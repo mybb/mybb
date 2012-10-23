@@ -1004,7 +1004,7 @@ if($mybb->input['action'] == "edit")
 		$query = $db->simple_select("themestylesheets", "*", "", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
 		while($theme_stylesheet = $db->fetch_array($query))
 		{
-			if(!$theme_stylesheets[$theme_stylesheet['cachefile']] && in_array($theme_stylesheet['tid'], $inherited_load))
+			if(!isset($theme_stylesheets[$theme_stylesheet['cachefile']]) && in_array($theme_stylesheet['tid'], $inherited_load))
 			{
 				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
 			}
@@ -1079,7 +1079,7 @@ if($mybb->input['action'] == "edit")
 			
 			foreach($inherited_ary as $tid => $file)
 			{
-				if($count == $applied_to_count && $count != 0)
+				if(isset($applied_to_count) && $count == $applied_to_count && $count != 0)
 				{
 					$sep = ", {$lang->and} ";
 				}
@@ -1092,7 +1092,7 @@ if($mybb->input['action'] == "edit")
 			$inherited .= ")</small>";
 		}
 		
-		if(is_array($style['applied_to']) && $style['applied_to']['global'][0] != "global")
+		if(is_array($style['applied_to']) && isset($style['applied_to']['global']) && $style['applied_to']['global'][0] != "global")
 		{
 			$attached_to = "<small>{$lang->attached_to}";
 			
@@ -1562,7 +1562,7 @@ Event.observe(window, "load", function() {
 }
 
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
-if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $mybb->input['mode'] == "simple"))
+if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
 {
 	$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple");
 	
@@ -1810,7 +1810,15 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	
 	// Get the properties from this item
 	$properties = parse_css_properties($editable_selector['values']);
-	
+
+	foreach(array('background', 'color', 'width', 'font-family', 'font-size', 'font-style', 'font-weight', 'text-decoration') as $_p)
+	{
+		if(!isset($properties[$_p]))
+		{
+			$properties[$_p] = '';
+		}
+	}
+
 	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheet", "post");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";

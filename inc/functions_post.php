@@ -26,9 +26,9 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('subject_extra', 'attachments', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
+	foreach(array('subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
 	{
-		if(empty($post_field))
+		if(empty($post[$post_field]))
 		{
 			$post[$post_field] = '';
 		}

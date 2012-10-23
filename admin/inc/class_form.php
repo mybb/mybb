@@ -206,19 +206,19 @@ class DefaultForm
 		{
 			$textarea .= " id=\"{$options['id']}\"";
 		}
-		if($options['style'])
+		if(isset($options['style']))
 		{
 			$textarea .= " style=\"{$options['style']}\"";
 		}
-		if($options['disabled'])
+		if(isset($options['disabled']))
 		{
 			$textarea .= " disabled=\"disabled\"";
 		}
-		if(!$options['rows'])
+		if(!isset($options['rows']))
 		{
 			$options['rows'] = 5;
 		}
-		if(!$options['cols'])
+		if(!isset($options['cols']))
 		{
 			$options['cols'] = 45;
 		}
@@ -581,18 +581,18 @@ class DefaultForm
 		{
 			$input .= " name=\"".$options['name']."\"";
 		}
-		if($options['disabled'])
+		if(isset($options['disabled']))
 		{
 			$input .= " disabled=\"disabled\"";
 		}
-		if($options['onclick'])
+		if(isset($options['onclick']))
 		{
 			$input .= " onclick=\"".str_replace('"', '\"', $options['onclick'])."\"";
 		}
 		$input .= " />";
 		return $input;
 	}
-	
+
 	/**
 	 * Generate a reset button.
 	 *
@@ -709,6 +709,16 @@ class DefaultForm
 		}
 		
 		// Set the options straight
+		if(!isset($on_options['class']))
+		{
+			$on_options['class'] = '';
+		}
+
+		if(!isset($off_options['class']))
+		{
+			$off_options['class'] = '';
+		}
+
 		$on_options['class'] = "radio_on ".$on_options['class'];
 		$on_options['checked'] = $on_checked;
 		$off_options['class'] = "radio_off ".$off_options['class'];
@@ -866,30 +876,37 @@ class DefaultFormContainer
 			'row_options' => &$row_options,
 			'this' => &$this
 		);
+
 		$plugins->run_hooks("admin_formcontainer_output_row", $pluginargs);
+
+		$row = $for = '';
 		if($label_for != '')
 		{
 			$for = " for=\"{$label_for}\"";
 		}
-		
+
 		if($title)
 		{
 			$row = "<label{$for}>{$title}</label>";
 		}
-		
-		if($options['id'])
+
+		if(isset($options['id']))
 		{
 			$options['id'] = " id=\"{$options['id']}\"";
 		}
-		
+		else
+		{
+			$options['id'] = '';
+		}
+
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
+
 		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
-		
 		$this->_container->construct_cell($row, $options);
-		
+
 		if(!isset($options['skip_construct']))
 		{
 			$this->_container->construct_row($row_options);

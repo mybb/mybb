@@ -80,7 +80,7 @@ class pluginSystem
 	 */
 	function run_hooks($hook, &$arguments="")
 	{
-		if(!is_array($this->hooks[$hook]))
+		if(!isset($this->hooks[$hook]) || !is_array($this->hooks[$hook]))
 		{
 			return $arguments;
 		}

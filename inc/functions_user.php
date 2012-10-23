@@ -443,6 +443,7 @@ function usercp_menu_messenger()
 	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
+	$folderlinks = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{

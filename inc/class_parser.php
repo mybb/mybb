@@ -199,7 +199,7 @@ class postParser
 			), $message);
 		}
 
-		if(!empty($options['nl2br']))
+		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements

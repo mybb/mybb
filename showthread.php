@@ -1089,7 +1089,8 @@ if($mybb->input['action'] == "thread")
 		{
 			$postoptionschecked['signature'] = 'checked="checked"';
 		}
-		if($mybb->user['emailnotify'] == 1)
+
+		if(isset($mybb->user['emailnotify']) && $mybb->user['emailnotify'] == 1)
 		{
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
 		}

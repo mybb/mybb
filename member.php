@@ -1527,16 +1527,14 @@ if($mybb->input['action'] == "profile")
 		$bgcolors[$cat] = alt_trow();
 	}
 
+	$website = '';
 	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
 	}
-	else
-	{
-		$website = '';
-	}
 
+	$signature = '';
 	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
 	{
 		$sig_parser = array(
@@ -1591,6 +1589,7 @@ if($mybb->input['action'] == "profile")
 		$memprofile['icq'] = '';
 	}
 
+	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
@@ -1799,6 +1798,7 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 
+	$groupimage = '';
 	if(!empty($displaygroup['image']))
 	{
 		if(!empty($mybb->user['language']))
@@ -1814,7 +1814,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(!$starimage)
+	if(!isset($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
@@ -1873,6 +1873,7 @@ if($mybb->input['action'] == "profile")
 		$reputation = get_reputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
+		$vote_link = '';
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
@@ -1897,7 +1898,8 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
-			$warning_link = "usercp.php";
+			$warn_user = '';
+			$warning_link = 'usercp.php';
 		}
 		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
 	}
@@ -1922,34 +1924,39 @@ if($mybb->input['action'] == "profile")
 		$thing = explode("\n", $customfield['type'], "2");
 		$type = trim($thing[0]);
 
+		$customfieldval = '';
 		$field = "fid{$customfield['fid']}";
-		$useropts = explode("\n", $userfields[$field]);
-		$customfieldval = $comma = '';
-		if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
-		{
-			foreach($useropts as $val)
-			{
-				if($val != '')
-				{
-					$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
-				}
-			}
-			if($customfieldval != '')
-			{
-				$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
-			}
-		}
-		else
-		{
-			$userfields[$field] = $parser->parse_badwords($userfields[$field]);
 
-			if($customfield['type'] == "textarea")
+		if(isset($userfields[$field]))
+		{
+			$useropts = explode("\n", $userfields[$field]);
+			$customfieldval = $comma = '';
+			if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 			{
-				$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+				foreach($useropts as $val)
+				{
+					if($val != '')
+					{
+						$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
+					}
+				}
+				if($customfieldval != '')
+				{
+					$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
+				}
 			}
 			else
 			{
-				$customfieldval = htmlspecialchars_uni($userfields[$field]);
+				$userfields[$field] = $parser->parse_badwords($userfields[$field]);
+	
+				if($customfield['type'] == "textarea")
+				{
+					$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+				}
+				else
+				{
+					$customfieldval = htmlspecialchars_uni($userfields[$field]);
+				}
 			}
 		}
 
@@ -1972,16 +1979,14 @@ if($mybb->input['action'] == "profile")
 	{
 		$timeonline = $lang->none_registered;
 	}
-	
+
+	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
-	else
-	{
-		$adminoptions = '';
-	}
-	
+
+	$modoptions = '';
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
@@ -2000,13 +2005,8 @@ if($mybb->input['action'] == "profile")
 		
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}
-	else
-	{
-		$modoptions = '';
-	}
-	
+
 	$buddy_options = '';
-	
 	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
@@ -2031,7 +2031,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$plugins->run_hooks("member_profile_end");
-	
+
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
 	output_page($profile);
 }

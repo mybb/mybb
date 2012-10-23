@@ -184,14 +184,14 @@ class DB_MySQLi
 			// Loop-de-loop
 			foreach($connections[$type] as $single_connection)
 			{
-				$connect_function = "mysqli_connect";
-				$persist = "";
-				if($single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
+				$persist = '';
+				$connect_function = 'mysqli_connect';
+				if(isset($single_connection['pconnect']) && version_compare(PHP_VERSION, '5.3.0', '>='))
 				{
-					$persist = "p:";
+					$persist = 'p:';
 				}
-				
-				$link = $type."_link";
+
+				$link = "{$type}_link";
 
 				$this->get_execution_time();
 
@@ -354,6 +354,8 @@ class DB_MySQLi
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+
+		$debug_extra = '';
 		if($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";

@@ -19,7 +19,7 @@ $page->add_breadcrumb_item($lang->forum_management, "index.php?module=forum-mana
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
-	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
+	if(isset($mybb->input['fid']) && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
 	{
 		$sub_tabs['view_forum'] = array(
 			'title' => $lang->view_forum,
@@ -2005,8 +2005,13 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_management_start");
-	$fid = intval($mybb->input['fid']);
 
+	if(!isset($mybb->input['fid']))
+	{
+		$mybb->input['fid'] = 0;
+	}
+
+	$fid = intval($mybb->input['fid']);
 	if($fid)
 	{
 		$forum = get_forum($fid);

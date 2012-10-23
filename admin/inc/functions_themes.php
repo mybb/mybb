@@ -546,17 +546,17 @@ function css_to_array($css)
 		$class_name = trim($class_name);
 		$comments = $matches[1][$i];
 		preg_match_all("#Name:(.*)#i", $comments, $name_match);
-		if($name_match[count($name_match)-1][0])
+		if(isset($name_match[count($name_match)-1][0]))
 		{
 			$name = trim($name_match[count($name_match)-1][0]);
 		}
 		preg_match_all("#Description:(.*)#i", $comments, $description_match);
-		if($description_match[count($description_match)-1][0])
+		if(isset($description_match[count($description_match)-1][0]))
 		{
 			$description = trim($description_match[count($description_match)-1][0]);
 		}
 		$class_id = md5($class_name);
-		if($already_parsed[$class_id])
+		if(isset($already_parsed[$class_id]))
 		{
 			$already_parsed[$class_id]++;
 			$class_id .= "_".$already_parsed[$class_id];
@@ -891,7 +891,7 @@ function make_parent_theme_list($tid)
 		}
 	}
 	
-	if(!is_array($themes_by_parent[$tid]))
+	if(!isset($themes_by_parent[$tid]))
 	{
 		return false;
 	}

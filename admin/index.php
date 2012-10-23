@@ -62,7 +62,7 @@ $ip_address = get_ip();
 unset($user);
 
 // Load Admin CP style
-if(!$cp_style)
+if(!isset($cp_style))
 {
 	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
 	{
@@ -79,6 +79,14 @@ $default_page = new DefaultPage;
 $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
+
+foreach(array('action', 'do', 'module') as $input)
+{
+	if(!isset($mybb->input[$input]))
+	{
+		$mybb->input[$input] = '';
+	}
+}
 
 if($mybb->input['action'] == "unlock")
 {
@@ -467,6 +475,11 @@ if(strpos($mybb->input['module'], "/") !== false)
 else
 {
 	$current_module = explode("-", $mybb->input['module'], 2);
+}
+
+if(!isset($current_module[1]))
+{
+	$current_module[1] = 'home';
 }
 
 if($mybb->input['module'] && isset($modules[$current_module[0]]))

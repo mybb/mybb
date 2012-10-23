@@ -328,7 +328,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 	if(!$offset && $offset != '0')
 	{
-		if($mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
+		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
@@ -2898,6 +2898,8 @@ function get_reputation($reputation, $uid=0)
 {
 	global $theme;
 
+	$display_reputation = '';
+
 	if($uid != 0)
 	{
 		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
@@ -3142,13 +3144,6 @@ function get_unviewable_forums($only_readable_threads=false)
 {
 	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
 
-	$pid = intval($pid);
-
-	if(!$permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
-
 	if(!is_array($forum_cache))
 	{
 		cache_forums();
@@ -3206,7 +3201,10 @@ function get_unviewable_forums($only_readable_threads=false)
 		}
 	}
 
-	return $unviewableforums;
+	if(isset($unviewableforums))
+	{
+		return $unviewableforums;
+	}
 }
 
 /**
@@ -3642,7 +3640,7 @@ function nice_time($stamp, $options=array())
 	$hsecs = 60*60;
 	$msecs = 60;
 
-	if($options['short'] == true)
+	if(isset($options['short']))
 	{
 		$lang_year = $lang->year_short;
 		$lang_years = $lang->years_short;
@@ -3727,7 +3725,7 @@ function nice_time($stamp, $options=array())
 		$nicetime['days'] = $days.$lang_days;
 	}
 
-	if($options['hours'] !== false)
+	if(!isset($options['hours']) || $options['hours'] !== false)
 	{
 		if($hours == 1)
 		{
@@ -3739,7 +3737,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['minutes'] !== false)
+	if(!isset($options['minutes']) || $options['minutes'] !== false)
 	{
 		if($minutes == 1)
 		{
@@ -3751,7 +3749,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['seconds'] !== false)
+	if(!isset($options['seconds']) || $options['seconds'] !== false)
 	{
 		if($seconds == 1)
 		{

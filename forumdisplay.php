@@ -788,6 +788,7 @@ else
 	$announcementlist = '';
 }
 
+$tids = $threadcache = array();
 $icon_cache = $cache->read("posticons");
 
 if($fpermissions['canviewthreads'] != 0)
@@ -834,7 +835,7 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 	}
 
-	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids && $ratings == true)
+	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($tids) && $ratings == true)
 	{
 		// Check if we've rated threads on this page
 		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
@@ -847,10 +848,6 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 	}
 }
-else
-{
-	$threadcache = $tids = null;
-}
 
 // If user has moderation tools available, prepare the Select All feature
 $num_results = $db->num_rows($query);
@@ -862,13 +859,13 @@ if(is_moderator($fid) && $num_results > 0)
 	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
 }
 
-if($tids)
+if(!empty($tids))
 {
 	$tids = implode(",", $tids);
 }
 
 // Check participation by the current user in any of these threads - for 'dot' folder icons
-if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $threadcache)
+if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcache))
 {
 	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids}) {$visibleonly}");
 	while($post = $db->fetch_array($query))
@@ -885,7 +882,7 @@ if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $threadcache)
 }
 
 // Read threads
-if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
+if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadcache))
 {
 	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
 	while($readthread = $db->fetch_array($query))
@@ -925,7 +922,7 @@ else
 $unreadpost = 0;
 $threads = '';
 $load_inline_edit_js = 0;
-if(is_array($threadcache))
+if(!empty($threadcache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
 	{
@@ -1028,7 +1025,7 @@ if(is_array($threadcache))
 				$thread['numratings'] = intval($thread['numratings']);
 
 				$not_rated = '';
-				if(!$thread['rated'])
+				if(!isset($thread['rated']) || empty($thread['rated']))
 				{
 					$not_rated = ' star_rating_notrated';
 				}

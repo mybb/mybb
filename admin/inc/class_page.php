@@ -56,6 +56,11 @@ class DefaultPage
 	public $extra_header = "";
 
 	/**
+	 * @var string Show a post verify error
+	 */
+	public $show_post_verify_error = '';
+
+	/**
 	 * Output the page header.
 	 *
 	 * @param string The title of the page.
@@ -202,10 +207,10 @@ var imagepath = '../images';
 		$trail = "";
 		foreach($this->_breadcrumb_trail as $key => $crumb)
 		{
-			if($this->_breadcrumb_trail[$key+1])
+			if(isset($this->_breadcrumb_trail[$key+1]))
 			{
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->_breadcrumb_trail[$key+2])
+				if(isset($this->_breadcrumb_trail[$key+2]))
 				{
 					$trail .= " &raquo; ";
 				}
@@ -671,11 +676,12 @@ EOF;
 			{
 				$class = ' active';
 			}
-			if($tab['align'] == "right")
+			if(isset($tab['align']) == "right")
 			{
 				$class .= " right";
 			}
-			if($tab['link_target'])
+			$target = '';
+			if(isset($tab['link_target']))
 			{
 				$target = " target=\"{$tab['link_target']}\"";
 			}
