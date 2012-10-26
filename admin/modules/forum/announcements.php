@@ -165,7 +165,33 @@ if($mybb->input['action'] == "add")
 	{
 		$page->output_inline_error($errors);
 	}
-	
+
+	$default_options = array(
+		'starttime_time',
+		'starttime_day',
+		'starttime_month',
+		'starttime_year',
+		'endtime_type',
+		'endtime_time',
+		'endtime_day',
+		'endtime_month',
+		'endtime_year',
+		'title',
+		'message',
+		'fid',
+		'allowhtml',
+		'allowmycode',
+		'allowsmilies'
+	);
+
+	foreach($default_options as $option)
+	{
+		if(!isset($mybb->input[$option]))
+		{
+			$mybb->input[$option] = '';
+		}
+	}
+
 	if($mybb->input['endtime_type'] == "1")
 	{
 		$endtime_checked[1] = "checked=\"checked\"";
@@ -206,7 +232,10 @@ if($mybb->input['action'] == "add")
 	{
 		$endday = gmdate("j", TIME_NOW);
 	}
-	
+
+	$startdateday = $enddateday = $startdatemonth = $enddatemonth = '';
+
+	// Days
 	for($i = 1; $i <= 31; ++$i)
 	{
 		if($startday == $i)
@@ -227,7 +256,13 @@ if($mybb->input['action'] == "add")
 			$enddateday .= "<option value=\"$i\">$i</option>\n";
 		}
 	}
-	
+
+	// Months
+	for($i = 1; $i <= 12; ++$i)
+	{
+		$endmonthsel[$i] = $startmonthsel[$i] = '';
+	}
+
 	if($mybb->input['starttime_month'])
 	{
 		$startmonth = intval($mybb->input['starttime_month']);
@@ -250,30 +285,30 @@ if($mybb->input['action'] == "add")
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	
-	$startdatemonth .= "<option value=\"01\" {$startmonthsel['01']}>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" {$endmonthsel['01']}>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" {$startmonthsel['02']}>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" {$endmonthsel['02']}>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" {$startmonthsel['03']}>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" {$endmonthsel['03']}>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" {$startmonthsel['04']}>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" {$endmonthsel['04']}>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" {$startmonthsel['05']}>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" {$endmonthsel['05']}>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" {$startmonthsel['06']}>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" {$endmonthsel['06']}>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" {$startmonthsel['07']}>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" {$endmonthsel['07']}>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" {$startmonthsel['08']}>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" {$endmonthsel['08']}>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" {$startmonthsel['09']}>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" {$endmonthsel['09']}>{$lang->september}</option>\n";
-	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
-	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
-	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
-	$enddatemonth .= "<option value=\"11\" {$endmonthsel['11']}>{$lang->november}</option>\n";
-	$startdatemonth .= "<option value=\"12\" {$startmonthsel['12']}>{$lang->december}</option>\n";
-	$enddatemonth .= "<option value=\"12\" {$endmonthsel['12']}>{$lang->december}</option>\n";
+	$startdatemonth .= "<option value=\"01\" {$startmonthsel[1]}>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" {$endmonthsel[1]}>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" {$startmonthsel[2]}>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" {$endmonthsel[2]}>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" {$startmonthsel[3]}>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" {$endmonthsel[3]}>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" {$startmonthsel[4]}>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" {$endmonthsel[4]}>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" {$startmonthsel[5]}>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" {$endmonthsel[5]}>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" {$startmonthsel[6]}>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" {$endmonthsel[6]}>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" {$startmonthsel[7]}>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" {$endmonthsel[7]}>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" {$startmonthsel[8]}>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" {$endmonthsel[8]}>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" {$startmonthsel[9]}>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" {$endmonthsel[9]}>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"10\" {$startmonthsel[10]}>{$lang->october}</option>\n";
+	$enddatemonth .= "<option value=\"10\" {$endmonthsel[10]}>{$lang->october}</option>\n";
+	$startdatemonth .= "<option value=\"11\" {$startmonthsel[11]}>{$lang->november}</option>\n";
+	$enddatemonth .= "<option value=\"11\" {$endmonthsel[11]}>{$lang->november}</option>\n";
+	$startdatemonth .= "<option value=\"12\" {$startmonthsel[12]}>{$lang->december}</option>\n";
+	$enddatemonth .= "<option value=\"12\" {$endmonthsel[12]}>{$lang->december}</option>\n";
 	
 	if($mybb->input['starttime_year'])
 	{
@@ -722,6 +757,7 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, "forum_announcements");
 
 	// Fetch announcements into their proper arrays
+	$global_announcements = $announcements = array();
 	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
 	while($announcement = $db->fetch_array($query))
 	{
@@ -732,8 +768,8 @@ if(!$mybb->input['action'])
 		}
 		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
 	}
-	
-	if($global_announcements)
+
+	if(!empty($global_announcements))
 	{
 		$table = new Table;
 		$table->construct_header($lang->announcement);
@@ -806,17 +842,17 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			{
 				$forum['name'] = "<em>".$forum['name']."</em>";
 			}
-			
+
 			if($forum['type'] == "c")
 			{
 				$forum['name'] = "<strong>".$forum['name']."</strong>";
 			}
-				
+
 			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\">{$forum['name']}</div>");
 			$table->construct_cell("<a href=\"index.php?module=forum-announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
-				
-			if($announcements[$forum['fid']])
+
+			if(isset($announcements[$forum['fid']]))
 			{
 				foreach($announcements[$forum['fid']] as $aid => $announcement)
 				{
@@ -837,7 +873,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			}
 
 			// Build the list for any sub forums of this forum
-			if($forums_by_parent[$forum['fid']])
+			if(isset($forums_by_parent[$forum['fid']]))
 			{
 				fetch_forum_announcements($table, $forum['fid'], $depth+1);
 			}

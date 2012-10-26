@@ -807,19 +807,21 @@ if($mybb->input['action'] == "thread")
 		}
 		
 		// Figure out if we need to display multiple pages.
+		$page = 1;
 		$perpage = $mybb->settings['postsperpage'];
 		if(isset($mybb->input['page']) && $mybb->input['page'] != "last")
 		{
 			$page = intval($mybb->input['page']);
 		}
+
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
 			$query = $db->query("
 				SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
-				WHERE p.tid='$tid'
-				AND p.dateline <= '".$post['dateline']."'
-				$visible
+				WHERE p.tid = '{$tid}'
+				AND p.dateline <= '{$post['dateline']}'
+				{$visible}
 			");
 			$result = $db->fetch_field($query, "count");
 			if(($result % $perpage) == 0)
@@ -831,16 +833,17 @@ if($mybb->input['action'] == "thread")
 				$page = intval($result / $perpage) + 1;
 			}
 		}
+
 		// Recount replies if user is a moderator to take into account unapproved posts.
 		if($ismod)
 		{
 			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 		}
+
 		$postcount = intval($thread['replies'])+1;
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
-		$page = 1;
 
 		if(isset($mybb->input['page']) && $mybb->input['page'] == "last")
 		{

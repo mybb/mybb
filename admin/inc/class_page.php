@@ -311,7 +311,7 @@ var imagepath = '../images';
 		$login_label_width = "";
 		 
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
-		if($lang->login_field_width)
+		if(isset($lang->login_field_width))
         {
         	$login_label_width = " style=\"width: ".(intval($lang->login_field_width)+100)."px;\"";
 			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
@@ -684,6 +684,10 @@ EOF;
 			if(isset($tab['link_target']))
 			{
 				$target = " target=\"{$tab['link_target']}\"";
+			}
+			if(!isset($tab['link']))
+			{
+				$tab['link'] = '';
 			}
 			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
 			$target = '';

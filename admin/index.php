@@ -264,7 +264,7 @@ else
 		// No matching admin session found - show message on login screen
 		if(!$admin_session['sid'])
 		{
-			$login_message = $lang->invalid_admin_session;
+			$login_message = $lang->error_invalid_admin_session;
 		}
 		else
 		{
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 	}
 }
 
-if(!$mybb->user['usergroup'])
+if(!isset($mybb->user['usergroup']))
 {
 	$mybbgroups = 1;
 }
@@ -342,7 +342,12 @@ $mybb->usergroup = usergroup_permissions($mybbgroups);
 
 if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 {
-	$db->delete_query("adminsessions", "uid='".intval($mybb->user['uid'])."'");
+	$uid = 0;
+	if(isset($mybb->user['uid']))
+	{
+		$uid = intval($mybb->user['uid']);
+	}
+	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
 	my_setcookie("adminsid", "");
 }
@@ -395,7 +400,7 @@ $page = new Page;
 $page->style = $cp_style;
 
 // Do not have a valid Admin user, throw back to login page.
-if(!$mybb->user['uid'] || $logged_out == true)
+if(!isset($mybb->user['uid']) || $logged_out == true)
 {	
 	if($logged_out == true)
 	{
@@ -408,7 +413,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 	else
 	{
 		// If we have this error while retreiving it from an AJAX request, then send back a nice error
-		if($mybb->input['ajax'] == 1)
+		if(isset($mybb->input['ajax']) && $mybb->input['ajax'] == 1)
 		{
 			echo "<error>login</error>";
 			die;

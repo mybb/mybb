@@ -307,7 +307,7 @@ class DefaultForm
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
-		if($options['checked'] === true || $options['checked'] == 1)
+		if(isset($options['checked']) && ($options['checked'] === true || $options['checked'] == 1))
 		{
 			$input .= " checked=\"checked\"";
 		}
@@ -391,16 +391,16 @@ class DefaultForm
 			$selectoptions = '';
 		}
 		
-		if(!$options['depth'])
+		if(!isset($options['depth']))
 		{
 			$options['depth'] = 0;
 		}
 		
 		$options['depth'] = intval($options['depth']);
 		
-		if(!$options['pid'])
+		if(!isset($options['pid']))
 		{
-			$pid = 0;
+			$options['pid'] = 0;
 		}
 		
 		$pid = intval($options['pid']);
@@ -429,7 +429,7 @@ class DefaultForm
 			$selectoptions .= "<option value=\"-1\"{$select_add}>{$options['main_option']}</option>\n";
 		}
 		
-		if(is_array($fselectcache[$pid]))
+		if(isset($fselectcache[$pid]))
 		{
 			foreach($fselectcache[$pid] as $main)
 			{
@@ -660,6 +660,17 @@ class DefaultForm
 			$yes_value = "yes";
 			$no_value = "no";
 		}
+
+		if(!isset($yes_options['class']))
+		{
+			$yes_options['class'] = '';
+		}
+
+		if(!isset($no_options['class']))
+		{
+			$no_options['class'] = '';
+		}
+
 		// Set the options straight
 		$yes_options['class'] = "radio_yes ".$yes_options['class'];
 		$yes_options['checked'] = $yes_checked;

@@ -875,6 +875,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 
 	$pages = ceil($count / $perpage);
 
+	$prevpage = '';
 	if($page > 1)
 	{
 		$prev = $page-1;
@@ -912,6 +913,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		$to = $pages;
 	}
 
+	$start = '';
 	if($from > 1)
 	{
 		if($from-1 == 1)
@@ -923,6 +925,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$start = \"".$templates->get("multipage_start")."\";");
 	}
 
+	$mppage = '';
 	for($i = $from; $i <= $to; ++$i)
 	{
 		$page_url = fetch_page_url($url, $i);
@@ -943,6 +946,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		}
 	}
 
+	$end = '';
 	if($to < $pages)
 	{
 		if($to+1 == $pages)
@@ -954,12 +958,14 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$end = \"".$templates->get("multipage_end")."\";");
 	}
 
+	$nextpage = '';
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
+
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 	
 	if($breadcrumb == true)
@@ -1594,6 +1600,7 @@ function get_post_icons()
 		$icon = $mybb->input['icon'];
 	}
 
+	$iconlist = '';
 	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
 	$posticons_cache = $cache->read("posticons");
@@ -2495,7 +2502,7 @@ function build_mycode_inserter($bind="message")
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
 			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
 
-			if($editor_lang_strings[$key+1])
+			if(isset($editor_lang_strings[$key+1]))
 			{
 				$editor_language .= ",";
 			}
@@ -2557,6 +2564,7 @@ function build_clickable_smilies()
 		{
 			reset($smiliecache);
 
+			$getmore = '';
 			if($mybb->settings['smilieinsertertot'] >= $smiliecount)
 			{
 				$mybb->settings['smilieinsertertot'] = $smiliecount;

@@ -103,7 +103,7 @@ function validate_password_from_username($username, $password)
 function validate_password_from_uid($uid, $password, $user = array())
 {
 	global $db, $mybb;
-	if($mybb->user['uid'] == $uid)
+	if(isset($mybb->user['uid']) && $mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
 	}
@@ -499,6 +499,8 @@ function usercp_menu_profile()
 function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+
+	$draftstart = $draftend = $draftcount = '';
 
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);	
