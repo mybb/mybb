@@ -895,7 +895,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			if($thread['thread_closed'] == 1)
+			if($post['thread_closed'] == 1)
 			{
 				$folder .= "lock";
 				$folder_label .= $lang->icon_lock;
