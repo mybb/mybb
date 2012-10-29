@@ -1195,23 +1195,27 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if($mybb->settings['failedcaptchalogincount'] > 0 && ($loginattempts > $mybb->settings['failedcaptchalogincount'] || intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount']))
 	{		
 		// Show captcha image if enabled
-		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng"))
+		if($mybb->settings['captchaimage'] == 1)
 		{
+			$do_captcha = true;
+
 			// Check their current captcha input - if correct, hide the captcha input area
 			if($mybb->input['imagestring'])
 			{
-				$imagehash = $db->escape_string($mybb->input['imagehash']);
-				$imagestring = $db->escape_string($mybb->input['imagestring']);
-				$query = $db->simple_select("captcha", "*", "imagehash='{$imagehash}' AND imagestring='{$imagestring}'");
-				$imgcheck = $db->fetch_array($query);
-				if($imgcheck['dateline'] > 0)
+				require_once MYBB_ROOT.'inc/class_captcha.php';
+				$login_captcha = new captcha;
+
+				if($login_captcha->validate_captcha() == true)
 				{
 					$correct = true;
+					$do_captcha = false;
 				}
 				else
 				{
-					$db->delete_query("captcha", "imagehash='{$imagehash}'");
 					$errors[] = $lang->error_regimageinvalid;
+
+					$imagehash = $db->escape_string($mybb->input['imagehash']);
+					$db->delete_query("captcha", "imagehash='{$imagehash}'");
 				}
 			}
 			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
@@ -1223,8 +1227,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 				$errors[] = $lang->error_regimagerequired;
 			}
 		}
-		
-		$do_captcha = true;
 	}
 	
 	if(!empty($errors))
@@ -1305,28 +1307,32 @@ if($mybb->input['action'] == "login")
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
+	$redirect_url = '';
 	if($_SERVER['HTTP_REFERER'] && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
-	else
-	{
-		$redirect_url = '';
-	}
 
-	$captcha = "";
+	$captcha = '';
 	// Show captcha image for guests if enabled
-	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
+	if($mybb->settings['captchaimage'] == 1)
 	{
-		$randomstr = random_str(5);
-		$imagehash = md5(random_str(12));
-		$imagearray = array(
-			"imagehash" => $imagehash,
-			"imagestring" => $randomstr,
-			"dateline" => TIME_NOW
-		);
-		$db->insert_query("captcha", $imagearray);
-		eval("\$captcha = \"".$templates->get("post_captcha")."\";");
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+
+		if($do_captcha == true)
+		{
+			$login_captcha = new captcha(true, "post_captcha");
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
+		}
+		else
+		{
+			$login_captcha = new captcha;
+			$captcha = $login_captcha->build_hidden_captcha();
+		}
 	}
 	
 	$username = "";
