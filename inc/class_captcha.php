@@ -220,6 +220,7 @@ class captcha
 			if(!$imgcheck['dateline'])
 			{
 				$this->set_error($lang->invalid_captcha_verify);
+				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 			}
 		}
 		elseif($this->type == 2)
