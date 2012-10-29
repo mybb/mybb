@@ -1213,9 +1213,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 				else
 				{
 					$errors[] = $lang->error_regimageinvalid;
-
-					$imagehash = $db->escape_string($mybb->input['imagehash']);
-					$db->delete_query("captcha", "imagehash='{$imagehash}'");
 				}
 			}
 			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
