@@ -649,9 +649,8 @@ if($mybb->input['action'] == "send")
 	$lang->post_icon = $lang->message_icon;
 
 	$posticons = get_post_icons();
-	$previewmessage = $mybb->input['message'];
-	$message = htmlspecialchars_uni($mybb->input['message']);
-	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
+	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->input['message']));
+	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->input['subject']));
 
 	if($mybb->input['preview'] || $send_errors)
 	{
@@ -691,8 +690,8 @@ if($mybb->input['action'] == "send")
 
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
-		$post['message'] = $previewmessage;
-		$post['subject'] = $previewsubject;
+		$post['message'] = $mybb->input['message'];
+		$post['subject'] = $subject;
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = TIME_NOW;
@@ -750,11 +749,12 @@ if($mybb->input['action'] == "send")
 		");
 
 		$pm = $db->fetch_array($query);
-		$message = htmlspecialchars_uni($parser->parse_barwords($pm['message']));
+		$message = htmlspecialchars_uni($parser->parse_badwords($pm['message']));
 		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 		if($pm['folder'] == "3")
-		{ // message saved in drafts
+		{
+			// message saved in drafts
 			$mybb->input['uid'] = $pm['toid'];
 
 			if($pm['includesig'] == 1)
@@ -810,7 +810,8 @@ if($mybb->input['action'] == "send")
 			}
 		}
 		else
-		{ // forward/reply
+		{
+			// forward/reply
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
@@ -917,7 +918,6 @@ if($mybb->input['action'] == "send")
 	eval("\$send = \"".$private_send."\";");
 	output_page($send);
 }
-
 
 if($mybb->input['action'] == "read")
 {
