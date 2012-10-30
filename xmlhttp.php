@@ -368,10 +368,7 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
-		$post_query = $db->simple_select("posts", "visible", "pid='" . (int)$post['pid'] . "'");
-		$post_visible = $db->fetch_field($post_query, "visible");
-		echo $post_visible;
-		if(!$post_visible)
+		if($post['visible'] == 0)
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
