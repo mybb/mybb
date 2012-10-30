@@ -528,6 +528,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		else
 		{
 			// Moderated post
+			if($mybb->user['showredirect'] != 1)
+			{
+				// User must see moderation notice, regardless of redirect settings
+				$mybb->user['showredirect'] = 1;
+			}
+
 			$lang->redirect_newreply .= '<br />'.$lang->redirect_newreply_moderation;
 			$url = get_thread_link($tid);
 		}
