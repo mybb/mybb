@@ -422,6 +422,12 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		else if(!$visible)
 		{
 			// Moderated thread
+			if($mybb->user['showredirect'] != 1)
+			{
+				// User must see moderation notice, regardless of redirect settings
+				$mybb->user['showredirect'] = 1;
+			}
+
 			$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
 			$url = get_forum_link($fid);
 		}
