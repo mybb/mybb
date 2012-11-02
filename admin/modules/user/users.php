@@ -742,7 +742,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input['bday'] = array();
+		$mybb->input['bday'] = array(0, 0, '');
 
 		if($user['birthday'])
 		{
