@@ -1,17 +1,22 @@
 <?php
 /**
- * $Horde: framework/Text_Diff/Diff/Mapped.php,v 1.3.2.3 2008/01/04 10:37:27 jan Exp $
- *
- * Copyright 2007-2008 The Horde Project (http://www.horde.org/)
+ * Copyright 2007-2011 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
+ * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
-class Text_Diff_Mapped extends Text_Diff {
 
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
+class Horde_Text_Diff_Mapped extends Horde_Text_Diff
+{
     /**
      * Computes a diff between sequences of strings.
      *
@@ -28,13 +33,13 @@ class Text_Diff_Mapped extends Text_Diff {
      * @param array $mapped_to_lines    This array should have the same number
      *                                  of elements as $to_lines.
      */
-    function Text_Diff_Mapped($from_lines, $to_lines,
-                              $mapped_from_lines, $mapped_to_lines)
+    public function __construct($from_lines, $to_lines,
+                                $mapped_from_lines, $mapped_to_lines)
     {
         assert(count($from_lines) == count($mapped_from_lines));
         assert(count($to_lines) == count($mapped_to_lines));
 
-        parent::Text_Diff($mapped_from_lines, $mapped_to_lines);
+        parent::__construct($mapped_from_lines, $mapped_to_lines);
 
         $xi = $yi = 0;
         for ($i = 0; $i < count($this->_edits); $i++) {
@@ -51,5 +56,4 @@ class Text_Diff_Mapped extends Text_Diff {
             }
         }
     }
-
 }

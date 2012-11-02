@@ -5,25 +5,29 @@
  * This class uses the Unix `diff` program via shell_exec to compute the
  * differences between the two input arrays.
  *
- * $Horde: framework/Text_Diff/Diff/Engine/shell.php,v 1.6.2.3 2008/01/04 10:37:27 jan Exp $
- *
- * Copyright 2007-2008 The Horde Project (http://www.horde.org/)
+ * Copyright 2007-2011 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
+ * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @author  Milian Wolff <mail@milianw.de>
  * @package Text_Diff
- * @since   0.3.0
  */
-class Text_Diff_Engine_shell {
 
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
+class Horde_Text_Diff_Engine_Shell
+{
     /**
      * Path to the diff executable
      *
      * @var string
      */
-    var $_diffCommand = 'diff';
+    protected $_diffCommand = 'diff';
 
     /**
      * Returns the array of differences.
@@ -31,18 +35,16 @@ class Text_Diff_Engine_shell {
      * @param array $from_lines lines of text from old file
      * @param array $to_lines   lines of text from new file
      *
-     * @return array all changes made (array with Text_Diff_Op_* objects)
+     * @return array all changes made (array with Horde_Text_Diff_Op_* objects)
      */
-    function diff($from_lines, $to_lines)
+    public function diff($from_lines, $to_lines)
     {
-        array_walk($from_lines, array('Text_Diff', 'trimNewlines'));
-        array_walk($to_lines, array('Text_Diff', 'trimNewlines'));
-
-        $temp_dir = Text_Diff::_getTempDir();
+        array_walk($from_lines, array('Horde_Text_Diff', 'trimNewlines'));
+        array_walk($to_lines, array('Horde_Text_Diff', 'trimNewlines'));
 
         // Execute gnu diff or similar to get a standard diff file.
-        $from_file = tempnam($temp_dir, 'Text_Diff');
-        $to_file = tempnam($temp_dir, 'Text_Diff');
+        $from_file = Horde_Util::getTempFile('Horde_Text_Diff');
+        $to_file = Horde_Util::getTempFile('Horde_Text_Diff');
         $fp = fopen($from_file, 'w');
         fwrite($fp, implode("\n", $from_lines));
         fclose($fp);
@@ -55,7 +57,7 @@ class Text_Diff_Engine_shell {
 
         if (is_null($diff)) {
             // No changes were made
-            return array(new Text_Diff_Op_copy($from_lines));
+            return array(new Horde_Text_Diff_Op_Copy($from_lines));
         }
 
         $from_line_no = 1;
@@ -87,7 +89,7 @@ class Text_Diff_Engine_shell {
                 // copied lines
                 assert('$match[1] - $from_line_no == $match[4] - $to_line_no');
                 array_push($edits,
-                    new Text_Diff_Op_copy(
+                    new Horde_Text_Diff_Op_Copy(
                         $this->_getLines($from_lines, $from_line_no, $match[1] - 1),
                         $this->_getLines($to_lines, $to_line_no, $match[4] - 1)));
             }
@@ -96,7 +98,7 @@ class Text_Diff_Engine_shell {
             case 'd':
                 // deleted lines
                 array_push($edits,
-                    new Text_Diff_Op_delete(
+                    new Horde_Text_Diff_Op_Delete(
                         $this->_getLines($from_lines, $from_line_no, $match[2])));
                 $to_line_no++;
                 break;
@@ -104,7 +106,7 @@ class Text_Diff_Engine_shell {
             case 'c':
                 // changed lines
                 array_push($edits,
-                    new Text_Diff_Op_change(
+                    new Horde_Text_Diff_Op_Change(
                         $this->_getLines($from_lines, $from_line_no, $match[2]),
                         $this->_getLines($to_lines, $to_line_no, $match[5])));
                 break;
@@ -112,7 +114,7 @@ class Text_Diff_Engine_shell {
             case 'a':
                 // added lines
                 array_push($edits,
-                    new Text_Diff_Op_add(
+                    new Horde_Text_Diff_Op_Add(
                         $this->_getLines($to_lines, $to_line_no, $match[5])));
                 $from_line_no++;
                 break;
@@ -122,7 +124,7 @@ class Text_Diff_Engine_shell {
         if (!empty($from_lines)) {
             // Some lines might still be pending. Add them as copied
             array_push($edits,
-                new Text_Diff_Op_copy(
+                new Horde_Text_Diff_Op_Copy(
                     $this->_getLines($from_lines, $from_line_no,
                                      $from_line_no + count($from_lines) - 1),
                     $this->_getLines($to_lines, $to_line_no,
@@ -144,7 +146,7 @@ class Text_Diff_Engine_shell {
      *
      * @return array The chopped lines
      */
-    function _getLines(&$text_lines, &$line_no, $end = false)
+    protected function _getLines(&$text_lines, &$line_no, $end = false)
     {
         if (!empty($end)) {
             $lines = array();
@@ -160,5 +162,4 @@ class Text_Diff_Engine_shell {
 
         return $lines;
     }
-
 }

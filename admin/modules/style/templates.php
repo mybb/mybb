@@ -1479,12 +1479,14 @@ if($mybb->input['action'] == "diff_report")
 	$template2['template'] = explode("\n", $template2['template']);
 
 	$plugins->run_hooks("admin_style_templates_diff_report_run");
-	require_once MYBB_ROOT."inc/3rdparty/diff/Diff.php";	
-	require_once MYBB_ROOT."inc/3rdparty/diff/Diff/Renderer/inline.php";
 
-	$diff = new Text_Diff('auto', array($template1['template'], $template2['template']));
-	$renderer = new Text_Diff_Renderer_inline();
-	
+	require_once MYBB_ROOT."inc/3rdparty/diff/Diff.php";
+	require_once MYBB_ROOT."inc/3rdparty/diff/Diff/Renderer.php";
+	require_once MYBB_ROOT."inc/3rdparty/diff/Diff/Renderer/Inline.php";
+
+	$diff = new Horde_Text_Diff('auto', array($template1['template'], $template2['template']));
+	$renderer = new Horde_Text_Diff_Renderer_Inline();
+
 	if($sid)
 	{
 		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
