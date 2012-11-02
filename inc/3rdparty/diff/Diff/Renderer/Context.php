@@ -1,15 +1,14 @@
 <?php
 /**
- * "Unified" diff renderer.
+ * "Context" diff renderer.
  *
- * This class renders the diff in classic "unified diff" format.
+ * This class renders the diff in classic "context diff" format.
  *
  * Copyright 2004-2011 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
  * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
- * @author  Ciprian Popovici
  * @package Text_Diff
  */
 
@@ -19,7 +18,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-class Horde_Text_Diff_Renderer_Unified extends Horde_Text_Diff_Renderer
+class Horde_Text_Diff_Renderer_Context extends Horde_Text_Diff_Renderer
 {
     /**
      * Number of leading context "lines" to preserve.
@@ -31,6 +30,8 @@ class Horde_Text_Diff_Renderer_Unified extends Horde_Text_Diff_Renderer
      */
     protected $_trailing_context_lines = 4;
 
+    protected $_second_block = '';
+
     protected function _blockHeader($xbeg, $xlen, $ybeg, $ylen)
     {
         if ($xlen != 1) {
@@ -39,26 +40,36 @@ class Horde_Text_Diff_Renderer_Unified extends Horde_Text_Diff_Renderer
         if ($ylen != 1) {
             $ybeg .= ',' . $ylen;
         }
-        return "@@ -$xbeg +$ybeg @@";
+        $this->_second_block = "--- $ybeg ----\n";
+        return "***************\n*** $xbeg ****";
+    }
+
+    protected function _endBlock()
+    {
+        return $this->_second_block;
     }
 
     protected function _context($lines)
     {
-        return $this->_lines($lines, ' ');
+        $this->_second_block .= $this->_lines($lines, '  ');
+        return $this->_lines($lines, '  ');
     }
 
     protected function _added($lines)
     {
-        return $this->_lines($lines, '+');
+        $this->_second_block .= $this->_lines($lines, '+ ');
+        return '';
     }
 
     protected function _deleted($lines)
     {
-        return $this->_lines($lines, '-');
+        return $this->_lines($lines, '- ');
     }
 
     protected function _changed($orig, $final)
     {
-        return $this->_deleted($orig) . $this->_added($final);
+        $this->_second_block .= $this->_lines($final, '! ');
+        return $this->_lines($orig, '! ');
     }
+
 }
