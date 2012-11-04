@@ -1215,10 +1215,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 					$errors[] = $lang->error_regimageinvalid;
 				}
 			}
-			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
-			{
-				$errors[] = $lang->error_regimagerequired;
-			}
 			else
 			{
 				$errors[] = $lang->error_regimagerequired;
