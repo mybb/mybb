@@ -2088,7 +2088,7 @@ if(!$mybb->input['action'])
 	// This is if we have days in the previous month to show
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
 		$calendar_month = $prev_month['month'];
@@ -2104,15 +2104,30 @@ if(!$mybb->input['action'])
 	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
-	$start_timestamp = gmmktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
-	$num_days = gmdate("t", gmmktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));
-	$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $num_days, $next_month['year']);
-
+	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
-
-	if($day > 31 && in_array($next_month['month'], array(4, 6, 11, 9)))
+	
+	$month_end_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $num_days, $year));
+	$next_days = 6-$month_end_weekday+$calendar['startofweek'];
+	
+	// More than a week? Go one week back
+	if($next_days >= 7)
 	{
-		// If we're a day over a 30 day month, gather the events from a week before too.
+		$next_days -= 7;
+	}
+	if($next_days > 0)
+	{
+		$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
+	}
+	else
+	{
+		// We don't need days from the next month
+		$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
+	}
+
+	if(isset($prev_days) && $day > $prev_days+1)
+	{
+		// If the day can't exist, gather the events from a week before too.
 		// Otherwise it will start on events for the 2nd - not the 'start' date for the month.
 		$start_timestamp -= (86400 * 7);
 	}
