@@ -3064,6 +3064,7 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("usercp_notepad_end");
 	
 	// Thread Subscriptions with New Posts
+	$latest_subscribed = '';
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
@@ -3126,6 +3127,7 @@ if(!$mybb->input['action'])
 				}
 
 				$icon_cache = $cache->read("posticons");
+				$threadprefixes = $cache->read('threadprefixes');
 				
 				foreach($subscriptions as $thread)
 				{
@@ -3142,12 +3144,9 @@ if(!$mybb->input['action'])
 						$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 						// If this thread has a prefix...
-						if($thread['prefix'] != 0)
+						if($thread['prefix'] != 0 && isset($threadprefixes[$thread['prefix']]))
 						{
-							$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']}'");
-							$threadprefix = $db->fetch_array($query);
-	
-							$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
+							$thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 						}
 						else
 						{
@@ -3155,7 +3154,7 @@ if(!$mybb->input['action'])
 						}
 
 						// Icons
-						if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 						{
 							$icon = $icon_cache[$thread['icon']];
 							$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";

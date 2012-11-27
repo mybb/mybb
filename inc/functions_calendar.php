@@ -74,7 +74,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 	if(!$events_cache)
 	{
-		$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+		$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 	}
 
 	$today = my_date("dnY");

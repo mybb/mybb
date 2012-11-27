@@ -2084,13 +2084,20 @@ if(!$mybb->input['action'])
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+
+	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	
 	// This is if we have days in the previous month to show
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
-		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$prev_days = $day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
 		$day += $calendar['startofweek']+1;
+		if($day > $prev_month_days+1)
+		{
+			// Go one week back
+			$day -= 7;
+		}
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}
@@ -2100,21 +2107,27 @@ if(!$mybb->input['action'])
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
-
-	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 	
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
-	$start_timestamp = gmmktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
-	$num_days = gmdate("t", gmmktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));
-	$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $num_days, $next_month['year']);
-
+	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
-
-	if($day > 31 && in_array($next_month['month'], array(4, 6, 11, 9)))
+	
+	$month_end_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $num_days, $year));
+	$next_days = 6-$month_end_weekday+$calendar['startofweek'];
+	
+	// More than a week? Go one week back
+	if($next_days >= 7)
 	{
-		// If we're a day over a 30 day month, gather the events from a week before too.
-		// Otherwise it will start on events for the 2nd - not the 'start' date for the month.
-		$start_timestamp -= (86400 * 7);
+		$next_days -= 7;
+	}
+	if($next_days > 0)
+	{
+		$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $next_days, $next_month['year']);
+	}
+	else
+	{
+		// We don't need days from the next month
+		$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
 	}
 
 	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
@@ -2133,18 +2146,6 @@ if(!$mybb->input['action'])
 	{
 		$weekday_name = fetch_weekday_name($weekday);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
-	}
-	
-	// Fix offset for Start Of Week being Saturday
-	if($calendar_month == $prev_month['month'] && $calendar['startofweek'] > 0)
-	{
-		$day -= 7;
-		
-		// Lets make sure we don't have a whole extra column for the last month
-		if($prev_month_days-7 >= ($day-1))
-		{
-			$day += 7;
-		}
 	}
 
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
