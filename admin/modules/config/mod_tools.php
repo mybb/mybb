@@ -283,6 +283,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message'],
 				'threadprefix' => intval($mybb->input['threadprefix'])
 			);
 			
@@ -390,6 +392,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
+		$mybb->input['pm_subject'] = $thread_options['pm_subject'];
+		$mybb->input['pm_message'] = $thread_options['pm_message'];
 	}
 	
 	$form_container = new FormContainer($lang->general_options);
@@ -527,6 +531,11 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
+	
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
+	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_thread_tool);
 
@@ -657,6 +666,8 @@ if($mybb->input['action'] == "add_thread_tool")
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message'],
 				'threadprefix' => $mybb->input['threadprefix'],
 			);
 			
@@ -755,6 +766,8 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
 		$mybb->input['newreplysubject'] = '{subject}';
+		$mybb->input['pm_subject'] = '';
+		$mybb->input['pm_message'] = '';
 	}
 
 	$form_container = new FormContainer($lang->general_options);
@@ -893,6 +906,11 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
+	$form_container->end();
+	
 	$buttons[] = $form->generate_submit_button($lang->save_thread_tool);
 
 	$form->output_submit_wrapper($buttons);
