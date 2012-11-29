@@ -1820,7 +1820,7 @@ body {
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newreply" version="1400"><![CDATA[<html>
+		<template name="newreply" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -1858,7 +1858,7 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
+{$option_signature}
 {$disablesmilies}
 </span></td>
 </tr>
@@ -1883,8 +1883,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newreply_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
+		<template name="newreply_disablesmilies" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_drafts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
@@ -1928,7 +1928,7 @@ body {
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
-		<template name="newthread" version="1600"><![CDATA[<html>
+		<template name="newthread" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -1962,7 +1962,7 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
+{$option_signature}
 {$disablesmilies}</span></td>
 </tr>
 {$modoptions}
@@ -1985,8 +1985,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newthread_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
+		<template name="newthread_disablesmilies" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_nav" version="1400"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
@@ -3650,7 +3650,7 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
+{$private_send_signature}
 <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
 {$private_send_tracking}
@@ -3695,6 +3695,7 @@ body {
 </body>
 </html>]]></template>
 		<template name="private_send_tracking" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
+		<template name="private_send_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />]]></template>
 		<template name="showthread_newreply_closed" version="120"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" alt="{$lang->thread_closed}" title="{$lang->thread_closed}" /></a>&nbsp;]]></template>
 		<template name="polls_editpoll" version="1400"><![CDATA[<html>
 <head>
@@ -4367,7 +4368,7 @@ body {
 	}
 // -->
 </script>]]></template>
-		<template name="showthread_quickreply" version="1400"><![CDATA[<br />
+		<template name="showthread_quickreply" version="1609"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="subject" value="RE: {$thread['subject']}" />
@@ -4393,7 +4394,7 @@ body {
 				<td class="trow1" valign="top" width="22%">
 					<strong>{$lang->message}</strong><br />
 					<span class="smalltext">{$lang->message_note}<br /><br />
-					<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
+					{$option_signature}
 					<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 				</td>
 				<td class="trow1">
@@ -4414,6 +4415,7 @@ body {
 		</tbody>
 	</table>
 </form>]]></template>
+		<template name="showthread_quickreply_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
 		<template name="memberlist" version="1602"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>

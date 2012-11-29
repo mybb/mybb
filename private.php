@@ -912,7 +912,15 @@ if($mybb->input['action'] == "send")
 		$tracking = $templates->get("private_send_tracking");
 	}
 	eval("\$private_send_tracking = \"".$tracking."\";");
-
+	
+	// Hide signature option if no permission
+	$option_signature = '';
+	if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+	{
+		$option_signature = $templates->get('private_send_signature');
+	}
+	eval("\$private_send_signature = \"".$option_signature."\";");
+	
 	$plugins->run_hooks("private_send_end");
 
 	eval("\$send = \"".$private_send."\";");

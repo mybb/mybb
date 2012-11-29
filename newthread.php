@@ -986,8 +986,18 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	
 	$forum['name'] = strip_tags($forum['name']);
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
+
+	$newthread_template = $templates->get("newthread");
 	
-	eval("\$newthread = \"".$templates->get("newthread")."\";");
+	// Hide signature option if no permission
+	$option_signature = '';
+	if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+	{
+		$option_signature = $templates->get('newthread_options_signature');
+	}
+	eval("\$option_signature = \"".$option_signature."\";");
+	
+	eval("\$newthread = \"".$newthread_template."\";");
 	output_page($newthread);
 
 }

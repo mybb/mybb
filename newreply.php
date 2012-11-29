@@ -1324,7 +1324,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	
 	$forum['name'] = strip_tags($forum['name']);
 
-	eval("\$newreply = \"".$templates->get("newreply")."\";");
+	$newreply_template = $templates->get("newreply");
+
+	// Hide signature option if no permission
+	$option_signature = '';
+	if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+	{
+		$option_signature = $templates->get('newreply_options_signature');
+	}
+	eval("\$option_signature = \"".$option_signature."\";");
+
+	eval("\$newreply = \"".$newreply_template."\";");
 	output_page($newreply);
 }
 ?>

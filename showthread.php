@@ -1086,6 +1086,14 @@ if($mybb->input['action'] == "thread")
 				$captcha = $post_captcha->html;
 			}
 		}
+		
+		// Hide signature option if no permission
+		$option_signature = '';
+		if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+		{
+			$option_signature = $templates->get('showthread_quickreply_options_signature');
+		}
+		eval("\$option_signature = \"".$option_signature."\";");
 
 		$postoptionschecked = array('signature' => '', 'emailnotify' => '');
 		if($mybb->user['signature'])
