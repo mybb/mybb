@@ -454,7 +454,7 @@
 		</setting>
 		<setting name="captchaimage">
 			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
-			<description><![CDATA[To help prevent automated registrations and postings, you can choose a type of image verification for the user to complete. Please see the MyBB Wiki for more information on CAPTCHAs.]]></description>
+			<description><![CDATA[To help prevent automated registrations and postings, you can choose a type of image verification for the user to complete. Please see the MyBB Docs for more information on CAPTCHAs.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[select
 0=No CAPTCHA
