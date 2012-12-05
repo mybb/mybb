@@ -22,7 +22,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-// We need to globalize $db here because when this script is called 
+// We need to globalize $db here because when this script is called
 // during load_module $db is not globalized in the function
 global $db;
 
@@ -54,7 +54,7 @@ function upgrade12_dbchanges()
 		"users" => array("uid","allownotices","hideemail","invisible","receivepms","pmpopup","pmnotify","remember","showsigs","showavatars","showquickreply","showredirect","away"),
 		"threads" => array("tid", "closed")
 	);
-	
+
 	if(!$db->field_exists('pmpopup', "users"))
 	{
 		$pmpopup_key = array_search('pmpopup', $to_int['users']);
@@ -205,11 +205,11 @@ function upgrade12_dbchanges1()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	echo "<p>Adding index to private messages table ... ";
 	flush();
-	
+
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
-	
+
 	echo "done.</p>";
-	
+
 	$contents = "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 
@@ -225,16 +225,16 @@ function upgrade12_dbchanges_post1()
 
 	$output->print_header("Performing Queries");
 
-	echo "<p>Performing necessary upgrade queries..</p>";	
+	echo "<p>Performing necessary upgrade queries..</p>";
 	echo "<p>Adding index to posts table ... ";
 	flush();
-	
+
 	// This will take a LONG time on huge post databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
-	
+
 	echo "done.</p>";
 	flush();
-	
+
 	$contents = "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 
@@ -251,26 +251,26 @@ function upgrade12_dbchanges_post2()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
-	
+
 	if($db->field_exists('longipaddress', "posts"))
 	{
 		echo "<p>Dropping longipaddress column in posts table ... ";
 		flush();
-	
+
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP longipaddress;");
-		
+
 		echo "done.</p>";
 		flush();
 	}
-	
+
 	echo "<p>Adding longipaddress column to posts table ... ";
 	flush();
-	
+
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(11) NOT NULL default '0' AFTER ipaddress");
-	
+
 	echo "done.</p>";
 	flush();
-	
+
 	$contents = "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 
@@ -286,17 +286,17 @@ function upgrade12_dbchanges_user()
 
 	$output->print_header("Performing Queries");
 
-	echo "<p>Performing necessary upgrade queries..</p>";	
+	echo "<p>Performing necessary upgrade queries..</p>";
 	echo "<p>Adding index to users table ... ";
 	flush();
-	
+
 	// This will take a LONG time on huge user databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `lastvisit` )");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `regdate` )");
-	
+
 	echo "done.</p>";
 	flush();
-	
+
 	$contents = "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 
@@ -314,19 +314,19 @@ function upgrade12_dbchanges2()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
-	
+
 	if($db->field_exists('recipients', "privatemessages"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
-	}	
+	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
-	
+
 	if($db->field_exists('deletetime', "privatemessages"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP deletetime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
-		
+
 	if($db->field_exists('maxpmrecipients', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxpmrecipients;");
@@ -338,7 +338,7 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers int(1) NOT NULL default '0' AFTER cancustomtitle");
-	
+
 	if($db->field_exists('lastip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP lastip;");
@@ -352,7 +352,7 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP coppauser;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD coppauser int(1) NOT NULL default '0'");
-	
+
 	if($db->field_exists('classicpostbit', 'users'))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP classicpostbit;");
@@ -364,13 +364,13 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canreceivewarnings;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings int(1) NOT NULL default '0' AFTER canwarnusers");
-	
+
 	if($db->field_exists('maxwarningsday', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxwarningsday;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
-	
+
 	$db->update_query("usergroups", array('canreceivewarnings' => 1), "cancp != 1");
 	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 1), "cancp=1 OR issupermod=1 OR gid=6"); // Admins, Super Mods and Mods
 
@@ -385,31 +385,31 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
 	}
-	
+
 	if($db->field_exists('keywords', "searchlog"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."searchlog DROP keywords;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
-	
+
 	if($db->field_exists('canaddpublicevents', "usergroups") && !$db->field_exists('canaddevents', "usergroups"))
 	{
 		$db->update_query("usergroups", array('canaddpublicevents' => 0), "canaddpublicevents='no'");
 		$db->update_query("usergroups", array('canaddpublicevents' => 1), "canaddpublicevents='yes'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents int(1) NOT NULL default '0';");
 	}
-	
+
 	if($db->field_exists('canaddprivateevents', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
 	}
-	
+
 	if($db->field_exists('canbypasseventmod', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canbypasseventmod;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod int(1) NOT NULL default '0' AFTER canaddevents;");
-	
+
 	if($db->field_exists('canmoderateevents', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
@@ -419,12 +419,12 @@ function upgrade12_dbchanges2()
 	$db->update_query("usergroups", array('canbypasseventmod' => 0, 'canmoderateevents' => 0), "cancp=0 AND issupermod=0");
 	$db->update_query("usergroups", array('canaddevents' => 0), "gid='1'");
 
-	$db->drop_table("maillogs");	
+	$db->drop_table("maillogs");
 	$db->drop_table("mailerrors");
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
 	$db->drop_table("massemails");
-	
+
 	$collation = $db->build_create_table_collation();
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
@@ -444,7 +444,7 @@ function upgrade12_dbchanges2()
 		perpage smallint(4) NOT NULL default '50',
 		PRIMARY KEY(mid)
 	) ENGINE=MyISAM{$collation};");
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
@@ -471,7 +471,7 @@ function upgrade12_dbchanges2()
 		smtpcode int(5) NOT NULL default '0',
 		PRIMARY KEY(eid)
  	) ENGINE=MyISAM{$collation};");
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions (
 		pid int unsigned NOT NULL auto_increment,
 		title varchar(120) NOT NULL default '',
@@ -490,7 +490,7 @@ function upgrade12_dbchanges2()
 		usergrouptype varchar(120) NOT NULL default '0',
 		PRIMARY KEY (pid)
 	) ENGINE=MyISAM{$collation};");
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
 		plid int unsigned NOT NULL auto_increment,
 		pid int unsigned NOT NULL default '0',
@@ -507,13 +507,13 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxemails;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER cansendemail");
-	
+
 	if($db->field_exists('parseorder', "mycode"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode DROP parseorder;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
-	
+
 	if($db->field_exists('mod_edit_posts', "forums"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums DROP mod_edit_posts;");
@@ -524,7 +524,7 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice int(1) NOT NULL default '0'");
 	}
-	
+
 	$db->drop_table("tasks");
 	$db->drop_table("tasklog");
 
@@ -588,25 +588,25 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("RENAME TABLE ".TABLE_PREFIX."favorites TO ".TABLE_PREFIX."threadsubscriptions");
 	}
-	
+
 	if($db->field_exists('fid', "threadsubscriptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
 	}
-	
+
 	if($db->field_exists('type', "threadsubscriptions"))
 	{
 		$db->update_query("threadsubscriptions", array('type' => 0), "type='f'");
 		$db->update_query("threadsubscriptions", array('type' => 1), "type='s'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
 	}
-	
+
 	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP dateline;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
-		
+
 	if($db->field_exists('subscriptionkey', "threadsubscriptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP subscriptionkey;");
@@ -620,7 +620,7 @@ function upgrade12_dbchanges2()
 		$db->update_query("users", array('emailnotify' => 0), "emailnotify != 1 AND emailnotify != 2");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
-	
+
 	$db->drop_table("warninglevels");
 	$db->drop_table("warningtypes");
 	$db->drop_table("warnings");
@@ -663,57 +663,57 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP warningpoints;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD warningpoints int(3) NOT NULL default '0' AFTER unreadpms");
-	
+
 	if($db->field_exists('moderateposts', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP moderateposts;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderateposts int(1) NOT NULL default '0' AFTER warningpoints");
-	
+
 	if($db->field_exists('moderationtime', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP moderationtime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderationtime bigint(30) NOT NULL default '0' AFTER moderateposts");
-	
+
 	if($db->field_exists('suspendposting', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP suspendposting;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspendposting int(1) NOT NULL default '0' AFTER moderationtime");
-	
+
 	if($db->field_exists('suspensiontime', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP suspensiontime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
-	
+
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups TEXT NOT NULL");
-	
+
 	if($db->field_exists('birthdayprivacy', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
-	
+
 	if($db->field_exists('birthdayprivacy', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
-	
+
 	if($db->field_exists('longregip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longregip;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longregip int(11) NOT NULL default '0' AFTER lastip");
-	
+
 	if($db->field_exists('longlastip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longlastip;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(11) NOT NULL default '0' AFTER lastip");
-	
+
 	// Unused column
 	if($db->field_exists('titles', "searchlog"))
 	{
@@ -730,27 +730,27 @@ function upgrade12_dbchanges2()
 	  data text NOT NULL,
 	  KEY module (module, action)
 	) ENGINE=MyISAM{$collation};");
-	
+
 	if($db->field_exists('data', "adminsessions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions DROP data;");
 	}
-	
+
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
-	
+
 	if($db->field_exists('isdefault', "settings"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings DROP isdefault;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings ADD isdefault int(1) NOT NULL default '0' AFTER gid;");
-	
+
 	$setting_group_cache = array();
 	$query = $db->simple_select("settinggroups", "gid, isdefault");
 	while($settinggroup = $db->fetch_array($query))
 	{
 		$setting_group_cache[$settinggroup['gid']] = $settinggroup['isdefault'];
 	}
-	
+
 	$query = $db->simple_select("settings", "gid, sid");
 	while($setting = $db->fetch_array($query))
 	{
@@ -759,19 +759,19 @@ function upgrade12_dbchanges2()
 			$db->update_query("settings", array('isdefault' => 1), "sid = '{$setting['sid']}'", 1);
 		}
 	}
-	
+
 	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
-	
+
 	$db->update_query("settings", array('optionscode' => $db->escape_string('php
 <select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
-	
+
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	
+
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
-	
+
 	$output->print_footer("12_dbchanges3");
 }
 
@@ -783,11 +783,11 @@ function upgrade12_dbchanges3()
 
 	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
 	flush();
-	
+
 	$db->drop_table("banfilters");
-	
+
 	$collation = $db->build_create_table_collation();
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."banfilters (
 	  fid int unsigned NOT NULL auto_increment,
 	  filter varchar(200) NOT NULL default '',
@@ -803,13 +803,13 @@ function upgrade12_dbchanges3()
 	{
 		// Some people put spaces or breaks (\r\n) instead, so we should take that into account.
 		$mybb->settings[$type] = str_replace(array("\n", "\r\n", "\r"), ",", $mybb->settings[$type]);
-		
+
 		// Usernames can have spaces so don't replace those with commas.
 		if($type != 'bannedusernames')
 		{
 			$mybb->settings[$type] = str_replace(" ", ",", $mybb->settings[$type]);
 		}
-		
+
 		$bans = explode(",", $mybb->settings[$type]);
 		$bans = array_unique($bans);
 		$bans = array_map("trim", $bans);
@@ -819,7 +819,7 @@ function upgrade12_dbchanges3()
 			{
 				continue;
 			}
-			
+
 			if($type == "bannedips")
 			{
 				$ban_type = 1;
@@ -859,10 +859,10 @@ function upgrade12_dbchanges4()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
-	
+
 	$db->drop_table("spiders");
 	$db->drop_table("stats");
-	
+
 	$collation = $db->build_create_table_collation();
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."spiders (
@@ -875,7 +875,7 @@ function upgrade12_dbchanges4()
 		lastvisit bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
 	) ENGINE=MyISAM{$collation};");
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."stats (
 		dateline bigint(30) NOT NULL default '0',
 		numusers int unsigned NOT NULL default '0',
@@ -906,19 +906,19 @@ function upgrade12_dbchanges4()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
 
 	$db->update_query("users", array('dstcorrection' => 2));
-	
+
 	$db->update_query("adminoptions", array('cpstyle' => ''));
-	
+
 	if($db->field_exists('permsset', "adminoptions") && !$db->field_exists('permissions', "adminoptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions TEXT NOT NULL ");
 	}
-	
+
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
 	$parser = new XMLParser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
-	
+
 	// Fetch default permissions list
 	$default_permissions = array();
 	foreach($tree['adminoptions'][0]['user'] as $users)
@@ -936,7 +936,7 @@ function upgrade12_dbchanges4()
 			break;
 		}
 	}
-	
+
 	$convert_permissions = array(
 		"caneditsettings" => array(
 				"module" => "config",
@@ -1015,9 +1015,9 @@ function upgrade12_dbchanges4()
 				"permission" => "backupdb",
 			),
 	);
-	
+
 	$new_permissions = $default_permissions;
-	
+
 	$query = $db->simple_select("adminoptions");
 	while($adminoption = $db->fetch_array($query))
 	{
@@ -1027,7 +1027,7 @@ function upgrade12_dbchanges4()
 			{
 				continue;
 			}
-			
+
 			if(array_key_exists($field, $convert_permissions))
 			{
 				// Note: old adminoptions table is still yes/no - do not change me
@@ -1042,9 +1042,9 @@ function upgrade12_dbchanges4()
 				$new_permissions[$convert_permissions[$field]['module']][$convert_permissions[$field]['permission']] = $value;
 			}
 		}
-		
+
 		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
-		
+
 		$new_permissions = $default_permissions;
 	}
 
@@ -1055,7 +1055,7 @@ function upgrade12_dbchanges4()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP {$field}");
 		}
 	}
-	
+
 	// Set default views
 	if($db->field_exists('defaultviews', "adminoptions"))
 	{
@@ -1085,7 +1085,7 @@ function upgrade12_dbchanges5()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
-	
+
 	$db->drop_table("templategroups");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."templategroups (
 		gid int unsigned NOT NULL auto_increment,
@@ -1093,7 +1093,7 @@ function upgrade12_dbchanges5()
 		title varchar(100) NOT NULL default '',
 		PRIMARY KEY (gid)
 		) ENGINE=MyISAM{$collation};");
-	
+
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('3','forumbit','<lang:group_forumbit>');");
@@ -1154,15 +1154,15 @@ function upgrade12_dbchanges5()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
-	
+
 	$collation = $db->build_create_table_collation();
-	
+
 	$db->drop_table("calendars");
 	$db->drop_table("calendarpermissions");
 	$db->drop_table("forumsread");
 	$db->drop_table("adminviews");
 	$db->drop_table("threadviews");
-	
+
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."threadviews (
 		tid int unsigned NOT NULL default '0'
 	) ENGINE=MyISAM{$collation};");
@@ -1275,9 +1275,9 @@ function upgrade12_dbchanges5()
 		$db->insert_query("adminviews", $new_view);
 		$view_count++;
 	}
-	
+
 	$avatardimensions = str_replace('x', '|', my_strtolower($mybb->settings['postmaxavatarsize']));
-	
+
 	$db->simple_select("users", "uid", "avatar != '' AND avatardimensions = ''");
 	while($user = $db->fetch_array($query))
 	{
@@ -1297,16 +1297,16 @@ function upgrade12_dbchanges5()
 function upgrade12_redoconfig()
 {
 	global $db, $output, $orig_config, $mybb;
-	
+
 	$config = $orig_config;
-	
+
 	$output->print_header("Rewriting config.php");
 
 	if(!is_array($config['database']))
 	{
 		// Backup our old Config file
 		@copy(MYBB_ROOT."inc/config.php", MYBB_ROOT."inc/config.backup.php");
-		
+
 		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 		if(!$fh)
 		{
@@ -1319,32 +1319,32 @@ function upgrade12_redoconfig()
 		{
 			$config['memcache_host'] = "localhost";
 		}
-		
+
 		if(!$config['memcache_port'])
 		{
 			$config['memcache_port'] = 11211;
 		}
-		
+
 		$comment = "";
-		
+
 		if(!$db->db_encoding || !$config['db_encoding'])
 		{
 			$comment = " // ";
 		}
-		
+
 		if(!$config['db_encoding'])
 		{
 			$config['db_encoding'] = "utf8";
 		}
-		
-		
+
+
 		$configdata = "<?php
 /**
  * Database configuration
  *
- * Please see the MyBB Wiki for advanced
+ * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * http://wiki.mybb.com/
+ * http://docs.mybb.com/
  */
 
 \$config['database']['type'] = '{$config['dbtype']}';
@@ -1411,7 +1411,7 @@ function upgrade12_redoconfig()
 
 /**
  * Database Encoding
- *  If you wish to set an encoding for MyBB uncomment 
+ *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
  *  the current value to the mysql charset:
  *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
@@ -1453,7 +1453,7 @@ function upgrade12_redoconfig()
 function upgrade12_dbchanges6()
 {
 	global $db, $output;
-	
+
 	$output->print_header("Post IP Conversion");
 
 	if(!$_POST['ipspage'])
@@ -1480,7 +1480,7 @@ function upgrade12_dbchanges6()
 
 	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
 	$cnt = $db->fetch_array($query);
-	
+
 	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
@@ -1488,9 +1488,9 @@ function upgrade12_dbchanges6()
 
 	echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 	flush();
-	
+
 	$ipaddress = false;
-	
+
 	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
@@ -1501,7 +1501,7 @@ function upgrade12_dbchanges6()
 		}
 		$ipaddress = true;
 	}
-	
+
 	$remaining = $upper-$cnt['ipcount'];
 	if($remaining && $ipaddress)
 	{
@@ -1525,7 +1525,7 @@ function upgrade12_dbchanges6()
 function upgrade12_dbchanges7()
 {
 	global $db, $output;
-	
+
 	$output->print_header("User IP Conversion");
 
 	if(!$_POST['ipspage'])
@@ -1552,17 +1552,17 @@ function upgrade12_dbchanges7()
 
 	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
 	$cnt = $db->fetch_array($query);
-	
+
 	if($upper > $cnt['ipcount'])
 	{
 		$upper = $cnt['ipcount'];
 	}
 
 	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-	
+
 	$ipaddress = false;
 	$update_array = array();
-	
+
 	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
@@ -1571,17 +1571,17 @@ function upgrade12_dbchanges7()
 		{
 			$update_array['longregip'] = intval(my_ip2long($user['regip']));
 		}
-		
+
 		if(!$user['longlastip'])
 		{
 			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
 		}
-		
+
 		if(!empty($update_array))
 		{
 			$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
 		}
-		
+
 		$update_array = array();
 		$ipaddress = true;
 	}
@@ -1603,7 +1603,7 @@ function upgrade12_dbchanges7()
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
-	$output->print_footer($nextact);	
+	$output->print_footer($nextact);
 }
 
 function upgrade12_dbchanges8()
@@ -1636,73 +1636,73 @@ function upgrade12_dbchanges8()
 
 	$query = $db->simple_select("events", "COUNT(eid) AS eventcount");
 	$cnt = $db->fetch_array($query);
-	
+
 	if($upper > $cnt['eventcount'])
 	{
 		$upper = $cnt['eventcount'];
 	}
 
 	$contents .= "<p>Converting events {$lower} to {$upper} ({$cnt['eventcount']} Total)</p>";
-	
+
 	// Just started - add fields
 	if(!$db->field_exists("donecon", "events"))
 	{
 		// Add temporary column
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD donecon smallint(1) NOT NULL;");
-		
+
 		if($db->field_exists('cid', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP cid;");
 		}
-		
+
 		if($db->field_exists('visible', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP visible;");
 		}
-		
+
 		if($db->field_exists('dateline', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP dateline;");
 		}
-		
+
 		if($db->field_exists('starttime', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP starttime;");
 		}
-		
+
 		if($db->field_exists('endtime', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP endtime;");
 		}
-		
+
 		if($db->field_exists('timezone', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP timezone;");
 		}
-		
+
 		if($db->field_exists('ignoretimezone', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP ignoretimezone;");
 		}
-		
+
 		if($db->field_exists('usingtime', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP usingtime;");
 		}
-		
+
 		if($db->field_exists('repeats', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP repeats;");
 		}
 
-		// Got structural changes?		
+		// Got structural changes?
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD cid int unsigned NOT NULL default '0' AFTER eid");
-		
+
 		if($db->field_exists('author', "events") && !$db->field_exists('uid', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
 		}
-		
+
 		if($db->field_exists('subject', "events") && !$db->field_exists('name', "events"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
@@ -1737,16 +1737,16 @@ function upgrade12_dbchanges8()
 			);
 			$db->update_query("events", $updated_event, "eid='{$event['eid']}'", 1);
 		}
-		
+
 		$date = true;
 	}
 	else
 	{
 		$date = false;
 	}
-	
+
 	$query = $db->simple_select("events", "COUNT(eid) AS remaining", "donecon!=1");
-	$remaining = $db->fetch_field($query, "remaining");	
+	$remaining = $db->fetch_field($query, "remaining");
 	if($remaining && $date)
 	{
 		$nextact = "12_dbchanges8";
@@ -1774,13 +1774,13 @@ function upgrade12_dbchanges8()
 function upgrade12_redothemes()
 {
 	global $db, $output, $config, $mybb;
-	
+
 	$output->print_header("Converting themes");
 
 	if(!@is_dir(MYBB_ROOT.'cache/'))
 	{
 		@mkdir(MYBB_ROOT.'cache/', 077);
-		
+
 		// Add in empty index.html!
 		$fp = @fopen(MYBB_ROOT."cache/index.html", "w");
 		@fwrite($fp, "");
@@ -1806,12 +1806,12 @@ function upgrade12_redothemes()
 		$output->print_footer("12_redothemes");
 		exit;
 	}
-	
+
 	$not_writable = false;
 	if(!@is_dir(MYBB_ROOT.'cache/themes/'))
 	{
 		@mkdir(MYBB_ROOT.'cache/themes/', 077);
-		
+
 		// Add in empty index.html!
 		$fp = @fopen(MYBB_ROOT."cache/themes/index.html", "w");
 		@fwrite($fp, "");
@@ -1830,35 +1830,35 @@ function upgrade12_redothemes()
 	  	@my_chmod(MYBB_ROOT.'cache/themes/test.write', '0777');
 		@unlink(MYBB_ROOT.'cache/themes/test.write');
 	}
-	
+
 	if($not_writable)
 	{
 		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/themes/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
 		$output->print_footer("12_redothemes");
 		exit;
 	}
-	
+
 	if($db->field_exists('themebits', "themes") && !$db->field_exists('properties', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE themebits properties text NOT NULL");
 	}
-	
+
 	if($db->field_exists('cssbits', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP cssbits");
 	}
-	
+
 	if($db->field_exists('csscached', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
 	}
-	
+
 	if($db->field_exists('stylesheets', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP stylesheets");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD stylesheets text NOT NULL AFTER properties");
-	
+
 	if($db->table_exists("themestylesheets"))
 	{
 		$db->drop_table("themestylesheets");
@@ -1901,7 +1901,7 @@ function upgrade12_redothemes()
 	$master_theme = $db->fetch_array($query);
 
 	$master_stylesheets = unserialize($master_theme['stylesheets']);
-	
+
 	if(is_array($master_stylesheets))
 	{
 		// Note: 1.4 only ships with one global|global stylesheet
@@ -1915,14 +1915,14 @@ function upgrade12_redothemes()
 					{
 						continue; // Skip global
 					}
-					
+
 					$default_stylesheets[$location][$action][] = $stylesheet;
 					$default_stylesheets['inherited']["{$location}_{$action}"][$stylesheet] = 1; // This stylesheet is inherited from the master
 				}
 			}
 		}
 	}
-	
+
 	$query = $db->simple_select("themes");
 	while($theme = $db->fetch_array($query))
 	{
@@ -1930,12 +1930,12 @@ function upgrade12_redothemes()
 		{
 			continue;
 		}
-		
+
 		$theme['css'] .= "\n\n".$theme['extracss'];
-		
+
 		$theme['css'] = upgrade_css_120_to_140($theme['css']);
-		
-		
+
+
 		// Create stylesheets
 		$cache_file = cache_stylesheet($theme['tid'], "global.css", $theme['css']);
 
@@ -1963,24 +1963,24 @@ function upgrade12_redothemes()
 		// Update the theme
 		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
-	
+
 	if($db->field_exists('css', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP css");
 	}
-	
+
 	if($db->field_exists('extracss', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
 	}
-	
+
 	// We need to replace this for our themes css to show up
 	// <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" /> must be present in the old template (it usually is)
 	$query = $db->simple_select("templates", "tid,template", "title='headerinclude'");
 	while($template = $db->fetch_array($query))
 	{
 		$template['template'] = str_replace('<link rel="stylesheet" type="text/css" href="{$theme[\'css_url\']}" />', '{$stylesheets}', $template['template']);
-		
+
 		$db->update_query("templates", array('template' => $db->escape_string($template['template'])), "tid='{$template['tid']}'");
 	}
 

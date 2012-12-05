@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id: tools_system_health.lang.php 5497 2011-07-13 09:06:41Z Tomm $
  */
 
@@ -68,7 +68,7 @@ $l['full_edit'] = "Full Edit";
 
 $l['error_chmod'] = "of the required files and directories do not have proper CHMOD settings.";
 $l['error_invalid_table'] = "The specified table does not exist.";
-$l['error_db_encoding_not_set'] = "Your current setup of MyBB is not setup to use this tool yet. Please see <a href=\"http://wiki.mybb.com/index.php/UTF8_Setup\">the wiki</a> for more information on how to set it up.";
+$l['error_db_encoding_not_set'] = "Your current setup of MyBB is not setup to use this tool yet. Please see the <a href=\"http://docs.mybb.com/Utf8_setup.html\">MyBB Docs</a> for more information on how to set it up.";
 $l['error_not_supported'] = "Your current Database Engine is not supported by the UTF-8 Conversion Tool.";
 $l['error_invalid_input'] = "There was a problem checking the templates. Please try again or contact the MyBB Group for support.";
 $l['error_master_templates_altered'] = "The Master Templates have been altered. Please contact the MyBB Group for support on how to alter these.";

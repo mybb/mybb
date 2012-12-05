@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id: config_settings.lang.php 5557 2011-08-26 14:06:44Z huji $
  */
- 
+
 $l['board_settings'] = "Board Settings";
 $l['change_settings'] = "Change Settings";
 $l['change_settings_desc'] = "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group.";
@@ -78,7 +78,7 @@ $l['error_cannot_edit_default'] = "Default settings and groups may not be edited
 $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be edited.";
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
-$l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 777.<br />For more information on CHMODing, see the <a href=\"http://wiki.mybb.com/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.";
+$l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 777.<br />For more information on CHMODing, see the <a href=\"http://docs.mybb.com/HowTo_Chmod.html\" target=\"_blank\">MyBB Docs</a>.";
 $l['error_hidden_captcha_conflict'] = "The hidden captcha value cannot be \"{1}\" as it conflicts with another registration field.";
 
 $l['success_setting_added'] = "The setting has been created successfully.";

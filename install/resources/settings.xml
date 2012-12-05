@@ -131,7 +131,7 @@
 		</setting>
 		<setting name="captchaimage">
 			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
-			<description><![CDATA[To help prevent automated registrations and postings, you can choose a type of image verification for the user to complete. Please see the MyBB Wiki for more information on CAPTCHAs.]]></description>
+			<description><![CDATA[To help prevent automated registrations and postings, you can choose a type of image verification for the user to complete. Please see the MyBB Docs for more information on CAPTCHAs.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[select
 0=No CAPTCHA
@@ -268,7 +268,7 @@ wrong=Wrong Forum]]></settingvalue>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
 		<setting name="seourls">
 			<title>Enable search engine friendly URLs?</title>
-			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see <a href="http://wiki.mybb.com/index.php/SEF_URLS">The MyBB wiki</a> for assistance.]]></description>
+			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see the <a href="http://docs.mybb.com/SEF_URLs.html">MyBB Docs</a> for assistance.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
 auto=Automatic Detection
@@ -681,7 +681,7 @@ none=Hide Errors and Warnings
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
-			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://wiki.mybb.com/index.php/1.6.5">MyBB Wiki</a> for more information regarding this change.]]></description>
+			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://docs.mybb.com/165.html">MyBB Docs</a> for more information regarding this change.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -700,7 +700,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<settingvalue><![CDATA[horizontal]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
-		</setting>		
+		</setting>
 		<setting name="postsperpage">
 			<title>Posts Per Page:</title>
 			<description><![CDATA[The number of posts to display per page. We recommend its not higher than 20 for people with slower connections.]]></description>
@@ -727,7 +727,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
-		</setting>		
+		</setting>
 		<setting name="threadreadcut">
 			<title>Read Threads in Database (Days)</title>
 			<description><![CDATA[The number of days that you wish to keep thread read information in the database. For large boards, we do not recommend a high number as the board will become slower. Set to 0 to disable.]]></description>
@@ -878,14 +878,14 @@ admin=Administrator Activation]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="requirecomplexpasswords"> 
-			<title>Require a complex password?</title> 
-			<description><![CDATA[Do you want users to use complex passwords? Complex passwords require an upper case letter, lower case letter and a number.]]></description> 
-			<disporder>7</disporder> 
-			<optionscode><![CDATA[yesno]]></optionscode> 
-			<settingvalue><![CDATA[0]]></settingvalue> 
+		<setting name="requirecomplexpasswords">
+			<title>Require a complex password?</title>
+			<description><![CDATA[Do you want users to use complex passwords? Complex passwords require an upper case letter, lower case letter and a number.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey> 
+			<helpkey></helpkey>
 		</setting>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
@@ -905,15 +905,15 @@ admin=Administrator Activation]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="allowmultipleemails"> 
-			<title><![CDATA[Allow emails to be registered multiple times?]]></title> 
-			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description> 
-			<disporder>10</disporder> 
-			<optionscode><![CDATA[yesno]]></optionscode> 
-			<settingvalue><![CDATA[0]]></settingvalue> 
+		<setting name="allowmultipleemails">
+			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
+			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey> 
-		</setting> 
+			<helpkey></helpkey>
+		</setting>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should they be allowed to keep it?]]></description>
@@ -1488,7 +1488,7 @@ descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
-		</setting>		
+		</setting>
 	</settinggroup>
 	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="12" isdefault="1">
 		<setting name="enablereputation">
