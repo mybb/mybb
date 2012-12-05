@@ -110,6 +110,12 @@ $l['split_reply_subject'] = "Reply subject";
 $l['split_reply_subject_desc'] = "Only used if a reply is made";
 $l['save_post_tool'] = "Save Post Tool";
 
+$l['send_private_message'] = 'Send Private Message';
+$l['private_message_message'] = 'Message';
+$l['private_message_message_desc'] = 'Message to send to the author of the thread. Leave empty to disable this feature.';
+$l['private_message_subject'] = 'Subject';
+$l['private_message_subject_desc'] = 'Enter the subject of the Private Message.';
+
 $l['error_missing_title'] = "Please enter a name for this tool.";
 $l['error_missing_description'] = "Please enter a short description for this tool.";
 $l['error_no_forums_selected'] = "Please select the forums in which this tool will be available.";
