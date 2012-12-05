@@ -22,7 +22,6 @@
 
 #ModalLoadingOverlay {
 	background: #000;
-	cursor: wait;
 }
 
 #ModalLoadingIndicator {
@@ -39,10 +38,9 @@
 
 #ModalContentContainer {
 	background: #fff;
-	background-image: url('images/background.gif');
-	background-repeat: repeat-x;
-	background-position: left bottom;
+	background-image: none;
 }
+
 #ModalTitle, .ModalTitle {
 	background: #efefef;
 	color: #444;

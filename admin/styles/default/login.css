@@ -4,20 +4,20 @@
  */
 
 body {
-	font-family: Verdana, Arial, sans-serif;
+	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
 	font-size: 12px;
-	background: #efefef;
+	background: #fff;
 	color: #000000;
 	margin: 0;
 }
 
 a {
-	color: #035488;
+	color: #0072BC;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #444;
+	color: #0072BC;
 	text-decoration: underline;
 }
 
@@ -32,7 +32,7 @@ a:hover {
 
 #logo h1 {
 	height: 82px;
-	background: transparent url(images/login_logo.gif) bottom left no-repeat;
+	background: transparent url(images/login_logo.png) bottom left no-repeat;
 	margin: 10px;
 	padding: 0;
 }
@@ -44,12 +44,16 @@ a:hover {
 }
 
 #content {
-	border: 2px solid #ccc;
+	border: 1px solid #ccc;
 	background: #fff;
+	padding: 1px;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
 p, form {
-	padding: 0 10px 10px 10px 
+	padding: 0 10px 10px 10px;
 }
 
 form {
@@ -65,24 +69,31 @@ form p {
 }
 
 h2 {
-	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
-	border-bottom: 1px solid #000000;
+	background: #02426c url(images/thead.png) repeat-x top left;
+	border-bottom: 1px solid #263c30;
 	color:#fff;
 	margin: 0;
 	padding: 8px;
-	font-size: 12px;
+	font-size: 14px;
+	border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
 }
 
 input.text_input {
-	border: 1px solid #0F5C8E;
-	background: #fff;
+	border: 1px solid #aaa;
 	width: 255px;
 	padding: 4px;
 	font-size: 13px;
+	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	outline: 0;
 }
 
 input.text_input:focus {
-	border: 1px solid #000;
+	border: 1px solid #777;
 }
 
 #message {
@@ -91,6 +102,9 @@ input.text_input:focus {
 	font-weight: bold;
 	background: #efefef;
 	border: 1px solid #ccc;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 #message.error {
@@ -106,39 +120,53 @@ input.text_input:focus {
 }
 
 form .label {
-	margin-top: 5px;
 	margin-bottom: 3px;
-	width: 120px;
+	width: 112px;
 	clear: left;
 	float: left;
-	padding-bottom:5px;
+	padding: 15px 0 0 8px;
+	border-top: 1px solid #ddd;
 }
 
 form label {
 	font-weight: bold;
 }
 
-.form_container .field{
+.form_container .field {
 	float: left;
-	padding-bottom: 5px;
+	padding: 8px 0;
+	border-top: 1px solid #ddd;
 }
 
 p.submit {
 	clear: both;
-	padding-top: 8px;
-	margin-top: 8px;
-	margin-right: 0;
-	padding-right: 0;
+	background: #efefef;
+	border-top: 1px solid #ddd;
+	padding: 8px 10px;
+	margin: 8px -10px 0;
 	text-align: right;
+	border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
 }
 
 p.submit input {
-	border: 3px double #0F5C8E;
-	padding: 3px;
-	background: #fff url(images/submit_bg.gif) repeat-x top;
-	color: #0F5C8E;
+	border: 1px solid #999;
+	padding: 4px 7px;
+	background: #e3e3e3 url(images/submit_bg.gif) repeat-x top;
+	color: #444;
 	font-weight: bold;
+	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
 	margin-right: 3px;
+	font-size: 1.1em;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+p.submit input:hover {
+	border: 1px solid #666;
+	cursor: pointer;
 }
 
 .forgot_password {
