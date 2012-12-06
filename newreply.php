@@ -1092,18 +1092,25 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 		}
 
-		if($post_captcha->type == 1 && $correct)
+		if(!$correct)
 		{
-			$post_captcha->build_captcha();
+ 			if($post_captcha->type == 1)
+			{
+				$post_captcha->build_captcha();
+			}
+			elseif($post_captcha->type == 2)
+			{
+				$post_captcha->build_recaptcha();
+			}
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
 		}
-		else if($post_captcha->type == 2)
+		else if($correct && $post_captcha->type == 2)
 		{
 			$post_captcha->build_recaptcha();
-		}
-
-		if($post_captcha->html)
-		{
-			$captcha = $post_captcha->html;
 		}
 	}
 
