@@ -1157,41 +1157,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	$errors = array();
 
-	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-	if(!$user['uid'])
-	{
-		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'", 1, true);
-
-		$mybb->input['action'] = "login";
-		$mybb->input['request_method'] = "get";
-
-		if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1)
-		{
-			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-		}
-
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$errors[] = $lang->error_invalidpworusername.$login_text;
-				break;
-			case 1:
-				$errors[] = $lang->error_invalidpworusername1.$login_text;
-				break;
-			case 2:
-				$errors[] = $lang->error_invalidpworusername2.$login_text;
-				break;
-			default:
-				$errors[] = $lang->error_invalidpworusername.$login_text;
-				break;
-		}
-	}
-	else
-	{
-		$correct = true;
-	}
-
 	if($mybb->settings['failedcaptchalogincount'] > 0 && ($loginattempts > $mybb->settings['failedcaptchalogincount'] || intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount']))
 	{
 		// Show captcha image if enabled
@@ -1214,6 +1179,45 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 					$errors[] = $error;
 				}
 			}
+		}
+	}
+
+	// Don't check password when captcha isn't solved
+	if(empty($errors))
+	{
+		$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+		if(!$user['uid'])
+		{
+			my_setcookie('loginattempts', $logins + 1);
+			$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'", 1, true);
+
+			$mybb->input['action'] = "login";
+			$mybb->input['request_method'] = "get";
+
+			if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1)
+			{
+				$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+			}
+
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$errors[] = $lang->error_invalidpworusername.$login_text;
+					break;
+				case 1:
+					$errors[] = $lang->error_invalidpworusername1.$login_text;
+					break;
+				case 2:
+					$errors[] = $lang->error_invalidpworusername2.$login_text;
+					break;
+				default:
+					$errors[] = $lang->error_invalidpworusername.$login_text;
+					break;
+			}
+		}
+		else
+		{
+			$correct = true;
 		}
 	}
 
