@@ -1144,9 +1144,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$captcha = $post_captcha->html;
 			}
 		}
-		else if($correct && $post_captcha->type == 2)
+		elseif($correct && $post_captcha->type == 2)
 		{
 			$post_captcha->build_recaptcha();
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
 		}
 	}
 

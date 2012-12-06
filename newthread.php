@@ -942,6 +942,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		else if($correct && $post_captcha->type == 2)
 		{
 			$post_captcha->build_recaptcha();
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
 		}
 	}
 
