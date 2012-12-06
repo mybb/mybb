@@ -2676,11 +2676,11 @@ body {
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
-				<!-- MyBB is free software developed and maintained by a volunteer community. 
-					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
-					 to show your support for MyBB.  If you choose to remove or modify the copyright below, 
+				<!-- MyBB is free software developed and maintained by a volunteer community.
+					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
+					 to show your support for MyBB.  If you choose to remove or modify the copyright below,
 					 you may be refused support on the MyBB Community Forums.
-					 
+
 					 This is free software, support us and we'll support you. -->
 {$lang->powered_by} <a href="http://mybb.com/" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://mybb.com/" target="_blank">MyBB Group</a>.<br />
 				<!-- End powered by -->
@@ -4800,7 +4800,7 @@ body {
 	</tr>
 	<tr>
 		<td class="trow1" width="20%"><strong><label for="sort">{$lang->sort_by}</label></strong></td>
-	
+
 		<td class="trow1">
 			<select name="sort" id="sort">
 				<option value="subject">{$lang->sort_by_subject}</option>
@@ -5395,18 +5395,15 @@ body {
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" alt="($lang->download_aim}" title="($lang->download_aim}" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" alt="{$lang->aim_remote}" title="{$lang->aim_remote}" /></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" alt="{$lang->download_aim}" title="{$lang->download_aim}" /></a><img src="http://info.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" alt="{$lang->aim_remote}" title="{$lang->aim_remote}" /></td>
 </tr>
 <tr>
-<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" alt="{$lang->send_me_instant}" title="{$lang->send_me_instant}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" alt="{$lang->send_me_instant}" title="{$lang->send_me_instant}" /></a></td>
 </tr>
 <tr>
-<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" alt="{$lang->add_me_buddy_list}" title="{$lang->add_me_buddy_list}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" alt="{$lang->add_me_buddy_list}" title="{$lang->add_me_buddy_list}" /></a></td>
 </tr>
-<tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width="117" height="23" alt="($lang->add_remote_to_page}" title="($lang->add_remote_to_page}" /></a></td>
-</tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" alt="{$lang->download_aol_im}" title="{$lang->download_aol_im}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" alt="{$lang->download_aol_im}" title="{$lang->download_aol_im}" /></a></td>
 </tr>
 </table>
 <!-- End AIM Remote -->
