@@ -5377,7 +5377,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_imcenter_aim" version="120"><![CDATA[<html>
+		<template name="misc_imcenter_aim" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->aim_center}</title>
 {$headerinclude}
