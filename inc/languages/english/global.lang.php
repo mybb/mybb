@@ -9,6 +9,7 @@
 $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Never";
 
+$l['search_button'] = 'Search';
 $l['toplinks_memberlist'] = "Member List";
 $l['toplinks_search'] = "Search";
 $l['toplinks_calendar'] = "Calendar";
@@ -228,6 +229,23 @@ $l['postbit_show_ignored_post'] = "Show this Post";
 $l['postbit_currently_ignoring_user'] = "The contents of this message are hidden because {1} is on your <a href=\"usercp.php?action=editlists\">ignore list</a>.";
 $l['postbit_warning_level'] = "Warning Level:";
 $l['postbit_warn'] = "Warn the author for this post";
+
+$l['postbit_button_reputation_add'] = 'Rate';
+$l['postibt_button_website'] = 'Website';
+$l['postbit_button_email'] = 'Email';
+$l['postbit_button_find'] = 'Find';
+$l['postbit_button_report'] = 'Report';
+$l['postbit_button_quote'] = 'Reply';
+$l['postbit_button_qdelete'] = 'Delete';
+$l['postbit_button_profile'] = 'Profile';
+$l['postbit_button_pm'] = 'PM';
+$l['postbit_button_warn'] = 'Warn';
+$l['postbit_button_edit'] = 'Edit';
+$l['postbit_button_multiquote'] = 'Quote';
+$l['postbit_button_reply_pm'] = 'Reply';
+$l['postbit_button_reply_all'] = 'Reply All';
+$l['postbit_button_forward'] = 'Forward';
+$l['postbit_button_delete_pm'] = 'Delete';
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";

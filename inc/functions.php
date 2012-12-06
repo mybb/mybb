@@ -3324,7 +3324,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.gif\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
+						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.png\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
 						$sep = $multipage_dropdown.$sep;
 					}
 				}

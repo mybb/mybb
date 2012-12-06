@@ -359,24 +359,24 @@ if($mybb->input['action'] == "results")
 		// Determine Folder Icon
 		if($message['status'] == 0)
 		{
-			$msgfolder = 'new_pm.gif';
+			$msgfolder = 'new_pm.png';
 			$msgalt = $lang->new_pm;
 			$msgprefix = "<strong>";
 			$msgsuffix = "</strong>";
 		}
 		elseif($message['status'] == 1)
 		{
-			$msgfolder = 'old_pm.gif';
+			$msgfolder = 'old_pm.png';
 			$msgalt = $lang->old_pm;
 		}
 		elseif($message['status'] == 3)
 		{
-			$msgfolder = 're_pm.gif';
+			$msgfolder = 're_pm.png';
 			$msgalt = $lang->reply_pm;
 		}
 		else if($message['status'] == 4)
 		{
-			$msgfolder = 'fw_pm.gif';
+			$msgfolder = 'fw_pm.png';
 			$msgalt = $lang->fwd_pm;
 		}
 		
@@ -2031,24 +2031,24 @@ if(!$mybb->input['action'])
 			// Determine Folder Icon
 			if($message['status'] == 0)
 			{
-				$msgfolder = 'new_pm.gif';
+				$msgfolder = 'new_pm.png';
 				$msgalt = $lang->new_pm;
 				$msgprefix = "<strong>";
 				$msgsuffix = "</strong>";
 			}
 			elseif($message['status'] == 1)
 			{
-				$msgfolder = 'old_pm.gif';
+				$msgfolder = 'old_pm.png';
 				$msgalt = $lang->old_pm;
 			}
 			elseif($message['status'] == 3)
 			{
-				$msgfolder = 're_pm.gif';
+				$msgfolder = 're_pm.png';
 				$msgalt = $lang->reply_pm;
 			}
 			elseif($message['status'] == 4)
 			{
-				$msgfolder = 'fw_pm.gif';
+				$msgfolder = 'fw_pm.png';
 				$msgalt = $lang->fwd_pm;
 			}
 			

@@ -77,7 +77,7 @@
 		<namestyle><![CDATA[{username}]]></namestyle>
 		<usertitle><![CDATA[]]></usertitle>
 		<stars><![CDATA[0]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -146,7 +146,7 @@
 		<namestyle><![CDATA[<span style="color: #CC00CC;"><strong>{username}</strong></span>]]></namestyle>
 		<usertitle><![CDATA[Super Moderator]]></usertitle>
 		<stars><![CDATA[6]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -215,7 +215,7 @@
 		<namestyle><![CDATA[<span style="color: green;"><strong><em>{username}</em></strong></span>]]></namestyle>
 		<usertitle><![CDATA[Administrator]]></usertitle>
 		<stars><![CDATA[7]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -284,7 +284,7 @@
 		<namestyle><![CDATA[{username}]]></namestyle>
 		<usertitle><![CDATA[Account not Activated]]></usertitle>
 		<stars><![CDATA[0]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -353,7 +353,7 @@
 		<namestyle><![CDATA[<span style="color: #CC00CC;"><strong>{username}</strong></span>]]></namestyle>
 		<usertitle><![CDATA[Moderator]]></usertitle>
 		<stars><![CDATA[5]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[0]]></isbannedgroup>
@@ -422,7 +422,7 @@
 		<namestyle><![CDATA[<s>{username}</s>]]></namestyle>
 		<usertitle><![CDATA[Banned]]></usertitle>
 		<stars><![CDATA[0]]></stars>
-		<starimage><![CDATA[images/star.gif]]></starimage>
+		<starimage><![CDATA[images/star.png]]></starimage>
 		<image><![CDATA[]]></image>
 		<disporder><![CDATA[0]]></disporder>
 		<isbannedgroup><![CDATA[1]]></isbannedgroup>

@@ -53,6 +53,8 @@ $l['email_notify'] = "Email Notification";
 $l['disable_smilies'] = "Disable Smilies";
 $l['post_reply'] = "Post Reply";
 $l['post_reply_img'] = "Post Reply";
+$l['new_reply'] = "New Reply";
+$l['search_button'] = 'Search';
 $l['post_thread'] = "Post Thread";
 $l['preview_post'] = "Preview Post";
 $l['rating_average'] = "{1} Votes - {2} Average";
@@ -89,5 +91,4 @@ $l['enter_keywords'] = "Enter Keywords";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
-
 ?>

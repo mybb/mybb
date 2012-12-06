@@ -78,5 +78,5 @@ $l['no_reputation_votes'] = "This user currently does not have any reputation ra
 $l['delete_reputation_confirm'] = "Are you sure you wish to delete this reputation Rating?";
 $l['delete_reputation_log'] = "Deleted reputation rating by {1} (UID: {2})";
 $l['reputations_disabled_group'] = "The reputation system is disabled for users of this user group.";
-$l['rate_user'] = "Rate user";
+$l['rate_user'] = "Rate User";
 ?>

@@ -35,7 +35,7 @@ function build_postbit($post, $post_type=0)
 	$unapproved_shade = '';
 	if($post['visible'] == 0 && $post_type == 0)
 	{
-		$altbg = $unapproved_shade = 'trow_shaded';
+		$altbg = $unapproved_shade = 'unapproved_post';
 	}
 	elseif($altbg == 'trow1')
 	{

@@ -71,11 +71,11 @@ END;
 				{
 					if($action == $mybb->input['action'])
 					{
-						echo "				<li class=\"active\"><strong>$step</strong></li>\n";
+						echo "				<li class=\"{$action} active\"><strong>$step</strong></li>\n";
 					}
 					else
 					{
-						echo "				<li>$step</li>\n";
+						echo "				<li class=\"{$action}\">$step</li>\n";
 					}
 				}
 				echo "			</ul>";

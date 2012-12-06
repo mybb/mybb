@@ -1916,21 +1916,21 @@ if($mybb->input['action'] == "profile")
 		$buddy_list = explode(',', $mybb->user['buddylist']);
 		if(in_array($mybb->input['uid'], $buddy_list))
 		{
-			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"{$theme['imgdir']}/remove_buddy.gif\" alt=\"{$lang->remove_from_buddy_list}\" /> {$lang->remove_from_buddy_list}</a>";
+			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option remove_buddy\">{$lang->remove_from_buddy_list}</a>";
 		}
 		else
 		{
-			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\"><img src=\"{$theme['imgdir']}/add_buddy.gif\" alt=\"{$lang->add_to_buddy_list}\" /> {$lang->add_to_buddy_list}</a>";
+			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option add_buddy\">{$lang->add_to_buddy_list}</a>";
 		}
 
 		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		if(in_array($mybb->input['uid'], $ignore_list))
 		{
-			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"{$theme['imgdir']}/remove_ignore.gif\" alt=\"{$lang->remove_from_ignore_list}\" /> {$lang->remove_from_ignore_list}</a>";
+			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option remove_ignore\">{$lang->remove_from_ignore_list}</a>";
 		}
 		else
 		{
-			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\"><img src=\"{$theme['imgdir']}/add_ignore.gif\" alt=\"{$lang->add_to_ignore_list}\" /> {$lang->add_to_ignore_list}</a>";
+			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option add_ignore\">{$lang->add_to_ignore_list}</a>";
 		}
 	}
 
