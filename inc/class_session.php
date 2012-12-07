@@ -16,8 +16,6 @@ class session
 	public $ipaddress = '';
 	public $useragent = '';
 	public $is_spider = false;
-	public $logins = 1;
-	public $failedlogin = 0;
 
 	/**
 	 * Initialize a session
@@ -48,13 +46,6 @@ class session
 				$this->sid = $session['sid'];
 				$this->uid = $session['uid'];
 			}
-			else
-			{
-				$this->sid = 0;
-				$this->uid = 0;
-				$this->logins = 1;
-				$this->failedlogin = 0;
-			}
 		}
 
 		// Still no session, fall back
@@ -62,8 +53,6 @@ class session
 		{
 			$this->sid = 0;
 			$this->uid = 0;
-			$this->logins = 1;
-			$this->failedlogin = 0;
 		}
 
 		// If we have a valid session id and user id, load that users session.
@@ -136,9 +125,6 @@ class session
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
-		
-		$this->logins = $mybb->user['loginattempts'];
-		$this->failedlogin = $mybb->user['failedlogin'];
 		
 		if($bannedcache[$uid])
 		{

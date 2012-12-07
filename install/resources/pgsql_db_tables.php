@@ -981,7 +981,6 @@ $tables[] = "CREATE TABLE mybb_users (
   coppauser int NOT NULL default '0',
   classicpostbit int NOT NULL default '0',
   loginattempts smallint NOT NULL default '1',
-  failedlogin bigint NOT NULL default '0',
   usernotes text NOT NULL default '',
   PRIMARY KEY (uid)
 );";
