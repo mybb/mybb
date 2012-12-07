@@ -3949,95 +3949,103 @@ a.button {
 <body>
 {$header}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="75%">
-<span class="largetext"><strong>{$formattedname}</strong></span><br />
-<span class="smalltext">
-({$usertitle})<br />
-{$groupimage}
-{$userstars}<br />
-<br />
-<strong>{$lang->registration_date}</strong> {$memregdate}<br />
-<strong>{$lang->date_of_birth}</strong> {$membday} {$membdayage}<br />
-<strong>{$lang->local_time}</strong> {$localtime}<br />
-<strong>{$lang->postbit_status}</strong> {$online_status}
-</span>
-</td><td width="25%" align="right" valign="middle">{$avatar}</td></tr></table>
-</td>
-</tr>
-{$awaybit}
+	<tr>
+		<td class="trow1">
+			<table width="100%" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<td width="75%">
+						<span class="largetext"><strong>{$formattedname}</strong></span><br />
+						<span class="smalltext">
+							({$usertitle})<br />
+							{$groupimage}
+							{$userstars}<br />
+							<br />
+							<strong>{$lang->registration_date}</strong> {$memregdate}<br />
+							<strong>{$lang->date_of_birth}</strong> {$membday} {$membdayage}<br />
+							<strong>{$lang->local_time}</strong> {$localtime}<br />
+							<strong>{$lang->postbit_status}</strong> {$online_status}
+						</span>
+					</td>
+					<td width="25%" align="right" valign="middle">{$avatar}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	{$awaybit}
 </table>
+
 <br />
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
-<tr>
-<td width="50%" valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td colspan="2" class="thead"><strong>{$lang->users_forum_info}</strong></td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang->joined}</strong></td>
-<td class="trow1">{$memregdate}</td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->lastvisit}</strong></td>
-<td class="trow2">{$memlastvisitdate} {$memlastvisittime}</td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang->total_posts}</strong></td>
-<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a> &mdash; <a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span></td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->timeonline}</strong></td>
-<td class="trow2">{$timeonline}</td>
-</tr>
-{$referrals}
-{$reputation}
-{$warning_level}
+	<tr>
+		<td width="50%" valign="top">
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td colspan="2" class="thead"><strong>{$lang->users_forum_info}</strong></td>
+				</tr>
+				<tr>
+					<td class="trow1"><strong>{$lang->joined}</strong></td>
+					<td class="trow1">{$memregdate}</td>
+				</tr>
+				<tr>
+					<td class="trow2"><strong>{$lang->lastvisit}</strong></td>
+					<td class="trow2">{$memlastvisitdate} {$memlastvisittime}</td>
+				</tr>
+				<tr>
+					<td class="trow1"><strong>{$lang->total_posts}</strong></td>
+					<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a> &mdash; <a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span></td>
+				</tr>
+				<tr>
+					<td class="trow2"><strong>{$lang->timeonline}</strong></td>
+					<td class="trow2">{$timeonline}</td>
+				</tr>
+				{$referrals}
+				{$reputation}
+				{$warning_level}
+			</table>
+
+			<br />
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td colspan="2" class="thead"><strong>{$lang->users_contact_details}</strong></td>
+				</tr>
+				<tr>
+					<td class="trow1" width="40%"><strong>{$lang->homepage}</strong></td>
+					<td class="trow1">{$website}</td>
+				</tr>
+				{$sendemail}
+				<tr>
+					<td class="{$bgcolors['pm']}"><strong>{$lang->pm}</strong></td>
+					<td class="{$bgcolors['pm']}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
+					<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
+					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
+					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['msn']}"><strong>{$lang->msn}</strong></td>
+					<td class="{$bgcolors['msn']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
+				</tr>
+			</table>
+		</td>
+		<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
+		<td width="50%" valign="top">
+		{$profilefields}
+		{$signature}
+		{$modoptions}
+		{$adminoptions}
+		{$buddy_options}
+		</td>
+	</tr>
 </table>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td colspan="2" class="thead"><strong>{$lang->users_contact_details}</strong></td>
-</tr>
-<tr>
-<td class="trow1" width="40%"><strong>{$lang->homepage}</strong></td>
-<td class="trow1">{$website}</td>
-</tr>
-{$sendemail}
-<tr>
-<td class="{$bgcolors['pm']}"><strong>{$lang->pm}</strong></td>
-<td class="{$bgcolors['pm']}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
-</tr>
-<tr>
-<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
-<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
-</tr>
-<tr>
-<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
-</tr>
-<tr>
-<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
-</tr>
-<tr>
-<td class="{$bgcolors['msn']}"><strong>{$lang->msn}</strong></td>
-<td class="{$bgcolors['msn']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
-</tr>
-</table>
-</td>
-<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
-<td width="50%" valign="top">
-{$profilefields}
-{$signature}
-{$modoptions}
-{$adminoptions}
-{$buddy_options}
-</td>
-</tr>
-</table>
+
 {$footer}
 </body>
 </html>]]></template>
