@@ -325,35 +325,11 @@ else
 		{
 			$user['userstars'] = "<br />".$user['userstars'];
 		}
-	
+
 		// Show avatar
-		if($user['avatar'] != '')
-		{
-			$user['avatar'] = htmlspecialchars_uni($user['avatar']);
-			$avatar_dimensions = explode("|", $user['avatardimensions']);
-			
-			if($avatar_dimensions[0] && $avatar_dimensions[1])
-			{
-				list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['memberlistmaxavatarsize']));
-			 	if($avatar_dimensions[0] > $max_width || $avatar_dimensions[1] > $max_height)
-				{
-					require_once MYBB_ROOT."inc/functions_image.php";
-					$scaled_dimensions = scale_image($avatar_dimensions[0], $avatar_dimensions[1], $max_width, $max_height);
-					$avatar_width_height = "width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\"";
-				}
-				else
-				{
-					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";	
-				}
-			}
-			
-			eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
-		}
-		else
-		{
-			$user['avatar'] = "";
-		}		
-		
+		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
+		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");	
+
 		$user['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
 		$user['lastvisit'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
