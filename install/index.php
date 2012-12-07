@@ -162,12 +162,12 @@ else
 		'adminuser' => $lang->admin_user,
 		'final' => $lang->finish_setup,
 	);
-	
+
 	if(!isset($mybb->input['action']))
 	{
 		$mybb->input['action'] = 'intro';
 	}
-	
+
 	switch($mybb->input['action'])
 	{
 		case 'license':
@@ -206,7 +206,7 @@ else
 function intro()
 {
 	global $output, $mybb, $lang;
-	
+
 	$output->print_header($lang->welcome, 'welcome');
 	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
 	{
@@ -219,15 +219,15 @@ function intro()
 function license_agreement()
 {
 	global $output, $lang, $mybb;
-	
+
 	ob_start();
 	$output->print_header($lang->license_agreement, 'license');
-	
+
 	if($mybb->input['allow_anonymous_info'] == 1)
 	{
 		require_once MYBB_ROOT."inc/functions_serverstats.php";
 		$build_server_stats = build_server_stats(1, '', $mybb->version_code, $mybb->config['database']['encoding']);
-		
+
 		if($build_server_stats['info_sent_success'] == false)
 		{
 			echo $build_server_stats['info_image'];
@@ -1039,7 +1039,7 @@ function requirements_check()
 	echo $lang->req_step_top;
 	$errors = array();
 	$showerror = 0;
-	
+
 	if(!file_exists(MYBB_ROOT."/inc/config.php"))
 	{
 		if(!@rename(MYBB_ROOT."/inc/config.default.php", MYBB_ROOT."/inc/config.php"))
@@ -1064,17 +1064,17 @@ function requirements_check()
 	{
 		$phpversion = $lang->sprintf($lang->req_step_span_pass, PHP_VERSION);
 	}
-	
+
 	if(function_exists('mb_detect_encoding'))
 	{
 		$mboptions[] = $lang->multi_byte;
 	}
-	
+
 	if(function_exists('iconv'))
 	{
 		$mboptions[] = 'iconv';
 	}
-	
+
 	// Check Multibyte extensions
 	if(count($mboptions) < 1)
 	{
@@ -1216,7 +1216,7 @@ function requirements_check()
 function database_info()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
-	
+
 	$mybb->input['action'] = 'database_info';
 	$output->print_header($lang->db_config, 'dbconfig');
 
@@ -1250,7 +1250,7 @@ function database_info()
 	{
 		echo $lang->db_step_config_db;
 	}
-	
+
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
@@ -1299,7 +1299,7 @@ function database_info()
 				<tr>
 					<th colspan=\"2\" class=\"first last\">{$dbtype['title']} {$lang->database_settings}</th>
 				</tr>";
-			
+
 		// SQLite gets some special settings
 		if($dbfile == 'sqlite')
 		{
@@ -1341,7 +1341,7 @@ function database_info()
 				<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][tableprefix]\" id=\"config_{$dbfile}_tableprefix\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['tableprefix'])."\" /></td>
 			</tr>
 			";
-		
+
 		// Encoding selection only if supported
 		if(is_array($encodings))
 		{
@@ -1374,7 +1374,7 @@ function database_info()
 function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
-	
+
 	if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php"))
 	{
 		$errors[] = $lang->db_step_error_invalidengine;
@@ -1382,7 +1382,7 @@ function create_tables()
 	}
 
 	$config = $mybb->input['config'][$mybb->input['dbengine']];
-	
+
 	if(strstr($mybb->input['dbengine'], "sqlite") !== false)
 	{
 		if(strstr($config['dbname'], "./") !== false || strstr($config['dbname'], "../") !== false || empty($config['dbname']))
@@ -1428,13 +1428,13 @@ function create_tables()
 	{
 		$errors[] = $lang->sprintf($lang->db_step_error_nodbname, $config['dbname']);
 	}
-	
+
 	// Most DB engines only allow certain characters in the table name. Oracle requires an alphabetic character first.
 	if((!preg_match("#^[A-Za-z][A-Za-z0-9_]*$#", $config['tableprefix'])) && $config['tableprefix'] != '')
 	{
 		$errors[] = $lang->db_step_error_invalid_tableprefix;
 	}
-	
+
 	// Needs to be smaller then 64 characters total (MySQL Limit).
 	// This allows 24 characters for the actual table name, which should be sufficient.
 	if(strlen($config['tableprefix']) > 40)
@@ -1446,7 +1446,7 @@ function create_tables()
 	{
 		database_info();
 	}
-	
+
 	// Decide if we can use a database encoding or not
 	if($db->fetch_db_charsets() != false)
 	{
@@ -1456,15 +1456,15 @@ function create_tables()
 	{
 		$db_encoding = "// \$config['database']['encoding'] = '{$config['encoding']}';";
 	}
-	
+
 	// Write the configuration file
 	$configdata = "<?php
 /**
  * Database configuration
  *
- * Please see the MyBB Wiki for advanced
+ * Please see the MyBB Docs for advanced
  * database configuration for larger installations
- * http://wiki.mybb.com/
+ * http://docs.mybb.com/
  */
 
 \$config['database']['type'] = '{$mybb->input['dbengine']}';
@@ -1531,7 +1531,7 @@ function create_tables()
 
 /**
  * Database Encoding
- *  If you wish to set an encoding for MyBB uncomment 
+ *  If you wish to set an encoding for MyBB uncomment
  *  the line below (if it isn't already) and change
  *  the current value to the mysql charset:
  *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
@@ -1556,7 +1556,7 @@ function create_tables()
 	'user_mail_logs' => 180, // User mail logs
 	'promotion_logs' => 180 // Promotion logs
 );
- 
+
 ?>";
 
 	$file = fopen(MYBB_ROOT.'inc/config.php', 'w');
@@ -1568,7 +1568,7 @@ function create_tables()
 
 	$output->print_header($lang->table_creation, 'createtables');
 	echo $lang->sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['short_title'], $db->get_version());
-	
+
 	if($dboptions[$mybb->input['dbengine']]['structure_file'])
 	{
 		$structure_file = $dboptions[$mybb->input['dbengine']]['structure_file'];
@@ -1670,10 +1670,12 @@ function insert_templates()
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
+		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
 	elseif(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 	{
+		require_once MYBB_ROOT."admin/inc/functions.php";
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
 	else
@@ -1682,7 +1684,7 @@ function insert_templates()
 	}
 	$theme_id = import_theme_xml($contents, array("templateset" => -2, "version_compat" => 1));
 	$tid = build_new_theme("Default", null, $theme_id);
-	
+
 	// Update our properties template set to the correct one
 	$query = $db->simple_select("themes", "properties", "tid='{$tid}'", array('limit' => 1));
 	$properties = unserialize($db->fetch_field($query, "properties"));
@@ -1698,7 +1700,7 @@ function insert_templates()
 function configure()
 {
 	global $output, $mybb, $errors, $lang;
-	
+
 	$output->print_header($lang->board_config, 'config');
 
 	// If board configuration errors
@@ -1741,22 +1743,22 @@ function configure()
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
 		}
-		
+
 		if(substr($cookiedomain, 0, 5) == ".www.")
 		{
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
-		
+
 		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || ip2long($_SERVER['SERVER_NAME']) != false)
 		{
 			$cookiedomain = '';
 		}
-		
+
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
 		{
 			$hostname .= ':'.$_SERVER['SERVER_PORT'];
 		}
-		
+
 		$currentlocation = get_current_location();
 		if($currentlocation)
 		{
@@ -1771,14 +1773,14 @@ function configure()
 				$cookiepath = my_substr($currentlocation, 0, $pos).'/';
 			}
 		}
-		
+
 		$currentscript = $hostname.get_current_location();
-		
+
 		if($currentscript)
 		{
 			$bburl = my_substr($currentscript, 0, my_strpos($currentscript, '/install/'));
 		}
-		
+
 		if($_SERVER['SERVER_ADMIN'])
 		{
 			$contactemail = $_SERVER['SERVER_ADMIN'];
@@ -1792,7 +1794,7 @@ function configure()
 function create_admin_user()
 {
 	global $output, $mybb, $errors, $db, $lang;
-	
+
 	$mybb->input['action'] = "adminuser";
 	// If no errors then check for errors from last step
 	if(!is_array($errors))
@@ -1999,16 +2001,16 @@ function install_done()
 
 	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
-	
+
 	require MYBB_ROOT.'inc/settings.php';
 	$mybb->settings = &$settings;
 
 	ob_start();
 	$output->print_header($lang->finish_setup, 'finish');
-	
+
 	echo $lang->done_step_usergroupsinserted;
-	
-	// Insert all of our user groups from the XML file	
+
+	// Insert all of our user groups from the XML file
 	$usergroup_settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
 	$parser = new XMLParser($usergroup_settings);
 	$parser->collapse_dups = 0;
@@ -2026,11 +2028,11 @@ function install_done()
 			{
 				continue;
 			}
-			
+
 			$new_group[$key] = $db->escape_string($value[0]['value']);
 		}
 		$db->insert_query("usergroups", $new_group, false);
-		
+
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
 		if($new_group['cancp'] == 1 && !$admin_gid)
 		{
@@ -2046,7 +2048,7 @@ function install_done()
 	}
 
 	echo $lang->done . '</p>';
-	
+
 	echo $lang->done_step_admincreated;
 	$now = TIME_NOW;
 	$salt = random_str();
@@ -2108,14 +2110,14 @@ function install_done()
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 	$insertmodule = array();
-	
+
 	$db->delete_query("adminoptions");
-	
+
 	// Insert all the admin permissions
 	foreach($tree['adminoptions'][0]['user'] as $users)
-	{			
+	{
 		$uid = $users['attributes']['uid'];
-		
+
 		foreach($users['permissions'][0]['module'] as $module)
 		{
 			foreach($module['permission'] as $permission)
@@ -2129,7 +2131,7 @@ function install_done()
 		{
 			$defaultviews[$view['attributes']['type']] = $view['value'];
 		}
-		
+
 		$adminoptiondata = array(
 			'uid' => intval($uid),
 			'cpstyle' => '',
@@ -2188,7 +2190,7 @@ function install_done()
 	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
-	
+
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");
 	while(($file = readdir($dh)) !== false)
@@ -2200,7 +2202,7 @@ function install_done()
 	}
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
-	
+
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;
@@ -2241,14 +2243,14 @@ function db_connection($config)
 		default:
 			$db = new DB_MySQL;
 	}
-	
+
 	// Connect to Database
 	define('TABLE_PREFIX', $config['database']['table_prefix']);
 
 	$db->connect($config['database']);
 	$db->set_table_prefix(TABLE_PREFIX);
 	$db->type = $config['database']['type'];
-	
+
 	return $db;
 }
 
@@ -2266,7 +2268,7 @@ function error_list($array)
 function write_settings()
 {
 	global $db;
-	
+
 	$query = $db->simple_select('settings', '*', '', array('order_by' => 'title'));
 	while($setting = $db->fetch_array($query))
 	{

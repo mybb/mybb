@@ -185,12 +185,12 @@ class DB_MySQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "mysql_connect";
-				if($single_connection['pconnect'])
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "mysql_pconnect";
 				}
-				
-				$link = $type."_link";
+
+				$link = "{$type}_link";
 
 				$this->get_execution_time();
 
@@ -340,6 +340,8 @@ class DB_MySQL
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+
+		$debug_extra = '';
 		if($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";

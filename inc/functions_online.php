@@ -967,12 +967,12 @@ function build_friendly_wol_location($user_activity)
 	
 	$plugin_array = array('user_activity' => &$user_activity, 'location_name' => &$location_name);
 	$plugins->run_hooks("build_friendly_wol_location_end", $plugin_array);
-	
-	if($user_activity['nopermission'] == 1)
+
+	if(isset($user_activity['nopermission']) && $user_activity['nopermission'] == 1)
 	{
 		$location_name = $lang->viewing_noperms;
 	}
-	
+
 	if(!$location_name)
 	{
 		$location_name = $lang->sprintf($lang->unknown_location, $user_activity['location']);

@@ -591,9 +591,9 @@ EOF;
 
 			foreach($trace as $call)
 			{
-				if(!$call['file']) $call['file'] = "[PHP]";
-				if(!$call['line']) $call['line'] = "&nbsp;";
-				if($call['class']) $call['function'] = $call['class'].$call['type'].$call['function'];
+				if(empty($call['file'])) $call['file'] = "[PHP]";
+				if(empty($call['line'])) $call['line'] = "&nbsp;";
+				if(!empty($call['class'])) $call['function'] = $call['class'].$call['type'].$call['function'];
 				$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
 				$backtrace .= "<tr>\n";
 				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";

@@ -14,8 +14,8 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons";
-$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons,private_archive_txt,private_archive_csv,private_archive_html";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to, postbit_online,postbit_find,postbit_pm, postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages";
 
 require_once "./global.php";
@@ -585,6 +585,11 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		$pm['bcc'] = array_map("trim", $pm['bcc']);
 	}
 
+	if(!$mybb->usergroup['cantrackpms'])
+	{
+		$mybb->input['options']['readreceipt'] = false;
+	}
+
 	$pm['options'] = array(
 		"signature" => $mybb->input['options']['signature'],
 		"disablesmilies" => $mybb->input['options']['disablesmilies'],
@@ -644,9 +649,8 @@ if($mybb->input['action'] == "send")
 	$lang->post_icon = $lang->message_icon;
 
 	$posticons = get_post_icons();
-	$previewmessage = $mybb->input['message'];
-	$message = htmlspecialchars_uni($mybb->input['message']);
-	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
+	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->input['message']));
+	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->input['subject']));
 
 	if($mybb->input['preview'] || $send_errors)
 	{
@@ -686,8 +690,8 @@ if($mybb->input['action'] == "send")
 
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
-		$post['message'] = $previewmessage;
-		$post['subject'] = $previewsubject;
+		$post['message'] = $mybb->input['message'];
+		$post['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = TIME_NOW;
@@ -741,15 +745,16 @@ if($mybb->input['action'] == "send")
 			SELECT pm.*, u.username AS quotename
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
+			WHERE pm.pmid='{$mybb->input['pmid']}' AND pm.uid='{$mybb->user['uid']}'
 		");
-		$pm = $db->fetch_array($query);
 
-		$message = htmlspecialchars_uni($pm['message']);
-		$subject = htmlspecialchars_uni($pm['subject']);
+		$pm = $db->fetch_array($query);
+		$message = htmlspecialchars_uni($parser->parse_badwords($pm['message']));
+		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 		if($pm['folder'] == "3")
-		{ // message saved in drafts
+		{
+			// message saved in drafts
 			$mybb->input['uid'] = $pm['toid'];
 
 			if($pm['includesig'] == 1)
@@ -805,7 +810,8 @@ if($mybb->input['action'] == "send")
 			}
 		}
 		else
-		{ // forward/reply
+		{
+			// forward/reply
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
@@ -897,13 +903,29 @@ if($mybb->input['action'] == "send")
 		$buddy_select = 'bcc';
 		eval("\$buddy_select_bcc = \"".$templates->get("private_send_buddyselect")."\";");
 	}
+
+	// Hide tracking option if no permission
+	$private_send = $templates->get("private_send");
+	$tracking = '';
+	if($mybb->usergroup['cantrackpms'])
+	{
+		$tracking = $templates->get("private_send_tracking");
+	}
+	eval("\$private_send_tracking = \"".$tracking."\";");
+	
+	// Hide signature option if no permission
+	$option_signature = '';
+	if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+	{
+		$option_signature = $templates->get('private_send_signature');
+	}
+	eval("\$private_send_signature = \"".$option_signature."\";");
 	
 	$plugins->run_hooks("private_send_end");
 
-	eval("\$send = \"".$templates->get("private_send")."\";");
+	eval("\$send = \"".$private_send."\";");
 	output_page($send);
 }
-
 
 if($mybb->input['action'] == "read")
 {
@@ -1022,6 +1044,7 @@ if($mybb->input['action'] == "read")
 
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+
 	if($pm['fromid'] == 0)
 	{
 		$pm['username'] = $lang->mybb_engine;
@@ -1105,6 +1128,11 @@ if($mybb->input['action'] == "read")
 
 if($mybb->input['action'] == "tracking")
 {
+	if(!$mybb->usergroup['cantrackpms'])
+	{
+		error_no_permission();
+	}
+
 	$plugins->run_hooks("private_tracking_start");
 	$readmessages = '';
 	$unreadmessages = '';
@@ -1850,10 +1878,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
 		$ids .= ",'{$message['pmid']}'";
 	}
-	
-	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=1", array('limit' => 1));
-	$css = $db->fetch_field($query, "stylesheet");
-	
+
+	if($mybb->input['exporttype'] == "html")
+	{
+		// Gather global stylesheet for HTML
+		$query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
+		$css = $db->fetch_field($query, "stylesheet");
+	}
+
 	$plugins->run_hooks("private_do_export_end");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");

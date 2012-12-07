@@ -977,6 +977,7 @@ switch($mybb->input['action'])
 		{
 			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
 			$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
+			$modaction['action'] = htmlspecialchars_uni($modaction['action']);
 			$info = '';
 			if($modaction['tsubject'])
 			{
@@ -1056,7 +1057,7 @@ switch($mybb->input['action'])
 		}
 		while($delayedmod = $db->fetch_array($query))
 		{
-			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['dateline']+($delayedmod['delay']*24*60*60));
+			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
@@ -1258,7 +1259,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->thread_merged);
 
-		moderation_redirect("showthread.php?tid=$tid", $lang->redirect_threadsmerged);
+		moderation_redirect(get_thread_link($tid), $lang->redirect_threadsmerged);
 		break;
 
 	// Divorce the posts in this thread (Split!)

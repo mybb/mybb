@@ -117,6 +117,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
+		// User can't delete unapproved post
+		if($post['visible'] == 0)
+		{
+			error_no_permission();
+		}
 	}
 }
 else
@@ -141,6 +146,11 @@ else
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			error($lang->edit_time_limit);
+		}
+		// User can't edit unapproved post
+		if($post['visible'] == 0)
+		{
+			error_no_permission();
 		}
 	}
 }

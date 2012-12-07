@@ -52,7 +52,7 @@ $l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {
 
 $l['mybb_incorrect_folder'] = "<div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
 	<h3>MyBB has detected that it is running from the \"Upload\" directory.</h3>
-	<p>While there is nothing wrong with this, it is recommended that your upload the contents of the \"Upload\" directory and not the directory itself.<br /><br />For more information see our <a href=\"http://wiki.mybb.com/index.php/Help:Upload_Directory\" target=\"_blank\">wiki page</a>.</p>
+	<p>While there is nothing wrong with this, it is recommended that your upload the contents of the \"Upload\" directory and not the directory itself.<br /><br />For more information please see the <a href=\"http://docs.mybb.com/Help-Upload_Directory.html\" target=\"_blank\">MyBB Docs</a>.</p>
 </div>";
 
 $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This wizard will install and configure a copy of MyBB on your server.</p>
@@ -68,7 +68,7 @@ $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This w
 </ul>
 <p>After each step has successfully been completed, click Next to move on to the next step.</p>
 <p>Click "Next" to view the MyBB license agreement.</p>
-<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://wiki.mybb.com/index.php/Anonymous_Statistics" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
+<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://docs.mybb.com/Anonymous_Statistics.html" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
 
 $l['license_step'] = '<div class="license_agreement">
 {1}
@@ -136,12 +136,12 @@ $l['req_step_error_phpversion'] = 'MyBB Requires PHP 5.1.0 or later to run. You 
 $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
 $l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="http://mybb.com/support" targert="_blank">MyBB Support.</a>';
-$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://wiki.mybb.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_tablelist'] = '<div class="error">
 <h3>Error</h3>
 <p>The MyBB Requirements check failed due to the reasons below. MyBB installation cannot continue because you did not meet the MyBB requirements. Please correct the errors below and try again:</p>
@@ -231,7 +231,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://wiki.mybb.com/index.php/Cookie_Settings">(?)</a></th>
+					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://docs.mybb.com/Cookie_Settings.html">(?)</a></th>
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
@@ -339,7 +339,7 @@ $l['upgrade_removedir'] = 'Please remove this directory before exploring your up
 $l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
 $l['upgrade_template_reversion'] = "Template Reversion Warning";
 $l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
-$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://wiki.mybb.com/index.php/Anonymous_Statistics\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
+$l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/Anonymous_Statistics.html\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
 
 /* Error messages */
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';

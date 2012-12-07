@@ -237,16 +237,16 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	
 	$optionslist = '';
 	$voteslist = '';
-	for($i = 1; $i <= $optioncount; ++$i)
+	for($i = 1; $i <= $polloptions; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
-			if($i > 1)
+			if($optionslist != '')
 			{
 				$optionslist .= '||~|~||';
 				$voteslist .= '||~|~||';
 			}
-			$optionslist .= $options[$i];
+			$optionslist .= trim($options[$i]);
 			$voteslist .= '0';
 		}
 	}
@@ -300,6 +300,11 @@ if($mybb->input['action'] == "editpoll")
 
 	$query = $db->simple_select("polls", "*", "pid='$pid'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
 
 	$query = $db->simple_select("threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
@@ -471,6 +476,11 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
 
 	$query = $db->simple_select("threads", "*", "poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
@@ -562,17 +572,17 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$voteslist = '';
 	$numvotes = '';
 	$votes = $mybb->input['votes'];
-	for($i = 1; $i <= $optioncount; ++$i)
+	for($i = 1; $i <= $numoptions; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
-			if($i > 1)
+			if($optionslist != '')
 			{
 				$optionslist .= "||~|~||";
 				$voteslist .= "||~|~||";
 			}
 			
-			$optionslist .= $options[$i];
+			$optionslist .= trim($options[$i]);
 			if(intval($votes[$i]) <= 0)
 			{
 				$votes[$i] = "0";
@@ -595,7 +605,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"question" => $db->escape_string($mybb->input['question']),
 		"options" => $db->escape_string($optionslist),
 		"votes" => $db->escape_string($voteslist),
-		"numoptions" => intval($numoptions),
+		"numoptions" => intval($optioncount),
 		"numvotes" => $numvotes,
 		"timeout" => $timeout,
 		"closed" => $postoptions['closed'],
@@ -620,6 +630,12 @@ if($mybb->input['action'] == "showresults")
 {
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
+	
 	$tid = $poll['tid'];
 	$query = $db->simple_select("threads", "*", "tid='$tid'");
 	$thread = $db->fetch_array($query);
@@ -865,7 +881,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$now = TIME_NOW;
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
-	$numvotes = $poll['numvotes'];
+	$numvotes = (int)$poll['numvotes'];
 	if($poll['multiple'] == 1)
 	{
 		if(is_array($option))
@@ -941,6 +957,7 @@ if($mybb->input['action'] == "do_undovote")
 	
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	$poll['numvotes'] = (int)$poll['numvotes'];
 	
 	if(!$poll['pid'])
 	{

@@ -262,7 +262,7 @@ class MyBB {
 				}
 			}
 			
-			if(!$this->cookies[$key])
+			if(empty($this->cookies[$key]))
 			{
 				$this->cookies[$key] = $val;
 			}

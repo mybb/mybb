@@ -103,7 +103,7 @@ function validate_password_from_username($username, $password)
 function validate_password_from_uid($uid, $password, $user = array())
 {
 	global $db, $mybb;
-	if($mybb->user['uid'] == $uid)
+	if(isset($mybb->user['uid']) && $mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
 	}
@@ -434,6 +434,16 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
+	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
+	// Hide tracking link if no permission
+	$tracking = '';
+	if($mybb->usergroup['cantrackpms'])
+	{
+		$tracking = $templates->get("usercp_nav_messenger_tracking");
+	}
+	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
+
+	$folderlinks = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -455,7 +465,7 @@ function usercp_menu_messenger()
 		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
 	}
 	
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
+	eval("\$usercpmenu .= \"".$usercp_nav_messenger."\";");
 }
 
 /**
@@ -489,6 +499,8 @@ function usercp_menu_profile()
 function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
+
+	$draftstart = $draftend = $draftcount = '';
 
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);	

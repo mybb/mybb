@@ -1030,7 +1030,7 @@ ul.thread_tools li.subscription_remove {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
-			<template name="forumdisplay_threadlist" version="1603"><![CDATA[<div class="float_left">
+			<template name="forumdisplay_threadlist" version="1609"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -1061,7 +1061,7 @@ ul.thread_tools li.subscription_remove {
 	<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
 			<form action="forumdisplay.php" method="get">
-				<input type="hidden" name="selectall" value="{$allselected}" />
+				<input type="hidden" name="selectall" value="" />
 				<input type="hidden" name="fid" value="{$fid}" />
 				<select name="sortby">
 					<option value="subject" {$sortsel['subject']}>{$lang->sort_by_subject}</option>
@@ -1820,7 +1820,7 @@ body {
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newreply" version="1400"><![CDATA[<html>
+		<template name="newreply" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -1858,7 +1858,7 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
+{$option_signature}
 {$disablesmilies}
 </span></td>
 </tr>
@@ -1883,8 +1883,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newreply_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
+		<template name="newreply_disablesmilies" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_drafts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
@@ -1928,7 +1928,7 @@ body {
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
-		<template name="newthread" version="1600"><![CDATA[<html>
+		<template name="newthread" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -1962,7 +1962,7 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
+{$option_signature}
 {$disablesmilies}</span></td>
 </tr>
 {$modoptions}
@@ -1985,8 +1985,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newthread_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />]]></template>
+		<template name="newthread_disablesmilies" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_nav" version="1400"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
@@ -1998,7 +1998,7 @@ body {
 {$usercpmenu}
 </table>
 </td>]]></template>
-		<template name="usercp_nav_messenger" version="1605"><![CDATA[<tr>
+		<template name="usercp_nav_messenger" version="1609"><![CDATA[<tr>
 	<td class="tcat">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
@@ -2011,7 +2011,7 @@ body {
 			{$folderlinks}
 		</td>
 	</tr>
-	<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>
+	{$ucp_nav_tracking}
 	<tr><td class="trow1 smalltext"><a href="private.php?action=folders" class="usercp_nav_item usercp_nav_pmfolders">{$lang->ucp_nav_edit_folders}</a></td></tr>
 </tbody>
 ]]></template>
@@ -2100,6 +2100,7 @@ body {
 </tr>
 </table>
 </fieldset>]]></template>
+		<template name="usercp_nav_messenger_tracking" version="1609"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_options" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
@@ -2568,16 +2569,6 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="error_maxsigimages" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$lang->too_many_images}</strong></td>
-</tr>
-<tr>
-<td class="trow1">{$lang->too_many_sig_images}<br /><span class="smalltext">{$lang->too_many_sig_images2}</span>
-</td>
-</tr>
-</table>
-<br />]]></template>
 		<template name="forumbit_depth2_forum" version="1400"><![CDATA[<tr>
 <td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
 <td class="{$bgcolor}" valign="top">
@@ -2685,11 +2676,11 @@ body {
 		<hr class="hidden" />
 			<div id="copyright">
 				<div id="debug"><debugstuff></div>
-				<!-- MyBB is free software developed and maintained by a volunteer community. 
-					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
-					 to show your support for MyBB.  If you choose to remove or modify the copyright below, 
+				<!-- MyBB is free software developed and maintained by a volunteer community.
+					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
+					 to show your support for MyBB.  If you choose to remove or modify the copyright below,
 					 you may be refused support on the MyBB Community Forums.
-					 
+
 					 This is free software, support us and we'll support you. -->
 {$lang->powered_by} <a href="http://mybb.com/" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://mybb.com/" target="_blank">MyBB Group</a>.<br />
 				<!-- End powered by -->
@@ -3610,7 +3601,7 @@ body {
 ]]></template>
 		<template name="managegroup_leaders" version="1600"><![CDATA[<p>{$lang->group_leaders}: {$leaders}</p>]]></template>
 		<template name="managegroup_leaders_bit" version="1600"><![CDATA[{$leader_profile_link}{$comma}]]></template>
-		<template name="private_send" version="1600"><![CDATA[<html>
+		<template name="private_send" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -3659,10 +3650,10 @@ body {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
+{$private_send_signature}
 <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />
+{$private_send_tracking}
 </span></td>
 </tr>
 </table>
@@ -3703,6 +3694,8 @@ body {
 {$autocompletejs}
 </body>
 </html>]]></template>
+		<template name="private_send_tracking" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
+		<template name="private_send_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />]]></template>
 		<template name="showthread_newreply_closed" version="120"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" alt="{$lang->thread_closed}" title="{$lang->thread_closed}" /></a>&nbsp;]]></template>
 		<template name="polls_editpoll" version="1400"><![CDATA[<html>
 <head>
@@ -4310,16 +4303,6 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="error_maxpostimages" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$lang->error_too_many_images}</strong></td>
-</tr>
-<tr>
-<td class="trow1">{$lang->error_too_many_images2}<br /><span class="smalltext">{$lang->error_too_many_images3} {$mybb->settings['maxpostimages']}.</span>
-</td>
-</tr>
-</table>
-<br />]]></template>
 		<template name="private_archive_html" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messages_for}</title>
@@ -4374,7 +4357,7 @@ body {
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="codebuttons" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1600"></script>
+		<template name="codebuttons" version="1609"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1609"></script>
 <script type="text/javascript">
 <!--
 	{$editor_language}
@@ -4385,7 +4368,7 @@ body {
 	}
 // -->
 </script>]]></template>
-		<template name="showthread_quickreply" version="1400"><![CDATA[<br />
+		<template name="showthread_quickreply" version="1609"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="subject" value="RE: {$thread['subject']}" />
@@ -4411,7 +4394,7 @@ body {
 				<td class="trow1" valign="top" width="22%">
 					<strong>{$lang->message}</strong><br />
 					<span class="smalltext">{$lang->message_note}<br /><br />
-					<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
+					{$option_signature}
 					<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 				</td>
 				<td class="trow1">
@@ -4432,6 +4415,7 @@ body {
 		</tbody>
 	</table>
 </form>]]></template>
+		<template name="showthread_quickreply_options_signature" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
 		<template name="memberlist" version="1602"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
@@ -4816,7 +4800,7 @@ body {
 	</tr>
 	<tr>
 		<td class="trow1" width="20%"><strong><label for="sort">{$lang->sort_by}</label></strong></td>
-	
+
 		<td class="trow1">
 			<select name="sort" id="sort">
 				<option value="subject">{$lang->sort_by_subject}</option>
@@ -5393,7 +5377,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_imcenter_aim" version="120"><![CDATA[<html>
+		<template name="misc_imcenter_aim" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->aim_center}</title>
 {$headerinclude}
@@ -5411,18 +5395,15 @@ body {
 <!-- Begin AIM Remote -->
 <table align="center" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" alt="($lang->download_aim}" title="($lang->download_aim}" /></a><img src="http://www.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" alt="{$lang->aim_remote}" title="{$lang->aim_remote}" /></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_man.gif" width="44" height="55" alt="{$lang->download_aim}" title="{$lang->download_aim}" /></a><img src="http://info.aol.co.uk/aim/remote/gr/aimver_topsm.gif" width="73" height="55" alt="{$lang->aim_remote}" title="{$lang->aim_remote}" /></td>
 </tr>
 <tr>
-<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" alt="{$lang->send_me_instant}" title="{$lang->send_me_instant}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:goim?screenname={$user['aim']}&amp;message=Hi.+Are+you+there?"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_im.gif" width="117" height="39" alt="{$lang->send_me_instant}" title="{$lang->send_me_instant}" /></a></td>
 </tr>
 <tr>
-<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" alt="{$lang->add_me_buddy_list}" title="{$lang->add_me_buddy_list}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="aim:addbuddy?screenname={$user['aim']}"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_bud.gif" width="117" height="39" alt="{$lang->add_me_buddy_list}" title="{$lang->add_me_buddy_list}" /></a></td>
 </tr>
-<tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/remote.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botadd.gif" width="117" height="23" alt="($lang->add_remote_to_page}" title="($lang->add_remote_to_page}" /></a></td>
-</tr>
-<td align="center" style="white-space: nowrap"><a href="http://www.aol.co.uk/aim/index.html"><img src="http://www.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" alt="{$lang->download_aol_im}" title="{$lang->download_aol_im}" /></a></td>
+<td align="center" style="white-space: nowrap"><a href="http://www.aim.com/"><img src="http://info.aol.co.uk/aim/remote/gr/aimver_botdow.gif" width="117" height="29" alt="{$lang->download_aol_im}" title="{$lang->download_aol_im}" /></a></td>
 </tr>
 </table>
 <!-- End AIM Remote -->
@@ -9319,7 +9300,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_move" version="1402"><![CDATA[<html>
+		<template name="calendar_move" version="1609"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>
 {$headerinclude}
@@ -9333,7 +9314,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<td colspan="2" width="100%" class="thead"><strong>{$lang->move_event}: {$event['name']}</strong></td>
 		</tr>
 		<tr>
-			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}:</strong></td>
+			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}</strong></td>
 			<td class="trow1">
 				<select name="new_calendar">
 					{$calendar_select}
@@ -10053,7 +10034,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_coppa_form" version="1400"><![CDATA[<html>
+		<template name="member_coppa_form" version="1609"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
 	<style type="text/css">
@@ -10110,7 +10091,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<dd class="single">{$lang->coppa_parent_agreement}</dd>
 
 		<dt><label for="signature">{$lang->signature}</label></dt>
-		<dd><input type="text" class="textbox" id="signature" /> Date: <input type="text" class="textbox date" id="date" /></dd>
+		<dd><input type="text" class="textbox" id="signature" /> {$lang->date}: <input type="text" class="textbox date" id="date" /></dd>
 	</dl>
 </body>
 </html>]]></template>
@@ -11035,9 +11016,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
-<template name="modcp_announcements_new" version="1405"><![CDATA[<html>
+<template name="modcp_announcements_new" version="1609"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
 </head>
 <body>
@@ -11120,9 +11101,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
-<template name="modcp_announcements_edit" version="1405"><![CDATA[<html>
+<template name="modcp_announcements_edit" version="1609"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
 </head>
 <body>

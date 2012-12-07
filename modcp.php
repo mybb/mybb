@@ -80,6 +80,10 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 	$unviewableforums = str_replace("'", '', $unviewableforums);
 	$unviewableforums = explode(',', $unviewableforums);
 }
+else
+{
+	$unviewableforums = array();
+}
 
 // Fetch the Mod CP menu
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
@@ -611,7 +615,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
-
+	
 	$startdate = @explode(" ", $mybb->input['starttime_time']);
 	$startdate = @explode(":", $startdate[0]);
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
@@ -642,8 +646,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -659,11 +662,11 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -891,7 +894,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
-
+	
 	$startdate = @explode(" ", $mybb->input['starttime_time']);
 	$startdate = @explode(":", $startdate[0]);
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
@@ -922,7 +925,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -938,11 +941,11 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1847,25 +1850,33 @@ if($mybb->input['action'] == "editprofile")
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
 	}
 
-	if($user['usertitle'] == "")
+	// Custom user title, check to see if we have a default group title
+	if(!$user['displaygroup'])
 	{
-		$query = $db->simple_select("usertitles", "*", "posts <='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-		$utitle = $db->fetch_array($query);
-		$defaulttitle = $utitle['title'];
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
+	$displaygroupfields = array('usertitle');
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+
+	if(!empty($display_group['usertitle']))
+	{
+		$defaulttitle = $display_group['usertitle'];
 	}
 	else
 	{
-		if(!$user['displaygroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
+		// Go for post count title if a group default isn't set
+		$usertitles = $cache->read('usertitles');
 
-		$displaygroupfields = array(
-			"usertitle"
-		);
-		$display_group = usergroup_displaygroup($user['displaygroup']);
-		$defaulttitle = $display_group['usertitle'];
+		foreach($usertitles as $title)
+		{
+			if($title['posts'] <= $mybb->user['postnum'])
+			{
+				$defaulttitle = $title['title'];
+			}
+		}
 	}
+
 	if(empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';
@@ -3068,6 +3079,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		if($mybb->input['uid'])
 		{
+			$username_select = $db->simple_select('users', 'username', "uid='" . (int)$mybb->input['uid'] . "'");
+			$user['username'] = $db->fetch_field($username_select, 'username');
 			$update_array = array(
 				'gid' => intval($mybb->input['usergroup']),
 				'admin' => intval($mybb->user['uid']),
@@ -3106,7 +3119,16 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$db->update_query('users', $update_array, "uid = {$user['uid']}");
 
 		$cache->update_banned();
-		log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+
+		// Log edit or add ban
+		if($mybb->input['uid'])
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->edited_user_ban);
+		}
+		else
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+		}
 		
 		$plugins->run_hooks("modcp_do_banuser_end");
 

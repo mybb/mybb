@@ -34,7 +34,7 @@ class pluginSystem
 	{
 		global $cache, $plugins;
 		$pluginlist = $cache->read("plugins");
-		if(is_array($pluginlist['active']))
+		if(!empty($pluginlist['active']) && is_array($pluginlist['active']))
 		{
 			foreach($pluginlist['active'] as $plugin)
 			{
@@ -80,7 +80,7 @@ class pluginSystem
 	 */
 	function run_hooks($hook, &$arguments="")
 	{
-		if(!is_array($this->hooks[$hook]))
+		if(!isset($this->hooks[$hook]) || !is_array($this->hooks[$hook]))
 		{
 			return $arguments;
 		}

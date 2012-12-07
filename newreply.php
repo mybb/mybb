@@ -14,6 +14,7 @@ define('THIS_SCRIPT', 'newreply.php');
 
 $templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,redirect_threadposted,loginbox,changeuserbox,posticons,newreply_threadreview,forumrules,attachments,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link";
 $templatelist .= ",smilieinsert,smilieinsert_getmore,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
+$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -24,12 +25,23 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
+// Check to see if we are missing any indexes
+$options = array('pid', 'tid', 'replyto', 'ajax', 'action', 'attachmentaid', 'newattachment', 'updateattachment', 'attachmentaid', 'subject', 'message', 'previewpost', 'processed', 'method', 'posthash', 'rem', 'quoted_ids', 'icon');
+foreach($options as $option)
+{
+	if(!isset($mybb->input[$option]))
+	{
+		$mybb->input[$option] = '';
+	}
+}
+
 // Get the pid and tid and replyto from the input.
 $pid = $replyto = $mybb->input['pid'];
 $tid = $mybb->input['tid'];
-if(isset($mybb->input['replyto']))
+
+if($mybb->input['replyto'])
 {
-	$replyto = intval($mybb->input['replyto']);	
+	$replyto = intval($mybb->input['replyto']);
 }
 
 // AJAX quick reply?
@@ -107,7 +119,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 
 	error_no_permission();
 }
 
-if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 {
 	error_no_permission();
 }
@@ -191,11 +203,13 @@ if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 	error($lang->error_cannot_upload_php_post);
 }
 
+$errors = array();
+$maximageserror = $attacherror = '';
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->input['updateattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
 	{
 		$attachwhere = "pid='{$pid}'";
@@ -206,12 +220,12 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	}
 	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", $attachwhere);
 	$attachcount = $db->fetch_field($query, "numattachs");
-	
+
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
-		
+
 		$update_attachment = false;
 		if($mybb->input['updateattachment'])
 		{
@@ -238,7 +252,7 @@ if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove" &&
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
@@ -254,7 +268,7 @@ if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
 	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].random_str());
 }
 
-$reply_errors = "";
+$reply_errors = $quoted_ids = '';
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
@@ -290,10 +304,10 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				error($lang->error_usernametaken);
 			}
-			
+
 			// Checks to make sure the user can login; they haven't had too many tries at logging in.
 			// Is a fatal call if user has had too many tries
-			$logins = login_attempt_check();		
+			$logins = login_attempt_check();
 
 			// If the user specified a password but it is wrong, throw back invalid password.
 			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
@@ -304,7 +318,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				if($mybb->settings['failedlogintext'] == 1)
 				{
 					$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-				}		
+				}
 				error($lang->error_invalidpassword.$login_text);
 			}
 			// Otherwise they've logged in successfully.
@@ -312,7 +326,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$mybb->input['username'] = $username = $mybb->user['username'];
 			my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], null, true);
 			my_setcookie('loginattempts', 1);
-			
+
 			// Update the session to contain their user ID
 			$updated_session = array(
 				"uid" => $mybb->user['uid'],
@@ -324,7 +338,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Set uid and username
 			$uid = $mybb->user['uid'];
 			$username = $mybb->user['username'];
-			
+
 			// Check if this user is allowed to post here
 			$mybb->usergroup = &$groupscache[$mybb->user['usergroup']];
 			$forumpermissions = forum_permissions($fid);
@@ -429,7 +443,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$post_errors = $posthandler->get_friendly_errors();
 	}
-	
+
 	// Mark thread as read
 	require_once MYBB_ROOT."inc/functions_indicators.php";
 	mark_thread_read($tid, $fid);
@@ -514,6 +528,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		else
 		{
 			// Moderated post
+			if($mybb->user['showredirect'] != 1)
+			{
+				// User must see moderation notice, regardless of redirect settings
+				$mybb->user['showredirect'] = 1;
+			}
+
 			$lang->redirect_newreply .= '<br />'.$lang->redirect_newreply_moderation;
 			$url = get_thread_link($tid);
 		}
@@ -557,7 +577,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 
 		$plugins->run_hooks("newreply_do_newreply_end");
-		
+
 		// This was a post made via the ajax quick reply - we need to do some special things here
 		if($mybb->input['ajax'])
 		{
@@ -645,11 +665,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				// Build a new posthash incase the user wishes to quick reply again
 			    $new_posthash = md5($mybb->user['uid'].random_str());
-				echo "<script type=\"text/javascript\">\n"; 
+				echo "<script type=\"text/javascript\">\n";
 				echo "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
 				echo "if(typeof(inlineModeration) != 'undefined') { Event.observe($('inlinemod_{$pid}'), 'click', inlineModeration.checkItem); }\n";
-				echo "</script>\n"; 
-				exit;				
+				echo "</script>\n";
+				exit;
 			}
 			// Post is in the moderation queue
 			else
@@ -660,8 +680,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_thread, get_forum_link($fid)); 
-			redirect($url, $lang->redirect_newreply); 
+			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_thread, get_forum_link($fid));
+			redirect($url, $lang->redirect_newreply);
 			exit;
 		}
 	}
@@ -672,14 +692,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 {
 	$plugins->run_hooks("newreply_start");
 
-	$quote_ids = '';
+	$quote_ids = $multiquote_external = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(!$mybb->input['previewpost'] && !$reply_errors && $mybb->input['action'] != "editdraft" && !$mybb->input['attachmentaid'] && !$mybb->input['newattachment'] && !$mybb->input['updateattachment'] && !$mybb->input['rem'])
 	{
 		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
-		if($mybb->cookies['multiquote'] && $mybb->settings['multiquote'] != 0)
+		if(isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0)
 		{
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
@@ -711,7 +731,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$visible_where = "AND p.visible > 0";
 			}
-			
+
 			require_once MYBB_ROOT."inc/functions_posting.php";
 			$query = $db->query("
 				SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
@@ -784,9 +804,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	// Set up the post options.
-	if($mybb->input['previewpost'] || $maximageserror || $reply_errors != '')
+	if($mybb->input['previewpost'] || $reply_errors != '')
 	{
 		$postoptions = $mybb->input['postoptions'];
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		if($postoptions['signature'] == 1)
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
@@ -811,6 +833,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
+		$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = $post['subject'];
 		if($post['includesig'] != 0)
@@ -837,6 +862,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	else
 	{
+		$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		if($mybb->user['signature'] != '')
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
@@ -860,19 +888,27 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$posticons = get_post_icons();
 	}
 
-	// No subject, but post info?
-	if(!$subject && $mybb->input['subject'])
+	// No subject?
+	if(!isset($subject))
 	{
-		$subject = $mybb->input['subject'];
+		if($mybb->input['subject'])
+		{
+			$subject = $mybb->input['subject'];
+		}
+		else
+		{
+			$subject = $thread['subject'];
+		}
 	}
 
 	// Preview a post that was written.
+	$preview = '';
 	if($mybb->input['previewpost'])
 	{
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
-	
+
 		// Set the post data that came from the input to the $post array.
 		$post = array(
 			"tid" => $mybb->input['tid'],
@@ -886,32 +922,32 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			"ipaddress" => get_ip(),
 			"posthash" => $mybb->input['posthash']
 		);
-	
+
 		if($mybb->input['pid'])
 		{
 			$post['pid'] = $mybb->input['pid'];
 		}
-		
+
 		$posthandler->set_data($post);
 
 		// Now let the post handler do all the hard work.
 		$valid_post = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
-	
+
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_post || !$valid_subject)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
-		
+
 		// One or more errors returned, fetch error list and throw to newreply page
 		if(count($post_errors) > 0)
 		{
 			$reply_errors = inline_error($post_errors);
 		}
 		else
-		{		
+		{
 			$quote_ids = htmlspecialchars_uni($mybb->input['quote_ids']);
 			if(!$mybb->input['username'])
 			{
@@ -948,7 +984,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post['includesig'] = 0;
 			}
-	
+
 			// Fetch attachments assigned to this post.
 			if($mybb->input['pid'])
 			{
@@ -958,18 +994,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$attachwhere = "posthash='".$db->escape_string($mybb->input['posthash'])."'";
 			}
-	
+
 			$query = $db->simple_select("attachments", "*", $attachwhere);
 			while($attachment = $db->fetch_array($query))
 			{
 				$attachcache[0][$attachment['aid']] = $attachment;
 			}
-	
+
 			$postbit = build_postbit($post, 1);
 			eval("\$preview = \"".$templates->get("previewpost")."\";");
 		}
 	}
-	$subject = htmlspecialchars_uni($subject);
+
+	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
 
 	if(!$pid && !$mybb->input['previewpost'])
 	{
@@ -1016,7 +1053,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-			
+
 			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
@@ -1034,12 +1071,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 			$attachcount++;
 		}
+
+		$noshowattach = '';
 		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
+
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1024) && $mybb->usergroup['attachquota'] != 0)
 		{
 			$noshowattach = 1;
 		}
+
 		if($mybb->usergroup['attachquota'] == 0)
 		{
 			$friendlyquota = $lang->unlimited;
@@ -1048,12 +1089,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
+
 		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
+
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
 
@@ -1064,16 +1108,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Show captcha image for guests if enabled
+	$captcha = '';
 	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(false, "post_captcha");
 
-		if($mybb->input['previewpost'] || $hide_captcha == true)
+		if($mybb->input['previewpost'] || $hide_captcha == true && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
-			$post_captcha = new captcha;
-
+			// ... but only if it's a default one, reCAPTCHAs must be filled in every time due to draconian limits
 			if($post_captcha->validate_captcha() == true)
 			{
 				$correct = true;
@@ -1085,7 +1130,23 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if(!$correct)
 		{
-			$post_captcha = new captcha(true, "post_captcha");
+ 			if($post_captcha->type == 1)
+			{
+				$post_captcha->build_captcha();
+			}
+			elseif($post_captcha->type == 2)
+			{
+				$post_captcha->build_recaptcha();
+			}
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
+		}
+		elseif($correct && $post_captcha->type == 2)
+		{
+			$post_captcha->build_recaptcha();
 
 			if($post_captcha->html)
 			{
@@ -1100,7 +1161,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$mybb->settings['postperpage'] = 20;
 		}
-		
+
 		if(is_moderator($fid))
 		{
 			$visibility = "(visible='1' OR visible='0')";
@@ -1207,7 +1268,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$closed = $thread['closed'];
 			$stuck = $thread['sticky'];
 		}
-		
+
 		if($closed)
 		{
 			$closecheck = ' checked="checked"';
@@ -1233,10 +1294,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$bgcolor = "trow2";
 	}
-	
+
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
-	
+
 	$lang->post_reply_to = $lang->sprintf($lang->post_reply_to, $thread['subject']);
 	$lang->reply_to = $lang->sprintf($lang->reply_to, $thread['subject']);
 
@@ -1276,10 +1337,20 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$plugins->run_hooks("newreply_end");
-	
+
 	$forum['name'] = strip_tags($forum['name']);
 
-	eval("\$newreply = \"".$templates->get("newreply")."\";");
+	$newreply_template = $templates->get("newreply");
+
+	// Hide signature option if no permission
+	$option_signature = '';
+	if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+	{
+		$option_signature = $templates->get('newreply_options_signature');
+	}
+	eval("\$option_signature = \"".$option_signature."\";");
+
+	eval("\$newreply = \"".$newreply_template."\";");
 	output_page($newreply);
 }
 ?>

@@ -9,7 +9,6 @@
  * $Id$
  */
 
-
 define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
@@ -18,7 +17,9 @@ $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_th
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool,search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
 $templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall";
+
 require_once "./global.php";
+
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -49,7 +50,7 @@ $mybb->input['keywords'] = trim($mybb->input['keywords']);
 $limitsql = "";
 if(intval($mybb->settings['searchhardlimit']) > 0)
 {
-	$limitsql = "ORDER BY t.dateline DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
+	$limitsql = "ORDER BY t.lastpost DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
 }
 
 if($mybb->input['action'] == "results")
@@ -894,7 +895,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			if($thread['thread_closed'] == 1)
+			if($post['thread_closed'] == 1)
 			{
 				$folder .= "lock";
 				$folder_label .= $lang->icon_lock;

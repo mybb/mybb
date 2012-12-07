@@ -114,12 +114,14 @@ class postParser
 		}
 		else
 		{		
-			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
+			while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $message))
 			{
-				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+				$message = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $message);
 			}
 
-			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
+			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
+			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
+			$message = str_replace($find, $replace, $message);
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
@@ -154,7 +156,7 @@ class postParser
 		}
 		
 		// Parse Highlights
-		if($this->options['highlight'])
+		if(!empty($this->options['highlight']))
 		{
 			$message = $this->highlight_message($message, $this->options['highlight']);
 		}
@@ -197,7 +199,7 @@ class postParser
 			), $message);
 		}
 
-		if($options['nl2br'] !== 0)
+		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -533,7 +535,7 @@ class postParser
 				}
 			}
 		}
-		if($options['strip_tags'] == 1)
+		if(isset($options['strip_tags']) && $options['strip_tags'] == 1)
 		{
 			$message = strip_tags($message);
 		}
@@ -564,7 +566,10 @@ class postParser
 			"#(o)(nfocus\s?=)#i",
 			"#(o)(nselect\s?=)#i",
 			"#(o)(nunload\s?=)#i",
-			"#(o)(nkeypress\s?=)#i"
+			"#(o)(nkeypress\s?=)#i",
+			"#(o)(nerror\s?=)#i",
+			"#(o)(nreset\s?=)#i",
+			"#(o)(nabort\s?=)#i"
 		);
 		
 		$message = preg_replace($js_array, "$1<strong></strong>$2$4", $message);

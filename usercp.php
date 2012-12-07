@@ -40,6 +40,24 @@ if(!$mybb->user['pmfolders'])
 
 $errors = '';
 
+if(!isset($mybb->input['action']))
+{
+	$mybb->input['action'] = '';
+}
+
+$collapse_options = array('usercppms', 'usercpprofile', 'usercpmisc');
+foreach($collapse_options as $option)
+{
+	if(!isset($collapsedimg[$option]))
+	{
+		$collapsedimg[$option] = '';
+	}
+	if(!isset($collapsed[$option.'_e']))
+	{
+		$collapsed[$option.'_e'] = '';
+	}
+}
+
 usercp_menu();
 
 $plugins->run_hooks("usercp_start");
@@ -258,6 +276,13 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
+		
+		// Set allowed value otherwise select options disappear
+		if(in_array($lang->userdata_invalid_birthday_privacy, $errors))
+		{
+			$mybb->input['birthdayprivacy'] = 'none';
+		}
+		
 		$errors = inline_error($errors);
 		$mybb->input['action'] = "profile";
 	}
@@ -575,9 +600,16 @@ if($mybb->input['action'] == "profile")
 	{
 		if($mybb->usergroup['usertitle'] == "")
 		{
-			$query = $db->simple_select("usertitles", "*", "posts <='".$mybb->user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-			$utitle = $db->fetch_array($query);
-			$defaulttitle = $utitle['title'];
+			$defaulttitle = '';
+			$usertitles = $cache->read('usertitles');
+
+			foreach($usertitles as $title)
+			{
+				if($title['posts'] <= $mybb->user['postnum'])
+				{
+					$defaulttitle = $title['title'];
+				}
+			}
 		}
 		else
 		{
@@ -1245,7 +1277,7 @@ if($mybb->input['action'] == "subscriptions")
 		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			// Hmm, you don't have permission to view this thread - unsubscribe!
-			$del_subscriptions[] = $subscription['tid'];
+			$del_subscriptions[] = $subscription['sid'];
 		}
 		else if($subscription['tid'])
 		{
@@ -1255,11 +1287,11 @@ if($mybb->input['action'] == "subscriptions")
 
 	if(is_array($del_subscriptions))
 	{
-		$tids = implode(',', $del_subscriptions);
+		$sids = implode(',', $del_subscriptions);
 
-		if($tids)
+		if($sids)
 		{
-			$db->delete_query("threadsubscriptions", "tid IN ({$tids}) AND uid='{$mybb->user['uid']}'");
+			$db->delete_query("threadsubscriptions", "sid IN ({$sids}) AND uid='{$mybb->user['uid']}'");
 		}
 
 		$threadcount = $threadcount - count($del_subscriptions);
@@ -2165,6 +2197,16 @@ if($mybb->input['action'] == "do_editlists")
 			}
 		}
 
+		if($found_users < count($users))
+		{
+			if($error_message)
+			{
+				$error_message .= "<br />";
+			}
+
+			$error_message .= $lang->invalid_user_selected;
+		}
+
 		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1))
 		{
 			if($mybb->input['manage'] == "ignored")
@@ -2192,16 +2234,6 @@ if($mybb->input['action'] == "do_editlists")
 		if(count($existing_users) == 0)
 		{
 			$message = "";
-		}
-
-		if($found_users < count($users))
-		{
-			if($error_message)
-			{
-				$error_message .= "<br />";
-			}
-
-			$error_message .= $lang->invalid_user_selected;
 		}
 	}
 
@@ -2425,7 +2457,7 @@ if($mybb->input['action'] == "drafts")
 		}
 		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 		{
-			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
+			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
 			$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 			$id = $draft['tid'];
 			$type = "thread";
@@ -3028,6 +3060,7 @@ if(!$mybb->input['action'])
 		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
 	}
 
+	$latest_warnings = '';
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
 		$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
@@ -3132,6 +3165,7 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("usercp_notepad_end");
 	
 	// Thread Subscriptions with New Posts
+	$latest_subscribed = '';
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
@@ -3290,6 +3324,7 @@ if(!$mybb->input['action'])
 	// User's Latest Threads
 
 	// Get unviewable forums
+	$f_perm_sql = '';
 	$unviewable_forums = get_unviewable_forums();
 	if($unviewable_forums)
 	{
@@ -3369,6 +3404,7 @@ if(!$mybb->input['action'])
 		$icon_cache = $cache->read("posticons");
 		
 		// Run the threads...
+		$latest_threads_threads = '';
 		foreach($threadcache as $thread)
 		{
 			if($thread['tid'])
@@ -3425,7 +3461,8 @@ if(!$mybb->input['action'])
 				{
 					$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				}
-	
+
+				$cutoff = 0;
 				if($thread['lastpost'] > $cutoff)
 				{
 					if($thread['lastread'])

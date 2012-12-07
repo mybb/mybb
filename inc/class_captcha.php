@@ -161,6 +161,12 @@ class captcha
 		$server = $this->server;
 		$public_key = $mybb->settings['captchapublickey'];
 
+		if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+		{
+			// Use secure server if HTTPS
+			$server = $this->secure_server;
+		}
+
 		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
 	}
@@ -214,9 +220,8 @@ class captcha
 			if(!$imgcheck['dateline'])
 			{
 				$this->set_error($lang->invalid_captcha_verify);
+				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 			}
-
-			$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 		}
 		elseif($this->type == 2)
 		{

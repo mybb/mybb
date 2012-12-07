@@ -510,7 +510,6 @@ class PMDataHandler extends DataHandler
 				}
 			}
 		}
-		$recipient_list = serialize($recipient_list);
 
 		$this->pm_insert_data = array(
 			'fromid' => intval($pm['sender']['uid']),
@@ -524,7 +523,7 @@ class PMDataHandler extends DataHandler
 			'smilieoff' => $pm['options']['disablesmilies'],
 			'receipt' => intval($pm['options']['readreceipt']),
 			'readtime' => 0,
-			'recipients' => $db->escape_string($recipient_list)
+			'recipients' => $db->escape_string(serialize($recipient_list))
 		);
 
 		// Check if we're updating a draft or not.

@@ -55,8 +55,6 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
-require_once MYBB_ROOT."inc/functions_compat.php";
-
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
@@ -226,7 +224,7 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 add_shutdown('send_mail_queue');
 
 /* URL Definitions */
-if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))
 {
 	define('FORUM_URL', "forum-{fid}.html");
 	define('FORUM_URL_PAGED', "forum-{fid}-page-{page}.html");

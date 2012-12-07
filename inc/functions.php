@@ -63,9 +63,15 @@ function output_page($contents)
 				$gzipen = "Disabled";
 			}
 
-			if(function_exists("memory_get_usage"))
+			$memory_usage = get_memory_usage();
+
+			if($memory_usage)
 			{
-				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_peak_usage(true));
+				$memory_usage = " / Memory Usage: ".get_friendly_size($memory_usage);
+			}
+			else
+			{
+				$memory_usage = '';
 			}
 
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
@@ -322,7 +328,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 	if(!$offset && $offset != '0')
 	{
-		if($mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
+		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
@@ -869,6 +875,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 
 	$pages = ceil($count / $perpage);
 
+	$prevpage = '';
 	if($page > 1)
 	{
 		$prev = $page-1;
@@ -906,6 +913,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		$to = $pages;
 	}
 
+	$start = '';
 	if($from > 1)
 	{
 		if($from-1 == 1)
@@ -917,6 +925,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$start = \"".$templates->get("multipage_start")."\";");
 	}
 
+	$mppage = '';
 	for($i = $from; $i <= $to; ++$i)
 	{
 		$page_url = fetch_page_url($url, $i);
@@ -937,6 +946,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		}
 	}
 
+	$end = '';
 	if($to < $pages)
 	{
 		if($to+1 == $pages)
@@ -948,12 +958,14 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$end = \"".$templates->get("multipage_end")."\";");
 	}
 
+	$nextpage = '';
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
+
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 	
 	if($breadcrumb == true)
@@ -1237,7 +1249,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
-	if(!$fpermcache[$fid]) // This forum has no custom or inherited permissions so lets just return the group permissions
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
 		return $groupperms;
 	}
@@ -1588,6 +1600,7 @@ function get_post_icons()
 		$icon = $mybb->input['icon'];
 	}
 
+	$iconlist = '';
 	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
 	$posticons_cache = $cache->read("posticons");
@@ -1837,6 +1850,24 @@ function get_server_load()
 	$returnload = trim($serverload[0]);
 
 	return $returnload;
+}
+
+/**
+ * Returns the amount of memory allocated to the script.
+ *
+ * @return int The amount of memory allocated to the script.
+ */
+function get_memory_usage()
+{
+	if(function_exists('memory_get_peak_usage'))
+	{
+		return memory_get_peak_usage(true);
+	}
+	elseif(function_exists('memory_get_usage'))
+	{
+		return memory_get_usage(true);
+	}
+	return false;
 }
 
 /**
@@ -2245,6 +2276,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
+	$jumpsel['default'] = '';
 
 	if($permissions)
 	{
@@ -2272,7 +2304,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 		$permissioncache = forum_permissions();
 	}
 
-	if(is_array($jumpfcache[$pid]))
+	if(isset($jumpfcache[$pid]) && is_array($jumpfcache[$pid]))
 	{
 		foreach($jumpfcache[$pid] as $main)
 		{
@@ -2470,7 +2502,7 @@ function build_mycode_inserter($bind="message")
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
 			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
 
-			if($editor_lang_strings[$key+1])
+			if(isset($editor_lang_strings[$key+1]))
 			{
 				$editor_language .= ",";
 			}
@@ -2532,6 +2564,7 @@ function build_clickable_smilies()
 		{
 			reset($smiliecache);
 
+			$getmore = '';
 			if($mybb->settings['smilieinsertertot'] >= $smiliecount)
 			{
 				$mybb->settings['smilieinsertertot'] = $smiliecount;
@@ -2873,6 +2906,8 @@ function get_reputation($reputation, $uid=0)
 {
 	global $theme;
 
+	$display_reputation = '';
+
 	if($uid != 0)
 	{
 		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
@@ -3115,14 +3150,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewableforums, $unviewable, $templates, $forumpass;
-
-	$pid = intval($pid);
-
-	if(!$permissions)
-	{
-		$permissions = $mybb->usergroup;
-	}
+	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
 
 	if(!is_array($forum_cache))
 	{
@@ -3181,7 +3209,10 @@ function get_unviewable_forums($only_readable_threads=false)
 		}
 	}
 
-	return $unviewableforums;
+	if(isset($unviewableforums))
+	{
+		return $unviewableforums;
+	}
 }
 
 /**
@@ -3213,6 +3244,7 @@ function build_breadcrumb()
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 	
 	$i = 0;
+	$activesep = '';
 	
 	if(is_array($navbits))
 	{
@@ -3310,7 +3342,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 		{
 			if($fid == $forumnav['fid'])
 			{
-				if($pforumcache[$forumnav['pid']])
+				if(!empty($pforumcache[$forumnav['pid']]))
 				{
 					build_forum_breadcrumb($forumnav['pid']);
 				}
@@ -3376,13 +3408,14 @@ function build_archive_link($type, $id="")
 	global $mybb;
 	
 	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-	if((DIRECTORY_SEPARATOR == '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || strstr(php_sapi_name(), 'cgi') || defined("ARCHIVE_QUERY_STRINGS"))
+	//if((DIRECTORY_SEPARATOR == '\\' && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
+	if($mybb->settings['seourls_archive'] == 1)
 	{
-		$base_url = $mybb->settings['bburl']."/archive/index.php?";
+		$base_url = $mybb->settings['bburl']."/archive/index.php/";
 	}
 	else
 	{
-		$base_url = $mybb->settings['bburl']."/archive/index.php/";
+		$base_url = $mybb->settings['bburl']."/archive/index.php?";
 	}
 
 	switch($type)
@@ -3408,7 +3441,7 @@ function build_archive_link($type, $id="")
  */
 function debug_page()
 {
-	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
+	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang;
 
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
@@ -3473,17 +3506,22 @@ function debug_page()
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";
 	echo "</tr>\n";
 
-	if(function_exists("memory_get_usage"))
+	$memory_usage = get_memory_usage();
+	if(!$memory_usage)
 	{
-		$memory_usage = memory_get_peak_usage(true);
-		$memory_limit = @ini_get("memory_limit");
-		echo "<tr>\n";
-		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
-		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".get_friendly_size($memory_usage)." ({$memory_usage} bytes)</font></td>\n";
-		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
-		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
-		echo "</tr>\n";
+		$memory_usage = $lang->unknown;
 	}
+	else
+	{
+		$memory_usage = get_friendly_size($memory_usage)." ({$memory_usage} bytes)";
+	}
+	$memory_limit = @ini_get("memory_limit");
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_usage}</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
+	echo "</tr>\n";
 
 	echo "</table>\n";
 
@@ -3610,7 +3648,7 @@ function nice_time($stamp, $options=array())
 	$hsecs = 60*60;
 	$msecs = 60;
 
-	if($options['short'] == true)
+	if(isset($options['short']))
 	{
 		$lang_year = $lang->year_short;
 		$lang_years = $lang->years_short;
@@ -3695,7 +3733,7 @@ function nice_time($stamp, $options=array())
 		$nicetime['days'] = $days.$lang_days;
 	}
 
-	if($options['hours'] !== false)
+	if(!isset($options['hours']) || $options['hours'] !== false)
 	{
 		if($hours == 1)
 		{
@@ -3707,7 +3745,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['minutes'] !== false)
+	if(!isset($options['minutes']) || $options['minutes'] !== false)
 	{
 		if($minutes == 1)
 		{
@@ -3719,7 +3757,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['seconds'] !== false)
+	if(!isset($options['seconds']) || $options['seconds'] !== false)
 	{
 		if($seconds == 1)
 		{
@@ -3905,10 +3943,8 @@ function get_current_location($fields=false, $ignore=array())
 		{
 			$ignore = array($ignore);
 		}
-		
+
 		$form_html = "";
-		$field_parts = explode('&', $field_parts);
-		
 		if(!empty($mybb->input))
 		{
 			foreach($mybb->input as $name => $value)
@@ -5047,27 +5083,18 @@ function login_attempt_check($fatal = true)
 	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
 
 	// Use cookie if possible, otherwise use session
-	// Session stops user clearing cookies to bypass the login
-	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
-	$cookielogins = intval($mybb->cookies['loginattempts']);
-	$cookietime = $mybb->cookies['failedlogin'];
+	// Find better solution to prevent clearing cookies
+	$loginattempts = 0;
+	$failedlogin = 0;
 
-	if(empty($cookielogins) || $cookielogins < $session->logins)
+	if(!empty($mybb->cookies['loginattempts']))
 	{
-		$loginattempts = $session->logins;
-	}
-	else
-	{
-		$loginattempts = $cookielogins;
+		$loginattempts = $mybb->cookies['loginattempts'];
 	}
 
-	if(empty($cookietime) || $cookietime < $session->failedlogin)
+	if(!empty($mybb->cookies['failedlogin']))
 	{
-		$failedlogin = $session->failedlogin;
-	}
-	else
-	{
-		$failedlogin = $cookietime;
+		$failedlogin = $mybb->cookies['failedlogin'];
 	}
 
 	// Work out if the user has had more than the allowed number of login attempts

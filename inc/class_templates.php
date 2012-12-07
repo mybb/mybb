@@ -69,7 +69,7 @@ class templates
 		//
 		// DEVELOPMENT MODE
 		//
-		if($mybb->dev_mode == 1)
+		if(isset($mybb->dev_mode) && $mybb->dev_mode == 1)
 		{
 			$template = $this->dev_get($title);
 			if($template !== false)
