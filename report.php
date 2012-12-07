@@ -41,9 +41,10 @@ if($type == 'post')
 	$report_type_thanks = $lang->success_post_reported;
 
 	$error = '';
+	$report = array();
 	$post = get_post($mybb->input['pid']);
 
-	if(!$post['pid'] || $post['pid'] && $post['uid'] == $mybb->user['uid'])
+	if(!$post['pid'])
 	{
 		// Invalid post
 		$error = $lang->error_invalid_report;
@@ -62,6 +63,20 @@ if($type == 'post')
 		// Password protected forums ......... yhummmmy!
 		$fid = $forum['fid'];
 		check_forum_password($forum['parentlist']);
+
+		// Check for existing report
+		$query = $db->simple_select("reportedposts", "*", "pid = '{$pid}' AND (type = 'post' OR type = '')");
+		if($db->num_rows($query))
+		{
+			// Existing report
+			$report = $db->fetch_array($query);
+			$reporters = unserialize($report['reporters']);
+
+			if($mybb->user['uid'] == $report['uid'] || is_array($reporters) && in_array($mybb->user['uid'], $reporters))
+			{
+				$error = $lang->error_report_voted;
+			}
+		}
 	}
 
 	if($error)
@@ -71,16 +86,7 @@ if($type == 'post')
 		exit;
 	}
 
-	$report = array();
-	$reportedposts = $cache->read("reportedposts");
-
-	$query = $db->simple_select("reportedposts", "*", "pid = '{$pid}' AND (type = 'post' OR type = '')");
-
-	if($db->num_rows($query))
-	{
-		// Existing report
-		$report = $db->fetch_array($query);
-	}
+	$reportedposts = $cache->read("reportedposts");	
 
 	$tid = $post['tid'];
 	$thread = get_thread($tid);
@@ -93,11 +99,13 @@ if($type == 'post')
 		// Are we adding a vote to an existing report?
 		if(isset($report['pid']))
 		{
+			$reporters[] = $mybb->user['uid'];
+
 			$update_array = array(
 				'type' => 'post',
 				'reports' => ++$report['reports'],
 				'lastreport' => TIME_NOW,
-				'lastreporter' => $mybb->user['uid']
+				'reporters' => $db->escape_string(serialize($reporters))
 			);
 
 			$db->update_query("reportedposts", $update_array, "rid = '{$report['rid']}'");
@@ -133,7 +141,7 @@ if($type == 'post')
 					'reports' => 1,
 					'dateline' => TIME_NOW,
 					'lastreport' => TIME_NOW,
-					'lastreporter' => $mybb->user['uid']
+					'reporters' => $db->escape_string(serialize(array($mybb->user['uid'])))
 				);
 
 				if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")

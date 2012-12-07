@@ -529,9 +529,9 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   reason varchar(250) NOT NULL default '',
   type varchar(50) NOT NULL default '',
   reports int NOT NULL default '0',
+  reporters text NOT NULL,
   dateline bigint(30) NOT NULL default '0'
-  lastreport bigint(30) NOT NULL default '0',
-  lastreporter int NOT NULL default '0'
+  lastreport bigint(30) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_reputation (

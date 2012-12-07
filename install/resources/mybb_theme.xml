@@ -8935,14 +8935,22 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <body>
 <br />
 <table border="0" cellspacing="1" cellpadding="4" class="tborder">
-<tr>
-<td class="thead"><span class="smalltext"><strong>{$mybb->settings['bbname']}</strong></span></td>
-
-</tr>
-<tr>
-<td class="trow1">{$error}</td>
-</tr>
+	<tr>
+		<td class="thead"><span class="smalltext"><strong>{$mybb->settings['bbname']}</strong></span></td>
+	</tr>
+	<tr>
+		<td class="trow1">{$error}</td>
+	</tr>
 </table>
+
+<br />
+<div style="text-align: center;">
+	<script type="text/javascript">
+	<!--
+		document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
+	// -->
+	</script>
+</div>
 </body>
 </html>]]></template>
 		<template name="report_noreason" version="1800"><![CDATA[<html>

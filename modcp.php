@@ -227,18 +227,29 @@ if($mybb->input['action'] == "reports")
 			}
 
 			// Lastpost info - is it missing (pre-1.8)?
+			$lastposter = $report['uid'];
 			if(!$report['lastreport'])
 			{
 				// Last reporter is our first reporter
-				$report['lastreport'] = $report['dateline'];
-				$report['lastreporter'] = $report['uid'];				
+				$report['lastreport'] = $report['dateline'];			
 			}
-
-			if(!isset($usercache[$report['lastreporter']]))
+			 
+			if($report['reporters'])
 			{
-				$usercache[$report['lastreporter']] = $report['lastreporter'];
+				$reporters = unserialize($report['reporters']);
+
+				if(is_array($reporters))
+				{
+					$lastposter = end($reporters);
+				}
 			}
 
+			if(!isset($usercache[$lastposter]))
+			{
+				$usercache[$lastposter] = $lastposter;
+			}
+
+			$report['lastreporter'] = $lastposter;
 			$reportcache[] = $report;
 		}
 

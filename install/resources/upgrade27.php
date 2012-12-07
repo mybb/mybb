@@ -54,14 +54,14 @@ function upgrade27_dbchanges()
 		$db->drop_column("reportedposts", "reports");
 	}
 
+	if($db->field_exists('reporters', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "reporters");
+	}
+
 	if($db->field_exists('lastreport', 'reportedposts'))
 	{
 		$db->drop_column("reportedposts", "lastreport");
-	}
-
-	if($db->field_exists('lastreporter', 'reportedposts'))
-	{
-		$db->drop_column("reportedposts", "lastreporter");
 	}
 
 	switch($db->type)
@@ -71,15 +71,15 @@ function upgrade27_dbchanges()
 			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
-			$db->add_column("reportedposts", "lastreporter", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL");
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
-			$db->add_column("reportedposts", "lastreporter", "int unsigned NOT NULL default '0'");
 			break;
 	}
 
