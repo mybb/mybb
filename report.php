@@ -40,8 +40,8 @@ if($type == 'post')
 	$report_type = $lang->report_post;
 	$report_type_thanks = $lang->success_post_reported;
 
-	$error = '';
 	$report = array();
+	$error = $go_back = '';
 	$post = get_post($mybb->input['pid']);
 
 	if(!$post['pid'])
@@ -65,7 +65,7 @@ if($type == 'post')
 		check_forum_password($forum['parentlist']);
 
 		// Check for existing report
-		$query = $db->simple_select("reportedposts", "*", "pid = '{$pid}' AND (type = 'post' OR type = '')");
+		$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND (type = 'post' OR type = '')");
 		if($db->num_rows($query))
 		{
 			// Existing report
@@ -116,7 +116,10 @@ if($type == 'post')
 			if(!$mybb->input['reason'] && !trim($mybb->input['comment']))
 			{
 				// No reason or no comment = no report
-				eval("\$report = \"".$templates->get("report_noreason")."\";");
+				$go_back = $lang->go_back;
+				$error = $lang->error_no_reason;
+
+				eval("\$report = \"".$templates->get("report_error")."\";");
 				output_page($report);
 				exit;
 			}

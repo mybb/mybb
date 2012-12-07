@@ -18,7 +18,7 @@ $l['thank_you'] = "Thank You.";
 $l['success_post_reported'] = "The post has successfully been reported. You can now close this window.";
 
 $l['report_error'] = "Error";
-$l['go_back'] = "Back";
+$l['go_back'] = "<input type=\"button\" class=\"button\" value=\"Go Back\" onclick=\"javascript:history.go(-1)\" />";
 $l['close_window'] = "Close Window";
 $l['error_no_reason'] = "You cannot report content without specifying a reason for reporting it.";
 $l['error_invalid_report'] = "This content either does not exist or is not able to be reported.";

@@ -48,8 +48,8 @@ $l['redirect_reportsmarked'] = "The selected reported posts have been marked as 
 $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
 $l['for'] = "for";
-$l['report_info'] = "Content";
-$l['report_type'] = "Report Comment";
+$l['report_info'] = "Reported Content";
+$l['report_type'] = "Comments";
 $l['report_count'] = "Reports";
 $l['report_lastpost'] = "Last Reported";
 
