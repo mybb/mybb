@@ -1098,7 +1098,7 @@ disabled=Disable this feature]]></optionscode>
 			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[40|40]]></settingvalue>
+			<settingvalue><![CDATA[100|100]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
