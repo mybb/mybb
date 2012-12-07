@@ -1381,21 +1381,10 @@ if($mybb->input['action'] == "profile")
 	$lang->users_signature = $lang->sprintf($lang->users_signature, $memprofile['username']);
 	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
 
-	if($memprofile['avatar'])
-	{
-		$memprofile['avatar'] = htmlspecialchars_uni($memprofile['avatar']);
-		$avatar_dimensions = explode("|", $memprofile['avatardimensions']);
-		if($avatar_dimensions[0] && $avatar_dimensions[1])
-		{
-			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-		}
-		$avatar = "<img src=\"{$memprofile['avatar']}\" alt=\"\" $avatar_width_height />";
-	}
-	else
-	{
-		$avatar = '';
-	}
+	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
+	$avatar = "<img src=\"{$useravatar['image']}\" alt=\"\" {$useravatar['width_height']} />";
 
+	$sendemail = '';
 	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
@@ -1403,7 +1392,6 @@ if($mybb->input['action'] == "profile")
 	else
 	{
 		$alttrow = "trow1"; // To properly sort the contact details below
-		$sendemail = '';
 	}
 
 	// Clean alt_trow for the contact details

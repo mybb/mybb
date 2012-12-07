@@ -305,7 +305,7 @@ function build_postbit($post, $post_type=0)
 		$post['useravatar'] = '';
 		if($mybb->user['showavatars'] != 0)
 		{
-			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions']);
+			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
 		}
 

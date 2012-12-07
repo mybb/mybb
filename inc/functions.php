@@ -2461,7 +2461,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 
 	if(!$max_dimensions)
 	{
-		$max_dimensions = $mybb->settings['postmaxavatarsize'];
+		$max_dimensions = $mybb->settings['maxavatardims'];
 	}
 
 	if($dimensions)
