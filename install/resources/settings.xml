@@ -1089,7 +1089,7 @@ disabled=Disable this feature]]></optionscode>
 			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[images/default_avatar.gif]]></settingvalue>
+			<settingvalue><![CDATA[images/default_avatar.png]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>

@@ -4763,7 +4763,7 @@ a.button {
 	<td class="{$alt_bg}" align="center">{$user['postnum']}</td>
 	{$referral_bit}
 </tr>]]></template>
-		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
+		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="misc_buddypopup" version="1400"><![CDATA[<html>
 <head>
@@ -10212,128 +10212,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_avatar_current" version="1800"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
-		<template name="usercp_avatar_gallery" version="120"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table width="100%" border="0" align="center">
-<tr>
-{$usercpnav}
-<td valign="top">
-{$avatar_error}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$lang->change_avatar}</strong></td>
-</tr>
-<tr>
-<td class="tcat"><strong>{$lang->local_galleries}</strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center">
-<form method="post" action="usercp.php">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="hidden" name="action" value="avatar" />
-<select name="gallery">
-{$galleries}
-</select>
-&nbsp;{$gobutton}
-</form>
-</td>
-</tr>
-<tr>
-<td class="tcat"><strong>{$lang->avatars_in_gallery}</strong></td>
-</tr>
-<tr>
-<td class="trow2">
-<form method="post" action="usercp.php">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="hidden" name="action" value="do_avatar" />
-<input type="hidden" name="gallery" value="{$gallery}" />
-<table width="100%" cellpadding="4">
-{$avatarlist}
-</table>
-</td>
-</tr>
-</table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_avatar" />
-<input type="submit" class="button" name="submit" value="{$lang->change_avatar}" />
-</div>
-</td>
-</tr>
-</table>
-</form>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="usercp_avatar_gallery_avatar" version="120"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" title="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
-		<template name="usercp_changeavatar" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form enctype="multipart/form-data" action="usercp.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table width="100%" border="0" align="center">
-<tr>
-{$usercpnav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="3"><strong>{$lang->change_avatar}</strong></td>
-</tr>
-<tr>
-<td align="center" class="trow1" width="1%"><input type="radio" class="radio" name="avatar" value="url"{$checked['url']} /></td>
-<td class="trow1" width="40%"><strong>{$lang->avatar_url}</strong><br /><span class="smalltext">{$lang->avatar_url_note}</span></td>
-<td class="trow1" width="55%"><input type="text" class="textbox" name="avatarurl" size="25" maxlength="100" value="{$avatarurl}" /></td>
-</tr>
-<tr>
-<td align="center" class="trow2" width="1%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
-<td class="trow2" width="40%"><strong>{$lang->avatar_upload}</strong><br /><span class="smalltext">{$lang->avatar_upload_note}</span></td>
-<td class="trow2" width="55%"><input type="file" name="avatarupload" size="25" value="" class="fileupload" />{$uploadedmsg}</td>
-</tr>
-<tr>
-<td align="center" class="trow1" width="1%"><input type="radio" class="radio" name="avatar" value="list"{$checked['list']} /></td>
-<td class="trow1" width="40%"><strong>{$lang->avatar_list}</strong><br /><span class="smalltext">{$lang->avatar_list_note}</span></td>
-<td class="trow1" width="55%">
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
-<tr>
-<td valign="middle">
-<select name="avatarlist" size="5" onChange="document.images.avatarpic.src='{$mybb->settings['avatardir']}/'+this[this.selectedIndex].value;">
-{$listoptions}
-</select>
-</td>
-<td valign="middle">
-<img src="{$avatarpic}" name="avatarpic" width="80" height="80" />
-</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<td align="center" class="trow2" width="1%"><input type="radio" class="radio" name="avatar" value="none"{$checked['none']} /></td>
-<td colspan="2" class="trow2" width="95%"><strong>{$lang->no_avatar}</strong><br /><span class="smalltext">{$lang->no_avatar_note}</span></td>
-</tr>
-</table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_avatar" />
-<input type="submit" class="button" name="submit" value="{$lang->change_avatar}" />
-</div>
-</td>
-</tr>
-</table>
-</form>
-{$footer}
-</body>
-</html>]]></template>
+		<template name="usercp_avatar_current" version="1800"><![CDATA[<td width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
 		<template name="usercp_changename" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
@@ -10378,7 +10257,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_currentavatar" version="1600"><![CDATA[<td class="trow1" valign="middle" align="center" width="1"><div class="usercp_container"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$avatar_width_height} /></div></td>]]></template>
+		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
 		<template name="usercp_drafts" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>

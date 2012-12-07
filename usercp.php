@@ -1956,31 +1956,22 @@ if($mybb->input['action'] == "avatar")
 		$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
 		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
 	}
-	$urltoavatar = htmlspecialchars_uni($mybb->user['avatar']);
-	if($mybb->user['avatar'])
-	{
-		$avatar_dimensions = explode("|", $mybb->user['avatardimensions']);
-		if($avatar_dimensions[0] && $avatar_dimensions[1])
-		{
-			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-		}
-		eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
-		$colspan = 1;
-	}
-	else
-	{
-		$colspan = 2;
-	}
+
+	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
+
 	if($mybb->settings['maxavatardims'] != "")
 	{
 		list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
 	}
+
 	if($mybb->settings['avatarsize'])
 	{
 		$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
+
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
 		$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
@@ -1989,9 +1980,9 @@ if($mybb->input['action'] == "avatar")
 	{
 		$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
 	}
-	
+
 	$plugins->run_hooks("usercp_avatar_end");
-	
+
 	eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
 	output_page($avatar);
 }
@@ -2927,27 +2918,14 @@ if(!$mybb->input['action'])
 		$percent = round($percent, 2);
 	}
 
+	$colspan = 2;
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
-	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
-
-	$colspan = 1;
-	if($mybb->user['avatar'])
-	{
-		$avatar_dimensions = explode("|", $mybb->user['avatardimensions']);
-		if($avatar_dimensions[0] && $avatar_dimensions[1])
-		{
-			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-		}
-		$mybb->user['avatar'] = htmlspecialchars($mybb->user['avatar']);
-		eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
-		$colspan = 2;
-	}
-	else
-	{
-		$avatar = '';
-	}
 	$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
 
+	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
+	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
+
+	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
 		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
