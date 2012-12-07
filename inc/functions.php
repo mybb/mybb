@@ -5083,31 +5083,18 @@ function login_attempt_check($fatal = true)
 	// Note: Number of logins is defaulted to 1, because using 0 seems to clear cookie data. Not really a problem as long as we account for 1 being default.
 
 	// Use cookie if possible, otherwise use session
-	// Session stops user clearing cookies to bypass the login
-	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
-	$cookielogins = 0;
-	$cookietime = 0;
+	// Find better solution to prevent clearing cookies
+	$loginattempts = 0;
+	$failedlogin = 0;
 
 	if(!empty($mybb->cookies['loginattempts']))
 	{
-		$cookielogins = $mybb->cookies['loginattempts'];
+		$loginattempts = $mybb->cookies['loginattempts'];
 	}
 
 	if(!empty($mybb->cookies['failedlogin']))
 	{
-		$cookietime = $mybb->cookies['failedlogin'];
-	}
-
-	$loginattempts = $cookielogins;
-	if($cookielogins < $session->logins)
-	{
-		$loginattempts = $session->logins;
-	}
-
-	$failedlogin = $cookietime;
-	if($cookietime < $session->failedlogin)
-	{
-		$failedlogin = $session->failedlogin;
+		$failedlogin = $mybb->cookies['failedlogin'];
 	}
 
 	// Work out if the user has had more than the allowed number of login attempts

@@ -25,11 +25,18 @@ function upgrade25_dbchanges()
 {
 	global $db, $output;
 
-	$output->print_header("Updating Help Documents");
+	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 
 	$db->update_query("helpdocs", array('usetranslation' => 1));
 	$db->update_query("helpsections", array('usetranslation' => 1));
+
+	$db->modify_column("polls", "numvotes", "text NOT NULL");
+
+	if($db->field_exists('failedlogin', 'users'))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
+	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("25_done");
