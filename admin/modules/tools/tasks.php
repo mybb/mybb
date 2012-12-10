@@ -639,7 +639,9 @@ if($mybb->input['action'] == "logs")
 	$query = $db->simple_select("tasklog", "COUNT(*) AS log_count");
 	$log_count = $db->fetch_field($query, "log_count");
 
+	$start = 0;
 	$per_page = 50;
+	$current_page = 1;
 
 	if($mybb->input['page'] > 0)
 	{
@@ -652,11 +654,6 @@ if($mybb->input['action'] == "logs")
 			$start = 0;
 			$current_page = 1;
 		}
-	}
-	else
-	{
-		$start = 0;
-		$current_page = 1;
 	}
 
 	$pagination = draw_admin_pagination($current_page, $per_page, $log_count, "index.php?module=tools-tasks&amp;action=logs&amp;page={page}");
@@ -672,7 +669,8 @@ if($mybb->input['action'] == "logs")
 	{
 		$log_entry['title'] = htmlspecialchars_uni($log_entry['title']);
 		$log_entry['data'] = htmlspecialchars_uni($log_entry['data']);
-		$date = my_date($mybb->settings['dateformat'], $log_entry['dateline']).", ".my_date($mybb->settings['timeformat'], $log_entry['dateline']);
+
+		$date = my_date('relative', $log_entry['dateline']);
 		$table->construct_cell("<a href=\"index.php?module=tools-tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($log_entry['data']);
@@ -684,6 +682,7 @@ if($mybb->input['action'] == "logs")
 		$table->construct_cell($lang->no_task_logs, array("colspan" => "3"));
 		$table->construct_row();
 	}
+
 	$table->output($lang->task_logs);
 	echo $pagination;
 

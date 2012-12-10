@@ -355,7 +355,7 @@ if($mybb->input['action'] == "orphans")
 				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
 				$table->construct_cell("<span class=\"float_right\">{$filesize}</span>{$file}");
 				$table->construct_cell($lang->reason_not_in_table, array('class' => 'align_center'));
-				$table->construct_cell(my_date($mybb->settings['dateformat'], filemtime($file_path)).", ".my_date($mybb->settings['timeformat'], filemtime($file_path)), array('class' => 'align_center'));
+				$table->construct_cell(my_date('relative', filemtime($file_path)), array('class' => 'align_center'));
 				$table->construct_row();
 			}
 		}
@@ -385,7 +385,7 @@ if($mybb->input['action'] == "orphans")
 				$table->construct_cell($reason, array('class' => 'align_center'));
 				if($attachment['dateuploaded'])
 				{
-					$table->construct_cell(my_date($mybb->settings['dateformat'], $attachment['dateuploaded']).", ".my_date($mybb->settings['timeformat'], $attachment['dateuploaded']), array('class' => 'align_center'));
+					$table->construct_cell(my_date('relative', $attachment['dateuploaded']), array('class' => 'align_center'));
 				}
 				else
 				{
@@ -932,7 +932,7 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 	$table->construct_cell(my_number_format($attachment['downloads']), array("class" => "align_center"));
 	if($attachment['dateuploaded'] > 0)
 	{
-		$date = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']).", ".my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+		$date = my_date('relative', $attachment['dateuploaded']);
 	}
 	else
 	{

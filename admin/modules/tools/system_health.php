@@ -703,13 +703,10 @@ if(!$mybb->input['action'])
 			break;
 		}
 
+		$time = "-";
 		if($backup['time'])
 		{
-			$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
-		}
-		else
-		{
-			$time = "-";
+			$time = my_date('relative', $backup['time']);
 		}
 
 		$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
@@ -722,7 +719,6 @@ if(!$mybb->input['action'])
 		$table->construct_cell($lang->no_backups, array('colspan' => 2));
 		$table->construct_row();
 	}
-
 
 	$table->output($lang->existing_db_backups);
 

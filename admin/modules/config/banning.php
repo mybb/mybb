@@ -233,7 +233,7 @@ if(!$mybb->input['action'])
 
 		if($filter['lastuse'] > 0)
 		{
-			$last_use = my_date($mybb->settings['dateformat'], $filter['lastuse']).", ".my_date($mybb->settings['timeformat'], $filter['lastuse']);
+			$last_use = my_date('relative', $filter['lastuse']);
 		}
 		else
 		{
@@ -242,7 +242,7 @@ if(!$mybb->input['action'])
 
 		if($filter['dateline'] > 0)
 		{
-			$date = my_date($mybb->settings['dateformat'], $filter['dateline']).", ".my_date($mybb->settings['timeformat'], $filter['dateline']);
+			$date = my_date('relative', $filter['dateline']);
 		}
 		else
 		{

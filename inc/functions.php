@@ -359,38 +359,79 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	{
 		$offset = 0;
 	}
-	
-	if($adodb == true && function_exists('adodb_date'))
+
+	// Using ADOdb?
+	if($adodb == true && !function_exists('adodb_date'))
 	{
-		$date = adodb_date($format, $stamp + ($offset * 3600));
+		$adodb = false;
 	}
-	else
+
+	$todaysdate == $yesterdaysdate = '';
+	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative'))
 	{
-		$date = gmdate($format, $stamp + ($offset * 3600));
-	}
-	
-	if($mybb->settings['dateformat'] == $format && $ty)
-	{
-		$stamp = TIME_NOW;
-		
-		if($adodb == true && function_exists('adodb_date'))
+		$_stamp = TIME_NOW;
+		if($adodb == true)
 		{
-			$todaysdate = adodb_date($format, $stamp + ($offset * 3600));
-			$yesterdaysdate = adodb_date($format, ($stamp - 86400) + ($offset * 3600));
+			$date = adodb_date($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$todaysdate = adodb_date($mybb->settings['dateformat'], $_stamp + ($offset * 3600));
+			$yesterdaysdate = adodb_date($mybb->settings['dateformat'], ($_stamp - 86400) + ($offset * 3600));
 		}
 		else
 		{
-			$todaysdate = gmdate($format, $stamp + ($offset * 3600));
-			$yesterdaysdate = gmdate($format, ($stamp - 86400) + ($offset * 3600));
+			$date = gmdate($mybb->settings['dateformat'], $stamp + ($offset * 3600));
+			$todaysdate = gmdate($mybb->settings['dateformat'], $_stamp + ($offset * 3600));
+			$yesterdaysdate = gmdate($mybb->settings['dateformat'], ($_stamp - 86400) + ($offset * 3600));
+		}
+	}
+
+	if($format == 'relative')
+	{
+		// Relative formats both date and time
+		if($ty)
+		{
+			if($todaysdate == $date)
+			{
+				$date = $lang->today;
+			}
+			else if($yesterdaysdate == $date)
+			{
+				$date = $lang->yesterday;
+			}
 		}
 
-		if($todaysdate == $date)
+		$date .= $mybb->settings['datetimesep'];
+		if($adodb == true)
 		{
-			$date = $lang->today;
+			$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
 		}
-		else if($yesterdaysdate == $date)
+		else
 		{
-			$date = $lang->yesterday;
+			$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+		}
+	}
+	else
+	{
+		if($ty && $format == $mybb->settings['dateformat'])
+		{			
+			if($todaysdate == $date)
+			{
+				$date = $lang->today;
+			}
+			else if($yesterdaysdate == $date)
+			{
+				$date = $lang->yesterday;
+			}
+		}
+		else
+		{
+			if($adodb == true)
+			{
+				$date = adodb_date($format, $stamp + ($offset * 3600));
+			}
+			else
+			{
+				$date = gmdate($format, $stamp + ($offset * 3600));
+			}
 		}
 	}
 

@@ -302,7 +302,7 @@ if($mybb->input['action'] == "join_requests")
 		$table->construct_cell($form->generate_check_box("users[]", $request['uid'], ""));
 		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'], "_blank")."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
-		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $request['dateline']), array('class' => 'align_center'));
+		$table->construct_cell(my_date('relative', $request['dateline']), array('class' => 'align_center'));
 
 		$popup = new PopupMenu("join_{$request['rid']}", $lang->options);
 		$popup->add_item($lang->approve, "index.php?module=user-groups&action=approve_join_request&amp;rid={$request['rid']}&amp;my_post_key={$mybb->post_code}");

@@ -215,15 +215,16 @@ if(!$mybb->input['action'])
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
+
 		$logitem['data'] = unserialize($logitem['data']);
-		
+		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
+		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
+
 		// Get detailed information from meta
 		$information = get_admin_log_action($logitem);
-	
+
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array('class' => 'align_center'));
 		$table->construct_cell($information);

@@ -197,14 +197,13 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['forumlink'] = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
-			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
-			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
+			$threaddate = my_date('relative', $thread['dateline']);
 			$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
 			$table->construct_cell("<a href=\"../{$thread['threadlink']}\" target=\"_blank\">{$thread['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
-			$table->construct_cell("{$threaddate}, {$threadtime}", array("class" => "align_center"));
+			$table->construct_cell($threaddate, array("class" => "align_center"));
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
@@ -305,14 +304,13 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$post['threadlink'] = get_thread_link($post['tid']);
 			$post['forumlink'] = get_forum_link($post['fid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
 			$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
 			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\" target=\"_blank\">{$post['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
-			$table->construct_cell("{$postdate}, {$posttime}", array("class" => "align_center"));
+			$table->construct_cell($postdate, array("class" => "align_center"));
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
@@ -410,8 +408,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		while($attachment = $db->fetch_array($query))
 		{
 			if(!$attachment['dateuploaded']) $attachment['dateuploaded'] = $attachment['dateline'];
-			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
-			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+			$attachdate = my_date('relative', $attachment['dateuploaded']);
 
 			$attachment['postsubject'] = htmlspecialchars_uni($attachment['postsubject']);
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
@@ -424,7 +421,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\" target=\"_blank\">{$attachment['postsubject']}</a></small>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
-			$table->construct_cell("{$attachdate}, {$attachtime}", array("class" => "align_center"));
+			$table->construct_cell($attachdate, array("class" => "align_center"));
 
 			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true)), array("class" => "align_center"));
 			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false)), array("class" => "align_center"));
@@ -453,5 +450,4 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 $page->output_header($lang->moderation_queue);
 echo "<p class=\"notice\">{$lang->error_no_threads}</p>";
 $page->output_footer();
-
 ?>

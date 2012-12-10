@@ -839,13 +839,13 @@ if($mybb->input['action'] == "edit")
 	$avatar_top = ceil((126-$scaled_dimensions['height'])/2);
 	if($user['lastactive'])
 	{
-		$last_active = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
+		$last_active = my_date('relative', $user['lastactive']);
 	}
 	else
 	{
 		$last_active = $lang->never;
 	}
-	$reg_date = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
+	$reg_date = my_date('relative', $user['regdate']);
 	if($user['dst'] == 1)
 	{
 		$timezone = $user['timezone']+1;
@@ -854,7 +854,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$timezone = $user['timezone'];
 	}
-	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600)).", ".gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
+	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
 	$days_registered = (TIME_NOW - $user['regdate']) / (24*3600);
 	$posts_per_day = 0;
 	if($days_registered > 0)
@@ -1174,7 +1174,7 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date($mybb->settings['dateformat'], $user['suspendsigtime'])." @ ".my_date($mybb->settings['timeformat'], $user['suspendsigtime']);
+			$expired = my_date('relative', $user['suspendsigtime']);
 			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
 		}
 		$user_suspend_info = '
@@ -1326,7 +1326,7 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date($mybb->settings['dateformat'], $user['moderationtime']).", ".my_date($mybb->settings['timeformat'], $user['moderationtime']);
+			$expired = my_date('relative', $user['moderationtime']);
 			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
 		}
 		else
@@ -1354,7 +1354,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$suspost_date = my_date($mybb->settings['dateformat'], $user['suspensiontime'])." ".my_date($mybb->settings['timeformat'], $user['suspensiontime']);
+			$suspost_date = my_date('relative', $user['suspensiontime']);
 			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
 		}
 	}
@@ -3167,8 +3167,8 @@ function build_users_view($view)
 			}
 			$user['view']['additionalgroups'] = "<small>{$groups_list}</small>";
 			$user['view']['email'] = "<a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>";
-			$user['view']['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
-			$user['view']['lastactive'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
+			$user['view']['regdate'] = my_date('relative', $user['regdate']);
+			$user['view']['lastactive'] = my_date('relative', $user['lastactive']);
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);

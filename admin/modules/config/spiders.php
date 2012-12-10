@@ -256,7 +256,7 @@ if($mybb->input['action'] == "edit")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_spiders_start");
-	
+
 	$page->output_header($lang->spiders_bots);
 
 	$sub_tabs['spiders'] = array(
@@ -279,22 +279,21 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("spiders", "*", "", array("order_by" => "lastvisit", "order_dir" => "desc"));
 	while($spider = $db->fetch_array($query))
 	{
+		$lastvisit = $lang->never;
 		$spider['name'] = htmlspecialchars_uni($spider['name']);
+
 		if($spider['lastvisit'])
 		{
-			$lastvisit = my_date($mybb->settings['dateformat'], $spider['lastvisit']).", ".my_date($mybb->settings['timeformat'], $spider['lastvisit']);
+			$lastvisit = my_date('relative', $spider['lastvisit']);
 		}
-		else
-		{
-			$lastvisit = $lang->never;
-		}
+
 		$table->construct_cell("<a href=\"index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
 		$table->construct_cell($lastvisit, array("class" => "align_center", "width" => 200));
 		$table->construct_cell("<a href=\"index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => 75));
 		$table->construct_cell("<a href=\"index.php?module=config-spiders&amp;action=delete&amp;sid={$spider['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center", "width" => 75));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_bots, array("colspan" => 4));
@@ -302,7 +301,6 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->spiders_bots);
-
 	$page->output_footer();
 }
 ?>

@@ -379,23 +379,23 @@ if($mybb->input['action'] == "backup")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_backupdb_start");
-	
+
 	$page->add_breadcrumb_item($lang->backups);
 	$page->output_header($lang->database_backups);
-	
+
 	$sub_tabs['database_backup'] = array(
 		'title' => $lang->database_backups,
 		'link' => "index.php?module=tools-backupdb",
 		'description' => $lang->database_backups_desc
 	);
-	
+
 	$sub_tabs['new_backup'] = array(
 		'title' => $lang->new_backup,
 		'link' => "index.php?module=tools-backupdb&amp;action=backup",
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'database_backup');
-	
+
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
@@ -414,44 +414,38 @@ if(!$mybb->input['action'])
 			}
 		}
 	}
-	
+
 	$count = count($backups);
 	krsort($backups);
-	
+
 	$table = new Table;
 	$table->construct_header($lang->backup_filename);
 	$table->construct_header($lang->file_size, array("class" => "align_center"));
 	$table->construct_header($lang->creation_date);
 	$table->construct_header($lang->controls, array("class" => "align_center"));
-	
+
 	foreach($backups as $backup)
 	{
+		$time = "-";
 		if($backup['time'])
 		{
-			$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
+			$time = my_date('relative', $backup['time']);
 		}
-		else
-		{
-			$time = "-";
-		}
-		
+
 		$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell(get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$backup['file'])), array("class" => "align_center"));
 		$table->construct_cell($time);
 		$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($count == 0)
 	{
 		$table->construct_cell($lang->no_backups, array('colspan' => 4));
 		$table->construct_row();
 	}
-	
-	
+
 	$table->output($lang->existing_database_backups);
-		
 	$page->output_footer();
 }
-
 ?>

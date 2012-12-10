@@ -141,7 +141,7 @@ if($mybb->input['action'] == "view")
 	$issuedby = build_profile_link($warning['username'], $warning['uid'], "_blank");
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 	
-	$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+	$date_issued = my_date('relative', $warning['dateline']);
 	if($warning['type_title'])
 	{
 		$warning_type = $warning['type_title'];
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "view")
 		}
 		else
 		{
-			$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+			$expires = my_date('relative', $warning['expires']);
 		}
 		$status = $lang->warning_active;
 	}
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "view")
 	}
 	else
 	{
-		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
+		$date_revoked = my_date('relative', $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
 		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid'], "_blank");
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
@@ -394,16 +394,16 @@ if(!$mybb->input['action'])
 		}
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid'], "_blank");
-		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
+		$issued_date = my_date('relative', $row['dateline']);
 		$revoked_text = '';
 		if($row['daterevoked'] > 0)
 		{
-			$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
+			$revoked_date = my_date('relative', $row['daterevoked']);
 			$revoked_text = "<br /><small><strong>{$lang->revoked}</strong> {$revoked_date}</small>";
 		}
 		if($row['expires'] > 0)
 		{
-			$expire_date = my_date($mybb->settings['dateformat'], $row['expires']).' '.my_date($mybb->settings['timeformat'], $row['expires']);
+			$expire_date = my_date('relative', $row['expires']);
 		}
 		else
 		{

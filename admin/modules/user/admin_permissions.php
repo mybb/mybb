@@ -465,7 +465,7 @@ if(!$mybb->input['action'])
 		
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 		
-		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
+		$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
 		
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
 		if($admin['permissions'] != "")

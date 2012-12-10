@@ -452,10 +452,19 @@ none=Hide Errors and Warnings
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="datetimesep">
+			<title>Date/Time Separator</title>
+			<description><![CDATA[Where MyBB joins date and time formats this setting is used to separate them (typically a space or comma).]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[, ]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="regdateformat">
 			<title>Registered Date Format</title>
 			<description><![CDATA[The format used on showthread where it shows when the user registered.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[M Y]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -464,7 +473,7 @@ none=Hide Errors and Warnings
 		<setting name="timezoneoffset">
 			<title>Default Timezone Offset</title>
 			<description><![CDATA[Here you can set the default timezone offset for guests and members using the default offset.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[php
 <select name=\"upsetting[{$setting['name']}]\">
 <option value=\"-12\" ".($setting['value'] == -12?"selected=\"selected\"":"").">GMT -12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -12).")</option>
@@ -507,7 +516,7 @@ none=Hide Errors and Warnings
 		<setting name="dstcorrection">
 			<title>Day Light Savings Time</title>
 			<description><![CDATA[If times are an hour out above and your timezone is selected correctly, enable day light savings time correction.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

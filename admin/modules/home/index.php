@@ -126,7 +126,7 @@ if($mybb->input['action'] == "version_check")
 			$stamp = '';
 			if($item['date_timestamp'])
 			{
-				$stamp = my_date($mybb->settings['dateformat'], $item['date_timestamp']).", ".my_date($mybb->settings['timeformat'], $item['date_timestamp']);
+				$stamp = my_date('relative', $item['date_timestamp']);
 			}
 
 			$content = $item['description'];
