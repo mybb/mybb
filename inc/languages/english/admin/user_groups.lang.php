@@ -108,6 +108,7 @@ $l['can_delete_posts'] = "Can delete own posts?";
 $l['can_delete_threads'] = "Can delete own threads?";
 $l['can_edit_attachments'] = "Can update own attachments?";
 $l['account_management'] = "Account Management";
+$l['can_be_reported'] = "Can be reported?";
 $l['can_access_usercp'] = "Can access User CP?";
 $l['can_change_username'] = "Can change username?";
 $l['can_use_usertitles'] = "Can use custom user titles?";

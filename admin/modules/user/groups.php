@@ -51,6 +51,7 @@ $usergroup_permissions = array(
 	"canuploadavatars" => 1,
 	"canratemembers" => 1,
 	"canchangename" => 0,
+	"canbereported" => 0,
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
@@ -843,6 +844,7 @@ if($mybb->input['action'] == "edit")
 				"canusercp" => intval($mybb->input['canusercp']),
 				"canuploadavatars" => intval($mybb->input['canuploadavatars']),
 				"canchangename" => intval($mybb->input['canchangename']),
+				"canbereported" => intval($mybb->input['canbereported']),
 				"showforumteam" => intval($mybb->input['showforumteam']),
 				"usereputationsystem" => intval($mybb->input['usereputationsystem']),
 				"cangivereputations" => intval($mybb->input['cangivereputations']),
@@ -1027,6 +1029,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->users_permissions);
 
 	$account_options = array(
+		$form->generate_check_box("canbereported", 1, $lang->can_be_reported, array("checked" => $mybb->input['canbereported'])),
 		$form->generate_check_box("canusercp", 1, $lang->can_access_usercp, array("checked" => $mybb->input['canusercp'])),
 		$form->generate_check_box("canchangename", 1, $lang->can_change_username, array("checked" => $mybb->input['canchangename'])),
 		$form->generate_check_box("cancustomtitle", 1, $lang->can_use_usertitles, array("checked" => $mybb->input['cancustomtitle'])),

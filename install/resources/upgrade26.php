@@ -23,7 +23,7 @@ $upgrade_detail = array(
 
 function upgrade27_dbchanges()
 {
-	global $output, $mybb;
+	global $cache, $output, $mybb;
 
 	$output->print_header("Updating Database");
 
@@ -64,6 +64,11 @@ function upgrade27_dbchanges()
 		$db->drop_column("reportedposts", "lastreport");
 	}
 
+	if($db->field_exists('canbereported', 'usergroups'))
+	{
+		$db->drop_column('usergroups', 'canbereported');
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -73,6 +78,7 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			$db->add_column("usergroups", "canbereported", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -80,6 +86,7 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL");
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0'");
 			break;
 	}
 
@@ -92,7 +99,24 @@ function upgrade27_dbchanges()
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
 
-	$db->update_query("reportedposts", array("type" => "post"));
+	$db->update_query("reportedposts", array('type' => 'post'));
+
+	// Sync usergroups with canbereported; no moderators or banned groups
+	$groups = array();
+	$usergroups = $cache->read('usergroups');
+
+	foreach($usergroups as $group)
+	{
+		if($group['canmodcp'] || $group['isbannedgroup'])
+		{
+			continue;
+		}
+
+		$groups[] = "'{$group['gid']}'";
+	}
+
+	$usergroups = implode(',', $groups);
+	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
 
 	sync_tasks(0);
 

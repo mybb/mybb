@@ -51,6 +51,7 @@
 		<canuploadavatars><![CDATA[0]]></canuploadavatars>
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
+		<canbereported><![CDATA[0]]></canbereported>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -120,6 +121,7 @@
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
+		<canbereported><![CDATA[1]]></canbereported>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -189,6 +191,7 @@
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
+		<canbereported><![CDATA[0]]></canbereported>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -258,6 +261,7 @@
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
+		<canbereported><![CDATA[0]]></canbereported>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -327,6 +331,7 @@
 		<canuploadavatars><![CDATA[0]]></canuploadavatars>
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
+		<canbereported><![CDATA[1]]></canbereported>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -396,6 +401,7 @@
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
+		<canbereported><![CDATA[0]]></canbereported>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -465,6 +471,7 @@
 		<canuploadavatars><![CDATA[0]]></canuploadavatars>
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
+		<canbereported><![CDATA[0]]></canbereported>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>

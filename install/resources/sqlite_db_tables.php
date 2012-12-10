@@ -802,6 +802,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canuploadavatars int(1) NOT NULL default '0',
   canratemembers int(1) NOT NULL default '0',
   canchangename int(1) NOT NULL default '0',
+  canbereported int(1) NOT NULL default '0',
   showforumteam int(1) NOT NULL default '0',
   usereputationsystem int(1) NOT NULL default '0',
   cangivereputations int(1) NOT NULL default '0',
