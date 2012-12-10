@@ -7876,9 +7876,9 @@ body {
 </td>
 </tr>
 </table><br />]]></template>
-		<template name="portal_welcome_guesttext" version="1607"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
+		<template name="portal_welcome_guesttext" version="1609"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
 <br />
-<form method="post" action="{$portal_url}"><input type="hidden" name="action" value="do_login" />
+<form method="post" action="{$mybb->settings['bburl']}/member.php"><input type="hidden" name="action" value="do_login" /><input type="hidden" name="url" value="{$portal_url}" />
 {$username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br /><br />
 <label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {$lang->remember_me}</label><br /><br />
@@ -11939,15 +11939,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
-		<template name="loginbox" version="120"><![CDATA[<tr>
+		<template name="loginbox" version="1609"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
 <td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}" /></td>
 </tr>
-<tr>
-<td class="trow1"><strong>{$lang->password}</strong></td>
-<td class="trow1"><input type="password" class="textbox" name="password" size="30" value="{$password}" /></td>
-</tr>
-
 ]]></template>
 		<template name="posticons" version="1410"><![CDATA[<tr>
 <td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
