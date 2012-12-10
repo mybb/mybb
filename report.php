@@ -14,9 +14,11 @@ define('THIS_SCRIPT', 'report.php');
 
 $templatelist = "report,email_reportpost,emailsubject_reportpost,report_thanks";
 require_once "./global.php";
+require_once MYBB_ROOT.'inc/functions_modcp.php';
 
 // Load global language phrases
 $lang->load("report");
+$reportedposts = $cache->read("reportedposts");
 
 if(!$mybb->user['uid'])
 {
@@ -31,6 +33,8 @@ if($mybb->input['type'])
 
 if($type == 'post')
 {
+	// These sections process the ability to report/actual reporting of content
+	// depending on which type of report the user is reporting
 	if($mybb->usergroup['canview'] == 0)
 	{
 		error_no_permission();
@@ -38,10 +42,11 @@ if($type == 'post')
 
 	// Set the type of report
 	$report_type = $lang->report_post;
-	$report_type_thanks = $lang->success_post_reported;
 
 	$report = array();
 	$error = $go_back = '';
+
+	// Check to make sure we can process this
 	$post = get_post($mybb->input['pid']);
 
 	if(!$post['pid'])
@@ -70,11 +75,11 @@ if($type == 'post')
 		{
 			// Existing report
 			$report = $db->fetch_array($query);
-			$reporters = unserialize($report['reporters']);
+			$report['reporters'] = unserialize($report['reporters']);
 
-			if($mybb->user['uid'] == $report['uid'] || is_array($reporters) && in_array($mybb->user['uid'], $reporters))
+			if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
 			{
-				$error = $lang->error_report_voted;
+				$error = $lang->success_report_voted;
 			}
 		}
 	}
@@ -86,29 +91,16 @@ if($type == 'post')
 		exit;
 	}
 
-	$reportedposts = $cache->read("reportedposts");	
-
-	$tid = $post['tid'];
-	$thread = get_thread($tid);
-
 	if($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	{
 		// Save Report
 		verify_post_check($mybb->input['my_post_key']);
 
 		// Are we adding a vote to an existing report?
-		if(isset($report['pid']))
+		if(isset($report['rid']))
 		{
-			$reporters[] = $mybb->user['uid'];
-
-			$update_array = array(
-				'type' => 'post',
-				'reports' => ++$report['reports'],
-				'lastreport' => TIME_NOW,
-				'reporters' => $db->escape_string(serialize($reporters))
-			);
-
-			$db->update_query("reportedposts", $update_array, "rid = '{$report['rid']}'");
+			$report['reporters'][] = $mybb->user['uid'];
+			update_report($report);
 		}
 		else
 		{
@@ -138,25 +130,10 @@ if($type == 'post')
 					'tid' => $post['tid'],
 					'fid' => $post['fid'],
 					'uid' => $mybb->user['uid'],
-					'reportstatus' => 0,
-					'reason' => $db->escape_string($reason."\n".$comment),
-					'type' => 'post',
-					'reports' => 1,
-					'dateline' => TIME_NOW,
-					'lastreport' => TIME_NOW,
-					'reporters' => $db->escape_string(serialize(array($mybb->user['uid'])))
+					'reason' => $reason."\n".$comment,
 				);
 
-				if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
-				{
-					require_once MYBB_ROOT.'inc/functions_modcp.php';
-					send_report($new_report);
-				}
-				else
-				{
-					$db->insert_query("reportedposts", $new_report);
-					$cache->update_reportedposts();
-				}
+				add_report($new_report, 'post');
 			}
 		}
 
@@ -166,44 +143,144 @@ if($type == 'post')
 		output_page($report);
 		exit;
 	}
+}
+elseif($type == 'profile')
+{
+	$report_type = 'Report Profile';
 
-	// Report a Post
-	$plugins->run_hooks("report_start");
+	$report = array();
+	$error = $go_back = '';
 
-	if(isset($report['pid']))
+	if(!(int)$mybb->input['pid'])
 	{
-		// Show duplicate message
-		eval("\$report_reasons = \"".$templates->get("report_duplicate")."\";");
+		$error = $lang->error_invalid_report;
 	}
 	else
 	{
-		// Generate reason box
-		$reasons = '';
-		$options = $reportedposts['reasons'];
+		$user = get_user($mybb->input['pid']);
 
-		if($options)
+		if(!$user['uid'])
 		{
-			foreach($options as $key => $option)
-			{
-				$reason = $option;
-				$lang_string = "report_reason_{$key}";
+			$error = $lang->error_invalid_report;
+		}
+		else
+		{
+			// Check to see if this user can be reported
+			$pid = $user['uid'];
+			$permissions = usergroup_permissions($user['uid']);
 
-				if(isset($lang->$lang_string))
+			if(isset($permissions['canbereported']) && $permissions['canbereported'] == 0)
+			{
+				$error = $lang->error_invalid_report;
+			}
+
+			// Have we already reported this user?
+			$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$user['uid']}' AND type = 'profile'");
+			if($db->num_rows($query))
+			{
+				// Existing report
+				$report = $db->fetch_array($query);
+				$report['reporters'] = unserialize($report['reporters']);
+
+				if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
 				{
-					$reason = $lang->$lang_string;
+					$error = $lang->success_report_voted;
+				}
+			}
+		}
+	}
+
+	if($error)
+	{
+		eval("\$report_error = \"".$templates->get("report_error")."\";");
+		output_page($report_error);
+		exit;
+	}
+
+	if($mybb->input['action'] == 'do_report' && $mybb->request_method == 'post')
+	{
+		verify_post_check($mybb->input['my_post_key']);
+
+		if(isset($report['rid']))
+		{
+			// Existing report, add vote
+			$report['reporters'][] = $mybb->user['uid'];
+			update_report($report);
+		}
+		else
+		{
+			if(!$mybb->input['reason'] && !trim($mybb->input['comment']))
+			{
+				$go_back = $lang->go_back;
+				$error = $lang->error_no_reason;
+
+				eval("\$report = \"".$templates->get("report_error")."\";");
+				output_page($report);
+				exit;
+			}
+			else
+			{
+				$reason = trim($mybb->input['reason']);
+				$comment = trim($mybb->input['comment']);
+
+				if(!$reason)
+				{
+					$reason = 'other';
 				}
 
-				$reasons .= "<option value=\"{$key}\">{$reason}</option>\n";
+				$new_report = array(
+					'pid' => $user['uid'],
+					'tid' => 0,
+					'fid' => 0,
+					'uid' => $mybb->user['uid'],
+					'reason' => $reason."\n".$comment,
+				);
+
+				add_report($new_report, 'profile');
 			}
 		}
 
-		$reasons .= "<option value=\"other\">{$lang->report_reason_other}</option>\n";
-		eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
+		$plugins->run_hooks("report_do_report_end");
+
+		eval("\$report = \"".$templates->get("report_thanks")."\";");
+		output_page($report);
+		exit;
+	}
+}
+
+if(isset($report['rid']))
+{
+	// Show duplicate message
+	eval("\$report_reasons = \"".$templates->get("report_duplicate")."\";");
+}
+else
+{
+	// Generate reason box
+	$reasons = '';
+	$options = $reportedposts['reasons'];
+
+	if($options)
+	{
+		foreach($options as $key => $option)
+		{
+			$reason = $option;
+			$lang_string = "report_reason_{$key}";
+
+			if(isset($lang->$lang_string))
+			{
+				$reason = $lang->$lang_string;
+			}
+
+			$reasons .= "<option value=\"{$key}\">{$reason}</option>\n";
+		}
 	}
 
-	$plugins->run_hooks("report_end");
-
-	eval("\$report = \"".$templates->get("report")."\";");
-	output_page($report);
+	$reasons .= "<option value=\"other\">{$lang->report_reason_other}</option>\n";
+	eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
 }
+
+$plugins->run_hooks("report_end");
+
+eval("\$report = \"".$templates->get("report")."\";");
+output_page($report);
 ?>

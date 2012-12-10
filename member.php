@@ -14,8 +14,8 @@ define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword");
 
 $nosession['avatar'] = 1;
-$templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered,member_register_hiddencaptcha";
-$templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
+$templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered,member_register_hiddencaptcha,redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword";
+$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_addremove,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
 require_once "./global.php";
 
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1802,20 +1802,19 @@ if($mybb->input['action'] == "profile")
 		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
 	}
 
+	$bgcolor = $alttrow = "trow1";
+	$customfields = $profilefields = '';
+
 	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
-	$customfields = '';
-	$bgcolor = "trow1";
-	$alttrow = "trow1";
+
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
+	$field_hidden = 'hidden=0';
 	if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['canmodcp'] == 1)
 	{
 		$field_hidden = '1=1';
 	}
-	else
-	{
-		$field_hidden = "hidden=0";
-	}
+
 	$query = $db->simple_select("profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
 	while($customfield = $db->fetch_array($query))
 	{
@@ -1861,19 +1860,18 @@ if($mybb->input['action'] == "profile")
 	{
 		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
 	}
+
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
 	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 	
+	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
-	else
-	{
-		$adminoptions = '';
-	}
 	
+	$modoptions = '';
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
@@ -1892,34 +1890,40 @@ if($mybb->input['action'] == "profile")
 		
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}
-	else
-	{
-		$modoptions = '';
-	}
-	
-	$buddy_options = '';
-	
+
+	$add_remove_options = array();
+	$buddy_options = $ignore_options = $report_options = '';
 	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
 		if(in_array($mybb->input['uid'], $buddy_list))
 		{
-			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option remove_buddy\">{$lang->remove_from_buddy_list}</a>";
+			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_buddy_button', 'lang' => $lang->remove_from_buddy_list);
 		}
 		else
 		{
-			$buddy_options = "<br /><a href=\"./usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option add_buddy\">{$lang->add_to_buddy_list}</a>";
+			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_buddy_button', 'lang' => $lang->add_to_buddy_list);
 		}
+
+		eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
 
 		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		if(in_array($mybb->input['uid'], $ignore_list))
 		{
-			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option remove_ignore\">{$lang->remove_from_ignore_list}</a>";
+			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$mybb->input['uid']}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_ignore_button', 'lang' => $lang->remove_from_ignore_list);
 		}
 		else
 		{
-			$buddy_options .= "<br /><a href=\"./usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}\" class=\"buddy_option add_ignore\">{$lang->add_to_ignore_list}</a>";
+			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_ignore_button', 'lang' => $lang->add_to_ignore_list);
 		}
+
+		eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+
+		// This is cheating; override the class to add onclick
+		$onclick = "\" onclick=\"MyBB.popupWindow(this.href, 'reportProfile', 400, 300); return false;";
+
+		$add_remove_options = array('url' => "report.php?type=profile&amp;pid={$memprofile['uid']}", 'class' => 'report_user_button'.$onclick, 'lang' => 'Report User');
+		eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
 	}
 
 	$plugins->run_hooks("member_profile_end");

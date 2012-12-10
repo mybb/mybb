@@ -190,7 +190,7 @@ if($mybb->input['action'] == "reports")
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
 		WHERE r.reportstatus = '0'{$where}
-		ORDER BY r.lastreport DESC
+		ORDER BY r.reports DESC
 		LIMIT {$start}, {$perpage}
 	");
 
@@ -296,19 +296,17 @@ if($mybb->input['action'] == "reports")
 			}
 
 			// Report Information
-			$report_information = '';
-
-			$string = "report_type_{$report['type']}";
-			$type = $lang->$string;
+			$report_information = $report_extra = '';
+			$string = "report_info_{$report['type']}";
 
 			switch($report['type'])
 			{
 				case 'profile':
 					// For profiles, we only need user data
-					$content_user = build_profile_link($usercache[$report['pid']]['username'], $report['pid']);
+					$profile_username = $usercache[$report['pid']]['username'];
+					$profile_link = get_profile_link($report['pid']);
 
-					$string = "report_info_{$report['type']}";
-					$report_information = $lang->sprintf($lang->$string, $user_link);
+					$report_information = $lang->sprintf($lang->$string, $profile_username, $profile_link);
 					break;
 				case 'reputation':
 					// For reputation we need a handful of things
@@ -318,24 +316,22 @@ if($mybb->input['action'] == "reports")
 					$profile_rep_link = "reputation.php?uid={$report['pid']}&amp;comment={$report['fid']}";
 
 					// Who is the offender? It's the TID!
-					$content_user = build_profile_link($usercache[$report['tid']]['username'], $report['tid']);
+					//$content_user = build_profile_link($usercache[$report['tid']]['username'], $report['tid']);
 
-					$string = "report_info_{$report['type']}";
 					$report_information = $lang->sprintf($lang->$string, $profile_rep_link, $profile_link, $profile_username);
 					break;
 				default:
-					// Determine type
-					$type_link = get_post_link($report['pid'])."#pid{$report['pid']}";
-
-					// For posts, the next step is thread info
+					// For posts, the first step is thread info for report_extra
 					$thread_subject = $postcache[$report['pid']]['subject'];
 					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
 
-					// Next, it's the user information
+					$report_extra = $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
+
+					// Next, it's the post and user information
+					$type_link = get_post_link($report['pid'])."#pid{$report['pid']}";
 					$content_user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
 
-					$string = "report_info_{$report['type']}";
-					$report_information = $lang->sprintf($lang->$string, $type_link, $thread_link, $thread_subject);
+					$report_information = $lang->sprintf($lang->$string, $type_link, $content_user);
 					break;
 			}
 

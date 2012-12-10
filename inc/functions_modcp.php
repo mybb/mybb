@@ -216,4 +216,46 @@ function send_report($report)
 	return false;
 }
 
+function add_report($report, $type = 'post')
+{
+	global $cache, $db, $mybb;
+
+	$insert_array = array(
+		'pid' => (int)$report['pid'],
+		'tid' => (int)$report['tid'],
+		'fid' => (int)$report['fid'],
+		'uid' => (int)$report['uid'],
+		'reportstatus' => 0,
+		'reason' => $db->escape_string($report['reason']),
+		'type' => $db->escape_string($type),
+		'reports' => 1,
+		'dateline' => TIME_NOW,
+		'lastreport' => TIME_NOW,
+		'reporters' => $db->escape_string(serialize(array($report['uid'])))
+	);
+
+	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
+	{
+		return send_report($new_report);
+	}
+
+	$rid = $db->insert_query("reportedposts", $insert_array);
+	$cache->update_reportedposts();
+
+	return $rid;
+}
+
+function update_report($report)
+{
+	global $db;
+
+	$update_array = array(
+		'reports' => ++$report['reports'],
+		'lastreport' => TIME_NOW,
+		'reporters' => $db->escape_string(serialize($report['reporters']))
+	);
+
+	$db->update_query("reportedposts", $update_array, "rid = '{$report['rid']}'");
+	return true;
+}
 ?>

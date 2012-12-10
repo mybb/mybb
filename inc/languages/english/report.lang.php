@@ -20,8 +20,10 @@ $l['success_post_reported'] = "The post has successfully been reported. You can 
 $l['report_error'] = "Error";
 $l['go_back'] = "<input type=\"button\" class=\"button\" value=\"Go Back\" onclick=\"javascript:history.go(-1)\" />";
 $l['close_window'] = "Close Window";
+
+$l['success_report_voted'] = "Thanks for reporting this content.<br />A member of the forum team will check your report soon.";
+
 $l['error_no_reason'] = "You cannot report content without specifying a reason for reporting it.";
 $l['error_invalid_report'] = "This content either does not exist or is not able to be reported.";
-$l['error_report_voted'] = "Thanks for reporting this content.<br />A member of the forum team will check your report soon.";
 $l['error_report_duplicate'] = "This content has already been reported by another member.<br />You may also report this content below.";
 ?>
