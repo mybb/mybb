@@ -57,7 +57,7 @@ $l['report_reason_other'] = "Other Reason";
 
 $l['report_info_post'] = "A <a href=\"{1}\">Post</a> by {2}";
 $l['report_info_post_thread'] = "In <a href=\"{1}\">{2}</a>";
-$l['report_info_profile'] = "<a href=\"{2}\">{1}'s Profile</a>";
+$l['report_info_profile'] = "<a href=\"{2}\">{1}</a>";
 $l['report_info_reputation'] = "<a href=\"{1}\">Reputation Comment</a> on <a href=\"{2}\">{3}</a>";
 
 $l['moderator_notes'] = "Moderator Notes";

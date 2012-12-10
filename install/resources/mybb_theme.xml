@@ -1235,6 +1235,26 @@ a.button.rate_user_button span {
 	background-position: 0 -379px;
 }
 
+a.button.add_buddy_button span {
+	background-position: 0 -418px;
+}
+
+a.button.remove_buddy_button {
+	background-position: 0 -458px;
+}
+
+a.button.add_ignore_button span {
+	background-position: 0 -439px;
+}
+
+a.button.remove_ignore_button span {
+	background-position: 0 -481px;
+}
+
+a.button.report_user_button span {
+	background-position: 0 -500px;
+}
+
 .quick_jump {
 	background: url(images/jump.png) no-repeat 0;
 	width: 13px;
@@ -1285,30 +1305,6 @@ a.button.rate_user_button span {
 
 form #message {
     width: 500px;
-}
-
-.buddy_option {
-	padding-left: 24px;
-	background-repeat: no-repeat;
-	background-position: left center;
-	margin-bottom: 6px;
-	display: inline-block;
-}
-
-.buddy_option.add_buddy {
-	background-image: url(images/add_buddy.png);
-}
-
-.buddy_option.remove_buddy {
-	background-image: url(images/remove_buddy.png);
-}
-
-.buddy_option.add_ignore {
-	background-image: url(images/add_ignore.png);
-}
-
-.buddy_option.remove_ignore {
-	background-image: url(images/remove_ignore.png);
 }
 
 .pollbar {
