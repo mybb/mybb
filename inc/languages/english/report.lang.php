@@ -7,7 +7,7 @@
  */
 
 $l['report_post'] = "Report Post";
-$l['report_profile'] = "Report Profile";
+$l['report_profile'] = "Report User";
 $l['report_reputation'] = "Report Reputation";
 $l['report_add_comment'] = "Add a comment with your report (optional):";
 $l['report_to_mod'] = "Report content to a moderator";

@@ -262,8 +262,8 @@ $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
 $l['on'] = "On";
 $l['off'] = "Off";
-$l['unread_report'] = "Moderator Notice: There is 1 unread reported post.";
-$l['unread_reports'] = "Moderator Notice: There are {1} unread reported posts.";
+$l['unread_report'] = "Moderator Notice: There is 1 unread report.";
+$l['unread_reports'] = "Moderator Notice: There are {1} unread reports.";
 $l['pending_joinrequest'] = "Group Leader Notice: You have 1 pending group membership join request.";
 $l['pending_joinrequests'] = "Group Leader Notice: You have {1} pending group membership join requests.";
 

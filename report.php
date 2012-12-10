@@ -167,7 +167,7 @@ elseif($type == 'profile')
 		{
 			// Check to see if this user can be reported
 			$pid = $user['uid'];
-			$permissions = usergroup_permissions($user['uid']);
+			$permissions = user_permissions($user['uid']);
 
 			if(isset($permissions['canbereported']) && $permissions['canbereported'] == 0)
 			{
