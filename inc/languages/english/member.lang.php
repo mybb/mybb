@@ -222,4 +222,5 @@ $l['remove_from_buddy_list'] = "Remove from Buddy List";
 $l['add_to_buddy_list'] = "Add to Buddy List";
 $l['remove_from_ignore_list'] = "Remove from Ignore List";
 $l['add_to_ignore_list'] = "Add to Ignore List";
+$l['report_user'] = "Report User";
 ?>

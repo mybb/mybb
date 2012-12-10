@@ -1922,7 +1922,7 @@ if($mybb->input['action'] == "profile")
 		// This is cheating; override the class to add onclick
 		$onclick = "\" onclick=\"MyBB.popupWindow(this.href, 'reportProfile', 400, 300); return false;";
 
-		$add_remove_options = array('url' => "report.php?type=profile&amp;pid={$memprofile['uid']}", 'class' => 'report_user_button'.$onclick, 'lang' => 'Report User');
+		$add_remove_options = array('url' => "report.php?type=profile&amp;pid={$memprofile['uid']}", 'class' => 'report_user_button'.$onclick, 'lang' => $lang->report_user);
 		eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
 	}
 

@@ -4041,7 +4041,8 @@ a.button {
 		{$signature}
 		{$modoptions}
 		{$adminoptions}
-		{$buddy_options}
+			<br />
+			<div style="text-align: center">{$buddy_options}{$ignore_options}{$report_options}</div>
 		</td>
 	</tr>
 </table>
@@ -4049,6 +4050,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_profile_addremove" version="1800"><![CDATA[<a href="{$add_remove_options['url']}" class="button small_button {$add_remove_options['class']}"><span>{$add_remove_options['lang']}</span></a>]]></template>
 		<template name="member_profile_adminoptions" version="1800"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
@@ -6588,7 +6590,7 @@ body {
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
-	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$lang->by} {$content_user} {$lang->for} {$report_reason}</td>
+	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$report_extra} {$lang->for} {$report_reason}</td>
 	<td class="{$trow}" align="left">{$report_comment}</td>
 	<td class="{$trow}" align="center">{$report_reports}</td>
 	<td class="{$trow} smalltext" align="right">{$lastreport_date} {$lastreport_time}<br />{$lang->by} <a href="{$lastreporter_link}">{$lastreporter_name}</a></td>
@@ -8911,6 +8913,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <form action="report.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
+<input type="hidden" name="type" value="{$type}" />
 <input type="hidden" name="pid" value="{$pid}" />
 
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8982,7 +8985,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="thead"><strong>{$lang->thank_you}</strong></td>
 	</tr>
 	<tr>
-		<td class="trow1">{$report_type_thanks}</td>
+		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>
 
