@@ -286,53 +286,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		// Check if username exists.
 		if(username_exists($mybb->input['username']))
 		{
-			// If it does and no password is given throw back "username is taken"
-			if(!$mybb->input['password'])
-			{
-				error($lang->error_usernametaken);
-			}
-
-			// Checks to make sure the user can login; they haven't had too many tries at logging in.
-			// Is a fatal call if user has had too many tries
-			$logins = login_attempt_check();
-
-			// If the user specified a password but it is wrong, throw back invalid password.
-			$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-			if(!$mybb->user['uid'])
-			{
-				my_setcookie('loginattempts', $logins + 1);
-				$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'", 1, true);
-				if($mybb->settings['failedlogintext'] == 1)
-				{
-					$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-				}
-				error($lang->error_invalidpassword.$login_text);
-			}
-			// Otherwise they've logged in successfully.
-
-			$mybb->input['username'] = $username = $mybb->user['username'];
-			my_setcookie("mybbuser", $mybb->user['uid']."_".$mybb->user['loginkey'], null, true);
-			my_setcookie('loginattempts', 1);
-
-			// Update the session to contain their user ID
-			$updated_session = array(
-				"uid" => $mybb->user['uid'],
-			);
-			$db->update_query("sessions", $updated_session, "sid='{$session->sid}'");
-
-			$db->update_query("users", array("loginattempts" => 1), "uid='{$mybb->user['uid']}'");
-
-			// Set uid and username
-			$uid = $mybb->user['uid'];
-			$username = $mybb->user['username'];
-
-			// Check if this user is allowed to post here
-			$mybb->usergroup = &$groupscache[$mybb->user['usergroup']];
-			$forumpermissions = forum_permissions($fid);
-			if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
-			{
-				error_no_permission();
-			}
+			// If it does throw back "username is taken"
+			error($lang->error_usernametaken);
 		}
 		// This username does not exist.
 		else
@@ -923,10 +878,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			if(!$mybb->input['username'])
 			{
 				$mybb->input['username'] = $lang->guest;
-			}
-			if($mybb->input['username'] && !$mybb->user['uid'])
-			{
-				$mybb->user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 			}
 			$mybb->input['icon'] = intval($mybb->input['icon']);
 			$query = $db->query("
