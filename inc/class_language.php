@@ -70,7 +70,7 @@ class MyLanguage
 	 */
 	function set_language($language="english", $area="user")
 	{
-		global $settings;
+		global $mybb;
 		
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
@@ -95,7 +95,7 @@ class MyLanguage
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
-				if(!is_dir($this->path."/".$settings['cplanguage']."/{$area}"))
+				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/{$area}"))
 				{
 					if(!is_dir($this->path."/english/{$area}"))
 					{
@@ -108,7 +108,7 @@ class MyLanguage
 				}
 				else
 				{
-					$language = $settings['cplanguage'];
+					$language = $mybb->settings['cplanguage'];
 				}
 			}
 			$this->language = $language."/{$area}";
@@ -126,14 +126,11 @@ class MyLanguage
 	{
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
-		if($isdatahandler)
+		if($isdatahandler === true)
 		{
-			$lfile = $this->path.'/'.str_replace('/admin', '', $this->language).'/'.$section.'.lang.php';
+			$this->language = str_replace('/admin', '', $this->language);
 		}
-		else
-		{
-			$lfile = $this->path.'/'.$this->language.'/'.$section.'.lang.php';
-		}
+		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		
 		if(file_exists($lfile))
 		{
