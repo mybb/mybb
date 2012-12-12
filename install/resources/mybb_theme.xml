@@ -11867,7 +11867,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
-		<template name="codebuttons" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1600"></script>
+		<template name="codebuttons" version="1609"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1609"></script>
 <script type="text/javascript">
 <!--
 	{$editor_language}
