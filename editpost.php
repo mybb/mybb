@@ -405,7 +405,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$attachcount = 0;
 		if($posthash)
 		{
-			$posthash_query = "posthash='".$db->escape_string($mybb->input['posthash'])."' OR ";
+			$posthash_query = "posthash='".$db->escape_string($posthash)."' OR ";
 		}
 		else
 		{
