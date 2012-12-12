@@ -167,7 +167,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	if($mybb->input['posthash'])
 	{
 		$posthash_query = "posthash='".$db->escape_string($mybb->input['posthash'])."' OR ";
@@ -178,7 +178,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	}
 	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "{$posthash_query}pid='{$pid}'");
 	$attachcount = $db->fetch_field($query, "numattachs");
-	
+
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
@@ -201,10 +201,10 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 }
 
 if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
-{ 
+{
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
 	if($mybb->input['attachmentact'] == "remove")
 	{
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			$firstpost = 0;
 		}
-		
+
 		$modlogdata['fid'] = $fid;
 		$modlogdata['tid'] = $tid;
 		if($firstpost)
@@ -405,7 +405,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$attachcount = 0;
 		if($posthash)
 		{
-			$posthash_query = "posthash='{$posthash}' OR ";
+			$posthash_query = "posthash='".$db->escape_string($mybb->input['posthash'])."' OR ";
 		}
 		else
 		{
@@ -494,7 +494,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
 		$posthandler->action = "post";
-	
+
 		// Set the post data that came from the input to the $post array.
 		$post = array(
 			"pid" => $mybb->input['pid'],
@@ -511,16 +511,16 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$post['uid'] = $mybb->user['uid'];
 			$post['username'] = $mybb->user['username'];
 		}
-	
+
 		// Set up the post options from the input.
 		$post['options'] = array(
 			"signature" => $mybb->input['postoptions']['signature'],
 			"emailnotify" => $mybb->input['postoptions']['emailnotify'],
 			"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 		);
-	
+
 		$posthandler->set_data($post);
-	
+
 		// Now let the post handler do all the hard work.
 		if(!$posthandler->validate_post())
 		{
@@ -626,7 +626,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			}
 		}
 	}
-	
+
 	// Generate thread prefix selector if this is the first post of the thread
 	if($thread['firstpost'] == $pid)
 	{
@@ -634,14 +634,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
-		
+
 		$prefixselect = build_prefix_select($forum['fid'], $mybb->input['threadprefix']);
 	}
 	else
 	{
 		$prefixselect = "";
 	}
-	
+
 	// Fetch subscription select box
 	$bgcolor = "trow1";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
@@ -655,7 +655,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
-	
+
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != 0)
 	{
@@ -667,7 +667,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	$plugins->run_hooks("editpost_end");
-	
+
 	$forum['name'] = strip_tags($forum['name']);
 
 	eval("\$editpost = \"".$templates->get("editpost")."\";");
