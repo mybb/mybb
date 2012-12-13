@@ -421,7 +421,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$plugins->run_hooks("newthread_start");
 
-	$quote_ids = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(!$mybb->input['previewpost'] && !$thread_errors && $mybb->input['action'] != "editdraft")
 	{
