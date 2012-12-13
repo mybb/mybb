@@ -736,7 +736,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
 			}
-			if(count($quoted_ids) > 0)
+			if(is_array($quoted_ids) && count($quoted_ids) > 0)
 			{
 				$quoted_ids = implode("|", $quoted_ids);
 			}
