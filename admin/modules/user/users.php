@@ -3108,11 +3108,11 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
+		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
 		}
-		else if(isset($view['conditions'][$search_field.'_blank']))
+		else if(!empty($view['conditions'][$search_field.'_blank']))
 		{
 			$search_sql .= " AND u.{$search_field} != ''";
 		}
@@ -3122,7 +3122,7 @@ function build_users_view($view)
 	$user_exact_fields = array("referrer");
 	foreach($user_exact_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			$search_sql .= " AND u.{$search_field}='".$db->escape_string($view['conditions'][$search_field])."'";
 		}
@@ -3133,7 +3133,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(!empty($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -3154,7 +3154,7 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
 		{
 			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
 
@@ -3166,7 +3166,7 @@ function build_users_view($view)
 	$ip_fields = array("regip", "lastip");
 	foreach($ip_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			// IPv6 IP
 			if(strpos($view['conditions'][$search_field], ":") !== false)
@@ -3191,7 +3191,7 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if(isset($view['conditions']['postip']))
+	if(!empty($view['conditions']['postip']))
 	{
 		// IPv6 IP
 		if(strpos($view['conditions']['postip'], ":") !== false)
