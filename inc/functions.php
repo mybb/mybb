@@ -404,7 +404,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 			if($relative['minute'] <= 1)
 			{
 				$relative['minute'] = 1;
-				$relative['plural'] = '';
+				$relative['plural'] = $lang->rel_minutes_single;
 			}
 
 			if($diff <= 60)
