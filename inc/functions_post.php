@@ -152,8 +152,7 @@ function build_postbit($post, $post_type=0)
 	$postcounter++;
 
 	// Format the post date and time using my_date
-	$post['postdate'] = my_date($mybb->settings['dateformat'], $post['dateline']);
-	$post['posttime'] = my_date($mybb->settings['timeformat'], $post['dateline']);
+	$post['postdate'] = my_date('relative', $post['dateline']);
 
 	// Dont want any little 'nasties' in the subject
 	$post['subject'] = $parser->parse_badwords($post['subject']);
@@ -344,7 +343,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['button_email'] = "";
 		}
-		
+
 		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has (only show if not announcement)
@@ -434,9 +433,8 @@ function build_postbit($post, $post_type=0)
 		// Figure out if we need to show an "edited by" message
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))
 		{
-			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
-			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
-			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editdate'] = my_date('relative', $post['edittime']);
+			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}

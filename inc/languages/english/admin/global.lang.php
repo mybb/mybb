@@ -118,6 +118,12 @@ $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
 
+$l['rel_in'] = "In";
+$l['rel_ago'] = "ago";
+$l['rel_less_than'] = "Less than";
+$l['rel_minute'] = "{1} {2} minute{3} {4}";
+$l['rel_minutes_plural'] = "s";
+
 // Parser bits
 $l['quote'] = "Quote:";
 $l['wrote'] = "Wrote:";

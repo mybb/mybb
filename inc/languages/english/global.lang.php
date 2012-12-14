@@ -207,7 +207,7 @@ $l['postbit_unapproved_attachment'] = "1 unapproved attachment.";
 $l['postbit_status_online'] = "Online";
 $l['postbit_status_offline'] = "Offline";
 $l['postbit_status_away'] = "Away";
-$l['postbit_edited'] = "This post was last modified: {1} {2} by";
+$l['postbit_edited'] = "This post was last modified: {1} by";
 $l['postbit_ipaddress'] = "IP Address:";
 $l['postbit_ipaddress_logged'] = "Logged";
 $l['postbit_post'] = "Post:";
@@ -295,6 +295,13 @@ $l['second'] = "Second";
 $l['second_short'] ="s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
+
+$l['rel_in'] = "In";
+$l['rel_ago'] = "ago";
+$l['rel_less_than'] = "Less than";
+$l['rel_minute'] = "{1} {2} minute{3} {4}";
+$l['rel_minutes_plural'] = "s";
+
 $l['permanent'] = "Permanent";
 $l['save_draft'] = "Save as Draft";
 $l['go'] = "Go";

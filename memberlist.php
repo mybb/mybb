@@ -330,8 +330,8 @@ else
 		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");	
 
-		$user['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
-		$user['lastvisit'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
+		$user['regdate'] = my_date('relative', $user['regdate']);
+		$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
 	}

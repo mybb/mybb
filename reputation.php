@@ -800,9 +800,8 @@ if(!$mybb->input['action'])
 		$vote_reputation = "({$vote_reputation})";
 
 		// Format the date this reputation was last modified
-		$last_updated_date = my_date($mybb->settings['dateformat'], $reputation_vote['dateline']);
-		$last_updated_time = my_date($mybb->settings['timeformat'], $reputation_vote['dateline']);
-		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
+		$last_updated_date = my_date('relative', $reputation_vote['dateline']);
+		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 		
 		// Is this rating specific to a post?
 		if($reputation_vote['pid'])

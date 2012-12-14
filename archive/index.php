@@ -63,7 +63,7 @@ switch($action)
 		archive_header($announcement['subject'], $announcement['subject'], $mybb->settings['bburl']."/announcements.php?aid={$id}");
 
 		// Format announcement contents.
-		$announcement['startdate'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
+		$announcement['startdate'] = my_date('relative', $announcement['startdate']);
 
 		$plugins->run_hooks("archive_announcement_start");
 
@@ -176,7 +176,7 @@ switch($action)
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$post['date'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $post['dateline'], "", 0);
+			$post['date'] = my_date('relative', $post['dateline'], "", 0);
 			if($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];

@@ -749,8 +749,7 @@ switch($mybb->input['action'])
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
 
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
@@ -840,8 +839,8 @@ switch($mybb->input['action'])
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
+
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -1310,8 +1309,8 @@ switch($mybb->input['action'])
 		$posts = '';
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
+
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
@@ -1975,8 +1974,8 @@ switch($mybb->input['action'])
 		$altbg = "trow1";
 		while($post = $db->fetch_array($query))
 		{
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
+
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],

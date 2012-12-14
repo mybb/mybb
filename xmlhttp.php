@@ -489,9 +489,8 @@ else if($mybb->input['action'] == "edit_post")
 		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
 		if($mybb->settings['showeditedby'] != 0 && $mybb->settings['showeditedbyadmin'] != 0)
 		{
-			$post['editdate'] = my_date($mybb->settings['dateformat'], TIME_NOW);
-			$post['edittime'] = my_date($mybb->settings['timeformat'], TIME_NOW);
-			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editdate'] = my_date('relative', TIME_NOW);
+			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}

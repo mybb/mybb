@@ -275,8 +275,7 @@ function build_forumbits($pid=0, $depth=1)
 				elseif($hideinfo != true)
 				{
 					// Format lastpost date and time
-					$lastpost_date = my_date($mybb->settings['dateformat'], $lastpost_data['lastpost']);
-					$lastpost_time = my_date($mybb->settings['timeformat'], $lastpost_data['lastpost']);
+					$lastpost_date = my_date('relative', $lastpost_data['lastpost']);
 
 					// Set up the last poster, last post thread id, last post subject and format appropriately
 					$lastpost_profilelink = build_profile_link($lastpost_data['lastposter'], $lastpost_data['lastposteruid']);

@@ -387,26 +387,57 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	if($format == 'relative')
 	{
 		// Relative formats both date and time
-		if($ty)
+		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
 		{
-			if($todaysdate == $date)
-			{
-				$date = $lang->today;
-			}
-			else if($yesterdaysdate == $date)
-			{
-				$date = $lang->yesterday;
-			}
-		}
+			$diff = TIME_NOW - $stamp;
+			$relative = array('prefix', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
 
-		$date .= $mybb->settings['datetimesep'];
-		if($adodb == true)
-		{
-			$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+			if($diff < 0)
+			{
+				$diff = abs($diff);
+				$relative['suffix'] = '';
+				$relative['prefix'] = $lang->rel_in;
+			}
+
+			$relative['minute'] = floor($diff / 60);
+
+			if($relative['minute'] <= 1)
+			{
+				$relative['minute'] = 1;
+				$relative['plural'] = '';
+			}
+
+			if($diff <= 60)
+			{
+				// Less than a minute
+				$relative['prefix'] = $lang->rel_less_than;
+			}
+
+			$date = $lang->sprintf($lang->rel_minute, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
 		else
 		{
-			$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+			if($ty)
+			{
+				if($todaysdate == $date)
+				{
+					$date = $lang->today;
+				}
+				else if($yesterdaysdate == $date)
+				{
+					$date = $lang->yesterday;
+				}
+			}
+
+			$date .= $mybb->settings['datetimesep'];
+			if($adodb == true)
+			{
+				$date .= adodb_date($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+			}
+			else
+			{
+				$date .= gmdate($mybb->settings['timeformat'], $stamp + ($offset * 3600));
+			}
 		}
 	}
 	else
@@ -706,7 +737,7 @@ function error($error="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	$timenow = my_date($mybb->settings['dateformat'], TIME_NOW) . " " . my_date($mybb->settings['timeformat'], TIME_NOW);
+	$timenow = my_date('relative', TIME_NOW);
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 
@@ -857,7 +888,7 @@ function redirect($url, $message="", $title="")
 	}
 
 	$time = TIME_NOW;
-	$timenow = my_date($mybb->settings['dateformat'], $time) . " " . my_date($mybb->settings['timeformat'], $time);
+	$timenow = my_date('relative', $time);
 
 	if(!$title)
 	{

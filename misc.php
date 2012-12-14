@@ -341,17 +341,15 @@ elseif($mybb->input['action'] == "buddypopup")
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
 
+			$send_pm = '';
 			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
 			{
 				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
 			}
-			else
-			{
-				$send_pm = '';
-			}
+
 			if($buddy['lastactive'])
 			{
-				$last_active = $lang->sprintf($lang->last_active, my_date($mybb->settings['dateformat'], $buddy['lastactive']).", ".my_date($mybb->settings['timeformat'], $buddy['lastactive']));
+				$last_active = $lang->sprintf($lang->last_active, my_date('relative', $buddy['lastactive']));
 			}
 			else
 			{

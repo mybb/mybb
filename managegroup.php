@@ -260,7 +260,7 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$altbg = alt_trow();
-		$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $user['regdate']);
+		$regdate = my_date('relative', $user['regdate']);
 		$post = $user;
 		$sendpm = $email = '';
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)

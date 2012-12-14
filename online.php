@@ -257,8 +257,7 @@ else
 	// Fetch the most online information
 	$most_online = $cache->read("mostonline");
 	$record_count = $most_online['numusers'];
-	$record_date = my_date($mybb->settings['dateformat'], $most_online['time']);
-	$record_time = my_date($mybb->settings['timeformat'], $most_online['time']);
+	$record_date = my_date('relative', $most_online['time']);
 
 	// Set automatic refreshing if enabled
 	if($mybb->settings['refreshwol'] > 0)

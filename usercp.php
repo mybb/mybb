@@ -1485,8 +1485,7 @@ if($mybb->input['action'] == "subscriptions")
 			}
 
 			// Build last post info
-			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+			$lastpostdate = my_date('relative', $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
 			$lastposteruid = $thread['lastposteruid'];
 
@@ -1603,8 +1602,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 		else
 		{
 			$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
-			$lastpost_date = my_date($mybb->settings['dateformat'], $forum['lastpost']);
-			$lastpost_time = my_date($mybb->settings['timeformat'], $forum['lastpost']);
+			$lastpost_date = my_date('relative', $forum['lastpost']);
 			$lastposttid = $forum['lastposttid'];
 			$lastposter = $forum['lastposter'];
 			$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
@@ -2354,8 +2352,7 @@ if($mybb->input['action'] == "drafts")
 			$type = "thread";
 		}
 		$draft['subject'] = htmlspecialchars_uni($draft['subject']);
-		$savedate = my_date($mybb->settings['dateformat'], $draft['dateline']);
-		$savetime = my_date($mybb->settings['timeformat'], $draft['dateline']);
+		$savedate = my_date('relative', $draft['dateline']);
 		eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
 	}
 	if(!$drafts)
@@ -2709,9 +2706,8 @@ if($mybb->input['action'] == "usergroups")
 
 		if($appliedjoin[$usergroup['gid']])
 		{
-			$applydate = my_date($mybb->settings['dateformat'], $appliedjoin[$usergroup['gid']]);
-			$applytime = my_date($mybb->settings['timeformat'], $appliedjoin[$usergroup['gid']]);
-			$joinlink = $lang->sprintf($lang->join_group_applied, $applydate, $applytime);
+			$applydate = my_date('relative', $appliedjoin[$usergroup['gid']]);
+			$joinlink = $lang->sprintf($lang->join_group_applied, $applydate);
 		}
 		else
 		{
@@ -2801,8 +2797,7 @@ if($mybb->input['action'] == "attachments")
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 
 			$sizedownloads = $lang->sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
-			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateline']);
-			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateline']);
+			$attachdate = my_date('relative', $attachment['dateline']);
 			$altbg = alt_trow();
 
 			eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
@@ -2920,7 +2915,7 @@ if(!$mybb->input['action'])
 
 	$colspan = 2;
 	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
-	$regdate = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $mybb->user['regdate']);
+	$regdate = my_date('relative', $mybb->user['regdate']);
 
 	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
 	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
@@ -2977,7 +2972,7 @@ if(!$mybb->input['action'])
 					$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
 				}
 				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-				$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+				$date_issued = my_date('relative', $warning['dateline']);
 				if($warning['type_title'])
 				{
 					$warning_type = $warning['type_title'];
@@ -3008,7 +3003,7 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+					$expires = my_date('relative', $warning['expires']);
 				}
 
 				$alt_bg = alt_trow();
@@ -3170,11 +3165,10 @@ if(!$mybb->input['action'])
 							$bgcolor = "trow_shaded";
 						}
 		
-						$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-						$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+						$lastpostdate = my_date('relative', $thread['lastpost']);
 						$lastposter = $thread['lastposter'];
 						$lastposteruid = $thread['lastposteruid'];
-		
+
 						if($lastposteruid == 0)
 						{
 							$lastposterlink = $lastposter;
@@ -3398,8 +3392,7 @@ if(!$mybb->input['action'])
 
 				$folder .= "folder";
 
-				$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-				$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+				$lastpostdate = my_date('relative', $thread['lastpost']);
 				$lastposter = $thread['lastposter'];
 				$lastposteruid = $thread['lastposteruid'];
 

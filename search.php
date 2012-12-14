@@ -531,8 +531,7 @@ if($mybb->input['action'] == "results")
 				$morelink = '';
 				$thread['multipage'] = '';
 			}
-			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+			$lastpostdate = my_date('relative', $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
@@ -943,7 +942,7 @@ if($mybb->input['action'] == "results")
 			{
 				$prev = $post['message'];
 			}
-			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
+			$posted = my_date('relative', $post['dateline']);
 			
 			$thread_url = get_thread_link($post['tid']);
 			$post_url = get_post_link($post['pid'], $post['tid']);

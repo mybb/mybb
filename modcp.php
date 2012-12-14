@@ -373,8 +373,7 @@ if($mybb->input['action'] == "reports")
 				$lastreporter_name = $usercache[$report['lastreporter']]['username'];
 			}
 
-			$lastreport_date = my_date($mybb->settings['dateformat'], $report['lastreport']);
-			$lastreport_time = my_date($mybb->settings['timeformat'], $report['lastreport']);
+			$lastreport_date = my_date('relative', $report['lastreport']);
 
 			// Plugin hook
 			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
@@ -482,8 +481,7 @@ if($mybb->input['action'] == "allreports")
 			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
 			$report['reporterlink'] = get_profile_link($report['uid']);
 
-			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
-			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+			$reportdate = my_date('relative', $report['dateline']);
 
 			if($report['reportstatus'] == 0)
 			{
@@ -619,8 +617,7 @@ if($mybb->input['action'] == "modlogs")
 	{
 		$information = '';
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
-		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
+		$log_date = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
@@ -1708,8 +1705,7 @@ if($mybb->input['action'] == "modqueue")
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['forumlink'] = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
-			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
-			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
+			$threaddate = my_date('relative', $thread['dateline']);
 			$profile_link = build_profile_link($thread['username'], $thread['uid']);
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
@@ -1795,8 +1791,7 @@ if($mybb->input['action'] == "modqueue")
 			$post['forumlink'] = get_forum_link($post['fid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
 			$profile_link = build_profile_link($post['username'], $post['uid']);
 			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
@@ -1883,8 +1878,7 @@ if($mybb->input['action'] == "modqueue")
 				$attachment['dateuploaded'] = $attachment['dateline'];
 			}
 			
-			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
-			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+			$attachdate = my_date('relative', $attachment['dateuploaded']);
 
 			$attachment['postsubject'] = htmlspecialchars_uni($attachment['postsubject']);
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
@@ -2466,9 +2460,8 @@ if($mybb->input['action'] == "editprofile")
 			{
 				// User has a temporary (or limited) ban
 				$string = $option['option']."_for";
-				$for_date = my_date($mybb->settings['dateformat'], $user[$option['length']]);
-				$for_time = my_date($mybb->settings['timeformat'], $user[$option['length']]);
-				$suspension_info = $lang->sprintf($lang->$string, $for_date, $for_time);
+				$for_date = my_date('relative', $user[$option['length']], '', 2);
+				$suspension_info = $lang->sprintf($lang->$string, $for_date);
 			}
 
 			switch($option['option'])
@@ -2616,10 +2609,8 @@ if($mybb->input['action'] == "finduser")
 		$alt_row = alt_trow();
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['postnum'] = my_number_format($user['postnum']);
-		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
-		$regtime = my_date($mybb->settings['timeformat'], $user['regdate']);
-		$lastdate = my_date($mybb->settings['dateformat'], $user['lastvisit']);
-		$lasttime = my_date($mybb->settings['timeformat'], $user['lastvisit']);
+		$regdate = my_date('relative', $user['regdate']);
+		$lastdate = my_date('relative', $user['lastvisit']);
 		$usergroup = $usergroups_cache[$user['usergroup']]['title'];
 		eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
 	}
@@ -2780,12 +2771,12 @@ if($mybb->input['action'] == "warninglogs")
 		$revoked_text = '';
 		if($row['daterevoked'] > 0)
 		{
-			$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
+			$revoked_date = my_date('relative', $row['daterevoked']);
 			eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
 		}
 		if($row['expires'] > 0)
 		{
-			$expire_date = my_date($mybb->settings['dateformat'], $row['expires']).' '.my_date($mybb->settings['timeformat'], $row['expires']);
+			$expire_date = my_date('relative', $row['expires'], '', 2);
 		}
 		else
 		{
@@ -3607,8 +3598,7 @@ if(!$mybb->input['action'])
 			LIMIT 1
 		");
 		$attachment = $db->fetch_array($query);
-		$attachment['date'] = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
-		$attachment['time'] = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+		$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
 		$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
 		$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
 		$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
@@ -3640,8 +3630,7 @@ if(!$mybb->input['action'])
 			LIMIT 1
 		");
 		$post = $db->fetch_array($query);
-		$post['date'] = my_date($mybb->settings['dateformat'], $post['dateline']);
-		$post['time'] = my_date($mybb->settings['timeformat'], $post['dateline']);
+		$post['date'] = my_date('relative', $post['dateline']);
 		$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 		$post['link'] = get_post_link($post['pid'], $post['tid']);
 		$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
@@ -3667,8 +3656,7 @@ if(!$mybb->input['action'])
 	{
 		$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible=0 {$flist}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
 		$thread = $db->fetch_array($query);
-		$thread['date'] = my_date($mybb->settings['dateformat'], $thread['dateline']);
-		$thread['time'] = my_date($mybb->settings['timeformat'], $thread['dateline']);
+		$thread['date'] = my_date('relative', $thread['dateline']);
 		$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		$thread['link'] = get_thread_link($thread['tid']);
 		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
@@ -3709,8 +3697,7 @@ if(!$mybb->input['action'])
 	{
 		$information = '';
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
-		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
+		$log_date = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);

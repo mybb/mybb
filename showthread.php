@@ -1035,8 +1035,7 @@ if($mybb->input['action'] == "thread")
 			$similar_thread['threadlink'] = get_thread_link($similar_thread['tid']);
 			$similar_thread['lastpostlink'] = get_thread_link($similar_thread['tid'], 0, "lastpost");
 
-			$lastpostdate = my_date($mybb->settings['dateformat'], $similar_thread['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $similar_thread['lastpost']);
+			$lastpostdate = my_date('relative', $similar_thread['lastpost']);
 			$lastposter = $similar_thread['lastposter'];
 			$lastposteruid = $similar_thread['lastposteruid'];
 
@@ -1267,8 +1266,7 @@ function buildtree($replyto="0", $indent="0")
 	{
 		foreach($tree[$replyto] as $key => $post)
 		{
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$postdate = my_date('relative', $post['dateline']);
 			$post['subject'] = htmlspecialchars_uni($parser->parse_badwords($post['subject']));
 			
 			if(!$post['subject'])

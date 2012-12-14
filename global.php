@@ -334,9 +334,8 @@ $lang->welcome_current_time = $lang->sprintf($lang->welcome_current_time, $daten
 // Format the last visit date of this user appropriately
 if(isset($mybb->user['lastvisit']))
 {
-	$lastvisit = my_date($mybb->settings['dateformat'], $mybb->user['lastvisit']) . $lang->comma . my_date($mybb->settings['timeformat'], $mybb->user['lastvisit']);
+	$lastvisit = my_date('relative', $mybb->user['lastvisit'], '', 2);
 }
-
 // Otherwise, they've never visited before
 else
 {
@@ -502,7 +501,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 
 		if($ban['lifted'] > 0)
 		{
-			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']).', '.my_date($mybb->settings['timeformat'], $ban['lifted']);
+			$banlift = my_date('relative', $ban['lifted']);
 		}
 	}
 

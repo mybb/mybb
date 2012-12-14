@@ -708,8 +708,7 @@ if($has_announcements == true)
 		$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
 		$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 		$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
-		$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
-		$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
+		$postdate = my_date('relative', $announcement['startdate']);
 		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
@@ -1150,20 +1149,16 @@ if(is_array($threadcache))
 		$inline_edit_tid = $thread['tid'];
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
+		$inline_edit_class = '';
 		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
 		{
 			$inline_edit_class = "subject_editable";
 		}
-		else
-		{
-			$inline_edit_class = "";
-		}
-		$load_inline_edit_js = 1;
 
-		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
-		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+		$load_inline_edit_js = 1;
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposteruid'];
+		$lastpostdate = my_date('relative', $thread['lastpost']);
 
 		// Don't link to guest's profiles (they have no profile).
 		if($lastposteruid == 0)

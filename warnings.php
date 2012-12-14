@@ -536,7 +536,7 @@ if($mybb->input['action'] == "warn")
 
 			$post_link = "";
 			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-			$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+			$date_issued = my_date('relative', $warning['dateline']);
 			if($warning['type_title'])
 			{
 				$warning_type = $warning['type_title'];
@@ -559,7 +559,7 @@ if($mybb->input['action'] == "warn")
 				}
 				else
 				{
-					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+					$expires = my_date('relative', $warning['expires']);
 				}
 			}
 			else
@@ -957,7 +957,7 @@ if($mybb->input['action'] == "view")
 	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 	
-	$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+	$date_issued = my_date('relative', $warning['dateline']);
 	if($warning['type_title'])
 	{
 		$warning_type = $warning['type_title'];
@@ -983,7 +983,7 @@ if($mybb->input['action'] == "view")
 		}
 		else
 		{
-			$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+			$expires = my_date('relative', $warning['expires']);
 		}
 		$status = $lang->warning_active;
 	}
@@ -1006,7 +1006,7 @@ if($mybb->input['action'] == "view")
 	}
 	else
 	{
-		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
+		$date_revoked = my_date('relative', $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
 		if(!$revoked_user['username'])
 		{
@@ -1132,7 +1132,7 @@ if(!$mybb->input['action'])
 			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."#pid{$warning['pid']}\">{$warning['post_subject']}</a></small>";
 		}
 		$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
-		$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+		$date_issued = my_date('relative', $warning['dateline']);
 		if($warning['type_title'])
 		{
 			$warning_type = $warning['type_title'];
@@ -1155,7 +1155,7 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+				$expires = my_date('relative', $warning['expires']);
 			}
 		}
 		else

@@ -460,9 +460,7 @@ if($mybb->input['action'] == "results")
 		
 		if($message['folder'] != "3")
 		{
-			$sendpmdate = my_date($mybb->settings['dateformat'], $message['dateline']);
-			$sendpmtime = my_date($mybb->settings['timeformat'], $message['dateline']);
-			$senddate = $sendpmdate.", ".$sendpmtime;
+			$senddate = my_date('relative', $message['dateline']);
 		}
 		else
 		{
@@ -813,8 +811,6 @@ if($mybb->input['action'] == "send")
 		{
 			// forward/reply
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
-			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 
@@ -1001,36 +997,29 @@ if($mybb->input['action'] == "read")
 	// Replied PM?
 	else if($pm['status'] == 3 && $pm['statustime'])
 	{
-		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
-		
-		if($reply_date == $lang->today || $reply_date == $lang->yesterday)
+		$reply_string = $lang->you_replied_on;
+		$reply_date = my_date('relative', $pm['statustime']);
+
+		if((TIME_NOW - $pm['statustime']) < 3600)
 		{
-			$reply_date .= $lang->comma.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = $lang->sprintf($lang->you_replied, $reply_date);
+			// Relative string for the first hour
+			$reply_string = $lang->you_replied;
 		}
-		else
-		{
-			$reply_date .= $lang->comma.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = $lang->sprintf($lang->you_replied_on, $reply_date);
-		}
-		
+
+		$actioned_on = $lang->sprintf($reply_string, $reply_date);
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 	else if($pm['status'] == 4 && $pm['statustime'])
 	{
-		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
-		
-		if(strpos($forward_date, $lang->today) !== false || strpos($forward_date, $lang->yesterday) !== false)
+		$forward_string = $lang->you_forwarded_on;
+		$forward_date = my_date('relative', $pm['statustime']);
+
+		if((TIME_NOW - $pm['statustime']) < 3600)
 		{
-			$forward_date .= $lang->comma.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = $lang->sprintf($lang->you_forwarded, $forward_date);
+			$forward_string = $lang->you_forwarded;
 		}
-		else
-		{
-			$forward_date .= $lang->comma.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = $lang->sprintf($lang->you_forwarded_on, $forward_date);
-		}
-		
+
+		$actioned_on = $lang->sprintf($forward_string, $forward_date);
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 
@@ -1178,8 +1167,7 @@ if($mybb->input['action'] == "tracking")
 	{
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
 		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
-		$readdate = my_date($mybb->settings['dateformat'], $readmessage['readtime']);
-		$readtime = my_date($mybb->settings['timeformat'], $readmessage['readtime']);
+		$readdate = my_date('relative', $readmessage['readtime']);
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
 	
@@ -1229,8 +1217,7 @@ if($mybb->input['action'] == "tracking")
 	{
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);		
-		$senddate = my_date($mybb->settings['dateformat'], $unreadmessage['dateline']);
-		$sendtime = my_date($mybb->settings['timeformat'], $unreadmessage['dateline']);
+		$senddate = my_date('relative', $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
 	}
 	
@@ -2142,9 +2129,7 @@ if(!$mybb->input['action'])
 			$message['subject'] = htmlspecialchars_uni($parser->parse_badwords($message['subject']));
 			if($message['folder'] != "3")
 			{
-				$sendpmdate = my_date($mybb->settings['dateformat'], $message['dateline']);
-				$sendpmtime = my_date($mybb->settings['timeformat'], $message['dateline']);
-				$senddate = $sendpmdate.", ".$sendpmtime;
+				$senddate = my_date('relative', $message['dateline']);
 			}
 			else
 			{

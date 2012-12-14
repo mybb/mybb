@@ -1710,8 +1710,7 @@ if($mybb->input['action'] == "profile")
 		if($memprofile['lastactive'])
 		{
 			$memlastvisitsep = $lang->comma;
-			$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
-			$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+			$memlastvisitdate = my_date('relative', $memprofile['lastactive']);
 		}
 
 		// Time Online
