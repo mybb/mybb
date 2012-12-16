@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'announcements.php');
 
-$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,postbit_rep_button ";
+$templatelist = "announcement,postbit_groupimage,postbit_reputation,postbit_avatar,postbit_online,postbit_offline,postbit_find,postbit_pm,postbit_email,postbit_www,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,postbit_rep_button, postbit_author_guest ";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
