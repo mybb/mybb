@@ -145,6 +145,18 @@ while($thread = $db->fetch_array($query))
 if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
+
+	$attachments = array();
+	$query = $db->simple_select("attachments", "*", $firstpostlist);
+	while($attachment = $db->fetch_array($query))
+	{
+		if(!isset($attachments[$attachment['pid']]))
+		{
+			$attachments[$attachment['pid']] = array();
+		}
+		$attachments[$attachment['pid']][] = $attachment;
+	}
+
 	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));    
 	while($post = $db->fetch_array($query))
 	{
@@ -159,8 +171,7 @@ if(!empty($firstposts))
 		
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
 		
-		$query2 = $db->simple_select("attachments", "*", "pid=".$post['pid']);
-		while($attachment = $db->fetch_array($query2))
+		foreach($attachments[$post['pid']] as $attachment)
 		{
 			$ext = get_extension($attachment['filename']);
 			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
