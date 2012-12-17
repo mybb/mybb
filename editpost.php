@@ -168,15 +168,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->input['posthash'])
-	{
-		$posthash_query = "posthash='".$db->escape_string($mybb->input['posthash'])."' OR ";
-	}
-	else
-	{
-		$posthash_query = "";
-	}
-	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "{$posthash_query}pid='{$pid}'");
+	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "pid='{$pid}'");
 	$attachcount = $db->fetch_field($query, "numattachs");
 
 	// If there's an attachment, check it and upload it
@@ -396,22 +388,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 	}
 
-	// Setup a unique posthash for attachment management
-	$posthash = htmlspecialchars_uni($post['posthash']);
-
 	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		if($posthash)
-		{
-			$posthash_query = "posthash='".$db->escape_string($posthash)."' OR ";
-		}
-		else
-		{
-			$posthash_query = "";
-		}
-		$query = $db->simple_select("attachments", "*", "{$posthash_query}pid='{$pid}'");
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{

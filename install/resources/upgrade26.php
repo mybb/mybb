@@ -38,6 +38,14 @@ function upgrade26_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
 	}
 
+	if($db->field_exists('posthash', 'posts'))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP posthash;");
+	}
+	
+	// We don't need the posthash after the post is inserted into the database
+	$db->update_query('attachments', "posthash=''", 'pid!=0');
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("26_done");
 }

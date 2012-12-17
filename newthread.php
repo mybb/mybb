@@ -120,6 +120,12 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newthread";
 }
 
+// Setup a unique posthash for attachment management
+if(!$mybb->input['posthash'] && !$pid)
+{
+	$mybb->input['posthash'] = md5($mybb->user['uid'].random_str());
+}
+
 if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 {
 	error($lang->error_cannot_upload_php_post);
@@ -171,13 +177,13 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 }
 
 // Are we removing an attachment from the thread?
-if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove" && $mybb->input['posthash'])
+if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
+	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
 		$mybb->input['action'] = "newthread";
@@ -253,7 +259,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
-		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."'");
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.dateline>".(TIME_NOW-500));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -727,20 +733,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$prefixselect = build_prefix_select($forum['fid'], $mybb->input['threadprefix']);
 
-	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
-	{
-	    $posthash = md5($mybb->user['uid'].random_str());
-	}
-	elseif($mybb->input['action'] == "editdraft")
-	{
-		// Drafts have posthashes, too...
-		$posthash = $post['posthash'];
-	}
-	else
-	{
-		$posthash = htmlspecialchars_uni($mybb->input['posthash']);
-	}
+	$posthash = htmlspecialchars_uni($mybb->input['posthash']);
 
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != 0)

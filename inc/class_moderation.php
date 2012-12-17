@@ -901,7 +901,6 @@ class Moderation
 					{
 						$attachment_array = array(
 							'pid' => $pid,
-							'posthash' => $db->escape_string($attachment['posthash']),
 							'uid' => $attachment['uid'],
 							'filename' => $db->escape_string($attachment['filename']),
 							'filetype' => $attachment['filetype'],
