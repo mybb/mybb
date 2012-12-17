@@ -125,7 +125,7 @@ foreach($group_permissions as $fid => $forum_permissions)
 }
 if(!empty($onlyusfids))
 {
-	$permsql .= "AND (fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}')";
+	$permsql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 }
 
 // Get the threads to syndicate.
