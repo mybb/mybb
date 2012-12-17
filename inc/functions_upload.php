@@ -395,12 +395,12 @@ function upload_attachment($attachment, $update_attachment=false)
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_php4;
 		return $ret;
 	}
-	
+
+	$extensions = $mybb->cache->read('attachtypes');
+
 	$ext = get_extension($attachment['name']);
 	// Check if we have a valid extension
-	$query = $db->simple_select("attachtypes", "*", "extension='".$db->escape_string($ext)."'");
-	$attachtype = $db->fetch_array($query);
-	if(!$attachtype['atid'])
+	if(!isset($extensions[$ext]))
 	{
 		$ret['error'] = $lang->error_attachtype;
 		return $ret;

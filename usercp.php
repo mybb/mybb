@@ -3288,10 +3288,11 @@ if(!$mybb->input['action'])
 				// If this thread has a prefix...
 				if($thread['prefix'] != 0)
 				{
-					$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']}'");
-					$threadprefix = $db->fetch_array($query);
-
-					$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
+					$threadprefixes = $cache->read('threadprefixes');
+					if(isset($threadprefixes[$thread['prefix']]))
+					{
+						$thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+					}
 				}
 				else
 				{

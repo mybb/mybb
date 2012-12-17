@@ -328,17 +328,23 @@ if($mybb->input['action'] == "results")
 			'limit' => $perpage
 		);
 		$query = $db->query("
-			SELECT t.*, u.username AS userusername, p.displaystyle AS threadprefix
+			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
 			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
+
+		$threadprefixes = $cache->read('threadprefixes');
 		$thread_cache = array();
 		while($thread = $db->fetch_array($query))
 		{
+			$thread['threadprefix'] = '';
+			if($thread['prefix'] && isset($threadprefixes[$thread['prefix']]))
+			{
+				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
+			}
 			$thread_cache[$thread['tid']] = $thread;
 		}
 		$thread_ids = implode(",", array_keys($thread_cache));

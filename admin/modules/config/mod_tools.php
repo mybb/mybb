@@ -507,16 +507,16 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
-	
-	$query = $db->simple_select('threadprefixes', 'pid, prefix');
-	if($db->num_rows($query) > 0)
+
+	$threadprefixes = $cache->read('threadprefixes');
+	if(!empty($threadprefixes))
 	{
 		$thread_prefixes = array(
 			'-1' => $lang->no_change,
 			'0' => $lang->no_prefix
 		);
-		
-		while($prefix = $db->fetch_array($query))
+
+		foreach($threadprefixes as $prefix)
 		{
 			$thread_prefixes[$prefix['pid']] = $prefix['prefix'];
 		}
@@ -881,20 +881,20 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
-	
-	$query = $db->simple_select('threadprefixes', 'pid, prefix');
-	if($db->num_rows($query) > 0)
+
+	$threadprefixes = $cache->read('threadprefixes');
+	if(!empty($threadprefixes))
 	{
 		$thread_prefixes = array(
 			'-1' => $lang->no_change,
 			'0' => $lang->no_prefix
 		);
-	
-		while($prefix = $db->fetch_array($query))
+
+		foreach($threadprefixes as $prefix)
 		{
 			$thread_prefixes[$prefix['pid']] = $prefix['prefix'];
 		}
-		
+
 		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, $mybb->input['threadprefix'], array('id' => 'threadprefix')), 'threadprefix');
 	}
 	

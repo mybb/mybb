@@ -524,15 +524,17 @@ function build_friendly_wol_location($user_activity)
 	{
 		$perms = array();
 		$tid_sql = implode(",", $tid_list);
-		$query = $db->query("
-			SELECT t.uid, t.fid, t.tid, t.subject, t.visible, p.displaystyle AS threadprefix
-			FROM ".TABLE_PREFIX."threads t
-			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-			WHERE tid IN({$tid_sql}) {$fidnot} {$visible}
-		");
+		$query = $db->simple_select('threads', 't.uid, t.fid, t.tid, t.subject, t.visible', "tid IN({$tid_sql}) {$fidnot}");
+
+		$threadprefixes = $mybb->cache->read('threadprefixes');
 
 		while($thread = $db->fetch_array($query))
 		{
+			$thread['threadprefix'] = '';
+			if($thread['prefix'] && isset($threadprefixes[$thread['prefix']]))
+			{
+				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
+			}
 			if(!$perms[$thread['fid']])
 			{
 				$perms[$thread['fid']] = forum_permissions($thread['fid']);

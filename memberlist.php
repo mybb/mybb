@@ -216,8 +216,9 @@ else
 	
 	// Cache a few things
 	$usergroups_cache = $cache->read('usergroups');
-	$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-	while($usertitle = $db->fetch_array($query))
+	$usertitles = $cache->read('usertitles');
+	$usertitles_cache = array();
+	foreach($usertitles as $usertitle)
 	{
 		$usertitles_cache[$usertitle['posts']] = $usertitle;
 	}

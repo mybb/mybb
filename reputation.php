@@ -472,6 +472,8 @@ if(!$mybb->input['action'])
 		$user['displaygroup'] = $user['usergroup'];
 	}
 
+	$usertitle = '';
+
 	// This user has a custom user title
 	if(trim($user['usertitle']) != '')
 	{
@@ -485,9 +487,15 @@ if(!$mybb->input['action'])
 	// Otherwise, fetch it from our titles table for the number of posts this user has
 	else
 	{
-		$query = $db->simple_select("usertitles", "*", "posts<='{$user['postnum']}'", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		$title = $db->fetch_array($query);
-		$usertitle = $title['title'];
+		$usertitles = $cache->read('usertitles');
+		foreach($usertitles as $title)
+		{
+			if($title['posts'] <= $user['postnum'])
+			{
+				$usertitle = $title['title'];
+			}
+		}
+		unset($usertitles, $title);
 	}
 
 	// If the user has permission to add reputations - show the image

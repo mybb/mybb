@@ -27,8 +27,15 @@ $tid = intval($mybb->input['tid']);
 $thread = get_thread($tid);
 
 // Get thread prefix
-$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']}'");
-$threadprefix = $db->fetch_array($query);
+$breadcrumbprefix = '';
+if($thread['prefix'])
+{
+	$threadprefixes = $cache->read('threadprefixes');
+	if(isset($threadprefixes[$thread['prefix']]))
+	{
+		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+	}
+}
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
@@ -48,7 +55,7 @@ $fid = $thread['fid'];
 
 // Make navigation
 build_forum_breadcrumb($thread['fid']);
-add_breadcrumb($threadprefix['displaystyle'].'&nbsp;'.$thread['subject'], get_thread_link($thread['tid']));
+add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
 add_breadcrumb($lang->nav_sendthread);
 
 // Get forum info

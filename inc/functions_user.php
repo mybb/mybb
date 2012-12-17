@@ -539,8 +539,14 @@ function get_usertitle($uid="")
 	}
 	else
 	{
-		$query = $db->simple_select("usertitles", "title", "posts<='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'desc'));
-		$usertitle = $db->fetch_array($query);
+		$usertitles = $mybb->cache->read('usertitles');
+		foreach($usertitles as $title)
+		{
+			if($title['posts'] <= $user['postnum'])
+			{
+				$usertitle = $title;
+			}
+		}
 		
 		return $usertitle['title'];
 	}

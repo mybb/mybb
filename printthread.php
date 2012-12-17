@@ -24,13 +24,18 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$query = $db->query("
-	SELECT t.*, p.prefix AS threadprefix, p.displaystyle
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-	WHERE t.tid='".intval($mybb->input['tid'])."' AND t.closed NOT LIKE 'moved|%'
-");
-$thread = $db->fetch_array($query);
+$thread = get_thread(intval($mybb->input['tid']));
+
+$thread['threadprefix'] = $thread['displaystyle'] = '';
+if($thread['prefix'])
+{
+	$threadprefixes = $cache->read('threadprefixes');
+	if(isset($threadprefixes[$thread['prefix']]))
+	{
+		$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['prefix'];
+		$thread['displaystyle'] = $threadprefixes[$thread['prefix']]['displaystyle'];
+	}
+}
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
