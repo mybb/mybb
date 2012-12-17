@@ -308,12 +308,12 @@ $templates->cache($db->escape_string($templatelist));
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
 $timenow = my_date($mybb->settings['timeformat'], TIME_NOW);
-$lang->welcome_current_time = $lang->sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
+$lang->welcome_current_time = $lang->sprintf($lang->welcome_current_time, $datenow . $lang->comma . $timenow);
 
 // Format the last visit date of this user appropriately
 if(isset($mybb->user['lastvisit']))
 {
-	$lastvisit = my_date($mybb->settings['dateformat'], $mybb->user['lastvisit']) . ', ' . my_date($mybb->settings['timeformat'], $mybb->user['lastvisit']);
+	$lastvisit = my_date($mybb->settings['dateformat'], $mybb->user['lastvisit']) . $lang->comma . my_date($mybb->settings['timeformat'], $mybb->user['lastvisit']);
 }
 
 // Otherwise, they've never visited before

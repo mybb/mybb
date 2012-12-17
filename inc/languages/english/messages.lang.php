@@ -45,7 +45,7 @@ $l['error_uploadfailed_movefailed'] = "There was a problem moving the uploaded f
 $l['error_uploadfailed_lost'] = "The attachment could not be found on the server.";
 $l['error_emailmismatch'] = "The email addresses you entered do not match. Please go back and try again";
 $l['error_nopassword'] = "You did not enter a valid password.";
-$l['error_usernametaken'] = "The username you have chosen is already registered.";
+$l['error_usernametaken'] = "The username you have chosen is already registered. If you have previously registered on these forums, please <a href=\"member.php?action=login\">login</a>.";
 $l['error_nousername'] = "You did not enter a username.";
 $l['error_invalidusername'] = "The username you have entered appears to be invalid.";
 $l['error_invalidpassword'] = "The password you entered is incorrect. If you have forgotten your password, click <a href=\"member.php?action=lostpw\">here</a>. Otherwise, go back and try again.";
