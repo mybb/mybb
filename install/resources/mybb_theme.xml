@@ -2910,7 +2910,6 @@ a.button {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
-<input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
 </form>

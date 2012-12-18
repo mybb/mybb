@@ -187,6 +187,12 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newreply";
 }
 
+// Setup a unique posthash for attachment management
+if(!$mybb->input['posthash'] && !$pid)
+{
+	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].random_str());
+}
+
 if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 {
 	error($lang->error_cannot_upload_php_post);
@@ -235,24 +241,18 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 }
 
 // Remove an attachment.
-if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove" && $mybb->input['posthash'])
+if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);
+	remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	if(!$mybb->input['submit'])
 	{
 		$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 		$mybb->input['action'] = "newreply";
 	}
-}
-
-// Setup our posthash for managing attachments.
-if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
-{
-	$mybb->input['posthash'] = md5($thread['tid'].$mybb->user['uid'].random_str());
 }
 
 $reply_errors = "";
@@ -323,7 +323,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'])
 	{
-		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.posthash='".$db->escape_string($mybb->input['posthash'])."' AND p.visible != '-2'");
+		$query = $db->simple_select("posts p", "p.pid, p.visible", "{$user_check} AND p.tid='{$thread['tid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.visible != '-2' AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -935,20 +935,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$subject = "RE: " . $thread['subject'];
 	}
 
-	// Setup a unique posthash for attachment management
-	if(!$mybb->input['posthash'] && $mybb->input['action'] != "editdraft")
-	{
-	    $posthash = md5($mybb->user['uid'].random_str());
-	}
-	elseif($mybb->input['action'] == "editdraft")
-	{
-		// Drafts have posthashes, too...
-		$posthash = htmlspecialchars_uni($post['posthash']);
-	}
-	else
-	{
-		$posthash = htmlspecialchars_uni($mybb->input['posthash']);
-	}
+	$posthash = htmlspecialchars_uni($mybb->input['posthash']);
 
 	// Do we have attachment errors?
 	if(count($errors) > 0)

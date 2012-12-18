@@ -39,6 +39,11 @@ function upgrade28_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	if($db->field_exists('posthash', 'posts'))
+	{
+		$db->drop_column("posts", "posthash");
+	}
+
 	if($db->field_exists('isdefault', 'templategroups'))
 	{
 		$db->drop_column("templategroups", "isdefault");

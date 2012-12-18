@@ -419,7 +419,7 @@ class PostDataHandler extends DataHandler
 			$user_check = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		
-		$query = $db->simple_select("posts", "pid,message,visible,posthash", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
+		$query = $db->simple_select("posts", "pid,message,visible", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
 		return $db->fetch_array($query);
 	}
 
@@ -835,28 +835,22 @@ class PostDataHandler extends DataHandler
 				}
 				
 				// Assign any uploaded attachments with the specific posthash to the merged post.
-				if($double_post['posthash'])
-				{
-					$post['posthash'] = $db->escape_string($post['posthash']);
-					$double_post['posthash'] = $db->escape_string($double_post['posthash']);
-					
-					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-					$attachmentcount = $db->fetch_field($query, "attachmentcount");
+				$post['posthash'] = $db->escape_string($post['posthash']);
 				
-					if($attachmentcount > 0)
-					{
-						// Update forum count
-						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-					}
-					
-					$attachmentassign = array(
-						"pid" => $double_post['pid'],
-						"posthash" => $double_post['posthash'],
-					);
-					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
-					
-					$post['posthash'] = $double_post['posthash'];
+				$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+				$attachmentcount = $db->fetch_field($query, "attachmentcount");
+			
+				if($attachmentcount > 0)
+				{
+					// Update forum count
+					update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
 				}
+				
+				$attachmentassign = array(
+					"pid" => $double_post['pid'],
+					"posthash" => ''
+				);
+				$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 			
 				// Return the post's pid and whether or not it is visible.
 				return array(
@@ -897,8 +891,7 @@ class PostDataHandler extends DataHandler
 				"longipaddress" => intval(my_ip2long($post['ipaddress'])),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
-				"visible" => $visible,
-				"posthash" => $db->escape_string($post['posthash'])
+				"visible" => $visible
 			);
 
 			$plugins->run_hooks("datahandler_post_insert_post", $this);
@@ -923,8 +916,7 @@ class PostDataHandler extends DataHandler
 				"longipaddress" => intval(my_ip2long($post['ipaddress'])),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
-				"visible" => $visible,
-				"posthash" => $db->escape_string($post['posthash'])
+				"visible" => $visible
 			);
 
 			$plugins->run_hooks("datahandler_post_insert_post", $this);
@@ -937,7 +929,8 @@ class PostDataHandler extends DataHandler
 		{
 			$post['posthash'] = $db->escape_string($post['posthash']);
 			$attachmentassign = array(
-				"pid" => $this->pid
+				"pid" => $this->pid,
+				"posthash" => ''
 			);
 			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 		}
@@ -1226,8 +1219,7 @@ class PostDataHandler extends DataHandler
 				"ipaddress" => $db->escape_string(get_ip()),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
-				"visible" => $visible,
-				"posthash" => $db->escape_string($thread['posthash'])
+				"visible" => $visible
 			);
 			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);
 
@@ -1272,8 +1264,7 @@ class PostDataHandler extends DataHandler
 				"longipaddress" => intval(my_ip2long(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
-				"visible" => $visible,
-				"posthash" => $db->escape_string($thread['posthash'])
+				"visible" => $visible
 			);
 			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);
 
@@ -1472,7 +1463,8 @@ class PostDataHandler extends DataHandler
 		{
 			$thread['posthash'] = $db->escape_string($thread['posthash']);
 			$attachmentassign = array(
-				"pid" => $this->pid
+				"pid" => $this->pid,
+				"posthash" => ''
 			);
 			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
