@@ -485,6 +485,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   edituid int NOT NULL default '0',
   edittime int NOT NULL default '0',
   visible int NOT NULL default '0',
+  posthash varchar(32) NOT NULL default '',
   PRIMARY KEY (pid)
 );";
 

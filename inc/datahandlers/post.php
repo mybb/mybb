@@ -835,8 +835,6 @@ class PostDataHandler extends DataHandler
 				);
 				$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
 				
-				$post['posthash'] = $double_post['posthash'];
-			
 				// Return the post's pid and whether or not it is visible.
 				return array(
 					"pid" => $double_post['pid'],
