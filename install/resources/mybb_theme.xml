@@ -1751,7 +1751,7 @@ body {
 	<input type="hidden" name="forums" value="{$fid}" />
 	<input type="hidden" name="postthread" value="1" />
 	</form><br />]]></template>
-		<template name="editpost" version="1600"><![CDATA[<html>
+		<template name="editpost" version="1610"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -1811,7 +1811,6 @@ body {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
-<input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
 </form>
