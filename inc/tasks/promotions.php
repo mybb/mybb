@@ -11,7 +11,7 @@
 
 function task_promotions($task)
 {
-	global $mybb, $db, $lang, $cache;
+	global $mybb, $db, $lang, $cache, $plugins;
 	
 	$usergroups = $cache->read("usergroups");
 	// Iterate through all our promotions
@@ -107,7 +107,17 @@ function task_promotions($task)
 		{
 			$usergroup_select = "usergroup";
 		}
-		
+
+		if(is_object($plugins))
+		{
+			$args = array(
+				'task' => &$task,
+				'promotion' => &$promotion,
+				'sql_where' => &$sql_where
+			);
+			$plugins->run_hooks('task_promotions', $args);
+		}
+
 		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
 		while($user = $db->fetch_array($query2))
 		{

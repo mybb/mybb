@@ -11,7 +11,7 @@
 
 function task_backupdb($task)
 {
-	global $db, $config, $lang;
+	global $db, $config, $lang, $plugins;
 	static $contents;
 
 	@set_time_limit(0);
@@ -47,10 +47,19 @@ function task_backupdb($task)
 		}
 		
 		$tables = $db->list_tables($config['database']['database'], $config['database']['table_prefix']);
-	
+
 		$time = date('dS F Y \a\t H:i', TIME_NOW);
-		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
-		$contents = $header;
+		$contents = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
+
+		if(is_object($plugins))
+		{
+			$args = array(
+				'task' =>  &$task,
+				'tables' =>  &$tables,
+			);
+			$plugins->run_hooks('task_backupdb', $args);
+		}
+
 		foreach($tables as $table)
 		{
 			$field_list = array();

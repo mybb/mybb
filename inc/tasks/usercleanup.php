@@ -11,7 +11,7 @@
 
 function task_usercleanup($task)
 {
-	global $db, $lang, $cache;
+	global $db, $lang, $cache, $plugins;
 
 	// Expire any old warnings
 	expire_warnings();
@@ -62,7 +62,12 @@ function task_usercleanup($task)
 	}
 	
 	$cache->update_moderators();
-	
+
+	if(is_object($plugins))
+	{
+		$plugins->run_hooks('task_usercleanup', $task);
+	}
+
 	add_task_log($task, $lang->task_usercleanup_ran);
 }
 ?>

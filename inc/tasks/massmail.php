@@ -20,11 +20,20 @@ require_once MYBB_ROOT."inc/datahandlers/pm.php";
 
 function task_massmail($task)
 {
-	global $db, $mybb, $lang;	
+	global $db, $mybb, $lang, $plugins;	
 	
 	$query = $db->simple_select("massemails", "*", "senddate <= '".TIME_NOW."' AND status IN (1,2)");
 	while($mass_email = $db->fetch_array($query))
 	{
+		if(is_object($plugins))
+		{
+			$args = array(
+				'task' => &$task,
+				'mass_email' => &$mass_email
+			);
+			$plugins->run_hooks('task_promotions', $args);
+		}
+
 		if($mass_email['status'] == 1)
 		{
 			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'", 1);

@@ -11,7 +11,7 @@
 
 function task_delayedmoderation($task)
 {
-	global $db, $lang;
+	global $db, $lang, $plugins;
 	
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -23,6 +23,15 @@ function task_delayedmoderation($task)
 	$query = $db->simple_select("delayedmoderation", "*", "delaydateline <= '".TIME_NOW."'");
 	while($delayedmoderation = $db->fetch_array($query))
 	{
+		if(is_object($plugins))
+		{
+			$args = array(
+				'task' => &$task,
+				'delayedmoderation' => &$delayedmoderation,
+			);
+			$plugins->run_hooks('task_delayedmoderation', $args);
+		}
+
 		$tids = explode(',', $delayedmoderation['tids']);
 		$input = unserialize($delayedmoderation['inputs']);
 		

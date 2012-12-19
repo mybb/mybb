@@ -11,7 +11,7 @@
 
 function task_checktables($task)
 {
-	global $db, $mybb, $lang;
+	global $db, $mybb, $lang, $plugins;
 	
 	// Sorry SQLite, you don't have a decent way of checking if the table is corrupted or not.
 	if($db->type == "sqlite")
@@ -71,7 +71,12 @@ function task_checktables($task)
 		}
 		
 	}
-	
+
+	if(is_object($plugins))
+	{
+		$plugins->run_hooks('task_checktables', $task);
+	}
+
 	if(!empty($repaired))
 	{
 		add_task_log($task, $lang->sprintf($lang->task_checktables_ran_found, implode(', ', $repaired)));

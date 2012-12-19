@@ -11,9 +11,7 @@
 
 function task_threadviews($task)
 {
-	global $mybb, $db, $lang;
-	
-	$threadviews = array();
+	global $mybb, $db, $lang, $plugins;
 
 	if($mybb->settings['delayedthreadviews'] != 1)
 	{
@@ -32,7 +30,12 @@ function task_threadviews($task)
 	}
 	
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");
-	
+
+	if(is_object($plugins))
+	{
+		$plugins->run_hooks('task_threadviews', $task);
+	}
+
 	add_task_log($task, $lang->task_threadviews_ran);
 }
 ?>

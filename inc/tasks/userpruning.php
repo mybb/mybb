@@ -11,7 +11,7 @@
 
 function task_userpruning($task)
 {
-	global $db, $lang, $mybb, $cache;
+	global $db, $lang, $mybb, $cache, $plugins;
 	
 	if($mybb->settings['enablepruning'] != 1)
 	{
@@ -60,7 +60,17 @@ function task_userpruning($task)
 			$users[$user['uid']] = $user['uid'];
 		}
 	}
-	
+
+	if(is_object($plugins))
+	{
+		$args = array(
+			'task' => &$task,
+			'in_usergroups' => &$in_usergroups,
+			'users' => &$users,
+		);
+		$plugins->run_hooks('task_userpruning', $args);
+	}
+
 	if(!empty($users))
 	{
 		$uid_list = $db->escape_string(implode(',', $users));
