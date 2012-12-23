@@ -381,6 +381,11 @@ class errorHandler {
 	{
 		global $mybb, $parser;
 
+		if(!empty($mybb->usergroup) && $mybb->settings['useerrorperm'] == 1 && $mybb->usergroup['cancp'] != 1)
+		{
+			exit(1);
+		}
+
 		if(!$mybb->settings['bbname'])
 		{
 			$mybb->settings['bbname'] = "MyBB";
