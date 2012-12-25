@@ -5309,7 +5309,7 @@ function validate_email_format($email)
 }
 
 /**
- * Validates the format of an email address.
+ * Validates the format of a website address.
  *
  * @param string The string to check.
  * @return boolean True when valid, false when invalid.

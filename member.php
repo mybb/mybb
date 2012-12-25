@@ -1417,7 +1417,6 @@ if($mybb->input['action'] == "profile")
 	else
 	{
 		$memprofile['website'] = $website = '';
-		$memprofile['website'] = '';
 	}
 
 	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
