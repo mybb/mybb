@@ -2130,19 +2130,24 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if($user['website'] == "" || $user['website'] == "http://")
+	if(validate_website_format($user['website']))
 	{
-		$user['website'] = "http://";
+		$user['website'] = htmlspecialchars_uni($user['website']);
+	}
+	else
+	{
+		$user['website'] = '';
 	}
 
-	if($user['icq'] != "0")
+	$user['icq'] = (int)$user['icq'];
+	if(!$user['icq'])
 	{
-		$user['icq'] = intval($user['icq']);
+		$user['icq'] = '';
 	}
-	if($user['icq'] == 0)
-	{
-		$user['icq'] = "";
-	}
+
+	$user['msn'] = htmlspecialchars_uni($user['msn']);
+	$user['aim'] = htmlspecialchars_uni($user['aim']);
+	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
 	if(!$errors)
 	{
@@ -2157,7 +2162,10 @@ if($mybb->input['action'] == "editprofile")
 	// Sanitize all input
 	foreach(array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'msn', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
-		$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
+		if(isset($mybb->input[$field]))
+		{
+			$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
+		}
 	}
 
 	// Custom user title, check to see if we have a default group title

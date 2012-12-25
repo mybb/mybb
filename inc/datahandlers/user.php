@@ -282,17 +282,18 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
+		$website_lower = my_strtolower($website);
+		if(empty($website) || $website_lower == 'http://' || $website_lower == 'https://')
 		{
 			$website = '';
 			return true;
 		}
 
 		// Does the website start with http(s)://?
-		if(my_strtolower(substr($website, 0, 4)) != "http")
+		if(!validate_website_format($website))
 		{
-			// Website does not start with http://, let's see if the user forgot.
-			$website = "http://".$website;
+			$this->set_error('invalid_website');
+			return false;
 		}
 
 		return true;
@@ -1010,11 +1011,11 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"website" => $db->escape_string($user['website']),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
+			"aim" => $db->escape_string($user['aim']),
+			"yahoo" => $db->escape_string($user['yahoo']),
+			"msn" => $db->escape_string($user['msn']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1191,7 +1192,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars($user['website']));
+			$this->user_update_data['website'] = $db->escape_string($user['website']);
 		}
 		if(isset($user['icq']))
 		{
@@ -1199,15 +1200,15 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
 		}
 		if(isset($user['msn']))
 		{
-			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars($user['msn']));
+			$this->user_update_data['msn'] = $db->escape_string($user['msn']);
 		}
 		if(isset($user['bday']))
 		{

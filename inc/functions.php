@@ -5309,6 +5309,28 @@ function validate_email_format($email)
 }
 
 /**
+ * Validates the format of an email address.
+ *
+ * @param string The string to check.
+ * @return boolean True when valid, false when invalid.
+ */
+function validate_website_format($website)
+{
+	if(empty($website) || !trim($website) || !my_strtolower(substr($website, 0, 4)) == 'http')
+	{
+		return false;
+	}
+
+	$website_lower = my_strtolower($website);
+	if($website_lower == 'http://' || $website_lower == 'https://')
+	{
+		return false;
+	}
+
+	return preg_match("/^(http(s?):\/\/)?(www\.)+[a-zA-Z0-9\.\-\_]+(\.[a-zA-Z]{2,3})+(\/[a-zA-Z0-9\_\-\s\.\/\?\%\#\&\=]*)?$/", $website);
+}
+
+/**
  * Checks to see if the email is already in use by another
  *
  * @param string The email to check.

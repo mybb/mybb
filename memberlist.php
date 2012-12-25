@@ -322,6 +322,25 @@ else
 			}
 		}
 
+		if(validate_website_format($user['website']))
+		{
+			$user['website'] = htmlspecialchars_uni($user['website']);
+		}
+		else
+		{
+			$user['website'] = '';
+		}
+
+		$user['icq'] = (int)$user['icq'];
+		if(!$user['icq'])
+		{
+			$user['icq'] = '';
+		}
+
+		$user['msn'] = htmlspecialchars_uni($user['msn']);
+		$user['aim'] = htmlspecialchars_uni($user['aim']);
+		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
+
 		if($user['userstars'] && $usergroup['groupimage'])
 		{
 			$user['userstars'] = "<br />".$user['userstars'];

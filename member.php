@@ -1409,14 +1409,15 @@ if($mybb->input['action'] == "profile")
 		$bgcolors[$cat] = alt_trow();
 	}
 
-	if($memprofile['website'])
+	if(validate_website_format($memprofile['website']))
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
+		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'$memprofile['website'].'</a>';
 	}
 	else
 	{
-		$website = '';
+		$memprofile['website'] = $website = '';
+		$memprofile['website'] = '';
 	}
 
 	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
@@ -1464,14 +1465,14 @@ if($mybb->input['action'] == "profile")
 		$percent = 100;
 	}
 
-	if(!empty($memprofile['icq']))
-	{
-		$memprofile['icq'] = intval($memprofile['icq']);
-	}
-	else
+	$memprofile['icq'] = (int)$memprofile['icq'];
+	if(!$memprofile['icq'])
 	{
 		$memprofile['icq'] = '';
 	}
+	$memprofile['msn'] = htmlspecialchars_uni($memprofile['msn']);
+	$memprofile['aim'] = htmlspecialchars_uni($memprofile['aim']);
+	$memprofile['yahoo'] = htmlspecialchars_uni($memprofile['yahoo']);
 
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
