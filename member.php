@@ -1525,11 +1525,14 @@ if($mybb->input['action'] == "profile")
 		$bgcolors[$cat] = alt_trow();
 	}
 
-	$website = '';
-	if($memprofile['website'])
+	if(validate_website_format($memprofile['website']))
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
+		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'$memprofile['website'].'</a>';
+	}
+	else
+	{
+		$memprofile['website'] = $website = '';
 	}
 
 	$signature = '';
@@ -1578,11 +1581,8 @@ if($mybb->input['action'] == "profile")
 		$percent = 100;
 	}
 
-	if(!empty($memprofile['icq']))
-	{
-		$memprofile['icq'] = intval($memprofile['icq']);
-	}
-	else
+	$memprofile['icq'] = (int)$memprofile['icq'];
+	if(!$memprofile['icq'])
 	{
 		$memprofile['icq'] = '';
 	}

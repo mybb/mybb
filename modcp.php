@@ -1820,19 +1820,24 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if($user['website'] == "" || $user['website'] == "http://")
+	if(validate_website_format($user['website']))
 	{
-		$user['website'] = "http://";
+		$user['website'] = htmlspecialchars_uni($user['website']);
+	}
+	else
+	{
+		$user['website'] = '';
 	}
 
-	if($user['icq'] != "0")
+	$user['icq'] = (int)$user['icq'];
+	if(!$user['icq'])
 	{
-		$user['icq'] = intval($user['icq']);
+		$user['icq'] = '';
 	}
-	if($user['icq'] == 0)
-	{
-		$user['icq'] = "";
-	}
+
+	$user['msn'] = htmlspecialchars_uni($user['msn']);
+	$user['aim'] = htmlspecialchars_uni($user['aim']);
+	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
 	if(!$errors)
 	{

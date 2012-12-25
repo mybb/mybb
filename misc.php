@@ -551,18 +551,37 @@ elseif($mybb->input['action'] == "imcenter")
 	$navigationbar = $navsep = '';
 	if($user['aim'])
 	{
+		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
 		$navsep = ' - ';
 	}
 	if($user['msn'])
 	{
+		$user['msn'] = htmlspecialchars_uni($user['msn']);
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
+		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
 	}
+
+	$user['icq'] = (int)$user['icq'];
+	if(!$user['icq'])
+	{
+		$user['icq'] = '';
+	}
+
+	if(validate_website_format($user['website']))
+	{
+		$user['website'] = htmlspecialchars_uni($user['website']);
+	}
+	else
+	{
+		$user['website'] = '';
+	}
+
 	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
 	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
