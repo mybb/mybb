@@ -1409,14 +1409,11 @@ if($mybb->input['action'] == "profile")
 		$bgcolors[$cat] = alt_trow();
 	}
 
+	$website = '';
 	if(validate_website_format($memprofile['website']))
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'$memprofile['website'].'</a>';
-	}
-	else
-	{
-		$memprofile['website'] = $website = '';
+		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'.$memprofile['website'].'</a>';
 	}
 
 	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
