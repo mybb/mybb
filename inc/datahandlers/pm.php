@@ -515,7 +515,6 @@ class PMDataHandler extends DataHandler
 				}
 			}
 		}
-		$recipient_list = serialize($recipient_list);
 
 		$this->pm_insert_data = array(
 			'fromid' => intval($pm['sender']['uid']),
