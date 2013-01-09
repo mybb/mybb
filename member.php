@@ -1528,7 +1528,7 @@ if($mybb->input['action'] == "profile")
 	if(validate_website_format($memprofile['website']))
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'$memprofile['website'].'</a>';
+		$website = '<a href="'.$memprofile['website'].'" target="_blank">'.$memprofile['website'].'</a>';
 	}
 	else
 	{
