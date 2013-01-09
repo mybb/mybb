@@ -542,6 +542,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
 	$display_group_options[0] = $lang->use_primary_user_group;
+	$options = array();
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -1138,6 +1139,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
 	$display_group_options[0] = $lang->use_primary_user_group;
+	$options = array();
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -2880,6 +2882,7 @@ if($mybb->input['action'] == "inline_edit")
 
 				// Usergroups
 				$display_group_options[0] = $lang->use_primary_user_group;
+				$options = array();
 				$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 				while($usergroup = $db->fetch_array($query))
 				{
@@ -3968,6 +3971,7 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->email_address_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
+	$options = array();
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
