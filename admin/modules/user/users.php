@@ -3325,7 +3325,7 @@ function build_users_view($view)
 		var form = document.getElementById('search_form');
 		form.onsubmit = function() {
 			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_user}')
+			if(search.value == '' || search.value == '".addcslashes($lang->search_for_user, "'")."')
 			{
 				search.focus();
 				return false;
@@ -3335,7 +3335,7 @@ function build_users_view($view)
 		var search = document.getElementById('search_keywords');
 		search.onfocus = function()
 		{
-			if(this.value == '{$lang->search_for_user}')
+			if(this.value == '".addcslashes($lang->search_for_user, "'")."')
 			{
 				$(this).removeClassName('search_default');
 				this.value = '';
@@ -3346,14 +3346,14 @@ function build_users_view($view)
 			if(this.value == '')
 			{
 				$(this).addClassName('search_default');
-				this.value = '{$lang->search_for_user}';
+				this.value = '".addcslashes($lang->search_for_user, "'")."';
 			}
 		}
 		// fix the styling used if we have a different default value
-        if(search.value != '{$lang->search_for_user}')
-        {
-            $(search).removeClassName('search_default');
-        }
+		if(search.value != '".addcslashes($lang->search_for_user, "'")."')
+		{
+			$(search).removeClassName('search_default');
+		}
 		</script>\n";
 	$built_view .= "</div>\n";
 	
