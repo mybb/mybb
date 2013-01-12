@@ -301,7 +301,7 @@ class SmtpMail extends MailHandler
 		}
 		else
 		{
-			$this->fatal_error("Unable to connect to the mail server with the given details.<br /><br />{$error_number}: {$error_string}");
+			$this->fatal_error("Unable to connect to the mail server with the given details. Reason: {$error_number}: {$error_string}");
 			return false;
 		}
 	}
