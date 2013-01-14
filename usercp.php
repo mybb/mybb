@@ -1266,7 +1266,7 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
 
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $subscription['uid'] != $mybb->user['uid']))
 		{
 			// Hmm, you don't have permission to view this thread - unsubscribe!
 			$del_subscriptions[] = $subscription['sid'];
@@ -1585,17 +1585,33 @@ if($mybb->input['action'] == "forumsubscriptions")
 		$forum_url = get_forum_link($forum['fid']);
 		$forumpermissions = $fpermissions[$forum['fid']];
 
-		if($forumpermissions['canview'] == 0)
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			continue;
 		}
 
 		$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']), array('lastpost' => $forum['lastpost']));
 		$folder = $lightbulb['folder'];
+		
+		if($forumpermissions['canonlyviewownthreads'] != 0)
+		{
+			$posts = '-';
+			$threads = '-';
+		}
+		else
+		{
+			$posts = my_number_format($forum['posts']);
+			$threads = my_number_format($forum['threads']);
+		}
 
 		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 		{
-			$lastpost = "<div align=\"center\">$lang->never</div>";
+			$lastpost = "<div align=\"center\">{$lang->never}</div>";
+		}
+		// Hide last post
+		elseif($forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid'])
+		{
+			$lastpost = "<div align=\"center\">{$lang->na}</div>";
 		}
 		else
 		{
@@ -1612,9 +1628,6 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
 			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
 		}
-
-		$posts = my_number_format($forum['posts']);
-		$threads = my_number_format($forum['threads']);
 
 		if($mybb->settings['showdescriptions'] == 0)
 		{
@@ -3059,7 +3072,7 @@ if(!$mybb->input['action'])
 		while($subscription = $db->fetch_array($query))
 		{
 			$forumpermissions = $fpermissions[$subscription['fid']];
-			if($forumpermissions['canview'] != 0 || $forumpermissions['canviewthreads'] != 0)
+			if($forumpermissions['canview'] != 0 && $forumpermissions['canviewthreads'] != 0 && ($forumpermissions['canonlyviewownthreads'] == 0 || $subscription['uid'] == $mybb->user['uid']))
 			{
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
