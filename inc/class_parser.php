@@ -974,7 +974,7 @@ class postParser
 		$parsed_url = @parse_url(urldecode($url));
 		if($parsed_url == false)
 		{
-			return "[video={$video}]{$url}[/video]";;
+			return "[video={$video}]{$url}[/video]";
 		}
 		
 		$fragments = array();
