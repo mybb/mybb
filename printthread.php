@@ -80,7 +80,7 @@ if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }
