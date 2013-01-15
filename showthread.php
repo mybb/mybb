@@ -122,79 +122,6 @@ if(!$forum || $forum['type'] != "f")
 	error($lang->error_invalidforum);
 }
 
-// Forumdisplay cache
-$forum_stats = $cache->read("forumsdisplay");
-
-$breadcrumb_multipage = array();
-if($mybb->settings['showforumpagesbreadcrumb'])
-{
-	// How many pages are there?
-	if(!$mybb->settings['threadsperpage'])
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
-
-	$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
-	$forum_threads = $db->fetch_array($query);
-	$threadcount = $forum_threads['threads'];
-
-	if($ismod == true)
-	{
-		$threadcount += $forum_threads['unapprovedthreads'];
-	}
-
-	// Limit to only our own threads
-	$uid_only = '';
-	if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
-	{
-		$uid_only = " AND uid = '".$mybb->user['uid']."'";
-
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
-		$threadcount = $db->fetch_field($query, "threads");
-	}
-
-	// If we have 0 threads double check there aren't any "moved" threads
-	if($threadcount == 0)
-	{
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
-		$threadcount = $db->fetch_field($query, "threads");
-	}
-
-	$stickybit = " OR sticky=1";
-	if($thread['sticky'] == 1)
-	{
-		$stickybit = " AND sticky=1";
-	}
-
-	// Figure out what page the thread is actually on
-	switch($db->type)
-	{
-		case "pgsql":
-			$query = $db->query("
-				SELECT COUNT(tid) as threads
-				FROM ".TABLE_PREFIX."threads
-				WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
-				GROUP BY lastpost
-				ORDER BY lastpost DESC
-			");
-			break;
-		default:
-			$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
-	}
-
-	$thread_position = $db->fetch_field($query, "threads");
-	$thread_page = ceil(($thread_position/$mybb->settings['threadsperpage']));
-
-	$breadcrumb_multipage = array(
-		"num_threads" => $threadcount,
-		"current_page" => $thread_page
-	);
-}
-
-// Build the navigation.
-build_forum_breadcrumb($fid, $breadcrumb_multipage);
-add_breadcrumb($thread['displayprefix'].$thread['subject'], get_thread_link($thread['tid']));
-
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
@@ -392,6 +319,79 @@ if(!empty($mybb->input['pid']))
 {
 	$pid = $mybb->input['pid'];
 }
+
+// Forumdisplay cache
+$forum_stats = $cache->read("forumsdisplay");
+
+$breadcrumb_multipage = array();
+if($mybb->settings['showforumpagesbreadcrumb'])
+{
+	// How many pages are there?
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+
+	$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
+	$forum_threads = $db->fetch_array($query);
+	$threadcount = $forum_threads['threads'];
+
+	if($ismod == true)
+	{
+		$threadcount += $forum_threads['unapprovedthreads'];
+	}
+
+	// Limit to only our own threads
+	$uid_only = '';
+	if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
+	{
+		$uid_only = " AND uid = '".$mybb->user['uid']."'";
+
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
+		$threadcount = $db->fetch_field($query, "threads");
+	}
+
+	// If we have 0 threads double check there aren't any "moved" threads
+	if($threadcount == 0)
+	{
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
+		$threadcount = $db->fetch_field($query, "threads");
+	}
+
+	$stickybit = " OR sticky=1";
+	if($thread['sticky'] == 1)
+	{
+		$stickybit = " AND sticky=1";
+	}
+
+	// Figure out what page the thread is actually on
+	switch($db->type)
+	{
+		case "pgsql":
+			$query = $db->query("
+				SELECT COUNT(tid) as threads
+				FROM ".TABLE_PREFIX."threads
+				WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
+				GROUP BY lastpost
+				ORDER BY lastpost DESC
+			");
+			break;
+		default:
+			$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
+	}
+
+	$thread_position = $db->fetch_field($query, "threads");
+	$thread_page = ceil(($thread_position/$mybb->settings['threadsperpage']));
+
+	$breadcrumb_multipage = array(
+		"num_threads" => $threadcount,
+		"current_page" => $thread_page
+	);
+}
+
+// Build the navigation.
+build_forum_breadcrumb($fid, $breadcrumb_multipage);
+add_breadcrumb($thread['displayprefix'].$thread['subject'], get_thread_link($thread['tid']));
 
 $plugins->run_hooks("showthread_start");
 
