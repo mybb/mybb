@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
-$templatelist = 'reputation_addlink,reputation_no_votes,reputation,reputation_add_error,reputation_deleted,reputation_added,reputation_add,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage';
+$templatelist = 'reputation_addlink,reputation_no_votes,reputation,reputation_add_error,reputation_deleted,reputation_added,reputation_add,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end';
 require_once "./global.php";
 
 require_once MYBB_ROOT."inc/class_parser.php";

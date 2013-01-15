@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "printthread,printthread_post";
+$templatelist = "printthread,printthread_post,forumdisplay_password_wrongpass,forumdisplay_password";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

@@ -2695,7 +2695,6 @@ a.button {
 				</form>
 				<br />]]></template>
 		<template name="calendar_eventbit" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
-		<template name="calendar_eventbit_private" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext eventbit_private"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
 		<template name="calendar_mini" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="width: 180px;">
 	<thead>
 		<tr>

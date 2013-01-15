@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'ratethread.php');
 
-$templatelist = '';
+$templatelist = 'forumdisplay_password_wrongpass,forumdisplay_password';
 require_once "./global.php";
 
 // Verify incoming POST request

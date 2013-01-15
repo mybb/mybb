@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'polls.php');
 
-$templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
+$templatelist = "changeuserbox,loginbox,polls_newpoll_option,polls_newpoll,polls_editpoll_option,polls_editpoll,polls_showresults_resultbit,polls_showresults";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";

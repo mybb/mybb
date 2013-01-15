@@ -12,9 +12,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'misc.php');
 
-$templatelist = "redirect_markallread,redirect_markforumread";
+$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
