@@ -654,7 +654,7 @@ if($mybb->input['action'] == "showresults")
 
 	if($forumpermissions['canviewthreads'] == 0 || $forumpermissions['canview'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
-		error($lang->error_pollpermissions);
+		error_no_permission();
 	}
 	
 	if(!$poll['pid'])
