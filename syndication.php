@@ -14,6 +14,8 @@ define("IGNORE_CLEAN_VARS", "fid");
 define("NO_ONLINE", 1);
 define('THIS_SCRIPT', 'syndication.php');
 
+$templatelist = "postbit_attachments_attachment";
+
 require_once "./global.php";
 
 // Load global language phrases
