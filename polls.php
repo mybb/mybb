@@ -652,7 +652,7 @@ if($mybb->input['action'] == "showresults")
 
 	$plugins->run_hooks("polls_showresults_start");
 
-	if($forumpermissions['canviewthreads'] == 0 || $forumpermissions['canview'] == 0)
+	if($forumpermissions['canviewthreads'] == 0 || $forumpermissions['canview'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_pollpermissions);
 	}
