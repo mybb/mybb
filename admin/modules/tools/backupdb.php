@@ -187,7 +187,11 @@ if($mybb->input['action'] == "backup")
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
 		$contents = $header;
 		foreach($mybb->input['tables'] as $table)
-		{			
+		{
+			if(!$db->table_exists($db->escape_string($table)))
+			{
+				continue;
+			}
 			if($mybb->input['analyzeoptimize'] == 1)
 			{
 				$db->optimize_table($table);
