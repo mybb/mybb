@@ -2202,6 +2202,8 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	if($mybb->request_method == "post")
 	{
+		// Remove special characters
+		$mybb->input['name'] = preg_replace('#([^a-z0-9-_]+)#i', '', $mybb->input['name']);
 		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
