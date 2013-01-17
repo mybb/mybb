@@ -2341,52 +2341,53 @@ if($mybb->input['action'] == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");
 
+	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");	
+	$draftcount = $db->fetch_field($query, 'draftcount');
+
+	$drafts = $disable_delete_drafts = '';
+	$lang->drafts_count = $lang->sprintf($lang->drafts_count, my_number_format($draftcount));
+
 	// Show a listing of all of the current 'draft' posts or threads the user has.
-	$drafts = '';
-	$query = $db->query("
-		SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
-		FROM ".TABLE_PREFIX."posts p
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
-		WHERE p.uid='".$mybb->user['uid']."' AND p.visible='-2'
-		ORDER BY p.dateline DESC
-	");
-
-	while($draft = $db->fetch_array($query))
+	if($draftcount)
 	{
-		$trow = alt_trow();
-		if($draft['threadvisible'] == 1) // We're looking at a draft post
-		{
-			$detail = $lang->thread." <a href=\"".get_thread_link($draft['tid'])."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
-			$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
-			$id = $draft['pid'];
-			$type = "post";
-		}
-		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
-		{
-			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
-			$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
-			$id = $draft['tid'];
-			$type = "thread";
-		}
+		$query = $db->query("
+			SELECT p.subject, p.pid, t.tid, t.subject AS threadsubject, t.fid, f.name AS forumname, p.dateline, t.visible AS threadvisible, p.visible AS postvisible
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
+			WHERE p.uid = '{$mybb->user['uid']}' AND p.visible = '-2'
+			ORDER BY p.dateline DESC
+		");
 
-		$draft['subject'] = htmlspecialchars_uni($draft['subject']);
-		$savedate = my_date('relative', $draft['dateline']);
-		eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
+		while($draft = $db->fetch_array($query))
+		{
+			$trow = alt_trow();
+			if($draft['threadvisible'] == 1) // We're looking at a draft post
+			{
+				$detail = $lang->thread." <a href=\"".get_thread_link($draft['tid'])."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
+				$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
+				$id = $draft['pid'];
+				$type = "post";
+			}
+			elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
+			{
+				$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
+				$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
+				$id = $draft['tid'];
+				$type = "thread";
+			}
+
+			$draft['subject'] = htmlspecialchars_uni($draft['subject']);
+			$savedate = my_date('relative', $draft['dateline']);
+			eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
+		}
 	}
-
-	$disable_delete_drafts = '';
-	if(!$drafts)
+	else
 	{
-		eval("\$drafts = \"".$templates->get("usercp_drafts_none")."\";");
 		$disable_delete_drafts = 'disabled="disabled"';
+		eval("\$drafts = \"".$templates->get("usercp_drafts_none")."\";");
 	}
-	
-	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");
-	$count = $db->fetch_field($query, 'draftcount');
 
-	$lang->drafts_count = $lang->sprintf($lang->drafts_count, my_number_format($count));
-	
 	$plugins->run_hooks("usercp_drafts_end");
 	
 	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
