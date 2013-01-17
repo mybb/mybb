@@ -29,14 +29,14 @@
 	margin: 0 auto;
 }
 
-ins {
-	background: #dfd;
-	text-decoration: none;
+ins, del {
+	color: #000;
 	padding: 2px;
+	line-height: 1.5em;
+	text-decoration: none;
+	background: #dfd;
 }
 
 del {
 	background: #fdd;
-	text-decoration: none;
-	padding: 2px;
 }
