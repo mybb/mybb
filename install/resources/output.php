@@ -59,6 +59,10 @@ END;
 		<div id="inner_container">
 		<div id="header">$this->title</div>
 END;
+		if($mybb->version_code >= 1700 && $mybb->version_code < 1800)
+		{
+			echo $lang->development_preview;	
+		}
 		if(empty($this->steps))
 		{
 			$this->steps = array();

@@ -27,7 +27,6 @@ a:hover {
 }
 
 /* Logo */
-
 #logo h1 {
 	background: #fff url('images/logo.png') no-repeat 0 5px;
 	height: 82px;
@@ -36,7 +35,6 @@ a:hover {
 }
 
 /* Header */
-
 #header {
 	clear: both;
 	background: #efefef;
@@ -46,28 +44,14 @@ a:hover {
 	font-size: 20px;
 	color: #444;
 	margin-bottom: 20px;
-	/*
-	background: #02426c url(images/thead.png) repeat-x top left;
-	border-bottom: 1px solid #263c30;
-	color:#fff;
-	margin: 0;
-	padding: 8px;
-	font-size: 14px;
-	font-weight: bold;
-	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-radius: 5px 5px 0 0;
-	*/
 }
 
 /* Inner Container */
-
 #inner_container {
 	background: #fff;
 }
 
 /* Progress Side bar */
-
 #progress {
 	width: 230px;
 	float: left;
@@ -142,7 +126,6 @@ a:hover {
 }
 
 /* Content Area */
-
 #content {
 	margin-left: 235px;
 	width: 580px;
@@ -155,7 +138,6 @@ a:hover {
 }
 
 /* Heading Styles */
-
 h2 {
 	margin: 0;
 	font-size: 20px;
@@ -174,7 +156,6 @@ h4 {
 }
 
 /* License Agreement */
-
 .license_agreement {
 	margin: 10px auto;
 	padding: 10px;
@@ -184,21 +165,18 @@ h4 {
 	border: 1px solid #ccc;
 }
 
-
 .license_agreement ul {
 	padding: 0;
 	margin: 15px;
 }
 
 /* Next Button */
-
 #next_button, .next_button {
 	text-align: right;
 	width: auto;
 }
 
 /* Footer */
-
 #footer {
 	clear: both;
 	background: #f5f5f5;
@@ -214,7 +192,6 @@ h4 {
 }
 
 /* Tables */
-
 .border_wrapper {
 	margin: 0;
 	padding: 1px;
@@ -255,7 +232,6 @@ table.general td {
 	border-right: 1px solid #ccc;
 	border-left: 1px solid #fafafa;
 }
-
 
 table.general tr td:last-child {
 	border-right: 0;
@@ -305,13 +281,11 @@ table.general th a, table.general th {
 	text-decoration: none;
 }
 
-
 table .alt_row td {
 	background: #f1f1f1;
 }
 
 /* Forms */
-
 input.text_input {
 	border: 1px solid #aaa;
 	width: 300px;
@@ -370,7 +344,6 @@ label {
 }
 
 /* Misc */
-
 .invisible {
 	display: none;
 }
@@ -391,6 +364,10 @@ label {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+}
+
+.error p {
+	margin-bottom: 0;
 }
 
 .success {

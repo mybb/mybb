@@ -3982,7 +3982,7 @@ a.button {
 				</tr>
 				<tr>
 					<td class="trow2"><strong>{$lang->lastvisit}</strong></td>
-					<td class="trow2">{$memlastvisitdate}}</td>
+					<td class="trow2">{$memlastvisitdate}</td>
 				</tr>
 				<tr>
 					<td class="trow1"><strong>{$lang->total_posts}</strong></td>
