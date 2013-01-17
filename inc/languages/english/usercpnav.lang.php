@@ -26,6 +26,7 @@ $l['ucp_nav_favorite_threads'] = "Favorite Threads";
 $l['ucp_nav_subscribed_threads'] = "Subscribed Threads";
 $l['ucp_nav_forum_subscriptions'] = "Forum Subscriptions";
 $l['ucp_nav_drafts'] = "Saved Drafts";
+$l['ucp_nav_drafts_active'] = "<strong>Saved Drafts ({1})</strong>";
 $l['ucp_nav_notepad'] = "Personal Pad";
 $l['ucp_nav_view_profile'] = "View Profile";
 $l['ucp_nav_home'] = "User CP Home";

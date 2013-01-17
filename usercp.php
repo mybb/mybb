@@ -19,7 +19,7 @@ $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profi
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options";
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current";
-$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts_submit,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none";
+$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none";
 $templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end";
 $templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert";
 
@@ -2340,6 +2340,7 @@ if($mybb->input['action'] == "editlists")
 if($mybb->input['action'] == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");
+
 	// Show a listing of all of the current 'draft' posts or threads the user has.
 	$drafts = '';
 	$query = $db->query("
@@ -2350,6 +2351,7 @@ if($mybb->input['action'] == "drafts")
 		WHERE p.uid='".$mybb->user['uid']."' AND p.visible='-2'
 		ORDER BY p.dateline DESC
 	");
+
 	while($draft = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
@@ -2367,31 +2369,30 @@ if($mybb->input['action'] == "drafts")
 			$id = $draft['tid'];
 			$type = "thread";
 		}
+
 		$draft['subject'] = htmlspecialchars_uni($draft['subject']);
 		$savedate = my_date('relative', $draft['dateline']);
 		eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
 	}
+
+	$disable_delete_drafts = '';
 	if(!$drafts)
 	{
 		eval("\$drafts = \"".$templates->get("usercp_drafts_none")."\";");
 		$disable_delete_drafts = 'disabled="disabled"';
 	}
-	else
-	{
-		eval("\$draftsubmit = \"".$templates->get("usercp_drafts_submit")."\";");
-		$disable_delete_drafts = '';
-	}
 	
-	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
-	$count = $db->fetch_array($query);
-	$draftcount = "(".my_number_format($count['draftcount']).")";
+	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");
+	$count = $db->fetch_field($query, 'draftcount');
+
+	$lang->drafts_count = $lang->sprintf($lang->drafts_count, my_number_format($count));
 	
 	$plugins->run_hooks("usercp_drafts_end");
 	
 	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
 	output_page($draftlist);
-
 }
+
 if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request

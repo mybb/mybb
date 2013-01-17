@@ -226,6 +226,7 @@ $l['no_thread_subscriptions'] = "You're currently not subscribed to any threads.
 $l['no_forum_subscriptions'] = "You're currently not subscribed to any forums.<p>To subscribe to a forum:</p><ol><li>Navigate to the forum you wish to subscribe to.</li><li>Click the 'Subscribe to this forum' link just above, towards the right side of, the list of threads in that forum.</li></ol>";
 $l['no_drafts'] = "You do not currently have any draft threads or posts.<p>To save a draft thread or post:</p><ol><li>Proceed to the normal posting pages for the action you wish to perform (post a new thread or reply to an existing one).</li><li>Fill in as much or as little as you want on the posting page.</li><li>Click the 'Save as Draft' button below the posting area.</li></ol>";
 $l['drafts'] = "Saved Drafts";
+$l['drafts_count'] = "Saved Drafts ({1})";
 $l['draft_saved'] = "Saved";
 $l['edit_draft'] = "Edit Draft";
 $l['draft_title'] = "Draft Title";
