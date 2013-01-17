@@ -1827,7 +1827,7 @@ if(!$mybb->input['action'])
 	while($theme = $db->fetch_array($query))
 	{
 		$tbits = unserialize($theme['properties']);
-		$themes[$tbits['templateset']][$theme['tid']] = $theme['name'];
+		$themes[$tbits['templateset']][$theme['tid']] = htmlspecialchars_uni($theme['name']);
 	}
 	
 	$template_sets = array();
