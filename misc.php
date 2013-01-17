@@ -688,7 +688,7 @@ elseif($mybb->input['action'] == "syndication")
 		$atom1check = '';
 		$rss2check = "checked=\"checked\"";
 	}
-	$forumselect = makesyndicateforums("", $blah);
+	$forumselect = makesyndicateforums();
 
 	$plugins->run_hooks("misc_syndication_end");
 
