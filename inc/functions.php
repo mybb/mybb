@@ -4076,7 +4076,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.$theme['name']."</option>";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>";
 					$depthit = $depth."--";
 				}
 

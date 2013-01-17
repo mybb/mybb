@@ -1041,7 +1041,7 @@ function build_theme_list($parent=0, $depth=0)
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
-			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}\">{$theme['name']}</a>";
+			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($theme['name'])."</a>";
 			
 			// We must have at least the master and 1 other active theme
 			if($theme_cache['num_themes'] > 2)
