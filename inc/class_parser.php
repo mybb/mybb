@@ -1004,11 +1004,20 @@ class postParser
 				$title = htmlspecialchars_uni($path[3]);
 				break;
 			case "myspacetv":
-				$id = $input['videoid']; // http://myspacetv.com/index.cfm?fuseaction=vids.individual&videoid=fds123
+				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
 				break;
 			case "yahoo":
-				$id = $path[3]; // http://video.yahoo.com/watch/fds123/abc567
-				$vid = htmlspecialchars_uni($path[2]);
+				$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				// Support for localized portals
+				$domain = explode('.', $parsed_url['host']);
+				if($domain[0] != 'screen')
+				{
+					$local = $domain[0].'.';
+				}
+				else
+				{
+					$local = '';
+				}
 				break;
 			case "vimeo":
 				$id = $path[1]; // http://vimeo.com/fds123
@@ -1031,7 +1040,7 @@ class postParser
 				return "[video={$video}]{$url}[/video]";
 		}
 
-		if(empty($id) || ($video == "yahoo" && empty($vid)))
+		if(empty($id))
 		{
 			return "[video={$video}]{$url}[/video]";
 		}
