@@ -40,9 +40,9 @@ foreach($options as $option)
 }
 
 // Get the pid and tid and replyto from the input.
-$pid = $replyto = $mybb->input['pid'];
 $tid = $mybb->input['tid'];
 
+$replyto = 0;
 if($mybb->input['replyto'])
 {
 	$replyto = intval($mybb->input['replyto']);
@@ -55,14 +55,14 @@ if($mybb->input['ajax'])
 }
 
 // Edit a draft post.
-$draft_pid = 0;
+$pid = 0;
 $editdraftpid = '';
-if($mybb->input['action'] == "editdraft" && $pid)
+if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
 {
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select("posts", "*", "pid='".$pid."'", $options);
+	$query = $db->simple_select("posts", "*", "pid='".intval($mybb->input['pid'])."'", $options);
 	$post = $db->fetch_array($query);
 	if(!$post['pid'])
 	{
@@ -72,9 +72,9 @@ if($mybb->input['action'] == "editdraft" && $pid)
 	{
 		error($lang->error_post_noperms);
 	}
-	$draft_pid = $post['pid'];
+	$pid = $post['pid'];
 	$tid = $post['tid'];
-	$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$draft_pid\" />";
+	$editdraftpid = "<input type=\"hidden\" name=\"pid\" value=\"$pid\" />";
 }
 
 // Set up $thread and $forum for later use.
@@ -667,9 +667,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 		}
 		// Handle incoming 'quote' button
-		if($mybb->input['pid'])
+		if($replyto)
 		{
-			$quoted_posts[$mybb->input['pid']] = $mybb->input['pid'];
+			$quoted_posts[$replyto] = $replyto;
 		}
 
 		// Quoting more than one post - fetch them
