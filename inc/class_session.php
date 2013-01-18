@@ -37,22 +37,14 @@ class session
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
 		{
-			$this->sid = $db->escape_string($mybb->cookies['sid']);
+			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
 				$this->sid = $session['sid'];
-				$this->uid = $session['uid'];
 			}
-		}
-
-		// Still no session, fall back
-		if(!$this->sid)
-		{
-			$this->sid = 0;
-			$this->uid = 0;
 		}
 
 		// If we have a valid session id and user id, load that users session.
