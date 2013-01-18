@@ -173,20 +173,23 @@ if(!empty($firstposts))
 		
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
 		
-		foreach($attachments[$post['pid']] as $attachment)
+		if(isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
 		{
-			$ext = get_extension($attachment['filename']);
-			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-			$attachment['icon'] = get_attachment_icon($ext);
-			eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-			if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
+			foreach($attachments[$post['pid']] as $attachment)
 			{
-				$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
-			}
-			else
-			{
-				$parsed_message .= "<br />".$attbit;
+				$ext = get_extension($attachment['filename']);
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+				$attachment['icon'] = get_attachment_icon($ext);
+				eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+				if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
+				{
+					$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
+				}
+				else
+				{
+					$parsed_message .= "<br />".$attbit;
+				}
 			}
 		}
 		
