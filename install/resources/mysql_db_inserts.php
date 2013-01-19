@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: mysql_db_inserts.php 5616 2011-09-20 13:24:59Z Tomm $
+ * $Id$
  */
 
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'ZIP File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');";

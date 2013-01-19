@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: $
+ * $Id$
  */
 
 $l['logindata_invalidpwordusername'] = "You have entered an invalid username/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.{1}";

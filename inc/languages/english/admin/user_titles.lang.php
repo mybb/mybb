@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: user_titles.lang.php 5349 2011-02-14 23:51:52Z MattR $
+ * $Id$
  */
 
 $l['user_titles'] = "User Titles";

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: banning.php 5453 2011-04-21 23:58:33Z jammerx2 $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

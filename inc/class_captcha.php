@@ -31,7 +31,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
- * $Id: class_captcha.php 5605 2011-09-19 11:17:26Z Tomm $
+ * $Id$
  */
 
 class captcha

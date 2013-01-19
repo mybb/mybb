@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_serverstats.php 5297 2010-12-28 22:01:14Z Tomm $
+ * $Id$
  */
 
 function build_server_stats($is_install=1, $prev_version='', $current_version='', $charset='')

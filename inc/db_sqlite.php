@@ -6,7 +6,7 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id: db_sqlite.php 5329 2011-01-14 10:30:34Z Tomm $
+ * $Id$
  */
 
 class DB_SQLite

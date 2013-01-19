@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: global.lang.php 5738 2011-12-30 14:26:42Z ralgith $
+ * $Id$
  */
 
 $l['redirect_width'] = "50%";

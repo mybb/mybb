@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: promotions.php 5369 2011-02-17 10:55:29Z MattR $
+ * $Id$
  */
 
 function task_promotions($task)

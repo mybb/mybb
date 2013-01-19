@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: index.php 5548 2011-08-08 17:30:31Z PirataNervo $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

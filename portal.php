@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: portal.php 5744 2012-01-23 16:37:22Z ralgith $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

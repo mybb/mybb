@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: post_icons.php 5459 2011-05-10 10:47:56Z Tomm $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

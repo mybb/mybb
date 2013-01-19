@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: reputation.php 5628 2011-10-06 08:24:24Z Tomm $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

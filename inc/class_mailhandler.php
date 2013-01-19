@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_mailhandler.php 5589 2011-09-13 15:08:11Z Tomm $
+ * $Id$
  */
 
 /**

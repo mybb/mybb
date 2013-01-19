@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: xmlhttp.php 5641 2011-10-26 09:36:44Z Tomm $
+ * $Id$
  */
 
 /**

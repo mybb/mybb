@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: system_health.php 5545 2011-08-08 15:44:56Z PirataNervo $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

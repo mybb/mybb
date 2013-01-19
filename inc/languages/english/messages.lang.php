@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: messages.lang.php 5740 2011-12-30 20:01:16Z ralgith $
+ * $Id$
  */
 
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";

@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: tools_recount_rebuild.lang.php 5500 2011-07-19 08:58:09Z Tomm $
+ * $Id$
  */
 
 $l['recount_rebuild'] = "Recount &amp; Rebuild";

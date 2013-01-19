@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: managegroup.php 5722 2011-12-10 00:29:10Z Tomm $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

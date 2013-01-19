@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: db_pdo.php 5297 2010-12-28 22:01:14Z Tomm $
+ * $Id$
  */
 
 class dbpdoEngine {

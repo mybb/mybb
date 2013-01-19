@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: dailycleanup.php 5353 2011-02-15 14:24:00Z Tomm $
+ * $Id$
  */
 
 function task_dailycleanup($task)

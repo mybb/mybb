@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: archive.lang.php 5365 2011-02-16 21:59:02Z MattR $
+ * $Id$
  */
 
 $l['archive_fullversion'] = "Full Version:";

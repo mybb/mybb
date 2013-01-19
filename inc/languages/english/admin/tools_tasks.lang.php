@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: tools_tasks.lang.php 5404 2011-03-19 01:17:10Z jammerx2 $
+ * $Id$
  */
 
 $l['task_manager'] = "Task Manager";

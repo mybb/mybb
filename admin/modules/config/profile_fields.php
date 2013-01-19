@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: profile_fields.php 5616 2011-09-20 13:24:59Z Tomm $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

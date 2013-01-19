@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: style_templates.lang.php 5383 2011-02-23 16:57:30Z Tomm $
+ * $Id$
  */
  
 $l['template_sets'] = "Template Sets";

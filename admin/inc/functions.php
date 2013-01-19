@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions.php 5720 2011-12-10 00:11:43Z Tomm $
+ * $Id$
  */
 
 /**

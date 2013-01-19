@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: backupdb.php 5409 2011-03-20 02:15:47Z jammerx2 $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

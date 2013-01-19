@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: mysql_db_tables.php 5690 2011-11-30 16:08:49Z Tomm $
+ * $Id$
  */
 
 $tables[] = "CREATE TABLE mybb_adminlog (

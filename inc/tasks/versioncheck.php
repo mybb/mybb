@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: $
+ * $Id$
  */
 
 function task_versioncheck($task)

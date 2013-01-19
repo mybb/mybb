@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: tools_modlog.lang.php 5557 2011-08-26 14:06:44Z huji $
+ * $Id$
  */
 
 

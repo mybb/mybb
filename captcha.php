@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: captcha.php 5560 2011-08-28 21:53:04Z PirataNervo $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: private.lang.php 5659 2011-11-27 13:04:53Z Tomm $
+ * $Id$
  */
 
 $l['nav_pms'] = "Private Messages";

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_core.php 5746 2012-02-03 10:03:25Z Tomm $
+ * $Id$
  */
 
 class MyBB {

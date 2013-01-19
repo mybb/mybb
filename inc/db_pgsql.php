@@ -6,7 +6,7 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id: db_pgsql.php 5332 2011-01-14 12:07:07Z Tomm $
+ * $Id$
  */
 
 class DB_PgSQL

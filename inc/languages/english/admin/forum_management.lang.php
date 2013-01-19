@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: forum_management.lang.php 5677 2011-11-29 12:45:05Z Tomm $
+ * $Id$
  */
 
 $l['forum_management'] = "Forum Management";

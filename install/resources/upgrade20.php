@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://mybb.com/about/license
  *
- * $Id: upgrade20.php 5520 2011-07-28 08:56:12Z Tomm $
+ * $Id$
  */
 
 /**

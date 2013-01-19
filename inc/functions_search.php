@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_search.php 5458 2011-05-01 21:12:31Z jammerx2 $
+ * $Id$
  */
 
 /**

@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: user_users.lang.php 5696 2011-12-06 11:10:25Z Tomm $
+ * $Id$
  */
 
 $l['users'] = "Users";

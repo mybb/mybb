@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: upgrade3.php 5299 2010-12-28 23:39:56Z Tomm $
+ * $Id$
  */
 
 /**

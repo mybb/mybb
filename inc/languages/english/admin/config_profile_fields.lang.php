@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: config_profile_fields.lang.php 5616 2011-09-20 13:24:59Z Tomm $
+ * $Id$
  */
  
 $l['custom_profile_fields'] = "Custom Profile Fields";

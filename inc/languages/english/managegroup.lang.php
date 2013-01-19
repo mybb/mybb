@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: managegroup.lang.php 5702 2011-12-07 09:01:51Z Tomm $
+ * $Id$
  */
 
 $l['nav_group_management'] = "{1} Group Management";

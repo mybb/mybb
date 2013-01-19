@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: datahandler_post.lang.php 5688 2011-11-29 16:53:15Z Tomm $
+ * $Id$
  */
 
 $l['postdata_invalid_user_id'] = 'The user id does not exist. Please supply a valid user id.';

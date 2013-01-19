@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: file_verification.php 5462 2011-05-15 16:36:36Z ralgith $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

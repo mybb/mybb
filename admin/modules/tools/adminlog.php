@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: adminlog.php 5602 2011-09-16 18:23:48Z ralgith $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

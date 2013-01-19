@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://mybb.com/about/license
  *
- * $Id: upgrade24.php 5830 2012-05-23 11:08:46Z Tomm $
+ * $Id$
  */
 
 /**

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: mybb_group.php 5297 2010-12-28 22:01:14Z Tomm $
+ * $Id$
  */
 
 function output_logo()

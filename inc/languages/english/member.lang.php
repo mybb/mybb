@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: member.lang.php 5741 2011-12-30 20:55:35Z ralgith $
+ * $Id$
  */
 
 $l['nav_register'] = "Register";

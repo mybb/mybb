@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: datahandler_event.lang.php 5297 2010-12-28 22:01:14Z Tomm $
+ * $Id$
  */
 
 $l['eventdata_missing_name'] = 'The name for the event is missing. Please enter an event name.';

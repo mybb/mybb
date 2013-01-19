@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_calendar.php 5420 2011-04-05 08:20:02Z Tomm $
+ * $Id$
  */
 
 /**

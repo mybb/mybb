@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: tools_system_health.lang.php 5497 2011-07-13 09:06:41Z Tomm $
+ * $Id$
  */
 
 $l['system_health'] = "System Health";

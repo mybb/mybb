@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: moderation.php 5587 2011-09-13 14:48:33Z Tomm $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_upload.php 5623 2011-10-01 02:46:09Z ralgith $
+ * $Id$
  */
 
 

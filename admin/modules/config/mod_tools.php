@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: mod_tools.php 5353 2011-02-15 14:24:00Z Tomm $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

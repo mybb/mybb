@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: user_group_promotions.lang.php 5746 2012-02-03 10:03:25Z Tomm $
+ * $Id$
  */
 
 $l['user_group_promotions'] = "User Group Promotions";

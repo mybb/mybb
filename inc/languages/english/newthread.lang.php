@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: newthread.lang.php 5657 2011-11-27 12:32:47Z Tomm $
+ * $Id$
  */
 
 $l['nav_newthread'] = "New Thread";

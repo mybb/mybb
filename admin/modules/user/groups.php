@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: groups.php 5712 2011-12-08 15:53:03Z Tomm $
+ * $Id$
  */
  
 // Array of usergroup permission fields and their default values.

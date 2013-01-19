@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: moderation.lang.php 5629 2011-10-06 08:33:29Z Tomm $
+ * $Id$
  */
 
 $l['nav_deletethread'] = "Delete Thread";

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

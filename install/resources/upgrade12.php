@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: upgrade12.php 5404 2011-03-19 01:17:10Z jammerx2 $
+ * $Id$
  */
 
 /**
