@@ -3,10 +3,10 @@
  * MyBB 1.6
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
+ * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: 
+ * $Id$
  */
 
 /**

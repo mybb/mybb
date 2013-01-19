@@ -1,5 +1,15 @@
 <?php
 /**
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ *
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
+ *
+ * $Id$
+ */
+
+/**
  * Import an entire theme (stylesheets, properties & templates) from an XML file.
  *
  * @param string The contents of the XML file
