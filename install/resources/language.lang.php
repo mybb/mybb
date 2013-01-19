@@ -1,10 +1,7 @@
 <?php
 /**
- * MyBB 1.6
+ * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
  *
  * $Id$
  */
