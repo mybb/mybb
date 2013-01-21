@@ -1286,6 +1286,13 @@ class Moderation
 				++$forum_counters[$moveto]['unapprovedthreads'];
 			}
 		}
+		else
+		{
+			$newthread = get_thread($newtid);
+			$thread_counters[$newtid]['replies'] = $newthread['replies'];
+			$thread_counters[$newtid]['unapprovedposts'] = $newthread['unapprovedposts'];
+			$thread_counters[$newtid]['attachmentcount'] = $newthread['attachmentcount'];
+		}
 
 		// Get attachment counts for each post
 		/*$query = $db->simple_select("attachments", "COUNT(aid) as count, pid", "pid IN ($pids_list)");

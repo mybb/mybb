@@ -7092,6 +7092,36 @@ body {
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_inline_moveposts" version="1800"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->move_posts}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->move_posts}</strong></td>
+</tr>
+{$loginbox}
+<tr>
+<td class="trow1"><strong>{$lang->thread_to_move_to}</strong><br /><span class="smalltext">{$lang->move_post_note}</span></td>
+<td class="trow1" width="60%"><input type="text" class="textbox" name="threadurl" size="40" />
+</td>
+</tr>
+</table>
+<br />
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}" /></div>
+<input type="hidden" name="action" value="do_multimoveposts" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="posts" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
+</form>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="moderation_merge" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->merge_threads}</title>

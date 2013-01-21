@@ -73,6 +73,7 @@ $l['users_browsing_thread_reading'] = "Reading...";
 $l['inline_delete_posts'] = "Delete Posts";
 $l['inline_merge_posts'] = "Merge Posts";
 $l['inline_split_posts'] = "Split Posts";
+$l['inline_move_posts'] = "Move Posts";
 $l['inline_approve_posts'] = "Approve Posts";
 $l['inline_unapprove_posts'] = "Unapprove Posts";
 $l['inline_post_moderation'] = "Inline Post Moderation:";

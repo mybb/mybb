@@ -1259,8 +1259,7 @@ switch($mybb->input['action'])
 			$mergetid = $parameters['tid'];
 		}
 		$mergetid = intval($mergetid);
-		$query = $db->simple_select("threads", "*", "tid='".intval($mergetid)."'");
-		$mergethread = $db->fetch_array($query);
+		$mergethread = get_thread($mergetid);
 		if(!$mergethread['tid'])
 		{
 			error($lang->error_badmergeurl);
@@ -2171,6 +2170,177 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
 
 		moderation_redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
+		break;
+
+	// Split posts - Inline moderation
+	case "multimoveposts":
+		add_breadcrumb($lang->nav_multi_moveposts);
+		
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			$posts = getids($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
+		
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
+		
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
+		$posts = array_map('intval', $posts);
+		$pidin = implode(',', $posts);
+
+		// Make sure that we are not moving posts in a thread with one post
+		// Select number of posts in each thread that the moved post is in
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin)
+			GROUP BY p.tid, p.pid
+		");
+		$threads = $pcheck = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if(intval($tcheck['count']) <= 1)
+			{
+				error($lang->error_cantsplitonepost);
+			}
+			$threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
+		}
+
+		// Make sure that we are not moving all posts in the thread
+		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
+			GROUP BY p.tid, p.pid
+		");
+		$pcheck2 = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if($tcheck['count'] > 0)
+			{
+				$pcheck2[] = $tcheck['tid'];
+			}
+		}
+		if(count($pcheck2) != count($pcheck))
+		{
+			// One or more threads do not have posts after splitting
+			error($lang->error_cantmoveall);
+		}
+
+		$inlineids = implode("|", $posts);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
+		eval("\$moveposts = \"".$templates->get("moderation_inline_moveposts")."\";");
+		output_page($moveposts);
+		break;
+
+	// Actually split the posts - Inline moderation
+	case "do_multimoveposts":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
+		// explode at # sign in a url (indicates a name reference) and reassign to the url
+		$realurl = explode("#", $mybb->input['threadurl']);
+		$mybb->input['threadurl'] = $realurl[0];
+		
+		// Are we using an SEO URL?
+		if(substr($mybb->input['threadurl'], -4) == "html")
+		{
+			// Get thread to merge's tid the SEO way
+			preg_match("#thread-([0-9]+)?#i", $mybb->input['threadurl'], $threadmatch);
+			preg_match("#post-([0-9]+)?#i", $mybb->input['threadurl'], $postmatch);
+			
+			if($threadmatch[1])
+			{
+				$parameters['tid'] = $threadmatch[1];
+			}
+			
+			if($postmatch[1])
+			{
+				$parameters['pid'] = $postmatch[1];
+			}
+		}
+		else
+		{
+			// Get thread to merge's tid the normal way
+			$splitloc = explode(".php", $mybb->input['threadurl']);
+			$temp = explode("&", my_substr($splitloc[1], 1));
+
+			if(!empty($temp))
+			{
+				for($i = 0; $i < count($temp); $i++)
+				{
+					$temp2 = explode("=", $temp[$i], 2);
+					$parameters[$temp2[0]] = $temp2[1];
+				}
+			}
+			else
+			{
+				$temp2 = explode("=", $splitloc[1], 2);
+				$parameters[$temp2[0]] = $temp2[1];
+			}
+		}
+		
+		if($parameters['pid'] && !$parameters['tid'])
+		{
+			$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");
+			$post = $db->fetch_array($query);
+			$newtid = $post['tid'];
+		}
+		elseif($parameters['tid'])
+		{
+			$newtid = $parameters['tid'];
+		}
+		$newtid = intval($newtid);
+		$newthread = get_thread($newtid);
+		if(!$newthread['tid'])
+		{
+			error($lang->error_badmovepostsurl);
+		}
+		if($newtid == $tid)
+		{ // sanity check
+			error($lang->error_movetoself);
+		}
+
+		$postlist = explode("|", $mybb->input['posts']);
+		foreach($postlist as $pid)
+		{
+			$pid = intval($pid);
+			$plist[] = $pid;
+		}
+		
+		if(!is_moderator_by_pids($plist, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
+		
+		$newtid = $moderation->split_posts($plist, $tid, $newthread['fid'], $db->escape_string($newthread['subject']), $newtid);
+
+		$pid_list = implode(', ', $plist);
+		$lang->move_selective_posts = $lang->sprintf($lang->move_selective_posts, $pid_list, $newtid);
+		log_moderator_action($modlogdata, $lang->move_selective_posts);
+
+		moderation_redirect(get_thread_link($newtid), $lang->redirect_moveposts);
 		break;
 
 	// Approve posts - Inline moderation
