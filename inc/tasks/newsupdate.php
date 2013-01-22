@@ -19,10 +19,17 @@ function task_newsupdate($task)
 
 	if (!extension_loaded('SimpleXML')) {
 		add_task_log($task, 'The SimpleXML extension is not installed. Please contact your host.');
+		return false;
 	}
 
 	$fetchedNews = fetch_remote_file('http://blog.mybb.com/feed/');
-	$feed        = new SimpleXMLElement($fetchedNews);
+
+	if (!$fetchedNews) {
+		add_task_log($task, 'Error communicating with the MyBB server.');
+		return false;
+	}
+
+	$feed = new SimpleXMLElement($fetchedNews);
 
 	$latestNews = array();
 	foreach ($feed->channel->item as $newsItem) {
