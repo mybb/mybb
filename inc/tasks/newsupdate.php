@@ -29,7 +29,12 @@ function task_newsupdate($task)
 		return false;
 	}
 
-	$feed = new SimpleXMLElement($fetchedNews);
+	try {
+		$feed = new SimpleXMLElement($fetchedNews);
+	} catch (Exception $e) {
+		add_task_log($task, $e);
+		return false;
+	}
 
 	$latestNews = array();
 	foreach ($feed->channel->item as $newsItem) {
