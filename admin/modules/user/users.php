@@ -154,8 +154,7 @@ if($mybb->input['action'] == "activate_user")
 		admin_redirect("index.php?module=user-users");
 	}
 
-	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-	$user = $db->fetch_array($query);
+	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
 	if(!$user['uid'] || $user['usergroup'] != 5)
@@ -358,8 +357,7 @@ if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_users_edit");
 	
-	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-	$user = $db->fetch_array($query);
+	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
 	if(!$user['uid'])
@@ -1435,8 +1433,7 @@ if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_users_delete");
 	
-	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-	$user = $db->fetch_array($query);
+	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
 	if(!$user['uid'])

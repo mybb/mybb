@@ -94,8 +94,7 @@ if($mybb->input['action'] == "unlock")
 	}
 	else if($mybb->input['uid'])
 	{
-		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-		$user = $db->fetch_array($query);
+		$user = get_user($mybb->input['uid']);
 		if(!$user['uid'])
 		{
 			$error[] = $lang->error_invalid_uid;
@@ -137,13 +136,7 @@ elseif($mybb->input['do'] == "login")
 
 	if($loginhandler->verify_username() !== false && $loginhandler->verify_password() !== false)
 	{
-		$loginhandler->login_data['uid'] = intval($loginhandler->login_data['uid']);
-		$query = $db->simple_select("users", "*", "uid = '{$loginhandler->login_data['uid']}'");
-		
-		if($db->num_rows($query))
-		{
-			$mybb->user = $db->fetch_array($query);
-		}
+		$mybb->user = get_user($loginhandler->login_data['uid']);
 	}
 
 	if($mybb->user['uid'])
@@ -277,8 +270,7 @@ else
 			$admin_session['data'] = @unserialize($admin_session['data']);
 
 			// Fetch the user from the admin session
-			$query = $db->simple_select("users", "*", "uid='{$admin_session['uid']}'");
-			$mybb->user = $db->fetch_array($query);
+			$mybb->user = get_user($admin_session['uid']);
 
 			// Login key has changed - force logout
 			if(!$mybb->user['uid'] || $mybb->user['loginkey'] != $admin_session['loginkey'])

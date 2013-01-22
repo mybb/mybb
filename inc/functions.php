@@ -1231,7 +1231,7 @@ function usergroup_displaygroup($gid)
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $usercache, $cached_forum_permissions_permissions, $cached_forum_permissions;
+	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $cached_forum_permissions_permissions, $cached_forum_permissions;
 
 	if($uid == 0)
 	{
@@ -1242,13 +1242,9 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	{
 		if($uid != 0 && $uid != $mybb->user['uid'])
 		{
-			if(!$usercache[$uid])
-			{
-				$query = $db->simple_select("users", "*", "uid='$uid'");
-				$usercache[$uid] = $db->fetch_array($query);
-			}
+			$user = get_user($uid);
 
-			$gid = $usercache[$uid]['usergroup'].",".$usercache[$uid]['additionalgroups'];
+			$gid = $user['usergroup'].",".$user['additionalgroups'];
 			$groupperms = usergroup_permissions($gid);
 		}
 		else
@@ -3992,8 +3988,7 @@ function leave_usergroup($uid, $leavegroup)
 	}
 	else
 	{
-		$query = $db->simple_select("users", "*", "uid='".intval($uid)."'");
-		$user = $db->fetch_array($query);
+		$user = get_user($uid);
 	}
 
 	$groupslist = "";

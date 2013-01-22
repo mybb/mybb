@@ -837,8 +837,7 @@ if($mybb->input['action'] == "activate")
 	}
 	else
 	{
-		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-		$user = $db->fetch_array($query);
+		$user = get_user($mybb->input['uid']);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
@@ -1072,8 +1071,7 @@ if($mybb->input['action'] == "resetpassword")
 	}
 	else
 	{
-		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
-		$user = $db->fetch_array($query);
+		$user = get_user($mybb->input['uid']);
 	}
 	if($mybb->input['code'] && $user['uid'])
 	{
