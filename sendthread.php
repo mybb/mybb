@@ -30,10 +30,10 @@ $thread = get_thread($tid);
 $breadcrumbprefix = '';
 if($thread['prefix'])
 {
-	$threadprefixes = $cache->read('threadprefixes');
-	if(isset($threadprefixes[$thread['prefix']]))
+	$threadprefix = build_prefixes($thread['prefix']);
+	if(isset($threadprefix['displaystyle']))
 	{
-		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
+		$breadcrumbprefix = $threadprefix['displaystyle'].'&nbsp;';
 	}
 }
 

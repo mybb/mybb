@@ -526,7 +526,7 @@ function build_friendly_wol_location($user_activity)
 		$tid_sql = implode(",", $tid_list);
 		$query = $db->simple_select('threads', 't.uid, t.fid, t.tid, t.subject, t.visible', "tid IN({$tid_sql}) {$fidnot}");
 
-		$threadprefixes = $mybb->cache->read('threadprefixes');
+		$threadprefixes = build_prefixes();
 
 		while($thread = $db->fetch_array($query))
 		{

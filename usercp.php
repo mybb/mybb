@@ -1258,11 +1258,10 @@ if($mybb->input['action'] == "subscriptions")
 
 	// Fetch subscriptions
 	$query = $db->query("
-		SELECT s.*, t.*, t.username AS threadusername, u.username, p.displaystyle AS threadprefix
+		SELECT s.*, t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
 		WHERE s.uid='".$mybb->user['uid']."' {$visible}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
@@ -1359,6 +1358,7 @@ if($mybb->input['action'] == "subscriptions")
 		}
 		
 		$icon_cache = $cache->read("posticons");
+		$threadprefixes = build_prefixes();
 
 		// Now we can build our subscription list
 		foreach($subscriptions as $thread)
@@ -1369,9 +1369,9 @@ if($mybb->input['action'] == "subscriptions")
 			$prefix = '';
 			
 			// If this thread has a prefix, insert a space between prefix and subject
-			if($thread['prefix'] != 0)
+			if($thread['prefix'] != 0 && isset($threadprefixes[$thread['prefix']]))
 			{
-				$thread['threadprefix'] .= '&nbsp;';
+				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 			}
 			
 			// Sanitize
@@ -3118,7 +3118,7 @@ if(!$mybb->input['action'])
 				}
 
 				$icon_cache = $cache->read("posticons");
-				$threadprefixes = $cache->read('threadprefixes');
+				$threadprefixes = build_prefixes();
 				
 				foreach($subscriptions as $thread)
 				{
@@ -3288,6 +3288,7 @@ if(!$mybb->input['action'])
 		}
 		
 		$icon_cache = $cache->read("posticons");
+		$threadprefixes = build_prefixes();
 		
 		// Run the threads...
 		foreach($threadcache as $thread)
@@ -3306,7 +3307,6 @@ if(!$mybb->input['action'])
 				// If this thread has a prefix...
 				if($thread['prefix'] != 0)
 				{
-					$threadprefixes = $cache->read('threadprefixes');
 					if(isset($threadprefixes[$thread['prefix']]))
 					{
 						$thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';

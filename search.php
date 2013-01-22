@@ -337,7 +337,7 @@ if($mybb->input['action'] == "results")
 			LIMIT $start, $perpage
 		");
 
-		$threadprefixes = $cache->read('threadprefixes');
+		$threadprefixes = build_prefixes();
 		$thread_cache = array();
 		while($thread = $db->fetch_array($query))
 		{

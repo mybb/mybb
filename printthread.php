@@ -29,11 +29,11 @@ $thread = get_thread(intval($mybb->input['tid']));
 $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
 {
-	$threadprefixes = $cache->read('threadprefixes');
-	if(isset($threadprefixes[$thread['prefix']]))
+	$threadprefix = build_prefixes($thread['prefix']);
+	if(isset($threadprefix))
 	{
-		$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['prefix'];
-		$thread['displaystyle'] = $threadprefixes[$thread['prefix']]['displaystyle'];
+		$thread['threadprefix'] = $threadprefix['prefix'];
+		$thread['displaystyle'] = $threadprefix['displaystyle'];
 	}
 }
 

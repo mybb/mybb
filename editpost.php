@@ -74,7 +74,7 @@ if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 $breadcrumbprefix = '';
 if($thread['prefix'])
 {
-	$threadprefixes = $cache->read('threadprefixes');
+	$threadprefixes = build_prefixes();
 	if(isset($threadprefixes[$thread['prefix']]))
 	{
 		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';

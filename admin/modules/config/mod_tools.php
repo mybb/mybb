@@ -508,7 +508,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 
-	$threadprefixes = $cache->read('threadprefixes');
+	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
 	{
 		$thread_prefixes = array(
@@ -882,7 +882,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 
-	$threadprefixes = $cache->read('threadprefixes');
+	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
 	{
 		$thread_prefixes = array(
