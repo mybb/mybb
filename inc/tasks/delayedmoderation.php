@@ -166,9 +166,7 @@ function task_delayedmoderation($task)
 					}
 					
 					$mergetid = intval($mergetid);
-					
-					$query = $db->simple_select("threads", "*", "tid='".intval($mergetid)."'");
-					$mergethread = $db->fetch_array($query);
+					$mergethread = get_thread($mergetid);
 					
 					if(!$mergethread['tid'])
 					{

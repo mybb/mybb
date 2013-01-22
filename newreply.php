@@ -68,16 +68,11 @@ if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
 }
 
 // Set up $thread and $forum for later use.
-$options = array(
-	"limit" => 1
-);
-$query = $db->simple_select("threads", "*", "tid='".$tid."'");
-if($db->num_rows($query) == 0)
+$thread = get_thread($tid);
+if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
-
-$thread = $db->fetch_array($query);
 $fid = $thread['fid'];
 
 // Get forum info

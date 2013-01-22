@@ -48,8 +48,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$plugins->run_hooks("polls_newpoll_start");
 
-	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
-	$thread = $db->fetch_array($query);
+	$thread = get_thread($mybb->input['tid']);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 	
@@ -150,8 +149,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_newpoll_start");
 
-	$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
-	$thread = $db->fetch_array($query);
+	$thread = get_thread($mybb->input['tid']);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 	
@@ -637,8 +635,7 @@ if($mybb->input['action'] == "showresults")
 	}
 	
 	$tid = $poll['tid'];
-	$query = $db->simple_select("threads", "*", "tid='$tid'");
-	$thread = $db->fetch_array($query);
+	$thread = get_thread($tid);
 	$fid = $thread['fid'];
 
 	// Get forum info
@@ -966,8 +963,7 @@ if($mybb->input['action'] == "do_undovote")
 	
 	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
 	// Get thread ID and then get forum info
-	$query = $db->simple_select("threads", "*", "tid='".intval($poll['tid'])."'");
-	$thread = $db->fetch_array($query);
+	$thread = get_thread($poll['tid']);
 	$fid = $thread['fid'];
 	
 	// Get forum info

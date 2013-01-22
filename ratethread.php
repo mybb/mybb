@@ -21,8 +21,7 @@ verify_post_check($mybb->input['my_post_key']);
 $lang->load("ratethread");
 
 $tid = intval($mybb->input['tid']);
-$query = $db->simple_select("threads", "*", "tid='{$tid}'");
-$thread = $db->fetch_array($query);
+$thread = get_thread($tid);
 if(!$thread['tid'])
 {
 	error($lang->error_invalidthread);

@@ -699,8 +699,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$query = $db->simple_select("threads", "*", "tid='$tid'");
-		$thread = $db->fetch_array($query);
+		$thread = get_thread($tid);
 
 		$plugins->run_hooks("moderation_approvethread");
 
@@ -722,8 +721,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$query = $db->simple_select("threads", "*", "tid='$tid'");
-		$thread = $db->fetch_array($query);
+		$thread = get_thread($tid);
 
 		$plugins->run_hooks("moderation_unapprovethread");
 
