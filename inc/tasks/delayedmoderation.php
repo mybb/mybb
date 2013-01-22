@@ -156,8 +156,7 @@ function task_delayedmoderation($task)
 					
 					if($parameters['pid'] && !$parameters['tid'])
 					{
-						$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");
-						$post = $db->fetch_array($query);
+						$post = get_post($parameters['pid']);
 						$mergetid = $post['tid'];
 					}
 					else if($parameters['tid'])

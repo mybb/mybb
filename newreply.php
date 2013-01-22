@@ -49,11 +49,7 @@ $pid = 0;
 $editdraftpid = '';
 if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
 {
-	$options = array(
-		"limit" => 1
-	);
-	$query = $db->simple_select("posts", "*", "pid='".intval($mybb->input['pid'])."'", $options);
-	$post = $db->fetch_array($query);
+	$post = get_post($pid);
 	if(!$post['pid'])
 	{
 		error($lang->error_invalidpost);
