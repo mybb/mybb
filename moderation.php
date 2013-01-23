@@ -16,7 +16,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_deleteposts_post,moderation_deleteposts,moderation_mergeposts_post,moderation_mergeposts';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
