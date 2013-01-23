@@ -19,7 +19,7 @@ Contributing to MyBB is easy:
 6. SQA will provide feedback and, if it passes verification, your pull request will be merged into MyBB
 
 ### Community
-Visit our community at (http://mybb.com "MyBB.com") for support.
+Visit our community at [MyBB.com](http://mybb.com) for support.
 
 ### License
-MyBB is licensed under LGPL v3.(http://mybb.com/about/license "GNU Lesser General Public License v3").
+MyBB is licensed under [GNU Lesser General Public License v3](http://mybb.com/about/license).
