@@ -184,7 +184,7 @@ function remove_avatars($uid, $exclude="")
  */
 function upload_avatar($avatar=array(), $uid=0)
 {
-	global $db, $mybb, $lang, $plugins;
+	global $db, $mybb, $lang, $plugins, $cache;
 	
 	if(!$uid)
 	{

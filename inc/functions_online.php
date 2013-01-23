@@ -524,7 +524,7 @@ function build_friendly_wol_location($user_activity)
 	{
 		$perms = array();
 		$tid_sql = implode(",", $tid_list);
-		$query = $db->simple_select('threads', 't.uid, t.fid, t.tid, t.subject, t.visible', "tid IN({$tid_sql}) {$fidnot}");
+		$query = $db->simple_select('threads', 'uid, fid, tid, subject, visible', "tid IN({$tid_sql}) {$fidnot}");
 
 		$threadprefixes = build_prefixes();
 
