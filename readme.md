@@ -1,4 +1,4 @@
-[![MyBB](https://github.com/mybb/mybb/blob/feature/images/logo.png "MyBB")](http://mybb.com "MyBB")
+[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](http://mybb.com "MyBB")
 
 ## Free never tasted so good.
 MyBB is a free and open source, community-based, forum software project.
