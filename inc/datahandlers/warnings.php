@@ -100,14 +100,14 @@ class WarningsHandler extends DataHandler
 		$warning = &$this->data;
 		
 		$this->write_warning_data = array(
-			"uid" => $warning['uid'],
-			"tid" => intval($warning['tid']),
-			"pid" => intval($warning['pid']),
+			"uid" => (int)$warning['uid'],
+			"tid" => (int)$warning['tid'],
+			"pid" => (int)($warning['pid'],
 			"title" => $db->escape_string($warning['title']),
-			"points" => intval($warning['points']),
+			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
-			"issuedby" => $mybb->user['uid'],
-			"expires" => $warning['expires'],
+			"issuedby" => (int)$mybb->user['uid'],
+			"expires" => $db->escape_string($warning['expires']),
 			"expired" => 0,
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])
