@@ -71,7 +71,7 @@ $l['show_neutral'] = "Show: Neutral Ratings";
 $l['show_negative'] = "Show: Negative Ratings";
 $l['sort_updated'] = "Sort by: Last Updated";
 $l['sort_username'] = "Sort by: Username";
-$l['last_updated'] = "Last updated {1}, {2}";
+$l['last_updated'] = "Last updated {1}";
 $l['postrep_given'] = "Rating given for <a href=\"{1}\">{2}'s post</a> {3}<br />";
 $l['postrep_given_thread'] = "in {1}";
 $l['no_reputation_votes'] = "This user currently does not have any reputation ratings with the specified criteria below.";
