@@ -623,22 +623,39 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 		
+		
 		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
+		else
+		{
+		
+			if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+			{
+				$errors[] = $lang->error_disallowed_namestyle_username;
+			}
+		}
+		
+		if(!$mybb->input['starimage'])
+		{
+			$mybb->input['starimage'] = "images/star.gif";
+		}
+		else
+		{
+			if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+			{
+				$errors[] = $lang->error_disallowed_characters_starimage;
+			}
+		}
+		
 
 		if(!$errors)
 		{
 			if($mybb->input['stars'] < 1)
 			{
 				$mybb->input['stars'] = 0;
-			}
-			
-			if(!$mybb->input['starimage'])
-			{
-				$mybb->input['starimage'] = "images/star.gif";
-			}
+			}	
 			
 			$new_usergroup = array(
 				"type" => 2,
@@ -765,6 +782,12 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_disallowed_namestyle_username;
 				$mybb->input['namestyle'] = $usergroup['namestyle'];
 			}
+		}
+		
+		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+		{
+			$errors[] = $lang->error_disallowed_characters_starimage;
+			$mybb->input['namestyle'] = $usergroup['namestyle'];
 		}
 
 		if(!$errors)
