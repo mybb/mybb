@@ -46,15 +46,15 @@ var Thread = {
 				}
 			});
 		}
-		element = $("multiquote_"+pid);
+		element = $("multiquote_"+pid).up('a');
 		if(is_new == true)
 		{
-			element.src = element.src.replace("postbit_multiquote.gif", "postbit_multiquote_on.gif");
+			element.addClassName('postbit_multiquote_on');
 			new_post_ids[new_post_ids.length] = pid;
 		}
 		else
 		{
-			element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
+			element.removeClassName('postbit_multiquote_on');
 		}
 		if($('quickreply_multiquote'))
 		{
@@ -132,10 +132,10 @@ var Thread = {
 		{
 			var post_ids = quoted.split("|");
 			post_ids.each(function(post_id) {
-				if($("multiquote_"+post_id))
+				if($("multiquote_"+post_id).up('a'))
 				{
-					element = $("multiquote_"+post_id);
-					element.src = element.src.replace("postbit_multiquote_on.gif", "postbit_multiquote.gif");
+					element = $("multiquote_"+post_id).up('a');
+					element.removeClassName('postbit_multiquote_on');
 				}
 			});
 		}
