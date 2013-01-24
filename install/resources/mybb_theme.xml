@@ -379,17 +379,17 @@ table {
 	border-top-color: #ffb8be;
 }
 
-.trow_selected td {
+.trow_selected {
 	background: #FFFBD9;
 	color: #000;
 	border-right-color: #F7E86A;
 	border-bottom-color: #F7E86A;
 }
 
-.trow_selected td a:link,
-.trow_selected td a:visited,
-.trow_selected td a:hover,
-.trow_selected td a:active {
+.trow_selected a:link,
+.trow_selected a:visited,
+.trow_selected a:hover,
+.trow_selected a:active {
 	color: #000;
 }
 
