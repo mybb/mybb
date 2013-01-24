@@ -185,7 +185,7 @@ class DB_MySQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "mysql_connect";
-				if(isset($single_connection['pconnect'])))
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "mysql_pconnect";
 				}
