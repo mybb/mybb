@@ -11948,6 +11948,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=1603"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1603"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
