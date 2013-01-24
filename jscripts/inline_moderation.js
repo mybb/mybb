@@ -43,12 +43,12 @@ var inlineModeration = {
 				else if(inlineIds.indexOf(id) != -1)
 				{
 					element.checked = true;
-					var tr = element.up('tr');
+					var post = element.up('div.post_content');
 					var fieldset = element.up('fieldset');
 					
-					if(tr)
+					if(post)
 					{
-						tr.addClassName('trow_selected');
+						post.addClassName('trow_selected');
 					}
 					
 					if(fieldset)
@@ -59,10 +59,10 @@ var inlineModeration = {
 				else
 				{
 					element.checked = false;
-					var tr = element.up('tr');
-					if(tr)
+					var post = element.up('div.post_content');
+					if(post)
 					{
-						tr.removeClassName('trow_selected');
+						post.removeClassName('trow_selected');
 					}
 				}
 			}
@@ -123,19 +123,19 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
-			var tr = element.up('tr');
-			if(tr)
+			var post = element.up('div.post_content');
+			if(post)
 			{
-				tr.addClassName('trow_selected');
+				post.addClassName('trow_selected');
 			}
 		}
 		else
 		{
 			inlineModeration.inlineCount--;
-			var tr = element.up('tr');
-			if(tr)
+			var post = element.up('div.post_content');
+			if(post)
 			{
-				tr.removeClassName('trow_selected');
+				post.removeClassName('trow_selected');
 			}
 
 			if(inlineCookie.indexOf("ALL") != -1)
@@ -203,7 +203,7 @@ var inlineModeration = {
 			}
 		});
 
-		$$('tr.trow_selected').each(function(element) {
+		$$('div.trow_selected').each(function(element) {
 			element.removeClassName('trow_selected');
 		});
 
@@ -247,15 +247,15 @@ var inlineModeration = {
 				var changed = (element.checked != master.checked);
 				element.checked = master.checked;
 
-				var tr = element.up('tr');
+				var post = element.up('div.post_content');
 				var fieldset = element.up('fieldset');
-				if(tr && master.checked == true)
+				if(post && master.checked == true)
 				{
-					tr.addClassName('trow_selected');
+					post.addClassName('trow_selected');
 				}
 				else
 				{
-					tr.removeClassName('trow_selected');
+					post.removeClassName('trow_selected');
 				}
 				
 				if(typeof(fieldset) != "undefined")
