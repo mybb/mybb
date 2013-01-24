@@ -166,7 +166,7 @@ class DB_MySQLi
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type]))
+			if(!isset($connections[$type]) || !is_array($connections[$type]))
 			{
 				break;
 			}
@@ -186,7 +186,7 @@ class DB_MySQLi
 			{
 				$connect_function = "mysqli_connect";
 				$persist = "";
-				if($single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
+				if(isset($single_connection['pconnect']) && $single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
 				{
 					$persist = "p:";
 				}
@@ -196,7 +196,12 @@ class DB_MySQLi
 				$this->get_execution_time();
 
 				// Specified a custom port for this connection?
-				list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
+				$port = '';
+				if(strpos($single_connection['hostname'], ':'))
+				{
+					list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
+				}
+
 				if($port)
 				{
 					$this->$link = @$connect_function($persist.$hostname, $single_connection['username'], $single_connection['password'], "", $port);

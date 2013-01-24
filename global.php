@@ -213,50 +213,36 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
-$theme_stylesheets = array();
-$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
-
-$actions = array('global');
-if(isset($mybb->input['action']))
+$stylesheets = '';
+$theme['stylesheets'] = unserialize($theme['stylesheets']);
+$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
+foreach($stylesheet_scripts as $stylesheet_script)
 {
-	$actions[] = $mybb->input['action'];
-}
-
-foreach($theme['stylesheets'] as $script => $stylesheet)
-{
-	if(!in_array($script, array('global', THIS_SCRIPT)) && $script != $theme['color'])
+	$stylesheet_actions = array("global");
+	if(!empty($mybb->input['action']))
 	{
-		continue;
+		$stylesheet_actions[] = $mybb->input['action'];
 	}
-
-	foreach($actions as $action)
+	// Load stylesheets for global actions and the current action
+	foreach($stylesheet_actions as $stylesheet_action)
 	{
-		if(!isset($stylesheet[$action]) || isset($stylesheet[$action]) && !$stylesheet[$action])
+		if(!$stylesheet_action)
 		{
 			continue;
 		}
 
-		foreach($stylesheet[$action] as $page_stylesheet)
+		if(!empty($theme['stylesheets'][$stylesheet_script][$stylesheet_action]))
 		{
-			if(!$already_loaded[$page_stylesheet])
+			// Actually add the stylesheets to the list
+			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
 			{
-				$theme_stylesheets[basename($page_stylesheet)] = $page_stylesheet;
+				if(!empty($already_loaded[$page_stylesheet]))
+				{
+					continue;
+				}
+				$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+				$already_loaded[$page_stylesheet] = 1;
 			}
-			
-			$already_loaded[$page_stylesheet] = 1;
-		}
-	}
-}
-unset($actions);
-
-$stylesheets = '';
-if(!empty($theme_stylesheets))
-{
-	foreach($theme['disporder'] as $style_name => $order)
-	{
-		if($theme_stylesheets[$style_name])
-		{
-			$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$theme_stylesheets[$style_name]}\" />\n";
 		}
 	}
 }
@@ -523,7 +509,8 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != 'private.php' || $mybb->input['action'] != 'read'))
+$pm_notice = '';
+if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
 {
 	if(!$parser)
 	{
@@ -621,6 +608,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 }
 
 // DST Auto detection enabled?
+$auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
 	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { Event.observe(window, 'load', function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
@@ -736,16 +724,19 @@ if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->setting
 }
 
 // work out which items the user has collapsed
-$colcookie = false;
-if(isset($mybb->cookies['collapsed']))
+$colcookie = '';
+if(!empty($mybb->cookies['collapsed']))
 {
 	$colcookie = $mybb->cookies['collapsed'];
 }
 
 // set up collapsable items (to automatically show them us expanded)
+$collapsed = array('boardstats' => '', 'boardstats_e' => '', 'quickreply' => '', 'quickreply_e' => '');
+$collapsedimg = $collapsed;
+
 if($colcookie)
 {
-	$col = explode('|', $colcookie);
+	$col = explode("|", $colcookie);
 	if(!is_array($col))
 	{
 		$col[0] = $colcookie; // only one item
@@ -753,11 +744,11 @@ if($colcookie)
 	unset($collapsed);
 	foreach($col as $key => $val)
 	{
-		$ex = $val.'_e';
-		$co = $val.'_c';
-		$collapsed[$co] = 'display: show;';
-		$collapsed[$ex] = 'display: none;';
-		$collapsedimg[$val] = '_collapsed';
+		$ex = $val."_e";
+		$co = $val."_c";
+		$collapsed[$co] = "display: show;";
+		$collapsed[$ex] = "display: none;";
+		$collapsedimg[$val] = "_collapsed";
 	}
 }
 

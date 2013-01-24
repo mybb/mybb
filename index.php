@@ -70,7 +70,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	");
 
 	$forum_viewers = $doneusers = array();
-	$membercount = $guestcount = $anoncount = 0;
+	$membercount = $guestcount = $anoncount = $botcount = 0;
 	$onlinemembers = $comma = '';
 
 	// Fetch spiders
@@ -86,7 +86,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		if($user['uid'] > 0)
 		{
 			// The user is registered.
-			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
+			if(!isset($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				// If the user is logged in anonymously, update the count for that.
 				if($user['invisible'] == 1)
@@ -191,8 +191,12 @@ if($mybb->settings['showbirthdays'] != 0)
 		$bdaycache = $cache->read('birthdays');
 	}
 	
-	$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
-	$today_bdays = $bdaycache[$bdaydate]['users'];
+	$hiddencount = $today_bdays = 0;
+	if(isset($bdaycache[$bdaydate]))
+	{
+		$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+		$today_bdays = $bdaycache[$bdaydate]['users'];
+	}
 
 	$comma = '';
 	if(!empty($today_bdays))
@@ -357,7 +361,7 @@ while($forum = $db->fetch_array($query))
 {
 	if($mybb->user['uid'] == 0)
 	{
-		if($forumsread[$forum['fid']])
+		if(isset($forumsread[$forum['fid']]))
 		{
 			$forum['lastread'] = $forumsread[$forum['fid']];
 		}

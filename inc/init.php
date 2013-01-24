@@ -238,7 +238,7 @@ if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 add_shutdown('send_mail_queue');
 
 /* URL Definitions */
-if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT'])))
 {
 	$mybb->seo_support = true;
 

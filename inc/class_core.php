@@ -95,6 +95,13 @@ class MyBB {
 	public $request_method = "";
 
 	/**
+	 * Loads templates directly from the master theme
+	 *
+	 * @var boolean
+	 */
+	public $dev_mode = false;
+
+	/**
 	 * Variables that need to be clean.
 	 *
 	 * @var array
@@ -269,7 +276,7 @@ class MyBB {
 				}
 			}
 			
-			if(!$this->cookies[$key])
+			if(!isset($this->cookies[$key]))
 			{
 				$this->cookies[$key] = $val;
 			}

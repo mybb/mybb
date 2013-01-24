@@ -366,7 +366,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		$adodb = false;
 	}
 
-	$todaysdate == $yesterdaysdate = '';
+	$todaysdate = $yesterdaysdate = '';
 	if($ty && ($format == $mybb->settings['dateformat'] || $format == 'relative'))
 	{
 		$_stamp = TIME_NOW;
@@ -390,7 +390,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		if($ty != 2 && (TIME_NOW - $stamp) < 3600)
 		{
 			$diff = TIME_NOW - $stamp;
-			$relative = array('prefix', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
+			$relative = array('prefix' => '', 'minute' => 0, 'plural' => $lang->rel_minutes_plural, 'suffix' => $lang->rel_ago);
 
 			if($diff < 0)
 			{
@@ -2335,6 +2335,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
+	$jumpsel['default'] = '';
 
 	if($permissions)
 	{
@@ -2362,7 +2363,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 		$permissioncache = forum_permissions();
 	}
 
-	if(is_array($jumpfcache[$pid]))
+	if(isset($jumpfcache[$pid]) && is_array($jumpfcache[$pid]))
 	{
 		foreach($jumpfcache[$pid] as $main)
 		{
@@ -3406,6 +3407,7 @@ function build_breadcrumb()
 		}
 	}
 
+	$activesep = '';
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
 
@@ -3464,7 +3466,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 		{
 			if($fid == $forumnav['fid'])
 			{
-				if($pforumcache[$forumnav['pid']])
+				if(isset($pforumcache[$forumnav['pid']]))
 				{
 					build_forum_breadcrumb($forumnav['pid']);
 				}

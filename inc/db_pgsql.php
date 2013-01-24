@@ -180,7 +180,7 @@ class DB_PgSQL
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type]))
+			if(!isset($connections[$type]) || !is_array($connections[$type]))
 			{
 				break;
 			}
@@ -199,7 +199,7 @@ class DB_PgSQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "pg_connect";
-				if($single_connection['pconnect'])
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "pg_pconnect";
 				}

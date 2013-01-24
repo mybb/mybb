@@ -24,10 +24,17 @@ function build_forumbits($pid=0, $depth=1)
 	$forum_listing = '';
 
 	// If no forums exist with this parent, do nothing
-	if(!is_array($fcache[$pid]))
+	if(empty($fcache[$pid]) || !is_array($fcache[$pid]))
 	{
 		return;
 	}
+
+	$parent_counters['threads'] = 0;
+	$parent_counters['posts'] = 0;
+	$parent_counters['unapprovedposts'] = 0;
+	$parent_counters['unapprovedthreads'] = 0;
+	$parent_counters['viewers'] = 0;
+	$forum_list = '';
 
 	// Foreach of the forums in this parent
 	foreach($fcache[$pid] as $parent)
@@ -59,12 +66,12 @@ function build_forumbits($pid=0, $depth=1)
 			$hideinfo = $hidecounters = false;
 			$hidelastpostinfo = false;
 			$showlockicon = 0;
-			if($permissions['canviewthreads'] != 1)
+			if(isset($permissions['canviewthreads']) && $permissions['canviewthreads'] != 1)
 			{
 			    $hideinfo = true;
 			}
 			
-			if($permissions['canonlyviewownthreads'] == 1)
+			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
 			{
 				$hidecounters = true;
 
@@ -141,7 +148,11 @@ function build_forumbits($pid=0, $depth=1)
 				$forum['posts'] += $forum_info['counters']['posts'];
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
-				$forum['viewers'] += $forum_info['counters']['viewing'];
+
+				if(!empty($forum_info['counters']['viewing']))
+				{
+					$forum['viewers'] += $forum_info['counters']['viewing'];
+				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
@@ -172,14 +183,14 @@ function build_forumbits($pid=0, $depth=1)
 					'lastposter' => ''
 				);
 			}
-			
+
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
-			if($lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+			if(!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
 			{
 				$parent_lastpost = $lastpost_data;
 			}
 
-			if(is_array($forum_viewers) && $forum_viewers[$forum['fid']] > 0)
+			if(is_array($forum_viewers) && isset($forum_viewers[$forum['fid']]) && $forum_viewers[$forum['fid']] > 0)
 			{
 				$forum['viewers'] = $forum_viewers[$forum['fid']];
 			}
@@ -191,7 +202,11 @@ function build_forumbits($pid=0, $depth=1)
 				$parent_counters['posts'] += $forum['posts'];
 				$parent_counters['unapprovedposts'] += $forum['unapprovedposts'];
 				$parent_counters['unapprovedthreads'] += $forum['unapprovedthreads'];
-				$parent_counters['viewers'] += $forum['viewers'];
+
+				if(!empty($forum['viewers']))
+				{
+					$parent_counters['viewers'] += $forum['viewers'];
+				}
 			}
 
 			// Done with our math, lets talk about displaying - only display forums which are under a certain depth
@@ -442,7 +457,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	else
 	{
 		// Fetch the last read date for this forum
-		if($forum['lastread'])
+		if(isset($forum['lastread']))
 		{
 			$forum_read = $forum['lastread'];
 		}
@@ -457,7 +472,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 			$threadcut = TIME_NOW - 60*60*24*$mybb->settings['threadreadcut'];
 
 			// If the user is a guest, do they have a forumsread cookie?
-			if(!$mybb->user['uid'] && $mybb->cookies['mybb']['forumread'])
+			if(!$mybb->user['uid'] && isset($mybb->cookies['mybb']['forumread']))
 			{
 				// If they've visited us before, then they'll have this cookie - otherwise everything is unread...
 				$forum_read = my_get_array_cookie("forumread", $forum['fid']);
