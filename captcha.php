@@ -120,7 +120,6 @@ imagerectangle($im, 0, 0, $img_width-1, $img_height-1, $border_color);
 header("Content-type: image/png");
 imagepng($im);
 imagedestroy($im);
-exit;
 
 /**
  * Draws a random number of lines on the image.

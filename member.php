@@ -1147,11 +1147,16 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
 
-	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+	if(isset($mybb->input['quick_login']) && $mybb->input['quick_password'] && $mybb->input['quick_username'])
 	{
 		$mybb->input['password'] = $mybb->input['quick_password'];
 		$mybb->input['username'] = $mybb->input['quick_username'];
 		$mybb->input['remember'] = $mybb->input['quick_remember'];
+	}
+
+	if(!isset($mybb->input['imagestring']))
+	{
+		$mybb->input['imagestring'] = '';
 	}
 
 	$user = array(
@@ -1233,7 +1238,7 @@ if($mybb->input['action'] == "login")
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
-	if($_SERVER['HTTP_REFERER'] && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
+	if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
@@ -1259,12 +1264,12 @@ if($mybb->input['action'] == "login")
 	
 	$username = "";
 	$password = "";
-	if($mybb->input['username'] && $mybb->request_method == "post")
+	if(isset($mybb->input['username']) && $mybb->request_method == "post")
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
 	}
 	
-	if($mybb->input['password'] && $mybb->request_method == "post")
+	if(isset($mybb->input['password']) && $mybb->request_method == "post")
 	{
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
@@ -1294,18 +1299,19 @@ if($mybb->input['action'] == "logout")
 	}
 
 	// Check session ID if we have one
-	if($mybb->input['sid'] && $mybb->input['sid'] != $session->sid)
+	if(isset($mybb->input['sid']) && $mybb->input['sid'] != $session->sid)
 	{
 		error($lang->error_notloggedout);
 	}
 	// Otherwise, check logoutkey
-	else if(!$mybb->input['sid'] && $mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+	else if(!isset($mybb->input['sid']) && $mybb->input['logoutkey'] != $mybb->user['logoutkey'])
 	{
 		error($lang->error_notloggedout);
 	}
 
 	my_unsetcookie("mybbuser");
 	my_unsetcookie("sid");
+
 	if($mybb->user['uid'])
 	{
 		$time = TIME_NOW;
@@ -1313,9 +1319,11 @@ if($mybb->input['action'] == "logout")
 			"lastactive" => $time-900,
 			"lastvisit" => $time,
 		);
-		$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
-		$db->delete_query("sessions", "sid='".$session->sid."'");
+
+		$db->update_query("users", $lastvisit, "uid = '{$mybb->user['uid']}'");
+		$db->delete_query("sessions", "sid = '{$session->sid}'");
 	}
+
 	$plugins->run_hooks("member_logout_end");
 	redirect("index.php", $lang->redirect_loggedout);
 }
@@ -1411,6 +1419,7 @@ if($mybb->input['action'] == "profile")
 		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'.$memprofile['website'].'</a>';
 	}
 
+	$signature = '';
 	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
 	{
 		$sig_parser = array(
@@ -1465,6 +1474,7 @@ if($mybb->input['action'] == "profile")
 	$memprofile['aim'] = htmlspecialchars_uni($memprofile['aim']);
 	$memprofile['yahoo'] = htmlspecialchars_uni($memprofile['yahoo']);
 
+	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
@@ -1660,6 +1670,7 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 
+	$groupimage = '';
 	if(!empty($displaygroup['image']))
 	{
 		if(!empty($mybb->user['language']))
@@ -1675,7 +1686,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(!$starimage)
+	if(!isset($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
@@ -1764,6 +1775,7 @@ if($mybb->input['action'] == "profile")
 		$reputation = get_reputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
+		$vote_link = '';
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
@@ -1776,27 +1788,28 @@ if($mybb->input['action'] == "profile")
 	{
 		$bg_color = alt_trow();
 		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+
 		if($warning_level > 100)
 		{
 			$warning_level = 100;
 		}
+
+		$warn_user = '';
+		$warning_link = 'usercp.php';
 		$warning_level = get_colored_warning_level($warning_level);
 		if($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
 			$warning_link = "warnings.php?uid={$memprofile['uid']}";
 		}
-		else
-		{
-			$warning_link = "usercp.php";
-		}
+
 		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
 	}
 
-	$bgcolor = $alttrow = "trow1";
+	$bgcolor = $alttrow = 'trow1';
 	$customfields = $profilefields = '';
 
-	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
+	$query = $db->simple_select("userfields", "*", "ufid = '{$uid}'");
 	$userfields = $db->fetch_array($query);
 
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
@@ -1812,34 +1825,39 @@ if($mybb->input['action'] == "profile")
 		$thing = explode("\n", $customfield['type'], "2");
 		$type = trim($thing[0]);
 
+		$customfieldval = '';
 		$field = "fid{$customfield['fid']}";
-		$useropts = explode("\n", $userfields[$field]);
-		$customfieldval = $comma = '';
-		if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
-		{
-			foreach($useropts as $val)
-			{
-				if($val != '')
-				{
-					$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
-				}
-			}
-			if($customfieldval != '')
-			{
-				$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
-			}
-		}
-		else
-		{
-			$userfields[$field] = $parser->parse_badwords($userfields[$field]);
 
-			if($customfield['type'] == "textarea")
+		if(isset($userfields[$field]))
+		{
+			$useropts = explode("\n", $userfields[$field]);
+			$customfieldval = $comma = '';
+			if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 			{
-				$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+				foreach($useropts as $val)
+				{
+					if($val != '')
+					{
+						$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
+					}
+				}
+				if($customfieldval != '')
+				{
+					$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
+				}
 			}
 			else
 			{
-				$customfieldval = htmlspecialchars_uni($userfields[$field]);
+				$userfields[$field] = $parser->parse_badwords($userfields[$field]);
+
+				if($customfield['type'] == "textarea")
+				{
+					$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+				}
+				else
+				{
+					$customfieldval = htmlspecialchars_uni($userfields[$field]);
+				}
 			}
 		}
 
@@ -1847,6 +1865,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
 		$bgcolor = alt_trow();
 	}
+
 	if($customfields)
 	{
 		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");

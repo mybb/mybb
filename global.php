@@ -307,6 +307,10 @@ if(isset($templatelist))
 {
 	$templatelist .= ',';
 }
+else
+{
+	$templatelist = '';
+}
 
 $templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
 $templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error';

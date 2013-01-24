@@ -865,7 +865,7 @@ function redirect($url, $message="", $title="")
 	
 	$plugins->run_hooks("redirect", $redirect_args);
 
-	if($mybb->input['ajax'])
+	if(isset($mybb->input['ajax']))
 	{
 		// Send our headers.
 		@header("Content-type: text/html; charset={$lang->settings['charset']}");
@@ -896,7 +896,7 @@ function redirect($url, $message="", $title="")
 	}
 	
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
-	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] != 0 || !$mybb->user['uid']))
+	if($mybb->settings['redirects'] == 1 && (isset($mybb->user['showredirect']) || !$mybb->user['uid']))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars($url);
@@ -3028,6 +3028,8 @@ function get_reputation($reputation, $uid=0)
 {
 	global $theme;
 
+	$display_reputation = '';
+
 	if($uid != 0)
 	{
 		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
@@ -3272,9 +3274,7 @@ function get_unviewable_forums($only_readable_threads=false)
 {
 	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
 
-	$pid = intval($pid);
-
-	if(!$permissions)
+	if(!isset($permissions))
 	{
 		$permissions = $mybb->usergroup;
 	}
@@ -3289,6 +3289,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
+	$unviewableforums = '';
 	$password_forums = array();
 	foreach($forum_cache as $fid => $forum)
 	{
@@ -3772,7 +3773,7 @@ function nice_time($stamp, $options=array())
 	$hsecs = 60*60;
 	$msecs = 60;
 
-	if($options['short'] == true)
+	if(isset($options['short']))
 	{
 		$lang_year = $lang->year_short;
 		$lang_years = $lang->years_short;
@@ -3857,7 +3858,7 @@ function nice_time($stamp, $options=array())
 		$nicetime['days'] = $days.$lang_days;
 	}
 
-	if($options['hours'] !== false)
+	if(!isset($options['hours']) || $options['hours'] !== false)
 	{
 		if($hours == 1)
 		{
@@ -3869,7 +3870,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['minutes'] !== false)
+	if(!isset($options['minutes']) || $options['minutes'] !== false)
 	{
 		if($minutes == 1)
 		{
@@ -3881,7 +3882,7 @@ function nice_time($stamp, $options=array())
 		}
 	}
 
-	if($options['seconds'] !== false)
+	if(!isset($options['seconds']) || $options['seconds'] !== false)
 	{
 		if($seconds == 1)
 		{
@@ -4145,8 +4146,12 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if($tid == 0)
 	{
+		if(!isset($lang->use_default))
+		{
+			$lang->use_default = $lang->lang_select_default;
+		}
 		$themeselect = "<select name=\"$name\">";
-		$themeselect .= "<option value=\"0\">".$lang->use_default."</option>\n";
+		$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
 		$themeselect .= "<option value=\"0\">-----------</option>\n";
 		$tid = 1;
 	}
@@ -4164,7 +4169,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	if(is_array($tcache[$tid]))
 	{
 		// Figure out what groups this user is in
-		if($mybb->user['additionalgroups'])
+		if(isset($mybb->user['additionalgroups']))
 		{
 			$in_groups = explode(",", $mybb->user['additionalgroups']);
 		}
