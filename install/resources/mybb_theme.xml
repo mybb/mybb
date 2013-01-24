@@ -8040,7 +8040,6 @@ body {
 		{$post['posturl']}
 		{$post['icon']}
 		<span class="post_date">{$post['postdate']} <span class="post_edit" id="edited_by_{$post['pid']}">{$post['editedmsg']}</span></span>
-	{$post['subject_extra']}
 	</div>
 	<div class="post_body" id="pid_{$post['pid']}">
 		{$post['message']}

@@ -354,6 +354,7 @@ class DB_MySQLi
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+		$debug_extra = '';
 		if($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";

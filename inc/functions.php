@@ -2523,7 +2523,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$dimensions = $mybb->settings['useravatardims'];
 	}
 
-	if($avatars[$avatar])
+	if(isset($avatars[$avatar]))
 	{
 		return $avatars[$avatar];
 	}
