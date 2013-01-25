@@ -50,9 +50,8 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'filter_badwords' => 1,
 		'allow_mycode' => $mybb->settings['sigmycode'],
 		'allow_smilies' => $mybb->settings['sigsmilies'],
-		'allow_imgcode' => $mybb->settings['sigimgcode'],
-		"filter_badwords" => 1
-	);
+		'allow_imgcode' => $mybb->settings['sigimgcode']
+    );
 	$parsed_sig = $parser->parse_message($mybb->input['signature'], $parser_options);
 	if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
 		substr_count($parsed_sig, "<img") > 0) ||

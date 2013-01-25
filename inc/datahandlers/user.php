@@ -1021,7 +1021,6 @@ class UserDataHandler extends DataHandler
 			"buddylist" => '',
 			"ignorelist" => '',
 			"pmfolders" => '',
-			"notepad" => '',
 			"warningpoints" => 0,
 			"moderateposts" => 0,
 			"moderationtime" => 0,

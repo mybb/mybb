@@ -35,7 +35,7 @@ function build_forumbits($pid=0, $depth=1)
 		foreach($parent as $forum)
 		{
 			$forums = $subforums = $sub_forums = '';
-			$lastpost_data = '';
+			$lastpost_data = array("lastpost" => 0);
 			$counters = '';
 			$forum_viewers_text = '';
 			$forum_viewers_text_plain = '';
@@ -163,7 +163,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 			
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
-			if($lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+			if(isset($lastpost_data['lastpost']) && isset( $parent_lastpost['lastpost']) && $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
 			{
 				$parent_lastpost = $lastpost_data;
 			}
@@ -257,7 +257,7 @@ function build_forumbits($pid=0, $depth=1)
 			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
-				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
+				if((intval($lastpost_data['lastpost']) == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
 					$lastpost = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
 				}
