@@ -2090,60 +2090,15 @@ function update_forum_lastpost($fid)
  */
 function update_thread_counters($tid, $changes=array())
 {
-	global $db;
-
-	$update_query = array();
-	
-	$counters = array('replies','unapprovedposts','attachmentcount', 'attachmentcount');
-	
-	// Fetch above counters for this thread
-	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
-	$thread = $db->fetch_array($query);
-	
-	foreach($counters as $counter)
-	{
-		if(array_key_exists($counter, $changes))
-		{
-			// Adding or subtracting from previous value?
-			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
-			{
-				$update_query[$counter] = $thread[$counter] + $changes[$counter];
-			}
-			else
-			{
-				$update_query[$counter] = $changes[$counter];
-			}
-			
-			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
-			{
-				$update_query[$counter] = 0;
-			}
-		}
-	}
-	
-	$db->free_result($query);
-
-	// Only update if we're actually doing something
-	if(count($update_query) > 0)
-	{
-		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
-	}
-	
-	unset($update_query, $thread);
-
-	update_thread_data($tid);
+	// die("Deprecated function call: update_thread_counters");
+	update_thread_data($tid, $changes);
 }
 
-/**
- * Update the first post and lastpost data for a specific thread
- *
- * @param int The thread ID
- */
-function update_thread_data($tid)
+function update_thread_data($tid, $changes=array())
 {
 	global $db;
 
+	$update_array = array();
 	$thread = get_thread($tid);
 
 	// If this is a moved thread marker, don't update it - we need it to stay as it is
@@ -2151,9 +2106,40 @@ function update_thread_data($tid)
 	{
 		return false;
 	}
+	
+	$greatest = ($db->type == "sqlite" ? "MAX" : "GREATEST");
+	
+	$counters = array('unapprovedposts','attachmentcount');
+	
+	foreach($counters as $counter)
+	{
+		if(!array_key_exists($counter, $changes))
+		{
+			continue;
+		}
 
+		// Adding or subtracting from previous value?
+		if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+		{
+			$update_array[$counter] = "{$greatest}(0, {$counter}+(".intval($changes[$counter]).'))';
+		}
+
+		else
+		{
+			// setting absolute value
+			$update_array[$counter] = intval($change);
+			
+			// Less than 0? That's bad
+			if($update_array[$counter] < 0)
+			{
+				$update_array[$counter] = 0;
+			}
+		}
+	}
+	
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+			   , COUNT(*)-1 AS replies
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid' AND p.visible='1'
@@ -2196,17 +2182,16 @@ function update_thread_data($tid)
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
-	$update_array = array(
-		'username' => $firstpost['username'],
+	$update_array += array(
+		'username' => "'{$firstpost['username']}'",
 		'uid' => intval($firstpost['uid']),
 		'dateline' => intval($firstpost['dateline']),
 		'lastpost' => intval($lastpost['dateline']),
-		'lastposter' => $lastpost['username'],
+		'lastposter' => "'{$lastpost['username']}'",
 		'lastposteruid' => intval($lastpost['uid']),
+		'replies' => intval($lastpost['replies']),
 	);
-	$db->update_query("threads", $update_array, "tid='{$tid}'");
-	
-	unset($firstpost, $lastpost, $update_array);
+	$db->update_query("threads", $update_array, "tid='{$tid}'", "", true);
 }
 
 function update_forum_count($fid)
