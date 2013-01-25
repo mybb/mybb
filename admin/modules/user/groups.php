@@ -643,7 +643,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+			if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['starimage']))
 			{
 				$errors[] = $lang->error_disallowed_characters_starimage;
 			}
@@ -784,10 +784,10 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 		
-		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['starimage']))
 		{
 			$errors[] = $lang->error_disallowed_characters_starimage;
-			$mybb->input['namestyle'] = $usergroup['namestyle'];
+			$mybb->input['starimage'] = $usergroup['starimage'];
 		}
 
 		if(!$errors)
