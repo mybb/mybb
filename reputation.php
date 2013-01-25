@@ -203,7 +203,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		exit;
 	}
 	
-	if($mybb->input['pid'] == 0)
+	if($mybb->input['pid'] == 0 || $mybb->input['pid'])
 	{
 		$mybb->input['comments'] = trim($mybb->input['comments']); // Trim whitespace to check for length
 		if(my_strlen($mybb->input['comments']) < 10)
