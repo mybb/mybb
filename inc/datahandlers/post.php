@@ -1031,6 +1031,13 @@ class PostDataHandler extends DataHandler
 			update_thread_counters($post['tid'], array("replies" => "+1"));
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
+		
+		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
+		$attachmentcount = $db->fetch_field($query, "attachmentcount");
+		if($attachmentcount > 0)
+		{
+			update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}"));
+		}
 
 		// Return the post's pid and whether or not it is visible.
 		return array(
