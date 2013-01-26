@@ -1572,6 +1572,15 @@ descending=Descending]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="minreplength">
+			<title>Minimum Reputation Length</title>
+			<description><![CDATA[The minimum number of characters a reputation can be.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="13" isdefault="1">
 		<setting name="enablewarningsystem">
