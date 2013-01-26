@@ -203,17 +203,14 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		exit;
 	}
 	
-	if($mybb->input['pid'] == 0)
+	$mybb->input['comments'] = trim($mybb->input['comments']); // Trim whitespace to check for length
+	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'])
 	{
-		$mybb->input['comments'] = trim($mybb->input['comments']); // Trim whitespace to check for length
-		if(my_strlen($mybb->input['comments']) < 10)
-		{
-			$show_back = 1;
-			$message = $lang->add_no_comment;
-			eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-			output_page($error);
-			exit;
-		}
+		$show_back = 1;
+		$message = $lang->add_no_comment;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		output_page($error);
+		exit;
 	}
 
 	// The power for the reputation they specified was invalid.
