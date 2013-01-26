@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -10,7 +10,7 @@
 $langinfo['name'] = "English (American)";
 
 // The author of the language
-$langinfo['author'] = "MyBulletinBoard";
+$langinfo['author'] = "MyBB Group";
 
 // The language authors website
 $langinfo['website'] = "http://mybb.com/";
