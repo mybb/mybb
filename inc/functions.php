@@ -2083,73 +2083,83 @@ function update_forum_lastpost($fid)
 }
 
 /**
- * Updates the thread counters with a specific value (or addition/subtraction of the previous value)
+ * Deprecated. For compatibility reasons, alias to update_thread_data()
  *
  * @param int The thread ID
  * @param array Array of items being updated (replies, unapprovedposts, attachmentcount) and their value (ex, 1, +1, -1)
  */
 function update_thread_counters($tid, $changes=array())
 {
-	global $db;
-
-	$update_query = array();
-	
-	$counters = array('replies','unapprovedposts','attachmentcount', 'attachmentcount');
-	
-	// Fetch above counters for this thread
-	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
-	$thread = $db->fetch_array($query);
-	
-	foreach($counters as $counter)
-	{
-		if(array_key_exists($counter, $changes))
-		{
-			// Adding or subtracting from previous value?
-			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
-			{
-				$update_query[$counter] = $thread[$counter] + $changes[$counter];
-			}
-			else
-			{
-				$update_query[$counter] = $changes[$counter];
-			}
-			
-			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
-			{
-				$update_query[$counter] = 0;
-			}
-		}
-	}
-	
-	$db->free_result($query);
-
-	// Only update if we're actually doing something
-	if(count($update_query) > 0)
-	{
-		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
-	}
-	
-	unset($update_query, $thread);
-
-	update_thread_data($tid);
+	// die("Deprecated function call: update_thread_counters");
+	update_thread_data($tid, $changes);
 }
 
 /**
+ * Updates the thread counters with a specific value (or addition/subtraction of the previous value)
  * Update the first post and lastpost data for a specific thread
  *
  * @param int The thread ID
+ * @param array Array of items being updated (replies, unapprovedposts, attachmentcount) and their value (ex, 1, +1, -1)
  */
-function update_thread_data($tid)
+function update_thread_data($tid, $changes=array())
 {
 	global $db;
 
+	$tid = intval($tid);
 	$thread = get_thread($tid);
 
 	// If this is a moved thread marker, don't update it - we need it to stay as it is
-	if(strpos($thread['closed'], 'moved|') !== false)
+	if($thread === false || strpos($thread['closed'], 'moved|') !== false)
 	{
 		return false;
+	}
+
+	$greatest = "GREATEST";
+
+	if($db->type == "sqlite")
+	{
+		$greatest = "MAX";
+	}
+
+	$update_array = array();
+	$counters = array('replies','unapprovedposts','attachmentcount');
+
+	foreach($counters as $counter)
+	{
+		if(!array_key_exists($counter, $changes))
+		{
+			continue;
+		}
+
+		// Obtain count from DB when replies === +1.
+		// This way threads with wrong replies counter are fixed on reply.
+		else if($counter == 'replies' && $changes['replies'] === "+1")
+		{
+			$query = $db->simple_select("posts", "COUNT(*) AS replies", "tid='{$tid}' AND visible=1");
+			$replies = $db->fetch_field($query, 'replies');
+			$db->free_result($query);
+
+			$update_array['replies'] = intval($replies)-1;
+
+			if($update_array['replies'] < 0)
+			{
+				$update_array['replies'] = 0;
+			}
+
+			continue;
+		}
+
+		// Adding or subtracting from previous value?
+		if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+		{
+			$update_array[$counter] = "{$greatest}(0, {$counter}+(".intval($changes[$counter]).'))';
+		}
+
+		else
+		{
+			// setting absolute value
+			$update_array[$counter] = intval($changes[$counter]);
+		}
 	}
 
 	$query = $db->query("
@@ -2161,9 +2171,9 @@ function update_thread_data($tid)
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
-	
+
 	$db->free_result($query);
-	
+
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
@@ -2173,7 +2183,7 @@ function update_thread_data($tid)
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
-	
+
 	$db->free_result($query);
 
 	if(!$firstpost['username'])
@@ -2196,17 +2206,16 @@ function update_thread_data($tid)
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
-	$update_array = array(
-		'username' => $firstpost['username'],
+	// Unquoted update_query due to counter updates above.
+	$update_array += array(
+		'username' => "'{$firstpost['username']}'",
 		'uid' => intval($firstpost['uid']),
 		'dateline' => intval($firstpost['dateline']),
 		'lastpost' => intval($lastpost['dateline']),
-		'lastposter' => $lastpost['username'],
+		'lastposter' => "'{$lastpost['username']}'",
 		'lastposteruid' => intval($lastpost['uid']),
 	);
-	$db->update_query("threads", $update_array, "tid='{$tid}'");
-	
-	unset($firstpost, $lastpost, $update_array);
+	$db->update_query("threads", $update_array, "tid='{$tid}'", "", true);
 }
 
 function update_forum_count($fid)
