@@ -843,7 +843,16 @@ if($mybb->input['action'] == "thread")
 		if($ismod)
 		{
 			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
+			$cached_replies = $thread['replies']+$thread['unapprovedposts'];
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
+			
+			// The counters are wrong? Rebuild them
+			// This doesn't cover all cases however it is a good addition to the manual rebuild function
+			if($thread['replies'] != $cached_replies)
+			{
+				require_once MYBB_ROOT."/inc/functions_rebuild.php";
+				rebuild_thread_counters($thread['tid']);
+			}
 		}
 
 		$postcount = intval($thread['replies'])+1;
