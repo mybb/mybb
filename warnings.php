@@ -42,7 +42,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
-	
+
 	// Check we haven't exceeded the maximum number of warnings per day
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
@@ -283,7 +283,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						{
 							$warning_title = $warning_type['title'];
 						}
-						
+
 						// Never lift the ban?
 						if($action['length'] <= 0)
 						{
@@ -298,24 +298,24 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 								{
 									continue;
 								}
-								
+
 								$time = 0;
 								list($day, $month, $year) = explode('-', $date);
 								if($day > 0)
 								{
 									$time += 60*60*24*$day;
 								}
-								
+
 								if($month > 0)
 								{
 									$time += 60*60*24*30*$month;
 								}
-								
+
 								if($year > 0)
 								{
 									$time += 60*60*24*365*$year;
 								}
-								
+
 								if($time == $action['length'])
 								{
 									$bantime = $date;
@@ -323,7 +323,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 								}
 							}
 						}
-						
+
 						$new_ban = array(
 							"uid" => intval($user['uid']),
 							"gid" => $db->escape_string($action['usergroup']),
@@ -718,9 +718,9 @@ if($mybb->input['action'] == "warn")
 		}
 		eval("\$pm_notify = \"".$templates->get("warnings_warn_pm")."\";");
 	}
-	
+
 	$plugins->run_hooks("warnings_warn_end");
-	
+
 	eval("\$warn = \"".$templates->get("warnings_warn")."\";");
 	output_page($warn);
 	exit;
@@ -779,8 +779,8 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 			$updated_user = array(
 				"warningpoints" => $new_warning_points
 			);
-			
-			
+
+
 			// check if we need to revoke any consequences with this warning
 			$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			$new_warning_level = round($new_warning_points/$mybb->settings['maxwarningpoints']*100);
@@ -790,12 +790,12 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 				// we have some warning levels we need to revoke
 				$max_expiration_times = $check_levels = array();
 				find_warnlevels_to_check($query, $max_expiration_times, $check_levels);
-				
+
 				// now check warning levels already applied to this user to see if we need to lower any expiration times
 				$query = $db->simple_select("warninglevels", "action", "percentage<=$new_warning_level");
 				$lower_expiration_times = $lower_levels = array();
 				find_warnlevels_to_check($query, $lower_expiration_times, $lower_levels);
-				
+
 				// now that we've got all the info, do necessary stuff
 				for($i = 1; $i <= 3; ++$i)
 				{
@@ -815,24 +815,24 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 								$current_inforce_field = 'moderateposts';
 								break;
 						}
-						
+
 						// if the thing isn't in force, don't bother with trying to update anything
 						if(!$user[$current_inforce_field])
 						{
 							continue;
 						}
-						
+
 						if($lower_levels[$i])
 						{
 							// lessen the expiration time if necessary
-							
+
 							if(!$lower_expiration_times[$i])
 							{
 								// doesn't expire - enforce this
 								$updated_user[$current_expiry_field] = 0;
 								continue;
 							}
-							
+
 							if($max_expiration_times[$i])
 							{
 								// if the old level did have an expiry time...
@@ -854,7 +854,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 									continue;
 								}
 							}
-							
+
 							$updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
 							// double-check if it's expired already
 							if($updated_user[$current_expiry_field] < TIME_NOW)
@@ -872,8 +872,8 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 					}
 				}
 			}
-			
-			
+
+
 			// Update user
 			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
 		}
@@ -958,7 +958,7 @@ if($mybb->input['action'] == "view")
 
 	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
-	
+
 	$date_issued = my_date('relative', $warning['dateline']);
 	if($warning['type_title'])
 	{
@@ -973,9 +973,9 @@ if($mybb->input['action'] == "view")
 	{
 		$warning['points'] = "+{$warning['points']}";
 	}
-	
+
 	$revoked_date = '';
-	
+
 	$points = $lang->sprintf($lang->warning_points, $warning['points']);
 	if($warning['expired'] != 1)
 	{
@@ -1018,7 +1018,7 @@ if($mybb->input['action'] == "view")
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
 	}
-	
+
 	$plugins->run_hooks("warnings_view_end");
 
 	eval("\$warning = \"".$templates->get("warnings_view")."\";");
@@ -1052,7 +1052,7 @@ if(!$mybb->input['action'])
 	{
 		$mybb->settings['postsperpage'] = 20;
 	}
-		
+
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['postsperpage'];
 	$page = intval($mybb->input['page']);
@@ -1083,12 +1083,12 @@ if(!$mybb->input['action'])
 	{
 		$warning_level = 100;
 	}
-	
+
 	if($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
 	{
 		$user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 	}
-	
+
 	if($warning_level > 0)
 	{
 		$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
@@ -1180,9 +1180,9 @@ if(!$mybb->input['action'])
 	{
 		eval("\$warnings = \"".$templates->get("warnings_no_warnings")."\";");
 	}
-	
+
 	$plugins->run_hooks("warnings_end");
-	
+
 	eval("\$warnings = \"".$templates->get("warnings")."\";");
 	output_page($warnings);
 }
@@ -1211,9 +1211,9 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 		{
 			continue;
 		}
-		
+
 		$check_levels[$action['type']] = true;
-		
+
 		$max_exp_time = &$max_expiration_times[$action['type']];
 		if($action['length'] && $max_exp_time != 0)
 		{

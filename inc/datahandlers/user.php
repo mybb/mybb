@@ -126,7 +126,7 @@ class UserDataHandler extends DataHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if a username is already in use or not.
 	 *
@@ -138,14 +138,14 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$uid_check = "";		
+		$uid_check = "";
 		if($this->data['uid'])
 		{
 			$uid_check = " AND uid!='{$this->data['uid']}'";
 		}
-		
+
 		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
-		
+
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -251,7 +251,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error('banned_email');
 			return false;
 		}
-		
+
 		// Check signed up emails
 		// Ignore the ACP because the Merge System sometimes produces users with duplicate email addresses (Not A Bug)
 		if($mybb->settings['allowmultipleemails'] == 0 && !defined("IN_ADMINCP"))
@@ -450,13 +450,13 @@ class UserDataHandler extends DataHandler
 	function verify_postnum()
 	{
 		$user = &$this->data;
-		
+
 		if($user['postnum'] < 0)
 		{
 			$this->set_error("invalid_postnum");
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -476,7 +476,7 @@ class UserDataHandler extends DataHandler
 		$userfields = array();
 		$comma = '';
 		$editable = '';
-		
+
 		if(!$this->data['profile_fields_editable'])
 		{
 			$editable = "editable=1";
@@ -603,7 +603,7 @@ class UserDataHandler extends DataHandler
 	function verify_options()
 	{
 		global $mybb;
-		
+
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
@@ -619,7 +619,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
-		
+
 		if($mybb->settings['postlayout'] == 'classic')
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 1);
@@ -628,7 +628,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_yesno_option($options, 'classicpostbit', 0);
 		}
-		
+
 		if(array_key_exists('subscriptionmethod', $options))
 		{
 			// Value out of range
@@ -648,7 +648,7 @@ class UserDataHandler extends DataHandler
 				$options['dstcorrection'] = 0;
 			}
 		}
-		
+
 		if($options['dstcorrection'] == 1)
 		{
 			$options['dst'] = 1;
@@ -670,7 +670,7 @@ class UserDataHandler extends DataHandler
         {
             $options['showcodebuttons'] = 1;
         }
-		
+
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
 		{
 			if($mybb->settings['threadusenetstyle'])
@@ -810,7 +810,7 @@ class UserDataHandler extends DataHandler
 				$this->set_error("missing_returndate");
 				return false;
 			}
-			
+
 			// Validate the return date lengths
 			$user['away']['returndate'] = substr($returnday, 0, 2).'-'.substr($returnmonth, 0, 2).'-'.substr($returnyear, 0, 4);
 		}
@@ -836,7 +836,7 @@ class UserDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if this is coming from a spam bot or not
 	 *
@@ -845,7 +845,7 @@ class UserDataHandler extends DataHandler
 	function verify_checkfields()
 	{
 		$user = &$this->data;
-		
+
 		// An invalid language has been specified?
 		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "true")
 		{
@@ -963,7 +963,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		$plugins->run_hooks("datahandler_user_validate", $this);
-		
+
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -1063,7 +1063,7 @@ class UserDataHandler extends DataHandler
 			"classicpostbit" => $user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
-		
+
 		if($user['options']['dstcorrection'] == 1)
 		{
 			$this->user_insert_data['dst'] = 1;
@@ -1074,11 +1074,11 @@ class UserDataHandler extends DataHandler
 		}
 
 		$plugins->run_hooks("datahandler_user_insert", $this);
-		
+
 		$this->uid = $db->insert_query("users", $this->user_insert_data);
-		
+
 		$user['user_fields']['ufid'] = $this->uid;
-		
+
 		$query = $db->simple_select("profilefields", "fid");
 		while($profile_field = $db->fetch_array($query))
 		{
@@ -1090,7 +1090,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		$db->insert_query("userfields", $user['user_fields'], false);
-		
+
 		if($this->user_insert_data['referrer'] != 0)
 		{
 			$db->write_query("
@@ -1276,20 +1276,20 @@ class UserDataHandler extends DataHandler
 		{
 			unset($this->user_update_data['pmnotice']);
 		}
-		
+
 		$plugins->run_hooks("datahandler_user_update", $this);
-		
+
 		if(count($this->user_update_data) < 1 && empty($user['user_fields']))
-		{ 
-			return false; 
-		}		
+		{
+			return false;
+		}
 
 		if(count($this->user_update_data) > 0)
 		{
 			// Actual updating happens here.
 			$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
 		}
-		
+
 		$cache->update_moderators();
 		if(isset($user['bday']) || isset($user['username']))
 		{
@@ -1335,7 +1335,7 @@ class UserDataHandler extends DataHandler
 			$db->update_query("threads", $username_update, "uid='{$user['uid']}'");
 			$db->update_query("threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
 			$db->update_query("forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
-			
+
 			$stats = $cache->read("stats");
 			if($stats['lastuid'] == $user['uid'])
 			{

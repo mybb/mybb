@@ -68,7 +68,7 @@ function run_task($tid=0)
 		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
 		$nextrun = fetch_next_run($task);
 		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
-		
+
 		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))
@@ -97,12 +97,12 @@ function run_task($tid=0)
 function add_task_log($task, $message)
 {
 	global $db;
-	
+
 	if(!$task['logging'])
 	{
-		return;	
+		return;
 	}
-	
+
 	$log_entry = array(
 		"tid" => intval($task['tid']),
 		"dateline" => TIME_NOW,

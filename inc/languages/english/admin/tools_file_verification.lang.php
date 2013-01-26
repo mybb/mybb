@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['file_verification'] = "File Verification";
 $l['checking'] = "Checking...";
 $l['file_verification_message'] = "This process will check all MyBB default files to check for validity. Press Yes to continue.<br /> <small>Please note, this process can not differentiate between custom modifications and actual corruption in files. Therefore you should take caution in reverting files this process returns as \"corrupt\".</small>";

@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright Œ 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['warning_system'] = "Warning System";
 $l['warning_types'] = "Warning Types";
 $l['warning_types_desc'] = "Here you can manage the list of different warning types staff are allowed to issue to users.";

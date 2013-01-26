@@ -53,7 +53,7 @@ if($fid > 0)
 	{
 		error_no_permission();
 	}
-	
+
 	// Check if this forum is password protected and we have a valid password
 	check_forum_password($forum['fid']);
 }
@@ -108,7 +108,7 @@ if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 	if($mybb->cookies['mybb']['announcements'])
 	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
-	
+
 		if(isset($cookie[$announcementarray['aid']]))
 		{
 			$setcookie = false;

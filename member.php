@@ -81,7 +81,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_register_start");
-	
+
 	// Are checking how long it takes for users to register?
 	if($mybb->settings['regtime'] > 0)
 	{
@@ -91,7 +91,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			// Check how long it took for this person to register
 			$time = TIME_NOW;
 			$timetook = time() - (int)$mybb->input['regtime'];
-			
+
 			// See if they registered faster than normal
 			if($timetook < $mybb->settings['regtime'])
 			{
@@ -103,7 +103,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			error($lang->error_spam_deny."s");
 		}
 	}
-	
+
 	// If we have hidden CATPCHA enabled and it's filled, deny registration
 	if($mybb->settings['hiddencaptchaimage'])
 	{
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					break;
 			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
-			
+
 			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -368,7 +368,7 @@ if($mybb->input['action'] == "coppa_form")
 	{
 		$mybb->settings['faxno'] = "&nbsp;";
 	}
-	
+
 	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
 	output_page($coppa_form);
 }
@@ -404,9 +404,9 @@ if($mybb->input['action'] == "register")
 		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
 		{
 			my_unsetcookie("coppauser");
-			
+
 			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
-			
+
 			// Store DOB in cookie so we can save it with the registration
 			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
 
@@ -422,9 +422,9 @@ if($mybb->input['action'] == "register")
 		else
 		{
 			$plugins->run_hooks("member_register_coppa");
-			
+
 			my_unsetcookie("coppauser");
-			
+
 			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
 			output_page($coppa);
 			exit;
@@ -452,7 +452,7 @@ if($mybb->input['action'] == "register")
 	else
 	{
 		$plugins->run_hooks("member_register_start");
-		
+
 		$validator_extra = '';
 
 		if(isset($mybb->input['timezoneoffset']))
@@ -565,14 +565,14 @@ if($mybb->input['action'] == "register")
 					$useropts = explode("\n", $userfield);
 				}
 				if(is_array($useropts))
-				{		
+				{
 					foreach($useropts as $key => $val)
 					{
 						$seloptions[$val] = $val;
 					}
 				}
 				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) 
+				if(is_array($expoptions))
 				{
 					foreach($expoptions as $key => $val)
 					{
@@ -650,7 +650,7 @@ if($mybb->input['action'] == "register")
 					}
 				}
 				$expoptions = explode("\n", $options);
-				if(is_array($expoptions)) 
+				if(is_array($expoptions))
 				{
 					foreach($expoptions as $key => $val)
 					{
@@ -690,7 +690,7 @@ if($mybb->input['action'] == "register")
 					$id = "fid{$profilefield['fid']}";
 				}
 				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {failure_message:'{$lang->js_validator_not_empty}'});\n";
-				
+
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
 			$code = '';
@@ -718,7 +718,7 @@ if($mybb->input['action'] == "register")
 			{
 				$enabledstcheck = "checked=\"checked\"";
 			}
-			
+
 		}
 		// Spambot registration image thingy
 		if($mybb->settings['captchaimage'])
@@ -895,7 +895,7 @@ if($mybb->input['action'] == "resendactivation")
 	{
 		error($lang->error_alreadyactivated);
 	}
-	
+
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
@@ -1111,7 +1111,7 @@ if($mybb->input['action'] == "resetpassword")
 	else
 	{
 		$plugins->run_hooks("member_resetpassword_form");
-		
+
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
@@ -1197,9 +1197,9 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 			{
 				$mybb->input['url'] = str_replace('&processed=1', '', $mybb->input['url']);
 			}
-			
+
 			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
-			
+
 			// Redirect to the URL if it is not member.php
 			redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
 		}
@@ -1225,7 +1225,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
-	
+
 	$member_loggedin_notice = "";
 	if($mybb->user['uid'] != 0)
 	{
@@ -1261,19 +1261,19 @@ if($mybb->input['action'] == "login")
 		$db->insert_query("captcha", $imagearray);
 		eval("\$captcha = \"".$templates->get("post_captcha")."\";");
 	}
-	
+
 	$username = "";
 	$password = "";
 	if(isset($mybb->input['username']) && $mybb->request_method == "post")
 	{
 		$username = htmlspecialchars_uni($mybb->input['username']);
 	}
-	
+
 	if(isset($mybb->input['password']) && $mybb->request_method == "post")
 	{
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
-	
+
 	switch($mybb->settings['username_method'])
 	{
 		case 1:
@@ -1345,7 +1345,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if($mybb->user['uid'] != $uid)
 	{
 		$memprofile = get_user($uid);
@@ -1354,7 +1354,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$memprofile = $mybb->user;
 	}
-	
+
 	$lang->profile = $lang->sprintf($lang->profile, $memprofile['username']);
 
 	if(!$memprofile['uid'])
@@ -1459,7 +1459,7 @@ if($mybb->input['action'] == "profile")
 		$percent = $memprofile['postnum']*100/$numposts;
 		$percent = round($percent, 2);
 	}
-	
+
 	if($percent > 100)
 	{
 		$percent = 100;
@@ -1495,7 +1495,7 @@ if($mybb->input['action'] == "profile")
 		else
 		{
 			$returnhome = explode("-", $memprofile['returndate']);
-			
+
 			// PHP native date functions use integers so timestamps for years after 2038 will not work
 			// Thus we use adodb_mktime
 			if($returnhome[2] >= 2038)
@@ -1509,17 +1509,17 @@ if($mybb->input['action'] == "profile")
 				$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
 				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
 			}
-			
+
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
 				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
-				
+
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
 			}
 		}
-		
+
 		// Check if our away status is set to 1, it may have been updated already (see a few lines above)
 		if($memprofile['away'] == 1)
 		{
@@ -1543,13 +1543,13 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
-		
+
 		if($memprofile['birthdayprivacy'] != 'none')
 		{
 			if($membday[0] && $membday[1] && $membday[2])
 			{
 				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
-				
+
 				if($membday[2] >= 1970)
 				{
 					$w_day = date("l", mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]));
@@ -1576,7 +1576,7 @@ if($mybb->input['action'] == "profile")
 				$membdayage = '';
 			}
 		}
-		
+
 		if($memprofile['birthdayprivacy'] == 'age')
 		{
 			$membday = $lang->birthdayhidden;
@@ -1592,7 +1592,7 @@ if($mybb->input['action'] == "profile")
 		$membday = $lang->not_specified;
 		$membdayage = '';
 	}
-	
+
 	if(!$memprofile['displaygroup'])
 	{
 		$memprofile['displaygroup'] = $memprofile['usergroup'];
@@ -1642,7 +1642,7 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 	}
-	
+
 	if($displaygroup['stars'] || $displaygroup['usertitle'])
 	{
 		// Set the number of stars if display group has constant number of stars
@@ -1701,7 +1701,7 @@ if($mybb->input['action'] == "profile")
 			$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 		}
 	}
-	
+
 	// User is currently online and this user has permissions to view the user on the WOL
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 	$query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
@@ -1874,18 +1874,18 @@ if($mybb->input['action'] == "profile")
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
 	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
-	
+
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
-	
+
 	$modoptions = '';
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
-		
+
 		if(!empty($memprofile['usernotes']))
 		{
 			if(strlen($memprofile['usernotes']) > 100)
@@ -1897,7 +1897,7 @@ if($mybb->input['action'] == "profile")
 		{
 			$memprofile['usernotes'] = $lang->no_usernotes;
 		}
-		
+
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}
 
@@ -1940,7 +1940,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$plugins->run_hooks("member_profile_end");
-	
+
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
 	output_page($profile);
 }
@@ -1957,7 +1957,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
-	
+
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
@@ -1969,25 +1969,25 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 			error($lang->error_max_emails_day);
 		}
 	}
-	
+
 	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);
-	
+
 	if(!$to_user['username'])
 	{
 		error($lang->error_invalidusername);
 	}
-	
+
 	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
 	}
-	
+
 	if(empty($mybb->input['subject']))
 	{
 		$errors[] = $lang->error_no_email_subject;
 	}
-	
+
 	if(empty($mybb->input['message']))
 	{
 		$errors[] = $lang->error_no_email_message;
@@ -2003,10 +2003,10 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		{
 			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		}
-		
+
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
 		my_mail($to_user['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->user['email']);
-		
+
 		if($mybb->settings['mail_logging'] > 0)
 		{
 			// Log the message
@@ -2043,7 +2043,7 @@ if($mybb->input['action'] == "emailuser")
 	{
 		error_no_permission();
 	}
-	
+
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
@@ -2054,18 +2054,18 @@ if($mybb->input['action'] == "emailuser")
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 			error($lang->error_max_emails_day);
 		}
-	}	
-	
+	}
+
 	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);
-	
+
 	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
-	
+
 	if(!$to_user['uid'])
 	{
 		error($lang->error_invaliduser);
 	}
-	
+
 	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
@@ -2075,7 +2075,7 @@ if($mybb->input['action'] == "emailuser")
 	{
 		error_no_permission();
 	}
-	
+
 	if(count($errors) > 0)
 	{
 		$errors = inline_error($errors);
@@ -2088,9 +2088,9 @@ if($mybb->input['action'] == "emailuser")
 		$subject = '';
 		$message = '';
 	}
-	
+
 	$plugins->run_hooks("member_emailuser_end");
-	
+
 	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
 	output_page($emailuser);
 }

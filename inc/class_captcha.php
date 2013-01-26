@@ -335,7 +335,7 @@ class captcha
 				$errors[] = $error['error_code'];
 				continue;
 			}
-			
+
 			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);

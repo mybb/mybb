@@ -66,11 +66,11 @@ class DefaultTable
 				$i = 0;
 			}
 			$i++;
-			if(isset($cell['extra']['class']))            
+			if(isset($cell['extra']['class']))
 			{
 				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
-			if(isset($cell['extra']['style']))            
+			if(isset($cell['extra']['style']))
 			{
 				$cells .= " style=\"".$cell['extra']['style']."\"";
 			}
@@ -86,7 +86,7 @@ class DefaultTable
 			{
 				$cells .= " rowspan=\"".$cell['extra']['rowspan']."\"";
 			}
-			if(isset($cell['extra']['width']))            
+			if(isset($cell['extra']['width']))
 			{
 				$cells .= " width=\"".$cell['extra']['width']."\"";
 			}
@@ -97,10 +97,10 @@ class DefaultTable
 		$data['cells'] = $cells;
 		$data['extra'] = $extra;
 		$this->_rows[] = $data;
-		
+
 		$this->_cells = array();
 	}
-	
+
 	/**
 	 * return the cells of a row for the table based row.
 	 *
@@ -111,7 +111,7 @@ class DefaultTable
 	function output_row_cells($row_id, $return=false)
 	{
 		$row = $this->_rows[$row_id]['cells'];
-		
+
 		if(!$return)
 		{
 			echo $row;

@@ -18,7 +18,7 @@ class DefaultForm
 	 * @var boolean Should this form be returned instead of output to the browser?
 	 */
 	private $_return = false;
-	
+
 	/**
 	 * @var string Contents of the form if $_return is true from __construct
 	 */
@@ -43,17 +43,17 @@ class DefaultForm
 		{
 			$form .= " enctype=\"multipart/form-data\"";
 		}
-		
+
 		if($name != "")
 		{
 			$form .= " name=\"{$name}\"";
 		}
-		
+
 		if($id != "")
 		{
 			$form .= " id=\"{$id}\"";
 		}
-		
+
 		if($onsubmit != "")
 		{
 			$form .= " onsubmit=\"{$onsubmit}\"";
@@ -89,7 +89,7 @@ class DefaultForm
 		$input .= " />";
 		return $input;
 	}
-	
+
 	/**
 	 * Generate a text box field.
 	 *
@@ -120,7 +120,7 @@ class DefaultForm
 		$input .= " />";
 		return $input;
 	}
-	
+
 	/**
 	 * Generate a password input box.
 	 *
@@ -180,7 +180,7 @@ class DefaultForm
 		}
 		$input .= " />";
 		return $input;
-		
+
 	}
 
 	/**
@@ -323,7 +323,7 @@ class DefaultForm
 		$input .= "</label>";
 		return $input;
 	}
-	
+
 	/**
 	 * Generate a select box.
 	 *
@@ -372,7 +372,7 @@ class DefaultForm
 		$select .= "</select>\n";
 		return $select;
 	}
-	
+
 	/**
 	 * Generate a forum selection box.
 	 *
@@ -385,50 +385,50 @@ class DefaultForm
 	function generate_forum_select($name, $selected, $options=array(), $is_first=1)
 	{
 		global $fselectcache, $forum_cache, $selectoptions;
-		
+
 		if(!$selectoptions)
 		{
 			$selectoptions = '';
 		}
-		
+
 		if(!$options['depth'])
 		{
 			$options['depth'] = 0;
 		}
-		
+
 		$options['depth'] = intval($options['depth']);
-		
+
 		if(!$options['pid'])
 		{
 			$pid = 0;
 		}
-		
+
 		$pid = intval($options['pid']);
-		
+
 		if(!is_array($fselectcache))
 		{
 			if(!is_array($forum_cache))
 			{
 				$forum_cache = cache_forums();
 			}
-	
+
 			foreach($forum_cache as $fid => $forum)
 			{
 				$fselectcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 			}
 		}
-		
+
 		if($options['main_option'] && $is_first)
 		{
 			$select_add = '';
 			if($selected == -1)
 			{
-				$select_add = " selected=\"selected\""; 
+				$select_add = " selected=\"selected\"";
 			}
-			
+
 			$selectoptions .= "<option value=\"-1\"{$select_add}>{$options['main_option']}</option>\n";
 		}
-		
+
 		if(is_array($fselectcache[$pid]))
 		{
 			foreach($fselectcache[$pid] as $main)
@@ -438,18 +438,18 @@ class DefaultForm
 					if($forum['fid'] != "0" && $forum['linkto'] == '')
 					{
 						$select_add = '';
-	
+
 						if(!empty($selected) && ($forum['fid'] == $selected || (is_array($selected) && in_array($forum['fid'], $selected))))
 						{
 							$select_add = " selected=\"selected\"";
 						}
-						
+
 						$sep = '';
 						if(isset($options['depth']))
 						{
 							$sep = str_repeat("&nbsp;", $options['depth']);
 						}
-						
+
 						$style = "";
 						if($forum['active'] == 0)
 						{
@@ -457,7 +457,7 @@ class DefaultForm
 						}
 
 						$selectoptions .= "<option value=\"{$forum['fid']}\"{$style}{$select_add}>".$sep.htmlspecialchars_uni(strip_tags($forum['name']))."</option>\n";
-	
+
 						if($forum_cache[$forum['fid']])
 						{
 							$options['depth'] += 5;
@@ -469,7 +469,7 @@ class DefaultForm
 				}
 			}
 		}
-		
+
 		if($is_first == 1)
 		{
 			if(!isset($options['multiple']))
@@ -497,7 +497,7 @@ class DefaultForm
 			return $select;
 		}
 	}
-	
+
 	/**
 	 * Generate a group selection box.
 	 *
@@ -509,31 +509,31 @@ class DefaultForm
 	function generate_group_select($name, $selected=array(), $options=array())
 	{
 		global $cache;
-		
+
 		$select = "<select name=\"{$name}\"";
-		
+
 		if(isset($options['multiple']))
 		{
 			$select .= " multiple=\"multiple\"";
 		}
-		
+
 		if(isset($options['class']))
 		{
 			$select .= " class=\"{$options['class']}\"";
 		}
-		
+
 		if(isset($options['id']))
 		{
 			$select .= " id=\"{$options['id']}\"";
 		}
-		
+
 		if(isset($options['size']))
 		{
 			$select .= " size=\"{$options['size']}\"";
 		}
-		
+
 		$select .= ">\n";
-		
+
 		$groups_cache = $cache->read('usergroups');
 		foreach($groups_cache as $group)
 		{
@@ -545,15 +545,15 @@ class DefaultForm
 					$selected_add = " selected=\"selected\"";
 				}
 			}
-			
+
 			$select .= "<option value=\"{$group['gid']}\"{$selected_add}>".htmlspecialchars_uni(strip_tags($group['title']))."</option>";
 		}
-		
+
 		$select .= "</select>";
-		
+
 		return $select;
 	}
-	
+
 	/**
 	 * Generate a submit button.
 	 *
@@ -592,7 +592,7 @@ class DefaultForm
 		$input .= " />";
 		return $input;
 	}
-	
+
 	/**
 	 * Generate a reset button.
 	 *
@@ -637,7 +637,7 @@ class DefaultForm
 	function generate_yes_no_radio($name, $value=1, $int=true, $yes_options=array(), $no_options = array())
 	{
 		global $lang;
-		
+
 		// Checked status
 		if($value == "no" || $value === '0')
 		{
@@ -665,7 +665,7 @@ class DefaultForm
 		$yes_options['checked'] = $yes_checked;
 		$no_options['class'] = "radio_no ".$no_options['class'];
 		$no_options['checked'] = $no_checked;
-		
+
 		$yes = $this->generate_radio_button($name, $yes_value, $lang->yes, $yes_options);
 		$no = $this->generate_radio_button($name, $no_value, $lang->no, $no_options);
 		return $yes." ".$no;
@@ -684,7 +684,7 @@ class DefaultForm
 	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
 	{
 		global $lang;
-		
+
 		// Checked status
 		if($value == "off" || (int) $value !== 1)
 		{
@@ -707,22 +707,22 @@ class DefaultForm
 			$on_value = "on";
 			$off_value = "off";
 		}
-		
+
 		// Set the options straight
 		$on_options['class'] = "radio_on ".$on_options['class'];
 		$on_options['checked'] = $on_checked;
 		$off_options['class'] = "radio_off ".$off_options['class'];
 		$off_options['checked'] = $off_checked;
-		
+
 		$on = $this->generate_radio_button($name, $on_value, $lang->on, $on_options);
 		$off = $this->generate_radio_button($name, $off_value, $lang->off, $off_options);
 		return $on." ".$off;
 	}
-	
+
 	function generate_date_select($name, $day="",$month="",$year="")
 	{
 		global $lang;
-		
+
 		$months = array(
 			1 => $lang->january,
 			2 => $lang->february,
@@ -737,35 +737,35 @@ class DefaultForm
 			11 => $lang->november,
 			12 => $lang->december,
 		);
-		
+
 		// Construct option list for days
 		$days = array();
 		for($i = 1; $i <= 31; ++$i)
 		{
 			$days[$i] = $i;
 		}
-		
+
 		if(!$day)
 		{
 			$day = date("j", TIME_NOW);
 		}
-		
+
 		if(!$month)
 		{
 			$month = date("n", TIME_NOW);
 		}
-		
+
 		if(!$year)
 		{
 			$year = date("Y", TIME_NOW);
 		}
-		
+
 		$built = $this->generate_select_box($name.'_day', $days, intval($day), array('id' => $name.'_day'))." &nbsp; ";
 		$built .= $this->generate_select_box($name.'_month', $months, intval($month), array('id' => $name.'_month'))." &nbsp; ";
 		$built .= $this->generate_text_box($name.'_year', intval($year), array('id' => $name.'_year', 'style' => 'width: 100px;'));
 		return $built;
 	}
-	
+
 	/**
 	 * Output a row of buttons in a wrapped container.
 	 *
@@ -790,7 +790,7 @@ class DefaultForm
 		{
 			return $return;
 		}
-	}	
+	}
 
 	/**
 	 * Finish up a form.
@@ -871,31 +871,31 @@ class DefaultFormContainer
 		{
 			$for = " for=\"{$label_for}\"";
 		}
-		
+
 		if($title)
 		{
 			$row = "<label{$for}>{$title}</label>";
 		}
-		
+
 		if($options['id'])
 		{
 			$options['id'] = " id=\"{$options['id']}\"";
 		}
-		
+
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
 		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
-		
+
 		$this->_container->construct_cell($row, $options);
-		
+
 		if(!isset($options['skip_construct']))
 		{
 			$this->_container->construct_row($row_options);
 		}
 	}
-	
+
 	/**
 	 * Output a row cell for a table based form row.
 	 *
@@ -906,7 +906,7 @@ class DefaultFormContainer
 	{
 		$this->_container->construct_cell($data, $options);
 	}
-	
+
 	/**
 	 * Build a row for the table based form row.
 	 *
@@ -916,7 +916,7 @@ class DefaultFormContainer
 	{
 		$this->_container->construct_row($extra);
 	}
-	
+
 	/**
 	 * return the cells of a row for the table based form row.
 	 *
@@ -955,12 +955,12 @@ class DefaultFormContainer
 	function end($return=false)
 	{
 		global $plugins;
-		
+
 		$hook = array(
 			'return'	=> &$return,
 			'this'		=> &$this
 		);
-		
+
 		$plugins->run_hooks("admin_formcontainer_end", $hook);
 		if($return == true)
 		{

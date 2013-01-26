@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_profile_fields_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_profile_fields_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -39,7 +39,7 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_fieldtype;
 		}
-		
+
 		if(!$errors)
 		{
 			$type = $mybb->input['fieldtype'];
@@ -52,7 +52,7 @@ if($mybb->input['action'] == "add")
 			{
 				$thing = $type;
 			}
-	
+
 			$new_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -65,38 +65,38 @@ if($mybb->input['action'] == "add")
 				"hidden" => $db->escape_string($mybb->input['hidden']),
 				"postnum" => intval($mybb->input['postnum'])
 			);
-			
+
 			$fid = $db->insert_query("profilefields", $new_profile_field);
-			
+
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
-			
+
 			$plugins->run_hooks("admin_config_profile_fields_add_commit");
 
 			// Log admin action
 			log_admin_action($fid, $mybb->input['name']);
-					
+
 			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?module=config-profile_fields");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_new_profile_field);
 	$page->output_header($lang->custom_profile_fields." - ".$lang->add_new_profile_field);
-	
+
 	$sub_tabs['custom_profile_fields'] = array(
 		'title' => $lang->custom_profile_fields,
 		'link' => "index.php?module=config-profile_fields"
 	);
-	
+
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
 		'link' => "index.php?module=config-profile_fields&amp;action=add",
 		'description' => $lang->add_new_profile_field_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_profile_field');
 	$form = new Form("index.php?module=config-profile_fields&amp;action=add", "post", "add");
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -108,7 +108,7 @@ if($mybb->input['action'] == "add")
 		$mybb->input['editable'] = 1;
 		$mybb->input['hidden'] = 0;
 	}
-	
+
 	$form_container = new FormContainer($lang->add_new_profile_field);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -148,23 +148,23 @@ if($mybb->input['action'] == "add")
 				add_star("row_options");
 		});
 	</script>';
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_profile_fields_edit");
-	
+
 	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
-	
+
 	if(!$profile_field['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?module=config-profile_fields");
 	}
-		
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -181,14 +181,14 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_fieldtype;
 		}
-		
+
 		$type = $mybb->input['fieldtype'];
 		$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
 		if($type != "text" && $type != "textarea")
 		{
 			$type = "$type\n$options";
 		}
-		
+
 		if(!$errors)
 		{
 			$profile_field = array(
@@ -203,11 +203,11 @@ if($mybb->input['action'] == "edit")
 				"hidden" => $db->escape_string($mybb->input['hidden']),
 				"postnum" => intval($mybb->input['postnum'])
 			);
-			
+
 			$db->update_query("profilefields", $profile_field, "fid = '".intval($mybb->input['fid'])."'");
-			
+
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
-			
+
 			// Log admin action
 			log_admin_action($profile_field['fid'], $mybb->input['name']);
 
@@ -215,22 +215,22 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=config-profile_fields");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_profile_field);
 	$page->output_header($lang->custom_profile_fields." - ".$lang->edit_profile_field);
-	
+
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
 		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
 		'description' => $lang->edit_profile_field_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_profile_field');
 	$form = new Form("index.php?module=config-profile_fields&amp;action=edit", "post", "edit");
-	
-	
+
+
 	echo $form->generate_hidden_field("fid", $profile_field['fid']);
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -238,12 +238,12 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$type = explode("\n", $profile_field['type'], "2");
-	
+
 		$mybb->input = $profile_field;
 		$mybb->input['fieldtype'] = $type[0];
 		$mybb->input['options'] = $type[1];
 	}
-	
+
 	$form_container = new FormContainer($lang->edit_profile_field);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -283,17 +283,17 @@ if($mybb->input['action'] == "edit")
 				add_star("row_options");
 		});
 	</script>';
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_profile_fields_delete");
-	
+
 	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
-	
+
 	// Does the profile field not exist?
 	if(!$profile_field['fid'])
 	{
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "delete")
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
-		
+
 		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
 
 		// Log admin action
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_profile_fields_start");
-	
+
 	$page->output_header($lang->custom_profile_fields);
 
 	$sub_tabs['custom_profile_fields'] = array(
@@ -338,15 +338,15 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=config-profile_fields",
 		'description' => $lang->custom_profile_fields_desc
 	);
-	
+
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
 		'link' => "index.php?module=config-profile_fields&amp;action=add",
 	);
 
-	
+
 	$page->output_nav_tabs($sub_tabs, 'custom_profile_fields');
-	
+
 	$table = new Table;
 	$table->construct_header($lang->name);
 	$table->construct_header($lang->id, array("class" => "align_center"));
@@ -354,7 +354,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->editable, array("class" => "align_center"));
 	$table->construct_header($lang->hidden, array("class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center"));
-	
+
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($field = $db->fetch_array($query))
 	{
@@ -388,24 +388,24 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong><a href=\"index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}\">".htmlspecialchars_uni($field['name'])."</a></strong><br /><small>".htmlspecialchars_uni($field['description'])."</small>", array('width' => '45%'));
 		$table->construct_cell($field['fid'], array("class" => "align_center", 'width' => '5%'));
 		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));		
+		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($hidden, array("class" => "align_center", 'width' => '10%'));
-		
+
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
 		$popup->add_item($lang->edit_field, "index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}");
 		$popup->add_item($lang->delete_field, "index.php?module=config-profile_fields&amp;action=delete&amp;fid={$field['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center", 'width' => '20%'));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_profile_fields, array('colspan' => 6));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->custom_profile_fields);
-	
+
 	$page->output_footer();
 }
 ?>

@@ -216,7 +216,7 @@ class PostDataHandler extends DataHandler
 				$subject_length = $subject_length - 4;
 			}
 		}
-		
+
 		if($subject_length > 85)
 		{
 			// Subject is too long
@@ -314,7 +314,7 @@ class PostDataHandler extends DataHandler
 			{
 				return true;
 			}
-			
+
 			// Fetch the user information for this post - used to check their last post date.
 			$user = get_user($post['uid']);
 
@@ -337,55 +337,55 @@ class PostDataHandler extends DataHandler
 		// All is well that ends well - return true.
 		return true;
 	}
-	
+
 	function verify_post_merge($simple_mode=false)
 	{
 		global $mybb, $db, $session;
-		
+
 		$post = &$this->data;
-		
+
 		// Are we starting a new thread?
 		if(!$post['tid'])
 		{
 			return true;
 		}
-		
+
 		// Are we even turned on?
 		if(empty($mybb->settings['postmergemins']))
 		{
 			return true;
 		}
-		
+
 		// Assign a default separator if none is specified
 		if(trim($mybb->settings['postmergesep']) == "")
 		{
 			$mybb->settings['postmergesep'] = "[hr]";
 		}
-		
+
 		// Check to see if this person is in a usergroup that is excluded
 		if(trim($mybb->settings['postmergeuignore']) != "")
 		{
 			$gids = explode(',', $mybb->settings['postmergeuignore']);
 			$gids = array_map('intval', $gids);
-			
-			
+
+
 			$user_usergroups = explode(',', $mybb->user['usergroup'].",".$mybb->user['additionalgroups']);
 			if(count(array_intersect($user_usergroups, $gids)) > 0)
 			{
 				return true;
-			}			
+			}
 		}
-		
+
 		// Select the lastpost and fid information for this thread
 		$query = $db->simple_select("threads", "lastpost,fid", "lastposteruid='".$post['uid']."' AND tid='".$post['tid']."'", array('limit' => '1'));
 		$thread = $db->fetch_array($query);
-		
+
 		// Check to see if the same author has posted within the merge post time limit
 		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
 		{
 			return true;
 		}
-		
+
 		if(strstr($mybb->settings['postmergefignore'], ','))
 		{
 			$fids = explode(',', $mybb->settings['postmergefignore']);
@@ -393,23 +393,23 @@ class PostDataHandler extends DataHandler
 			{
 				$fid[] = intval($forumid);
 			}
-			
+
 			if(in_array($thread['fid'], $fid))
 			{
 				return true;
 			}
-			
+
 		}
 		else if(trim($mybb->settings['postmergefignore']) != "" && $thread['fid'] == intval($mybb->settings['postmergefignore']))
 		{
 			return true;
 		}
-		
+
 		if($simple_mode == true)
 		{
 			return false;
 		}
-		
+
 		if($post['uid'])
 		{
 			$user_check = "uid='".$post['uid']."'";
@@ -418,7 +418,7 @@ class PostDataHandler extends DataHandler
 		{
 			$user_check = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
-		
+
 		$query = $db->simple_select("posts", "pid,message,visible", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
 		return $db->fetch_array($query);
 	}
@@ -481,7 +481,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 	}
-	
+
 	/**
 	* Verifies the video count.
 	*
@@ -586,22 +586,22 @@ class PostDataHandler extends DataHandler
 			$dateline = TIME_NOW;
 		}
 	}
-	
+
 	/**
 	 * Verify thread prefix.
-	 * 
+	 *
 	 * @return boolean True when valid, false when not valid.
 	 */
 	function verify_prefix()
 	{
 		$prefix = &$this->data['prefix'];
-		
+
 		// If a valid prefix isn't supplied, don't assign one.
 		if(!$prefix || $prefix < 1)
 		{
 			$prefix = 0;
 		}
-		
+
 		return true;
 	}
 
@@ -616,9 +616,9 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 		$time = TIME_NOW;
-		
+
 		$this->action = "post";
-		
+
 		if($this->method != "update" && !$post['savedraft'])
 		{
 			$this->verify_post_flooding();
@@ -698,7 +698,7 @@ class PostDataHandler extends DataHandler
 		{
 			die("The post is not valid.");
 		}
-		
+
 		// Fetch the thread
 		$thread = get_thread($post['tid']);
 
@@ -707,7 +707,7 @@ class PostDataHandler extends DataHandler
 		{
 			$visible = -2;
 		}
-		
+
 		// Otherwise this post is being made now and we have a bit to do.
 		else
 		{
@@ -760,7 +760,7 @@ class PostDataHandler extends DataHandler
 				// Unstick the thread.
 				if($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
-					$newstick = "sticky='0'";					
+					$newstick = "sticky='0'";
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
@@ -798,7 +798,7 @@ class PostDataHandler extends DataHandler
 				$visible = 0;
 			}
 		}
-		
+
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
 
@@ -811,7 +811,7 @@ class PostDataHandler extends DataHandler
 		{
 			$draft_check = false;
 		}
-		
+
 		if($this->method != "update" && $visible == 1)
 		{
 			$double_post = $this->verify_post_merge();
@@ -820,7 +820,7 @@ class PostDataHandler extends DataHandler
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
 				$this->pid = $double_post['pid'];
-				
+
 				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
 				$update_query = array(
 					"message" => $db->escape_string($double_post['message'])
@@ -828,30 +828,30 @@ class PostDataHandler extends DataHandler
 				$update_query['edituid'] = intval($post['uid']);
 				$update_query['edittime'] = TIME_NOW;
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
-				
+
 				if($draft_check)
 				{
 					$db->delete_query("posts", "pid='".$post['pid']."'");
 				}
-				
+
 				// Assign any uploaded attachments with the specific posthash to the merged post.
 				$post['posthash'] = $db->escape_string($post['posthash']);
-				
+
 				$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
 				$attachmentcount = $db->fetch_field($query, "attachmentcount");
-			
+
 				if($attachmentcount > 0)
 				{
 					// Update forum count
 					update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
 				}
-				
+
 				$attachmentassign = array(
 					"pid" => $double_post['pid'],
 					"posthash" => ''
 				);
 				$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
-			
+
 				// Return the post's pid and whether or not it is visible.
 				return array(
 					"pid" => $double_post['pid'],
@@ -859,7 +859,7 @@ class PostDataHandler extends DataHandler
 				);
 			}
 		}
-		
+
 		if($visible == 1 && $thread['visible'] == 1)
 		{
 			$now = TIME_NOW;
@@ -872,7 +872,7 @@ class PostDataHandler extends DataHandler
 			{
 				$update_array['postnum'] = 'postnum+1';
 			}
-			
+
 			$db->update_query("users", $update_array, "uid='{$post['uid']}'", 1, true);
 		}
 
@@ -940,9 +940,9 @@ class PostDataHandler extends DataHandler
 			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser;
-			
+
 			$done_users = array();
-			
+
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->text_parse_message($post['message'], array('me_username' => $post['username'], 'filter_badwords' => 1, 'safe_html' => 1));
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
@@ -963,7 +963,7 @@ class PostDataHandler extends DataHandler
 					continue;
 				}
 				$done_users[$subscribedmember['uid']] = 1;
-				
+
 				$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
 				if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 				{
@@ -975,7 +975,7 @@ class PostDataHandler extends DataHandler
 					// User isn't a moderator or the author of the thread...
 					continue;
 				}
-				
+
 				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
@@ -1010,8 +1010,8 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
 				$emailsubject = $lang->sprintf($emailsubject, $subject);
-				
-				$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);				
+
+				$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
@@ -1048,7 +1048,7 @@ class PostDataHandler extends DataHandler
 			update_thread_counters($post['tid'], array("replies" => "+1"));
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
-		
+
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
 		$attachmentcount = $db->fetch_field($query, "attachmentcount");
 		if($attachmentcount > 0)
@@ -1075,7 +1075,7 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Validate all thread assets.
-		
+
 		if(!$thread['savedraft'])
 		{
 			$this->verify_post_flooding();
@@ -1085,7 +1085,7 @@ class PostDataHandler extends DataHandler
 		{
 			$this->verify_author();
 		}
-		
+
 		if($this->method == "insert" || array_key_exists('prefix', $thread))
 		{
 			$this->verify_prefix();
@@ -1304,7 +1304,7 @@ class PostDataHandler extends DataHandler
 			if(is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
 			{
 				$lang->load($this->language_file, true);
-				
+
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $this->tid;
 				$modlogdata['tid'] = $thread['tid'];
@@ -1362,17 +1362,17 @@ class PostDataHandler extends DataHandler
 						$db->update_query("users", $update_query, "uid='{$thread['uid']}'", 1, true);
 					}
 				}
-				
+
 				if(!$forum['lastpost'])
 				{
 					$forum['lastpost'] = 0;
 				}
-				
+
 				$done_users = array();
-				
+
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
 				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-				
+
 				// Parse badwords
 				require_once MYBB_ROOT."inc/class_parser.php";
 				$parser = new postParser;
@@ -1395,7 +1395,7 @@ class PostDataHandler extends DataHandler
 						continue;
 					}
 					$done_users[$subscribedmember['uid']] = 1;
-					
+
 					$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
 					if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 					{
@@ -1443,7 +1443,7 @@ class PostDataHandler extends DataHandler
 						$emailmessage = $langcache[$uselang]['email_forumsubscription'];
 					}
 					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
-					
+
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], get_thread_link($this->tid), $thread['fid'], $post_code);
 					$new_email = array(
@@ -1475,7 +1475,7 @@ class PostDataHandler extends DataHandler
 			);
 			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
-		
+
 		if($visible == 1)
 		{
 			update_thread_data($this->tid);
@@ -1487,7 +1487,7 @@ class PostDataHandler extends DataHandler
 			update_thread_counters($this->tid, array("replies" => 0));
 			update_forum_counters($thread['fid'], array("unapprovedthreads" => "+1", "unapprovedposts" => "+1"));
 		}
-		
+
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
 		$attachmentcount = $db->fetch_field($query, "attachmentcount");
 		if($attachmentcount > 0)
@@ -1524,11 +1524,11 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		$post['pid'] = intval($post['pid']);
-		
+
 		$existing_post = get_post($post['pid']);
 		$post['tid'] = $existing_post['tid'];
 		$post['fid'] = $existing_post['fid'];
-		
+
 		$forum = get_forum($post['fid']);
 
 		// Decide on the visibility of this post.
@@ -1541,7 +1541,7 @@ class PostDataHandler extends DataHandler
                     update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
                     update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
-                    
+
                     // Subtract from the users post count
                     // Update the post count if this forum allows post counts to be tracked
                     if($forum['usepostcounts'] != 0)
@@ -1558,7 +1558,7 @@ class PostDataHandler extends DataHandler
                     update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
                     update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
-                    
+
                     // Update the post count if this forum allows post counts to be tracked
                     if($forum['usepostcounts'] != 0)
                     {
@@ -1594,19 +1594,19 @@ class PostDataHandler extends DataHandler
 		{
 			$first_post = false;
 		}
-		
+
 		if($existing_post['visible'] == 0)
 		{
 			$visible = 0;
 		}
-		
+
 		// Update the thread details that might have been changed first.
 		if($first_post)
-		{			
+		{
 			$this->tid = $post['tid'];
 
 			$this->thread_update_data['visible'] = $visible;
-			
+
 			if(isset($post['prefix']))
 			{
 				$this->thread_update_data['prefix'] = intval($post['prefix']);
@@ -1668,7 +1668,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		$this->post_update_data['visible'] = $visible;
-		
+
 		$plugins->run_hooks("datahandler_post_update", $this);
 
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");

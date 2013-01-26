@@ -30,7 +30,7 @@ function upgrade6_dbchanges()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
-	
+
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE regex regex text NOT NULL");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode CHANGE replacement replacement text NOT NULL");
 

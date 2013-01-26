@@ -23,7 +23,7 @@ $plugins->run_hooks("admin_tools_tasks_begin");
 
 /**
  * Validates a string or array of values
- * 
+ *
  * @param mixed Comma-separated list or array of values
  * @param int Minimum value
  * @param int Maximum value
@@ -67,7 +67,7 @@ function check_time_values($value, $min, $max, $return_type)
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_tools_tasks_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -140,7 +140,7 @@ if($mybb->input['action'] == "add")
 			$new_task['nextrun'] = fetch_next_run($new_task);
 			$tid = $db->insert_query("tasks", $new_task);
 			$cache->update_tasks();
-			
+
 			$plugins->run_hooks("admin_tools_tasks_add_commit");
 
 			// Log admin action
@@ -168,7 +168,7 @@ if($mybb->input['action'] == "add")
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
 		'link' => "index.php?module=tools-tasks&amp;action=logs"
-	);	
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
 	$form = new Form("index.php?module=tools-tasks&amp;action=add", "post", "add");
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
-	
+
 	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 	$form_container->end();
 
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_tools_tasks_edit");
-	
+
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_invalid_month;
 		}
-		
+
 		if(!$errors)
 		{
 			$enable_confirmation = false;
@@ -322,7 +322,7 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['enabled'] = 0;
 				$enable_confirmation = true;
 			}
-			
+
 			$updated_task = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -339,14 +339,14 @@ if($mybb->input['action'] == "edit")
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
 			$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
 			$cache->update_tasks();
-			
+
 			$plugins->run_hooks("admin_tools_tasks_edit_commit");
 
 			// Log admin action
 			log_admin_action($task['tid'], $mybb->input['title']);
 
 			flash_message($lang->success_task_updated, 'success');
-			
+
 			if($enable_confirmation == true)
 			{
 				admin_redirect("index.php?module=tools-tasks&amp;action=enable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
@@ -360,7 +360,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item($lang->edit_task);
 	$page->output_header($lang->scheduled_tasks." - ".$lang->edit_task);
-	
+
 	$sub_tabs['edit_task'] = array(
 		'title' => $lang->edit_task,
 		'description' => $lang->edit_task_desc,
@@ -433,7 +433,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], true));
-	
+
 	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled'], true));
 	$form_container->end();
 
@@ -448,7 +448,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_tools_tasks_delete");
-	
+
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
@@ -458,7 +458,7 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -473,7 +473,7 @@ if($mybb->input['action'] == "delete")
 
 		// Fetch next task run
 		$cache->update_tasks();
-		
+
 		$plugins->run_hooks("admin_tools_tasks_delete_commit");
 
 		// Log admin action
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
-	
+
 	if($mybb->input['action'] == "enable")
 	{
 		$plugins->run_hooks("admin_tools_tasks_enable");
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	{
 		$plugins->run_hooks("admin_tools_tasks_disable");
 	}
-	
+
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	}
 
 	if($mybb->input['action'] == "enable")
-	{	
+	{
 		if($task['file'] == "backupdb" || $task['file'] == "checktables")
 		{
 			// User clicked no
@@ -524,18 +524,18 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			{
 				admin_redirect("index.php?module=tools-tasks");
 			}
-		
+
 			if($mybb->request_method == "post")
 			{
 				$nextrun = fetch_next_run($task);
 				$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
 				$cache->update_tasks();
-				
+
 				$plugins->run_hooks("admin_tools_tasks_enable_commit");
-				
+
 				// Log admin action
 				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
-				
+
 				flash_message($lang->success_task_enabled, 'success');
 				admin_redirect("index.php?module=tools-tasks");
 			}
@@ -549,12 +549,12 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			$nextrun = fetch_next_run($task);
 			$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
 			$cache->update_tasks();
-			
+
 			$plugins->run_hooks("admin_tools_tasks_enable_commit");
-			
+
 			// Log admin action
 			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
-			
+
 			flash_message($lang->success_task_enabled, 'success');
 			admin_redirect("index.php?module=tools-tasks");
 		}
@@ -563,12 +563,12 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	{
 		$db->update_query("tasks", array("enabled" => 0), "tid='{$task['tid']}'");
 		$cache->update_tasks();
-		
+
 		$plugins->run_hooks("admin_tools_tasks_disable_commit");
-		
+
 		// Log admin action
 		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
-		
+
 		flash_message($lang->success_task_disabled, 'success');
 		admin_redirect("index.php?module=tools-tasks");
 	}
@@ -581,11 +581,11 @@ if($mybb->input['action'] == "run")
 		flash_message($lang->invalid_post_verify_key2, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
-	
+
 	ignore_user_abort(true);
 	@set_time_limit(0);
 	$plugins->run_hooks("admin_tools_tasks_run");
-	
+
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
@@ -595,7 +595,7 @@ if($mybb->input['action'] == "run")
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
-	
+
 	run_task($task['tid']);
 
 	$plugins->run_hooks("admin_tools_tasks_run_commit");
@@ -610,7 +610,7 @@ if($mybb->input['action'] == "run")
 if($mybb->input['action'] == "logs")
 {
 	$plugins->run_hooks("admin_tools_tasks_logs");
-	
+
 	$page->output_header($lang->task_logs);
 
 	$sub_tabs['scheduled_tasks'] = array(
@@ -622,7 +622,7 @@ if($mybb->input['action'] == "logs")
 		'title' => $lang->add_new_task,
 		'link' => "index.php?module=tools-tasks&amp;action=add"
 	);
-	
+
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
 		'link' => "index.php?module=tools-tasks&amp;action=logs",
@@ -692,7 +692,7 @@ if($mybb->input['action'] == "logs")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_tasks_start");
-	
+
 	$page->output_header($lang->task_manager);
 
 	$sub_tabs['scheduled_tasks'] = array(

@@ -77,7 +77,7 @@ class templates
 				$this->cache[$title] = $template;
 			}
 		}
-		
+
 		if(!isset($this->cache[$title]))
 		{
 			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
@@ -87,7 +87,7 @@ class templates
 			{
 				$this->uncached_templates[$title] = $title;
 			}
-			
+
 			if(!$gettemplate)
 			{
 				$gettemplate['template'] = "";
@@ -108,7 +108,7 @@ class templates
 				$template = "\n{$template}\n";
 			}
 		}
-		
+
 		if($eslashes)
 		{
 			$template = str_replace("\\'", "'", addslashes($template));

@@ -132,7 +132,7 @@ $query = $db->query("
     WHERE p.tid='$tid' {$visible}
     ORDER BY p.dateline
 	LIMIT {$start}, {$perpage}
-"); 
+");
 while($postrow = $db->fetch_array($query))
 {
 	if($postrow['userusername'])

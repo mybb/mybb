@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_badwords_begin");
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_badwords_add");
-	
+
 	if(!trim($mybb->input['badword']))
 	{
 		$errors[] = $lang->error_missing_bad_word;
@@ -49,7 +49,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	}
 
 	$badword = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($mybb->input['badword'], "#"));
-	
+
 	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
 	if(strlen($mybb->input['badword']) == strlen($mybb->input['replacement']) && preg_match("#(^|\W)".$badword."(\W|$)#i", $mybb->input['replacement']))
 	{
@@ -64,7 +64,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		);
 
 		$bid = $db->insert_query("badwords", $new_badword);
-		
+
 		$plugins->run_hooks("admin_config_badwords_add_commit");
 
 		// Log admin action
@@ -83,10 +83,10 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_badwords_delete");
-	
+
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
-	
+
 	// Does the bad word not exist?
 	if(!$badword['bid'])
 	{
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the bad word
 		$db->delete_query("badwords", "bid='{$badword['bid']}'");
-		
+
 		$plugins->run_hooks("admin_config_badwords_delete_commit");
 
 		// Log admin action
@@ -124,10 +124,10 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_badwords_edit");
-	
+
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
-	
+
 	// Does the bad word not exist?
 	if(!$badword['bid'])
 	{
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$db->update_query("badwords", $updated_badword, "bid='{$badword['bid']}'");
-			
+
 			$plugins->run_hooks("admin_config_badwords_edit_commit");
 
 			// Log admin action
@@ -203,14 +203,14 @@ if($mybb->input['action'] == "edit")
 	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_badwords_start");
-	
+
 	$page->output_header($lang->bad_words);
 
 	$sub_tabs['badwords'] = array(
@@ -246,13 +246,13 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config-badwords&amp;action=delete&amp;bid={$badword['bid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_bad_words, array("colspan" => 4));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->bad_word_filters);
 
 	$form = new Form("index.php?module=config-badwords&amp;action=add", "post", "add");

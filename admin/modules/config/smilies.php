@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_smilies_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_smilies_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -44,7 +44,7 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_order;
 		}
-		
+
 		if(!$errors)
 		{
 			$new_smilie = array(
@@ -54,24 +54,24 @@ if($mybb->input['action'] == "add")
 				"disporder" => intval($mybb->input['disporder']),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
-			
+
 			$sid = $db->insert_query("smilies", $new_smilie);
 
 			$cache->update_smilies();
-			
+
 			$plugins->run_hooks("admin_config_smilies_add_commit");
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
-			
+
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_smilie);
 	$page->output_header($lang->smilies." - ".$lang->add_smilie);
-	
+
 	$sub_tabs['manage_smilies'] = array(
 		'title' => $lang->manage_smilies,
 		'link' => "index.php?module=config-smilies",
@@ -89,10 +89,10 @@ if($mybb->input['action'] == "add")
 		'title' => $lang->mass_edit,
 		'link' => "index.php?module=config-smilies&amp;action=mass_edit"
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_smilie');
 	$form = new Form("index.php?module=config-smilies&amp;action=add", "post", "add");
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -102,13 +102,13 @@ if($mybb->input['action'] == "add")
 		$mybb->input['image'] = 'images/smilies/';
 		$mybb->input['showclickable'] = 1;
 	}
-	
+
 	if(!$mybb->input['disporder'])
 	{
 		$query = $db->simple_select("smilies", "max(disporder) as dispordermax");
 		$mybb->input['disporder'] = $db->fetch_field($query, "dispordermax")+1;
 	}
-	
+
 	$form_container = new FormContainer($lang->add_smilie);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->text_replace." <em>*</em>", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_smilies_edit");
-	
+
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_order;
 		}
-		
+
 		if(!$errors)
 		{
 			$updated_smilie = array(
@@ -170,11 +170,11 @@ if($mybb->input['action'] == "edit")
 				"disporder" => intval($mybb->input['disporder']),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
-			
+
 			$db->update_query("smilies", $updated_smilie, "sid = '".intval($mybb->input['sid'])."'");
-			
+
 			$cache->update_smilies();
-			
+
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
 
 			// Log admin action
@@ -184,10 +184,10 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=config-smilies");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_smilie);
 	$page->output_header($lang->smilies." - ".$lang->edit_smilie);
-	
+
 	$sub_tabs['edit_smilie'] = array(
 		'title' => $lang->edit_smilie,
 		'link' => "index.php?module=config-smilies&amp;action=edit",
@@ -197,12 +197,12 @@ if($mybb->input['action'] == "edit")
 		'title' => $lang->mass_edit,
 		'link' => "index.php?module=config-smilies&amp;action=mass_edit",
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_smilie');
 	$form = new Form("index.php?module=config-smilies&amp;action=edit", "post", "edit");
-	
+
 	echo $form->generate_hidden_field("sid", $smilie['sid']);
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -232,7 +232,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_smilies_delete");
-	
+
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -255,7 +255,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("smilies", "sid='{$smilie['sid']}'");
 
 		$cache->update_smilies();
-		
+
 		$plugins->run_hooks("admin_config_smilies_delete_commit");
 
 		// Log admin action
@@ -272,39 +272,39 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "add_multiple")
 {
 	$plugins->run_hooks("admin_config_smilies_add_multiple");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if($mybb->input['step'] == 1)
 		{
 			$plugins->run_hooks("admin_config_smilies_add_multiple_step1");
-			
+
 			if(!trim($mybb->input['pathfolder']))
 			{
 				$errors[] = $lang->error_missing_path_multiple;
 			}
-			
+
 			$path = $mybb->input['pathfolder'];
 			$dir = @opendir(MYBB_ROOT.$path);
-			
+
 			if(!$dir)
 			{
 				$errors[] = $lang->error_invalid_path;
 			}
-			
+
 			if($path && !is_array($errors))
 			{
 				if(substr($path, -1, 1) !== "/")
 				{
 					$path .= "/";
 				}
-				
+
 				$query = $db->simple_select("smilies");
 				while($smilie = $db->fetch_array($query))
 				{
 					$asmilies[$smilie['image']] = 1;
 				}
-				
+
 				while($file = readdir($dir))
 				{
 					if($file != ".." && $file != ".")
@@ -320,18 +320,18 @@ if($mybb->input['action'] == "add_multiple")
 					}
 				}
 				closedir($dir);
-				
+
 				if(count($smilies) == 0)
 				{
 					$errors[] = $lang->error_no_smilies;
 				}
 			}
-			
+
 			if(!$errors)
 			{
 				$page->add_breadcrumb_item($lang->add_multiple_smilies);
 				$page->output_header($lang->smilies." - ".$lang->add_multiple_smilies);
-				
+
 				$sub_tabs['manage_smilies'] = array(
 					'title' => $lang->manage_smilies,
 					'link' => "index.php?module=config-smilies",
@@ -349,44 +349,44 @@ if($mybb->input['action'] == "add_multiple")
 					'title' => $lang->mass_edit,
 					'link' => "index.php?module=config-smilies&amp;action=mass_edit"
 				);
-				
+
 				$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
 				$form = new Form("index.php?module=config-smilies&amp;action=add_multiple", "post", "add_multiple");
 				echo $form->generate_hidden_field("step", "2");
 				echo $form->generate_hidden_field("pathfolder", $path);
-				
+
 				$form_container = new FormContainer($lang->add_multiple_smilies);
 				$form_container->output_row_header($lang->image, array("class" => "align_center", 'width' => '10%'));
 				$form_container->output_row_header($lang->name);
 				$form_container->output_row_header($lang->text_replace, array('width' => '20%'));
-				$form_container->output_row_header($lang->include, array("class" => "align_center", 'width' => '5%'));			
-		
+				$form_container->output_row_header($lang->include, array("class" => "align_center", 'width' => '5%'));
+
 				foreach($smilies as $key => $file)
 				{
 					$ext = get_extension($file);
 					$find = str_replace(".".$ext, "", $file);
 					$name = ucfirst($find);
-				
+
 					$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
 					$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
 					$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
 					$form_container->output_cell($form->generate_check_box("include[{$file}]", 1, "", array('checked' => 1)), array("class" => "align_center"));
 					$form_container->construct_row();
 				}
-				
+
 				if($form_container->num_rows() == 0)
 				{
 					flash_message($lang->error_no_images, 'error');
 					admin_redirect("index.php?module=config-smilies&action=add_multiple");
 				}
-				
+
 				$form_container->end();
-				
+
 				$buttons[] = $form->generate_submit_button($lang->save_smilies);
-			
+
 				$form->output_submit_wrapper($buttons);
 				$form->end();
-				
+
 				$page->output_footer();
 				exit;
 			}
@@ -394,18 +394,18 @@ if($mybb->input['action'] == "add_multiple")
 		else
 		{
 			$plugins->run_hooks("admin_config_smilies_add_multiple_step2");
-			
+
 			$path = $mybb->input['pathfolder'];
 			reset($mybb->input['include']);
 			$find = $mybb->input['find'];
 			$name = $mybb->input['name'];
-			
+
 			if(empty($mybb->input['include']))
 			{
 				flash_message($lang->error_none_included, 'error');
 				admin_redirect("index.php?module=config-smilies&action=add_multiple");
 			}
-			
+
 			foreach($mybb->input['include'] as $image => $insert)
 			{
 				if($insert)
@@ -421,20 +421,20 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$cache->update_smilies();
-			
+
 			$plugins->run_hooks("admin_config_smilies_add_multiple_commit");
 
 			// Log admin action
 			log_admin_action();
-			
+
 			flash_message($lang->success_multiple_smilies_added, 'success');
 			admin_redirect("index.php?module=config-smilies");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_multiple_smilies);
 	$page->output_header($lang->smilies." - ".$lang->add_multiple_smilies);
-	
+
 	$sub_tabs['manage_smilies'] = array(
 		'title' => $lang->manage_smilies,
 		'link' => "index.php?module=config-smilies",
@@ -452,11 +452,11 @@ if($mybb->input['action'] == "add_multiple")
 		'title' => $lang->mass_edit,
 		'link' => "index.php?module=config-smilies&amp;action=mass_edit"
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
 	$form = new Form("index.php?module=config-smilies&amp;action=add_multiple", "post", "add_multiple");
 	echo $form->generate_hidden_field("step", "1");
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -477,7 +477,7 @@ if($mybb->input['action'] == "add_multiple")
 if($mybb->input['action'] == "mass_edit")
 {
 	$plugins->run_hooks("admin_config_smilies_mass_edit");
-	
+
 	if($mybb->request_method == "post")
 	{
 		foreach($mybb->input['name'] as $sid => $name)
@@ -494,13 +494,13 @@ if($mybb->input['action'] == "mass_edit")
 					"disporder" => intval($mybb->input['disporder'][$sid]),
 					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
 				);
-					
+
 				$db->update_query("smilies", $smilie, "sid = '{$sid}'");
 			}
 		}
-		
+
 		$cache->update_smilies();
-		
+
 		$plugins->run_hooks("admin_config_smilies_mass_edit_commit");
 
 		// Log admin action
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "mass_edit")
 		flash_message($lang->success_multiple_smilies_updated, 'success');
 		admin_redirect("index.php?module=config-smilies");
 	}
-	
+
 	$page->add_breadcrumb_item($lang->mass_edit);
 	$page->output_header($lang->smilies." - ".$lang->mass_edit);
 
@@ -530,11 +530,11 @@ if($mybb->input['action'] == "mass_edit")
 		'link' => "index.php?module=config-smilies&amp;action=mass_edit",
 		'description' => $lang->mass_edit_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'mass_edit');
-	
+
 	$form = new Form("index.php?module=config-smilies&amp;action=mass_edit", "post", "mass_edit");
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -544,13 +544,13 @@ if($mybb->input['action'] == "mass_edit")
 		$mybb->input['path'] = 'images/smilies/';
 		$mybb->input['showclickable'] = 1;
 	}
-	
+
 	if(!$mybb->input['disporder'])
 	{
 		$query = $db->simple_select("smilies", "max(disporder) as dispordermax");
 		$mybb->input['disporder'] = $db->fetch_field($query, "dispordermax")+1;
 	}
-	
+
 	$form_container = new FormContainer($lang->manage_smilies);
 	$form_container->output_row_header($lang->image, array("class" => "align_center", 'width' => '1'));
 	$form_container->output_row_header($lang->name);
@@ -558,12 +558,12 @@ if($mybb->input['action'] == "mass_edit")
 	$form_container->output_row_header($lang->order, array('width' => '5%'));
 	$form_container->output_row_header($lang->mass_edit_show_clickable, array("width" => 165));
 	$form_container->output_row_header($lang->smilie_delete, array("class" => "align_center", 'width' => '5%'));
-	
+
 	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
 	while($smilie = $db->fetch_array($query))
 	{
 		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
-		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/") 
+		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/")
 		{
 			$image = $smilie['image'];
 		}
@@ -571,7 +571,7 @@ if($mybb->input['action'] == "mass_edit")
 		{
 			$image = "../".$smilie['image'];
 		}
-		
+
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
 		$form_container->output_cell($form->generate_text_box("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
@@ -580,15 +580,15 @@ if($mybb->input['action'] == "mass_edit")
 		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->input['delete']), array("class" => "align_center"));
 		$form_container->construct_row();
 	}
-	
+
 	if($form_container->num_rows() == 0)
 	{
 		$form_container->output_cell($lang->no_smilies, array('colspan' => 6));
 		$form_container->construct_row();
 	}
-	
+
 	$form_container->end();
-	
+
 	$buttons[] = $form->generate_submit_button($lang->save_smilies);
 	$buttons[] = $form->generate_reset_button($lang->reset);
 
@@ -601,7 +601,7 @@ if($mybb->input['action'] == "mass_edit")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_smilies_start");
-	
+
 	$page->output_header($lang->manage_smilies);
 
 	$sub_tabs['manage_smilies'] = array(
@@ -621,10 +621,10 @@ if(!$mybb->input['action'])
 		'title' => $lang->mass_edit,
 		'link' => "index.php?module=config-smilies&amp;action=mass_edit",
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'manage_smilies');
-	
-	$pagenum = intval($mybb->input['page']);	
+
+	$pagenum = intval($mybb->input['page']);
 	if($pagenum)
 	{
 		$start = ($pagenum-1) * 20;
@@ -634,19 +634,19 @@ if(!$mybb->input['action'])
 		$start = 0;
 		$pagenum = 1;
 	}
-	
-	
+
+
 	$table = new Table;
 	$table->construct_header($lang->image, array("class" => "align_center", "width" => 1));
 	$table->construct_header($lang->name, array("width" => "35%"));
 	$table->construct_header($lang->text_replace, array("width" => "35%"));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2));
-	
+
 	$query = $db->simple_select("smilies", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'disporder'));
 	while($smilie = $db->fetch_array($query))
 	{
 		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
-		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/") 
+		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/")
 		{
 			$image = $smilie['image'];
 		}
@@ -654,27 +654,27 @@ if(!$mybb->input['action'])
 		{
 			$image = "../".$smilie['image'];
 		}
-		
+
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
 		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
-		
+
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=edit&amp;sid={$smilie['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=delete&amp;sid={$smilie['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_smilies, array('colspan' => 5));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->manage_smilies);
-	
+
 	$query = $db->simple_select("smilies", "COUNT(sid) as smilies");
 	$total_rows = $db->fetch_field($query, "smilies");
-	
+
 	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-smilies&amp;page={page}");
 
 	$page->output_footer();

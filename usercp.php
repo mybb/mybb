@@ -188,7 +188,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
-			
+
 			$return_month = intval(substr($mybb->input['awaymonth'], 0, 2));
 			$return_day = intval(substr($mybb->input['awayday'], 0, 2));
 			$return_year = min(intval($mybb->input['awayyear']), 9999);
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			{
 				error($lang->error_usercp_return_date_past);
 			}
-			
+
 			$returndate = "{$return_day}-{$return_month}-{$return_year}";
 		}
 		else
@@ -619,9 +619,9 @@ if($mybb->input['action'] == "profile")
 	{
 		$customtitle = "";
 	}
-	
+
 	$plugins->run_hooks("usercp_profile_end");
-	
+
 	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");
 	output_page($editprofile);
 }
@@ -796,7 +796,7 @@ if($mybb->input['action'] == "options")
 	{
 		$receivepmscheck = "";
 	}
-	
+
 	if($user['receivefrombuddy'] == 1)
 	{
 		$receivefrombuddycheck = "checked=\"checked\"";
@@ -855,7 +855,7 @@ if($mybb->input['action'] == "options")
 		$pmnotifycheck = '';
 	}
 
-	
+
 	if($user['threadmode'] != "threaded" && $user['threadmode'] != "linear")
 	{
 		$user['threadmode'] = ''; // Leave blank to show default
@@ -898,7 +898,7 @@ if($mybb->input['action'] == "options")
 	}
 
 	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
-	
+
 	if($mybb->settings['allowbuddyonly'] == 1)
 	{
 		eval("\$pms_from_buddys = \"".$templates->get("usercp_options_pms_from_buddys")."\";");
@@ -945,9 +945,9 @@ if($mybb->input['action'] == "options")
 		}
 		eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
 	}
-	
+
 	$plugins->run_hooks("usercp_options_end");
-	
+
 	eval("\$editprofile = \"".$templates->get("usercp_options")."\";");
 	output_page($editprofile);
 }
@@ -1005,7 +1005,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 					);
 
 					$db->insert_query("awaitingactivation", $newactivation);
-	
+
 					$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 				}
 				else
@@ -1049,7 +1049,7 @@ if($mybb->input['action'] == "email")
 	}
 
 	$plugins->run_hooks("usercp_email");
-	
+
 	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
 	output_page($changemail);
 }
@@ -1102,7 +1102,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 if($mybb->input['action'] == "password")
 {
 	$plugins->run_hooks("usercp_password");
-	
+
 	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
 	output_page($editpassword);
 }
@@ -1161,9 +1161,9 @@ if($mybb->input['action'] == "changename")
 	{
 		error_no_permission();
 	}
-	
+
 	$plugins->run_hooks("usercp_changename_end");
-	
+
 	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
 	output_page($changename);
 }
@@ -1301,7 +1301,7 @@ if($mybb->input['action'] == "subscriptions")
 	if(is_array($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
-		
+
 		if($mybb->user['uid'] == 0)
 		{
 			// Build a forum cache.
@@ -1311,7 +1311,7 @@ if($mybb->input['action'] == "subscriptions")
 				WHERE active != 0
 				ORDER BY pid, disporder
 			");
-			
+
 			$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
 		}
 		else
@@ -1356,7 +1356,7 @@ if($mybb->input['action'] == "subscriptions")
 				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
 			}
 		}
-		
+
 		$icon_cache = $cache->read("posticons");
 		$threadprefixes = build_prefixes();
 
@@ -1367,13 +1367,13 @@ if($mybb->input['action'] == "subscriptions")
 
 			$folder = '';
 			$prefix = '';
-			
+
 			// If this thread has a prefix, insert a space between prefix and subject
 			if($thread['prefix'] != 0 && isset($threadprefixes[$thread['prefix']]))
 			{
 				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 			}
-			
+
 			// Sanitize
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
@@ -1411,7 +1411,7 @@ if($mybb->input['action'] == "subscriptions")
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 			{
 				$forum_read = $readforums[$thread['fid']];
-			
+
 				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				if($forum_read == 0 || $forum_read < $read_cutoff)
 				{
@@ -1525,9 +1525,9 @@ if($mybb->input['action'] == "subscriptions")
 	{
 		eval("\$threads = \"".$templates->get("usercp_subscriptions_none")."\";");
 	}
-	
+
 	$plugins->run_hooks("usercp_subscriptions_end");
-	
+
 	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
 	output_page($subscriptions);
 }
@@ -1535,7 +1535,7 @@ if($mybb->input['action'] == "subscriptions")
 if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
-	
+
 	if($mybb->user['uid'] == 0)
 	{
 		// Build a forum cache.
@@ -1545,7 +1545,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 			WHERE active != 0
 			ORDER BY pid, disporder
 		");
-		
+
 		$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
 	}
 	else
@@ -1597,7 +1597,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 		$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']), array('lastpost' => $forum['lastpost']));
 		$folder = $lightbulb['folder'];
-		
+
 		if($forumpermissions['canonlyviewownthreads'] != 0)
 		{
 			$posts = '-';
@@ -1654,7 +1654,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 }
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
-{	
+{
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
@@ -1745,7 +1745,7 @@ if($mybb->input['action'] == "editsig")
 	if($mybb->user['suspendsignature'] && $mybb->user['suspendsigtime'] > TIME_NOW)
 	{
 		$plugins->run_hooks("usercp_editsig_end");
-		
+
 		// User either doesn't have permission, or has their signature suspended
 		eval("\$editsig = \"".$templates->get("usercp_editsig_suspended")."\";");
 	}
@@ -1792,12 +1792,12 @@ if($mybb->input['action'] == "editsig")
 		{
 			$codebuttons = build_mycode_inserter("signature");
 		}
-		
+
 		$plugins->run_hooks("usercp_editsig_end");
-		
+
 		eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	}
-	
+
 	output_page($editsig);
 }
 
@@ -1857,7 +1857,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			$s = '';
 			if(!$mybb->settings['maxavatardims'])
 			{
-				$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits				
+				$mybb->settings['maxavatardims'] = '100x100'; // Hard limit of 100 if there are no limits
 			}
 
 			// Because Gravatars are square, hijack the width
@@ -2036,10 +2036,10 @@ if($mybb->input['action'] == "do_editlists")
 			$selected_list = explode(",", $mybb->user['ignorelist']);
 		}
 	}
-	
+
 	$error_message = "";
 	$message = "";
-	
+
 	// Adding one or more users to this list
 	if($mybb->input['add_username'])
 	{
@@ -2097,7 +2097,7 @@ if($mybb->input['action'] == "do_editlists")
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
-				
+
 				$existing_users[] = $user['uid'];
 			}
 		}
@@ -2330,7 +2330,7 @@ if($mybb->input['action'] == "editlists")
 		}
 		exit;
 	}
-	
+
 	$plugins->run_hooks("usercp_editlists_end");
 
 	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
@@ -2341,7 +2341,7 @@ if($mybb->input['action'] == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");
 
-	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");	
+	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible='-2' AND uid='{$mybb->user['uid']}'");
 	$draftcount = $db->fetch_field($query, 'draftcount');
 
 	$drafts = $disable_delete_drafts = '';
@@ -2389,7 +2389,7 @@ if($mybb->input['action'] == "drafts")
 	}
 
 	$plugins->run_hooks("usercp_drafts_end");
-	
+
 	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
 	output_page($draftlist);
 }
@@ -2758,7 +2758,7 @@ if($mybb->input['action'] == "usergroups")
 	}
 
 	$plugins->run_hooks("usercp_usergroups_end");
-	
+
 	eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
 	output_page($groupmemberships);
 }
@@ -2857,9 +2857,9 @@ if($mybb->input['action'] == "attachments")
 		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
 		$usagenote = '';
 	}
-	
+
 	$plugins->run_hooks("usercp_attachments_end");
-	
+
 	eval("\$manageattachments = \"".$templates->get("usercp_attachments")."\";");
 	output_page($manageattachments);
 }
@@ -2911,7 +2911,7 @@ if(!$mybb->input['action'])
 	{
 		$daysreg = 1;
 	}
-	
+
 	$perday = $mybb->user['postnum'] / $daysreg;
 	$perday = round($perday, 2);
 	if($perday > $mybb->user['postnum'])
@@ -3040,7 +3040,7 @@ if(!$mybb->input['action'])
 
 	// Format post numbers
 	$mybb->user['posts'] = my_number_format($mybb->user['postnum']);
-	
+
 	// Build referral link
 	if($mybb->settings['usereferrals'] == 1)
 	{
@@ -3053,7 +3053,7 @@ if(!$mybb->input['action'])
 	$mybb->user['notepad'] = htmlspecialchars_uni($mybb->user['notepad']);
 	eval("\$user_notepad = \"".$templates->get("usercp_notepad")."\";");
 	$plugins->run_hooks("usercp_notepad_end");
-	
+
 	// Thread Subscriptions with New Posts
 	$latest_subscribed = '';
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
@@ -3074,7 +3074,7 @@ if(!$mybb->input['action'])
 			ORDER BY t.lastpost DESC
 			LIMIT 0, 10
 		");
-		
+
 		$fpermissions = forum_permissions();
 		while($subscription = $db->fetch_array($query))
 		{
@@ -3084,7 +3084,7 @@ if(!$mybb->input['action'])
 				$subscriptions[$subscription['tid']] = $subscription;
 			}
 		}
-		
+
 		if(is_array($subscriptions))
 		{
 			$tids = implode(",", array_keys($subscriptions));
@@ -3100,12 +3100,12 @@ if(!$mybb->input['action'])
 						unset($subscriptions[$readthread['tid']]); // If it's already been read, then don't display the thread
 					}
 					else
-					{			
+					{
 						$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
 					}
 				}
 			}
-			
+
 			if($subscriptions)
 			{
 				if($mybb->settings['dotfolders'] != 0)
@@ -3119,7 +3119,7 @@ if(!$mybb->input['action'])
 
 				$icon_cache = $cache->read("posticons");
 				$threadprefixes = build_prefixes();
-				
+
 				foreach($subscriptions as $thread)
 				{
 					$folder = '';
@@ -3154,13 +3154,13 @@ if(!$mybb->input['action'])
 						{
 							$icon = "&nbsp;";
 						}
-						
+
 						if($thread['doticon'])
 						{
 							$folder = "dot_";
 							$folder_label .= $lang->icon_dot;
 						}
-						
+
 						// Check to see which icon we display
 						if($thread['lastread'] && $thread['lastread'] < $thread['lastpost'])
 						{
@@ -3175,14 +3175,14 @@ if(!$mybb->input['action'])
 							$folder_label .= $lang->icon_no_new;
 							$new_class = "subject_old";
 						}
-						
+
 						$folder .= "folder";
 
 						if($thread['visible'] == 0)
 						{
 							$bgcolor = "trow_shaded";
 						}
-		
+
 						$lastpostdate = my_date('relative', $thread['lastpost']);
 						$lastposter = $thread['lastposter'];
 						$lastposteruid = $thread['lastposteruid'];
@@ -3195,11 +3195,11 @@ if(!$mybb->input['action'])
 						{
 							$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 						}
-			
+
 						$thread['replies'] = my_number_format($thread['replies']);
 						$thread['views'] = my_number_format($thread['views']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
-	
+
 						eval("\$latest_subscribed_threads .= \"".$templates->get("usercp_latest_subscribed_threads")."\";");
 					}
 				}
@@ -3207,7 +3207,7 @@ if(!$mybb->input['action'])
 			}
 		}
 	}
-	
+
 	// User's Latest Threads
 
 	// Get unviewable forums
@@ -3286,10 +3286,10 @@ if(!$mybb->input['action'])
 				$threadcache[$post['tid']]['doticon'] = 1;
 			}
 		}
-		
+
 		$icon_cache = $cache->read("posticons");
 		$threadprefixes = build_prefixes();
-		
+
 		// Run the threads...
 		foreach($threadcache as $thread)
 		{
@@ -3303,7 +3303,7 @@ if(!$mybb->input['action'])
 				$isnew = 0;
 				$donenew = 0;
 				$lastread = 0;
-				
+
 				// If this thread has a prefix...
 				if($thread['prefix'] != 0)
 				{
@@ -3316,7 +3316,7 @@ if(!$mybb->input['action'])
 				{
 					$thread['displayprefix'] = '';
 				}
-				
+
 				$thread['subject'] = $parser->parse_badwords($thread['subject']);
 				$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 				$thread['threadlink'] = get_thread_link($thread['tid']);
@@ -3335,19 +3335,19 @@ if(!$mybb->input['action'])
 				if($mybb->settings['threadreadcut'] > 0)
 				{
 					$forum_read = $readforums[$thread['fid']];
-				
+
 					$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 					if($forum_read == 0 || $forum_read < $read_cutoff)
 					{
 						$forum_read = $read_cutoff;
 					}
 				}
-	
+
 				if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read)
 				{
 					$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				}
-	
+
 				if($thread['lastpost'] > $cutoff)
 				{
 					if($thread['lastread'])
@@ -3355,7 +3355,7 @@ if(!$mybb->input['action'])
 						$lastread = $thread['lastread'];
 					}
 				}
-	
+
 				if(!$lastread)
 				{
 					$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
@@ -3434,7 +3434,7 @@ if(!$mybb->input['action'])
 
 		eval("\$latest_threads = \"".$templates->get("usercp_latest_threads")."\";");
 	}
-	
+
 	$plugins->run_hooks("usercp_end");
 
 	eval("\$usercp = \"".$templates->get("usercp")."\";");

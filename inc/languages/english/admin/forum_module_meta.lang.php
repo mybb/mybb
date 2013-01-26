@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['forums_and_posts'] = "Forums &amp; Posts";
 
 $l['forum_management'] = "Forum Management";

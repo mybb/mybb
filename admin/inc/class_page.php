@@ -39,7 +39,7 @@ class DefaultPage
 	 * @var string The action we're currently performing.
 	 */
 	public $active_action;
-	
+
 	/**
 	 * @var string Content for the side bar of the page if we have one.
 	 */
@@ -49,7 +49,7 @@ class DefaultPage
 	 * @var array The breadcrumb trail leading up to this page.
 	 */
 	public $_breadcrumb_trail = array();
-	
+
 	/**
 	 * @var string Any additional information to add between the <head> tags.
 	 */
@@ -63,20 +63,20 @@ class DefaultPage
 	function output_header($title="")
 	{
 		global $mybb, $admin_session, $lang, $plugins;
-		
+
 		$plugins->run_hooks("admin_page_output_header");
-		
+
 		if(!$title)
 		{
 			$title = $lang->mybb_admin_panel;
 		}
-		
+
 		$rtl = "";
 		if($lang->settings['rtl'] == 1)
 		{
 			$rtl = " dir=\"rtl\"";
 		}
-		
+
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\"{$rtl}>\n";
 		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
@@ -152,11 +152,11 @@ var imagepath = '../images';
 	function output_footer($quit=true)
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
-		
+
 		$plugins->run_hooks("admin_page_output_footer");
-		
+
 		$memory_usage = get_friendly_size(get_memory_usage());
-		
+
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;
 		echo "			</div>\n";
@@ -172,13 +172,13 @@ var imagepath = '../images';
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
-		
+
 		if($quit != false)
 		{
 			exit;
 		}
 	}
-	
+
 	/**
 	 * Add an item to the page breadcrumb trail.
 	 *
@@ -189,7 +189,7 @@ var imagepath = '../images';
 	{
 		$this->_breadcrumb_trail[] = array("name" => $name, "url" => $url);
 	}
-	
+
 	/**
 	 * Generate a breadcrumb trail.
 	 */
@@ -217,7 +217,7 @@ var imagepath = '../images';
 		}
 		return $trail;
 	}
-	
+
 	/**
 	 * Output a success message.
 	 *
@@ -242,7 +242,7 @@ var imagepath = '../images';
 		}
 		echo "<div class=\"alert\"{$id}>{$message}</div>\n";
 	}
-	
+
 	/**
 	 * Output an inline message.
 	 *
@@ -252,7 +252,7 @@ var imagepath = '../images';
 	{
 		echo "<div class=\"inline_message\">{$message}</div>\n";
 	}
-	
+
 	/**
 	 * Output a single error message.
 	 *
@@ -273,7 +273,7 @@ var imagepath = '../images';
 	function output_inline_error($errors)
 	{
 		global $lang;
-		
+
 		if(!is_array($errors))
 		{
 			$errors = array($errors);
@@ -301,10 +301,10 @@ var imagepath = '../images';
 		global $lang, $cp_style, $mybb;
 
 		$copy_year = COPY_YEAR;
-		
+
 		$login_container_width = "";
 		$login_label_width = "";
-		 
+
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
 		if($lang->login_field_width)
         {
@@ -370,7 +370,7 @@ EOF;
 				$lang_username = $lang->username;
 				break;
 		}
-        
+
         // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
@@ -401,7 +401,7 @@ print <<<EOF
 EOF;
 	exit;
 	}
-	
+
 	/**
 	 * Generate the lockout page
 	 *
@@ -441,7 +441,7 @@ EOF;
 EOF;
 	exit;
 	}
-	
+
 	/**
 	 * Generate the lockout unlock page
 	 *
@@ -570,7 +570,7 @@ EOF;
 		}
 		return $build_menu;
 	}
-	
+
 
 	/**
 	 * Build a navigation sub menu if we have one.
@@ -702,7 +702,7 @@ EOF;
 	function output_confirm_action($url, $message="", $title="")
 	{
 		global $lang;
-		
+
 		if(!$message)
 		{
 			$message = $lang->confirm_action;
@@ -760,7 +760,7 @@ class DefaultSidebarItem
 	 * @var string The contents of the side bar block.
 	 */
 	private $_contents;
-	
+
 	/**
 	 * Constructor. Set the title of the side bar block.
 	 *
@@ -770,7 +770,7 @@ class DefaultSidebarItem
 	{
 		$this->_title = $title;
 	}
-	
+
 	/**
 	 * Add menus item to the side bar block.
 	 *
@@ -780,7 +780,7 @@ class DefaultSidebarItem
 	function add_menu_items($items, $active)
 	{
 		global $run_module;
-		
+
 		$this->_contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
@@ -788,7 +788,7 @@ class DefaultSidebarItem
 			{
 				continue;
 			}
-			
+
 			$class = "";
 			if($item['id'] == $active)
 			{
@@ -799,7 +799,7 @@ class DefaultSidebarItem
 		}
 		$this->_contents .= "</ul>";
 	}
-	
+
 	/**
 	 * Sets custom html to the contents variable
 	 *
@@ -809,7 +809,7 @@ class DefaultSidebarItem
 	{
 		$this->_contents = $html;
 	}
-	
+
 	/**
 	 * Fetch the HTML markup for the side bar box.
 	 */

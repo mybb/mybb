@@ -34,14 +34,14 @@ class WarningsHandler extends DataHandler
 	 * @var string
 	 */
 	public $language_prefix = 'warnings';
-	
+
 	private $write_warning_data;
 	private $read_warning_data;
-	
+
 	public function validate_maximum()
 	{
 		global $mybb, $db, $lang;
-		
+
 		if($mybb->usergroup['maxwarningsday'] != 0)
 		{
 			$timecut = TIME_NOW-60*60*24;
@@ -54,7 +54,7 @@ class WarningsHandler extends DataHandler
 			}
 		}
 	}
-	
+
 	public function get($wid)
 	{
 		$wid = (int)$wid;
@@ -62,43 +62,43 @@ class WarningsHandler extends DataHandler
 		{
 			return false;
 		}
-		
+
 		$query = $db->simple_select("warnings", "*", "wid='".$wid."'");
 		$this->read_warning_data = $db->fetch_array($query);
-		
+
 		return $this->read_warning_data;
 	}
-	
+
 	public update_warning()
 	{
 		global $db, $mybb, $plugins;
-		
+
 		$warning = &$this->data;
-		
+
 		$warning['wid'] = (int)$warning['wid'];
 		if($warning['wid'] <= 0)
 		{
 			return false;
 		}
-		
+
 		$this->write_warning_data = array(
 			"expired" => 1,
 			"daterevoked" => TIME_NOW,
 			"revokedby" => $mybb->user['uid'],
 			"revokereason" => $db->escape_string($warning['reason'])
 		);
-		
+
 		$db->update_query("warnings", $this->write_warning_data, "wid='{$warning['wid']}'");
-		
+
 		return $this->write_warning_data;
 	}
 
 	public insert_warning()
 	{
 		global $db, $mybb, $plugins;
-		
+
 		$warning = &$this->data;
-		
+
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
 			"tid" => (int)$warning['tid'],
@@ -112,9 +112,9 @@ class WarningsHandler extends DataHandler
 			"revokereason" => '',
 			"notes" => $db->escape_string($warning['notes'])
 		);
-		
+
 		$this->write_warning_data['wid'] = $db->insert_query("warnings", $this->write_warning_data);
-		
+
 		return $this->write_warning_data;
 	}
 }

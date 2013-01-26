@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_spiders_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_spiders_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$sid = $db->insert_query("spiders", $new_spider);
 
 			$cache->update_spiders();
-			
+
 			$plugins->run_hooks("admin_config_spiders_add_commit");
 
 			// Log admin action
@@ -61,7 +61,7 @@ if($mybb->input['action'] == "add")
 
 	$page->add_breadcrumb_item($lang->add_new_bot);
 	$page->output_header($lang->spiders_bots." - ".$lang->add_new_bot);
-	
+
 	$sub_tabs['spiders'] = array(
 		'title' => $lang->spiders_bots,
 		'link' => "index.php?module=config-spiders",
@@ -73,7 +73,7 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, "add_spider");
-	
+
 	$form = new Form("index.php?module=config-spiders&amp;action=add", "post");
 
 	if($errors)
@@ -84,11 +84,11 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_new_bot);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $mybb->input['useragent'], array('id' => 'useragent')), 'useragent');
-	
+
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
-	
+
 	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
@@ -107,14 +107,14 @@ if($mybb->input['action'] == "add")
 	$buttons[] = $form->generate_submit_button($lang->save_bot);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_spiders_delete");
-	
+
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("spiders", "sid='{$spider['sid']}'");
 
 		$cache->update_spiders();
-		
+
 		$plugins->run_hooks("admin_config_spiders_delete_commit");
 
 		// Log admin action
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_spiders_edit");
-	
+
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
-			
+
 			$plugins->run_hooks("admin_config_spiders_edit_commit");
 
 			// Log admin action
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item($lang->edit_bot);
 	$page->output_header($lang->spiders_bots." - ".$lang->edit_bot);
-	
+
 	$sub_tabs['edit_spider'] = array(
 		'title' => $lang->edit_bot,
 		'link' => "index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}",
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$page->output_nav_tabs($sub_tabs, "edit_spider");
-	
+
 	$form = new Form("index.php?module=config-spiders&amp;action=edit&amp;sid={$spider['sid']}", "post");
 
 	if($errors)
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_bot);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $spider_data['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->user_agent." <em>*</em>", $lang->user_agent_desc, $form->generate_text_box('useragent', $spider_data['useragent'], array('id' => 'useragent')), 'useragent');
-	
+
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
@@ -249,7 +249,7 @@ if($mybb->input['action'] == "edit")
 	$buttons[] = $form->generate_submit_button($lang->save_bot);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 

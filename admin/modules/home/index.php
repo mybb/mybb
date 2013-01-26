@@ -153,25 +153,25 @@ if($mybb->input['action'] == "version_check")
 elseif(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_home_index_start");
-	
+
 	if($mybb->request_method == "post" && isset($mybb->input['adminnotes']))
 	{
 		// Update Admin Notes cache
 		$update_cache = array(
 			"adminmessage" => $mybb->input['adminnotes']
 		);
-		
+
 		$cache->update("adminnotes", $update_cache);
-		
+
 		$plugins->run_hooks("admin_home_index_start_begin");
-	
+
 		flash_message($lang->success_notes_updated, 'success');
 		admin_redirect("index.php");
 	}
-	
+
 	$page->add_breadcrumb_item($lang->dashboard);
 	$page->output_header($lang->dashboard);
-	
+
 	$sub_tabs['dashboard'] = array(
 		'title' => $lang->dashboard,
 		'link' => "index.php",
@@ -179,12 +179,12 @@ elseif(!$mybb->input['action'])
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'dashboard');
-	
+
 	// Load stats cache
 	$stats = $cache->read("stats");
-	
+
 	$serverload = get_server_load();
-	
+
 	// Get the number of users
 	$query = $db->simple_select("users", "COUNT(uid) AS numusers");
 	$users = my_number_format($db->fetch_field($query, "numusers"));
@@ -220,7 +220,7 @@ elseif(!$mybb->input['action'])
 	{
 		$status['numunapprovedposts'] = 0;
 	}
-	
+
 	$unapproved_posts = my_number_format($stats['numunapprovedposts']);
 
 	// Get the number of new posts for today
@@ -252,52 +252,52 @@ elseif(!$mybb->input['action'])
 		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
-	
+
 	$adminmessage = $cache->read("adminnotes");
 
 	$table = new Table;
 	$table->construct_header($lang->mybb_server_stats, array("colspan" => 2));
 	$table->construct_header($lang->forum_stats, array("colspan" => 2));
-	
+
 	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
 	$table->construct_cell($mybb->version, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$threads}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
-	
+
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(PHP_VERSION, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
-	
+
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
 	$table->construct_cell($db->short_title." ".$db->get_version(), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->users}</strong>", array('width' => '25%'));
 	$table->construct_cell("<a href=\"index.php?module=user-users\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array('usergroup' => '5')))."&amp;from=home\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
 	$table->construct_row();
-	
+
 	$table->construct_cell("<strong>{$lang->server_load}</strong>", array('width' => '25%'));
 	$table->construct_cell($serverload, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->attachments}</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> {$lang->attachments}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=attachments\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
 	$table->construct_row();
-	
+
 	$table->output($lang->dashboard);
-	
+
 	$table->construct_header($lang->admin_notes_public);
-	
+
 	$form = new Form("index.php", "post");
 	$table->construct_cell($form->generate_text_area("adminnotes", $adminmessage['adminmessage'], array('style' => 'width: 99%; height: 200px;')));
 	$table->construct_row();
-	
-	$table->output($lang->admin_notes);	
-	
+
+	$table->output($lang->admin_notes);
+
 	$buttons[] = $form->generate_submit_button($lang->save_notes);
 	$form->output_submit_wrapper($buttons);
-	
+
 	$form->end();
-	
+
 	$page->output_footer();
 }
 ?>

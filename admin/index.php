@@ -100,18 +100,18 @@ if($mybb->input['action'] == "unlock")
 			$error[] = $lang->error_invalid_uid;
 		}
 	}
-	
+
 	// Do we have the token? If so let's process it
 	if($mybb->input['token'] && $user['uid'])
-	{		
+	{
 		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".intval($user['uid'])."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
-		
+
 		// If we're good to go
 		if($db->fetch_field($query, "num") > 0)
 		{
 			$db->delete_query("awaitingactivation", "uid='".intval($user['uid'])."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
 			$db->update_query("adminoptions", array('loginlockoutexpiry' => 0, 'loginattempts' => 0), "uid='".intval($user['uid'])."'");
-			
+
 			admin_redirect("index.php");
 		}
 		else
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "unlock")
 			$error[] = $lang->error_invalid_token;
 		}
 	}
-	
+
 	$default_page->show_lockout_unlock();
 }
 elseif($mybb->input['do'] == "login")
@@ -147,9 +147,9 @@ elseif($mybb->input['do'] == "login")
 		}
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
-		
+
 		$sid = md5(uniqid(microtime(true)));
-		
+
 		// Create a new admin session for this user
 		$admin_session = array(
 			"sid" => $sid,
@@ -166,14 +166,14 @@ elseif($mybb->input['do'] == "login")
 		my_setcookie("adminsid", $sid);
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
-	
+
 		$mybb->request_method = "get";
-		
+
 		if(!empty($mybb->input['module']))
 		{
 			// $query_string should contain the module
 			$query_string = '?module='.htmlspecialchars($mybb->input['module']);
-			
+
 			// Now we look for any paramters passed in $_SERVER['QUERY_STRING']
 			if($_SERVER['QUERY_STRING'])
 			{
@@ -181,25 +181,25 @@ elseif($mybb->input['do'] == "login")
 				$qstring = str_replace('action=logout', '', $qstring);
 				$qstring = preg_replace('#&+#', '&', $qstring);
 				$qstring = str_replace('?&', '?', $qstring);
-				
+
 				// So what do we do? We know that parameters are devided by ampersands
 				// That means we must get to work!
 				$parameters = explode('&', $qstring);
-				
+
 				// Remove our first member if it's for the module
 				if(substr($parameters[0], 0, 8) == '?module=')
 				{
 					unset($parameters[0]);
 				}
-				
+
 				foreach($parameters as $key => $param)
 				{
 					$params = explode("=", $param);
-					
+
 					$query_string .= '&'.htmlspecialchars($params[0])."=".htmlspecialchars($params[1]);
 				}
 			}
-		
+
 			admin_redirect("index.php".$query_string);
 		}
 	}
@@ -207,14 +207,14 @@ elseif($mybb->input['do'] == "login")
 	{
 		$query = $db->simple_select("users", "uid,email", "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'");
 		$login_user = $db->fetch_array($query);
-		
+
 		if($login_user['uid'] > 0)
 		{
 			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".intval($login_user['uid'])."'", 1, true);
 		}
-		
+
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
-		
+
 		// Have we attempted too many times?
 		if($loginattempts['loginattempts'] > 0)
 		{
@@ -223,10 +223,10 @@ elseif($mybb->input['do'] == "login")
 			{
 				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($login_user['uid'])."'", 1);
 			}
-			
-			// Did we hit lockout for the first time? Send the unlock email to the administrator 
+
+			// Did we hit lockout for the first time? Send the unlock email to the administrator
 			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
-			{				
+			{
 				$db->delete_query("awaitingactivation", "uid='".intval($login_user['uid'])."' AND type='l'");
 				$lockout_array = array(
 					"uid" => $login_user['uid'],
@@ -235,15 +235,15 @@ elseif($mybb->input['do'] == "login")
 					"type" => "l"
 				);
 				$db->insert_query("awaitingactivation", $lockout_array);
-				
+
 				$subject = $lang->sprintf($lang->locked_out_subject, $mybb->settings['bbname']);
 				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code']);
 				my_mail($login_user['email'], $subject, $message);
 			}
-			
+
 			$default_page->show_lockedout();
 		}
-		
+
 		$fail_check = 1;
 	}
 }
@@ -305,7 +305,7 @@ else
 							break;
 						}
 					}
-					
+
 					// IP doesn't match properly - show message on logon screen
 					if(!$valid_ip)
 					{
@@ -349,7 +349,7 @@ if($mybb->user['uid'])
 {
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
-	
+
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
 	{
 		$cp_style = $admin_options['cpstyle'];
@@ -394,7 +394,7 @@ $page->style = $cp_style;
 
 // Do not have a valid Admin user, throw back to login page.
 if(!$mybb->user['uid'] || $logged_out == true)
-{	
+{
 	if($logged_out == true)
 	{
 		$page->show_login($lang->success_logged_out);
@@ -427,10 +427,10 @@ while(($module = readdir($dir)) !== false)
 	if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
 	{
 		require_once $modules_dir."/".$module."/module_meta.php";
-		
+
 		// Need to always load it for admin permissions / quick access
 		$lang->load($module."_module_meta", false, true);
-		
+
 		$has_permission = false;
 		if(function_exists($module."_admin_permissions"))
 		{
@@ -444,7 +444,7 @@ while(($module = readdir($dir)) !== false)
 		{
 			$has_permission = true;
 		}
-			
+
 		// Do we have permissions to run this module (Note: home is accessible by all)
 		if($module == "home" || $has_permission == true)
 		{
@@ -510,7 +510,7 @@ if($mybb->request_method == "post")
 			$post_verify = false;
 		}
 	}
-	
+
 	if($post_verify == true)
 	{
 		// If the post key does not match we switch the action to GET and set a message to show the user

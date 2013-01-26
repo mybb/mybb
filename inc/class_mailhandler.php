@@ -34,7 +34,7 @@ class MailHandler
 	 * @var string
 	 */
 	public $from;
-	
+
 	/**
 	 * Who the email should return to.
 	 *
@@ -48,7 +48,7 @@ class MailHandler
 	 * @var string
 	 */
 	public $subject;
-	
+
 	/**
 	 * The unaltered subject of mail.
 	 *
@@ -109,7 +109,7 @@ class MailHandler
 	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="", $return_email="")
 	{
 		global $parser, $lang, $mybb;
-		
+
 		$this->message = '';
 		$this->headers = $headers;
 
@@ -248,7 +248,7 @@ class MailHandler
 		{
 			$message_text = strip_tags($message);
 		}
-		
+
 		if($this->parse_format == 'both')
 		{
 			$mime_boundary = "=_NextPart".md5(TIME_NOW);
@@ -284,7 +284,7 @@ class MailHandler
 	{
 		// Build mail headers
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
-		
+
 		if($this->return_email)
 		{
 			$this->headers .= "Return-Path: {$this->return_email}{$this->delimiter}";
@@ -315,7 +315,7 @@ class MailHandler
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
-	
+
 	/**
 	 * Log a fatal error message to the database.
 	 *
@@ -325,7 +325,7 @@ class MailHandler
 	function fatal_error($error)
 	{
 		global $db;
-		
+
 		$mail_error = array(
 			"subject" => $db->escape_string($this->orig_subject),
 			"message" => $db->escape_string($this->message),
@@ -337,10 +337,10 @@ class MailHandler
 			"smtpcode" => intval($this->code)
 		);
 		$db->insert_query("mailerrors", $mail_error);
-		
+
 		// Another neat feature would be the ability to notify the site administrator via email - but wait, with email down, how do we do that? How about private message and hope the admin checks their PMs?
 	}
-	
+
 	/**
 	 * Rids pesky characters from subjects, recipients, from addresses etc (prevents mail injection too)
 	 *
@@ -405,6 +405,6 @@ class MailHandler
 			return trim($output);
 		}
 		return $string;
-	} 
+	}
 }
 ?>

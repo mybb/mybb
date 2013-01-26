@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -14,7 +14,7 @@ $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will n
 $l['error_invalidpworusername'] = "You have entered an invalid username/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername1'] = "You have entered an invalid email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_invalidpworusername2'] = "You have entered an invalid username/password or email/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
-$l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields."; 
+$l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields.";
 $l['error_alreadyuploaded'] = "This post already contains an attachment with the same name. Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
 $l['error_alreadyuploaded_perm'] = "This post already contains an attachment with the same name. Please either remove the existing file or rename the file and upload it again.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
@@ -80,7 +80,7 @@ $l['error_message_too_short'] = "Sorry, your message is too short and cannot be 
 $l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
-		
+
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
 $l['emailsubject_subscription'] = "New Reply to {1}";
@@ -370,7 +370,7 @@ Thank you,
 {5}";
 
 $l['email_newpm'] = "{1},
-		
+
 You have received a new private message on {3} from {2}. To view this message, you can follow this link:
 
 {4}/private.php

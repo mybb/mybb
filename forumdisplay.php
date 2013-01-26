@@ -301,7 +301,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 				{
 					$invisiblemark = '';
 				}
-				
+
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -312,7 +312,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 			}
 		}
 	}
-		
+
 	$guestsonline = '';
 	if($guestcount)
 	{
@@ -324,7 +324,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 	{
 		$onlinesep = $lang->comma;
 	}
-	
+
 	$invisonline = '';
 	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 	{
@@ -348,7 +348,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	{
 		$foruminfo['rulestitle'] = $lang->sprintf($lang->forum_rules, $foruminfo['name']);
 	}
-	
+
 	$rules_parser = array(
 		"allow_html" => 1,
 		"allow_mycode" => 1,
@@ -541,7 +541,7 @@ else
 }
 
 // Needs to be initialized in order to speed-up things. Fixes #2031
-$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>''); 
+$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>'');
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 $threadcount = 0;
@@ -569,7 +569,7 @@ if($fpermissions['canviewthreads'] != 0)
 		{
 			$threadcount += $forum_threads['unapprovedthreads'];
 		}
-		
+
 		// If we have 0 threads double check there aren't any "moved" threads
 		if($threadcount == 0)
 		{
@@ -616,9 +616,9 @@ if($upper > $threadcount)
 
 // Assemble page URL
 if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) // Ugly URL
-{	
+{
 	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-	
+
 	if($mybb->seo_support == true)
 	{
 		$q = "?";
@@ -629,21 +629,21 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if((!empty($foruminfo['defaultsortby']) && $sortby != $foruminfo['defaultsortby']) || (empty($foruminfo['defaultsortby']) && $sortby != "lastpost"))
 	{
 		$page_url .= "{$q}{$and}sortby={$sortby}";
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if($sortordernow != "desc")
 	{
 		$page_url .= "{$q}{$and}order={$sortordernow}";
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if($datecut > 0)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
@@ -804,7 +804,7 @@ if($fpermissions['canviewthreads'] != 0)
 	$ratings = false;
 	$moved_threads = array();
 	while($thread = $db->fetch_array($query))
-	{		
+	{
 		$threadcache[$thread['tid']] = $thread;
 
 		if($thread['numratings'] > 0 && $ratings == false)
@@ -883,16 +883,16 @@ if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcac
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadcache))
 {
-	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
+	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($readthread = $db->fetch_array($query))
 	{
-		if(!empty($moved_threads[$readthread['tid']])) 
-		{ 
-	 		$readthread['tid'] = $moved_threads[$readthread['tid']]; 
+		if(!empty($moved_threads[$readthread['tid']]))
+		{
+	 		$readthread['tid'] = $moved_threads[$readthread['tid']];
 	 	}
 		if($threadcache[$readthread['tid']])
 		{
-	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline']; 
+	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 		}
 	}
 }
@@ -925,7 +925,7 @@ if(is_array($threadcache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
 	{
-		$mybb->settings['maxmultipagelinks'] = 5;		
+		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
 	if(!$mybb->settings['postsperpage'])
@@ -947,7 +947,7 @@ if(is_array($threadcache))
 		{
 			$bgcolor = alt_trow();
 		}
-		
+
 		if($thread['sticky'] == 1)
 		{
 			$thread_type_class = " forumdisplay_sticky";
@@ -1264,7 +1264,7 @@ if(is_array($threadcache))
 			{
 				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
 			}
-			
+
 			if($customthreadtools)
 			{
 				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");

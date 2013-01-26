@@ -12,7 +12,7 @@
 function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
 {
 	global $db;
-	
+
 	// we have some warning levels we need to revoke
 	$max_expiration_times = array(
 		1 => -1,	// Ban
@@ -32,9 +32,9 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 		{
 			continue;
 		}
-		
+
 		$check_levels[$action['type']] = true;
-		
+
 		$max_exp_time = &$max_expiration_times[$action['type']];
 		if($action['length'] && $max_exp_time != 0)
 		{
@@ -90,7 +90,7 @@ function fetch_friendly_expiration($time)
  */
 function fetch_time_length($time, $period)
 {
-	$time = intval($time);		
+	$time = intval($time);
 
 	if($period == "hours")
 	{

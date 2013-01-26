@@ -71,7 +71,7 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
-		
+
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
 		// Default language is English.
@@ -79,13 +79,13 @@ class MyLanguage
 		{
 			$language = "english";
 		}
-		
+
 		// Check if the language exists.
 		if(!$this->language_exists($language))
 		{
 			die("Language $language ($this->path/$language) is not installed");
 		}
-		
+
 		$this->language = $language;
 		require $this->path."/".$language.".php";
 		$this->settings = $langinfo;
@@ -134,7 +134,7 @@ class MyLanguage
 		{
 			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}
-		
+
 		if(file_exists($lfile))
 		{
 			require_once $lfile;
@@ -150,10 +150,10 @@ class MyLanguage
 				die("$lfile does not exist");
 			}
 		}
-		
+
 		// We must unite and protect our language variables!
 		$lang_keys_ignore = array('language', 'path', 'settings');
-		
+
 		if(is_array($l))
 		{
 			foreach($l as $key => $val)
@@ -165,17 +165,17 @@ class MyLanguage
 			}
 		}
 	}
-	
+
 	function sprintf($string)
 	{
 		$arg_list = func_get_args();
 		$num_args = count($arg_list);
-		
+
 		for($i = 1; $i < $num_args; $i++)
 		{
 			$string = str_replace('{'.$i.'}', $arg_list[$i], $string);
 		}
-		
+
 		return $string;
 	}
 

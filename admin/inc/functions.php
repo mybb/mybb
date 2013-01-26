@@ -68,7 +68,7 @@ function admin_redirect($url)
 function update_admin_session($name, $value)
 {
 	global $db, $admin_session;
-	
+
 	$admin_session['data'][$name] = $value;
 	$updated_session = array(
 		"data" => $db->escape_string(@serialize($admin_session['data']))
@@ -100,7 +100,7 @@ function flash_message($message, $type='')
 function draw_admin_pagination($page, $per_page, $total_items, $url)
 {
 	global $mybb, $lang;
-	
+
 	if($total_items <= $per_page)
 	{
 		return;
@@ -122,7 +122,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	{
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
-	
+
 	$max_links = $mybb->settings['maxmultipagelinks'];
 
 	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
@@ -195,7 +195,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 function make_parent_list($fid, $navsep=",")
 {
 	global $pforumcache, $db;
-	
+
 	if(!$pforumcache)
 	{
 		$query = $db->simple_select("forums", "name, fid, pid", "", array("order_by" => "disporder, pid"));
@@ -204,10 +204,10 @@ function make_parent_list($fid, $navsep=",")
 			$pforumcache[$forum['fid']][$forum['pid']] = $forum;
 		}
 	}
-	
+
 	reset($pforumcache);
 	reset($pforumcache[$fid]);
-	
+
 	foreach($pforumcache[$fid] as $key => $forum)
 	{
 		if($fid == $forum['fid'])
@@ -216,7 +216,7 @@ function make_parent_list($fid, $navsep=",")
 			{
 				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
 			}
-			
+
 			if($navigation)
 			{
 				$navigation .= $navsep;
@@ -232,7 +232,7 @@ function save_quick_perms($fid)
 	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
 
 	$permission_fields = array();
-	
+
 	$field_list = $db->show_fields_from("forumpermissions");
 	foreach($field_list as $field)
 	{
@@ -241,23 +241,23 @@ function save_quick_perms($fid)
 			$permission_fields[$field['Field']] = 1;
 		}
 	}
-	
+
 	// "Can Only View Own Threads" permission is a forum permission only option
 	$usergroup_permission_fields = $permission_fields;
 	unset($usergroup_permission_fields['canonlyviewownthreads']);
-	
+
 	$query = $db->simple_select("usergroups", "gid");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$query2 = $db->simple_select("forumpermissions", $db->escape_string(implode(',', array_keys($permission_fields))), "fid='{$fid}' AND gid='{$usergroup['gid']}'", array('limit' => 1));
 		$existing_permissions = $db->fetch_array($query2);
-		
+
 		if(!$existing_permissions)
 		{
 			$query2 = $db->simple_select("usergroups", $db->escape_string(implode(',', array_keys($usergroup_permission_fields))), "gid='{$usergroup['gid']}'", array('limit' => 1));
 			$existing_permissions = $db->fetch_array($query2);
 		}
-		
+
 		// Delete existing permissions
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 
@@ -272,7 +272,7 @@ function save_quick_perms($fid)
 			{
 				$pview = 0;
 			}
-			
+
 			if($canpostthreads[$usergroup['gid']] == 1)
 			{
 				$pthreads = 1;
@@ -281,7 +281,7 @@ function save_quick_perms($fid)
 			{
 				$pthreads = 0;
 			}
-			
+
 			if($canpostreplies[$usergroup['gid']] == 1)
 			{
 				$preplies = 1;
@@ -290,7 +290,7 @@ function save_quick_perms($fid)
 			{
 				$preplies = 0;
 			}
-			
+
 			if($canpostpolls[$usergroup['gid']] == 1)
 			{
 				$ppolls = 1;
@@ -299,7 +299,7 @@ function save_quick_perms($fid)
 			{
 				$ppolls = 0;
 			}
-			
+
 			if(!$preplies && !$pthreads)
 			{
 				$ppost = 0;
@@ -308,7 +308,7 @@ function save_quick_perms($fid)
 			{
 				$ppost = 1;
 			}
-			
+
 			$insertquery = array(
 				"fid" => intval($fid),
 				"gid" => intval($usergroup['gid']),
@@ -317,17 +317,17 @@ function save_quick_perms($fid)
 				"canpostreplys" => intval($preplies),
 				"canpostpolls" => intval($ppolls),
 			);
-			
+
 			foreach($permission_fields as $field => $value)
 			{
 				if(array_key_exists($field, $insertquery))
 				{
 					continue;
 				}
-				
+
 				$insertquery[$db->escape_string($field)] = intval($existing_permissions[$field]);
 			}
-			
+
 			$db->insert_query("forumpermissions", $insertquery);
 		}
 	}
@@ -342,15 +342,15 @@ function save_quick_perms($fid)
 function check_admin_permissions($action, $error = true)
 {
 	global $mybb, $page, $lang, $modules_dir;
-	
+
 	if(is_super_admin($mybb->user['uid']))
 	{
 		return true;
 	}
-	
+
 	require_once $modules_dir."/".$action['module']."/module_meta.php";
 	if(function_exists($action['module']."_admin_permissions"))
-	{	
+	{
 		$func = $action['module']."_admin_permissions";
 		$permissions = $func();
 		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
@@ -369,7 +369,7 @@ function check_admin_permissions($action, $error = true)
 			}
 		}
 	}
-	
+
 	return true;
 }
 
@@ -383,27 +383,27 @@ function check_admin_permissions($action, $error = true)
 function get_admin_permissions($get_uid="", $get_gid="")
 {
 	global $db, $mybb;
-	
+
 	// Set UID and GID if none
 	$uid = $get_uid;
 	$gid = $get_gid;
-	
+
 	$gid_array = array();
-	
+
 	if($uid === "")
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if(!$gid)
 	{
 		// Prepare user's groups since the group isn't specified
 		$gid_array[] = (-1) * intval($mybb->user['usergroup']);
-		
+
 		if($mybb->user['additionalgroups'])
 		{
 			$additional_groups = explode(',', $mybb->user['additionalgroups']);
-			
+
 			if(!empty($additional_groups))
 			{
 				// Make sure gids are negative
@@ -425,7 +425,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 	if($get_gid && !$get_uid)
 	{
 		// A group only
-		
+
 		$options = array(
 			"order_by" => "uid",
 			"order_dir" => "ASC",
@@ -435,27 +435,27 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		return unserialize($db->fetch_field($query, "permissions"));
 	}
 	else
-	{		
+	{
 		// A user and/or group
-		
+
 		$options = array(
 			"order_by" => "uid",
 			"order_dir" => "DESC"
 		);
-		
+
 		// Prepare user's groups into SQL format
 		$group_sql = '';
 		foreach($gid_array as $gid)
 		{
 			$group_sql .= " OR uid='{$gid}'";
 		}
-		
+
 		$perms_group = array();
 		$query = $db->simple_select("adminoptions", "permissions, uid", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
 			$perm['permissions'] = unserialize($perm['permissions']);
-			
+
 			// Sorting out which permission is which
 			if($perm['uid'] > 0)
 			{
@@ -471,7 +471,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 				$perms_def = $perm['permissions'];
 			}
 		}
-		
+
 		// Figure out group permissions...ugh.
 		foreach($perms_group as $gperms)
 		{
@@ -481,7 +481,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 				$final_group_perms = $gperms;
 				continue;
 			}
-			
+
 			// Loop through each specific permission to find the highest permission
 			foreach($gperms as $perm_name => $perm_value)
 			{
@@ -537,12 +537,12 @@ function fetch_iconv_encoding($mysql_encoding)
 function change_admin_permission($tab, $page="", $default=1)
 {
 	global $db;
-	
+
 	$query = $db->simple_select("adminoptions", "uid, permissions", "permissions != ''");
 	while($adminoption = $db->fetch_array($query))
 	{
 		$adminoption['permissions'] = unserialize($adminoption['permissions']);
-		
+
 		if($default == -1)
 		{
 			if(!empty($page))
@@ -555,7 +555,7 @@ function change_admin_permission($tab, $page="", $default=1)
 			}
 		}
 		else
-		{		
+		{
 			if(!empty($page))
 			{
 				if($adminoption['uid'] == 0)
@@ -579,7 +579,7 @@ function change_admin_permission($tab, $page="", $default=1)
 				}
 			}
 		}
-		
+
 		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
 	}
 }
@@ -594,15 +594,15 @@ function change_admin_permission($tab, $page="", $default=1)
 function login_attempt_check_acp($uid=0, $return_num=false)
 {
 	global $db, $mybb;
-	
+
 	$attempts['loginattempts'] = 0;
-	
+
 	if($uid > 0)
 	{
 		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".intval($uid)."'", 1);
 		$attempts = $db->fetch_array($query);
 	}
-	
+
 	if($attempts['loginattempts'] <= 0)
 	{
 		return false;
@@ -615,7 +615,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 		{
 			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($uid)."'", 1);
 		}
-		
+
 		// Are we returning the # of login attempts?
 		if($return_num == true)
 		{
@@ -627,7 +627,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -680,7 +680,7 @@ function delete_user_posts($uid, $date)
 	{
 		$postcache[] = $post['pid'];
 	}
-	
+
 	if(!$db->num_rows($query))
 	{
 		return false;

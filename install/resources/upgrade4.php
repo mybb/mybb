@@ -58,23 +58,23 @@ function upgrade4_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP version;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD version varchar(20) NOT NULL default '0';");
-	
+
 	if($db->field_exists('status', "templates"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP status;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD status varchar(10) NOT NULL default '';");
-	
+
 	if($db->field_exists('dateline', "templates"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP dateline;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD dateline int(10) NOT NULL default '0';");
-	
+
 	$db->write_query("UPDATE ".TABLE_PREFIX."templates SET version='100.06' WHERE sid>0");
 
 	echo "Done</p>";
-	
+
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("4_done");

@@ -246,12 +246,12 @@ if($mybb->input['action'] == "addevent")
 	{
 		$name = htmlspecialchars_uni($mybb->input['name']);
 	}
-	
+
 	if(isset($mybb->input['description']))
 	{
 		$description = htmlspecialchars_uni($mybb->input['description']);
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
 		$single_day = $mybb->input['single_day'];
@@ -533,7 +533,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		"private" => $mybb->input['private'],
 		"type" => $mybb->input['type']
 	);
-	
+
 	// Now we add in our date/time info depending on the type of event
 	if($mybb->input['type'] == "single")
 	{
@@ -674,7 +674,7 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
-	
+
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_editevent);
@@ -765,12 +765,12 @@ if($mybb->input['action'] == "editevent")
 		{
 			$privatecheck = " checked=\"checked\"";
 		}
-		
+
 		if($mybb->input['ignoretimezone'] == 1)
 		{
 			$ignore_timezone = "checked=\"checked\"";
 		}
-		
+
 		$timezone = $mybb->input['timezone'];
 	}
 	else
@@ -1231,7 +1231,7 @@ if($mybb->input['action'] == "event")
 		"allow_imgcode" => $calendar['allowimgcode'],
 		"allow_videocode" => $calendar['allowvideocode']
 	);
-	
+
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 	// Get the usergroup
@@ -1263,12 +1263,12 @@ if($mybb->input['action'] == "event")
 	if($event['uid'] > 0 && $event['username'])
 	{
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
-		
+
 		if(trim($event['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
 		}
-		
+
 		if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
 		{
 			$event['usertitle'] = $user_usergroup['usertitle'];
@@ -1301,12 +1301,12 @@ if($mybb->input['action'] == "event")
 			$event['starimage'] = $user_usergroup['starimage'];
 		}
 		$event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
-		
+
 		for($i = 0; $i < $post['stars']; ++$i)
 		{
 			$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
-		
+
 		if($event['userstars'] && $event['starimage'] && $event['stars'])
 		{
 			$event['userstars'] .= "<br />";
@@ -1322,7 +1322,7 @@ if($mybb->input['action'] == "event")
 
 		$event['username'] = $event['username'];
 		$event['profilelink'] = format_name($event['username'], 1);
-		
+
 		if($user_usergroup['usertitle'])
 		{
 			$event['usertitle'] = $user_usergroup['usertitle'];
@@ -1353,9 +1353,9 @@ if($mybb->input['action'] == "event")
 		$end_day = gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 		$start_time = gmdate("Hi", $event['starttime_user']);
 		$end_time = gmdate("Hi", $event['endtime_user']);
-	
+
 		$event['repeats'] = unserialize($event['repeats']);
-		
+
 		// Event only runs over one day
 		if($start_day == $end_day && $event['repeats']['repeats'] == 0)
 		{
@@ -1469,7 +1469,7 @@ if($mybb->input['action'] == "dayview")
 	{
 		$year = my_date("Y");
 	}
-	
+
 	// Then the month
 	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
 	{
@@ -1516,7 +1516,7 @@ if($mybb->input['action'] == "dayview")
 					{
 						$age = '';
 					}
-					
+
 					$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
 					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
 					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
@@ -1595,12 +1595,12 @@ if($mybb->input['action'] == "dayview")
 			if($event['uid'] > 0 && $event['username'])
 			{
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
-				
+
 				if(trim($event['usertitle']) != "")
 				{
 					$hascustomtitle = 1;
 				}
-				
+
 				if($user_usergroup['usertitle'] != "" && !$hascustomtitle)
 				{
 					$event['usertitle'] = $user_usergroup['usertitle'];
@@ -1632,12 +1632,12 @@ if($mybb->input['action'] == "dayview")
 				{
 					$event['starimage'] = $user_usergroup['starimage'];
 				}
-				
+
 				for($i = 0; $i < $post['stars']; ++$i)
 				{
 					$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
 				}
-				
+
 				if($event['userstars'] && $event['starimage'] && $event['stars'])
 				{
 					$event['userstars'] .= "<br />";
@@ -1653,7 +1653,7 @@ if($mybb->input['action'] == "dayview")
 
 				$event['username'] = $event['username'];
 				$event['profilelink'] = format_name($event['username'], 1);
-				
+
 				if($user_usergroup['usertitle'])
 				{
 					$event['usertitle'] = $user_usergroup['usertitle'];
@@ -1684,7 +1684,7 @@ if($mybb->input['action'] == "dayview")
 				$end_day = gmmktime(0, 0, 0, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 				$start_time = gmdate("Hi", $event['starttime_user']);
 				$end_time = gmdate("Hi", $event['endtime_user']);
-			
+
 				// Event only runs over one day
 				if($start_day == $end_day && $event['repeats']['repeats'] == 0)
 				{
@@ -1798,7 +1798,7 @@ if($mybb->input['action'] == "weekview")
 	}
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
-	
+
 	$yearsel = '';
 	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
 	{
@@ -1819,7 +1819,7 @@ if($mybb->input['action'] == "weekview")
 	{
 		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->input['week']);
 	}
-	
+
 	// This is where we've come from and where we're headed
 	$week_from = explode("-", gmdate("j-n-Y", $mybb->input['week']));
 	$week_from_one = $week_from[1];
@@ -2059,7 +2059,7 @@ if(!$mybb->input['action'])
 	{
 		$year = my_date("Y");
 	}
-	
+
 	// Then the month
 	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
 	{
@@ -2086,7 +2086,7 @@ if(!$mybb->input['action'])
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 
 	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-	
+
 	// This is if we have days in the previous month to show
 	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
@@ -2107,14 +2107,14 @@ if(!$mybb->input['action'])
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
-	
+
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $calendar_year);
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
-	
+
 	$month_end_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $num_days, $year));
 	$next_days = 6-$month_end_weekday+$calendar['startofweek'];
-	
+
 	// More than a week? Go one week back
 	if($next_days >= 7)
 	{
@@ -2131,7 +2131,7 @@ if(!$mybb->input['action'])
 	}
 
 	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
-	
+
 	// Fetch birthdays
 	if($calendar['showbirthdays'])
 	{
@@ -2151,7 +2151,7 @@ if(!$mybb->input['action'])
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
-		{						
+		{
 			// Current month always starts on 1st row
 			if($row == 0 && $day == $calendar['startofweek']+1)
 			{
@@ -2248,7 +2248,7 @@ if(!$mybb->input['action'])
 			}
 
 			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-			
+
 			// Is the current day
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{
@@ -2280,7 +2280,7 @@ if(!$mybb->input['action'])
 	{
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
-	
+
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");

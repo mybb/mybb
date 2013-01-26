@@ -10,7 +10,7 @@
  */
 
 class installerOutput {
-	
+
 	public $doneheader;
 	public $openedform;
 	public $script = "index.php";
@@ -20,7 +20,7 @@ class installerOutput {
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
-		
+
 		if($lang->title)
 		{
 			$this->title = $lang->title;
@@ -50,7 +50,7 @@ END;
 			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 			$this->openedform = 1;
 		}
-		
+
 		echo <<<END
 		<div id="container">
 		<div id="logo">
@@ -61,7 +61,7 @@ END;
 END;
 		if($mybb->version_code >= 1700 && $mybb->version_code < 1800)
 		{
-			echo $lang->development_preview;	
+			echo $lang->development_preview;
 		}
 		if(empty($this->steps))
 		{

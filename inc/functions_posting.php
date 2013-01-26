@@ -17,7 +17,7 @@
  *     OUTPUT:  [quote]a[quote=me]b[/quote][/quote]
  *  #2. INPUT:  [quote=a][quote=b][quote=c][quote=d][/quote][quote=e][/quote][/quote][quote=f][/quote][/quote]
  *     OUTPUT:  [quote=a][quote=b][/quote][quote=f][/quote][/quote]
- * 
+ *
  * @param string the message from which quotes are to be removed
  * @param integer nested depth at which quotes should be removed; if none supplied, will use MyBB's default; must be at least 0
  * @return string the original message passed in $text, but with quote tags selectively removed
@@ -34,17 +34,17 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		$rmdepth = $mybb->settings['maxquotedepth'];
 	}
 	$rmdepth = intval($rmdepth);
-	
+
 	// find all tokens
 	// note, at various places, we use the prefix "s" to denote "start" (ie [quote]) and "e" to denote "end" (ie [/quote])
 	preg_match_all("#\[quote(=(?:&quot;|\"|')?.*?(?:&quot;|\"|')?)?\]#si", $text, $smatches, PREG_OFFSET_CAPTURE | PREG_PATTERN_ORDER);
 	preg_match_all("#\[/quote\]#i", $text, $ematches, PREG_OFFSET_CAPTURE | PREG_PATTERN_ORDER);
-	
+
 	if(empty($smatches) || empty($ematches))
 	{
 		return $text;
 	}
-	
+
 	// make things easier by only keeping offsets
 	$soffsets = $eoffsets = array();
 	foreach($smatches[0] as $id => $match)
@@ -61,8 +61,8 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		}
 	}
 	unset($smatches, $ematches);
-	
-	
+
+
 	// elmininate malformed quotes by parsing like the parser does (preg_replace in a while loop)
 	// NOTE: this is slightly inaccurate because the parser considers [quote] and [quote=...] to be different things
 	$good_offsets = array();
@@ -82,14 +82,14 @@ function remove_message_quotes(&$text, $rmdepth=null)
 						$good_offsets[$soffset] = 1;
 						$good_offsets[$eoffset] = -1;
 						$last_offset = $eoffset;
-						
+
 						unset($soffsets[$sk], $eoffsets[$ek]);
 						break;
 					}
 				}
 			}
 		}
-		
+
 		// remove any end offsets occurring before start offsets
 		$first_start = reset($soffsets);
 		foreach($eoffsets as $ek => &$eoffset)
@@ -105,15 +105,15 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		}
 		// we don't need to remove start offsets after the last end offset, because the loop will deplete something before that
 	}
-	
-	
+
+
 	if(empty($good_offsets))
 	{
 		return $text;
 	}
 	ksort($good_offsets);
-	
-	
+
+
 	// we now have a list of all the ordered tokens, ready to go through
 	$depth = 0;
 	$remove_regions = array();
@@ -130,12 +130,12 @@ function remove_message_quotes(&$text, $rmdepth=null)
 			$remove_regions[] = array($tmp_start, $offset);
 		}
 	}
-	
+
 	if(empty($remove_regions))
 	{
 		return $text;
 	}
-	
+
 	// finally, remove the quotes from the string
 	$newtext = '';
 	$cpy_start = 0;
@@ -159,8 +159,8 @@ function remove_message_quotes(&$text, $rmdepth=null)
 	{
 		$newtext .= substr($text, $cpy_start);
 	}
-	
-	
+
+
 	// we're done
 	return $newtext;
 }
@@ -168,7 +168,7 @@ function remove_message_quotes(&$text, $rmdepth=null)
 
 /**
  * Performs cleanup of a quoted message, such as replacing /me commands, before presenting quoted post to the user.
- * 
+ *
  * @param array quoted post info, taken from the DB (requires the 'message', 'username', 'pid' and 'dateline' entries to be set; will use 'userusername' if present)
  * @param boolean whether to call remove_message_quotes() on the quoted message
  * @return string the cleaned up message, wrapped in a quote tag
@@ -182,7 +182,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
 	}
-	
+
 	// Swap username over if we have a registered user
 	if($quoted_post['userusername'])
 	{
@@ -199,7 +199,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 		"",
 	), $quoted_post['message']);
 	$quoted_post['message'] = $parser->parse_badwords($quoted_post['message']);
-	
+
 	if($remove_message_quotes)
 	{
 		global $mybb;
@@ -209,9 +209,9 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 			$quoted_post['message'] = remove_message_quotes($quoted_post['message'], $max_quote_depth-1); // we're wrapping the message in a [quote] tag, so take away one quote depth level
 		}
 	}
-	
+
 	$quoted_post = $plugins->run_hooks("parse_quoted_message", $quoted_post);
-	
+
 	return "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 }
 

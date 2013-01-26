@@ -23,12 +23,12 @@ $plugins->run_hooks("admin_config_help_documents_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_help_documents_add");
-	
+
 	// Add section
 	if($mybb->input['type'] == "section")
 	{
 		$plugins->run_hooks("admin_config_help_documents_add_section");
-		
+
 		// Do add?
 		if($mybb->request_method == "post")
 		{
@@ -36,22 +36,22 @@ if($mybb->input['action'] == "add")
 			{
 				$errors[] = $lang->error_section_missing_name;
 			}
-			
+
 			if(empty($mybb->input['description']))
 			{
 				$errors[] = $lang->error_section_missing_description;
 			}
-			
+
 			if(!isset($mybb->input['enabled']))
 			{
 				$errors[] = $lang->error_section_missing_enabled;
 			}
-			
+
 			if($mybb->input['enabled'] != 1)
 			{
 				$mybb->input['enabled'] = 0;
 			}
-			
+
 			if(!is_array($errors))
 			{
 				$sql_array = array(
@@ -61,11 +61,11 @@ if($mybb->input['action'] == "add")
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
-				
+
 				$sid = $db->insert_query("helpsections", $sql_array);
-				
+
 				$plugins->run_hooks("admin_config_help_documents_add_section_commit");
-				
+
 				// Log admin action
 				log_admin_action($sid, $mybb->input['name'], 'section');
 
@@ -73,28 +73,28 @@ if($mybb->input['action'] == "add")
 				admin_redirect('index.php?module=config-help_documents');
 			}
 		}
-	
+
 		$page->add_breadcrumb_item($lang->add_new_section);
 		$page->output_header($lang->help_documents." - ".$lang->add_new_section);
-		
+
 		$sub_tabs['manage_help_documents'] = array(
 			'title'	=> $lang->manage_help_documents,
 			'link'	=> "index.php?module=config-help_documents"
 		);
-	
+
 		$sub_tabs['add_help_document'] = array(
 			'title'	=> $lang->add_new_document,
 			'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=document"
 		);
-		
+
 		$sub_tabs['add_help_section'] = array(
 			'title'	=> $lang->add_new_section,
 			'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=section",
 			'description' => $lang->add_new_section_desc
 		);
-	
+
 		$page->output_nav_tabs($sub_tabs, 'add_help_section');
-	
+
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -106,7 +106,7 @@ if($mybb->input['action'] == "add")
 			$mybb->input['enabled'] = 1;
 			$mybb->input['usetranslation'] = 1;
 		}
-	
+
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=section", "post", "add");
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
@@ -116,18 +116,18 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
-	
+
 		$buttons[] = $form->generate_submit_button($lang->save_section);
-	
+
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
-	
+
 	// Add page
 	else
 	{
 		$plugins->run_hooks("admin_config_help_documents_add_page");
-		
+
 		// Do add?
 		if($mybb->request_method == "post")
 		{
@@ -135,32 +135,32 @@ if($mybb->input['action'] == "add")
 			{
 				$errors[] = $lang->error_missing_sid;
 			}
-			
+
 			if(empty($mybb->input['name']))
 			{
 				$errors[] = $lang->error_document_missing_name;
 			}
-			
+
 			if(empty($mybb->input['description']))
 			{
 				$errors[] = $lang->error_document_missing_description;
 			}
-			
+
 			if(empty($mybb->input['document']))
 			{
 				$errors[] = $lang->error_document_missing_document;
 			}
-			
+
 			if(!isset($mybb->input['enabled']))
 			{
 				$errors[] = $lang->error_document_missing_enabled;
 			}
-			
+
 			if($mybb->input['enabled'] != 1)
 			{
 				$mybb->input['enabled'] = 0;
 			}
-			
+
 			if(!is_array($errors))
 			{
 				$sql_array = array(
@@ -172,40 +172,40 @@ if($mybb->input['action'] == "add")
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
-				
+
 				$hid = $db->insert_query("helpdocs", $sql_array);
-				
+
 				$plugins->run_hooks("admin_config_help_documents_add_page_commit");
 
 				// Log admin action
 				log_admin_action($hid, $mybb->input['name'], 'document');
-				
+
 				flash_message($lang->success_help_document_added, 'success');
 				admin_redirect('index.php?module=config-help_documents');
 			}
 		}
-	
+
 		$page->add_breadcrumb_item($lang->add_new_document);
-		$page->output_header($lang->help_documents." - ".$lang->add_new_document);		
-		
+		$page->output_header($lang->help_documents." - ".$lang->add_new_document);
+
 		$sub_tabs['manage_help_documents'] = array(
 			'title'	=> $lang->manage_help_documents,
 			'link'	=> "index.php?module=config-help_documents"
 		);
-	
+
 		$sub_tabs['add_help_document'] = array(
 			'title'	=> $lang->add_new_document,
 			'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=document",
 			'description' => $lang->add_new_document_desc
 		);
-		
+
 		$sub_tabs['add_help_section'] = array(
 			'title'	=> $lang->add_new_section,
 			'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=section"
 		);
-	
+
 		$page->output_nav_tabs($sub_tabs, 'add_help_document');
-	
+
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "add")
 			$mybb->input['enabled'] = 1;
 			$mybb->input['usetranslation'] = 1;
 		}
-	
+
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=document", "post", "add");
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
@@ -235,9 +235,9 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
-	
+
 		$buttons[] = $form->generate_submit_button($lang->save_document);
-	
+
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
@@ -249,7 +249,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_help_documents_edit");
-	
+
 	// Edit a section
 	if($mybb->input['sid'] && !$mybb->input['hid'])
 	{
@@ -257,37 +257,37 @@ if($mybb->input['action'] == "edit")
 		$section = $db->fetch_array($query);
 
 		$plugins->run_hooks("admin_config_help_documents_edit_section");
-		
+
 		// Do edit?
 		if($mybb->request_method == "post")
 		{
 			$sid = intval($mybb->input['sid']);
-			
+
 			if(empty($sid))
 			{
 				$errors[] = $lang->error_invalid_sid;
 			}
-			
+
 			if(empty($mybb->input['name']))
 			{
 				$errors[] = $lang->error_section_missing_name;
 			}
-			
+
 			if(empty($mybb->input['description']))
 			{
 				$errors[] = $lang->error_section_missing_description;
 			}
-			
+
 			if(!isset($mybb->input['enabled']))
 			{
 				$errors[] = $lang->error_section_missing_enabled;
 			}
-			
+
 			if($mybb->input['enabled'] != 1)
 			{
 				$mybb->input['enabled'] = 0;
 			}
-			
+
 			if(!is_array($errors))
 			{
 				$sql_array = array(
@@ -297,31 +297,31 @@ if($mybb->input['action'] == "edit")
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
-				
+
 				$db->update_query("helpsections", $sql_array, "sid = '{$sid}'");
-				
+
 				$plugins->run_hooks("admin_config_help_documents_edit_section_commit");
 
 				// Log admin action
 				log_admin_action($sid, $mybb->input['name'], 'section');
-				
+
 				flash_message($lang->success_help_section_updated, 'success');
 				admin_redirect('index.php?module=config-help_documents');
 			}
 		}
-	
+
 		$page->add_breadcrumb_item($lang->edit_section);
 		$page->output_header($lang->help_documents." - ".$lang->edit_section);
-		
-		
+
+
 		$sub_tabs['edit_help_section'] = array(
 			'title'	=> $lang->edit_section,
 			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;sid=".intval($mybb->input['sid']),
 			'description' => $lang->edit_section_desc
 		);
-	
+
 		$page->output_nav_tabs($sub_tabs, 'edit_help_section');
-	
+
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -335,65 +335,65 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['enabled'] = $section['enabled'];
 			$mybb->input['usetranslation'] = $section['usetranslation'];
 		}
-	
+
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
-		
+
 		echo $form->generate_hidden_field("sid", $mybb->input['sid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
-		
+
 		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".intval($mybb->input['sid']).")");
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
-	
+
 		$buttons[] = $form->generate_submit_button($lang->edit_section);
-	
+
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
-	
+
 	// Edit document
 	else
 	{
 		$plugins->run_hooks("admin_config_help_documents_edit_page");
-		
+
 		// Do edit?
 		if($mybb->request_method == "post")
 		{
 			$hid = intval($mybb->input['hid']);
-			
+
 			if(empty($hid))
 			{
 				$errors[] = $lang->error_invalid_sid;
 			}
-			
+
 			if(empty($mybb->input['name']))
 			{
 				$errors[] = $lang->error_document_missing_name;
 			}
-			
+
 			if(empty($mybb->input['description']))
 			{
 				$errors[] = $lang->error_document_missing_description;
 			}
-			
+
 			if(empty($mybb->input['document']))
 			{
 				$errors[] = $lang->error_document_missing_document;
 			}
-			
+
 			if(!isset($mybb->input['enabled']))
 			{
 				$errors[] = $lang->error_document_missing_enabled;
 			}
-			
+
 			if($mybb->input['enabled'] != 1)
 			{
 				$mybb->input['enabled'] = 0;
 			}
-			
+
 			if(!is_array($errors))
 			{
 				$sql_array = array(
@@ -405,11 +405,11 @@ if($mybb->input['action'] == "edit")
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
-				
+
 				$db->update_query("helpdocs", $sql_array, "hid = '{$hid}'");
-				
+
 				$plugins->run_hooks("admin_config_help_documents_edit_page_commit");
-				
+
 				// Log admin action
 				log_admin_action($hid, $mybb->input['name'], 'document');
 
@@ -417,19 +417,19 @@ if($mybb->input['action'] == "edit")
 				admin_redirect('index.php?module=config-help_documents');
 			}
 		}
-	
+
 		$page->add_breadcrumb_item($lang->edit_document);
 		$page->output_header($lang->help_documents." - ".$lang->edit_document);
-		
-		
+
+
 		$sub_tabs['edit_help_document'] = array(
 			'title'	=> $lang->edit_document,
 			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".intval($mybb->input['hid']),
 			'description' => $lang->edit_document_desc
 		);
-	
+
 		$page->output_nav_tabs($sub_tabs, 'edit_help_document');
-	
+
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -447,14 +447,14 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['enabled'] = $doc['enabled'];
 			$mybb->input['usetranslation'] = $doc['usetranslation'];
 		}
-	
+
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
-		
+
 		echo $form->generate_hidden_field("hid", $mybb->input['hid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
-				
+
 		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".intval($mybb->input['hid']).")");
-		
+
 		$query = $db->simple_select("helpsections", "sid, name");
 		while($section = $db->fetch_array($query))
 		{
@@ -467,9 +467,9 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
 		$form_container->end();
-	
+
 		$buttons[] = $form->generate_submit_button($lang->edit_document);
-		
+
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_help_documents_delete");
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "delete")
 			flash_message($lang->success_section_deleted, 'success');
 			admin_redirect("index.php?module=config-help_documents");
 		}
-		
+
 		// Delete document
 		else
 		{
@@ -533,7 +533,7 @@ if($mybb->input['action'] == "delete")
 				flash_message($lang->error_missing_hid, 'error');
 				admin_redirect("index.php?module=config-help_documents");
 			}
-			
+
 			$db->delete_query("helpdocs", "hid = '{$hid}'", 1);
 
 			$plugins->run_hooks("admin_config_help_documents_delete_page_commit");
@@ -567,7 +567,7 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_help_documents_start");
-	
+
 	$page->output_header($lang->help_documents);
 
 	$sub_tabs['manage_help_documents'] = array(
@@ -580,7 +580,7 @@ if(!$mybb->input['action'])
 		'title'	=> $lang->add_new_document,
 		'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=document"
 	);
-	
+
 	$sub_tabs['add_help_section'] = array(
 		'title'	=> $lang->add_new_section,
 		'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=section"

@@ -137,7 +137,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 	// Build the who's online bit on the index page.
 	$onlinecount = $membercount + $guestcount + $botcount;
-	
+
 	if($onlinecount != 1)
 	{
 		$onlinebit = $lang->online_online_plural;
@@ -182,15 +182,15 @@ if($mybb->settings['showbirthdays'] != 0)
 	$bdaycount = $bdayhidden = 0;
 	$bdaydate = my_date('j-n', TIME_NOW, '', 0);
 	$year = my_date('Y', TIME_NOW, '', 0);
-	
+
 	$bdaycache = $cache->read('birthdays');
-	
+
 	if(!is_array($bdaycache))
 	{
 		$cache->update_birthdays();
 		$bdaycache = $cache->read('birthdays');
 	}
-	
+
 	$hiddencount = $today_bdays = 0;
 	if(isset($bdaycache[$bdaydate]))
 	{
@@ -373,7 +373,7 @@ $forumpermissions = forum_permissions();
 // Get the forum moderators if the setting is enabled.
 $moderatorcache = array();
 if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
-{	
+{
 	$moderatorcache = $cache->read('moderators');
 }
 

@@ -102,7 +102,7 @@ if($mybb->input['thumbnail'])
 			$type = "image/unknown";
 			break;
 	}
-	
+
 	header("Content-disposition: filename=\"{$attachment['filename']}\"");
 	header("Content-type: ".$type);
 	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
@@ -112,7 +112,7 @@ if($mybb->input['thumbnail'])
 else
 {
 	$ext = get_extension($attachment['filename']);
-	
+
 	switch($attachment['filetype'])
 	{
 		case "application/pdf":
@@ -146,14 +146,14 @@ else
 	{
 		header("Content-disposition: {$disposition}; filename=\"{$attachment['filename']}\"");
 	}
-	
+
 	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie 6.0") !== false)
 	{
 		header("Expires: -1");
 	}
-	
+
 	header("Content-length: {$attachment['filesize']}");
-	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
+	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
 	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
 }
 ?>

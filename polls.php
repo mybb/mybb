@@ -51,7 +51,7 @@ if($mybb->input['action'] == "newpoll")
 	$thread = get_thread($mybb->input['tid']);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
-	
+
 	// Get forum info
 	$forum = get_forum($fid);
 	if(!$forum)
@@ -152,7 +152,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$thread = get_thread($mybb->input['tid']);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
-	
+
 	// Get forum info
 	$forum = get_forum($fid);
 	if(!$forum)
@@ -201,38 +201,38 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$postoptions['public'] = 0;
 	}
-	
+
 	if($polloptions < 2)
 	{
 		$polloptions = "2";
 	}
 	$optioncount = "0";
 	$options = $mybb->input['options'];
-	
+
 	for($i = 1; $i <= $polloptions; ++$i)
 	{
 		if(trim($options[$i]) != "")
 		{
 			$optioncount++;
 		}
-		
+
 		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
 		{
 			$lengtherror = 1;
 			break;
 		}
 	}
-	
+
 	if($lengtherror)
 	{
 		error($lang->error_polloptiontoolong);
 	}
-	
+
 	if(empty($mybb->input['question']) || $optioncount < 2)
 	{
 		error($lang->error_noquestionoptions);
 	}
-	
+
 	$optionslist = '';
 	$voteslist = '';
 	for($i = 1; $i <= $polloptions; ++$i)
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 			$voteslist .= '0';
 		}
 	}
-	
+
 	if($mybb->input['timeout'] > 0)
 	{
 		$timeout = intval($mybb->input['timeout']);
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-	
+
 	$newpoll = array(
 		"tid" => $thread['tid'],
 		"question" => $db->escape_string($mybb->input['question']),
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "editpoll")
 
 	$query = $db->simple_select("polls", "*", "pid='$pid'");
 	$poll = $db->fetch_array($query);
-	
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "editpoll")
 	add_breadcrumb($lang->nav_editpoll);
 
 	$forumpermissions = forum_permissions($fid);
-	
+
 	// Get forum info
 	$forum = get_forum($fid);
 	if(!$forum)
@@ -336,12 +336,12 @@ if($mybb->input['action'] == "editpoll")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	if(!is_moderator($fid, "caneditposts"))
 	{
 		error_no_permission();
 	}
-	
+
 	$polldate = my_date($mybb->settings['dateformat'], $poll['dateline']);
 	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
 	{
@@ -349,12 +349,12 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$postoptionschecked['closed'] = 'checked="checked"';
 		}
-		
+
 		if($poll['multiple'] == 1)
 		{
 			$postoptionschecked['multiple'] = 'checked="checked"';
 		}
-		
+
 		if($poll['public'] == 1)
 		{
 			$postoptionschecked['public'] = 'checked="checked"';
@@ -368,7 +368,7 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 		}
-		
+
 		$question = htmlspecialchars_uni($poll['question']);
 		$numoptions = $poll['numoptions'];
 		$optionbits = "";
@@ -378,17 +378,17 @@ if($mybb->input['action'] == "editpoll")
 			$option = $optionsarray[$i];
 			$option = htmlspecialchars_uni($option);
 			$optionvotes = intval($votesarray[$i]);
-			
+
 			if(!$optionvotes)
 			{
 				$optionvotes = 0;
 			}
-			
+
 			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
 			$option = "";
 			$optionvotes = "";
 		}
-		
+
 		if(!$poll['timeout'])
 		{
 			$timeout = 0;
@@ -419,12 +419,12 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$postoptionschecked['multiple'] = 'checked="checked"';
 		}
-		
+
 		if($postoptions['public'] == 1)
 		{
 			$postoptionschecked['public'] = 'checked="checked"';
 		}
-		
+
 		if($postoptions['closed'] == 1)
 		{
 			$postoptionschecked['closed'] = 'checked="checked"';
@@ -439,12 +439,12 @@ if($mybb->input['action'] == "editpoll")
 			$option = $options[$i];
 			$option = htmlspecialchars_uni($option);
 			$optionvotes = $votes[$i];
-			
+
 			if(!$optionvotes)
 			{
 				$optionvotes = 0;
 			}
-			
+
 			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
 			$option = "";
 		}
@@ -474,7 +474,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
-	
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
@@ -484,7 +484,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$thread = $db->fetch_array($query);
 
 	$forumpermissions = forum_permissions($thread['fid']);
-	
+
 	// Get forum info
 	$forum = get_forum($thread['fid']);
 	if(!$forum)
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	if(!is_moderator($thread['fid'], "caneditposts"))
 	{
 		error_no_permission();
@@ -529,12 +529,12 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$postoptions['multiple'] = 0;
 	}
-	
+
 	if($postoptions['public'] != '1')
 	{
 		$postoptions['public'] = 0;
 	}
-	
+
 	if($postoptions['closed'] != '1')
 	{
 		$postoptions['closed'] = 0;
@@ -548,14 +548,14 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		{
 			$optioncount++;
 		}
-		
+
 		if(my_strlen($options[$i]) > $mybb->settings['polloptionlimit'] && $mybb->settings['polloptionlimit'] != 0)
 		{
 			$lengtherror = 1;
 			break;
 		}
 	}
-	
+
 	if($lengtherror)
 	{
 		error($lang->error_polloptiontoolong);
@@ -565,7 +565,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_noquestionoptions);
 	}
-	
+
 	$optionslist = '';
 	$voteslist = '';
 	$numvotes = '';
@@ -579,7 +579,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 				$optionslist .= "||~|~||";
 				$voteslist .= "||~|~||";
 			}
-			
+
 			$optionslist .= trim($options[$i]);
 			if(intval($votes[$i]) <= 0)
 			{
@@ -589,7 +589,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 			$numvotes = $numvotes + $votes[$i];
 		}
 	}
-	
+
 	if($mybb->input['timeout'] > 0)
 	{
 		$timeout = intval($mybb->input['timeout']);
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-	
+
 	$updatedpoll = array(
 		"question" => $db->escape_string($mybb->input['question']),
 		"options" => $db->escape_string($optionslist),
@@ -616,7 +616,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$db->update_query("polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
-	
+
 	$modlogdata['fid'] = $thread['fid'];
 	$modlogdata['tid'] = $thread['tid'];
 	log_moderator_action($modlogdata, $lang->poll_edited);
@@ -628,12 +628,12 @@ if($mybb->input['action'] == "showresults")
 {
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
-	
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
 	}
-	
+
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
 	$fid = $thread['fid'];
@@ -653,12 +653,12 @@ if($mybb->input['action'] == "showresults")
 	{
 		error_no_permission();
 	}
-	
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
 	}
-	
+
 	if(!$thread['tid'])
 	{
 		error($lang->error_invalidthread);
@@ -673,10 +673,10 @@ if($mybb->input['action'] == "showresults")
 
 	// Calculate votes
 	$query = $db->query("
-		SELECT v.*, u.username 
-		FROM ".TABLE_PREFIX."pollvotes v 
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid) 
-		WHERE v.pid='{$poll['pid']}' 
+		SELECT v.*, u.username
+		FROM ".TABLE_PREFIX."pollvotes v
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=v.uid)
+		WHERE v.pid='{$poll['pid']}'
 		ORDER BY u.username
 	");
 	while($voter = $db->fetch_array($query))
@@ -698,14 +698,14 @@ if($mybb->input['action'] == "showresults")
 			$voters[$voter['voteoption']][$voter['uid']] = $voter['username'];
 		}
 	}
-	
+
 	$optionsarray = explode("||~|~||", $poll['options']);
 	$votesarray = explode("||~|~||", $poll['votes']);
 	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
 		$poll['totvotes'] = $poll['totvotes'] + $votesarray[$i-1];
 	}
-	
+
 	$polloptions = '';
 	for($i = 1; $i <= $poll['numoptions']; ++$i)
 	{
@@ -732,7 +732,7 @@ if($mybb->input['action'] == "showresults")
 			$optionbg = 'trow1';
 			$votestar = '';
 		}
-		
+
 		if($votes == '0')
 		{
 			$percent = '0';
@@ -741,7 +741,7 @@ if($mybb->input['action'] == "showresults")
 		{
 			$percent = number_format($votes / $poll['totvotes'] * 100, 2);
 		}
-		
+
 		$imagewidth = round($percent/3) * 5;
 		$comma = '';
 		$guest_comma = '';
@@ -772,7 +772,7 @@ if($mybb->input['action'] == "showresults")
 		}
 		eval("\$polloptions .= \"".$templates->get("polls_showresults_resultbit")."\";");
 	}
-	
+
 	if($poll['totvotes'])
 	{
 		$totpercent = '100%';
@@ -792,7 +792,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;
@@ -811,14 +811,14 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 	if($forumpermissions['canvotepolls'] == 0)
 	{
 		error_no_permission();
 	}
-	
+
 	// Get forum info
 	$forum = get_forum($fid);
 	if(!$forum)
@@ -841,19 +841,19 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	{
 		error($lang->error_pollclosed);
 	}
-	
+
 	if(!isset($mybb->input['option']))
 	{
 		error($lang->error_nopolloptions);
 	}
-	
+
 	// Check if the user has voted before...
 	if($mybb->user['uid'])
 	{
 		$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
 		$votecheck = $db->fetch_array($query);
 	}
-	
+
 	if($votecheck['vid'] || (isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== ""))
 	{
 		error($lang->error_alreadyvoted);
@@ -873,7 +873,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 		my_setcookie("pollvotes[{$poll['pid']}]", $votes_cookie);
 	}
-	
+
 	$votesql = '';
 	$now = TIME_NOW;
 	$votesarray = explode("||~|~||", $poll['votes']);
@@ -915,8 +915,8 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	}
 
 	$db->write_query("
-		INSERT INTO 
-		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) 
+		INSERT INTO
+		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline)
 		VALUES $votesql
 	");
 	$voteslist = '';
@@ -945,27 +945,27 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 if($mybb->input['action'] == "do_undovote")
 {
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$plugins->run_hooks("polls_do_undovote_start");
 	if($mybb->usergroup['canundovotes'] != 1)
 	{
 		error_no_permission();
 	}
-	
+
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['numvotes'] = (int)$poll['numvotes'];
-	
+
 	if(!$poll['pid'])
 	{
 		error($lang->error_invalidpoll);
 	}
-	
+
 	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
 	// Get thread ID and then get forum info
 	$thread = get_thread($poll['tid']);
 	$fid = $thread['fid'];
-	
+
 	// Get forum info
 	$forum = get_forum($fid);
 	if(!$forum)
@@ -981,16 +981,16 @@ if($mybb->input['action'] == "do_undovote")
 			error($lang->error_closedinvalidforum);
 		}
 	}
-	
+
 	$poll['timeout'] = $poll['timeout']*60*60*24;
-	
+
 
 	$expiretime = $poll['dateline'] + $poll['timeout'];
 	if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < TIME_NOW && $poll['timeout']))
 	{
 		error($lang->error_pollclosed);
 	}
-	
+
 	// Check if the user has voted before...
 	$vote_options = array();
 	if($mybb->user['uid'])
@@ -1007,7 +1007,7 @@ if($mybb->input['action'] == "do_undovote")
 		$vote_options = explode(',', $mybb->cookies['pollvotes'][$poll['pid']]);
 	}
 	$votecheck = !empty($vote_options);
-	
+
 	if(!$votecheck)
 	{
 		error($lang->error_notvoted);
@@ -1016,15 +1016,15 @@ if($mybb->input['action'] == "do_undovote")
 	{
 		// clear cookie for Guests
 		my_setcookie("pollvotes[{$poll['pid']}]", "");
-	}	
-	
+	}
+
 	// Note, this is not thread safe!
 	$votesarray = explode("||~|~||", $poll['votes']);
 	if(count($votesarray) > $poll['numoptions'])
 	{
 		$votesarray = array_slice(0, $poll['numoptions']);
 	}
-	
+
 	if($poll['multiple'] == 1)
 	{
 		foreach($vote_options as $vote)
@@ -1045,13 +1045,13 @@ if($mybb->input['action'] == "do_undovote")
 			--$poll['numvotes'];
 		}
 	}
-	
+
 	// check if anything < 0 - possible if Guest vote undoing is allowed (generally Guest unvoting should be disabled >_>)
 	if($poll['numvotes'] < 0)
 	{
 		$poll['numvotes'] = 0;
 	}
-	
+
 	foreach($votesarray as $i => $votes)
 	{
 		if($votes < 0)
@@ -1059,7 +1059,7 @@ if($mybb->input['action'] == "do_undovote")
 			$votesarray[$i] = 0;
 		}
 	}
-	
+
 	$voteslist = implode("||~|~||", $votesarray);
 	$updatedpoll = array(
 		"votes" => $db->escape_string($voteslist),

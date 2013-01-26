@@ -18,7 +18,7 @@ if(!defined("IN_MYBB"))
 function config_meta()
 {
 	global $page, $lang, $plugins;
-	
+
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "settings", "title" => $lang->bbsettings, "link" => "index.php?module=config-settings");
 	$sub_menu['20'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=config-banning");
@@ -36,18 +36,18 @@ function config_meta()
 	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?module=config-calendars");
 	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?module=config-warning");
 	$sub_menu['160'] = array("id" => "thread_prefixes", "title" => $lang->thread_prefixes, "link" => "index.php?module=config-thread_prefixes");
-	
+
 	$sub_menu = $plugins->run_hooks("admin_config_menu", $sub_menu);
-	
+
 	$page->add_menu_item($lang->configuration, "config", "index.php?module=config", 10, $sub_menu);
-	
+
 	return true;
 }
 
 function config_action_handler($action)
 {
 	global $page, $lang, $plugins;
-	
+
 	$page->active_module = "config";
 
 	$actions = array(
@@ -68,7 +68,7 @@ function config_action_handler($action)
 		'settings' => array('active' => 'settings', 'file' => 'settings.php'),
 		'thread_prefixes' => array('active' => 'thread_prefixes', 'file' => 'thread_prefixes.php')
 	);
-	
+
 	$actions = $plugins->run_hooks("admin_config_action_handler", $actions);
 
 	if(isset($actions[$action]))
@@ -86,7 +86,7 @@ function config_action_handler($action)
 function config_admin_permissions()
 {
 	global $lang, $plugins;
-	
+
 	$admin_permissions = array(
 		"settings" => $lang->can_manage_settings,
 		"banning" => $lang->can_manage_banned_accounts,
@@ -105,9 +105,9 @@ function config_admin_permissions()
 		"mod_tools" => $lang->can_manage_mod_tools,
 		"thread_prefixes" => $lang->can_manage_thread_prefixes
 	);
-	
+
 	$admin_permissions = $plugins->run_hooks("admin_config_permissions", $admin_permissions);
-	
+
 	return array("name" => $lang->configuration, "permissions" => $admin_permissions, "disporder" => 10);
 }
 ?>

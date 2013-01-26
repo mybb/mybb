@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['template_sets'] = "Template Sets";
 $l['template_set'] = "Template Set";
 $l['templates'] = "Templates";
@@ -149,8 +149,8 @@ $l['no_updated_templates'] = "There are currently no templates which have been u
 
 $l['confirm_template_set_deletion'] = "Are you sure you want to delete this template set?";
 $l['confirm_template_group_delete'] = "Are you sure you want to delete this template group? This action does not remove the templates in the group.";
-$l['confirm_template_deletion'] = "Are you sure you want to delete this template?"; 
-$l['confirm_template_revertion'] = "Are you sure you want to revert this template?"; 
+$l['confirm_template_deletion'] = "Are you sure you want to delete this template?";
+$l['confirm_template_revertion'] = "Are you sure you want to revert this template?";
 
 $l['error_security_problem'] = "A potential security issue was found in the template. Please review your changes or contact the MyBB Group for support.";
 $l['error_missing_input'] = "Please make sure you have all the input required to edit this template (tid and sid)";

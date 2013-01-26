@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['dashboard'] = "Dashboard";
 $l['dashboard_description'] = "This section allows you to see some of the various statistics relating to your board. You may also add other notes for other administrators to see.";
 

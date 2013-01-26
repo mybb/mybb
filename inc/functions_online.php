@@ -41,7 +41,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			$parameters[$temp2[0]] = $temp2[1];
 		}
 	}
-	
+
 	if($nopermission)
 	{
 		$filename = "nopermission";
@@ -166,7 +166,7 @@ function fetch_wol_activity($location, $nopermission=false)
 				}
 				$user_activity['activity'] = "misc_whoposted";
 				$user_activity['tid'] = $parameters['tid'];
-			}			
+			}
 			elseif(in_array($parameters['action'], $accepted_parameters))
 			{
 				$user_activity['activity'] = "misc_".$parameters['action'];
@@ -178,7 +178,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			break;
 		case "modcp":
 			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
-			
+
 			foreach($accepted_parameters as $action)
 			{
 				if($parameters['action'] == $action)
@@ -187,25 +187,25 @@ function fetch_wol_activity($location, $nopermission=false)
 					break;
 				}
 			}
-			
+
 			$accepted_parameters = array();
-			$accepted_parameters['report'] = array("do_reports", "reports", "allreports");			
+			$accepted_parameters['report'] = array("do_reports", "reports", "allreports");
 			$accepted_parameters['new_announcement'] = array("do_new_announcement", "new_announcement");
 			$accepted_parameters['delete_announcement'] = array("do_delete_announcement", "delete_announcement");
 			$accepted_parameters['edit_announcement'] = array("do_edit_announcement", "edit_announcement");
 			$accepted_parameters['mod_queue'] = array("do_modqueue", "modqueue");
 			$accepted_parameters['editprofile'] = array("do_editprofile", "editprofile");
 			$accepted_parameters['banning'] = array("do_banuser", "banning", "liftban", "banuser");
-			
+
 			foreach($accepted_parameters as $name => $actions)
 			{
 				if(in_array($parameters['action'], $actions))
-				{					
+				{
 					$user_activity['activity'] = "modcp_".$name;
 					break;
 				}
 			}
-			
+
 			if(!$user_activity['activity'])
 			{
 				$user_activity['activity'] = "modcp";
@@ -262,7 +262,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			else
 			{
 				$accepted_parameters = array("do_editpoll", "editpoll", "newpoll", "do_newpoll", "showresults", "vote");
-			
+
 				foreach($accepted_parameters as $action)
 				{
 					if($parameters['action'] == $action)
@@ -271,7 +271,7 @@ function fetch_wol_activity($location, $nopermission=false)
 						break;
 					}
 				}
-				
+
 				if(!$user_activity['activity'])
 				{
 					$user_activity['activity'] = "showresults";
@@ -445,12 +445,12 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "unknown";
 			break;
 	}
-	
+
 	// Expects $location to be passed through already sanitized
 	$user_activity['location'] = $location;
-	
+
 	$user_activity = $plugins->run_hooks("fetch_wol_activity_end", $user_activity);
-	
+
 	return $user_activity;
 }
 
@@ -482,7 +482,7 @@ function build_friendly_wol_location($user_activity)
 			$usernames[$user['uid']] = $user['username'];
 		}
 	}
-	
+
 	// Fetch any attachments
 	if(!is_array($attachments) && count($aid_list) > 0)
 	{
@@ -552,9 +552,9 @@ function build_friendly_wol_location($user_activity)
 				{
 					$thread_title = $thread['threadprefix'].'&nbsp;';
 				}
-				
+
 				$thread_title .= htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-				
+
 				$threads[$thread['tid']] = $thread_title;
 				$fid_list[] = $thread['fid'];
 			}
@@ -746,7 +746,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		case "misc_imcenter":
 			$location_name = $lang->viewing_imcenter;
-			break;						
+			break;
 		// modcp.php functions
 		case "modcp_modlogs":
 			$location_name = $lang->viewing_modlogs;
@@ -965,15 +965,15 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->managing_warnings;
 			break;
 	}
-	
+
 	$plugin_array = array('user_activity' => &$user_activity, 'location_name' => &$location_name);
 	$plugins->run_hooks("build_friendly_wol_location_end", $plugin_array);
-	
+
 	if(isset($user_activity['nopermission']) && $user_activity['nopermission'] == 1)
 	{
 		$location_name = $lang->viewing_noperms;
 	}
-	
+
 	if(!$location_name)
 	{
 		$location_name = $lang->sprintf($lang->unknown_location, $user_activity['location']);
@@ -1024,7 +1024,7 @@ function build_wol_row($user)
 	}
 
 	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
-	
+
 	// Fetch the location name for this users activity
 	$location = build_friendly_wol_location($user['activity']);
 

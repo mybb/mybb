@@ -134,7 +134,7 @@ class DataHandler
 				$errors[] = $error['error_code'];
 				continue;
 			}
-			
+
 			if(!empty($error['data']) && !is_array($error['data']))
 			{
 				$error['data'] = array($error['data']);
@@ -179,7 +179,7 @@ class DataHandler
 			return false;
 		}
 	}
-	
+
 	/**
 	* Verifies if yes/no options haven't been modified.
 	*

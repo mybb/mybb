@@ -30,14 +30,14 @@ function task_hourlycleanup($task)
 
 	// Delete moved threads with time limits
 	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".(int)$time['threads']."'");
-	
+
 	// Delete old searches
 	$db->delete_query("searchlog", "dateline < '".(int)$time['searchlog']."'");
 
 	// Delete old captcha images
 	$cut = TIME_NOW-(60*60*24*7);
 	$db->delete_query("captcha", "dateline < '".(int)$time['captcha']."'");
-	
+
 	add_task_log($task, $lang->task_hourlycleanup_ran);
 }
 ?>

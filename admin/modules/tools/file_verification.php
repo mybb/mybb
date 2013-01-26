@@ -24,7 +24,7 @@ $plugins->run_hooks("admin_tools_file_verification_begin");
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_file_verification_check");
-	
+
 	if($mybb->request_method == "post")
 	{
 		// User clicked no
@@ -32,34 +32,34 @@ if(!$mybb->input['action'])
 		{
 			admin_redirect("index.php?module=tools-system_health");
 		}
-		
+
 		$page->add_breadcrumb_item($lang->checking, "index.php?module=tools-file_verification");
-		
+
 		$page->output_header($lang->file_verification." - ".$lang->checking);
-		
+
 		$file = explode("\n", fetch_remote_file("http://www.mybb.com/checksums/release_mybb_{$mybb->version_code}.txt"));
-		
+
 		if(strstr($file[0], "<?xml") !== false || empty($file[0]))
 		{
 			$page->output_inline_error($lang->error_communication);
 			$page->output_footer();
 			exit;
 		}
-		
+
 		// Parser-up our checksum file from the MyBB Server
 		foreach($file as $line)
-		{			
+		{
 			$parts = explode(" ", $line, 2);
 			if(empty($parts[0]) || empty($parts[1]))
 			{
 				continue;
 			}
-			
+
 			if(substr($parts[1], 0, 7) == "./admin")
 			{
 				$parts[1] = "./{$mybb->config['admin_dir']}".substr($parts[1], 7);
 			}
-			
+
 			if(file_exists(MYBB_ROOT."forums.php") && !file_exists(MYBB_ROOT."portal.php"))
 			{
 				if(trim($parts[1]) == "./index.php")
@@ -71,16 +71,16 @@ if(!$mybb->input['action'])
 					$parts[1] = "./index.php";
 				}
 			}
-			
+
 			$checksums[trim($parts[1])][] = $parts[0];
 		}
-		
+
 		$bad_files = verify_files();
-		
+
 		$table = new Table;
 		$table->construct_header($lang->file);
 		$table->construct_header($lang->status, array("class" => "align_center", "width" => 100));
-		
+
 		foreach($bad_files as $file)
 		{
 			switch($file['status'])
@@ -94,9 +94,9 @@ if(!$mybb->input['action'])
 					$color = "#5B5658";
 					break;
 			}
-			
+
 			$table->construct_cell("<strong><span style=\"color: {$color};\">".substr($file['path'], 2)."</span></strong>");
-			
+
 			$table->construct_cell("<strong><span style=\"color: {$color};\">{$file['status']}</span></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
@@ -121,7 +121,7 @@ if(!$mybb->input['action'])
 		$page->output_footer();
 		exit;
 	}
-	
+
 	$page->output_confirm_action("index.php?module=tools-file_verification", $lang->file_verification_message, $lang->file_verification);
 }
 

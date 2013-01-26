@@ -234,7 +234,7 @@ function archive_error_no_permission()
 function check_forum_password_archive($fid, $pid=0)
 {
 	global $forum_cache;
-	
+
 	if(!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
@@ -255,14 +255,14 @@ function check_forum_password_archive($fid, $pid=0)
 			{
 				continue;
 			}
-			
+
 			if($forum_cache[$parent_id]['password'] != "")
 			{
 				check_forum_password_archive($parent_id, $fid);
 			}
 		}
 	}
-	
+
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{

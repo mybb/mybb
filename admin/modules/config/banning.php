@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_banning_begin");
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_banning_add");
-	
+
 	if(!trim($mybb->input['filter']))
 	{
 		$errors[] = $lang->error_missing_ban_input;
@@ -42,7 +42,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			"dateline" => TIME_NOW
 		);
 		$fid = $db->insert_query("banfilters", $new_filter);
-		
+
 		if($mybb->input['type'] == 1)
 		{
 			$cache->update_bannedips();
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		{
 			$cache->update_bannedemails();
 		}
-		
+
 		$plugins->run_hooks("admin_config_banning_add_commit");
 
 		// Log admin action
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		{
 			flash_message($lang->success_email_disallowed, 'success');
 			admin_redirect("index.php?module=config-banning&type=emails");
-		}		
+		}
 	}
 	else
 	{
@@ -94,10 +94,10 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_banning_delete");
-	
+
 	$query = $db->simple_select("banfilters", "*", "fid='".intval($mybb->input['fid'])."'");
 	$filter = $db->fetch_array($query);
-	
+
 	// Does the filter not exist?
 	if(!$filter['fid'])
 	{
@@ -117,7 +117,7 @@ if($mybb->input['action'] == "delete")
 	{
 		$type = "ips";
 	}
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the ban filter
 		$db->delete_query("banfilters", "fid='{$filter['fid']}'");
-		
+
 		$plugins->run_hooks("admin_config_banning_delete_commit");
 
 		// Log admin action
@@ -156,7 +156,7 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_banning_start");
-	
+
 	switch($mybb->input['type'])
 	{
 		case "emails":
@@ -255,13 +255,13 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config-banning&amp;action=delete&amp;fid={$filter['fid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_bans, array("colspan" => 4));
 		$table->construct_row();
 	}
-	
+
 	$table->output($title);
 
 	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
@@ -284,7 +284,7 @@ if(!$mybb->input['action'])
 		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
 		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
 	}
-	
+
 	$form_container->end();
 	echo $form->generate_hidden_field("type", $type);
 	$form->output_submit_wrapper($buttons);

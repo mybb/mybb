@@ -25,10 +25,10 @@ class diskCacheHandler
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve an item from the cache.
 	 *
@@ -36,14 +36,14 @@ class diskCacheHandler
 	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	
+
 	function fetch($name, $hard_refresh=false)
 	{
 		if(!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
 		{
 			return false;
 		}
-		
+
 		if(!isset($this->cache[$name]) || $hard_refresh == true)
 		{
 			@include(MYBB_ROOT."/cache/{$name}.php");
@@ -52,11 +52,11 @@ class diskCacheHandler
 		{
 			@include_once(MYBB_ROOT."/cache/{$name}.php");
 		}
-		
+
 		// Return data
 		return $$name;
 	}
-	
+
 	/**
 	 * Write an item to the cache.
 	 *
@@ -80,10 +80,10 @@ class diskCacheHandler
 		fwrite($cache_file, $cache_contents);
 		flock($cache_file, LOCK_UN);
 		fclose($cache_file);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Delete a cache
 	 *
@@ -94,7 +94,7 @@ class diskCacheHandler
 	{
 		return @unlink(MYBB_ROOT."/cache/{$name}.php");
 	}
-	
+
 	/**
 	 * Disconnect from the cache
 	 */
@@ -102,9 +102,9 @@ class diskCacheHandler
 	{
 		return true;
 	}
-	
+
 	/**
-	 * Select the size of the disk cache 
+	 * Select the size of the disk cache
 	 *
 	 * @param string The name of the cache
 	 * @return integer the size of the disk cache
@@ -125,7 +125,7 @@ class diskCacheHandler
 				{
 					continue;
 				}
-				
+
 				$total += filesize(MYBB_ROOT."/cache/{$file}");
 			}
 			return $total;

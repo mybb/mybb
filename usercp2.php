@@ -165,7 +165,7 @@ elseif($mybb->input['action'] == "removesubscription")
 	}
 }
 elseif($mybb->input['action'] == "removesubscriptions")
-{	
+{
 	if($mybb->input['type'] == "forum")
 	{
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");

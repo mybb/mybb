@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -211,7 +211,7 @@ $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics"
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
-$l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails"; 
+$l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
@@ -267,6 +267,6 @@ $l['admin_log_user_users_inline_banned_temp'] = "Banned {1} user(s) until {2}";
 $l['admin_log_user_users_inline_activated'] = "Activated {1} user(s)";
 $l['admin_log_user_users_inline_lift'] = "Lifted {1} user(s) bans";
 
-$l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})"; 
- 
+$l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})";
+
 ?>

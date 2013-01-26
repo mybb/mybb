@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -41,9 +41,9 @@ $l['multiquote_external_deselect'] = "deselect these posts";
 $l['multiquote_external_one_quote'] = "Quote this post too";
 $l['multiquote_external_quote'] = "Quote these posts too";
 
-$l['redirect_newthread'] = "Thank you, your thread has been posted."; 
-$l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options and configuration page."; 
-$l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing."; 
+$l['redirect_newthread'] = "Thank you, your thread has been posted.";
+$l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options and configuration page.";
+$l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing.";
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
 ?>

@@ -8,7 +8,7 @@
  *
  * $Id$
  */
- 
+
 ignore_user_abort(true);
 @set_time_limit(0);
 
@@ -57,7 +57,7 @@ else
 	// Send our fake gif image (clear 1x1 transparent image)
 	header("Content-type: image/gif");
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
-	
+
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
 	if($mybb->use_shutdown == true)
 	{

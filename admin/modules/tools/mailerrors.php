@@ -22,17 +22,17 @@ $plugins->run_hooks("admin_tools_mailerrors_begin");
 if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_tools_mailerrors_prune");
-	
+
 	if($mybb->input['delete_all'])
 	{
 		$db->delete_query("mailerrors");
 		$num_deleted = $db->affected_rows();
-		
+
 		$plugins->run_hooks("admin_tools_mailerrors_prune_delete_all_commit");
-		
+
 		// Log admin action
 		log_admin_action($num_deleted);
-		
+
 		flash_message($lang->all_logs_deleted, 'success');
 		admin_redirect("index.php?module=tools-mailerrors");
 	}
@@ -45,12 +45,12 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 			$num_deleted = $db->affected_rows();
 		}
 	}
-	
+
 	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
-	
+
 	// Log admin action
 	log_admin_action($num_deleted);
-	
+
 	flash_message($lang->selected_logs_deleted, 'success');
 	admin_redirect("index.php?module=tools-mailerrors");
 }
@@ -58,7 +58,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 if($mybb->input['action'] == "view")
 {
 	$plugins->run_hooks("admin_tools_mailerrors_view");
-	
+
 	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -99,7 +99,7 @@ if($mybb->input['action'] == "view")
 		$table->construct_cell($log['smtpcode']);
 		$table->construct_row();
 	}
-	
+
 	if($log['smtperror'])
 	{
 		$table->construct_cell($lang->smtp_server_response);
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "view")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_mailerrors_start");
-	
+
 	$per_page = 20;
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
@@ -159,13 +159,13 @@ if(!$mybb->input['action'])
 	$additional_criteria = array();
 
 	$page->output_header($lang->system_email_log);
-	
+
 	$sub_tabs['mailerrors'] = array(
 		'title' => $lang->system_email_log,
 		'link' => "index.php?module=tools-mailerrors",
 		'description' => $lang->system_email_log_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'mailerrors');
 
 	$form = new Form("index.php?module=tools-mailerrors&amp;action=prune", "post");
@@ -233,7 +233,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($log['dateline'], array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_logs, array("colspan" => 5));
@@ -249,18 +249,18 @@ if(!$mybb->input['action'])
 	}
 
 	$form->end();
-	
+
 	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-mailerrors&amp;page={page}{$additional_criteria}");
-	
+
 	$form = new Form("index.php?module=tools-mailerrors", "post");
 	$form_container = new FormContainer($lang->filter_system_email_log);
-	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
-	$form_container->output_row($lang->error_message_contains, "", $form->generate_text_box('error', $mybb->input['error'], array('id' => 'error')), 'error');	
-	$form_container->output_row($lang->to_address_contains, "", $form->generate_text_box('toaddress', $mybb->input['toaddress'], array('id' => 'toaddress')), 'toaddress');	
-	$form_container->output_row($lang->from_address_contains, "", $form->generate_text_box('fromaddress', $mybb->input['fromaddress'], array('id' => 'fromaddress')), 'fromaddress');	
+	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');
+	$form_container->output_row($lang->error_message_contains, "", $form->generate_text_box('error', $mybb->input['error'], array('id' => 'error')), 'error');
+	$form_container->output_row($lang->to_address_contains, "", $form->generate_text_box('toaddress', $mybb->input['toaddress'], array('id' => 'toaddress')), 'toaddress');
+	$form_container->output_row($lang->from_address_contains, "", $form->generate_text_box('fromaddress', $mybb->input['fromaddress'], array('id' => 'fromaddress')), 'fromaddress');
 
 	$form_container->end();
 	$buttons = array();

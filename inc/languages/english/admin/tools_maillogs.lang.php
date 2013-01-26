@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -31,7 +31,7 @@ $l['filter_user_email_log'] = "Filter User Email Log";
 $l['username_is'] = "Username is";
 $l['email_contains'] = "Email Address contains";
 $l['subject_contains'] = "Subject contains";
-$l['find_emails_to_user'] = "Find all emails sent to this user"; 
+$l['find_emails_to_user'] = "Find all emails sent to this user";
 
 $l['error_invalid_user'] = "The username you entered does not exist.";
 

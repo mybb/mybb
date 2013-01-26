@@ -568,7 +568,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   usergrouptype varchar(120) NOT NULL default '0',
   PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
-	
+
 $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid int unsigned NOT NULL auto_increment,
   pid int unsigned NOT NULL default '0',
@@ -698,7 +698,7 @@ $tables[] = "CREATE TABLE mybb_stats (
 	numposts int unsigned NOT NULL default '0',
 	PRIMARY KEY(dateline)
 ) ENGINE=MyISAM;";
-	
+
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid int unsigned NOT NULL auto_increment,
 	title varchar(120) NOT NULL default '',

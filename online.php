@@ -74,7 +74,7 @@ if($mybb->input['action'] == "today")
 		}
 
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
-		{	
+		{
 			$username = $online['username'];
 			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
@@ -83,7 +83,7 @@ if($mybb->input['action'] == "today")
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
 	}
-	
+
 	$todaycount = my_number_format($todaycount);
 	$invis_count = my_number_format($invis_count);
 
@@ -136,7 +136,7 @@ else
 		switch($db->type)
 		{
 			case "sqlite":
-			case "pgsql":		
+			case "pgsql":
 				$sql = "s.time DESC";
 				break;
 			default:
@@ -145,7 +145,7 @@ else
 		}
 		$refresh_string = '';
 	}
-	
+
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 
 	// Exactly how many users are currently online?
@@ -167,7 +167,7 @@ else
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
-	
+
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -190,7 +190,7 @@ else
 
 	// Assemble page URL
 	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);
-	
+
 	// Query for active sessions
 	$query = $db->query("
 		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
@@ -265,7 +265,7 @@ else
 		$refresh_time = $mybb->settings['refreshwol'] * 60;
 		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";
 	}
-	
+
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");

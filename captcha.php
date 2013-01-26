@@ -40,7 +40,7 @@ else
 {
 	return false;
 }
-	
+
 $ttf_fonts = array();
 
 // We have support for true-type fonts (FreeType 2)
@@ -150,7 +150,7 @@ function draw_lines(&$im)
 function draw_circles(&$im)
 {
 	global $img_width, $img_height;
-	
+
 	$circles = $img_width*$img_height / 100;
 	for($i = 0; $i <= $circles; ++$i)
 	{
@@ -171,13 +171,13 @@ function draw_circles(&$im)
 function draw_dots(&$im)
 {
 	global $img_width, $img_height;
-	
+
 	$dot_count = $img_width*$img_height/5;
 	for($i = 0; $i <= $dot_count; ++$i)
 	{
 		$color = imagecolorallocate($im, my_rand(200, 255), my_rand(200, 255), my_rand(200, 255));
 		imagesetpixel($im, my_rand(0, $img_width), my_rand(0, $img_height), $color);
-	}	
+	}
 }
 
 /**
@@ -188,7 +188,7 @@ function draw_dots(&$im)
 function draw_squares(&$im)
 {
 	global $img_width, $img_height;
-	
+
 	$square_count = 30;
 	for($i = 0; $i <= $square_count; ++$i)
 	{
@@ -198,7 +198,7 @@ function draw_squares(&$im)
 		$sq_width = $sq_height = my_rand(10, 20);
 		$pos_x2 = $pos_x + $sq_height;
 		$pos_y2 = $pos_y + $sq_width;
-		imagefilledrectangle($im, $pos_x, $pos_y, $pos_x2, $pos_y2, $color); 
+		imagefilledrectangle($im, $pos_x, $pos_y, $pos_x2, $pos_y2, $color);
 	}
 }
 
@@ -211,12 +211,12 @@ function draw_squares(&$im)
 function draw_string(&$im, $string)
 {
 	global $use_ttf, $min_size, $max_size, $min_angle, $max_angle, $ttf_fonts, $img_height, $img_width;
-	
+
 	if(empty($string))
 	{
 		return false;
 	}
-	
+
 	$spacing = $img_width / my_strlen($string);
 	$string_length = my_strlen($string);
 	for($i = 0; $i < $string_length; ++$i)
@@ -226,20 +226,20 @@ function draw_string(&$im, $string)
 		{
 			// Select a random font size
 			$font_size = my_rand($min_size, $max_size);
-			
+
 			// Select a random font
 			$font = array_rand($ttf_fonts);
 			$font = $ttf_fonts[$font];
-	
+
 			// Select a random rotation
 			$rotation = my_rand($min_angle, $max_angle);
-			
+
 			// Set the colour
 			$r = my_rand(0, 200);
 			$g = my_rand(0, 200);
 			$b = my_rand(0, 200);
 			$color = imagecolorallocate($im, $r, $g, $b);
-			
+
 			// Fetch the dimensions of the character being added
 			$dimensions = imageftbbox($font_size, $rotation, $font, $string[$i], array());
 			$string_width = $dimensions[2] - $dimensions[0];
@@ -255,7 +255,7 @@ function draw_string(&$im, $string)
 			$shadow_y = my_rand(-3, 3) + $pos_y;
 			$shadow_color = imagecolorallocate($im, $r+20, $g+20, $b+20);
 			imagefttext($im, $font_size, $rotation, $shadow_x, $shadow_y, $shadow_color, $font, $string[$i], array());
-			
+
 			// Write the character to the image
 			imagefttext($im, $font_size, $rotation, $pos_x, $pos_y, $color, $font, $string[$i], array());
 		}
@@ -268,7 +268,7 @@ function draw_string(&$im, $string)
 			// Calculate character offsets
 			$pos_x = $spacing / 4 + $i * $spacing;
 			$pos_y = $img_height / 2 - $string_height -10 + my_rand(-3, 3);
-			
+
 			// Create a temporary image for this character
 			if(gd_version() >= 2)
 			{
@@ -287,15 +287,15 @@ function draw_string(&$im, $string)
 			$g = my_rand(0, 200);
 			$b = my_rand(0, 200);
 			$color = imagecolorallocate($temp_im, $r, $g, $b);
-			
+
 			// Draw a shadow
 			$shadow_x = my_rand(-1, 1);
 			$shadow_y = my_rand(-1, 1);
 			$shadow_color = imagecolorallocate($temp_im, $r+50, $g+50, $b+50);
 			imagestring($temp_im, 5, 1+$shadow_x, 1+$shadow_y, $string[$i], $shadow_color);
-			
+
 			imagestring($temp_im, 5, 1, 1, $string[$i], $color);
-			
+
 			// Copy to main image
 			imagecopyresized($im, $temp_im, $pos_x, $pos_y, 0, 0, 40, 55, 15, 20);
 			imagedestroy($temp_im);

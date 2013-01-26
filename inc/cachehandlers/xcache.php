@@ -18,11 +18,11 @@ class xcacheCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	public $unique_id;
-	
+
 	function xcacheCacheHandler($silent=false)
 	{
 		global $mybb;
-		
+
 		if(!function_exists("xcache_get"))
 		{
 			// Check if our DB engine is loaded
@@ -49,7 +49,7 @@ class xcacheCacheHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve an item from the cache.
 	 *
@@ -57,7 +57,7 @@ class xcacheCacheHandler
 	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	
+
 	function fetch($name, $hard_refresh=false)
 	{
 		if(!xcache_isset($this->unique_id."_".$name))
@@ -66,7 +66,7 @@ class xcacheCacheHandler
 		}
 		return xcache_get($this->unique_id."_".$name);
 	}
-	
+
 	/**
 	 * Write an item to the cache.
 	 *
@@ -78,7 +78,7 @@ class xcacheCacheHandler
 	{
 		return xcache_set($this->unique_id."_".$name, $contents);
 	}
-	
+
 	/**
 	 * Delete a cache
 	 *
@@ -89,7 +89,7 @@ class xcacheCacheHandler
 	{
 		return xcache_set($this->unique_id."_".$name, "", 1);
 	}
-	
+
 	/**
 	 * Disconnect from the cache
 	 */
@@ -97,11 +97,11 @@ class xcacheCacheHandler
 	{
 		return true;
 	}
-	
+
 	function size_of($name)
 	{
 		global $lang;
-		
+
 		return $lang->na;
 	}
 }

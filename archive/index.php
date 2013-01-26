@@ -38,7 +38,7 @@ switch($action)
 			{
 				archive_error_no_permission();
 			}
-			
+
 			check_forum_password_archive($forum['fid']);
 		}
 
@@ -92,7 +92,7 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
-		
+
 		if($thread['visible'] != 1)
 		{
 			if(is_moderator($forum['fid']))
@@ -104,14 +104,14 @@ switch($action)
 				archive_error($lang->error_invalidthread);
 			}
 		}
-		
+
 		if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			archive_error_no_permission();
 		}
-		
+
 		check_forum_password_archive($forum['fid']);
-		
+
 		// Build the navigation
 		build_forum_breadcrumb($forum['fid'], 1);
 		add_breadcrumb($thread['subject']);
@@ -146,12 +146,12 @@ switch($action)
 		{
 			$pids[$post['pid']] = $post['pid'];
 		}
-		
+
 		if(empty($pids))
 		{
 			archive_error($lang->error_invalidthread);
 		}
-		
+
 		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
 
 		$pids = implode(",", $pids);
@@ -236,9 +236,9 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
-		
+
 		check_forum_password_archive($forum['fid']);
-		
+
 		$useronly = "";
 		if($forumpermissions['canonlyviewownthreads'] == 1)
 		{
@@ -275,7 +275,7 @@ switch($action)
 		{
 			$page = 1;
 		}
-		
+
 		if($page > 0)
 		{
 			$start = ($page-1) * $perpage;
@@ -308,9 +308,9 @@ switch($action)
 			echo $forums;
 			echo "</ol>\n</div>\n";
 		}
-		
+
 		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
-	
+
 		// Get the announcements if the forum is not a category.
 		if($forum['type'] == 'f')
 		{
@@ -360,7 +360,7 @@ switch($action)
 					}
 
 					$plugins->run_hooks("archive_forum_thread");
-					
+
 					$sticky['replies'] = my_number_format($sticky['replies']);
 
 					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
@@ -398,7 +398,7 @@ switch($action)
 					}
 
 					$plugins->run_hooks("archive_forum_thread");
-					
+
 					$thread['replies'] = my_number_format($thread['replies']);
 
 					echo "<li><a href=\"{$base_url}thread-{$thread['tid']}.html\">{$thread['subject']}</a>";

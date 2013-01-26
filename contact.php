@@ -35,18 +35,18 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	// Validate input
 	if(!isset($mybb->input['message']) || trim_blank_chrs($mybb->input['message']) == '')
 	{
 		$errors[] = $lang->contact_no_message;
 	}
-	
+
 	if(!isset($mybb->input['subject']) || trim_blank_chrs($mybb->input['subject']) == '')
 	{
 		$errors[] = $lang->contact_no_subject;
 	}
-	
+
 	if(!isset($mybb->input['email']) || trim_blank_chrs($mybb->input['email']) == '')
 	{
 		$errors[] = $lang->contact_no_email;
@@ -59,7 +59,7 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 			$errors[] = $lang->contact_no_email;
 		}
 	}
-	
+
 	// Should we have a CAPTCHA? Perhaps yes...
 	if($mybb->settings['captchaimage'])
 	{
@@ -74,12 +74,12 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 			}
 		}
 	}
-	
+
 	if(empty($errors))
 	{
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], trim_blank_chrs($mybb->input['subject']), trim_blank_chrs($mybb->input['message']), trim_blank_chrs($mybb->input['email']));
-		
+
 		// Redirect
 		redirect('contact.php', $lang->contact_success_message);
 	}
@@ -107,7 +107,7 @@ else
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 $mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
 $mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
-	
+
 // Contact page
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);

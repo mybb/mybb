@@ -97,11 +97,11 @@ class pluginSystem
 					{
 						require_once $hook['file'];
 					}
-					
+
 					$func = $hook['function'];
 					$returnargs = $func($arguments);
-					
-					
+
+
 					if($returnargs)
 					{
 						$arguments = $returnargs;
@@ -155,7 +155,7 @@ class pluginSystem
 			return false;
 		}
 		$plugin_info = $info_func();
-		
+
 		// No compatibility set or compatibility = * - assume compatible
 		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
 		{

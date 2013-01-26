@@ -28,7 +28,7 @@ function modcp_can_manage_user($uid)
 		return false;
 	}
 	// Current user is a super mod or is an administrator
-	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid'])))) 
+	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid']))))
 	{
 		return false;
 	}
@@ -94,17 +94,17 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			{
 				// This forum is moderated by the user, so print out the forum's title, and its announcements
 				$trow = alt_trow();
-				
+
 				$padding = 40*($depth-1);
-				
+
 				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
-					
+
 				if($announcements[$forum['fid']])
 				{
 					foreach($announcements[$forum['fid']] as $aid => $announcement)
 					{
 						$trow = alt_trow();
-						
+
 						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
 							$icon = "<img src=\"{$theme['imgdir']}/minioff.png\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
@@ -113,9 +113,9 @@ function fetch_forum_announcements($pid=0, $depth=1)
 						{
 							$icon = "<img src=\"{$theme['imgdir']}/minion.png\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
 						}
-						
+
 						$subject = htmlspecialchars_uni($announcement['subject']);
-								
+
 						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 					}
 				}

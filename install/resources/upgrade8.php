@@ -36,14 +36,14 @@ function upgrade8_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP oldadditionalgroups;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups TEXT NOT NULL AFTER oldgroup");
-	
+
 
 	if($db->field_exists('olddisplaygroup', "banned"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP olddisplaygroup;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD olddisplaygroup int NOT NULL default '0' AFTER oldadditionalgroups");
-	
+
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("8_done");

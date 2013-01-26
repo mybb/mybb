@@ -15,7 +15,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   dateline bigint(30) NOT NULL default '0',
   module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
-  data TEXT NOT NULL 
+  data TEXT NOT NULL
  );";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
@@ -507,7 +507,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   newusergroup smallint NOT NULL default '0',
   usergrouptype varchar(120) NOT NULL default '0'
 );";
-	
+
 $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid INTEGER PRIMARY KEY,
   pid int NOT NULL default '0',
@@ -615,7 +615,7 @@ $tables[] = "CREATE TABLE mybb_stats (
 	numthreads int unsigned NOT NULL default '0',
 	numposts int unsigned NOT NULL default '0'
 );";
-	
+
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
@@ -942,6 +942,6 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	daterevoked bigint(30) NOT NULL default '0',
 	revokedby int NOT NULL default '0',
 	revokereason TEXT NOT NULL,
-	notes TEXT NOT NULL 
+	notes TEXT NOT NULL
 );";
 ?>

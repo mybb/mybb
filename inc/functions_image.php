@@ -11,7 +11,7 @@
 
 /**
  * Generates a thumbnail based on specified dimensions (supports png, jpg, and gif)
- * 
+ *
  * @param string the full path to the original image
  * @param string the directory path to where to save the new image
  * @param string the filename to save the new image as
@@ -26,7 +26,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumb['code'] = 3;
 		return $thumb;
 	}
-	
+
 	$imgdesc = getimagesize($file);
 	$imgwidth = $imgdesc[0];
 	$imgheight = $imgdesc[1];
@@ -34,16 +34,16 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgattr = $imgdesc[3];
 	$imgbits = $imgdesc['bits'];
 	$imgchan = $imgdesc['channels'];
-	
+
 	if($imgwidth == 0 || $imgheight == 0)
 	{
 		$thumb['code'] = 3;
 		return $thumb;
-	}		
+	}
 	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
-		
+
 		if($imgtype == 3)
 		{
 			if(@function_exists("imagecreatefrompng"))
@@ -79,7 +79,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumbwidth = $scale['width'];
 		$thumbheight = $scale['height'];
 		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
-		
+
 		if(!$thumbim)
 		{
 			$thumbim = @imagecreate($thumbwidth, $thumbheight);
@@ -155,7 +155,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 
 /**
  * Attempts to allocate enough memory to generate the thumbnail
- * 
+ *
  * @param integer hight dimension
  * @param integer width dimension
  * @param string one of the IMAGETYPE_XXX constants indicating the type of the image
@@ -193,10 +193,10 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	}
 	$current_usage = memory_get_usage();
 	$free_memory = $memory_limit - $current_usage;
-	
+
 	$thumbnail_memory = round(($width * $height * $bitdepth * $channels / 8) * 5);
 	$thumbnail_memory += 2097152;
-	
+
 	if($thumbnail_memory > $free_memory)
 	{
 		if($matches[1] && $matches[2])
@@ -213,14 +213,14 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 					$memory_limit = ceil((($memory_limit+$thumbnail_memory) / 1073741824))."G";
 			}
 		}
-		
+
 		@ini_set("memory_limit", $memory_limit);
 	}
 }
 
 /**
  * Figures out the correct dimensions to use
- * 
+ *
  * @param integer current hight dimension
  * @param integer current width dimension
  * @param integer max hight dimension
@@ -231,10 +231,10 @@ function scale_image($width, $height, $maxwidth, $maxheight)
 {
 	$width = intval($width);
 	$height = intval($height);
-	
+
 	if(!$width) $width = $maxwidth;
 	if(!$height) $height = $maxheight;
-	
+
 	$newwidth = $width;
 	$newheight = $height;
 

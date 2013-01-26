@@ -35,11 +35,11 @@ $plugins->run_hooks("admin_config_calendars_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_calendars_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		$plugins->run_hooks("admin_config_calendars_add_commit");
-		
+
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
@@ -65,7 +65,7 @@ if($mybb->input['action'] == "add")
 				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
-			
+
 			$cid = $db->insert_query("calendars", $calendar);
 
 			// Log admin action
@@ -84,20 +84,20 @@ if($mybb->input['action'] == "add")
 			"moderation" => 0
 		);
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_calendar);
 	$page->output_header($lang->calendars." - ".$lang->add_calendar);
-	
+
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
 		'link' => "index.php?module=config-calendars&amp;action=add",
 		'description' => $lang->add_calendar_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_calendar');
 	$form = new Form("index.php?module=config-calendars&amp;action=add", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -129,10 +129,10 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "permissions")
 {
 	$plugins->run_hooks("admin_config_calendars_permissions");
-	
+
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
-	
+
 	// Does the calendar not exist?
 	if(!$calendar['cid'])
 	{
@@ -145,13 +145,13 @@ if($mybb->input['action'] == "permissions")
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
-	
+
 	$query = $db->simple_select("calendarpermissions", "*", "cid='{$calendar['cid']}'");
 	while($existing = $db->fetch_array($query))
 	{
 		$existing_permissions[$existing['gid']] = $existing;
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
 		foreach(array_keys($usergroups) as $group_id)
@@ -177,7 +177,7 @@ if($mybb->input['action'] == "permissions")
 				$db->insert_query("calendarpermissions", $permissions_array);
 			}
 		}
-		
+
 		$plugins->run_hooks("admin_config_calendars_permissions_commit");
 
 		// Log admin action
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "permissions")
 		flash_message($lang->success_calendar_permissions_updated, 'success');
 		admin_redirect("index.php?module=config-calendars");
 	}
-	
+
 	$calendar['name'] = htmlspecialchars_uni($calendar['name']);
 	$page->add_breadcrumb_item($calendar['name'], "index.php?module=config-calendars&amp;action=edit&amp;cid={$calendar['cid']}");
 	$page->add_breadcrumb_item($lang->permissions);
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "permissions")
 	$table->construct_header($lang->permissions_bypass_moderation, array("class" => "align_center", "width" => "10%"));
 	$table->construct_header($lang->permissions_moderator, array("class" => "align_center", "width" => "10%"));
 	$table->construct_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
-	
+
 	foreach($usergroups as $usergroup)
 	{
 		if($existing_permissions[$usergroup['gid']])
@@ -270,10 +270,10 @@ if($mybb->input['action'] == "permissions")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_calendars_edit");
-	
+
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
-	
+
 	// Does the calendar not exist?
 	if(!$calendar['cid'])
 	{
@@ -308,11 +308,11 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => $db->escape_string($mybb->input['allowvideocode']),
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
-			
+
 			$db->update_query("calendars", $calendar, "cid = '".intval($mybb->input['cid'])."'");
-			
+
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
-			
+
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
 
@@ -320,21 +320,21 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=config-calendars");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_calendar);
 	$page->output_header($lang->calendars." - ".$lang->edit_calendar);
-	
+
 	$sub_tabs['edit_calendar'] = array(
 		'title' => $lang->edit_calendar,
 		'link' => "index.php?module=config-calendars&amp;action=edit",
 		'description' => $lang->edit_calendar_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_calendar');
 	$form = new Form("index.php?module=config-calendars&amp;action=edit", "post");
-	
+
 	echo $form->generate_hidden_field("cid", $calendar['cid']);
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -370,10 +370,10 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_calendars_delete");
-	
+
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
-	
+
 	// Does the calendar not exist?
 	if(!$calendar['cid'])
 	{
@@ -393,7 +393,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("calendars", "cid='{$calendar['cid']}'");
 		$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}'");
 		$db->delete_query("events", "cid='{$calendar['cid']}'");
-		
+
 		$plugins->run_hooks("admin_config_calendars_delete_commit");
 
 		// Log admin action
@@ -411,7 +411,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_calendars_update_order");
-	
+
 	if(!is_array($mybb->input['disporder']))
 	{
 		admin_redirect("index.php?module=config-calendars");
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 		);
 		$db->update_query("calendars", $update_query, "cid='".intval($cid)."'");
 	}
-	
+
 	$plugins->run_hooks("admin_config_calendars_update_order_commit");
 
 	// Log admin action
@@ -445,7 +445,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->calendar);
 	$table->construct_header($lang->order, array('width' => '5%', 'class' => 'align_center'));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 3, "width" => 300));
-	
+
 	$query = $db->simple_select("calendars", "*", "", array('order_by' => 'disporder'));
 	while($calendar = $db->fetch_array($query))
 	{
@@ -457,14 +457,14 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=delete&amp;cid={$calendar['cid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_calendar_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows()  == 0)
 	{
 		$table->construct_cell($lang->no_calendars, array('colspan' => 5));
 		$table->construct_row();
 		$no_results = true;
 	}
-	
+
 	$table->output($lang->manage_calendars);
 
 	if(!$no_results)

@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -43,7 +43,7 @@ $l['ban_users'] = "Ban Users";
 $l['users_banned'] = "{1} user(s) have been banned.";
 $l['confirm_multilift'] = "Are you sure you want to lift bans for the user(s) you selected?";
 $l['success_ban_lifted'] = "Bans for {1} user(s) you selected have been lifted.";
-$l['edit_ban'] = "Edit Ban"; 
+$l['edit_ban'] = "Edit Ban";
 $l['lift_ban'] = "Lift Ban";
 $l['lift_bans'] = "Lift Bans";
 $l['confirm_multidelete'] = "Are you sure you want to delete these {1} user(s)? This cannot be undone.";

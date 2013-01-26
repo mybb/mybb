@@ -17,14 +17,14 @@ class DB_MySQLi
 	 * @var string
 	 */
 	public $title = "MySQLi";
-	
+
 	/**
 	 * The short title of this layer.
 	 *
 	 * @var string
 	 */
 	public $short_title = "MySQLi";
-	
+
 	/**
 	 * The type of db software being used.
 	 *
@@ -59,14 +59,14 @@ class DB_MySQLi
 	 * @var resource
 	 */
 	public $read_link;
-	
+
 	/**
 	 * The write database connection resource
 	 *
 	 * @var resource
 	 */
 	public $write_link;
-	
+
 	/**
 	 * Reference to the last database connection resource used.
 	 *
@@ -101,14 +101,14 @@ class DB_MySQLi
 	 * @var string
 	 */
 	public $table_prefix;
-	
+
 	/**
 	 * The extension used to run the SQL database
 	 *
 	 * @var string
 	 */
 	public $engine = "mysqli";
-	
+
 	/**
 	 * Weather or not this engine can use the search functionality
 	 *
@@ -170,7 +170,7 @@ class DB_MySQLi
 			{
 				break;
 			}
-			
+
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
@@ -190,7 +190,7 @@ class DB_MySQLi
 				{
 					$persist = "p:";
 				}
-				
+
 				$link = $type."_link";
 
 				$this->get_execution_time();
@@ -265,23 +265,23 @@ class DB_MySQLi
 	function select_db($database)
 	{
 		global $mybb;
-		
+
 		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
 		if($this->write_link)
 		{
 			$slave_success = @mysqli_select_db($this->write_link, $database) or $this->error("[WRITE] Unable to select slave database", $this->write_link);
-			
+
 			$success = ($master_success && $slave_success ? true : false);
 		}
 		else
 		{
 			$success = $master_success;
 		}
-		
+
 		if($success && $this->db_encoding)
 		{
 			$this->query("SET NAMES '{$this->db_encoding}'");
-			
+
 			if($slave_success && count($this->connections) > 1)
 			{
 				$this->write_query("SET NAMES '{$this->db_encoding}'");
@@ -321,18 +321,18 @@ class DB_MySQLi
 			$this->error($string);
 			exit;
 		}
-		
+
 		$query_time = $this->get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
-		
+
 		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
 		return $query;
 	}
-	
+
 	/**
 	 * Execute a write query on the slave database
 	 *
@@ -507,7 +507,7 @@ class DB_MySQLi
 	{
 		if($this->current_link)
 		{
-			return mysqli_errno($this->current_link);			
+			return mysqli_errno($this->current_link);
 		}
 		else
 		{
@@ -524,7 +524,7 @@ class DB_MySQLi
 	{
 		if($this->current_link)
 		{
-			return mysqli_error($this->current_link);			
+			return mysqli_error($this->current_link);
 		}
 		else
 		{
@@ -544,13 +544,13 @@ class DB_MySQLi
 			if(class_exists("errorHandler"))
 			{
 				global $error_handler;
-				
+
 				if(!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
 				}
-				
+
 				$error = array(
 					"error_no" => $this->error_number(),
 					"error" => $this->error_string(),
@@ -609,7 +609,7 @@ class DB_MySQLi
 		{
 			$query = $this->query("SHOW TABLES FROM `$database`");
 		}
-		
+
 		while(list($table) = mysqli_fetch_array($query))
 		{
 			$tables[] = $table;
@@ -627,11 +627,11 @@ class DB_MySQLi
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
 		$query = $this->write_query("
-			SHOW TABLES 
+			SHOW TABLES
 			LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
-		
+
 		if($exists > 0)
 		{
 			return true;
@@ -652,12 +652,12 @@ class DB_MySQLi
 	function field_exists($field, $table)
 	{
 		$query = $this->write_query("
-			SHOW COLUMNS 
-			FROM {$this->table_prefix}$table 
+			SHOW COLUMNS
+			FROM {$this->table_prefix}$table
 			LIKE '$field'
 		");
 		$exists = $this->num_rows($query);
-		
+
 		if($exists > 0)
 		{
 			return true;
@@ -696,16 +696,16 @@ class DB_MySQLi
 	 * @param array List of options, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
-	
+
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
-		
+
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
 		}
-		
+
 		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
@@ -714,7 +714,7 @@ class DB_MySQLi
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
-		
+
 		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
@@ -723,10 +723,10 @@ class DB_MySQLi
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
-		
+
 		return $this->query($query);
 	}
-	
+
 	/**
 	 * Build an insert query from an array.
 	 *
@@ -743,13 +743,13 @@ class DB_MySQLi
 		$fields = "`".implode("`,`", array_keys($array))."`";
 		$values = implode("','", $array);
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} (".$fields.") 
+			INSERT
+			INTO {$this->table_prefix}{$table} (".$fields.")
 			VALUES ('".$values."')
 		");
 		return $this->insert_id();
 	}
-	
+
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
@@ -775,8 +775,8 @@ class DB_MySQLi
 		$insert_rows = implode(", ", $insert_rows);
 
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} ({$fields}) 
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
 			VALUES {$insert_rows}
 		");
 	}
@@ -797,27 +797,27 @@ class DB_MySQLi
 		{
 			return false;
 		}
-		
+
 		$comma = "";
 		$query = "";
 		$quote = "'";
-		
+
 		if($no_quote == true)
 		{
 			$quote = "";
 		}
-		
+
 		foreach($array as $field => $value)
 		{
 			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
 			$comma = ', ';
 		}
-		
+
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
 		}
-		
+
 		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
@@ -869,7 +869,7 @@ class DB_MySQLi
 		}
 		return $string;
 	}
-	
+
 	/**
 	 * Frees the resources of a MySQLi query.
 	 *
@@ -880,7 +880,7 @@ class DB_MySQLi
 	{
 		return mysqli_free_result($query);
 	}
-	
+
 	/**
 	 * Escape a string used within a like command.
 	 *
@@ -922,7 +922,7 @@ class DB_MySQLi
 	{
 		$this->write_query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
 	}
-	
+
 	/**
 	 * Analyzes a specific table.
 	 *
@@ -943,7 +943,7 @@ class DB_MySQLi
 	{
 		$query = $this->write_query("SHOW CREATE TABLE ".$this->table_prefix.$table."");
 		$structure = $this->fetch_array($query);
-		
+
 		return $structure['Create Table'];
 	}
 
@@ -1027,7 +1027,7 @@ class DB_MySQLi
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
@@ -1046,12 +1046,12 @@ class DB_MySQLi
 				break;
 			}
 		}
-		
+
 		if($index_exists)
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1077,7 +1077,7 @@ class DB_MySQLi
 	{
 		$this->write_query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
 	}
-	
+
 	/**
 	 * Drop an table with the specified table
 	 *
@@ -1094,7 +1094,7 @@ class DB_MySQLi
 		{
 			$table_prefix = $this->table_prefix;
 		}
-		
+
 		if($hard == false)
 		{
 			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
@@ -1104,7 +1104,7 @@ class DB_MySQLi
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 	}
-	
+
 	/**
 	 * Replace contents of table with values
 	 *
@@ -1118,18 +1118,18 @@ class DB_MySQLi
 		foreach($replacements as $column => $value)
 		{
 			$values .= $comma."`".$column."`='".$value."'";
-			
+
 			$comma = ',';
 		}
-		
+
 		if(empty($replacements))
 		{
 			 return false;
 		}
-		
+
 		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
 	}
-	
+
 	/**
 	 * Drops a column
 	 *
@@ -1140,7 +1140,7 @@ class DB_MySQLi
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
 	}
-	
+
 	/**
 	 * Adds a column
 	 *
@@ -1152,7 +1152,7 @@ class DB_MySQLi
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
-	
+
 	/**
 	 * Modifies a column
 	 *
@@ -1164,7 +1164,7 @@ class DB_MySQLi
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} MODIFY {$column} {$new_definition}");
 	}
-	
+
 	/**
 	 * Renames a column
 	 *
@@ -1187,7 +1187,7 @@ class DB_MySQLi
 	{
 		$this->table_prefix = $prefix;
 	}
-	
+
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *

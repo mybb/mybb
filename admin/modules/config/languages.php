@@ -24,7 +24,7 @@ $plugins->run_hooks("admin_config_languages_begin");
 if($mybb->input['action'] == "edit_properties")
 {
 	$plugins->run_hooks("admin_config_languages_edit_properties");
-	
+
 	$editlang = basename($mybb->input['lang']);
 	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
 	if(!file_exists($file))
@@ -32,7 +32,7 @@ if($mybb->input['action'] == "edit_properties")
 		flash_message($lang->error_invalid_file, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!is_writable($file))
@@ -40,17 +40,17 @@ if($mybb->input['action'] == "edit_properties")
 			flash_message($lang->error_cannot_write_to_file, 'error');
 			admin_redirect("index.php?module=config-languages");
 		}
-		
+
 		foreach($mybb->input['info'] as $key => $info)
 		{
 			$info = str_replace("\\", "\\\\", $info);
 			$info = str_replace('$', '\$', $info);
 			$newlanginfo[$key] = str_replace("\"", '\"', $info);
 		}
-		
+
 		// Get contents of existing file
 		require $file;
-	
+
 		// Make the contents of the new file
 		$newfile = "<?php
 // The friendly name of the language
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "edit_properties")
 // Sets the character set, blank uses the default.
 \$langinfo['charset'] = \"{$newlanginfo['charset']}\";\n".
 "?".">";
-	
+
 		// Put it in!
 		if($file = fopen($file, "w"))
 		{
@@ -97,12 +97,12 @@ if($mybb->input['action'] == "edit_properties")
 			$errors[] = $lang->error_cannot_write_to_file;
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($languages[$editlang], "index.php?module=config-languages&amp;action=edit&amp;lang={$editlang}");
 	$page->add_breadcrumb_item($lang->nav_editing_set);
-	
+
 	$page->output_header($lang->languages);
-	
+
 	$sub_tabs['edit_properties'] = array(
 		"title" => $lang->edit_properties,
 		"link" => "index.php?module=config-languages",
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "edit_properties")
 	echo $form->generate_hidden_field("info[author]", $langinfo['author']);
 	echo $form->generate_hidden_field("info[website]", $langinfo['website']);
 	echo $form->generate_hidden_field("info[version]", $langinfo['version']);
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			$mybb->input['info']['admin'] = 0;
 		}
-		
+
 		if($langinfo['rtl'])
 		{
 			$mybb->input['info']['rtl'] = 1;
@@ -142,14 +142,14 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			$mybb->input['info']['rtl'] = 0;
 		}
-		
+
 		$mybb->input['info']['name'] = $langinfo['name'];
 		$mybb->input['info']['htmllang'] = $langinfo['htmllang'];
 		$mybb->input['info']['charset'] = $langinfo['charset'];
 	}
 
 	$form_container = new FormContainer($lang->edit_properties);
-	
+
 	$form_container->output_row($lang->friendly_name." <em>*</em>", "", $form->generate_text_box('info[name]', $mybb->input['info']['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->language_in_html." <em>*</em>", "", $form->generate_text_box('info[htmllang]', $mybb->input['info']['htmllang'], array('id' => 'htmllang')), 'htmllang');
 	$form_container->output_row($lang->charset." <em>*</em>", "", $form->generate_text_box('info[charset]', $mybb->input['info']['charset'], array('id' => 'charset')), 'charset');
@@ -164,31 +164,31 @@ if($mybb->input['action'] == "edit_properties")
 	}
 
 	$form_container->end();
-		
+
 	$buttons[] = $form->generate_submit_button($lang->save_language_file, array('disabled' => $no_write));
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "quick_phrases")
 {
 	$plugins->run_hooks("admin_config_languages_quick_phrases");
-	
+
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
-	
+
 	$page->add_breadcrumb_item($languages[$editlang], "index.php?module=config-languages&amp;action=quick_edit&amp;lang={$editlang}");
-	
+
 	if(!file_exists($folder) || ($editwithfolder && !file_exists($editwithfolder)))
 	{
 		flash_message($lang->error_invalid_set, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
-	
+
 	$quick_phrases = array(
 		'member.lang.php' => array(
 			'agreement' => $lang->quickphrases_agreement,
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "quick_phrases")
 			'error_nopermission_guest_4' => $lang->quickphrases_error_nopermission_guest_4
 		)
 	);
-	
+
 	if($mybb->request_method == 'post')
 	{
 		if($mybb->request_method == 'post')
@@ -213,15 +213,15 @@ if($mybb->input['action'] == "quick_phrases")
 			foreach($quick_phrases as $file => $phrases)
 			{
 				$lines = file($folder.$file);
-				
+
 				$fp = fopen($folder.$file, 'w');
 				fwrite($fp, '<?php'.PHP_EOL);
-				
+
 				for($i = 1; $i < count($lines); $i++)
 				{
 					preg_match_all('/\$l\[\'([a-z].+)\'\]/', $lines[$i], $matches);
 					$phrase = $matches[1][0];
-					
+
 					if($mybb->input['edit'][$phrase])
 					{
 						$new_line = '$l[\''.$phrase.'\'] = "'.str_replace('"', '\"', $mybb->input['edit'][$phrase]).'";'.PHP_EOL;
@@ -232,46 +232,46 @@ if($mybb->input['action'] == "quick_phrases")
 						fwrite($fp, $lines[$i]);
 					}
 				}
-				
+
 				fclose($fp);
 			}
-			
+
 			// Log admin action
 			log_admin_action($editlang);
-			
+
 			flash_message($lang->success_quickphrases_updated, 'success');
 			admin_redirect('index.php?module=config-languages&amp;action=edit&amp;lang='.$editlang);
 		}
 	}
-	
+
 	$page->output_header($lang->languages);
-	
+
 	$sub_tabs['language_files'] = array(
 		'title' => $lang->language_files,
 		'link' => "index.php?module=config-languages&amp;action=edit&amp;lang=".$editlang,
 		'description' => $lang->language_files_desc
 	);
-	
+
 	$sub_tabs['quick_phrases'] = array(
 		'title' => $lang->quick_phrases,
 		'link' => "index.php?module=config-languages&amp;action=quick_phrases&amp;lang=".$editlang,
 		'description' => $lang->quick_phrases_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'quick_phrases');
-	
+
 	$form = new Form('index.php?module=config-languages&amp;action=quick_phrases&amp;lang='.$editlang, 'post', 'quick_phrases');
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
 	}
-	
+
 	$table = new Table;
-	
+
 	// Check if file is writable, before allowing submission
 	$no_write = 0;
-	
+
 	foreach($quick_phrases as $file => $phrases)
 	{
 		if(!is_writable($folder.$file))
@@ -279,18 +279,18 @@ if($mybb->input['action'] == "quick_phrases")
 			$no_write = 1;
 		}
 	}
-	
+
 	if($no_write)
 	{
 		$page->output_alert($lang->alert_note_cannot_write);
 	}
-	
+
 	$form_container = new FormContainer($lang->quick_phrases);
-	
+
 	foreach($quick_phrases as $file => $phrases)
 	{
 		require $folder.$file;
-		
+
 		foreach($phrases as $phrase => $description)
 		{
 			$value = $l[$phrase];
@@ -302,45 +302,45 @@ if($mybb->input['action'] == "quick_phrases")
 			{
 				$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
 			}
-			
+
 			$form_container->output_row($description, $phrase, $form->generate_text_area("edit[$phrase]", $value, array('id' => 'lang_'.$phrase, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), 'lang_'.$phrase, array('width' => '50%'));
 		}
 	}
-	
+
 	$form_container->end();
-	
+
 	$buttons[] = $form->generate_submit_button($lang->save_language_file, array('disabled' => $no_write));
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_languages_edit");
-	
+
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
-	
+
 	$page->add_breadcrumb_item($languages[$editlang], "index.php?module=config-languages&amp;action=edit&amp;lang={$editlang}");
-	
+
 	$editwith = basename($mybb->input['editwith']);
 	$editwithfolder = '';
-	
+
 	if($editwith)
 	{
 		$editwithfolder = MYBB_ROOT."inc/languages/".$editwith."/";
 	}
-	
+
 	if(!file_exists($folder) || ($editwithfolder && !file_exists($editwithfolder)))
 	{
 		flash_message($lang->error_invalid_set, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
-	
+
 	if(isset($mybb->input['file']))
 	{
 		// Validate input
@@ -350,29 +350,29 @@ if($mybb->input['action'] == "edit")
 			$file = 'admin/'.$file;
 		}
 		$page->add_breadcrumb_item($file);
-		
+
 		$editfile = $folder.$file;
 		$withfile = '';
-		
+
 		$editwithfile = '';
 		if($editwithfolder)
 		{
 			$editwithfile = $editwithfolder.$file;
 		}
-		
+
 		if(!file_exists($editfile) || ($editwithfile && !file_exists($editwithfile)) || $file == '.' || $file == '..')
 		{
 			flash_message($lang->error_invalid_file, 'error');
 			admin_redirect("index.php?module=config-languages");
 		}
-		
+
 		if($mybb->request_method == "post")
 		{
 			// Make the contents of the new file
-			
+
 			// Load the old file
 			$contents = implode('', file($editfile));
-			
+
 			// Loop through and change entries
 			foreach($mybb->input['edit'] as $key => $phrase)
 			{
@@ -383,17 +383,17 @@ if($mybb->input['action'] == "edit")
 				$key = str_replace("\\", '', $key);
 				$key = str_replace('$', '', $key);
 				$key = str_replace("'", '', $key);
-				
+
 				// Ugly regexp to find a variable and replace it.
 				$contents = preg_replace('@\n\$l\[\''.$key.'\']([\s]*)=([\s]*)("(.*?)"|\'(.*?)\');([\s]*)\n@si', "\n\$l['{$key}'] = \"{$phrase}\";\n", $contents);
 			}
-			
+
 			// Put it back!
 			if($fp = @fopen($editfile, "w"))
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
-				
+
 				$plugins->run_hooks("admin_config_languages_edit_commit");
 
 				// Log admin action
@@ -407,10 +407,10 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_cannot_write_to_file;
 			}
 		}
-		
+
 		// Get file being edited in an array
 		require $editfile;
-		
+
 		if(count($l) > 0)
 		{
 			$editvars = $l;
@@ -432,14 +432,14 @@ if($mybb->input['action'] == "edit")
 
 		// Start output
 		$page->output_header($lang->languages);
-		
+
 		$sub_tabs['edit_language_variables'] = array(
 			"title" => $lang->edit_language_variables,
 			"link" => "index.php?module=config-languages",
 			"description" => $lang->edit_language_variables_desc
 		);
 		$page->output_nav_tabs($sub_tabs, "edit_language_variables");
-		
+
 		$form = new Form("index.php?module=config-languages&amp;action=edit", "post", "edit");
 		echo $form->generate_hidden_field("file", $file);
 		echo $form->generate_hidden_field("lang", $editlang);
@@ -486,7 +486,7 @@ if($mybb->input['action'] == "edit")
 		{
 			// Editing individually
 			$form_container->output_row_header($languages[$editlang]);
-	
+
 			// Make each editing row
 			foreach($editvars as $key => $value)
 			{
@@ -502,7 +502,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 		$form_container->end();
-		
+
 		$buttons[] = $form->generate_submit_button($lang->save_language_file, array('disabled' => $no_write));
 
 		$form->output_submit_wrapper($buttons);
@@ -511,27 +511,27 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$page->output_header($lang->languages);
-		
+
 		$sub_tabs['language_files'] = array(
 			'title' => $lang->language_files,
 			'link' => "index.php?module=config-languages&amp;action=edit&amp;lang=".$editlang,
 			'description' => $lang->language_files_desc
 		);
-		
+
 		$sub_tabs['quick_phrases'] = array(
 			'title' => $lang->quick_phrases,
 			'link' => "index.php?module=config-languages&amp;action=quick_phrases&amp;lang=".$editlang,
 			'description' => $lang->quick_phrases_desc
 		);
-		
+
 		$page->output_nav_tabs($sub_tabs, 'language_files');
-		
+
 		require MYBB_ROOT."inc/languages/".$editlang.".php";
-		
+
 		$table = new Table;
 		$table->construct_header($lang->file);
 		$table->construct_header($lang->controls, array("class" => "align_center", "width" => 100));
-		
+
 		// Get files in main folder
 		$filenames = array();
 		if($handle = opendir($folder))
@@ -544,26 +544,26 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			closedir($handle);
-			sort($filenames);			
+			sort($filenames);
 		}
-		
+
 		foreach($filenames as $key => $file)
 		{
 			$table->construct_cell("<strong>{$file}</strong>");
 			$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$file}\">{$lang->edit}</a>", array("class" => "align_center"));
 			$table->construct_row();
 		}
-		
+
 		if($table->num_rows() == 0)
 		{
 			$table->construct_cell($lang->no_language_files_front_end, array('colspan' => 3));
 			$table->construct_row();
 		}
-		
+
 		$table->output($lang->front_end);
-		
+
 		if($langinfo['admin'] != 0)
-		{		
+		{
 			// Get files in admin folder
 			$adminfilenames = array();
 			if($handle = opendir($folder."admin"))
@@ -578,28 +578,28 @@ if($mybb->input['action'] == "edit")
 				closedir($handle);
 				sort($adminfilenames);
 			}
-			
+
 			$table = new Table;
 			$table->construct_header($lang->file);
 			$table->construct_header($lang->controls, array("class" => "align_center", "width" => 100));
-			
+
 			foreach($adminfilenames as $key => $file)
 			{
 				$table->construct_cell("<strong>{$file}</strong>");
 				$table->construct_cell("<a href=\"index.php?module=config-languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$file}&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "align_center"));
 				$table->construct_row();
 			}
-			
+
 			if($table->num_rows()  == 0)
 			{
 				$table->construct_cell($lang->no_language_files_admin_cp, array('colspan' => 3));
 				$table->construct_row();
 			}
-			
+
 			$table->output($lang->admin_cp);
 		}
 	}
-	
+
 	$page->output_footer();
 }
 
@@ -607,7 +607,7 @@ if($mybb->input['action'] == "edit")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_languages_start");
-	
+
 	$page->output_header($lang->languages);
 
 	$sub_tabs['languages'] = array(
@@ -622,23 +622,23 @@ if(!$mybb->input['action'])
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'languages');
-	
+
 	$table = new Table;
 	$table->construct_header($lang->languagevar);
 	$table->construct_header($lang->version, array("class" => "align_center", "width" => 100));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 155));
-	
+
 	asort($languages);
-	
+
 	foreach($languages as $key1 => $langname1)
 	{
 		$langselectlangs[$key1] = $lang->sprintf($lang->edit_with, $langname1);
 	}
-	
+
 	foreach($languages as $key => $langname)
 	{
 		include MYBB_ROOT."inc/languages/".$key.".php";
-		
+
 		if(!empty($langinfo['website']))
 		{
 			$author = "<a href=\"{$langinfo['website']}\" target=\"_blank\">{$langinfo['author']}</a>";
@@ -647,10 +647,10 @@ if(!$mybb->input['action'])
 		{
 			$author = $langinfo['author'];
 		}
-		
+
 		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><small>{$author}</small>");
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
-		
+
 		$popup = new PopupMenu("laguage_{$key}", $lang->options);
 		$popup->add_item($lang->edit_language_variables, "index.php?module=config-languages&amp;action=edit&amp;lang={$key}");
 		foreach($langselectlangs as $key1 => $langname1)
@@ -661,15 +661,15 @@ if(!$mybb->input['action'])
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows()  == 0)
 	{
 		$table->construct_cell($lang->no_language, array('colspan' => 3));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->installed_language_packs);
-	
+
 	$page->output_footer();
 }
 

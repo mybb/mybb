@@ -22,7 +22,7 @@ class apcCacheHandler
 	function __construct($silent=false)
 	{
 		global $mybb;
-		
+
 		if(!function_exists("apc_fetch"))
 		{
 			// Check if our DB engine is loaded
@@ -103,7 +103,7 @@ class apcCacheHandler
 	function size_of($name)
 	{
 		global $lang;
-		
+
 		return $lang->na;
 	}
 }

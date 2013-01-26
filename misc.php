@@ -199,7 +199,7 @@ elseif($mybb->input['action'] == "help")
 				if($lang->$langdocvar)
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
-					
+
 					if($langdocvar == "d3_document")
 					{
 						$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->user['logoutkey']);
@@ -410,7 +410,7 @@ elseif($mybb->input['action'] == "whoposted")
 	$whoposted = '';
 	$tid = intval($mybb->input['tid']);
 	$thread = get_thread($tid);
-	
+
 	if(is_moderator($thread['fid']))
 	{
 		$ismod = true;
@@ -421,7 +421,7 @@ elseif($mybb->input['action'] == "whoposted")
 		$ismod = false;
 		$show_posts = "p.visible = '1'";
 	}
-	
+
 	// Make sure we are looking at a real thread here.
 	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 	{
@@ -433,18 +433,18 @@ elseif($mybb->input['action'] == "whoposted")
 	{
 		error($lang->error_invalidforum);
 	}
-	
+
 	// Does the user have permission to view this thread?
 	$forumpermissions = forum_permissions($forum['fid']);
-	
+
 	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}
-	
+
 	// Check if this forum is password protected and we have a valid password
 	check_forum_password($forum['fid']);
-	
+
 	if($mybb->input['sort'] != 'username')
 	{
 		$sortsql = ' ORDER BY posts DESC';
@@ -586,7 +586,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
 	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
-	
+
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
 	output_page($imcenter);
@@ -700,7 +700,7 @@ elseif($mybb->input['action'] == "syndication")
 if($mybb->input['action'] == "clearcookies")
 {
 	$plugins->run_hooks("misc_clearcookies");
-	
+
 	if($mybb->input['key'] != $mybb->user['logoutkey'])
 	{
 		error($lang->error_invalidkey);

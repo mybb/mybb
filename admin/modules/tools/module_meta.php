@@ -28,20 +28,20 @@ function tools_meta()
 	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?module=tools-optimizedb");
 	$sub_menu['80'] = array("id" => "file_verification", "title" => $lang->file_verification, "link" => "index.php?module=tools-file_verification");
-	
+
 	$sub_menu = $plugins->run_hooks("admin_tools_menu", $sub_menu);
-	
+
 	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?module=tools", 50, $sub_menu);
-	
+
 	return true;
 }
 
 function tools_action_handler($action)
 {
 	global $page, $lang, $plugins;
-	
+
 	$page->active_module = "tools";
-	
+
 	$actions = array(
 		'php_info' => array('active' => 'php_info', 'file' => 'php_info.php'),
 		'tasks' => array('active' => 'tasks', 'file' => 'tasks.php'),
@@ -58,7 +58,7 @@ function tools_action_handler($action)
 		'file_verification' => array('active' => 'file_verification', 'file' => 'file_verification.php'),
 		'statistics' => array('active' => 'statistics', 'file' => 'statistics.php'),
 	);
-	
+
 	$actions = $plugins->run_hooks("admin_tools_action_handler", $actions);
 
 	$sub_menu = array();
@@ -68,19 +68,19 @@ function tools_action_handler($action)
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?module=tools-mailerrors");
 	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?module=tools-warninglog");
 	$sub_menu['60'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
-	
+
 	$sub_menu = $plugins->run_hooks("admin_tools_menu_logs", $sub_menu);
-	
+
 	if(!isset($actions[$action]))
 	{
 		$page->active_action = "system_health";
 	}
-	
+
 	$sidebar = new SidebarItem($lang->logs);
 	$sidebar->add_menu_items($sub_menu, $actions[$action]['active']);
-	
+
 	$page->sidebar .= $sidebar->get_markup();
-	
+
 	if(isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
@@ -95,7 +95,7 @@ function tools_action_handler($action)
 function tools_admin_permissions()
 {
 	global $lang, $plugins;
-	
+
 	$admin_permissions = array(
 		"system_health" => $lang->can_access_system_health,
 		"cache" => $lang->can_manage_cache,
@@ -112,9 +112,9 @@ function tools_admin_permissions()
 		"file_verification" => $lang->can_manage_file_verification,
 		"statistics" => $lang->can_view_statistics,
 	);
-	
+
 	$admin_permissions = $plugins->run_hooks("admin_tools_permissions", $admin_permissions);
-	
+
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
 ?>

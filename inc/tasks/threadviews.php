@@ -28,7 +28,7 @@ function task_threadviews($task)
 	{
 		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, true);
 	}
-	
+
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");
 
 	if(is_object($plugins))

@@ -35,19 +35,19 @@ $plugins->run_hooks('admin_config_thread_prefixes_begin');
 if($mybb->input['action'] == 'add_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_add_prefix');
-	
+
 	if($mybb->request_method == 'post')
 	{
 		if(trim($mybb->input['prefix']) == '')
 		{
 			$errors[] = $lang->error_missing_prefix;
 		}
-		
+
 		if(trim($mybb->input['displaystyle']) == '')
 		{
 			$errors[] = $lang->error_missing_display_style;
 		}
-		
+
 		if($mybb->input['forum_type'] == 2)
 		{
 			if(count($mybb->input['forum_1_forums']) < 1)
@@ -62,7 +62,7 @@ if($mybb->input['action'] == 'add_prefix')
 			$forum_checked[1] = "checked=\"checked\"";
 			$mybb->input['forum_1_forums'] = '';
 		}
-		
+
 		if($mybb->input['group_type'] == 2)
 		{
 			if(count($mybb->input['group_1_groups']) < 1)
@@ -77,14 +77,14 @@ if($mybb->input['action'] == 'add_prefix')
 			$group_checked[1] = "checked=\"checked\"";
 			$mybb->input['group_1_forums'] = '';
 		}
-		
+
 		if(!$errors)
 		{
 			$new_prefix = array(
 				'prefix'		=> $db->escape_string($mybb->input['prefix']),
 				'displaystyle'	=> $db->escape_string($mybb->input['displaystyle'])
 			);
-			
+
 			if($mybb->input['forum_type'] == 2)
 			{
 				if(is_array($mybb->input['forum_1_forums']))
@@ -94,7 +94,7 @@ if($mybb->input['action'] == 'add_prefix')
 					{
 						$checked[] = intval($fid);
 					}
-					
+
 					$new_prefix['forums'] = implode(',', $checked);
 				}
 			}
@@ -102,7 +102,7 @@ if($mybb->input['action'] == 'add_prefix')
 			{
 				$new_prefix['forums'] = '-1';
 			}
-			
+
 			if($mybb->input['group_type'] == 2)
 			{
 				if(is_array($mybb->input['group_1_groups']))
@@ -112,7 +112,7 @@ if($mybb->input['action'] == 'add_prefix')
 					{
 						$checked[] = intval($gid);
 					}
-					
+
 					$new_prefix['groups'] = implode(',', $checked);
 				}
 			}
@@ -120,26 +120,26 @@ if($mybb->input['action'] == 'add_prefix')
 			{
 				$new_prefix['groups'] = '-1';
 			}
-			
+
 			$pid = $db->insert_query('threadprefixes', $new_prefix);
-			
+
 			$plugins->run_hooks('admin_config_thread_prefixes_add_prefix_commit');
-			
+
 			// Log admin action
 			log_admin_action($pid, $mybb->input['prefix']);
 			$cache->update_threadprefixes();
-			
+
 			flash_message($lang->success_thread_prefix_created, 'success');
 			admin_redirect('index.php?module=config-thread_prefixes');
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_new_thread_prefix);
 	$page->output_header($lang->thread_prefixes." - ".$lang->add_new_thread_prefix);
 	$page->output_nav_tabs($sub_tabs, 'add_prefix');
-	
+
 	$form = new Form('index.php?module=config-thread_prefixes&amp;action=add_prefix', 'post');
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -155,16 +155,16 @@ if($mybb->input['action'] == 'add_prefix')
 		$group_checked[1] = "checked=\"checked\"";
 		$group_checked[2] = '';
 	}
-	
+
 	$form_container = new FormContainer($lang->prefix_options);
 	$form_container->output_row($lang->prefix.' <em>*</em>', $lang->prefix_desc, $form->generate_text_box('prefix', $mybb->input['prefix'], array('id' => 'prefix')), 'prefix');
 	$form_container->output_row($lang->display_style.' <em>*</em>', $lang->display_style_desc, $form->generate_text_box('displaystyle', $mybb->input['displaystyle'], array('id' => 'displaystyle')), 'displaystyle');
-	
+
 	$actions = "<script type=\"text/javascript\">
     function checkAction(id)
     {
         var checked = '';
-        
+
         $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
@@ -180,7 +180,7 @@ if($mybb->input['action'] == 'add_prefix')
         {
             Element.show(id+'_'+checked);
         }
-    }    
+    }
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -198,7 +198,7 @@ if($mybb->input['action'] == 'add_prefix')
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums.' <em>*</em>', '', $actions);
-	
+
 	$group_select = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
@@ -216,40 +216,40 @@ if($mybb->input['action'] == 'add_prefix')
 		checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $group_select);
-	
+
 	$form_container->end();
-	
+
 	$buttons[] = $form->generate_submit_button($lang->save_thread_prefix);
-	
+
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == 'edit_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_start');
-	
+
 	$prefix = build_prefixes($mybb->input['pid']);
 	if(!$prefix['pid'])
 	{
 		flash_message($lang->error_invalid_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
-	
+
 	if($mybb->request_method == 'post')
 	{
 		if(trim($mybb->input['prefix']) == '')
 		{
 			$errors[] = $lang->error_missing_prefix;
 		}
-		
+
 		if(trim($mybb->input['displaystyle']) == '')
 		{
 			$errors[] = $lang->error_missing_display_style;
 		}
-		
+
 		if($mybb->input['forum_type'] == 2)
 		{
 			if(count($mybb->input['forum_1_forums']) < 1)
@@ -264,7 +264,7 @@ if($mybb->input['action'] == 'edit_prefix')
 			$forum_checked[1] = "checked=\"checked\"";
 			$mybb->input['forum_1_forums'] = '';
 		}
-		
+
 		if($mybb->input['group_type'] == 2)
 		{
 			if(count($mybb->input['group_1_groups']) < 1)
@@ -279,14 +279,14 @@ if($mybb->input['action'] == 'edit_prefix')
 			$group_checked[1] = "checked=\"checked\"";
 			$mybb->input['group_1_forums'] = '';
 		}
-		
+
 		if(!$errors)
 		{
 			$update_prefix = array(
 				'prefix'		=> $db->escape_string($mybb->input['prefix']),
 				'displaystyle'	=> $db->escape_string($mybb->input['displaystyle'])
 			);
-			
+
 			if($mybb->input['forum_type'] == 2)
 			{
 				if(is_array($mybb->input['forum_1_forums']))
@@ -296,7 +296,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					{
 						$checked[] = intval($fid);
 					}
-					
+
 					$update_prefix['forums'] = implode(',', $checked);
 				}
 			}
@@ -304,7 +304,7 @@ if($mybb->input['action'] == 'edit_prefix')
 			{
 				$update_prefix['forums'] = '-1';
 			}
-			
+
 			if($mybb->input['group_type'] == 2)
 			{
 				if(is_array($mybb->input['group_1_groups']))
@@ -314,7 +314,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					{
 						$checked[] = intval($gid);
 					}
-					
+
 					$update_prefix['groups'] = implode(',', $checked);
 				}
 			}
@@ -322,20 +322,20 @@ if($mybb->input['action'] == 'edit_prefix')
 			{
 				$update_prefix['groups'] = '-1';
 			}
-			
+
 			$db->update_query('threadprefixes', $update_prefix, "pid='{$mybb->input['pid']}'");
-			
+
 			$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_commit');
-			
+
 			// Log admin action
 			log_admin_action($mybb->input['pid'], $mybb->input['prefix']);
 			$cache->update_threadprefixes();
-			
+
 			flash_message($lang->success_thread_prefix_updated, 'success');
 			admin_redirect('index.php?module=config-thread_prefixes');
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_thread_prefix);
 	$page->output_header($lang->thread_prefixes.' - '.$lang->edit_thread_prefix);
 
@@ -350,7 +350,7 @@ if($mybb->input['action'] == 'edit_prefix')
 
 	$form = new Form('index.php?module=config-thread_prefixes&amp;action=edit_prefix', 'post');
 	echo $form->generate_hidden_field('pid', $mybb->input['pid']);
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -359,7 +359,7 @@ if($mybb->input['action'] == 'edit_prefix')
 	{
 		$query = $db->simple_select('threadprefixes', '*', "pid = '{$mybb->input['pid']}'");
 		$threadprefix = $db->fetch_array($query);
-		
+
 		$mybb->input['prefix'] = $threadprefix['prefix'];
 		$mybb->input['displaystyle'] = $threadprefix['displaystyle'];
 		$mybb->input['forum_1_forums'] = explode(",", $threadprefix['forums']);
@@ -374,7 +374,7 @@ if($mybb->input['action'] == 'edit_prefix')
 			$forum_checked[1] = '';
 			$forum_checked[2] = "checked=\"checked\"";
 		}
-		
+
 		$mybb->input['group_1_groups'] = explode(",", $threadprefix['groups']);
 
 		if(!$threadprefix['groups'] || $threadprefix['groups'] == -1)
@@ -388,16 +388,16 @@ if($mybb->input['action'] == 'edit_prefix')
 			$group_checked[2] = "checked=\"checked\"";
 		}
 	}
-	
+
 	$form_container = new FormContainer($lang->prefix_options);
 	$form_container->output_row($lang->prefix.' <em>*</em>', $lang->prefix_desc, $form->generate_text_box('prefix', $mybb->input['prefix'], array('id' => 'prefix')), 'prefix');
 	$form_container->output_row($lang->display_style.' <em>*</em>', $lang->display_style_desc, $form->generate_text_box('displaystyle', $mybb->input['displaystyle'], array('id' => 'displaystyle')), 'displaystyle');
-	
+
 	$actions = "<script type=\"text/javascript\">
     function checkAction(id)
     {
         var checked = '';
-        
+
         $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
@@ -413,7 +413,7 @@ if($mybb->input['action'] == 'edit_prefix')
         {
             Element.show(id+'_'+checked);
         }
-    }    
+    }
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -431,7 +431,7 @@ if($mybb->input['action'] == 'edit_prefix')
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums.' <em>*</em>', '', $actions);
-	
+
 	$group_select = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
@@ -449,49 +449,49 @@ if($mybb->input['action'] == 'edit_prefix')
 		checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $group_select);
-	
+
 	$form_container->end();
-	
+
 	$buttons[] = $form->generate_submit_button($lang->save_thread_prefix);
-	
+
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if($mybb->input['action'] == 'delete_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_delete_prefix');
-	
+
 	$prefix = build_prefixes($mybb->input['pid']);
 	if(!$prefix['pid'])
 	{
 		flash_message($lang->error_invalid_thread_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
-	
+
 	if($mybb->request_method == 'post')
 	{
 		// Remove prefix from existing threads
 		$update_threads = array('prefix' => 0);
 		$db->update_query('threads', $update_threads, "prefix='{$prefix['pid']}'");
-		
+
 		// Delete prefix
 		$db->delete_query('threadprefixes', "pid='{$prefix['pid']}'");
-		
+
 		$plugins->run_hooks('admin_config_thread_prefixes_delete_thread_prefix_commit');
-		
+
 		// Log admin action
 		log_admin_action($prefix['pid'], $prefix['prefix']);
 		$cache->update_threadprefixes();
-		
+
 		flash_message($lang->success_thread_prefix_deleted, 'success');
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
@@ -504,14 +504,14 @@ if($mybb->input['action'] == 'delete_prefix')
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_start');
-	
+
 	$page->output_header($lang->thread_prefixes);
 	$page->output_nav_tabs($sub_tabs, 'thread_prefixes');
-	
+
 	$table = new Table;
 	$table->construct_header($lang->prefix);
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'colspan' => 2));
-	
+
 	$prefixes = build_prefixes();
 	if($prefixes)
 	{
@@ -523,15 +523,15 @@ if(!$mybb->input['action'])
 			$table->construct_row();
 		}
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_thread_prefixes, array('colspan' => 3));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->thread_prefixes);
-	
+
 	$page->output_footer();
 }
 ?>

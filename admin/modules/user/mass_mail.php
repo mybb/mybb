@@ -41,7 +41,7 @@ if($mybb->input['action'] == "send" || $mybb->input['action'] == "archive" || !$
 }
 
 if($mybb->input['action'] == "edit")
-{	
+{
 	$page->add_breadcrumb_item($lang->edit_mass_mail);
 
 	$query = $db->simple_select("massemails", "*", "mid='".intval($mybb->input['mid'])."'");
@@ -51,12 +51,12 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_mid, 'error');
 		admin_redirect("index.php?module=user-mass_mail");
 	}
-	
+
 	if($email['conditions'] != '')
 	{
 		$email['conditions'] = unserialize($email['conditions']);
 	}
-	
+
 	$sub_tabs['edit_mass_mail'] = array(
 		'title' => $lang->edit_mass_mail,
 		'link' => 'index.php?module=user-mass_mail&amp;action=edit&amp;mid='.$email['mid'],
@@ -69,7 +69,7 @@ if($mybb->input['action'] == "edit")
 		"{bbname}" => $lang->board_name,
 		"{bburl}" => $lang->board_url
 	);
-	
+
 	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message} ";
 	foreach($replacement_fields as $value => $name)
 	{
@@ -94,20 +94,20 @@ if($mybb->input['action'] == "edit")
 			{
 				$mybb->input['deliveryhour'] += 12;
 			}
-			
+
 			$exploded = explode(':', $mybb->input['endtime_time']);
 			$mybb->input['deliveryhour'] = intval($exploded[0]);
-			
+
 			$exploded = explode(' ', $exploded[1]);
 			$mybb->input['deliveryminute'] = intval($exploded[0]);
-			
+
 			$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year']) + $mybb->user['timezone']*3600;
 			if($delivery_date <= TIME_NOW)
 			{
 				$errors[] = $lang->error_only_in_future;
 			}
 		}
-		
+
 		// Need to perform the search to fetch the number of users we're emailing
 		$member_query = build_mass_mail_query($mybb->input['conditions']);
 		$query = $db->simple_select("users u", "COUNT(uid) AS num", $member_query);
@@ -117,12 +117,12 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_no_users;
 		}
-		
+
 		if(!trim($mybb->input['subject']))
 		{
 			$errors[] = $lang->error_missing_subject;
 		}
-		
+
 		if($mybb->input['type'] == 1)
 		{
 			if(!$mybb->input['message'])
@@ -136,7 +136,7 @@ if($mybb->input['action'] == "edit")
 			{
 				$errors[] = $lang->error_missing_plain_text;
 			}
-			
+
 			if(($mybb->input['format'] == 1 || $mybb->input['format'] == 2) && !$mybb->input['htmlmessage'])
 			{
 				$errors[] = $lang->error_missing_html;
@@ -145,8 +145,8 @@ if($mybb->input['action'] == "edit")
 			{
 				$errors[] = $lang->error_missing_plain_text;
 			}
-		}					
-		
+		}
+
 		if(!$errors)
 		{
 			// Sending via a PM
@@ -192,11 +192,11 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=user-mass_mail");
 		}
 	}
-	
+
 	$page->output_header($lang->edit_mass_mail);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_mass_mail');
-	
+
 	// If we have any error messages, show them
 	if($errors)
 	{
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$input = $email;
-		
+
 		if($email['senddate'] != 0)
 		{
 			if($email['senddate'] <= TIME_NOW)
@@ -234,7 +234,7 @@ if($mybb->input['action'] == "edit")
 			$delivery_type_checked['now'] = " checked=\"checked\"";
 		}
 	}
-	
+
 	if($input['deliveryhour'])
 	{
 		$input['endtime_time'] = intval($input['deliveryhour']).":";
@@ -243,7 +243,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$input['endtime_time'] = "12:";
 	}
-	
+
 	if($input['deliveryminute'])
 	{
 		$input['endtime_time'] .= intval($input['deliveryminute'])." ";
@@ -252,7 +252,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$input['endtime_time'] .= "00 ";
 	}
-	
+
 	if($input['deliverymeridiem'])
 	{
 		$input['endtime_time'] .= $input['deliverymeridiem'];
@@ -261,7 +261,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$input['endtime_time'] .= "am";
 	}
-	
+
 	if(!$input['deliveryyear'])
 	{
 		$enddateyear = gmdate('Y', TIME_NOW);
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$enddateyear = intval($input['deliveryyear']);
 	}
-	
+
 	if(!$input['deliverymonth'])
 	{
 		$input['enddatemonth'] = gmdate('n', TIME_NOW);
@@ -279,7 +279,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$input['enddatemonth'] = intval($input['deliverymonth']);
 	}
-	
+
 	if(!$input['deliveryday'])
 	{
 		$input['enddateday'] = gmdate('j', TIME_NOW);
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$input['enddateday'] = intval($input['deliveryday']);
 	}
-	
+
 	$form = new Form("index.php?module=user-mass_mail&amp;action=edit", "post");
 	echo $form->generate_hidden_field("mid", $email['mid']);
 
@@ -318,7 +318,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_radio_button("type", 1, $lang->send_via_pm, array("id" => "type_pm", "checked" => $type_pm_checked))
 	);
 	$form_container->output_row("{$lang->message_type}: <em>*</em>", "", implode("<br />", $type_options));
-	
+
 	$monthnames = array(
 		"offset",
 		$lang->january,
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "edit")
 		$lang->november,
 		$lang->december,
 	);
-	
+
 	$enddatemonth = "";
 	foreach($monthnames as $key => $month)
 	{
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "edit")
 		{
 			continue;
 		}
-		
+
 		if($key == $input['enddatemonth'])
 		{
 			$enddatemonth .= "<option value=\"{$key}\" selected=\"selected\">{$month}</option>\n";
@@ -352,9 +352,9 @@ if($mybb->input['action'] == "edit")
 			$enddatemonth .= "<option value=\"{$key}\">{$month}</option>\n";
 		}
 	}
-	
+
 	$enddateday = "";
-	
+
 	// Construct option list for days
 	for($i = 1; $i <= 31; ++$i)
 	{
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "edit")
 			$enddateday .= "<option value=\"{$i}\">{$i}</option>\n";
 		}
 	}
-	
+
 	$actions = "<script type=\"text/javascript\">
 		function checkAction(id)
 		{
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "edit")
 			{
 				Element.show(id+'_'+checked);
 			}
-		}    
+		}
 	</script>
 		<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"delivery_type\" value=\"now\" {$delivery_type_checked['now']} class=\"delivery_types_check\" onclick=\"checkAction('delivery_type');\" style=\"vertical-align: middle;\" /> <strong>{$lang->deliver_immediately}</strong></label></dt>
@@ -406,17 +406,17 @@ if($mybb->input['action'] == "edit")
 		checkAction('delivery_type');
 		</script>";
 	$form_container->output_row("{$lang->delivery_date}: <em>*</em>", $lang->delivery_date_desc, $actions);
-	
+
 	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_text_box('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
-	
+
 	$format_options = array(
 		0 => $lang->plain_text_only,
 		1 => $lang->html_only,
 		2 => $lang->html_and_plain_text
 	);
-	
+
 	$form_container->output_row("{$lang->message_format}: <em>*</em>", "", $form->generate_select_box('format', $format_options, $input['format'], array('id' => 'format')), 'format', null, array("id" => "format_container"));
-	
+
 	$form_container->end();
 
 	if($input['format'] == 2)
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	Event.observe($('automatic_text'), 'click', ToggleAutomatic);
-	
+
 	function insertText(value, textarea)
 	{
 		// Internet Explorer
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "edit")
 			textarea.value += value;
 		}
 	}
-	
+
 	</script>";
 
 	$form_container = new FormContainer("{$lang->edit_mass_mail}: {$lang->define_the_recipients}");
@@ -594,7 +594,7 @@ if($mybb->input['action'] == "send")
 		"{bbname}" => $lang->board_name,
 		"{bburl}" => $lang->board_url
 	);
-	
+
 	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message}: ";
 	foreach($replacement_fields as $value => $name)
 	{
@@ -621,20 +621,20 @@ if($mybb->input['action'] == "send")
 				{
 					$mybb->input['deliveryhour'] += 12;
 				}
-				
+
 				$exploded = explode(':', $mybb->input['endtime_time']);
 				$mybb->input['deliveryhour'] = intval($exploded[0]);
-				
+
 				$exploded = explode(' ', $exploded[1]);
 				$mybb->input['deliveryminute'] = intval($exploded[0]);
-			
+
 				$delivery_date = gmmktime($mybb->input['deliveryhour'], $mybb->input['deliveryminute'], 0, $mybb->input['endtime_month'], $mybb->input['endtime_day'], $mybb->input['endtime_year']) + $mybb->user['timezone']*3600;
 				if($delivery_date <= TIME_NOW)
 				{
 					$errors[] = $lang->error_only_in_future;
 				}
 			}
-			
+
 			if(!$errors)
 			{
 				// Mark as queued for delivery
@@ -653,7 +653,7 @@ if($mybb->input['action'] == "send")
 		$page->output_header("{$lang->send_mass_mail}: {$lang->step_four}");
 
 		$page->output_nav_tabs($sub_tabs, 'send_mass_mail');
-		
+
 		// If we have any error messages, show them
 		if($errors)
 		{
@@ -690,7 +690,7 @@ if($mybb->input['action'] == "send")
 				$delivery_type_checked['now'] = " checked=\"checked\"";
 			}
 		}
-		
+
 		$table = new Table;
 		$table->construct_cell("<strong>{$lang->delivery_method}:</strong>", array('width' => '25%'));
 		if($email['type'] == 1)
@@ -703,11 +703,11 @@ if($mybb->input['action'] == "send")
 		}
 		$table->construct_cell($delivery_type);
 		$table->construct_row();
-		
+
 		$table->construct_cell("<strong>{$lang->subject}:</strong>");
 		$table->construct_cell(htmlspecialchars_uni($email['subject']));
 		$table->construct_row();
-		
+
 		$table->construct_cell("<strong>{$lang->message}:</strong>");
 		$format_preview = '';
 		if($email['format'] == 0 || $email['format'] == 2)
@@ -724,14 +724,14 @@ if($mybb->input['action'] == "send")
 		}
 		$table->construct_cell($format_preview);
 		$table->construct_row();
-		
+
 		// Recipient counts & details
 		$table->construct_cell("<strong>{$lang->total_recipients}:</strong>");
 		$table->construct_cell(my_number_format($email['totalcount'])." - <a href=\"index.php?module=user-mass_mail&amp;action=send&amp;step=3&amp;mid={$email['mid']}\">{$lang->change_recipient_conds}</a>");
 		$table->construct_row();
-		
+
 		$table->output("{$lang->send_mass_mail}: {$lang->step_four} - {$lang->review_message}");
-		
+
 		if($input['deliveryhour'])
 		{
 			$input['endtime_time'] = intval($input['deliveryhour']).":";
@@ -740,7 +740,7 @@ if($mybb->input['action'] == "send")
 		{
 			$input['endtime_time'] = "12:";
 		}
-		
+
 		if($input['deliveryminute'])
 		{
 			$input['endtime_time'] .= intval($input['deliveryminute'])." ";
@@ -749,7 +749,7 @@ if($mybb->input['action'] == "send")
 		{
 			$input['endtime_time'] .= "00 ";
 		}
-		
+
 		if($input['deliverymeridiem'])
 		{
 			$input['endtime_time'] .= $input['deliverymeridiem'];
@@ -758,7 +758,7 @@ if($mybb->input['action'] == "send")
 		{
 			$input['endtime_time'] .= "am";
 		}
-		
+
 		if(!$input['deliveryyear'])
 		{
 			$enddateyear = gmdate('Y', TIME_NOW);
@@ -767,7 +767,7 @@ if($mybb->input['action'] == "send")
 		{
 			$enddateyear = intval($input['deliveryyear']);
 		}
-		
+
 		if(!$input['deliverymonth'])
 		{
 			$input['enddatemonth'] = gmdate('n', TIME_NOW);
@@ -776,7 +776,7 @@ if($mybb->input['action'] == "send")
 		{
 			$input['enddatemonth'] = intval($input['deliverymonth']);
 		}
-		
+
 		if(!$input['deliveryday'])
 		{
 			$input['enddateday'] = gmdate('j', TIME_NOW);
@@ -785,7 +785,7 @@ if($mybb->input['action'] == "send")
 		{
 			$input['enddateday'] = intval($input['deliveryday']);
 		}
-		
+
 		$monthnames = array(
 			"offset",
 			$lang->january,
@@ -801,7 +801,7 @@ if($mybb->input['action'] == "send")
 			$lang->november,
 			$lang->december,
 		);
-		
+
 		$enddatemonth = "";
 		foreach($monthnames as $key => $month)
 		{
@@ -809,7 +809,7 @@ if($mybb->input['action'] == "send")
 			{
 				continue;
 			}
-			
+
 			if($key == $input['enddatemonth'])
 			{
 				$enddatemonth .= "<option value=\"{$key}\" selected=\"selected\">{$month}</option>\n";
@@ -819,9 +819,9 @@ if($mybb->input['action'] == "send")
 				$enddatemonth .= "<option value=\"{$key}\">{$month}</option>\n";
 			}
 		}
-		
+
 		$enddateday = "";
-		
+
 		// Construct option list for days
 		for($i = 1; $i <= 31; ++$i)
 		{
@@ -834,7 +834,7 @@ if($mybb->input['action'] == "send")
 				$enddateday .= "<option value=\"{$i}\">{$i}</option>\n";
 			}
 		}
-		
+
 		$form = new Form("index.php?module=user-mass_mail&amp;action=send&amp;step=4&amp;mid={$email['mid']}", "post");
 		$form_container = new FormContainer("{$lang->send_mass_mail}: {$lang->step_four} - {$lang->define_delivery_date}");
 
@@ -858,7 +858,7 @@ if($mybb->input['action'] == "send")
 		        {
 		            Element.show(id+'_'+checked);
 		        }
-		    }    
+		    }
 		</script>
 			<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 			<dt><label style=\"display: block;\"><input type=\"radio\" name=\"delivery_type\" value=\"now\" {$delivery_type_checked['now']} class=\"delivery_types_check\" onclick=\"checkAction('delivery_type');\" style=\"vertical-align: middle;\" /> <strong>{$lang->deliver_immediately}</strong></label></dt>
@@ -876,14 +876,14 @@ if($mybb->input['action'] == "send")
 			checkAction('delivery_type');
 			</script>";
 			$form_container->output_row("{$lang->delivery_date}: <em>*</em>", $lang->delivery_date_desc, $actions);
-			
+
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->schedule_for_delivery);
 		$form->output_submit_wrapper($buttons);
 
 		$form->end();
-		$page->output_footer();		
+		$page->output_footer();
 	}
 
 	if($mybb->input['step'] == 3)
@@ -1018,7 +1018,7 @@ if($mybb->input['action'] == "send")
 			{
 				$errors[] = $lang->error_missing_subject;
 			}
-			
+
 			if($mybb->input['type'] == 1)
 			{
 				if(!$mybb->input['message'])
@@ -1032,7 +1032,7 @@ if($mybb->input['action'] == "send")
 				{
 					$errors[] = $lang->error_missing_plain_text;
 				}
-				
+
 				if(($mybb->input['format'] == 1 || $mybb->input['format'] == 2) && !$mybb->input['htmlmessage'])
 				{
 					$errors[] = $lang->error_missing_html;
@@ -1175,9 +1175,9 @@ if($mybb->input['action'] == "send")
 		);
 
 		$form_container->output_row("{$lang->message_format}:", "", $form->generate_select_box('format', $format_options, $input['format'], array('id' => 'format')), 'format', null, array("id" => "format_container"));
-		
+
 		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_text_box('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
-		
+
 		$form_container->end();
 
 		if($mybb->input['format'] == 2)
@@ -1277,7 +1277,7 @@ if($mybb->input['action'] == "send")
 		}
 
 		Event.observe($('automatic_text'), 'click', ToggleAutomatic);
-		
+
 		function insertText(value, textarea)
 		{
 			// Internet Explorer
@@ -1299,7 +1299,7 @@ if($mybb->input['action'] == "send")
 				textarea.value += value;
 			}
 		}
-		
+
 		</script>";
 
 		$buttons[] = $form->generate_submit_button($lang->next_step);
@@ -1314,7 +1314,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("massemails", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mass_email = $db->fetch_array($query);
-	
+
 	if(!$mass_email['mid'])
 	{
 		flash_message($lang->error_delete_invalid_mid, 'error');
@@ -1335,7 +1335,7 @@ if($mybb->input['action'] == "delete")
 
 		// Log admin action
 		log_admin_action($mass_email['mid'], $mass_email['subject']);
-		
+
 		if($mybb->input['archive'] == 1)
 		{
 			flash_message($lang->success_mass_mail_deleted, 'success');
@@ -1364,13 +1364,13 @@ if($mybb->input['action'] == "preview")
 {
 	$query = $db->simple_select("massemails", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mass_email = $db->fetch_array($query);
-	
+
 	if(!$mass_email['mid'])
 	{
 		flash_message($lang->error_invalid_mid, 'error');
 		admin_redirect("index.php?module=user-mass_mail");
 	}
-	
+
 	?>
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head profile="http://gmpg.org/xfn/1">
@@ -1382,9 +1382,9 @@ if($mybb->input['action'] == "preview")
 		<div id="popup_container">
 		<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a> Mass Email Preview</div>
 
-		<div id="content">	
+		<div id="content">
 	<?php
-	
+
 	if($mybb->input['format'] == 'text' || !$mass_email['htmlmessage'])
 	{
 		// Show preview of the text version
@@ -1395,7 +1395,7 @@ if($mybb->input['action'] == "preview")
 		// Preview the HTML version
 		echo $mass_email['htmlmessage'];
 	}
-	
+
 		?>
 		</div>
 	</div>
@@ -1410,18 +1410,18 @@ if($mybb->input['action'] == "resend")
 	// Copy and resend an email
 	$query = $db->simple_select("massemails", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mass_email = $db->fetch_array($query);
-	
+
 	if(!$mass_email['mid'])
 	{
 		flash_message($lang->error_invalid_mid, 'error');
-		admin_redirect("index.php?module=user-mass_mail");		
+		admin_redirect("index.php?module=user-mass_mail");
 	}
 
 	// Need to perform the search to fetch the number of users we're emailing
 	$member_query = build_mass_mail_query(unserialize($mass_email['conditions']));
 	$query = $db->simple_select("users u", "COUNT(uid) AS num", $member_query);
 	$total_recipients = $db->fetch_field($query, "num");
-	
+
 	// Create the new email based off the old one.
 	$new_email = array(
 		"uid" => $mass_email['uid'],
@@ -1439,7 +1439,7 @@ if($mybb->input['action'] == "resend")
 		"perpage" => $mass_email['perpage']
 	);
 	$mid = $db->insert_query("massemails", $new_email);
-	
+
 	// Redirect the user to the summary page so they can select when to deliver this message
 	flash_message($lang->success_mass_mail_resent, 'success');
 	admin_redirect("index.php?module=user-mass_mail&action=send&step=4&mid={$mid}");
@@ -1451,21 +1451,21 @@ if($mybb->input['action'] == "cancel")
 	// Cancel the delivery of a mass-email.
 	$query = $db->simple_select("massemails", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mass_email = $db->fetch_array($query);
-	
+
 	if(!$mass_email['mid'])
 	{
 		flash_message($lang->error_invalid_mid, 'error');
-		admin_redirect("index.php?module=user-mass_mail");		
+		admin_redirect("index.php?module=user-mass_mail");
 	}
-	
+
 	$updated_email = array(
 		'status' => 4
 	);
 	$db->update_query("massemails", $updated_email, "mid='{$mass_email['mid']}'");
-	
+
 	flash_message($lang->success_mass_mail_canceled, 'success');
 	admin_redirect("index.php?module=user-mass_mail");
-	exit;		
+	exit;
 }
 
 if($mybb->input['action'] == "archive")
@@ -1589,7 +1589,7 @@ if(!$mybb->input['action'])
 		}
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_unsent_messages, array('colspan' => 6));

@@ -17,16 +17,16 @@ class dbpdoEngine {
 	 * @var object
 	 */
 	public $db;
-	
+
 	/**
 	 * The last query resource that ran
 	 *
 	 * @var object
 	 */
 	public $last_query = "";
-	
+
 	public $seek_array = array();
-	
+
 	public $queries = 0;
 
 	/**
@@ -43,17 +43,17 @@ class dbpdoEngine {
 		try
 		{
     		$this->db = new PDO($dsn, $user, $password, $driver_options);
-		} 
+		}
 		catch(PDOException $exception)
 		{
     		die('Connection failed: '.$exception->getMessage());
 		}
-		
+
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Query the database.
 	 *
@@ -63,15 +63,15 @@ class dbpdoEngine {
 	function query($string)
 	{
 		++$this->queries;
-		
-		$query = $this->db->query($string, PDO::FETCH_BOTH);		
+
+		$query = $this->db->query($string, PDO::FETCH_BOTH);
 		$this->last_query = $query;
-		
+
 		$query->guid = $this->queries;
-		
+
 		return $query;
 	}
-	
+
 	/**
 	 * Return a result array for a query.
 	 *
@@ -84,7 +84,7 @@ class dbpdoEngine {
 		{
 			return;
 		}
-		
+
 		if($this->seek_array[$query->guid])
 		{
 			$array = $query->fetch(PDO::FETCH_BOTH, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
@@ -93,10 +93,10 @@ class dbpdoEngine {
 		{
 			$array = $query->fetch(PDO::FETCH_BOTH);
 		}
-		
+
 		return $array;
 	}
-	
+
 	/**
 	 * Moves internal row pointer to the next row
 	 *
@@ -109,10 +109,10 @@ class dbpdoEngine {
 		{
 			return;
 		}
-		
+
 		$this->seek_array[$query->guid] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
 	}
-	
+
 	/**
 	 * Return the number of rows resulting from a query.
 	 *
@@ -125,10 +125,10 @@ class dbpdoEngine {
 		{
 			return;
 		}
-		
+
 		return count($query->rowCount());
 	}
-	
+
 	/**
 	 * Return the last id number of inserted data.
 	 *
@@ -139,7 +139,7 @@ class dbpdoEngine {
 	{
 		return $this->db->lastInsertId($name);
 	}
-	
+
 	/**
 	 * Return an error number.
 	 *
@@ -152,12 +152,12 @@ class dbpdoEngine {
 		{
 			return;
 		}
-		
+
 		$errorcode = $query->errorCode();
-		
+
 		return $errorcode;
 	}
-	
+
 	/**
 	 * Return an error string.
 	 *
@@ -172,7 +172,7 @@ class dbpdoEngine {
 		}
 		return $query->errorInfo();
 	}
-	
+
 	/**
 	 * Roll back the last query.
 	 *
@@ -182,7 +182,7 @@ class dbpdoEngine {
 	{
 		//return $this->db->rollBack();
 	}
-	
+
 	/**
 	 * Returns the number of affected rows in a query.
 	 *
@@ -192,7 +192,7 @@ class dbpdoEngine {
 	{
 		return $query->rowCount();
 	}
-	
+
 	/**
 	 * Return the number of fields.
 	 *
@@ -203,18 +203,18 @@ class dbpdoEngine {
 	{
 		return $query->columnCount();
 	}
-	
+
 	function escape_string($string)
 	{
-		$string = $this->db->quote($string);	
-		
+		$string = $this->db->quote($string);
+
 		// Remove ' from the begginging of the string and at the end of the string, because we already use it in insert_query
 		$string = substr($string, 1);
 		$string = substr($string, 0, -1);
-		
+
 		return $string;
 	}
-	
+
 	/**
 	 * Return a selected attribute
 	 *
@@ -224,7 +224,7 @@ class dbpdoEngine {
 	function get_attribute($attribute)
 	{
 		$attribute = $this->db->getAttribute(constant("PDO::".$attribute.""));
-		
+
 		return $attribute;
 	}
 }

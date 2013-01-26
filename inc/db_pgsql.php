@@ -17,7 +17,7 @@ class DB_PgSQL
 	 * @var string
 	 */
 	public $title = "PostgreSQL";
-	
+
 	/**
 	 * The short title of this layer.
 	 *
@@ -52,14 +52,14 @@ class DB_PgSQL
 	 * @var resource
 	 */
 	public $read_link;
-	
+
 	/**
 	 * The write database connection resource
 	 *
 	 * @var resource
 	 */
 	public $write_link;
-	
+
 	/**
 	 * Reference to the last database connection resource used.
 	 *
@@ -94,35 +94,35 @@ class DB_PgSQL
 	 * @var string
 	 */
 	public $table_prefix;
-	
+
 	/**
 	 * The temperary connection string used to store connect details
 	 *
 	 * @var string
 	 */
 	public $connect_string;
-	
+
 	/**
 	 * The last query run on the database
 	 *
 	 * @var string
 	 */
 	public $last_query;
-	
+
 	/**
 	 * The current value of pconnect (0/1).
 	 *
 	 * @var string
 	 */
 	public $pconnect;
-	
+
 	/**
 	 * The engine used to run the SQL database
 	 *
 	 * @var string
 	 */
 	public $engine = "pgsql";
-	
+
 	/**
 	 * Weather or not this engine can use the search functionality
 	 *
@@ -136,7 +136,7 @@ class DB_PgSQL
 	 * @var string
 	 */
 	public $db_encoding = "utf8";
-	
+
 	/**
 	 * The time spent performing queries
 	 *
@@ -184,7 +184,7 @@ class DB_PgSQL
 			{
 				break;
 			}
-			
+
 			if(array_key_exists('hostname', $connections[$type]))
 			{
 				$details = $connections[$type];
@@ -203,13 +203,13 @@ class DB_PgSQL
 				{
 					$connect_function = "pg_pconnect";
 				}
-				
+
 				$link = $type."_link";
 
 				$this->get_execution_time();
 
 				$this->connect_string = "dbname={$single_connection['database']} user={$single_connection['username']}";
-				
+
 				if(strpos($single_connection['hostname'], ':') !== false)
 				{
 					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
@@ -219,12 +219,12 @@ class DB_PgSQL
 				{
 					$this->connect_string .= " port={$single_connection['port']}";
 				}
-				
+
 				if($single_connection['hostname'] != "")
 				{
 					$this->connect_string .= " host={$single_connection['hostname']}";
 				}
-				
+
 				if($single_connection['password'])
 				{
 					$this->connect_string .= " password={$single_connection['password']}";
@@ -269,7 +269,7 @@ class DB_PgSQL
 		$this->current_link = &$this->read_link;
 		return $this->read_link;
 	}
-	
+
 	/**
 	 * Query the database.
 	 *
@@ -281,15 +281,15 @@ class DB_PgSQL
 	function query($string, $hide_errors=0, $write_query=0)
 	{
 		global $pagestarttime, $db, $mybb;
-		
+
 		$string = preg_replace("#LIMIT ([0-9]+),([ 0-9]+)#i", "LIMIT $2 OFFSET $1", $string);
-		
+
 		$this->last_query = $string;
-		
+
 		$this->get_execution_time();
-		
+
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
-		{			
+		{
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
 			if(strstr($string, 'CHANGE') !== false)
 			{
@@ -302,7 +302,7 @@ class DB_PgSQL
 			while(pg_connection_busy($this->write_link));
 			$this->current_link = &$this->write_link;
 			pg_send_query($this->current_link, $string);
-			$query = pg_get_result($this->current_link);		
+			$query = pg_get_result($this->current_link);
 		}
 		else
 		{
@@ -311,24 +311,24 @@ class DB_PgSQL
 			pg_send_query($this->current_link, $string);
 			$query = pg_get_result($this->current_link);
 		}
-		
+
 		if((pg_result_error($query) && !$hide_errors))
 		{
 			$this->error($string, $query);
 			exit;
 		}
-		
+
 		$query_time = $this->get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
-		
+
 		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $query_time);
 		}
 		return $query;
 	}
-	
+
 	/**
 	 * Execute a write query on the slave database
 	 *
@@ -462,18 +462,18 @@ class DB_PgSQL
 	{
 		$this->last_query = str_replace(array("\r", "\n", "\t"), '', $this->last_query);
 		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
-				
+
 		$table = $matches[1];
-		
+
 		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
 		$field = $this->fetch_field($query, 'column_name');
-		
+
 		// Do we not have a primary field?
 		if(!$field)
 		{
 			return;
 		}
-		
+
 		$id = $this->write_query("SELECT currval('{$table}_{$field}_seq') AS last_value");
 		return $this->fetch_field($id, 'last_value');
 	}
@@ -502,7 +502,7 @@ class DB_PgSQL
 		{
 			return 0;
 		}
-		
+
 		return pg_result_error_field($query, PGSQL_DIAG_SQLSTATE);
 	}
 
@@ -517,7 +517,7 @@ class DB_PgSQL
 		{
 			return pg_result_error($query);
 		}
-		
+
 		if($this->current_link)
 		{
 			return pg_last_error($this->current_link);
@@ -525,7 +525,7 @@ class DB_PgSQL
 		else
 		{
 			return pg_last_error();
-		}		
+		}
 	}
 
 	/**
@@ -540,13 +540,13 @@ class DB_PgSQL
 			if(class_exists("errorHandler"))
 			{
 				global $error_handler;
-				
+
 				if(!is_object($error_handler))
 				{
 					require_once MYBB_ROOT."inc/class_error.php";
 					$error_handler = new errorHandler();
 				}
-				
+
 				$error = array(
 					"error_no" => $this->error_number($query),
 					"error" => $this->error_string($query),
@@ -599,8 +599,8 @@ class DB_PgSQL
 		else
 		{
 			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
-		}		
-		
+		}
+
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['table_name'];
@@ -619,9 +619,9 @@ class DB_PgSQL
 	{
 		// Execute on master server to ensure if we've just created a table that we get the correct result
 		$query = $this->write_query("SELECT COUNT(table_name) as table_names FROM information_schema.tables WHERE table_schema = 'public' AND table_name='{$this->table_prefix}{$table}'");
-		
+
 		$exists = $this->fetch_field($query, 'table_names');
-		
+
 		if($exists > 0)
 		{
 			return true;
@@ -642,9 +642,9 @@ class DB_PgSQL
 	function field_exists($field, $table)
 	{
 		$query = $this->write_query("SELECT COUNT(column_name) as column_names FROM information_schema.columns WHERE table_name='{$this->table_prefix}{$table}' AND column_name='{$field}'");
-		
+
 		$exists = $this->fetch_field($query, "column_names");
-		
+
 		if($exists > 0)
 		{
 			return true;
@@ -673,7 +673,7 @@ class DB_PgSQL
 			$shutdown_queries[] = $query;
 		}
 	}
-	
+
 	/**
 	 * Performs a simple select query.
 	 *
@@ -682,7 +682,7 @@ class DB_PgSQL
 	 * @param string SQL formatted list of conditions to be matched.
 	 * @param array List of options, order by, order direction, limit, limit start
 	 */
-	
+
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
@@ -690,7 +690,7 @@ class DB_PgSQL
 		{
 			$query .= " WHERE ".$conditions;
 		}
-		
+
 		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
@@ -699,7 +699,7 @@ class DB_PgSQL
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
-		
+
 		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
@@ -708,10 +708,10 @@ class DB_PgSQL
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
-		
+
 		return $this->query($query);
 	}
-	
+
 	/**
 	 * Build an insert query from an array.
 	 *
@@ -726,15 +726,15 @@ class DB_PgSQL
 		{
 			return false;
 		}
-		
+
 		$fields = implode(",", array_keys($array));
 		$values = implode("','", $array);
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} (".$fields.") 
+			INSERT
+			INTO {$this->table_prefix}{$table} (".$fields.")
 			VALUES ('".$values."')
 		");
-		
+
 		if($insert_id != false)
 		{
 			return $this->insert_id();
@@ -744,7 +744,7 @@ class DB_PgSQL
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
@@ -770,8 +770,8 @@ class DB_PgSQL
 		$insert_rows = implode(", ", $insert_rows);
 
 		$this->write_query("
-			INSERT 
-			INTO {$this->table_prefix}{$table} ({$fields}) 
+			INSERT
+			INTO {$this->table_prefix}{$table} ({$fields})
 			VALUES {$insert_rows}
 		");
 	}
@@ -792,16 +792,16 @@ class DB_PgSQL
 		{
 			return false;
 		}
-		
+
 		$comma = "";
 		$query = "";
 		$quote = "'";
-		
+
 		if($no_quote == true)
 		{
 			$quote = "";
 		}
-		
+
 		foreach($array as $field => $value)
 		{
 			$query .= $comma.$field."={$quote}".$value."{$quote}";
@@ -812,7 +812,7 @@ class DB_PgSQL
 			$query .= " WHERE $where";
 		}
 		return $this->write_query("
-			UPDATE {$this->table_prefix}$table 
+			UPDATE {$this->table_prefix}$table
 			SET $query
 		");
 	}
@@ -832,10 +832,10 @@ class DB_PgSQL
 		{
 			$query .= " WHERE $where";
 		}
-		
+
 		return $this->write_query("
-			DELETE 
-			FROM {$this->table_prefix}$table 
+			DELETE
+			FROM {$this->table_prefix}$table
 			$query
 		");
 	}
@@ -858,7 +858,7 @@ class DB_PgSQL
 		}
 		return $string;
 	}
-	
+
 	/**
 	 * Frees the resources of a MySQLi query.
 	 *
@@ -869,7 +869,7 @@ class DB_PgSQL
 	{
 		return pg_free_result($query);
 	}
-	
+
 	/**
 	 * Escape a string used within a like command.
 	 *
@@ -892,11 +892,11 @@ class DB_PgSQL
 		{
 			return $this->version;
 		}
-		
+
 		$version = pg_version($this->current_link);
- 
+
   		$this->version = $version['server'];
-		
+
 		return $this->version;
 	}
 
@@ -909,7 +909,7 @@ class DB_PgSQL
 	{
 		$this->write_query("VACUUM ".$this->table_prefix.$table."");
 	}
-	
+
 	/**
 	 * Analyzes a specific table.
 	 *
@@ -927,19 +927,19 @@ class DB_PgSQL
 	 * @return string The pg command to create the specified table.
 	 */
 	function show_create_table($table)
-	{		
+	{
 		$query = $this->write_query("
 			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotnull as notnull
 			FROM pg_class c
 			LEFT JOIN pg_attribute a ON (a.attrelid = c.oid)
 			LEFT JOIN pg_type t ON (a.atttypid = t.oid)
-			WHERE c.relname = '{$this->table_prefix}{$table}' AND a.attnum > 0 
+			WHERE c.relname = '{$this->table_prefix}{$table}' AND a.attnum > 0
 			ORDER BY a.attnum
 		");
 
 		$lines = array();
 		$table_lines = "CREATE TABLE {$this->table_prefix}{$table} (\n";
-		
+
 		while($row = $this->fetch_array($query))
 		{
 			// Get the data from the table
@@ -989,7 +989,7 @@ class DB_PgSQL
 			{
 				$line .= ' NOT NULL';
 			}
-			
+
 			$lines[] = $line;
 		}
 
@@ -1024,7 +1024,7 @@ class DB_PgSQL
 
 		$table_lines .= implode(", \n", $lines);
 		$table_lines .= "\n)\n";
-		
+
 		return $table_lines;
 	}
 
@@ -1038,22 +1038,22 @@ class DB_PgSQL
 	{
 		$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 		$primary_key = $this->fetch_field($query, 'column_name');
-		
+
 		$query = $this->write_query("
 			SELECT column_name as Field, data_type as Extra
-			FROM information_schema.columns 
+			FROM information_schema.columns
 			WHERE table_name = '{$this->table_prefix}{$table}'
-		");		
+		");
 		while($field = $this->fetch_array($query))
 		{
 			if($field['field'] == $primary_key)
 			{
 				$field['extra'] = 'auto_increment';
 			}
-			
+
 			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
 		}
-		
+
 		return $field_info;
 	}
 
@@ -1113,11 +1113,11 @@ class DB_PgSQL
 	function drop_index($table, $name)
 	{
 		$this->write_query("
-			ALTER TABLE {$this->table_prefix}$table 
+			ALTER TABLE {$this->table_prefix}$table
 			DROP INDEX $name
 		");
 	}
-	
+
 	/**
 	 * Checks to see if an index exists on a specified table
 	 *
@@ -1128,12 +1128,12 @@ class DB_PgSQL
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		
+
 		$query = $this->write_query("SELECT * FROM pg_indexes WHERE tablename='".$this->escape_string($this->table_prefix.$table)."'");
-		
+
 		$exists = $this->fetch_field($query, $index);
 		$this->error_reporting = $err;
-		
+
 		if($exists)
 		{
 			return true;
@@ -1143,7 +1143,7 @@ class DB_PgSQL
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Drop an table with the specified table
 	 *
@@ -1161,7 +1161,7 @@ class DB_PgSQL
 		{
 			$table_prefix = $this->table_prefix;
 		}
-		
+
 		if($hard == false)
 		{
 			if($this->table_exists($table))
@@ -1173,17 +1173,17 @@ class DB_PgSQL
 		{
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
-		
+
 		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
 		$field = $this->fetch_field($query, 'column_name');
-		
+
 		// Do we not have a primary field?
 		if($field)
 		{
 			$this->write_query('DROP SEQUENCE {$table}_{$field}_id_seq');
 		}
 	}
-	
+
 	/**
 	 * Replace contents of table with values
 	 *
@@ -1228,7 +1228,7 @@ class DB_PgSQL
 			while($column = $this->fetch_array($query))
 			{
 				if($column[$main_field] == $replacements[$main_field])
-				{                
+				{
 					$update = true;
 					break;
 				}
@@ -1251,21 +1251,21 @@ class DB_PgSQL
 			return $this->insert_query($table, $replacements, $insert_id);
 		}
 	}
-	
+
 	function build_fields_string($table, $append="")
 	{
 		$fields = $this->show_fields_from($table);
 		$comma = '';
-		
+
 		foreach($fields as $key => $field)
 		{
 			$fieldstring .= $comma.$append.$field['Field'];
 			$comma = ',';
 		}
-		
+
 		return $fieldstring;
 	}
-	
+
 	/**
 	 * Drops a column
 	 *
@@ -1276,7 +1276,7 @@ class DB_PgSQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} DROP {$column}");
 	}
-	
+
 	/**
 	 * Adds a column
 	 *
@@ -1288,7 +1288,7 @@ class DB_PgSQL
 	{
 		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
 	}
-	
+
 	/**
 	 * Modifies a column
 	 *
@@ -1330,7 +1330,7 @@ class DB_PgSQL
 
 		return $result1 && $result2 && $result3;
 	}
-	
+
 	/**
 	 * Renames a column
 	 *
@@ -1347,7 +1347,7 @@ class DB_PgSQL
 		$result2 = $this->modify_column($table, $new_column, $new_definition, $new_not_null, $new_default_value);
 		return ($result1 && $result2);
 	}
-	
+
 	/**
 	 * Sets the table prefix used by the simple select, insert, update and delete functions
 	 *
@@ -1357,7 +1357,7 @@ class DB_PgSQL
 	{
 		$this->table_prefix = $prefix;
 	}
-	
+
 	/**
 	 * Fetched the total size of all mysql tables or a specific table
 	 *

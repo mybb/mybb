@@ -2,10 +2,10 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
- 
+
 $l['banning'] = "Banning";
 $l['banned_ips'] = "Banned IPs";
 $l['banned_ips_desc'] = "Here you can manage IP addresses which are banned from accessing your board.";

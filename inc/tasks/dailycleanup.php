@@ -12,7 +12,7 @@
 function task_dailycleanup($task)
 {
 	global $mybb, $db, $cache, $lang, $plugins;
-	
+
 	require_once MYBB_ROOT."inc/functions_user.php";
 
 	$time = array(
@@ -39,7 +39,7 @@ function task_dailycleanup($task)
 		$db->delete_query("threadsread", "dateline < '".(int)$time['threadreadcut']."'");
 		$db->delete_query("forumsread", "dateline < '".(int)$time['threadreadcut']."'");
 	}
-	
+
 	// Check PMs moved to trash over a week ago & delete them
 	$query = $db->simple_select("privatemessages", "pmid, uid, folder", "deletetime<='".(int)$time['privatemessages']."' AND folder='4'");
 	while($pm = $db->fetch_array($query))
@@ -61,7 +61,7 @@ function task_dailycleanup($task)
 	{
 		$db->delete_query("privatemessages", "pmid IN(".implode(',', $pm_update).")");
 	}
-	
+
 	if(!empty($user_update))
 	{
 		foreach($user_update as $uid)
@@ -69,12 +69,12 @@ function task_dailycleanup($task)
 			update_pm_count($uid);
 		}
 	}
-	
+
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
 	$cache->update_birthdays();
 	$cache->update_forumsdisplay();
-	
+
 	add_task_log($task, $lang->task_dailycleanup_ran);
 }
 ?>

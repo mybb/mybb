@@ -36,7 +36,7 @@ $plugins->run_hooks("admin_user_titles_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_user_titles_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -57,11 +57,11 @@ if($mybb->input['action'] == "add")
 				"stars" => intval($mybb->input['stars']),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
-			
+
 			$utid = $db->insert_query("usertitles", $new_title);
-			
+
 			$cache->update_usertitles();
-			
+
 			$plugins->run_hooks("admin_user_titles_add_commit");
 
 			// Log admin action
@@ -78,14 +78,14 @@ if($mybb->input['action'] == "add")
 			'starimage' => '{theme}/star.gif',
 		);
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_new_user_title);
 	$page->output_header($lang->user_titles." - ".$lang->add_new_user_title);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_title');
 	$form = new Form("index.php?module=user-titles&amp;action=add", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -109,7 +109,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_user_titles_edit");
-	
+
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -139,16 +139,16 @@ if($mybb->input['action'] == "edit")
 				"stars" => intval($mybb->input['stars']),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
-			
+
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
-			
+
 			$cache->update_usertitles();
-			
+
 			$plugins->run_hooks("admin_user_titles_edit_commit");
 
 			// Log admin action
 			log_admin_action($usertitle['utid'], $mybb->input['title'], $mybb->input['posts']);
-			
+
 			flash_message($lang->success_user_title_updated, 'success');
 			admin_redirect("index.php?module=user-titles");
 		}
@@ -156,17 +156,17 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item($lang->edit_user_title);
 	$page->output_header($lang->user_titles." - ".$lang->edit_user_title);
-	
+
 	$sub_tabs['edit_title'] = array(
 		'title' => $lang->edit_user_title,
 		'link' => "index.php?module=user-titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
 		'description' => $lang->edit_user_title_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_title');
 	$form = new Form("index.php?module=user-titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_titles_delete");
-	
+
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("usertitles", "utid='{$usertitle['utid']}'");
-		
+
 		$plugins->run_hooks("admin_user_titles_delete_commit");
 
 		// Log admin action
@@ -232,7 +232,7 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_user_titles_start");
-	
+
 	$page->output_header($lang->manage_user_titles);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_titles');
@@ -241,7 +241,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->user_title);
 	$table->construct_header($lang->minimum_posts, array('width' => '130', 'class' => 'align_center'));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
-	
+
 	$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts'));
 	while($usertitle = $db->fetch_array($query))
 	{
@@ -252,14 +252,14 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=user-titles&amp;action=delete&amp;utid={$usertitle['utid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_titles, array('colspan' => 4));
 		$table->construct_row();
 		$no_results = true;
 	}
-	
+
 	$table->output($lang->manage_user_titles);
 
 	$page->output_footer();

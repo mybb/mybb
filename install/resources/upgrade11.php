@@ -41,7 +41,7 @@ function upgrade11_dbchanges()
 		{
 			$template['template'] = str_replace('<input type="hidden" name="modtype" value="thread" />', '<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="modtype" value="thread" />', $template['template']);
-			
+
 			$template['template'] = str_replace('moderation.php?action=\'+this.options[this.selectedIndex].value+\'&amp;tid={$tid}&amp;modtype=thread', 'moderation.php?action=\'+this.options[this.selectedIndex].value+\'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}', $template['template']);
 		}
 		elseif($template['title'] == "headerinclude")
@@ -57,13 +57,13 @@ var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', $template['template'
 		{
 			// Remove any duplicates
 			$template['template'] = str_replace("<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", "", $template['template']);
-			
+
 			$template['template'] = preg_replace("#<form(.*?)method\=\\\"post\\\"(.*?)>#i", "<form$1method=\"post\"$2>\n<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", $template['template']);
 		}
-		
+
 		// Update MyBB Javascript versions (to clear cache)
 		$template['template'] = str_replace("?ver=121", "?ver=1212", $template['template']);
-		
+
 		$db->update_query("templates", array('template' => $db->escape_string($template['template']), 'version' => '1212'), "tid='{$template['tid']}'", 1);
 	}
 

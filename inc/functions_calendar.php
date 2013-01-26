@@ -27,7 +27,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	{
 		$year = my_date("Y");
 	}
-	
+
 	// Then the month
 	if($month < 1 || $month > 12)
 	{
@@ -35,7 +35,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	}
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
-	
+
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
 
 	$month_link = get_calendar_link($calendar['cid'], $year, $month);
@@ -281,14 +281,14 @@ function get_calendar_permissions($cid=0)
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
 	$groups = explode(",", $gid);
-	
+
 	if(!is_array($calendar_permissions))
 	{
 		return;
 	}
 
 	$current_permissions = array();
-	
+
 	foreach($groups as $gid)
 	{
 		// If this calendar has permissions set for this group
@@ -304,7 +304,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 			}
 		}
 	}
-	
+
 	if(count($current_permissions) == 0)
 	{
 		return;
@@ -411,7 +411,7 @@ function get_prev_month($month, $year)
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
-	
+
 	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
@@ -474,7 +474,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			}
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
-			
+
 			// Get rid of hour/minutes because sometimes they cause the events to stretch into the next day
 			$range_end = gmmktime(23, 59, 59, gmdate("n", $event['endtime_user']), gmdate("j", $event['endtime_user']), gmdate("Y", $event['endtime_user']));
 			while($range_start < $range_end)
@@ -650,7 +650,7 @@ function fetch_weekday_name($weekday, $short=false)
 			$short_weekday_name = $lang->short_sunday;
 			break;
 	}
-	
+
 	if($short == true)
 	{
 		return $short_weekday_name;
@@ -673,7 +673,7 @@ function fetch_weekday_name($weekday, $short=false)
 function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 {
 	$new_time = $last_occurance;
-	
+
 	$repeats = $event['repeats'];
 
 	$start_day = explode("-", gmdate("j-n-Y", $event['starttime_user']));
@@ -1000,7 +1000,7 @@ function fetch_friendly_repetition($event)
 				else
 				{
 					return $lang->sprintf($lang->every_x_months_on_weekday, $occurance, $weekday_name, $event['repeats']['months']);
-				} 
+				}
 			}
 			break;
 		case 5:

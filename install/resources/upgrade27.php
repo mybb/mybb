@@ -145,7 +145,7 @@ function upgrade28_updatetheme()
 	{
 		$output->print_error("Please make sure your admin directory is uploaded correctly.");
 	}
-	
+
 	$output->print_header("Updating Themes");
 	$contents = "<p>Updating the Default theme... ";
 
@@ -169,7 +169,7 @@ function upgrade28_updatetheme()
 	$db->update_query("themes", array("tid" => 2), "tid = '{$tid}'");
 
 	$tid = 2;
-	
+
 	// Now that the default theme is back, we need to insert our colors
 	$query = $db->simple_select("themes", "*", "tid = '{$tid}'");
 
@@ -215,7 +215,7 @@ function upgrade28_updatetheme()
 					"lastmodified" => TIME_NOW,
 					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 				);
-			
+
 				$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 				$css_url = "css.php?stylesheet={$sid}";
 
@@ -233,7 +233,7 @@ function upgrade28_updatetheme()
 				++$count;
 			}
 		}
-		
+
 		$update_array = array(
 			"properties" => $db->escape_string(serialize($properties)),
 			"stylesheets" => $db->escape_string(serialize($stylesheets))

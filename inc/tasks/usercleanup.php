@@ -60,7 +60,7 @@ function task_usercleanup($task)
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 	}
-	
+
 	$cache->update_moderators();
 
 	if(is_object($plugins))

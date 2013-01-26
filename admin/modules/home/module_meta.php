@@ -24,25 +24,25 @@ function home_meta()
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
 	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home-credits");
 	$sub_menu = $plugins->run_hooks("admin_home_menu", $sub_menu);
-	
+
 	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
-	
+
 	return true;
 }
 
 function home_action_handler($action)
 {
 	global $page, $db, $lang, $plugins;
-	
+
 	$page->active_module = "home";
-	
+
 	$actions = array(
 		'preferences' => array('active' => 'preferences', 'file' => 'preferences.php'),
 		'credits' => array('active' => 'credits', 'file' => 'credits.php'),
 		'version_check' => array('active' => 'version_check', 'file' => 'version_check.php'),
 		'dashboard' => array('active' => 'dashboard', 'file' => 'index.php')
 	);
-	
+
 	if(!isset($actions[$action]))
 	{
 		$page->active_action = "dashboard";
@@ -51,9 +51,9 @@ function home_action_handler($action)
 	{
 		$page->active_action = $actions[$action]['active'];
 	}
-	
+
 	$actions = $plugins->run_hooks("admin_home_action_handler", $actions);
-	
+
 	if($page->active_action == "dashboard")
 	{
 		// Quick Access
@@ -64,12 +64,12 @@ function home_action_handler($action)
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates");
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
-		
+
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
-		
+
 		$sidebar = new SidebarItem($lang->quick_access);
 		$sidebar->add_menu_items($sub_menu, $page->active_action);
-		
+
 		$page->sidebar .= $sidebar->get_markup();
 
 		// Online Administrators in the last 30 minutes
@@ -77,12 +77,12 @@ function home_action_handler($action)
 		$query = $db->simple_select("adminsessions", "uid, ip", "lastactive > {$timecut}");
 		$online_users = "<ul class=\"menu online_admins\">";
 		$online_admins = array();
-		
+
 		// If there's only 1 user online, it has to be us.
 		if($db->num_rows($query) == 1)
 		{
 			global $mybb;
-			
+
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
@@ -101,7 +101,7 @@ function home_action_handler($action)
 					"ip" => $user['ip']
 				);
 			}
-			
+
 			$query = $db->simple_select("users", "uid, username", "uid IN(".implode(',', $uid_in).")", array('order_by' => 'username'));
 			while($user = $db->fetch_array($query))
 			{
@@ -113,11 +113,11 @@ function home_action_handler($action)
 				unset($online_admins[$user['uid']]);
 			}
 		}
-		
+
 		$done_users = array();
-		
+
 		asort($online_admins);
-		
+
 		foreach($online_admins as $user)
 		{
 			if(!$done_users["{$user['uid']}.{$user['ip']}"])

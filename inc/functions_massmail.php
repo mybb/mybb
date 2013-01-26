@@ -65,9 +65,9 @@ function build_mass_mail_query($conditions)
 		{
 			$conditions['usergroup'] = array($conditions['usergroup']);
 		}
-		
+
 		$conditions['usergroup'] = array_map('intval', $conditions['usergroup']);
-		
+
 		foreach($conditions['usergroup'] as $usergroup)
 		{
 			switch($db->type)

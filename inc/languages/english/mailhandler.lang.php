@@ -5,7 +5,7 @@
  *
  * $Id$
  */
- 
+
 $l['error_no_connection'] = 'There was an error establishing a connection through the server: ';
 $l['error_no_message'] = 'There was no message specified.';
 $l['error_no_subject'] = 'There was no subject specified.';

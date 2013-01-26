@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -43,7 +43,7 @@ $l['new_post'] = "1 new post";
 $l['view_new'] = "View New Posts";
 $l['view_todays'] = "View Today's Posts";
 $l['online'] = "Online Users";
-$l['online_user'] = "There is currently 1 user online"; 
+$l['online_user'] = "There is currently 1 user online";
 $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
 $l['no_one'] = "no-one";

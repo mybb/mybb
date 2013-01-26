@@ -119,7 +119,7 @@ if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 }
 
 $valid = array(
-	'showthread.php', 
+	'showthread.php',
 	'forumdisplay.php',
 	'newthread.php',
 	'ewreply.php',
@@ -352,12 +352,12 @@ if($mybb->user['uid'] != 0)
 		$admin_dir = $config['admin_dir'];
 		eval('$admincplink = "'.$templates->get('header_welcomeblock_member_admin').'";');
 	}
-	
+
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		eval('$modcplink = "'.$templates->get('header_welcomeblock_member_moderator').'";');
 	}
-	
+
 	// Format the welcome back message
 	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link($mybb->user['username'], $mybb->user['uid']), $lastvisit);
 
@@ -392,7 +392,7 @@ $groupleaders = $cache->read('groupleaders');
 if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb->user['uid'], $groupleaders))
 {
 	$groupleader = $groupleaders[$mybb->user['uid']];
-	
+
 	$gids = "'0'";
 	foreach($groupleader as $user)
 	{

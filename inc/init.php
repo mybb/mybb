@@ -76,7 +76,7 @@ else
 	// Include the required core files
 	require_once MYBB_ROOT."inc/config.php";
 	$mybb->config = &$config;
-	
+
 	if(!isset($config['database']))
 	{
 		$not_installed = true;
@@ -178,7 +178,7 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			"order_by" => "title",
 			"order_dir" => "ASC"
 		);
-		
+
 		$query = $db->simple_select("settings", "value, name", "", $options);
 		while($setting = $db->fetch_array($query))
 		{

@@ -22,7 +22,7 @@ function build_postbit($post, $post_type=0)
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
-	
+
 	$hascustomtitle = 0;
 
 	// Set up the message parser if it doesn't already exist.
@@ -92,12 +92,12 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			$parser_options['allow_videocode'] = $forum['allowvideocode'];
 			$parser_options['filter_badwords'] = 1;
-			
+
 			if(!$post['username'])
 			{
 				$post['username'] = $lang->guest;
 			}
-			
+
 			if($post['userusername'])
 			{
 				$parser_options['me_username'] = $post['userusername'];
@@ -108,7 +108,7 @@ function build_postbit($post, $post_type=0)
 			}
 			break;
 	}
-	
+
 	// Sanatize our custom profile fields for use in templates, if people choose to use them
 	foreach($post as $post_field => $field_value)
 	{
@@ -127,7 +127,7 @@ function build_postbit($post, $post_type=0)
 			{
 				$mybb->settings['postsperpage'] = 20;
 			}
-			
+
 			$postcounter = $mybb->settings['postsperpage']*($page-1);
 		}
 		else
@@ -144,7 +144,7 @@ function build_postbit($post, $post_type=0)
 	{
 		$post_extra_style = "margin-top: 5px;";
 	}
-	
+
 	if(!$altbg)
 	{ // Define the alternate background colour if this is the first post
 		$altbg = "trow1";
@@ -162,7 +162,7 @@ function build_postbit($post, $post_type=0)
 	{
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 	}
-	
+
 	if(empty($post['subject']))
 	{
 		$post['subject'] = '&nbsp;';
@@ -194,7 +194,7 @@ function build_postbit($post, $post_type=0)
 				$titlescache[$usertitle['posts']] = $usertitle;
 			}
 		}
-		
+
 		if(is_array($titlescache))
 		{
 			krsort($titlescache);
@@ -230,12 +230,12 @@ function build_postbit($post, $post_type=0)
 		$post['profilelink_plain'] = get_profile_link($post['uid']);
 		$post['username_formatted'] = format_name($post['username'], $post['usergroup'], $post['displaygroup']);
 		$post['profilelink'] = build_profile_link($post['username_formatted'], $post['uid']);
-		
+
 		if(trim($post['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
 		}
-		
+
 		if($usergroup['usertitle'] != "" && !$hascustomtitle)
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
@@ -311,7 +311,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
-		
+
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
@@ -375,7 +375,7 @@ function build_postbit($post, $post_type=0)
 				$warning_level = 100;
 			}
 			$warning_level = get_colored_warning_level($warning_level);
-			
+
 			// If we can warn them, it's not the same person, and we're in a PM or a post.
 			if($mybb->usergroup['canwarnusers'] != 0 && $post['uid'] != $mybb->user['uid'] && ($post_type == 0 || $post_type == 2))
 			{
@@ -389,14 +389,14 @@ function build_postbit($post, $post_type=0)
 			}
 			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
 		}
-		
+
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
 		$post['username'] = $post['username'];
 		$post['profilelink'] = format_name($post['username'], 1);
-		
+
 		if($usergroup['usertitle'])
 		{
 			$post['usertitle'] = $usergroup['usertitle'];
@@ -405,7 +405,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
-		
+
 		$usergroup['title'] = $lang->na;
 
 		$post['userregdate'] = $lang->na;
@@ -420,7 +420,7 @@ function build_postbit($post, $post_type=0)
 		$post['replink'] = '';
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
-	
+
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
 	$post['button_quote'] = '';
@@ -430,22 +430,22 @@ function build_postbit($post, $post_type=0)
 	$post['button_replyall_pm'] = '';
 	$post['button_forward_pm']  = '';
 	$post['button_delete_pm'] = '';
-	
+
 	// For private messages, fetch the reply/forward/delete icons
 	if($post_type == 2 && $post['pmid'])
 	{
-		global $replyall;		
-		
+		global $replyall;
+
 		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
 		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
 		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
-		
+
 		if($replyall == true)
 		{
 			eval("\$post['button_replyall_pm'] = \"".$templates->get("postbit_replyall_pm")."\";");
 		}
 	}
-	
+
 	if(!$post_type)
 	{
 		// Figure out if we need to show an "edited by" message
@@ -457,12 +457,12 @@ function build_postbit($post, $post_type=0)
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
-		
+
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
-		
+
 		// Quick Delete button
 		$can_delete = 0;
 		if($mybb->user['uid'] == $post['uid'])
@@ -476,12 +476,12 @@ function build_postbit($post, $post_type=0)
 				$can_delete = 1;
 			}
 		}
-		
+
 		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
-		
+
 		// Inline moderation stuff
 		if($ismod)
 		{
@@ -494,9 +494,9 @@ function build_postbit($post, $post_type=0)
 			{
 				$inlinecheck = "";
 			}
-			
+
 			eval("\$post['inlinecheck'] = \"".$templates->get("postbit_inlinecheck")."\";");
-			
+
 			if($post['visible'] == 0)
 			{
 				$invisiblepost = 1;
@@ -509,17 +509,17 @@ function build_postbit($post, $post_type=0)
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
-		
+
 		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
-		
+
 		if($forumpermissions['canpostreplys'] != 0 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
-		
+
 		if($mybb->user['uid'] != "0")
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
@@ -533,7 +533,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
 		}
 	}
-	
+
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if(!$post_type || $post_type == 2)
 	{
@@ -544,7 +544,7 @@ function build_postbit($post, $post_type=0)
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
 			else if($mybb->settings['logip'] == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
-			{		
+			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
 			else
@@ -557,19 +557,19 @@ function build_postbit($post, $post_type=0)
 			$post['iplogged'] = "";
 		}
 	}
-	
+
 	if($post['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
 	}
-	
+
 	// If we have incoming search terms to highlight - get it done.
 	if(!empty($mybb->input['highlight']))
 	{
 		$parser_options['highlight'] = $mybb->input['highlight'];
 		$post['subject'] = $parser->highlight_message($post['subject'], $parser_options['highlight']);
 	}
-	
+
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	$post['attachments'] = '';
@@ -600,7 +600,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$icon_cache = $cache->read("posticons");
-	
+
 	if($post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
 		$icon = $icon_cache[$post['icon']];
@@ -613,7 +613,7 @@ function build_postbit($post, $post_type=0)
 	{
 		$post['icon'] = "";
 	}
-	
+
 	$post_visibility = '';
 	switch($post_type)
 	{
@@ -639,17 +639,17 @@ function build_postbit($post, $post_type=0)
 			}
 			break;
 	}
-	
+
 	if($mybb->settings['postlayout'] == "classic")
 	{
 		eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
 	}
 	else
 	{
-		eval("\$postbit = \"".$templates->get("postbit")."\";");		
+		eval("\$postbit = \"".$templates->get("postbit")."\";");
 	}
 	$GLOBALS['post'] = "";
-	
+
 	return $postbit;
 }
 
@@ -689,7 +689,7 @@ function get_post_attachments($id, &$post)
 				{
 					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
-					// Show as download for all other cases 
+					// Show as download for all other cases
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
@@ -708,7 +708,7 @@ function get_post_attachments($id, &$post)
 				{
 					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
-					// Show as download for all other cases 
+					// Show as download for all other cases
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
 					{
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");

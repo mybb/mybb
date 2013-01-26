@@ -34,7 +34,7 @@ class PMDataHandler extends DataHandler
 	* @var string
 	*/
 	public $language_prefix = 'pmdata';
-	
+
 	/**
 	 * Array of data inserted in to a private message.
 	 *
@@ -48,11 +48,11 @@ class PMDataHandler extends DataHandler
 	 * @var array
 	 */
 	public $pm_update_data = array();
-	
+
 	/**
 	 * PM ID currently being manipulated by the datahandlers.
 	 */
-	public $pmid = 0;	
+	public $pmid = 0;
 
 	/**
 	 * Verifies a private message subject.
@@ -242,7 +242,7 @@ class PMDataHandler extends DataHandler
 		{
 			// Collect group permissions for this recipient.
 			$recipient_permissions = user_permissions($user['uid']);
-	
+
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
@@ -253,7 +253,7 @@ class PMDataHandler extends DataHandler
 				{
 					$this->set_error("recipient_is_ignoring", array($user['username']));
 				}
-				
+
 				// Is the recipient only allowing private messages from their buddy list?
 				if($mybb->settings['allowbuddyonly'] == 1 && $user['receivefrombuddy'] == 1)
 				{
@@ -263,7 +263,7 @@ class PMDataHandler extends DataHandler
 						$this->set_error("recipient_has_buddy_only", array(htmlspecialchars_uni($user['username'])));
 					}
 				}
-				
+
 				// Can the recipient actually receive private messages based on their permissions or user setting?
 				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
 				{
@@ -271,7 +271,7 @@ class PMDataHandler extends DataHandler
 					return false;
 				}
 			}
-	
+
 			// Check to see if the user has reached their private message quota - if they have, email them.
 			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
 			{
@@ -314,13 +314,13 @@ class PMDataHandler extends DataHandler
 
 				$db->insert_query("mailqueue", $new_email);
 				$cache->update_mailqueue();
-	
+
 				if($this->admin_override != true)
 				{
 					$this->set_error("recipient_reached_quota", array($user['username']));
 				}
 			}
-	
+
 			// Everything looks good, assign some specifics about the recipient
 			$pm['recipients'][$user['uid']] = array(
 				"uid" => $user['uid'],
@@ -331,7 +331,7 @@ class PMDataHandler extends DataHandler
 				"pmnotify" => $user['pmnotify'],
 				"language" => $user['language']
 			);
-			
+
 			// If this recipient is defined as a BCC recipient, save it
 			if($user['bcc'] == 1)
 			{
@@ -340,7 +340,7 @@ class PMDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
 	/**
 	* Verify that the user is not flooding the system.
 	*
@@ -351,13 +351,13 @@ class PMDataHandler extends DataHandler
 		global $mybb, $db;
 
 		$pm = &$this->data;
-		
+
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
 		if($mybb->settings['pmfloodsecs'] > 0 && $pm['fromid'] != 0 && $this->admin_override == false)
 		{
 			// Fetch the senders profile data.
 			$sender = get_user($pm['fromid']);
-			
+
 			// Calculate last post
 			$query = $db->simple_select("privatemessages", "dateline", "fromid='".$db->escape_string($pm['fromid'])."' AND toid != '0'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$sender['lastpm'] = $db->fetch_field($query, "dateline");
@@ -417,7 +417,7 @@ class PMDataHandler extends DataHandler
 		global $plugins;
 
 		$pm = &$this->data;
-		
+
 		if(!$pm['savedraft'])
 		{
 			$this->verify_pm_flooding();
@@ -429,7 +429,7 @@ class PMDataHandler extends DataHandler
 		$this->verify_sender();
 
 		$this->verify_recipient();
-		
+
 		$this->verify_message();
 
 		$this->verify_options();
@@ -598,15 +598,15 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_newpm;
 					$emailmessage = $userlang->email_newpm;
 				}
-				
+
 				if(!$pm['sender']['username'])
 				{
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
-				
+
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
-				
+
 				$new_email = array(
 					"mailto" => $db->escape_string($recipient['email']),
 					"mailfrom" => '',

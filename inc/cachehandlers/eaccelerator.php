@@ -18,11 +18,11 @@ class eacceleratorCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	public $unique_id;
-	
+
 	function eacceleratorCacheHandler($silent=false)
 	{
 		global $mybb;
-		
+
 		if(!function_exists("eaccelerator_get"))
 		{
 			// Check if our DB engine is loaded
@@ -50,7 +50,7 @@ class eacceleratorCacheHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve an item from the cache.
 	 *
@@ -58,7 +58,7 @@ class eacceleratorCacheHandler
 	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	
+
 	function fetch($name, $hard_refresh=false)
 	{
 		$data = eaccelerator_get($this->unique_id."_".$name);
@@ -69,7 +69,7 @@ class eacceleratorCacheHandler
 
 		return @unserialize($data);
 	}
-	
+
 	/**
 	 * Write an item to the cache.
 	 *
@@ -84,7 +84,7 @@ class eacceleratorCacheHandler
 		eaccelerator_unlock($this->unique_id."_".$name);
 		return $status;
 	}
-	
+
 	/**
 	 * Delete a cache
 	 *
@@ -95,7 +95,7 @@ class eacceleratorCacheHandler
 	{
 		return eaccelerator_rm($this->unique_id."_".$name);
 	}
-	
+
 	/**
 	 * Disconnect from the cache
 	 */
@@ -103,11 +103,11 @@ class eacceleratorCacheHandler
 	{
 		return true;
 	}
-	
+
 	function size_of($name)
 	{
 		global $lang;
-		
+
 		return $lang->na;
 	}
 }

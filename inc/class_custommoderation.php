@@ -14,7 +14,7 @@ if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
- 
+
 /**
  * Used to execute a custom moderation tool
  *
@@ -126,7 +126,7 @@ class CustomModeration extends Moderation
 			{
 				$this->delete_post($pid);
 			}
-			
+
 			$delete_tids = array();
 			$imploded_pids = implode(",", array_map("intval", $pids));
 			$query = $db->simple_select("threads", "tid", "firstpost IN ({$imploded_pids})");
@@ -169,7 +169,7 @@ class CustomModeration extends Moderation
 			{
 				$query = $db->simple_select("posts", "COUNT(*) AS totalposts", "tid='{$tid}'");
 				$count = $db->fetch_array($query);
-				
+
 				if($count['totalposts'] == 1)
 				{
 					error($lang->error_cantsplitonepost);
@@ -179,7 +179,7 @@ class CustomModeration extends Moderation
 				{
 					error($lang->error_cantsplitall);
 				}
-				
+
 				if($post_options['splitposts'] == -2)
 				{
 					$post_options['splitposts'] = $thread['fid'];
@@ -211,13 +211,13 @@ class CustomModeration extends Moderation
 					if(empty($post_options['splitpostsreplysubject']))
 					{
 						$post_options['splitpostsreplysubject'] = 'RE: '.$new_subject;
-					}	
+					}
 					else
 					{
 						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $post_options['splitpostsreplysubject']);
 						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
 					}
-					
+
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
@@ -240,7 +240,7 @@ class CustomModeration extends Moderation
 					if($posthandler->validate_post($post))
 					{
 						$posthandler->insert_post($post);
-					}					
+					}
 				}
 			}
 		}
@@ -282,7 +282,7 @@ class CustomModeration extends Moderation
 				{
 					if($last_tid != 0)
 					{
-						$this->merge_threads($last_tid, $tid['tid'], $tid['subject']); // And keep merging them until we get down to one thread. 
+						$this->merge_threads($last_tid, $tid['tid'], $tid['subject']); // And keep merging them until we get down to one thread.
 					}
 					$last_tid = $tid['tid'];
 				}
@@ -327,7 +327,7 @@ class CustomModeration extends Moderation
 			{
 				$this->toggle_thread_status($tids);
 			}
-			
+
 			if($thread_options['threadprefix'] != '-1')
 			{
 				$this->apply_thread_prefix($tids, $thread_options['threadprefix']); // Update thread prefix
@@ -342,12 +342,12 @@ class CustomModeration extends Moderation
 				$tid_list = implode(',', $tids);
 				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
-				
+
 				// Loop threads adding a reply to each one
 				while($thread = $db->fetch_array($query))
 				{
 					$posthandler = new PostDataHandler("insert");
-			
+
 					if(empty($thread_options['replysubject']))
                     {
                         $new_subject = 'RE: '.$thread['subject'];
@@ -357,7 +357,7 @@ class CustomModeration extends Moderation
                         $new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
                         $new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
                     }
-    
+
                     // Set the post data that came from the input to the $post array.
                     $post = array(
                         "tid" => $thread['tid'],

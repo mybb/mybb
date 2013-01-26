@@ -22,7 +22,7 @@ $plugins->run_hooks("admin_config_post_icons_begin");
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_post_icons_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -45,7 +45,7 @@ if($mybb->input['action'] == "add")
 			$iid = $db->insert_query("icons", $new_icon);
 
 			$cache->update_posticons();
-			
+
 			$plugins->run_hooks("admin_config_post_icons_add_commit");
 
 			// Log admin action
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "add")
 	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
 
 	$form->output_submit_wrapper($buttons);
-	
+
 	$form->end();
 
 	$page->output_footer();
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "add_multiple")
 {
 	$plugins->run_hooks("admin_config_post_icons_add_multiple");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if($mybb->input['step'] == 1)
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "add_multiple")
 					}
 				}
 				closedir($dir);
-	
+
 				if(count($icons) == 0)
 				{
 					$errors[] = $lang->error_no_images;
@@ -220,7 +220,7 @@ if($mybb->input['action'] == "add_multiple")
 			}
 		}
 		else
-		{			
+		{
 			$path = $mybb->input['pathfolder'];
 			reset($mybb->input['include']);
 			$name = $mybb->input['name'];
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$cache->update_posticons();
-			
+
 			$plugins->run_hooks("admin_config_post_icons_add_multiple_commit");
 
 			// Log admin action
@@ -263,7 +263,7 @@ if($mybb->input['action'] == "add_multiple")
 		'title'	=> $lang->manage_post_icons,
 		'link'	=> "index.php?module=config-post_icons"
 	);
-	
+
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
 		'link'	=> "index.php?module=config-post_icons&amp;action=add"
@@ -300,10 +300,10 @@ if($mybb->input['action'] == "add_multiple")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_post_icons_edit");
-	
+
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
-	
+
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
@@ -330,9 +330,9 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$db->update_query("icons", $icon, "iid='".intval($mybb->input['iid'])."'");
-			
+
 			$cache->update_posticons();
-			
+
 			$plugins->run_hooks("admin_config_post_icons_edit_commit");
 
 			// Log admin action
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "edit")
 			admin_redirect('index.php?module=config-post_icons');
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_post_icon);
 	$page->output_header($lang->post_icons." - ".$lang->edit_post_icon);
 
@@ -383,10 +383,10 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_post_icons_delete");
-	
+
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
-	
+
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("icons", "iid='{$icon['iid']}'");
 
 		$cache->update_posticons();
-		
+
 		$plugins->run_hooks("admin_config_post_icons_delete_commit");
 
 		// Log admin action
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_post_icons_start");
-	
+
 	$page->output_header($lang->post_icons);
 
 	$sub_tabs['manage_icons'] = array(
@@ -478,7 +478,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config-post_icons&amp;action=delete&amp;iid={$icon['iid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_post_icons, array('colspan' => 4));
@@ -489,7 +489,7 @@ if(!$mybb->input['action'])
 
 	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
 	$total_rows = $db->fetch_field($query, "icons");
-	
+
 	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config-post_icons&amp;page={page}");
 
 	$page->output_footer();

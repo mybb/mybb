@@ -100,17 +100,17 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
-	
+
 	if(!validate_email_format($mybb->input['email']))
 	{
 		$errors[] = $lang->error_invalidemail;
 	}
-	
+
 	if(empty($mybb->input['subject']))
 	{
 		$errors[] = $lang->error_nosubject;
-	}	
-	
+	}
+
 	if(empty($mybb->input['message']))
 	{
 		$errors[] = $lang->error_nomessage;
@@ -127,14 +127,14 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		{
 			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		}
-		
+
 		$threadlink = get_thread_link($thread['tid']);
-		
+
 		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
-		
+
 		// Send the actual message
 		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->user['email']);
-		
+
 		if($mybb->settings['mail_logging'] > 0)
 		{
 			// Log the message
@@ -180,7 +180,7 @@ if(!$mybb->input['action'])
 		$subject = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
 		$message = '';
 	}
-	
+
 	$plugins->run_hooks("sendthread_end");
 
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");

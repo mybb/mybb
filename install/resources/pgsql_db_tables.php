@@ -14,7 +14,7 @@ if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
- 
+
 $tables[] = "CREATE TABLE mybb_adminlog (
   uid int NOT NULL default '0',
   ipaddress varchar(50) NOT NULL default '',
@@ -60,7 +60,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
     perpage int NOT NULL default '0',
     view_type varchar(6) NOT NULL default '',
     PRIMARY KEY (vid)
-);"; 
+);";
 
 $tables[] = "CREATE TABLE mybb_announcements (
   aid serial,
@@ -548,7 +548,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   usergrouptype varchar(120) NOT NULL default '0',
   PRIMARY KEY(pid)
 );";
-	
+
 $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid serial,
   pid int NOT NULL default '0',
@@ -667,7 +667,7 @@ $tables[] = "CREATE TABLE mybb_stats (
 	numposts numeric(10,0) NOT NULL default '0',
 	UNIQUE (dateline)
 );";
-	
+
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid serial,
 	title varchar(120) NOT NULL default '',
@@ -817,7 +817,7 @@ $tables[] = "CREATE TABLE mybb_userfields (
 );";
 $query = $db->write_query("SELECT column_name
 						  FROM information_schema.constraint_column_usage
-						  WHERE table_name = '".$config['tableprefix']."userfields' 
+						  WHERE table_name = '".$config['tableprefix']."userfields'
 						  AND constraint_name = '".$config['tableprefix']."userfields_pkey'
 						  LIMIT 1");
 $main_field = $db->fetch_field($query, 'column_name');

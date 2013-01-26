@@ -41,7 +41,7 @@ $plugins->run_hooks("admin_forum_moderation_queue_begin");
 if($mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_commit");
-	
+
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -66,7 +66,7 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_threads($threads_to_approve);
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_threads_commit");
 
 		// Log admin action
@@ -95,7 +95,7 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_posts($posts_to_approve);
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_posts_commit");
 
 		// Log admin action
@@ -120,7 +120,7 @@ if($mybb->request_method == "post")
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
 			}
 		}
-		
+
 		$plugins->run_hooks("admin_forum_moderation_queue_attachments_commit");
 
 		// Log admin action
@@ -141,7 +141,7 @@ $all_options .= "</ul>\n";
 if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_threads");
-	
+
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0");
@@ -233,7 +233,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_posts");
-	
+
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->query("
@@ -294,7 +294,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($post['threadsubject']);
 			$post['subject'] = htmlspecialchars_uni($post['subject']);
-			
+
 			if(!$post['subject'])
 			{
 				$post['subject'] = $lang->re." ".$post['threadsubject'];
@@ -348,7 +348,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 {
 	$plugins->run_hooks("admin_forum_moderation_queue_attachments");
-	
+
 	$query = $db->query("
 		SELECT COUNT(aid) AS unapprovedattachments
 		FROM  ".TABLE_PREFIX."attachments a

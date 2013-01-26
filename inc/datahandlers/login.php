@@ -272,7 +272,7 @@ class LoginDataHandler extends DataHandler
 
 		$db->update_query("sessions", $newsession, "sid = '{$session->sid}'");
 		$db->update_query("users", array("loginattempts" => 1), "uid = '{$user['uid']}'");
-		
+
 		$remember = null;
 		if($mybb->input['remember'] != "yes")
 		{

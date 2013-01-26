@@ -16,7 +16,7 @@
  */
 
 class XMLParser {
-	
+
 	public $data;
 	public $vals;
 	public $collapse_dups = 1;
@@ -76,7 +76,7 @@ class XMLParser {
 		}
 		return $tag;
 	}
-	
+
 	/**
 	 * Fetch the children for from a specific node array
 	 *

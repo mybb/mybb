@@ -92,9 +92,9 @@ function output_page($contents)
 	{
 		$contents = gzip_encode($contents, $mybb->settings['gziplevel']);
 	}
-	
+
 	@header("Content-type: text/html; charset={$lang->settings['charset']}");
-	
+
 	echo $contents;
 
 	$plugins->run_hooks("post_output_page");
@@ -110,7 +110,7 @@ function output_page($contents)
 function add_shutdown($name, $arguments=array())
 {
 	global $shutdown_functions;
-	
+
 	if(!is_array($arguments))
 	{
 		$arguments = array($arguments);
@@ -162,7 +162,7 @@ function run_shutdown()
 		{
 			require MYBB_ROOT."inc/config.php";
 		}
-		
+
 		if(isset($config))
 		{
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
@@ -180,8 +180,8 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
-			
-			
+
+
 			$db->connect($config['database']);
 			define("TABLE_PREFIX", $config['database']['table_prefix']);
 			$db->set_table_prefix(TABLE_PREFIX);
@@ -251,7 +251,7 @@ function send_mail_queue($count=10)
 		{
 			// Delete the message from the queue
 			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
-			
+
 			if($db->affected_rows() == 1)
 			{
 				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
@@ -285,8 +285,8 @@ function parse_page($contents)
 	{
 		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
 	}
-	
-	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents); 
+
+	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents);
 
 	if($lang->settings['rtl'] == 1)
 	{
@@ -302,7 +302,7 @@ function parse_page($contents)
 	{
 		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
 	}
-	
+
 	return $contents;
 }
 
@@ -443,7 +443,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	else
 	{
 		if($ty && $format == $mybb->settings['dateformat'])
-		{			
+		{
 			if($todaysdate == $date)
 			{
 				$date = $lang->today;
@@ -491,12 +491,12 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 {
 	global $mybb;
 	static $mail;
-	
+
 	// Does our object not exist? Create it
 	if(!is_object($mail))
 	{
 		require_once MYBB_ROOT."inc/class_mailhandler.php";
-		
+
 		if($mybb->settings['mail_handler'] == 'smtp')
 		{
 			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
@@ -508,7 +508,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 			$mail = new PhpMail();
 		}
 	}
-	
+
 	// Using SMTP based mail
 	if($mybb->settings['mail_handler'] == 'smtp')
 	{
@@ -517,7 +517,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 			$mail->keep_alive = true;
 		}
 	}
-	
+
 	// Using PHP based mail()
 	else
 	{
@@ -526,7 +526,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 			$mail->additional_parameters = $mybb->settings['mail_parameters'];
 		}
 	}
-	
+
 	// Build and send
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
 	return $mail->send();
@@ -649,7 +649,7 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 function cache_forums($force=false)
 {
 	global $forum_cache, $cache;
-	
+
 	if($force == true)
 	{
 		$forum_cache = $cache->read("forums", 1);
@@ -694,7 +694,7 @@ function get_child_list($fid)
 	{
 		return;
 	}
-	
+
 	foreach($forums_by_parent[$fid] as $forum)
 	{
 		$forums[] = $forum['fid'];
@@ -829,7 +829,7 @@ function error_no_permission()
 		}
 
 		$redirect_url = htmlspecialchars_uni($redirect_url);
-		
+
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
@@ -862,7 +862,7 @@ function redirect($url, $message="", $title="")
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
 	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
-	
+
 	$plugins->run_hooks("redirect", $redirect_args);
 
 	if(isset($mybb->input['ajax']))
@@ -894,7 +894,7 @@ function redirect($url, $message="", $title="")
 	{
 		$title = $mybb->settings['bbname'];
 	}
-	
+
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
 	if($mybb->settings['redirects'] == 1 && (isset($mybb->user['showredirect']) || !$mybb->user['uid']))
 	{
@@ -910,7 +910,7 @@ function redirect($url, $message="", $title="")
 		$url = str_replace(array("\n","\r",";"), "", $url);
 
 		run_shutdown();
-		
+
 		if(my_substr($url, 0, 7) !== 'http://' && my_substr($url, 0, 8) !== 'https://' && my_substr($url, 0, 1) !== '/')
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
@@ -941,7 +941,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	{
 		return;
 	}
-	
+
 	$url = str_replace("&amp;", "&", $url);
 	$url = htmlspecialchars_uni($url);
 
@@ -1033,7 +1033,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
-	
+
 	if($breadcrumb == true)
 	{
 		eval("\$multipage = \"".$templates->get("multipage_breadcrumb")."\";");
@@ -1182,7 +1182,7 @@ function usergroup_permissions($gid=0)
 				{
 					$usergroup[$perm] = 0;
 					continue;
-				} 
+				}
 
 				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?
 				{
@@ -1315,16 +1315,16 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-	
+
 	$current_permissions = array();
 	$only_view_own_threads = 1;
-	
+
 	foreach($groups as $gid)
 	{
 		if($groupscache[$gid])
 		{
 			$level_permissions = $fpermcache[$fid][$gid];
-			
+
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($level_permissions))
 			{
@@ -1340,15 +1340,15 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 							break;
 						}
 					}
-					
+
 					// If we STILL don't have forum permissions we use the usergroup itself
 					if(empty($level_permissions))
 					{
 						$level_permissions = $groupscache[$gid];
-					}					
+					}
 				}
 			}
-			
+
 			foreach($level_permissions as $permission => $access)
 			{
 				if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
@@ -1386,9 +1386,9 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 function check_forum_password($fid, $pid=0)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
-	
+
 	$showform = true;
-	
+
 	if(!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
@@ -1409,14 +1409,14 @@ function check_forum_password($fid, $pid=0)
 			{
 				continue;
 			}
-			
+
 			if($forum_cache[$parent_id]['password'] != "")
 			{
 				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
-	
+
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
@@ -1483,7 +1483,7 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if($uid == 0)
 	{
 		return false;
@@ -1591,7 +1591,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 	{
 		$uid = $mybb->user['uid'];
 	}
-	
+
 	if($uid == 0)
 	{
 		return false;
@@ -1627,7 +1627,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 		else
 		{
 			$modperms = get_moderator_permissions($fid, $uid);
-			
+
 			if(!$action && $modperms)
 			{
 				return true;
@@ -1671,7 +1671,7 @@ function get_post_icons()
 		$posticons[$posticon['name']] = $posticon;
 	}
 	krsort($posticons);
-	
+
 	foreach($posticons as $dbicon)
 	{
 		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
@@ -1756,7 +1756,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	{
 		$cookie .= "; HttpOnly";
 	}
-	
+
 	$mybb->cookies[$name] = $value;
 
 	header($cookie, false);
@@ -1770,10 +1770,10 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 function my_unsetcookie($name)
 {
 	global $mybb;
-	
+
 	$expires = -3600;
 	my_setcookie($name, "", $expires);
-	
+
 	unset($mybb->cookies[$name]);
 }
 
@@ -1787,7 +1787,7 @@ function my_unsetcookie($name)
 function my_get_array_cookie($name, $id)
 {
 	global $mybb;
-	
+
 	if(!isset($mybb->cookies['mybb'][$name]))
 	{
 		return false;
@@ -1815,14 +1815,14 @@ function my_get_array_cookie($name, $id)
 function my_set_array_cookie($name, $id, $value, $expires="")
 {
 	global $mybb;
-	
+
 	$cookie = $mybb->cookies['mybb'];
 	$newcookie = my_unserialize($cookie[$name]);
 
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
-	
+
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
 }
@@ -1843,7 +1843,7 @@ function my_unserialize($data)
 	}
 
 	return $array;
-} 
+}
 
 /**
  * Returns the serverload of the system.
@@ -1876,7 +1876,7 @@ function get_server_load()
 			{
 				return $lang->unknown;
 			}
-			
+
 			// Suhosin likes to throw a warning if exec is disabled then die - weird
 			if($func_blacklist = @ini_get('suhosin.executor.func.blacklist'))
 			{
@@ -1976,12 +1976,12 @@ function update_stats($changes=array())
 		$new_stats['lastuid'] = $lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
-	
+
 	if(empty($new_stats))
 	{
 		return;
 	}
-	
+
 	if(is_array($stats))
 	{
 		$stats = array_merge($stats, $new_stats);
@@ -2034,7 +2034,7 @@ function update_forum_counters($fid, $changes=array())
 			{
 				$update_query[$counter] = $changes[$counter];
 			}
-			
+
 			// Less than 0? That's bad
 			if(!$update_query[$counter])
 			{
@@ -2058,14 +2058,14 @@ function update_forum_counters($fid, $changes=array())
 			$threads_diff = $update_query['threads'] - $forum['threads'];
 			if($threads_diff > -1)
 			{
-				$new_stats['numthreads'] = "+{$threads_diff}";			
+				$new_stats['numthreads'] = "+{$threads_diff}";
 			}
 			else
 			{
 				$new_stats['numthreads'] = "{$threads_diff}";
 			}
 		}
-		
+
 		if(array_key_exists('unapprovedthreads', $update_query))
 		{
 			$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
@@ -2078,7 +2078,7 @@ function update_forum_counters($fid, $changes=array())
 				$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
 			}
 		}
-		
+
 		if(array_key_exists('posts', $update_query))
 		{
 			$posts_diff = $update_query['posts'] - $forum['posts'];
@@ -2091,7 +2091,7 @@ function update_forum_counters($fid, $changes=array())
 				$new_stats['numposts'] = "{$posts_diff}";
 			}
 		}
-		
+
 		if(array_key_exists('unapprovedposts', $update_query))
 		{
 			$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
@@ -2152,13 +2152,13 @@ function update_thread_counters($tid, $changes=array())
 	global $db;
 
 	$update_query = array();
-	
+
 	$counters = array('replies','unapprovedposts','attachmentcount', 'attachmentcount');
-	
+
 	// Fetch above counters for this thread
 	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
 	$thread = $db->fetch_array($query);
-	
+
 	foreach($counters as $counter)
 	{
 		if(array_key_exists($counter, $changes))
@@ -2172,7 +2172,7 @@ function update_thread_counters($tid, $changes=array())
 			{
 				$update_query[$counter] = $changes[$counter];
 			}
-			
+
 			// Less than 0? That's bad
 			if($update_query[$counter] < 0)
 			{
@@ -2180,7 +2180,7 @@ function update_thread_counters($tid, $changes=array())
 			}
 		}
 	}
-	
+
 	$db->free_result($query);
 
 	// Only update if we're actually doing something
@@ -2188,7 +2188,7 @@ function update_thread_counters($tid, $changes=array())
 	{
 		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
 	}
-	
+
 	unset($update_query, $thread);
 
 	update_thread_data($tid);
@@ -2220,9 +2220,9 @@ function update_thread_data($tid)
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
-	
+
 	$db->free_result($query);
-	
+
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
@@ -2232,7 +2232,7 @@ function update_thread_data($tid)
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
-	
+
 	$db->free_result($query);
 
 	if(!$firstpost['username'])
@@ -2264,7 +2264,7 @@ function update_thread_data($tid)
 		'lastposteruid' => intval($lastpost['uid']),
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
-	
+
 	unset($firstpost, $lastpost, $update_array);
 }
 
@@ -2380,7 +2380,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 						$optionselected = "selected=\"selected\"";
 						$selecteddone = 1;
 					}
-					
+
 					$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
 
 					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
@@ -2549,7 +2549,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 			}
 			else
 			{
-				$avatar_width_height = "width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\"";	
+				$avatar_width_height = "width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\"";
 			}
 		}
 	}
@@ -2615,7 +2615,7 @@ function build_mycode_inserter($bind="message")
 			"editor_color"
 		);
 		$editor_language = "var editor_language = {\n";
-		
+
 		$editor_lang_strings = $plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
 
 		foreach($editor_lang_strings as $key => $lang_string)
@@ -2746,7 +2746,7 @@ function build_clickable_smilies()
 
 /**
  * Builds thread prefixes and returns a selected prefix (or all)
- * 
+ *
  *  @param int The prefix ID (0 to return all)
  *  @return array The thread prefix's values (or all thread prefixes)
  */
@@ -2798,7 +2798,7 @@ function build_prefixes($pid=0)
 
 /**
  * Build the thread prefix selection menu
- * 
+ *
  *  @param mixed The forum ID (integer ID or string all)
  *  @param mixed The selected prefix ID (integer ID or string any)
  *  @return string The thread prefix selection menu
@@ -2806,7 +2806,7 @@ function build_prefixes($pid=0)
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
 	global $cache, $db, $lang, $mybb;
-	
+
 	if($fid != 'all')
 	{
 		$fid = intval($fid);
@@ -3152,12 +3152,12 @@ function get_ip()
 function get_friendly_size($size)
 {
 	global $lang;
-	
+
 	if(!is_numeric($size))
 	{
 		return $lang->na;
 	}
-	
+
 	// Yottabyte (1024 Zettabytes)
 	if($size >= 1208925819614629174706176)
 	{
@@ -3259,7 +3259,7 @@ function get_attachment_icon($ext)
 			global $change_dir;
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
-		
+
 		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext}\" />";
 	}
 }
@@ -3310,7 +3310,7 @@ function get_unviewable_forums($only_readable_threads=false)
 			{
 				$pwverified = 0;
 			}
-			
+
 			$password_forums[$forum['fid']] = $forum['password'];
 		}
 		else
@@ -3367,9 +3367,9 @@ function build_breadcrumb()
 	global $nav, $navbits, $templates, $theme, $lang, $mybb;
 
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
-	
+
 	$i = 0;
-	
+
 	if(is_array($navbits))
 	{
 		reset($navbits);
@@ -3385,7 +3385,7 @@ function build_breadcrumb()
 				{
 					$sep = "";
 				}
-				
+
 				$multipage = null;
 				$multipage_dropdown = null;
 				if(!empty($navbit['multipage']))
@@ -3491,7 +3491,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 				elseif(!empty($multipage))
 				{
 					$navbits[$navsize]['url'] = get_forum_link($forumnav['fid'], $multipage['current_page']);
-					
+
 					$navbits[$navsize]['multipage'] = $multipage;
 					$navbits[$navsize]['multipage']['url'] = str_replace('{fid}', $forumnav['fid'], FORUM_URL_PAGED);
 				}
@@ -3531,7 +3531,7 @@ function reset_breadcrumb()
 function build_archive_link($type, $id="")
 {
 	global $mybb;
-	
+
 	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
 	//if((DIRECTORY_SEPARATOR == '\\' && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
 	if($mybb->settings['seourls_archive'] == 1)
@@ -4012,7 +4012,7 @@ function leave_usergroup($uid, $leavegroup)
 			}
 		}
 	}
-	
+
 	$dispupdate = "";
 	if($leavegroup == $user['displaygroup'])
 	{
@@ -4024,7 +4024,7 @@ function leave_usergroup($uid, $leavegroup)
 		SET additionalgroups='$groupslist' $dispupdate
 		WHERE uid='".intval($uid)."'
 	");
-	
+
 	$cache->update_moderators();
 }
 
@@ -4062,7 +4062,7 @@ function get_current_location($fields=false, $ignore=array())
 	if($fields == true)
 	{
 		global $mybb;
-		
+
 		if(!is_array($ignore))
 		{
 			$ignore = array($ignore);
@@ -4077,11 +4077,11 @@ function get_current_location($fields=false, $ignore=array())
 				{
 					continue;
 				}
-				
+
 				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars((string)$name)."\" value=\"".htmlspecialchars((string)$value)."\" />\n";
 			}
 		}
-		
+
 		return array('location' => $location, 'form_html' => $form_html, 'form_method' => $mybb->request_method);
 	}
 	else
@@ -4094,11 +4094,11 @@ function get_current_location($fields=false, $ignore=array())
 		{
 			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
 		}
-		
+
 		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
 		{
 			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
-	
+
 			foreach($post_array as $var)
 			{
 				if(isset($_POST[$var]))
@@ -4106,7 +4106,7 @@ function get_current_location($fields=false, $ignore=array())
 					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
 				}
 			}
-	
+
 			if(isset($addloc) && is_array($addloc))
 			{
 				if(strpos($location, "?") === false)
@@ -4281,27 +4281,27 @@ function convert_through_utf8($str, $to=true)
 	static $charset;
 	static $use_mb;
 	static $use_iconv;
-	
+
 	if(!isset($charset))
 	{
 		$charset = my_strtolower($lang->settings['charset']);
 	}
-	
+
 	if($charset == "utf-8")
 	{
 		return $str;
 	}
-	
+
 	if(!isset($use_iconv))
 	{
 		$use_iconv = function_exists("iconv");
 	}
-	
+
 	if(!isset($use_mb))
 	{
 		$use_mb = function_exists("mb_convert_encoding");
 	}
-	
+
 	if($use_iconv || $use_mb)
 	{
 		if($to)
@@ -4353,14 +4353,14 @@ function my_wordwrap($message)
 	if($mybb->settings['wordwrap'] > 0)
 	{
 		$message = convert_through_utf8($message);
-		
+
 		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
 		{
-			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);	
+			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);
 		}
-		
+
 		$new_message = convert_through_utf8($new_message, false);
-		
+
 		return $new_message;
 	}
 
@@ -4467,7 +4467,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$lang->month_11,
 		$lang->month_12
 	);
-	
+
 
 	// This needs to be in this specific order
 	$find = array(
@@ -4498,7 +4498,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 
 	$bdays = str_replace($find, $html, $bdays);
 	$bmonth = str_replace($find, $html, $bmonth);
-	
+
 	$replace = array(
 		sprintf('%02s', $bm),
 		sprintf('%02s', $bd),
@@ -4511,7 +4511,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$wd,
 		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);
-	
+
 	// Do we have the full month in our output?
 	// If so there's no need for the short month
 	if(strpos($display, 'F') !== false)
@@ -4519,7 +4519,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		array_pop($find);
 		array_pop($replace);
 	}
-	
+
 	return str_replace($find, $replace, $display);
 }
 
@@ -4728,15 +4728,15 @@ function my_strtoupper($string)
  * @return int The un-htmlentitied' string.
  */
 function unhtmlentities($string)
-{	
+{
 	// Replace numeric entities
 	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'unichr(hexdec("\\1"))', $string);
 	$string = preg_replace('~&#([0-9]+);~e', 'unichr("\\1")', $string);
-	
+
 	// Replace literal entities
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
 	$trans_tbl = array_flip($trans_tbl);
-	
+
 	return strtr($string, $trans_tbl);
 }
 
@@ -4795,7 +4795,7 @@ function get_event_poster($event)
 function get_event_date($event)
 {
 	global $mybb;
-	
+
 	$event_date = explode("-", $event['date']);
 	$event_date = mktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 	$event_date = my_date($mybb->settings['dateformat'], $event_date);
@@ -4862,7 +4862,7 @@ function build_profile_link($username="", $uid=0, $target="", $onclick="")
 		{
 			$onclick = " onclick=\"{$onclick}\"";
 		}
-		
+
 		return "<a href=\"{$mybb->settings['bburl']}/".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
 	}
 }
@@ -4910,7 +4910,7 @@ function get_thread_link($tid, $page=0, $action='')
 		{
 			$link = THREAD_URL_PAGED;
 		}
-		$link = str_replace("{tid}", $tid, $link);		
+		$link = str_replace("{tid}", $tid, $link);
 		$link = str_replace("{page}", $page, $link);
 		return htmlspecialchars_uni($link);
 	}
@@ -5342,19 +5342,19 @@ function validate_website_format($website)
 function email_already_in_use($email, $uid="")
 {
 	global $db;
-	
+
 	$uid_string = "";
 	if($uid)
 	{
 		$uid_string = " AND uid != '".intval($uid)."'";
 	}
 	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string($email)."'{$uid_string}");
-	
+
 	if($db->fetch_field($query, "emails") > 0)
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -5395,7 +5395,7 @@ function rebuild_settings()
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
-	
+
 	$settings = "<"."?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?".">";
 	$file = @fopen(MYBB_ROOT."inc/settings.php", $mode);
 	@fwrite($file, $settings);
@@ -5417,7 +5417,7 @@ function build_highlight_array($terms)
 	if($mybb->settings['minsearchword'] < 1)
 	{
 		$mybb->settings['minsearchword'] = 3;
-	} 
+	}
 
 	if(is_array($terms))
 	{
@@ -5490,7 +5490,7 @@ function build_highlight_array($terms)
 	{
 		return false;
 	}
-	
+
 	// Sort the word array by length. Largest terms go first and work their way down to the smallest term.
 	// This resolves problems like "test tes" where "tes" will be highlighted first, then "test" can't be highlighted because of the changed html
 	usort($words, create_function('$a,$b', 'return strlen($b) - strlen($a);'));
@@ -5501,7 +5501,7 @@ function build_highlight_array($terms)
 		$word = trim($word);
 
 		$word = my_strtolower($word);
-	
+
 		// Special boolean operators should be stripped
 		if($word == "" || $word == "or" || $word == "not" || $word == "and")
 		{
@@ -5603,7 +5603,7 @@ function is_banned_email($email, $update_lastuse=false)
 	global $cache, $db;
 
 	$banned_cache = $cache->read("bannedemails");
-	
+
 	if($banned_cache === false)
 	{
 		// Failed to read cache, see if we can rebuild it
@@ -5644,20 +5644,20 @@ function is_banned_email($email, $update_lastuse=false)
 function is_banned_ip($ip_address, $update_lastuse=false)
 {
 	global $db, $cache;
-	
+
 	$banned_ips = $cache->read("bannedips");
 	if(!is_array($banned_ips))
 	{
 		return false;
 	}
-	
+
 	foreach($banned_ips as $banned_ip)
 	{
 		if(!$banned_ip['filter'])
 		{
 			continue;
 		}
-		
+
 		// Make regular expression * match
 		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
 		if(preg_match("#^{$banned_ip['filter']}$#i", $ip_address))
@@ -5775,7 +5775,7 @@ function fetch_remote_file($url, $post_data=array())
 		}
 		$post_body = ltrim($post_body, '&');
 	}
-	
+
 	if(function_exists("curl_init"))
 	{
 		$ch = curl_init();
@@ -5828,11 +5828,11 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			$headers[] = "GET {$url['path']} HTTP/1.0";
 		}
-		
+
 		$headers[] = "Host: {$url['host']}";
 		$headers[] = "Connection: Close";
 		$headers[] = '';
-		
+
 		if(!empty($post_body))
 		{
 			$headers[] = $post_body;
@@ -5842,8 +5842,8 @@ function fetch_remote_file($url, $post_data=array())
 			// If we have no post body, we need to add an empty element to make sure we've got \r\n\r\n before the (non-existent) body starts
 			$headers[] = '';
 		}
-		
-		$headers = implode("\r\n", $headers);	
+
+		$headers = implode("\r\n", $headers);
 		if(!@fwrite($fp, $headers))
 		{
 			return false;
@@ -5875,7 +5875,7 @@ function fetch_remote_file($url, $post_data=array())
 function is_super_admin($uid)
 {
 	global $mybb;
-	
+
 	$mybb->config['super_admins'] = str_replace(" ", "", $mybb->config['super_admins']);
 	if(my_strpos(",{$mybb->config['super_admins']},", ",{$uid},") === false)
 	{
@@ -5926,7 +5926,7 @@ function is_member($groups, $user = false)
 	}
 
 	$groups = array_filter(array_map('intval', $groups));
-	
+
 	return array_intersect($groups, $memberships);
 }
 
@@ -5966,7 +5966,7 @@ function escaped_explode($delimeter, $string, $escape="")
 	}
 	foreach($quoted_strings as $string)
 	{
-		if($string != "") 
+		if($string != "")
 		{
 			if($in_escape)
 			{
@@ -6039,7 +6039,7 @@ function fetch_longipv4_range($ip)
 		}
 		return array(ip2long($ip_string1), ip2long($ip_string2));
 	}
-} 
+}
 
 /**
  * Fetch a list of ban times for a user account.
@@ -6106,9 +6106,9 @@ function ban_date2timestamp($date, $stamp=0)
 function expire_warnings()
 {
 	global $db;
-	
+
 	$users = array();
-	
+
 	$query = $db->query("
 		SELECT w.wid, w.uid, w.points, u.warningpoints
 		FROM ".TABLE_PREFIX."warnings w
@@ -6121,7 +6121,7 @@ function expire_warnings()
 			"expired" => 1
 		);
 		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-		
+
 		if(array_key_exists($warning['uid'], $users))
 		{
 			$users[$warning['uid']] -= $warning['points'];
@@ -6131,14 +6131,14 @@ function expire_warnings()
 			$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
 		}
 	}
-	
+
 	foreach($users as $uid => $warningpoints)
 	{
 		if($warningpoints < 0)
 		{
 			$warningpoints = 0;
 		}
-		
+
 		$updated_user = array(
 			"warningpoints" => intval($warningpoints)
 		);
@@ -6160,7 +6160,7 @@ function my_chmod($file, $mode)
 		return false;
 	}
 	$old_umask = umask(0);
-	
+
 	// We convert the octal string to a decimal number because passing a octal string doesn't work with chmod
 	// and type casting subsequently removes the prepended 0 which is needed for octal numbers
 	$result = chmod($file, octdec($mode));
@@ -6177,12 +6177,12 @@ function my_chmod($file, $mode)
 function my_rmdir_recursive($path, $ignore=array())
 {
 	global $orig_dir;
-	
+
 	if(!isset($orig_dir))
 	{
 		$orig_dir = $path;
 	}
-	
+
     if(@is_dir($path) && !@is_link($path))
     {
         if($dh = @opendir($path))
@@ -6196,16 +6196,16 @@ function my_rmdir_recursive($path, $ignore=array())
             }
            @closedir($dh);
         }
-		
+
 		// Are we done? Don't delete the main folder too and return true
 		if($path == $orig_dir)
 		{
 			return true;
 		}
-		
+
         return @rmdir($path);
     }
-	
+
     return @unlink($path);
 }
 
@@ -6222,7 +6222,7 @@ function subforums_count($array)
 	{
 		$count += count($array2);
 	}
-	
+
 	return $count;
 }
 
@@ -6240,7 +6240,7 @@ function my_ip2long($ip)
 	if(!$ip_long)
 	{
 		$ip_long = sprintf("%u", ip2long($ip));
-		
+
 		if(!$ip_long)
 		{
 			return 0;
@@ -6282,21 +6282,21 @@ function my_long2ip($long)
 function verify_files($path=MYBB_ROOT, $count=0)
 {
 	global $mybb, $checksums, $bad_verify_files;
-	
+
 	// We don't need to check these types of files
 	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif");
 	$ignore_ext = array("attach");
-	
+
 	if(substr($path, -1, 1) == "/")
 	{
 		$path = substr($path, 0, -1);
 	}
-	
+
 	if(!is_array($bad_verify_files))
 	{
 		$bad_verify_files = array();
 	}
-	
+
 	// Make sure that we're in a directory and it's not a symbolic link
     if(@is_dir($path) && !@is_link($path))
     {
@@ -6309,17 +6309,17 @@ function verify_files($path=MYBB_ROOT, $count=0)
 				{
 					continue;
 				}
-				
+
 				// Recurse through the directory tree
 				if(is_dir($path."/".$file))
 				{
 					verify_files($path."/".$file, ($count+1));
 					continue;
 				}
-				
+
 				// We only need the last part of the path (from the MyBB directory to the file. i.e. inc/functions.php)
 				$file_path = ".".str_replace(substr(MYBB_ROOT, 0, -1), "", $path)."/".$file;
-				
+
 				// Does this file even exist in our official list? Perhaps it's a plugin
 				if(array_key_exists($file_path, $checksums))
 				{
@@ -6331,12 +6331,12 @@ function verify_files($path=MYBB_ROOT, $count=0)
 						$contents .= fread($handle, 8192);
 					}
 					fclose($handle);
-					
+
 					$md5 = md5($contents);
-					
+
 					// Does it match any of our hashes (unix/windows new lines taken into consideration with the hashes)
 					if(!in_array($md5, $checksums[$file_path]))
-					{						
+					{
 						$bad_verify_files[] = array("status" => "changed", "path" => $file_path);
 					}
 				}
@@ -6345,7 +6345,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
            @closedir($dh);
         }
     }
-	
+
 	if($count == 0)
 	{
 		if(!empty($checksums))
@@ -6360,7 +6360,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 			}
 		}
 	}
-	
+
 	// uh oh
 	if($count == 0)
 	{
@@ -6395,40 +6395,40 @@ function signed($int)
 function secure_seed_rng($count=8)
 {
 	$output = '';
-	
+
 	// Try the unix/linux method
 	if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
 	{
 		$output = @fread($handle, $count);
 		@fclose($handle);
 	}
-	
+
 	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
 	if(strlen($output) < $count)
 	{
 		$output = '';
-		
+
 		// Close to what PHP basically uses internally to seed, but not quite.
 		$unique_state = microtime().@getmypid();
-		
+
 		for($i = 0; $i < $count; $i += 16)
 		{
 			$unique_state = md5(microtime().$unique_state);
 			$output .= pack('H*', md5($unique_state));
 		}
 	}
-	
+
 	// /dev/urandom and openssl will always be twice as long as $count. base64_encode will roughly take up 33% more space but crc32 will put it to 32 characters
 	$output = hexdec(substr(dechex(crc32(base64_encode($output))), 0, $count));
-	
+
 	return $output;
 }
 
 /**
  * Wrapper function for mt_rand. Automatically seeds using a secure seed once.
  *
- * @param int Optional lowest value to be returned (default: 0) 
- * @param int Optional highest value to be returned (default: mt_getrandmax()) 
+ * @param int Optional lowest value to be returned (default: 0)
+ * @param int Optional highest value to be returned (default: mt_getrandmax())
  * @param boolean True forces it to reseed the RNG first
  * @return int An integer equivalent of a secure hexadecimal seed
  */
@@ -6443,7 +6443,7 @@ function my_rand($min=null, $max=null, $force_seed=false)
 		$seeded = true;
 
 		$obfuscator = abs((int) secure_seed_rng());
-		
+
 		// Ensure that $obfuscator is <= mt_getrandmax() for 64 bit systems.
 		if($obfuscator > mt_getrandmax())
 		{
@@ -6505,7 +6505,7 @@ function trim_blank_chrs($string, $charlist=false)
 					  0xBE => array(0xA0 => 1), // \x{FFA0}
 					  0xBF => array(0xB9 => 1, 0xBA => 1, 0xBB => 1)), // \x{FFF9} to \x{FFFB}
 	);
-	
+
 	$hex_chrs_rev = array(
 		0x20 => 1,
 		0x09 => 1,
@@ -6551,7 +6551,7 @@ function trim_blank_chrs($string, $charlist=false)
 		0xBA => array(0xBF => array(0xEF => 1)), // \x{FFFA}
 		0xBB => array(0xBF => array(0xEF => 1)), // \x{FFFB}
 	);
-	
+
 	// Start from the beginning and work our way in
 	do
 	{
@@ -6565,7 +6565,7 @@ function trim_blank_chrs($string, $charlist=false)
 		$string = substr($string, $offset);
 	}
 	while(++$i);
-	
+
 	// Start from the end and work our way in
 	$string = strrev($string);
 	do
@@ -6581,7 +6581,7 @@ function trim_blank_chrs($string, $charlist=false)
 	}
 	while(++$i);
 	$string = strrev($string);
-	
+
 	if($charlist !== false)
 	{
 		$string = trim($string, $charlist);
@@ -6590,7 +6590,7 @@ function trim_blank_chrs($string, $charlist=false)
 	{
 		$string = trim($string);
 	}
-	
+
 	return $string;
 }
 
@@ -6600,7 +6600,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 	{
 		return 0;
 	}
-	
+
 	$ord = ord($string[$i]);
 	if(array_key_exists($ord, $array))
 	{
@@ -6613,7 +6613,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 		}
 		return $n;
 	}
-	
+
 	return 0;
 }
 
@@ -6625,7 +6625,7 @@ function match_sequence($string, $array, $i=0, $n=0)
 function gd_version()
 {
 	static $gd_version;
-	
+
 	if($gd_version)
 	{
 		return $gd_version;
@@ -6634,7 +6634,7 @@ function gd_version()
 	{
 		return;
 	}
-	
+
 	if(function_exists("gd_info"))
 	{
 		$gd_info = gd_info();
@@ -6651,7 +6651,7 @@ function gd_version()
 		preg_match('/\d/', $info, $gd);
 		$gd_version = $gd[0];
 	}
-	
+
 	return $gd_version;
 }
 

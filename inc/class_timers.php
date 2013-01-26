@@ -10,35 +10,35 @@
  */
 
 class timer {
-	
+
 	/**
 	 * The timer name.
 	 *
 	 * @var string
 	 */
 	public $name;
-	
+
 	/**
 	 * The start time of this timer.
 	 *
 	 * @var int
 	 */
 	public $start;
-	
+
 	/**
 	 * The end time of this timer.
 	 *
 	 * @var int
 	 */
 	public $end;
-	
+
 	/**
 	 * The total time this timer has run.
 	 *
 	 * @var int
 	 */
 	public $totaltime;
-	
+
 	/**
 	 * The formatted total time this timer has run.
 	 *
@@ -54,14 +54,14 @@ class timer {
 	{
 		$this->add();
 	}
-	
+
 	/**
 	 * Starts the timer.
 	 *
 	 */
 	function add()
 	{
-		if(!$this->start) 
+		if(!$this->start)
 		{
 			$this->start = microtime(true);
 		}
@@ -89,7 +89,7 @@ class timer {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Stops the timer.
 	 *
@@ -106,7 +106,7 @@ class timer {
 			return $this->formatted;
 		}
 	}
-	
+
 	/**
 	 * Removes the timer.
 	 *
@@ -119,7 +119,7 @@ class timer {
 		$this->totaltime = "";
 		$this->formatted = "";
 	}
-	
+
 	/**
 	 * Formats the timer time in a pretty way.
 	 *

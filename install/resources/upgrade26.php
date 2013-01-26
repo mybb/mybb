@@ -37,10 +37,10 @@ function upgrade26_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
 	}
-	
+
 	// We don't need the posthash after the post is inserted into the database
 	$db->update_query('attachments', "posthash=''", 'pid!=0');
-	
+
 	// Column will be dropped in MyBB 1.8
 	$db->update_query('posts', "posthash=''");
 

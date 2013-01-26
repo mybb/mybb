@@ -15,17 +15,17 @@ function task_backupdb($task)
 	static $contents;
 
 	@set_time_limit(0);
-	
+
 	if(!defined('MYBB_ADMIN_DIR'))
 	{
 		if(!isset($config['admin_dir']))
 		{
 			$config['admin_dir'] = "admin";
 		}
-	
+
 		define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 	}
-	
+
 	// Check if folder is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
@@ -34,9 +34,9 @@ function task_backupdb($task)
 	else
 	{
 		$db->set_table_prefix('');
-		
+
 		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
-		
+
 		if(function_exists('gzopen'))
 		{
 			$fp = gzopen($file.'.sql.gz', 'w9');
@@ -45,7 +45,7 @@ function task_backupdb($task)
 		{
 			$fp = fopen($file.'.sql', 'w');
 		}
-		
+
 		$tables = $db->list_tables($config['database']['database'], $config['database']['table_prefix']);
 
 		$time = date('dS F Y \a\t H:i', TIME_NOW);
@@ -68,13 +68,13 @@ function task_backupdb($task)
 			{
 				$field_list[] = $field['Field'];
 			}
-			
+
 			$fields = "`".implode("`,`", $field_list)."`";
-	
+
 			$structure = $db->show_create_table($table).";\n";
 			$contents .= $structure;
 			clear_overflow($fp, $contents);
-			
+
 			$query = $db->simple_select($table);
 			while($row = $db->fetch_array($query))
 			{
@@ -97,9 +97,9 @@ function task_backupdb($task)
 				clear_overflow($fp, $contents);
 			}
 		}
-		
+
 		$db->set_table_prefix(TABLE_PREFIX);
-		
+
 		if(function_exists('gzopen'))
 		{
 			gzwrite($fp, $contents);
@@ -110,25 +110,25 @@ function task_backupdb($task)
 			fwrite($fp, $contents);
 			fclose($fp);
 		}
-		
+
 		add_task_log($task, $lang->task_backup_ran);
 	}
 }
 
 // Allows us to refresh cache to prevent over flowing
-function clear_overflow($fp, &$contents) 
+function clear_overflow($fp, &$contents)
 {
 	global $mybb;
-	
-	if(function_exists('gzopen')) 
+
+	if(function_exists('gzopen'))
 	{
 		gzwrite($fp, $contents);
-	} 
-	else 
+	}
+	else
 	{
 		fwrite($fp, $contents);
 	}
-		
-	$contents = '';	
+
+	$contents = '';
 }
 ?>

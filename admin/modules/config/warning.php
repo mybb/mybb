@@ -48,7 +48,7 @@ $plugins->run_hooks("admin_config_warning_begin");
 if($mybb->input['action'] == "add_level")
 {
 	$plugins->run_hooks("admin_config_warning_add_level");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!is_numeric($mybb->input['percentage']) || $mybb->input['percentage'] > 100 || $mybb->input['percentage'] < 0)
@@ -87,26 +87,26 @@ if($mybb->input['action'] == "add_level")
 				"percentage" => intval($mybb->input['percentage']),
 				"action" => serialize($action)
 			);
-			
+
 			$lid = $db->insert_query("warninglevels", $new_level);
-			
+
 			$plugins->run_hooks("admin_config_warning_add_level_commit");
 
 			// Log admin action
 			log_admin_action($lid, $mybb->input['percentage']);
-			
+
 			flash_message($lang->success_warning_level_created, 'success');
 			admin_redirect("index.php?module=config-warning&action=levels");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_warning_level);
 	$page->output_header($lang->warning_levels." - ".$lang->add_warning_level);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_level');
 	$form = new Form("index.php?module=config-warning&amp;action=add_level", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -121,7 +121,7 @@ if($mybb->input['action'] == "add_level")
 	{
 		$banned_groups[$group['gid']] = $group['title'];
 	}
-	
+
 	$periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "add_level")
 		{
 			Element.show('action_'+checked);
 		}
-	}	
+	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
@@ -201,7 +201,7 @@ if($mybb->input['action'] == "add_level")
 if($mybb->input['action'] == "edit_level")
 {
 	$plugins->run_hooks("admin_config_warning_edit_level");
-	
+
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -250,9 +250,9 @@ if($mybb->input['action'] == "edit_level")
 				"percentage" => intval($mybb->input['percentage']),
 				"action" => serialize($action)
 			);
-			
+
 			$db->update_query("warninglevels", $updated_level, "lid='{$level['lid']}'");
-			
+
 			$plugins->run_hooks("admin_config_warning_edit_level_commit");
 
 			// Log admin action
@@ -262,19 +262,19 @@ if($mybb->input['action'] == "edit_level")
 			admin_redirect("index.php?module=config-warning&action=levels");
 		}
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_warning_level);
 	$page->output_header($lang->warning_levels." - ".$lang->edit_warning_level);
-	
+
 	$sub_tabs['edit_level'] = array(
 		'link' => "index.php?module=config-warning&amp;action=edit_level&amp;lid={$level['lid']}",
 		'title' => $lang->edit_warning_level,
 		'description' => $lang->edit_warning_level_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_level');
 	$form = new Form("index.php?module=config-warning&amp;action=edit_level&amp;lid={$level['lid']}", "post");
-	
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "edit_level")
 	{
 		$banned_groups[$group['gid']] = $group['title'];
 	}
-	
+
 	$periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -343,7 +343,7 @@ if($mybb->input['action'] == "edit_level")
 		{
 			Element.show('action_'+checked);
 		}
-	}	
+	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
@@ -395,7 +395,7 @@ if($mybb->input['action'] == "edit_level")
 if($mybb->input['action'] == "delete_level")
 {
 	$plugins->run_hooks("admin_config_warning_delete_level");
-	
+
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "delete_level")
 	{
 		// Delete the level
 		$db->delete_query("warninglevels", "lid='{$level['lid']}'");
-		
+
 		$plugins->run_hooks("admin_config_warning_delete_level_commit");
 
 		// Log admin action
@@ -434,7 +434,7 @@ if($mybb->input['action'] == "delete_level")
 if($mybb->input['action'] == "add_type")
 {
 	$plugins->run_hooks("admin_config_warning_add_type");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -454,14 +454,14 @@ if($mybb->input['action'] == "add_type")
 				"points" => intval($mybb->input['points']),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
-			
+
 			$tid = $db->insert_query("warningtypes", $new_type);
-			
+
 			$plugins->run_hooks("admin_config_warning_add_type_commit");
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
-			
+
 			flash_message($lang->success_warning_type_created, 'success');
 			admin_redirect("index.php?module=config-warning");
 		}
@@ -474,14 +474,14 @@ if($mybb->input['action'] == "add_type")
 			"expire_period" => "days"
 		);
 	}
-	
+
 	$page->add_breadcrumb_item($lang->add_warning_type);
 	$page->output_header($lang->warning_types." - ".$lang->add_warning_type);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'add_type');
 	$form = new Form("index.php?module=config-warning&amp;action=add_type", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -511,7 +511,7 @@ if($mybb->input['action'] == "add_type")
 if($mybb->input['action'] == "edit_type")
 {
 	$plugins->run_hooks("admin_config_warning_edit_type");
-	
+
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -541,9 +541,9 @@ if($mybb->input['action'] == "edit_type")
 				"points" => intval($mybb->input['points']),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
-			
+
 			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
-			
+
 			$plugins->run_hooks("admin_config_warning_edit_type_commit");
 
 			// Log admin action
@@ -563,20 +563,20 @@ if($mybb->input['action'] == "edit_type")
 			"expire_period" => $expiration['period']
 		);
 	}
-	
+
 	$page->add_breadcrumb_item($lang->edit_warning_type);
 	$page->output_header($lang->warning_types." - ".$lang->edit_warning_type);
-	
+
 	$sub_tabs['edit_type'] = array(
 		'link' => "index.php?module=config-warning&amp;action=edit_type&amp;tid={$type['tid']}",
 		'title' => $lang->edit_warning_type,
 		'description' => $lang->edit_warning_type_desc
 	);
-	
+
 	$page->output_nav_tabs($sub_tabs, 'edit_type');
 	$form = new Form("index.php?module=config-warning&amp;action=edit_type&amp;tid={$type['tid']}", "post");
-	
-	
+
+
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -606,7 +606,7 @@ if($mybb->input['action'] == "edit_type")
 if($mybb->input['action'] == "delete_type")
 {
 	$plugins->run_hooks("admin_config_warning_delete_type");
-	
+
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -627,7 +627,7 @@ if($mybb->input['action'] == "delete_type")
 	{
 		// Delete the type
 		$db->delete_query("warningtypes", "tid='{$type['tid']}'");
-		
+
 		$plugins->run_hooks("admin_config_warning_delete_type_commit");
 
 		// Log admin action
@@ -645,7 +645,7 @@ if($mybb->input['action'] == "delete_type")
 if($mybb->input['action'] == "levels")
 {
 	$plugins->run_hooks("admin_config_warning_levels");
-	
+
 	$page->output_header($lang->warning_levels);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_levels');
@@ -654,7 +654,7 @@ if($mybb->input['action'] == "levels")
 	$table->construct_header($lang->percentage, array('width' => '5%', 'class' => 'align_center'));
 	$table->construct_header($lang->action_to_take);
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2));
-	
+
 	$query = $db->simple_select("warninglevels", "*", "", array('order_by' => 'percentage'));
 	while($level = $db->fetch_array($query))
 	{
@@ -669,7 +669,7 @@ if($mybb->input['action'] == "levels")
 		if($action['type'] == 1)
 		{
 			$type = "move_banned_group";
-			$group_name = $groupscache[$action['usergroup']]['title'];			
+			$group_name = $groupscache[$action['usergroup']]['title'];
 		}
 		elseif($action['type'] == 2)
 		{
@@ -699,14 +699,14 @@ if($mybb->input['action'] == "levels")
 		$table->construct_cell("<a href=\"index.php?module=config-warning&amp;action=delete_level&amp;lid={$level['lid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_level_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_warning_levels, array('colspan' => 4));
 		$table->construct_row();
 		$no_results = true;
 	}
-	
+
 	$table->output($lang->warning_levels);
 
 	$page->output_footer();
@@ -715,7 +715,7 @@ if($mybb->input['action'] == "levels")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_warning_start");
-	
+
 	$page->output_header($lang->warning_types);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_types');
@@ -725,7 +725,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->points, array('width' => '5%', 'class' => 'align_center'));
 	$table->construct_header($lang->expires_after, array('width' => '25%', 'class' => 'align_center'));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2));
-	
+
 	$query = $db->simple_select("warningtypes", "*", "", array('order_by' => 'title'));
 	while($type = $db->fetch_array($query))
 	{
@@ -746,14 +746,14 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config-warning&amp;action=delete_type&amp;tid={$type['tid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_type_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_warning_types, array('colspan' => 5));
 		$table->construct_row();
 		$no_results = true;
 	}
-	
+
 	$table->output($lang->warning_types);
 
 	$page->output_footer();

@@ -23,11 +23,11 @@ class memcacheCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	public $unique_id;
-	
+
 	function memcacheCacheHandler($silent=false)
 	{
 		global $mybb;
-		
+
 		if(!function_exists("memcache_connect"))
 		{
 			// Check if our DB engine is loaded
@@ -48,16 +48,16 @@ class memcacheCacheHandler
 	function connect()
 	{
 		global $mybb, $error_handler;
-		
+
 		$this->memcache = new Memcache;
-		
+
 		if($mybb->config['memcache']['host'])
 		{
 			$mybb->config['memcache'][0] = $mybb->config['memcache'];
 			unset($mybb->config['memcache']['host']);
 			unset($mybb->config['memcache']['port']);
 		}
-		
+
 		foreach($mybb->config['memcache'] as $memcache)
 		{
 			if(!$memcache['host'])
@@ -87,7 +87,7 @@ class memcacheCacheHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Retrieve an item from the cache.
 	 *
@@ -95,7 +95,7 @@ class memcacheCacheHandler
 	 * @param boolean True if we should do a hard refresh
 	 * @return mixed Cache data if successful, false if failure
 	 */
-	
+
 	function fetch($name, $hard_refresh=false)
 	{
 		$data = $this->memcache->get($this->unique_id."_".$name);
@@ -109,7 +109,7 @@ class memcacheCacheHandler
 			return $data;
 		}
 	}
-	
+
 	/**
 	 * Write an item to the cache.
 	 *
@@ -121,7 +121,7 @@ class memcacheCacheHandler
 	{
 		return $this->memcache->set($this->unique_id."_".$name, $contents, MEMCACHE_COMPRESSED);
 	}
-	
+
 	/**
 	 * Delete a cache
 	 *
@@ -132,7 +132,7 @@ class memcacheCacheHandler
 	{
 		return $this->memcache->delete($this->unique_id."_".$name);
 	}
-	
+
 	/**
 	 * Disconnect from the cache
 	 */
@@ -140,11 +140,11 @@ class memcacheCacheHandler
 	{
 		@$this->memcache->close();
 	}
-	
+
 	function size_of($name)
 	{
 		global $lang;
-		
+
 		return $lang->na;
 	}
 }
