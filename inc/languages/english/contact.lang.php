@@ -2,7 +2,7 @@
 /**
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -17,7 +17,7 @@ $l['contact_email'] = 'Email';
 $l['contact_email_desc'] = 'Enter your email so we can contact you back.';
 $l['contact_send'] = 'Send';
 $l['image_verification'] = "Image Verification";
-$l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated posts.";
+$l['verification_note'] = "Please enter the text contained within the image into the text box below it. This process is used to prevent automated messages.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 ?>
