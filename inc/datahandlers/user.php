@@ -467,7 +467,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_profile_fields()
 	{
-		global $db, $mybb;
+		global $db;
 
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
@@ -492,7 +492,7 @@ class UserDataHandler extends DataHandler
 		while($profilefield = $db->fetch_array($query))
 		{
 			// Does this field have a minimum post count?
-			if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'] && $user['uid'] == $mybb->user['uid'])
+			if(!$this->data['profile_fields_editable'] && $profilefield['postnum'] > $user['postnum'])
 			{
 				continue;
 			}
