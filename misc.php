@@ -23,6 +23,12 @@ $lang->load("misc");
 
 $plugins->run_hooks("misc_start");
 
+// A little easter egg!
+if($mybb->input['action'] == 'bolt')
+{
+	error('Bolt is the MyBB Mascot!','Who is Bolt?');	
+}
+
 if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $mybb->user['uid'] > 0)
 {
 	if($mybb->user['dstcorrection'] == 2)
