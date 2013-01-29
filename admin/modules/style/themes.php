@@ -36,7 +36,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
