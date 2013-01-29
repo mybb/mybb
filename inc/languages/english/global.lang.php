@@ -214,7 +214,6 @@ $l['postbit_post'] = "Post:";
 $l['postbit_reputation'] = "Reputation:";
 $l['postbit_reputation_add'] = "Give Reputation to this user";
 $l['postbit_website'] = "Visit this user's website";
-$l['postbit_button_website'] = "Website";
 $l['postbit_email'] = "Send this user an email";
 $l['postbit_find'] = "Find all posts by this user";
 $l['postbit_report'] = "Report this post to a moderator";
@@ -232,7 +231,7 @@ $l['postbit_warning_level'] = "Warning Level:";
 $l['postbit_warn'] = "Warn the author for this post";
 
 $l['postbit_button_reputation_add'] = 'Rate';
-$l['postibt_button_website'] = 'Website';
+$l['postbit_button_website'] = 'Website';
 $l['postbit_button_email'] = 'Email';
 $l['postbit_button_find'] = 'Find';
 $l['postbit_button_report'] = 'Report';
