@@ -214,6 +214,7 @@ $l['postbit_post'] = "Post:";
 $l['postbit_reputation'] = "Reputation:";
 $l['postbit_reputation_add'] = "Give Reputation to this user";
 $l['postbit_website'] = "Visit this user's website";
+$l['postbit_button_website'] = "Website";
 $l['postbit_email'] = "Send this user an email";
 $l['postbit_find'] = "Find all posts by this user";
 $l['postbit_report'] = "Report this post to a moderator";
