@@ -1239,7 +1239,7 @@ a.button.add_buddy_button span {
 	background-position: 0 -418px;
 }
 
-a.button.remove_buddy_button {
+a.button.remove_buddy_button span {
 	background-position: 0 -458px;
 }
 
