@@ -26,7 +26,6 @@ $l['userdata_email_already_in_use'] = "You have entered an email address that is
 $l['userdata_dob_required'] = "You did not select your date of birth. Please select your date of birth to continue - you can hide your birthday and age from other users, however.";
 $l['userdata_invalid_website'] = 'The website address you entered is invalid. Please enter a valid website address or leave the field empty.';
 $l['userdata_invalid_icq_number'] = 'The ICQ number you entered is invalid. Please enter a valid ICQ number or leave the field empty.';
-$l['userdata_invalid_website'] = 'The website address you entered is invalid. Please enter a valid website address or leave the field empty.';
 $l['userdata_invalid_msn_address'] = 'The MSN address you entered is invalid. Please enter a valid MSN address or leave the field empty.';
 $l['userdata_invalid_birthday'] = 'The birthday you entered is invalid. Please enter a valid birthday or leave the field empty.';
 $l['userdata_invalid_birthday_coppa'] = 'To verify your age, please enter the year you were born. You may hide your Age and Date of Birth in your profile options.';
