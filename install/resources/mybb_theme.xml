@@ -3381,7 +3381,7 @@ a.button {
 		<dl class="thread_legend smalltext">
 			<dd><span class="thread_status newfolder" title="{$lang->new_thread}">&nbsp;</span> {$lang->new_thread}</dd>
 			<dd><span class="thread_status newhotfolder" title="{$lang->new_hot_thread}">&nbsp;</span> {$lang->new_hot_thread}</dd>
-			<dd><span class="thread_status hotfolder.png" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
+			<dd><span class="thread_status hotfolder" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
 		</dl>
 	</div>
 
@@ -11287,7 +11287,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<dl class="thread_legend smalltext">
 			<dd><span class="thread_status newfolder" title="{$lang->new_thread}">&nbsp;</span> {$lang->new_thread}</dd>
 			<dd><span class="thread_status newhotfolder" title="{$lang->new_hot_thread}">&nbsp;</span> {$lang->new_hot_thread}</dd>
-			<dd><span class="thread_status hotfolder.png" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
+			<dd><span class="thread_status hotfolder" title="{$lang->hot_thread}">&nbsp;</span> {$lang->hot_thread}</dd>
 		</dl>
 	</div>
 
