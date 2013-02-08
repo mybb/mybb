@@ -352,21 +352,23 @@ if($mybb->input['action'] == "profile")
 		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
 	}
 
-	if(validate_website_format($user['website']))
+	if($user['website'] == "" || $user['website'] == "http://")
 	{
-		$user['website'] = htmlspecialchars_uni($user['website']);
+		$user['website'] = "http://";
 	}
 	else
 	{
-		$user['website'] = '';
+		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
 
-	$user['icq'] = (int)$user['icq'];
-	if(!$user['icq'])
+	if($user['icq'] != "0")
 	{
-		$user['icq'] = '';
+		$user['icq'] = intval($user['icq']);
 	}
-
+	if($user['icq'] == 0)
+	{
+		$user['icq'] = "";
+	}
 	if($errors)
 	{
 		$user['msn'] = htmlspecialchars_uni($user['msn']);
