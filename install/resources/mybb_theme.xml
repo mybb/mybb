@@ -3495,8 +3495,8 @@ a.button {
 						</fieldset>
 						</form>
 						{$welcomeblock}
-					<!-- </div> -- in header_welcomeblock_member and header_welcomeblock_guest -->
-				<!-- </div> -- in header_welcomeblock_member and header_welcomeblock_guest -->
+					<!-- </div> in header_welcomeblock_member and header_welcomeblock_guest -->
+				<!-- </div> in header_welcomeblock_member and header_welcomeblock_guest -->
 			</div>
 		</div>
 		<div id="content">
