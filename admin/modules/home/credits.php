@@ -69,7 +69,7 @@ if(!$mybb->input['action'])
 	
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-1830.html\" target=\"_blank\">Justin Soltesz</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-15525.html\" target=\"_blank\">Polarbear541</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-15525.html\" target=\"_blank\">Kieran Dunbar</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-16693.html\" target=\"_blank\">F&aacute;bio Maia</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
