@@ -516,7 +516,7 @@ function get_admin_log_action($logitem)
 			$string .= '('.implode(', ', $logitem['data']).')';
 		}
 	}
-	return htmlspecialchars_uni($string);
+	return $string;
 }
 
 ?>
