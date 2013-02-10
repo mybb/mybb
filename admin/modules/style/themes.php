@@ -712,12 +712,13 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$tid = build_new_theme($mybb->input['name'], null, $mybb->input['tid']);
+
+			$tid = build_new_theme(htmlspecialchars_uni($mybb->input['name']), null, $mybb->input['tid']);
 
 			$plugins->run_hooks("admin_style_themes_add_commit");
 
 			// Log admin action
-			log_admin_action($mybb->input['name'], $tid);
+			log_admin_action(htmlspecialchars_uni($mybb->input['name']), $tid);
 
 			flash_message($lang->success_theme_created, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
