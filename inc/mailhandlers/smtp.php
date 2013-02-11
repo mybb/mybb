@@ -95,6 +95,13 @@ class SmtpMail extends MailHandler
 	public $secure_port = 465;
 
 	/**
+	 * Whether to use a TLS connection.
+	 *
+	 * @var boolean
+	 */
+	public $use_tls = false;
+
+	/**
 	 * SMTP host.
 	 *
 	 * @var string
@@ -140,7 +147,7 @@ class SmtpMail extends MailHandler
 				$protocol = 'ssl://';
 				break;
 			case MYBB_TLS:
-				$protocol = 'tls://';
+				$this->use_tls = true;
 				break;
 		}
 
@@ -272,6 +279,22 @@ class SmtpMail extends MailHandler
 			{
 				$this->fatal_error("The mail server is not ready, it did not respond with a 220 status message.");
 				return false;
+			}
+
+			if ($this->use_tls)
+			{
+				$data = $this->send_data('STARTTLS', 220);
+				if (!$data)
+				{
+					$this->fatal_error("Couldn't switch SMTP to TLS");
+					return false;
+				}
+				$data = stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+				if (!$data)
+				{
+					$this->fatal_error("Couldn't switch socket to TLS");
+					return false;
+				}
 			}
 
 			if(!empty($this->username) && !empty($this->password))
