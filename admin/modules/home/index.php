@@ -285,6 +285,17 @@ elseif(!$mybb->input['action'])
 
 	$table->output($lang->dashboard);
 
+	// Latest news widget
+	if (!empty($update_check['news']) && is_array($update_check['news'])) {
+		foreach ($update_check['news'] as $newsItem) {
+			$table->construct_cell("<strong><a href='{$newsItem['link']}'>{$newsItem['title']}</a></strong>", array('colspan' => '2'));
+			$table->construct_row();
+			$table->construct_cell($newsItem['description'], array('colspan' => '2'));
+			$table->construct_row();
+		}
+		$table->output($lang->latest_mybb_announcements);
+	}
+
 	$table->construct_header($lang->admin_notes_public);
 
 	$form = new Form("index.php", "post");
