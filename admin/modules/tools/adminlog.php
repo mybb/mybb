@@ -515,7 +515,7 @@ function get_admin_log_action($logitem)
 			$string .= '('.implode(', ', $logitem['data']).')';
 		}
 	}
-	return $string;
+	return htmlentities($string); // agains xss in admin log
 }
 
 ?>
