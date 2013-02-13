@@ -1306,44 +1306,21 @@ if($mybb->input['action'] == "login")
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'])
 	{
-		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
-		$login_captcha = new captcha(false, "post_captcha");
 
-		if($do_captcha != true && $login_captcha->type == 1)
+		if($do_captcha == true)
 		{
-			if($login_captcha->validate_captcha() == true)
-			{
-				$correct = true;
-
-				$captcha = $login_captcha->build_hidden_captcha();
-			}
-		}
-		
-		if(!$correct)
-		{
- 			if($login_captcha->type == 1)
-			{
-				$login_captcha->build_captcha();
-			}
-			elseif($login_captcha->type == 2)
-			{
-				$login_captcha->build_recaptcha();
-			}
+			$login_captcha = new captcha(true, "post_captcha");
 
 			if($login_captcha->html)
 			{
 				$captcha = $login_captcha->html;
 			}
 		}
-		elseif($correct && $login_captcha->type == 2)
+		else
 		{
-			$login_captcha->build_recaptcha();
-
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
-			}
+			$login_captcha = new captcha;
+			$captcha = $login_captcha->build_hidden_captcha();
 		}
 	}
 
@@ -1545,14 +1522,11 @@ if($mybb->input['action'] == "profile")
 		$bgcolors[$cat] = alt_trow();
 	}
 
-	if(validate_website_format($memprofile['website']))
+	$website = '';
+	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = '<a href="'.$memprofile['website'].'" target="_blank">'.$memprofile['website'].'</a>';
-	}
-	else
-	{
-		$memprofile['website'] = $website = '';
+		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
 	}
 
 	$signature = '';
@@ -1601,8 +1575,11 @@ if($mybb->input['action'] == "profile")
 		$percent = 100;
 	}
 
-	$memprofile['icq'] = (int)$memprofile['icq'];
-	if(!$memprofile['icq'])
+	if(!empty($memprofile['icq']))
+	{
+		$memprofile['icq'] = intval($memprofile['icq']);
+	}
+	else
 	{
 		$memprofile['icq'] = '';
 	}
