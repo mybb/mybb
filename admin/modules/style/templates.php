@@ -247,11 +247,14 @@ if($mybb->input['action'] == "add_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'mybb\';
-	</script>';
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+';
 	}
 
 	$page->add_breadcrumb_item($lang->add_template);
@@ -277,7 +280,7 @@ if($mybb->input['action'] == "add_template")
 	$form_container = new FormContainer($lang->add_template);
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->template_set, $lang->template_set_desc, $form->generate_select_box('sid', $template_sets, $sid), 'sid');
-	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => 'codepress php', 'style' => 'width: 100%; height: 500px;')), 'template');
+	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => '', 'style' => 'width: 100%; height: 500px;')), 'template');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
@@ -290,16 +293,13 @@ if($mybb->input['action'] == "add_template")
 	if($admin_options['codepress'] != 0)
 	{
 		echo "<script type=\"text/javascript\">
-	Event.observe('add_template', 'submit', function()
-	{
-		if($('template_cp')) {
-			var area = $('template_cp');
-			area.id = 'template';
-			area.value = template.getCode();
-			area.disabled = false;
-		}
-	});
-</script>";
+			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+				lineNumbers: true,
+				mode: \"text/html\",
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});
+		</script>";
 	}
 
 	$page->output_footer();
@@ -595,11 +595,14 @@ if($mybb->input['action'] == "edit_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'mybb\';
-	</script>';
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+';
 	}
 
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
@@ -661,7 +664,7 @@ if($mybb->input['action'] == "edit_template")
 
 	$form_container->output_row($lang->template_set, $lang->template_set_desc, $form->generate_select_box('sid', $template_sets, $sid));
 
-	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 500px;')));
+	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => '', 'style' => 'width: 100%; height: 500px;')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
@@ -674,16 +677,13 @@ if($mybb->input['action'] == "edit_template")
 	if($admin_options['codepress'] != 0)
 	{
 		echo "<script type=\"text/javascript\">
-	Event.observe('edit_template', 'submit', function()
-	{
-		if($('template_cp')) {
-			var area = $('template_cp');
-			area.id = 'template';
-			area.value = template.getCode();
-			area.disabled = false;
-		}
-	});
-</script>";
+			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+				lineNumbers: true,
+				mode: \"text/html\",
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});
+		</script>";
 	}
 
 	$page->output_footer();
@@ -1112,11 +1112,14 @@ if($mybb->input['action'] == "search_replace")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-php.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'php\';
-	</script>';
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+';
 	}
 
 	$page->add_breadcrumb_item($lang->search_replace);
@@ -1129,9 +1132,9 @@ if($mybb->input['action'] == "search_replace")
 	echo $form->generate_hidden_field('type', "templates");
 
 	$form_container = new FormContainer($lang->search_replace);
-	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 200px;')));
+	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 
-	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->input['replace'], array('id' => 'replace', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 200px;')));
+	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->input['replace'], array('id' => 'replace', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->find_and_replace);
@@ -1163,23 +1166,20 @@ if($mybb->input['action'] == "search_replace")
 	if($admin_options['codepress'] != 0)
 	{
 		echo "<script type=\"text/javascript\">
-	Event.observe('do_template', 'submit', function()
-	{
-		if($('find_cp')) {
-			var area = $('find_cp');
-			area.id = 'find';
-			area.value = find.getCode();
-			area.disabled = false;
-		}
-
-		if($('replace_cp')) {
-			var area = $('replace_cp');
-			area.id = 'replace';
-			area.value = replace.getCode();
-			area.disabled = false;
-		}
-	});
-</script>";
+			var editor1 = CodeMirror.fromTextArea(document.getElementById(\"find\"), {
+				lineNumbers: true,
+				mode: \"text/html\",
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});
+			
+			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
+				lineNumbers: true,
+				mode: \"text/html\",
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});
+		</script>";
 	}
 
 	$page->output_footer();

@@ -16,8 +16,8 @@ $l['select_acp_theme'] = "Please select a theme to use in the Admin Control Pane
 $l['notes_not_shared'] = "These notes are not shared with other Administrators.";
 $l['save_notes_and_prefs'] = "Save Personal Notes & Preferences";
 $l['personal_notes'] = "Personal Notes";
-$l['codepress'] = "Turn on / off Codepress";
-$l['use_codepress_desc'] = "This preference allows you to turn off Codepress (used in template editing and stylesheet editing for syntax highlighing) if you are experiencing issues / slow loading.";
+$l['codemirror'] = "Turn on / off Code Mirror";
+$l['use_codemirror_desc'] = "This preference allows you to turn off Code Mirror (used in template editing and stylesheet editing for syntax highlighing) if you are experiencing issues / slow loading.";
 
 $l['success_preferences_updated'] = "The preferences have been successfully updated.";
 

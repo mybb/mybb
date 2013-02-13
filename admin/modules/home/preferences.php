@@ -34,7 +34,7 @@ if(!$mybb->input['action'])
 			"permissions" => $db->escape_string($adminopts['permissions']),
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
-			"codepress" => intval($mybb->input['codepress']),
+			"codepress" => intval($mybb->input['codepress']), // It's actually CodeMirror but for compatibility purposes lets leave it codepress
 		);
 
 		$db->replace_query("adminoptions", $sqlarray, "uid");
@@ -77,7 +77,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->acp_theme}</strong><br /><small>{$lang->select_acp_theme}</small><br /><br />{$setting_code}");
 	$table->construct_row();
 
-	$table->construct_cell("<strong>{$lang->codepress}</strong><br /><small>{$lang->use_codepress_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));
+	$table->construct_cell("<strong>{$lang->codemirror}</strong><br /><small>{$lang->use_codemirror_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));
 	$table->construct_row();
 
 	$table->output($lang->preferences);

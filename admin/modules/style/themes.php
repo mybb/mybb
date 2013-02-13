@@ -2119,11 +2119,11 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'css\';
-	</script>';
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+';
 	}
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
@@ -2174,7 +2174,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";
 
 	$table = new Table;
-	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => 'codepress css', 'rows' => '30')));
+	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30')));
 	$table->construct_row();
 	$table->output("{$lang->full_stylesheet_for} ".htmlspecialchars_uni($stylesheet['name']));
 
@@ -2189,16 +2189,11 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		echo "<script type=\"text/javascript\">
-	Event.observe('edit_stylesheet', 'submit', function()
-	{
-		if($('stylesheet_cp')) {
-			var area = $('stylesheet_cp');
-			area.id = 'stylesheet';
-			area.value = stylesheet.getCode();
-			area.disabled = false;
-		}
-	});
-</script>";
+			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
+				lineNumbers: true,
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});</script>";
 	}
 
 	$page->output_footer();
@@ -2388,11 +2383,11 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'css\';
-	</script>';
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
+<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+';
 	}
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
@@ -2625,7 +2620,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			</table>
 		</dd>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->write_own}</strong></label></dt>
-		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->input['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => 'codepress css', 'rows' => '30'))."</span>
+		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->input['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => '', 'rows' => '30'))."</span>
 	</dl>";
 
 	$form_container->output_row("", "", $actions);
@@ -2639,16 +2634,11 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		echo "<script type=\"text/javascript\">
-	Event.observe('add_stylesheet', 'submit', function()
-	{
-		if($('stylesheet_cp')) {
-			var area = $('stylesheet_cp');
-			area.id = 'stylesheet';
-			area.value = stylesheet.getCode();
-			area.disabled = false;
-		}
-	});
-</script>\n";
+			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
+				lineNumbers: true,
+				tabMode: \"indent\",
+				theme: \"mybb\"
+			});</script>";
 	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
