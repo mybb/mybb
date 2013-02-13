@@ -189,13 +189,8 @@ class captcha
 		}
 		else if($this->type == 2)
 		{
-			// Names
-			$hash = "recaptcha_challenge_field";
-			$string = "recaptcha_response_field";
-
-			// Values
-			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
-			$field['string'] = $mybb->input['recaptcha_response_field'];
+			// reCAPTCHA doesn't support hidden Captchas
+			return false;
 		}
 
 		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
