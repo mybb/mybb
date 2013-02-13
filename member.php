@@ -1110,7 +1110,7 @@ if($mybb->input['action'] == "resetpassword")
 	}
 }
 
-$do_captcha = $correct = false;
+$correct = false;
 $inline_errors = '';
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
@@ -1169,7 +1169,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 			{
 				$correct = true;
 				$do_captcha = true;
-
+				
 				// CAPTCHA validation failed
 				foreach($login_captcha->get_errors() as $error)
 				{
@@ -1303,24 +1303,46 @@ if($mybb->input['action'] == "login")
 	}
 
 	$captcha = '';
-	// Show captcha image for guests if enabled
-	if($mybb->settings['captchaimage'])
+	// Show captcha image for guests if enabled and only if we have to do
+	if($mybb->settings['captchaimage'] && isset($do_captcha))
 	{
+		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$login_captcha = new captcha(false, "post_captcha");
 
-		if($do_captcha == true)
+		if($do_captcha == false && $login_captcha->type == 1)
 		{
-			$login_captcha = new captcha(true, "post_captcha");
+			if($login_captcha->validate_captcha() == true)
+			{
+				$correct = true;
+				$captcha = $login_captcha->build_hidden_captcha();
+			}
+		}
+
+		if(!$correct)
+		{
+			if($login_captcha->type == 1)
+			{
+				$login_captcha->build_captcha();
+			}
+			elseif($login_captcha->type == 2)
+			{
+				$login_captcha->build_recaptcha();
+			}
 
 			if($login_captcha->html)
 			{
 				$captcha = $login_captcha->html;
 			}
 		}
-		else
+		elseif($correct && $login_captcha->type == 2)
 		{
-			$login_captcha = new captcha;
-			$captcha = $login_captcha->build_hidden_captcha();
+			$login_captcha->build_recaptcha();
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
 		}
 	}
 
