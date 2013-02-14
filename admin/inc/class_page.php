@@ -370,6 +370,18 @@ EOF;
 				$lang_username = $lang->username;
 				break;
 		}
+		
+		// Secret PIN
+		global $config;
+		if(isset($config['secret_pin']) && $config['secret_pin'] != '')
+		{
+			$secret_pin = "<div class=\"label\"{$login_label_width}><label for=\"pin\">{$lang->secret_pin}</label></div>
+            <div class=\"field\"><input type=\"password\" name=\"pin\" id=\"pin\" class=\"text_input\" /></div>";
+		}
+		else
+		{
+			$secret_pin = '';
+		}
 
         // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
@@ -384,6 +396,8 @@ print <<<EOF
 
 			<div class="label"{$login_label_width}><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
+			
+            {$secret_pin}
 		</div>
 		<p class="submit">
 			<span class="forgot_password">
