@@ -2027,8 +2027,7 @@ if($mybb->input['action'] == "do_editprofile")
 			)
 		);
 
-		require_once MYBB_ROOT."inc/class_warnings.php";
-		$warnings_object = new Warnings;
+		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
 			if(!$mybb->input[$option['action']])
@@ -2055,7 +2054,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 				if(!is_array($errors))
 				{
-					$suspend_length = $warnings_object->fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
+					$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
 
 					if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 					{
