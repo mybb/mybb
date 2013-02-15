@@ -1496,13 +1496,13 @@ function create_tables()
 \$config['hide_admin_links'] = 0;
 
 /**
- * Admin CP Security PIN
+ * Admin CP Secret PIN
  *  If you wish to request a PIN
  *  when someone tries to login
  *  on your Admin CP, enter it below.
  */
 
-\$config['security_pin'] = 0;
+\$config['secret_pin'] = '';
 
 /**
  * Data-cache configuration
