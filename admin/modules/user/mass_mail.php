@@ -933,10 +933,14 @@ if($mybb->input['action'] == "send")
 					"conditions" => unserialize($email['conditions'])
 				);
 			}
+			else
+			{
+				$input = array();
+			}
 		}
 
 		$options = array(
-			'username', 'email', 'postnum_dir'
+			'username', 'email', 'postnum_dir', 'numposts'
 		);
 
 		foreach($options as $option)
