@@ -662,9 +662,9 @@ if($mybb->input['action'] == "send")
 		}
 		else
 		{
+			$input = array();
 			if($email['senddate'] != 0)
 			{
-				$input = array();
 				if($email['senddate'] <= TIME_NOW)
 				{
 					$input['delivery_type'] = "now";
