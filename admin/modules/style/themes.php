@@ -863,7 +863,7 @@ if($mybb->input['action'] == "edit")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1408,7 +1408,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1789,7 +1789,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2044,7 +2044,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2207,7 +2207,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2266,7 +2266,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2670,7 +2670,7 @@ if($mybb->input['action'] == "set_default")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2696,7 +2696,7 @@ if($mybb->input['action'] == "force")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == '1')
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
