@@ -640,7 +640,7 @@ if($mybb->input['action'] == "export")
 		$plugins->run_hooks("admin_style_themes_export_commit");
 
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 		$theme['name'] = rawurlencode($theme['name']);
 		header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
@@ -717,7 +717,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_style_themes_add_commit");
 
 			// Log admin action
-			log_admin_action($mybb->input['name'], $tid);
+			log_admin_action(htmlspecialchars_uni($mybb->input['name']), $tid);
 
 			flash_message($lang->success_theme_created, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
@@ -844,7 +844,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_style_themes_delete_commit");
 
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 		flash_message($lang->success_theme_deleted, 'success');
 		admin_redirect("index.php?module=style-themes");
@@ -975,7 +975,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
-			log_admin_action($theme['tid'], $theme['name']);
+			log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 			flash_message($lang->success_theme_properties_updated, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -1540,7 +1540,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$plugins->run_hooks("admin_style_themes_stylesheet_properties_commit");
 
 			// Log admin action
-			log_admin_action($stylesheet['sid'], $mybb->input['name'], $theme['tid'], $theme['name']);
+			log_admin_action($stylesheet['sid'], $mybb->input['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -1871,7 +1871,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple_commit");
 
 		// Log admin action
-		log_admin_action($theme['name'], $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
 
 		if(!$mybb->input['ajax'])
 		{
@@ -2097,7 +2097,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced_commit");
 
 		// Log admin action
-		log_admin_action($theme['name'], $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
 
 		flash_message($lang->success_stylesheet_updated, 'success');
 
@@ -2247,7 +2247,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		$plugins->run_hooks("admin_style_themes_delete_stylesheet_commit");
 
 		// Log admin action
-		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
+		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 
 		flash_message($lang->success_stylesheet_deleted, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -2373,7 +2373,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
 
 			// Log admin action
-			log_admin_action($sid, $mybb->input['name'], $theme['tid'], $theme['name']);
+			log_admin_action($sid, $mybb->input['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 
 			flash_message($lang->success_stylesheet_added, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}&file=".urlencode($mybb->input['name']));
@@ -2682,7 +2682,7 @@ if($mybb->input['action'] == "set_default")
 	$plugins->run_hooks("admin_style_themes_set_default_commit");
 
 	// Log admin action
-	log_admin_action($theme['tid'], $theme['name']);
+	log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 	flash_message($lang->success_theme_set_default, 'success');
 	admin_redirect("index.php?module=style-themes");
@@ -2719,7 +2719,7 @@ if($mybb->input['action'] == "force")
 		$plugins->run_hooks("admin_style_themes_force_commit");
 
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 		flash_message($lang->success_theme_forced, 'success');
 		admin_redirect("index.php?module=style-themes");
