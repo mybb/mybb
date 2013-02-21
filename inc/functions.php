@@ -47,11 +47,11 @@ function output_page($contents)
 
 			if(my_strpos(getenv("REQUEST_URI"), "?"))
 			{
-				$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&amp;debug=1";
+				$debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "&amp;debug=1";
 			}
 			else
 			{
-				$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "?debug=1";
+				$debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "?debug=1";
 			}
 
 			if($mybb->settings['gzipoutput'] != 0)
@@ -827,7 +827,7 @@ function redirect($url, $message="", $title="")
 	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] != 0 || !$mybb->user['uid']))
 	{
 		$url = str_replace("&amp;", "&", $url);
-		$url = htmlspecialchars($url);
+		$url = htmlspecialchars_uni($url);
 
 		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
 		output_page($redirectpage);
@@ -3954,7 +3954,7 @@ function get_current_location($fields=false, $ignore=array())
 					continue;
 				}
 				
-				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars((string)$name)."\" value=\"".htmlspecialchars((string)$value)."\" />\n";
+				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars_uni((string)$name)."\" value=\"".htmlspecialchars_uni((string)$value)."\" />\n";
 			}
 		}
 		

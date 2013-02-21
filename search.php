@@ -68,8 +68,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower(htmlspecialchars($mybb->input['order']));
-	$sortby = my_strtolower(htmlspecialchars($mybb->input['sortby']));
+	$order = my_strtolower(htmlspecialchars_uni($mybb->input['order']));
+	$sortby = my_strtolower(htmlspecialchars_uni($mybb->input['sortby']));
 
 	switch($sortby)
 	{
@@ -1466,7 +1466,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	{
 		$sortorder = "desc";
 	}
-	$sortby = htmlspecialchars($mybb->input['sortby']);
+	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
 	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=".$sid."&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
 }

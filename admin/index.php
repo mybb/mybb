@@ -173,7 +173,7 @@ elseif($mybb->input['do'] == "login")
 		if(!empty($mybb->input['module']))
 		{
 			// $query_string should contain the module
-			$query_string = '?module='.htmlspecialchars($mybb->input['module']);
+			$query_string = '?module='.htmlspecialchars_uni($mybb->input['module']);
 			
 			// Now we look for any paramters passed in $_SERVER['QUERY_STRING']
 			if($_SERVER['QUERY_STRING'])
@@ -197,7 +197,7 @@ elseif($mybb->input['do'] == "login")
 				{
 					$params = explode("=", $param);
 					
-					$query_string .= '&'.htmlspecialchars($params[0])."=".htmlspecialchars($params[1]);
+					$query_string .= '&'.htmlspecialchars_uni($params[0])."=".htmlspecialchars_uni($params[1]);
 				}
 			}
 		

@@ -81,7 +81,7 @@ class DefaultForm
 	 */
 	function generate_hidden_field($name, $value, $options=array())
 	{
-		$input = "<input type=\"hidden\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\"";
+		$input = "<input type=\"hidden\" name=\"{$name}\" value=\"".htmlspecialchars_uni($value)."\"";
 		if(isset($options['id']))
 		{
 			$input .= " id=\"".$options['id']."\"";
@@ -100,7 +100,7 @@ class DefaultForm
 	 */
 	function generate_text_box($name, $value="", $options=array())
 	{
-		$input = "<input type=\"text\" name=\"".$name."\" value=\"".htmlspecialchars($value)."\"";
+		$input = "<input type=\"text\" name=\"".$name."\" value=\"".htmlspecialchars_uni($value)."\"";
 		if(isset($options['class']))
 		{
 			$input .= " class=\"text_input ".$options['class']."\"";
@@ -131,7 +131,7 @@ class DefaultForm
 	 */
 	function generate_password_box($name, $value="", $options=array())
 	{
-		$input = "<input type=\"password\" name=\"".$name."\" value=\"".htmlspecialchars($value)."\"";
+		$input = "<input type=\"password\" name=\"".$name."\" value=\"".htmlspecialchars_uni($value)."\"";
 		if(isset($options['class']))
 		{
 			$input .= " class=\"text_input ".$options['class']."\"";
@@ -248,7 +248,7 @@ class DefaultForm
 		{
 			$input .= " class=\"label_{$options['class']}\"";
 		}
-		$input .= "><input type=\"radio\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\"";
+		$input .= "><input type=\"radio\" name=\"{$name}\" value=\"".htmlspecialchars_uni($value)."\"";
 		if(isset($options['class']))
 		{
 			$input .= " class=\"radio_input ".$options['class']."\"";
@@ -294,7 +294,7 @@ class DefaultForm
 		{
 			$input .= " class=\"label_{$options['class']}\"";
 		}
-		$input .= "><input type=\"checkbox\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\"";
+		$input .= "><input type=\"checkbox\" name=\"{$name}\" value=\"".htmlspecialchars_uni($value)."\"";
 		if(isset($options['class']))
 		{
 			$input .= " class=\"checkbox_input ".$options['class']."\"";
@@ -563,7 +563,7 @@ class DefaultForm
 	 */
 	function generate_submit_button($value, $options=array())
 	{
-		$input = "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";
+		$input = "<input type=\"submit\" value=\"".htmlspecialchars_uni($value)."\"";
 
 		if(isset($options['class']))
 		{
@@ -602,7 +602,7 @@ class DefaultForm
 	 */
 	function generate_reset_button($value, $options=array())
 	{
-		$input = "<input type=\"reset\" value=\"".htmlspecialchars($value)."\"";
+		$input = "<input type=\"reset\" value=\"".htmlspecialchars_uni($value)."\"";
 
 		if(isset($options['class']))
 		{

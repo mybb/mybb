@@ -1709,13 +1709,13 @@ function configure()
 		$error_list = error_list($errors);
 		echo $lang->sprintf($lang->config_step_error_config, $error_list);
 
-		$bbname = htmlspecialchars($mybb->input['bbname']);
-		$bburl = htmlspecialchars($mybb->input['bburl']);
-		$websitename = htmlspecialchars($mybb->input['websitename']);
-		$websiteurl = htmlspecialchars($mybb->input['websiteurl']);
-		$cookiedomain = htmlspecialchars($mybb->input['cookiedomain']);
-		$cookiepath = htmlspecialchars($mybb->input['cookiepath']);
-		$contactemail =  htmlspecialchars($mybb->input['contactemail']);
+		$bbname = htmlspecialchars_uni($mybb->input['bbname']);
+		$bburl = htmlspecialchars_uni($mybb->input['bburl']);
+		$websitename = htmlspecialchars_uni($mybb->input['websitename']);
+		$websiteurl = htmlspecialchars_uni($mybb->input['websiteurl']);
+		$cookiedomain = htmlspecialchars_uni($mybb->input['cookiedomain']);
+		$cookiepath = htmlspecialchars_uni($mybb->input['cookiepath']);
+		$contactemail =  htmlspecialchars_uni($mybb->input['contactemail']);
 	}
 	else
 	{

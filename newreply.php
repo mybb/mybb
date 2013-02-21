@@ -317,7 +317,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Otherwise use the name they specified.
 			else
 			{
-				$username = htmlspecialchars($mybb->input['username']);
+				$username = htmlspecialchars_uni($mybb->input['username']);
 			}
 			$uid = 0;
 		}

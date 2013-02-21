@@ -1010,11 +1010,11 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"website" => $db->escape_string(htmlspecialchars_uni($user['website'])),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
+			"aim" => $db->escape_string(htmlspecialchars_uni($user['aim'])),
+			"yahoo" => $db->escape_string(htmlspecialchars_uni($user['yahoo'])),
+			"msn" => $db->escape_string(htmlspecialchars_uni($user['msn'])),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1191,7 +1191,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars($user['website']));
+			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
 		}
 		if(isset($user['icq']))
 		{
@@ -1199,15 +1199,15 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
 		}
 		if(isset($user['msn']))
 		{
-			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars($user['msn']));
+			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars_uni($user['msn']));
 		}
 		if(isset($user['bday']))
 		{

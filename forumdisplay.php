@@ -443,7 +443,7 @@ if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 
 if(!empty($mybb->input['order']))
 {
-	$mybb->input['order'] = htmlspecialchars($mybb->input['order']);
+	$mybb->input['order'] = htmlspecialchars_uni($mybb->input['order']);
 }
 else
 {
@@ -477,7 +477,7 @@ $sortfield2 = '';
 
 if(!empty($mybb->input['sortby']))
 {
-	$sortby = htmlspecialchars($mybb->input['sortby']);
+	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
 }
 else
 {

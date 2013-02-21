@@ -3056,7 +3056,7 @@ if(!$mybb->input['action'])
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 		}
-		$mybb->user['avatar'] = htmlspecialchars($mybb->user['avatar']);
+		$mybb->user['avatar'] = htmlspecialchars_uni($mybb->user['avatar']);
 		eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 		$colspan = 2;
 	}
