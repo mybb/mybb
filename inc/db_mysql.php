@@ -353,7 +353,7 @@ class DB_MySQL
 				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
 				"<td><strong>table</strong></td>\n".

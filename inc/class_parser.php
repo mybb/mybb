@@ -195,7 +195,7 @@ class postParser
 		{
 			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
 				'$matches',
-				'return htmlspecialchars($matches[0]);'
+				'return htmlspecialchars_uni($matches[0]);'
 			), $message);
 		}
 

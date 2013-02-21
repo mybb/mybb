@@ -562,7 +562,7 @@ EOF;
 		{
 			foreach($items as $menu_item)
 			{
-				$menu_item['link'] = htmlspecialchars($menu_item['link']);
+				$menu_item['link'] = htmlspecialchars_uni($menu_item['link']);
 				if($menu_item['id'] == $this->active_module)
 				{
 					$sub_menu = $menu_item['submenu'];
@@ -808,7 +808,7 @@ class DefaultSidebarItem
 			{
 				$class = "active";
 			}
-			$item['link'] = htmlspecialchars($item['link']);
+			$item['link'] = htmlspecialchars_uni($item['link']);
 			$this->_contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
 		}
 		$this->_contents .= "</ul>";

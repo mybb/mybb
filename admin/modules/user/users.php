@@ -2791,14 +2791,14 @@ function build_users_view($view)
 	{
 		// If this is a custom view we need to save everything ready to pass it on from page to page
 		global $admin_session;
-		if(!$_REQUEST['search_id'])
+		if(!$mybb->input['search_id'])
 		{
 			$search_id = md5(random_str());
 			$admin_session['data']['user_views'][$search_id] = $view;
 			update_admin_session('user_views', $admin_session['data']['user_views']);
-			$_REQUEST['search_id'] = $search_id;
+			$mybb->input['search_id'] = $search_id;
 		}
-		$view['url'] .= "&amp;search_id=".htmlspecialchars($_REQUEST['search_id']);
+		$view['url'] .= "&amp;search_id=".htmlspecialchars_uni($mybb->input['search_id']);
 	}
 
 	if($mybb->input['username'])
@@ -2812,7 +2812,7 @@ function build_users_view($view)
 	}
 
 	if(isset($view['conditions']['referrer'])){
-		$view['url'] .= "&amp;action=referrers&amp;uid=".htmlspecialchars($view['conditions']['referrer']);
+		$view['url'] .= "&amp;action=referrers&amp;uid=".htmlspecialchars_uni($view['conditions']['referrer']);
 	}
 
 	// Do we not have any views?

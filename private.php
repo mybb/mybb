@@ -251,8 +251,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("private_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower(htmlspecialchars($mybb->input['order']));
-	$sortby = my_strtolower(htmlspecialchars($mybb->input['sortby']));
+	$order = my_strtolower(htmlspecialchars_uni($mybb->input['order']));
+	$sortby = my_strtolower(htmlspecialchars_uni($mybb->input['sortby']));
 
 	$sortby_accepted = array('subject', 'username', 'dateline');
 
@@ -858,7 +858,7 @@ if($mybb->input['action'] == "send")
 				$query = $db->simple_select('users', 'uid, username', "uid IN ({$recipientids})");
 				while($user = $db->fetch_array($query))
 				{
-					$to .= $comma.htmlspecialchars($user['username']);
+					$to .= $comma.htmlspecialchars_uni($user['username']);
 					$comma = $lang->comma;
 				}
 			}

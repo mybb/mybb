@@ -892,11 +892,11 @@ if($mybb->input['action'] == "new_announcement")
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
-		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$starttime_time = htmlspecialchars_uni($mybb->input['starttime_time']);
 		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
-		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		$endtime_time = htmlspecialchars_uni($mybb->input['endtime_time']);
 	}
 	else
 	{
@@ -1284,11 +1284,11 @@ if($mybb->input['action'] == "edit_announcement")
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
-		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$starttime_time = htmlspecialchars_uni($mybb->input['starttime_time']);
 		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
-		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		$endtime_time = htmlspecialchars_uni($mybb->input['endtime_time']);
 
 		$errored = true;
 	}
@@ -2030,6 +2030,7 @@ if($mybb->input['action'] == "do_editprofile")
 		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
+			$mybb->input[$option['time']] = intval($mybb->input[$option['time']]);
 			if(!$mybb->input[$option['action']])
 			{
 				if($user[$option['update_field']] == 1)
@@ -2045,7 +2046,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 			if($mybb->input[$option['action']])
 			{
-				if(intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+				if($mybb->input[$option['time']] == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 				{
 					// User has selected a type of ban, but not entered a valid time frame
 					$string = $option['action']."_error";
