@@ -712,7 +712,8 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$tid = build_new_theme($mybb->input['name'], null, $mybb->input['tid']);
+
+			$tid = build_new_theme(htmlspecialchars_uni($mybb->input['name']), null, $mybb->input['tid']);
 
 			$plugins->run_hooks("admin_style_themes_add_commit");
 
