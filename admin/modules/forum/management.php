@@ -964,7 +964,7 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("themes", "tid,name", "name!='((master))' AND name!='((master-backup))'", array('order_by' => 'name'));
 	while($style = $db->fetch_array($query))
 	{
-		$styles[$style['tid']] = $style['name'];
+		$styles[$style['tid']] = htmlspecialchars_uni($style['name']);
 	}
 
 	$style_options = array(
