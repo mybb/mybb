@@ -56,7 +56,8 @@ class Horde_Text_Diff
 			'Op/Base.php',
 			'Op/Copy.php',
 			'Op/Change.php',
-			'Op/Add.php'
+			'Op/Add.php',
+			'Op/Delete.php'
 		);
 
 		foreach($classes as $class)
