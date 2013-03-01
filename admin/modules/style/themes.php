@@ -1092,7 +1092,7 @@ if($mybb->input['action'] == "edit")
 			$inherited .= ")</small>";
 		}
 		
-		if(is_array($style['applied_to']) && isset($style['applied_to']['global']) && $style['applied_to']['global'][0] != "global")
+		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = "<small>{$lang->attached_to}";
 			
@@ -2370,7 +2370,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
 	
-	if(is_array($mybb->input['applied_to']) && $mybb->input['applied_to']['global'][0] != "global")
+	if(is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
 		$check_actions = "";
 		
