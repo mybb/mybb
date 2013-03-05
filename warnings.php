@@ -1187,47 +1187,4 @@ if(!$mybb->input['action'])
 	output_page($warnings);
 }
 
-
-
-function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
-{
-	global $db;
-	// we have some warning levels we need to revoke
-	$max_expiration_times = array(
-		1 => -1,	// Ban
-		2 => -1,	// Revoke posting
-		3 => -1		// Moderate posting
-	);
-	$check_levels = array(
-		1 => false,	// Ban
-		2 => false,	// Revoke posting
-		3 => false	// Moderate posting
-	);
-	while($warn_level = $db->fetch_array($query))
-	{
-		// revoke actions taken at this warning level
-		$action = unserialize($warn_level['action']);
-		if($action['type'] < 1 || $action['type'] > 3)	// prevent any freak-ish cases
-		{
-			continue;
-		}
-
-		$check_levels[$action['type']] = true;
-
-		$max_exp_time = &$max_expiration_times[$action['type']];
-		if($action['length'] && $max_exp_time != 0)
-		{
-			$expiration = $action['length'];
-			if($expiration > $max_exp_time)
-			{
-				$max_exp_time = $expiration;
-			}
-		}
-		else
-		{
-			$max_exp_time = 0;
-		}
-	}
-}
-
 ?>
