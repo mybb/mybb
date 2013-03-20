@@ -3306,6 +3306,7 @@ a.button {
 		</script>
 	</td>
 ]]></template>
+		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_threadlist" version="1800"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
@@ -4767,6 +4768,9 @@ a.button {
 	<td class="{$alt_bg}" align="center">{$user['postnum']}</td>
 	{$referral_bit}
 </tr>]]></template>
+		<template name="memberlist_error" version="1800"><![CDATA[<tr>
+<td colspan="{$colspan}" align="center" class="trow1">{$lang->error_no_members}</td>
+</tr>]]></template>
 		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="misc_buddypopup" version="1400"><![CDATA[<html>
@@ -5045,6 +5049,7 @@ body {
 </html>]]></template>
 		<template name="misc_smilies_popup_smilie" version="123"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="insertSmilie('{$smilie['insert']}');" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
+		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
 <td class="{$class}" align="center"><img src="{$smilie['image']}" /></td>
 <td class="{$class}">{$smilie['name']}</td>
@@ -6825,6 +6830,7 @@ body {
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move" {$method_selected['move']} />{$lang->method_move}</label><br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$mybb->input['redirect_expire']}" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy" {$method_selected['copy']} />{$lang->method_copy}</label><br />]]></template>
+		<template name="moderation_delayedmodaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="{$cols}">{$lang->no_delayed_mods}</td></tr>]]></template>
 		<template name="moderation_deletepoll" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_poll}</title>
@@ -7343,6 +7349,7 @@ body {
 <td class="{$trow}">{$info}</td>
 </tr>
 ]]></template>
+		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1400"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
@@ -7825,6 +7832,7 @@ body {
 <br />]]></template>
 		<template name="portal_announcement_numcomments" version="1400"><![CDATA[- <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
 		<template name="portal_announcement_numcomments_no" version="120"><![CDATA[- {$lang->no_replies}]]></template>
+		<template name="portal_announcement_avatar" version="1800"><![CDATA[<td class="trow1" width="1" align="center" valign="top"><img src="{$announcement['avatar']}" alt="" {$avatar_width_height} /></td>]]></template>
 		<template name="portal_latestthreads" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->latest_threads}</strong></td>
@@ -9933,6 +9941,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
 <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
+		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" /></td>
+]]></template>
+		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
+</tr>
+]]></template>
 		<template name="stats" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->board_stats}</title>

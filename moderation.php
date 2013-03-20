@@ -15,8 +15,8 @@ define('THIS_SCRIPT', 'moderation.php');
 $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move';
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_deleteposts_post,moderation_deleteposts,moderation_mergeposts_post,moderation_mergeposts';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_merge';
-$templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts';
+$templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -466,7 +466,8 @@ switch($mybb->input['action'])
 		}
 		if(!$delayedmods)
 		{
-			$delayedmods = "<tr><td class=\"trow1\" colspan=\"5\">{$lang->no_delayed_mods}</td></tr>";
+			$cols = 5;
+			eval("\$delayedmods = \"".$templates->get("moderation_delayedmodaction_error")."\";");
 		}
 
 		$url = '';
@@ -1015,7 +1016,7 @@ switch($mybb->input['action'])
 		}
 		if(!$modactions)
 		{
-			$modactions = "<tr><td class=\"trow1\" colspan=\"4\">$lang->no_mod_options</td></tr>";
+			eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
 		}
 
 		$actions = array(
@@ -1113,7 +1114,8 @@ switch($mybb->input['action'])
 		}
 		if(!$delayedmods)
 		{
-			$delayedmods = "<tr><td class=\"trow1\" colspan=\"4\">{$lang->no_delayed_mods}</td></tr>";
+			$cols = 4;
+			eval("\$delayedmods = \"".$templates->get("moderation_delayedmodaction_error")."\";");
 		}
 
 		$plugins->run_hooks("moderation_threadnotes");

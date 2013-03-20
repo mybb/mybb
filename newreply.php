@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
 $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external";
-$templatelist .= ",smilieinsert,smilieinsert_getmore,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
+$templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature";
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";

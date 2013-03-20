@@ -18,7 +18,7 @@ $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_a
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,postbit_groupimage,postbit_online,postbit_away,postbit_offline";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

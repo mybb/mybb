@@ -21,7 +21,7 @@ $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,user
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none";
 $templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end";
-$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert";
+$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

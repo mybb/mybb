@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'memberlist.php');
 
 $templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,multipage_prevpage";
-$templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,memberlist_referrals,memberlist_referrals_bit";
+$templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,memberlist_referrals,memberlist_referrals_bit,memberlist_error";
 require_once "./global.php";
 
 // Load global language phrases
@@ -359,7 +359,7 @@ else
 	// Do we have no results?
 	if(!$users)
 	{
-		$users = "<tr>\n<td colspan=\"".$colspan."\" align=\"center\" class=\"trow1\">$lang->error_no_members</td>\n</tr>";
+		eval("\$users = \"".$templates->get("memberlist_error")."\";");
 	}
 
 	$plugins->run_hooks("memberlist_end");

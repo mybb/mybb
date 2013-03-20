@@ -20,7 +20,7 @@ $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modc
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread";
-$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
 $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
 
 require_once "./global.php";
