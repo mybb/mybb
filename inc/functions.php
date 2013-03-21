@@ -2711,7 +2711,7 @@ function build_clickable_smilies()
 					}
 
 					$find = htmlspecialchars_uni($find);
-					$smilies .= "<td style=\"text-align: center\"><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
+					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
 
