@@ -8018,8 +8018,9 @@ body {
 </td>
 </tr>]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
-		<template name="post_subscription_method" version="1400"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top">{$lang->thread_subscription_method}</td>
+		<template name="post_subscription_method" version="1800"><![CDATA[<tr>
+<td class="{$bgcolor}" valign="top"><strong>{$lang->thread_subscription_method}</strong><br />
+<span class="smalltext">{$lang->thread_subscription_method_desc}</span></td>
 <td class="{$bgcolor} smalltext">
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_dont} value="" style="vertical-align: middle;" /> {$lang->no_subscribe}</label><br />
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_none} value="none" style="vertical-align: middle;" /> {$lang->no_email_subscribe}</label><br />
