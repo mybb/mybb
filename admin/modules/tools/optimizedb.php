@@ -36,9 +36,12 @@ if(!$mybb->input['action'])
 		$db->set_table_prefix('');
 
 		foreach($mybb->input['tables'] as $table)
-		{			
-			$db->optimize_table($table);
-			$db->analyze_table($table);
+		{
+			if($db->table_exists($db->escape_string($table)))
+			{
+				$db->optimize_table($table);
+				$db->analyze_table($table);
+			}
 		}
 		
 		$db->set_table_prefix(TABLE_PREFIX);

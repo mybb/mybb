@@ -346,6 +346,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 	
 	$posthash = $db->escape_string($mybb->input['posthash']);
+	$pid = intval($pid);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)
 	{
@@ -418,7 +419,15 @@ function upload_attachment($attachment, $update_attachment=false)
 	$forumpermissions = forum_permissions($forum['fid']);
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='".intval($pid)."' AND pid!='0'))");
+	if($pid != 0)
+	{
+		$uploaded_query = "pid='{$pid}'";
+	}
+	else
+	{
+		$uploaded_query = "posthash='{$posthash}'";
+	}
+	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND ".$uploaded_query);
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'] && $update_attachment == false)
 	{
@@ -488,7 +497,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 	// Generate the array for the insert_query
 	$attacharray = array(
-		"pid" => intval($pid),
+		"pid" => $pid,
 		"posthash" => $posthash,
 		"uid" => $mybb->user['uid'],
 		"filename" => $db->escape_string($file['original_filename']),
@@ -590,7 +599,7 @@ function upload_attachment($attachment, $update_attachment=false)
 		$aid = $db->insert_query("attachments", $attacharray);
 	}
 
-	if($tid)
+	if($pid)
 	{
 		update_thread_counters($tid, array("attachmentcount" => "+1"));
 	}

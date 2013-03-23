@@ -25,6 +25,15 @@ function build_postbit($post, $post_type=0)
 	
 	$hascustomtitle = 0;
 
+	// Set default values for any fields not provided here
+	foreach(array('subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
+	{
+		if(empty($post[$post_field]))
+		{
+			$post[$post_field] = '';
+		}
+	}
+
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
@@ -202,19 +211,19 @@ function build_postbit($post, $post_type=0)
 	}
 
 	// Work out the usergroup/title stuff
+	$post['groupimage'] = '';
 	if(!empty($usergroup['image']))
 	{
+		$language = $mybb->settings['bblanguage'];
 		if(!empty($mybb->user['language']))
 		{
 			$language = $mybb->user['language'];
 		}
-		else
-		{
-			$language = $mybb->settings['bblanguage'];
-		}
+
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
+
 		if($mybb->settings['postlayout'] == "classic")
 		{
 			$post['groupimage'] .= "<br />";
@@ -222,8 +231,8 @@ function build_postbit($post, $post_type=0)
 	}
 
 	if($post['userusername'])
-	{ // This post was made by a registered user
-
+	{
+		// This post was made by a registered user
 		$post['username'] = $post['userusername'];
 		$post['profilelink_plain'] = get_profile_link($post['uid']);
 		$post['username_formatted'] = format_name($post['username'], $post['usergroup'], $post['displaygroup']);
@@ -261,7 +270,7 @@ function build_postbit($post, $post_type=0)
 			$post['stars'] = $usergroup['stars'];
 		}
 
-		if(!$post['starimage'])
+		if(empty($post['starimage']))
 		{
 			$post['starimage'] = $usergroup['starimage'];
 		}
@@ -270,7 +279,8 @@ function build_postbit($post, $post_type=0)
 		{
 			// Only display stars if we have an image to use...
 			$post['starimage'] = str_replace("{theme}", $theme['imgdir'], $post['starimage']);
-		
+
+			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
 				$post['userstars'] .= "<img src=\"".$post['starimage']."\" border=\"0\" alt=\"*\" />";
@@ -325,7 +335,8 @@ function build_postbit($post, $post_type=0)
 		}
 		else
 		{
-			$post['useravatar'] = "";
+			$post['useravatar'] = '';
+			$post['avatar_padding'] = '';
 		}
 		
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
@@ -335,7 +346,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
 		
-		if($mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
+		if($mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'])
 		{
 			if(!$post['pid'])
 			{
@@ -451,6 +462,7 @@ function build_postbit($post, $post_type=0)
 	if(!$post_type)
 	{
 		// Figure out if we need to show an "edited by" message
+		$post['editedmsg'] = '';
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
@@ -487,7 +499,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;
@@ -562,7 +574,7 @@ function build_postbit($post, $post_type=0)
 	}
 	
 	// If we have incoming search terms to highlight - get it done.
-	if($mybb->input['highlight'])
+	if(!empty($mybb->input['highlight']))
 	{
 		$parser_options['highlight'] = $mybb->input['highlight'];
 		$post['subject'] = $parser->highlight_message($post['subject'], $parser_options['highlight']);
@@ -627,7 +639,8 @@ function build_postbit($post, $post_type=0)
 			$post = $plugins->run_hooks("postbit", $post);
 
 			// Is this author on the ignore list of the current user? Hide this post
-			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
+			$ignore_bit = '';
+			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
 			{
 				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
@@ -662,7 +675,7 @@ function get_post_attachments($id, &$post)
 
 	$validationcount = 0;
 	$tcount = 0;
-	if(is_array($attachcache[$id]))
+	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)
 		{

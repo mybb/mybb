@@ -29,6 +29,9 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
 
+$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
+$templates->cache($db->escape_string($templatelist));
+
 $shutdown_queries = array();
 
 // Load some of the stock caches we'll be using.
@@ -367,6 +370,11 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
+		// User can't edit unapproved post
+		if($post['visible'] == 0)
+		{
+			xmlhttp_error($lang->post_moderation);
+		}
 	}
 
 	// Forum is closed - no editing allowed (for anyone)
@@ -438,7 +446,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$postinfo = $posthandler->update_post();
 			$visible = $postinfo['visible'];
-			if($visible == 0 && !is_moderator())
+			if($visible == 0 && !is_moderator($post['fid']))
 			{
 				echo "<p>\n";
 				echo $lang->post_moderation;
@@ -491,9 +499,7 @@ else if($mybb->input['action'] == "edit_post")
 		
 		// Send our headers.
 		header("Content-type: text/plain; charset={$charset}");
-		echo "<p>\n";
-		echo $post['message'];
-		echo "</p>\n";
+		echo $post['message']."\n";
 		if($editedmsg)
 		{
 			echo str_replace(array("\r", "\n"), "", "<editedmsg>{$editedmsg}</editedmsg>");
@@ -556,6 +562,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums}
+		ORDER BY p.dateline
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{

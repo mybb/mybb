@@ -237,6 +237,7 @@ class Moderation
 		$db->delete_query("polls", "tid='$tid'");
 		$db->delete_query("pollvotes", "pid='".$thread['poll']."'");
 		$db->delete_query("threadsread", "tid='$tid'");
+		$db->delete_query("threadratings", "tid='$tid'");
 
 		$updated_counters = array(
 			"posts" => "-{$num_approved_posts}",
@@ -900,7 +901,6 @@ class Moderation
 					{
 						$attachment_array = array(
 							'pid' => $pid,
-							'posthash' => $db->escape_string($attachment['posthash']),
 							'uid' => $attachment['uid'],
 							'filename' => $db->escape_string($attachment['filename']),
 							'filetype' => $attachment['filetype'],
@@ -1393,7 +1393,7 @@ class Moderation
 					{
 						$forum_counters[$post['fid']]['unapprovedposts'] = $forum_cache[$post['fid']]['unapprovedposts'];
 					}
-					--$forum_counters[$post['fid']]['posts'];
+					--$forum_counters[$post['fid']]['unapprovedposts'];
 					// Add 1 to the new forum's unapproved posts
 					if(!isset($forum_counters[$moveto]['unapprovedposts']))
 					{
@@ -1541,7 +1541,7 @@ class Moderation
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 				WHERE p.tid = '{$thread['tid']}'
-				GROUP BY u.uid
+				GROUP BY p.visible, u.uid
 				ORDER BY posts DESC
 			");
 			while($posters = $db->fetch_array($query1))

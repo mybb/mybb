@@ -552,11 +552,11 @@ function akismet_moderation_start()
 	
 	if($snippit == "thread")
 	{
-		redirect("./forumdisplay.php?fid={$post['fid']}", $lang->thread_spam_success);
+		redirect(get_forum_link($post['fid']), $lang->thread_spam_success);
 	}
 	else
 	{
-		redirect("./showthread.php?tid={$post['tid']}", $lang->post_spam_success);
+		redirect(get_thread_link($post['tid']), $lang->post_spam_success);
 	}
 }
 
@@ -1080,7 +1080,7 @@ function akismet_admin()
 			}
 			
 			$table->construct_cell($form->generate_check_box("akismet[{$post['pid']}]", 1, ''));
-			$table->construct_cell("<span style=\"float: right;\">{$lang->username}: {$username}</span> <span style=\"float: left;\">{$lang->title}: ".htmlspecialchars_uni($post['subject'])." <strong>(".my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']).")</strong></span>");
+			$table->construct_cell("<span style=\"float: right;\">{$lang->username} {$username}</span> <span style=\"float: left;\">{$lang->title}: ".htmlspecialchars_uni($post['subject'])." <strong>(".my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']).")</strong></span>");
 			$table->construct_row();
 			
 			$parser_options = array(

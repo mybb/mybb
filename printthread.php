@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "printthread,printthread_post";
+$templatelist = "printthread,printthread_post,forumdisplay_password_wrongpass,forumdisplay_password";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -75,7 +75,7 @@ if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }

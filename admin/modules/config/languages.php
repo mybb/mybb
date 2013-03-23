@@ -359,8 +359,8 @@ if($mybb->input['action'] == "edit")
 		{
 			$editwithfile = $editwithfolder.$file;
 		}
-		
-		if(!file_exists($editfile) || ($editwithfile && !file_exists($editwithfile)))
+
+		if(!file_exists($editfile) || ($editwithfile && !file_exists($editwithfile)) || $file == '.' || $file == '..')
 		{
 			flash_message($lang->error_invalid_file, 'error');
 			admin_redirect("index.php?module=config-languages");

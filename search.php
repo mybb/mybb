@@ -9,16 +9,18 @@
  * $Id$
  */
 
-
 define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
 
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
-$templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool,search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall";
+$templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
+$templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
+$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,multipage_prevpage";
+
 require_once "./global.php";
+
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -49,7 +51,7 @@ $mybb->input['keywords'] = trim($mybb->input['keywords']);
 $limitsql = "";
 if(intval($mybb->settings['searchhardlimit']) > 0)
 {
-	$limitsql = "ORDER BY t.dateline DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
+	$limitsql = "ORDER BY t.lastpost DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
 }
 
 if($mybb->input['action'] == "results")
@@ -66,8 +68,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower(htmlspecialchars($mybb->input['order']));
-	$sortby = my_strtolower(htmlspecialchars($mybb->input['sortby']));
+	$order = my_strtolower(htmlspecialchars_uni($mybb->input['order']));
+	$sortby = my_strtolower(htmlspecialchars_uni($mybb->input['sortby']));
 
 	switch($sortby)
 	{
@@ -894,7 +896,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			if($thread['thread_closed'] == 1)
+			if($post['thread_closed'] == 1)
 			{
 				$folder .= "lock";
 				$folder_label .= $lang->icon_lock;
@@ -978,7 +980,7 @@ if($mybb->input['action'] == "results")
 			$num_results = $db->num_rows($query);
 			$lang->page_selected = $lang->sprintf($lang->page_selected, intval($num_results));
 			$lang->select_all = $lang->sprintf($lang->select_all, intval($postcount));
-			$lang->all_selected = $lang->sprintf($lang->page_selected, intval($postcount));
+			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($postcount));
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 			
 			$customthreadtools = $customposttools = '';
@@ -1464,7 +1466,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	{
 		$sortorder = "desc";
 	}
-	$sortby = htmlspecialchars($mybb->input['sortby']);
+	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
 	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=".$sid."&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
 }

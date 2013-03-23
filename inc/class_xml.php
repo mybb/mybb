@@ -60,7 +60,8 @@ class XMLParser {
 	 */
 	function build_tag($thisvals, $vals, &$i, $type)
 	{
-		$tag['tag'] = $thisvals['tag'];
+		$tag = array('tag' => $thisvals['tag']);
+
 		if(isset($thisvals['attributes']))
 		{
 			$tag['attributes'] = $thisvals['attributes'];
@@ -68,7 +69,10 @@ class XMLParser {
 
 		if($type == "complete")
 		{
-			$tag['value'] = $thisvals['value'];
+			if(isset($thisvals['value']))
+			{
+				$tag['value'] = $thisvals['value'];
+			}
 		}
 		else
 		{

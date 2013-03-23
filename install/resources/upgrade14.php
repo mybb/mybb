@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.4.3
+ * Upgrade Script: 1.4.2 or 1.4.3
  */
 
 

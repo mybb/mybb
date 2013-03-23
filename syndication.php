@@ -14,6 +14,8 @@ define("IGNORE_CLEAN_VARS", "fid");
 define("NO_ONLINE", 1);
 define('THIS_SCRIPT', 'syndication.php');
 
+$templatelist = "postbit_attachments_attachment";
+
 require_once "./global.php";
 
 // Load global language phrases
@@ -125,7 +127,7 @@ foreach($group_permissions as $fid => $forum_permissions)
 }
 if(!empty($onlyusfids))
 {
-	$permsql .= "AND (fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}')";
+	$permsql .= "AND ((fid IN(".implode(',', $onlyusfids).") AND uid='{$mybb->user['uid']}') OR fid NOT IN(".implode(',', $onlyusfids)."))";
 }
 
 // Get the threads to syndicate.
@@ -145,6 +147,18 @@ while($thread = $db->fetch_array($query))
 if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
+
+	$attachments = array();
+	$query = $db->simple_select("attachments", "*", $firstpostlist);
+	while($attachment = $db->fetch_array($query))
+	{
+		if(!isset($attachments[$attachment['pid']]))
+		{
+			$attachments[$attachment['pid']] = array();
+		}
+		$attachments[$attachment['pid']][] = $attachment;
+	}
+
 	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));    
 	while($post = $db->fetch_array($query))
 	{
@@ -159,21 +173,23 @@ if(!empty($firstposts))
 		
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
 		
-		$query2 = $db->simple_select("attachments", "*", "pid=".$post['pid']);
-		while($attachment = $db->fetch_array($query2))
+		if(isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
 		{
-			$ext = get_extension($attachment['filename']);
-			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-			$attachment['icon'] = get_attachment_icon($ext);
-			eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-			if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
+			foreach($attachments[$post['pid']] as $attachment)
 			{
-				$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
-			}
-			else
-			{
-				$parsed_message .= "<br />".$attbit;
+				$ext = get_extension($attachment['filename']);
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+				$attachment['icon'] = get_attachment_icon($ext);
+				eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+				if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
+				{
+					$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);
+				}
+				else
+				{
+					$parsed_message .= "<br />".$attbit;
+				}
 			}
 		}
 		

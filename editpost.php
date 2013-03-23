@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'editpost.php');
 
-$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons,codebuttons,smilieinsert,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,newthread_postpoll,editpost_disablesmilies,post_subscription_method,post_attachments_attachment_remove";
+$templatelist = "editpost,previewpost,loginbox,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,newthread_postpoll,editpost_disablesmilies,post_subscription_method,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -117,6 +117,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
+		// User can't delete unapproved post
+		if($post['visible'] == 0)
+		{
+			error_no_permission();
+		}
 	}
 }
 else
@@ -142,6 +147,11 @@ else
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			error($lang->edit_time_limit);
 		}
+		// User can't edit unapproved post
+		if($post['visible'] == 0)
+		{
+			error_no_permission();
+		}
 	}
 }
 
@@ -157,18 +167,10 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
-	if($mybb->input['posthash'])
-	{
-		$posthash_query = "posthash='".$db->escape_string($mybb->input['posthash'])."' OR ";
-	}
-	else
-	{
-		$posthash_query = "";
-	}
-	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "{$posthash_query}pid='{$pid}'");
+
+	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "pid='{$pid}'");
 	$attachcount = $db->fetch_field($query, "numattachs");
-	
+
 	// If there's an attachment, check it and upload it
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
@@ -191,10 +193,10 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 }
 
 if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
-{ 
+{
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
-	
+
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
 	if($mybb->input['attachmentact'] == "remove")
 	{
@@ -235,7 +237,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			$firstpost = 0;
 		}
-		
+
 		$modlogdata['fid'] = $fid;
 		$modlogdata['tid'] = $tid;
 		if($firstpost)
@@ -386,21 +388,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 	}
 
-	// Setup a unique posthash for attachment management
-	$posthash = htmlspecialchars_uni($post['posthash']);
-
 	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		$posthash_query = '';
-
-		if($posthash)
-		{
-			$posthash_query = "posthash='".$db->escape_string($posthash)."' OR ";
-		}
-
-		$query = $db->simple_select("attachments", "*", "{$posthash_query}pid='{$pid}'");
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 		$attachments = '';
 		while($attachment = $db->fetch_array($query))
 		{
@@ -483,7 +475,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("update");
 		$posthandler->action = "post";
-	
+
 		// Set the post data that came from the input to the $post array.
 		$post = array(
 			"pid" => $mybb->input['pid'],
@@ -500,16 +492,16 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$post['uid'] = $mybb->user['uid'];
 			$post['username'] = $mybb->user['username'];
 		}
-	
+
 		// Set up the post options from the input.
 		$post['options'] = array(
 			"signature" => $mybb->input['postoptions']['signature'],
 			"emailnotify" => $mybb->input['postoptions']['emailnotify'],
 			"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 		);
-	
+
 		$posthandler->set_data($post);
-	
+
 		// Now let the post handler do all the hard work.
 		if(!$posthandler->validate_post())
 		{
@@ -615,7 +607,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			}
 		}
 	}
-	
+
 	// Generate thread prefix selector if this is the first post of the thread
 	if($thread['firstpost'] == $pid)
 	{
@@ -623,14 +615,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
-		
+
 		$prefixselect = build_prefix_select($forum['fid'], $mybb->input['threadprefix']);
 	}
 	else
 	{
 		$prefixselect = "";
 	}
-	
+
 	// Fetch subscription select box
 	$bgcolor = "trow1";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
@@ -644,7 +636,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
-	
+
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != 0)
 	{
@@ -656,7 +648,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	$plugins->run_hooks("editpost_end");
-	
+
 	$forum['name'] = strip_tags($forum['name']);
 
 	eval("\$editpost = \"".$templates->get("editpost")."\";");

@@ -114,12 +114,14 @@ class postParser
 		}
 		else
 		{		
-			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
+			while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $message))
 			{
-				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+				$message = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $message);
 			}
 
-			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
+			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
+			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
+			$message = str_replace($find, $replace, $message);
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
@@ -154,7 +156,7 @@ class postParser
 		}
 		
 		// Parse Highlights
-		if($this->options['highlight'])
+		if(!empty($this->options['highlight']))
 		{
 			$message = $this->highlight_message($message, $this->options['highlight']);
 		}
@@ -193,11 +195,11 @@ class postParser
 		{
 			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
 				'$matches',
-				'return htmlspecialchars($matches[0]);'
+				'return htmlspecialchars_uni($matches[0]);'
 			), $message);
 		}
 
-		if($options['nl2br'] !== 0)
+		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -533,7 +535,7 @@ class postParser
 				}
 			}
 		}
-		if($options['strip_tags'] == 1)
+		if(isset($options['strip_tags']) && $options['strip_tags'] == 1)
 		{
 			$message = strip_tags($message);
 		}
@@ -564,7 +566,10 @@ class postParser
 			"#(o)(nfocus\s?=)#i",
 			"#(o)(nselect\s?=)#i",
 			"#(o)(nunload\s?=)#i",
-			"#(o)(nkeypress\s?=)#i"
+			"#(o)(nkeypress\s?=)#i",
+			"#(o)(nerror\s?=)#i",
+			"#(o)(nreset\s?=)#i",
+			"#(o)(nabort\s?=)#i"
 		);
 		
 		$message = preg_replace($js_array, "$1<strong></strong>$2$4", $message);
@@ -627,14 +632,15 @@ class postParser
 
 		do
 		{
+			// preg_replace has erased the message? Restore it...
+			if(!$message)
+			{
+				$message = $previous_message;
+				break;
+			}
 			$previous_message = $message;
 			$message = preg_replace($pattern, $replace, $message, -1, $count);
 		} while($count);
-
-		if(!$message)
-		{
-			$message = $previous_message;
-		}
 
 		if($text_only == false)
 		{
@@ -969,7 +975,7 @@ class postParser
 		$parsed_url = @parse_url(urldecode($url));
 		if($parsed_url == false)
 		{
-			return "[video={$video}]{$url}[/video]";;
+			return "[video={$video}]{$url}[/video]";
 		}
 		
 		$fragments = array();
@@ -1000,11 +1006,20 @@ class postParser
 				$title = htmlspecialchars_uni($path[3]);
 				break;
 			case "myspacetv":
-				$id = $input['videoid']; // http://myspacetv.com/index.cfm?fuseaction=vids.individual&videoid=fds123
+				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
 				break;
 			case "yahoo":
-				$id = $path[3]; // http://video.yahoo.com/watch/fds123/abc567
-				$vid = htmlspecialchars_uni($path[2]);
+				$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
+				// Support for localized portals
+				$domain = explode('.', $parsed_url['host']);
+				if($domain[0] != 'screen')
+				{
+					$local = $domain[0].'.';
+				}
+				else
+				{
+					$local = '';
+				}
 				break;
 			case "vimeo":
 				$id = $path[1]; // http://vimeo.com/fds123
@@ -1027,7 +1042,7 @@ class postParser
 				return "[video={$video}]{$url}[/video]";
 		}
 
-		if(empty($id) || ($video == "yahoo" && empty($vid)))
+		if(empty($id))
 		{
 			return "[video={$video}]{$url}[/video]";
 		}

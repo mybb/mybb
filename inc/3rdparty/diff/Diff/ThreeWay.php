@@ -1,35 +1,37 @@
 <?php
 /**
- * A class for computing three way diffs.
+ * A class for computing three way merges.
  *
- * $Horde: framework/Text_Diff/Diff/ThreeWay.php,v 1.3.2.3 2008/01/04 10:37:27 jan Exp $
- *
- * Copyright 2007-2008 The Horde Project (http://www.horde.org/)
+ * Copyright 2007-2011 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file COPYING for license information (LGPL). If you did
- * not receive this file, see http://opensource.org/licenses/lgpl-license.php.
- *
- * @package Text_Diff
- * @since   0.3.0
- */
-
-/** Text_Diff */
-require_once 'Text/Diff.php';
-
-/**
- * A class for computing three way diffs.
+ * not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @package Text_Diff
  * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
  */
-class Text_Diff_ThreeWay extends Text_Diff {
+
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
+class Horde_Text_Diff_ThreeWay
+{
+    /**
+     * Array of changes.
+     *
+     * @var array
+     */
+    protected $_edits;
 
     /**
      * Conflict counter.
      *
      * @var integer
      */
-    var $_conflictingBlocks = 0;
+    protected $_conflictingBlocks = 0;
 
     /**
      * Computes diff between 3 sequences of strings.
@@ -38,12 +40,12 @@ class Text_Diff_ThreeWay extends Text_Diff {
      * @param array $final1  The first version to compare to.
      * @param array $final2  The second version to compare to.
      */
-    function Text_Diff_ThreeWay($orig, $final1, $final2)
+    public function __construct($orig, $final1, $final2)
     {
         if (extension_loaded('xdiff')) {
-            $engine = new Text_Diff_Engine_xdiff();
+            $engine = new Horde_Text_Diff_Engine_Xdiff();
         } else {
-            $engine = new Text_Diff_Engine_native();
+            $engine = new Horde_Text_Diff_Engine_Native();
         }
 
         $this->_edits = $this->_diff3($engine->diff($orig, $final1),
@@ -52,7 +54,7 @@ class Text_Diff_ThreeWay extends Text_Diff {
 
     /**
      */
-    function mergedOutput($label1 = false, $label2 = false)
+    public function mergedOutput($label1 = false, $label2 = false)
     {
         $lines = array();
         foreach ($this->_edits as $edit) {
@@ -74,17 +76,18 @@ class Text_Diff_ThreeWay extends Text_Diff {
     }
 
     /**
-     * @access private
      */
-    function _diff3($edits1, $edits2)
+    protected function _diff3($edits1, $edits2)
     {
         $edits = array();
-        $bb = new Text_Diff_ThreeWay_BlockBuilder();
+        $bb = new Horde_Text_Diff_ThreeWay_BlockBuilder();
 
         $e1 = current($edits1);
         $e2 = current($edits2);
         while ($e1 || $e2) {
-            if ($e1 && $e2 && is_a($e1, 'Text_Diff_Op_copy') && is_a($e2, 'Text_Diff_Op_copy')) {
+            if ($e1 && $e2 &&
+                $e1 instanceof Horde_Text_Diff_Op_Copy &&
+                $e2 instanceof Horde_Text_Diff_Op_Copy) {
                 /* We have copy blocks from both diffs. This is the (only)
                  * time we want to emit a diff3 copy block.  Flush current
                  * diff3 diff block, if any. */
@@ -94,7 +97,7 @@ class Text_Diff_ThreeWay extends Text_Diff {
 
                 $ncopy = min($e1->norig(), $e2->norig());
                 assert($ncopy > 0);
-                $edits[] = new Text_Diff_ThreeWay_Op_copy(array_slice($e1->orig, 0, $ncopy));
+                $edits[] = new Horde_Text_Diff_ThreeWay_Op_Copy(array_slice($e1->orig, 0, $ncopy));
 
                 if ($e1->norig() > $ncopy) {
                     array_splice($e1->orig, 0, $ncopy);
@@ -118,11 +121,11 @@ class Text_Diff_ThreeWay extends Text_Diff {
                         $bb->input($orig);
                     }
 
-                    if (is_a($e1, 'Text_Diff_Op_copy')) {
+                    if ($e1 instanceof Horde_Text_Diff_Op_Copy) {
                         $bb->out1(array_splice($e1->final, 0, $norig));
                     }
 
-                    if (is_a($e2, 'Text_Diff_Op_copy')) {
+                    if ($e2 instanceof Horde_Text_Diff_Op_Copy) {
                         $bb->out2(array_splice($e2->final, 0, $norig));
                     }
                 }
@@ -144,133 +147,4 @@ class Text_Diff_ThreeWay extends Text_Diff {
 
         return $edits;
     }
-
-}
-
-/**
- * @package Text_Diff
- * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
- *
- * @access private
- */
-class Text_Diff_ThreeWay_Op {
-
-    function Text_Diff_ThreeWay_Op($orig = false, $final1 = false, $final2 = false)
-    {
-        $this->orig = $orig ? $orig : array();
-        $this->final1 = $final1 ? $final1 : array();
-        $this->final2 = $final2 ? $final2 : array();
-    }
-
-    function merged()
-    {
-        if (!isset($this->_merged)) {
-            if ($this->final1 === $this->final2) {
-                $this->_merged = &$this->final1;
-            } elseif ($this->final1 === $this->orig) {
-                $this->_merged = &$this->final2;
-            } elseif ($this->final2 === $this->orig) {
-                $this->_merged = &$this->final1;
-            } else {
-                $this->_merged = false;
-            }
-        }
-
-        return $this->_merged;
-    }
-
-    function isConflict()
-    {
-        return $this->merged() === false;
-    }
-
-}
-
-/**
- * @package Text_Diff
- * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
- *
- * @access private
- */
-class Text_Diff_ThreeWay_Op_copy extends Text_Diff_ThreeWay_Op {
-
-    function Text_Diff_ThreeWay_Op_Copy($lines = false)
-    {
-        $this->orig = $lines ? $lines : array();
-        $this->final1 = &$this->orig;
-        $this->final2 = &$this->orig;
-    }
-
-    function merged()
-    {
-        return $this->orig;
-    }
-
-    function isConflict()
-    {
-        return false;
-    }
-
-}
-
-/**
- * @package Text_Diff
- * @author  Geoffrey T. Dairiki <dairiki@dairiki.org>
- *
- * @access private
- */
-class Text_Diff_ThreeWay_BlockBuilder {
-
-    function Text_Diff_ThreeWay_BlockBuilder()
-    {
-        $this->_init();
-    }
-
-    function input($lines)
-    {
-        if ($lines) {
-            $this->_append($this->orig, $lines);
-        }
-    }
-
-    function out1($lines)
-    {
-        if ($lines) {
-            $this->_append($this->final1, $lines);
-        }
-    }
-
-    function out2($lines)
-    {
-        if ($lines) {
-            $this->_append($this->final2, $lines);
-        }
-    }
-
-    function isEmpty()
-    {
-        return !$this->orig && !$this->final1 && !$this->final2;
-    }
-
-    function finish()
-    {
-        if ($this->isEmpty()) {
-            return false;
-        } else {
-            $edit = new Text_Diff_ThreeWay_Op($this->orig, $this->final1, $this->final2);
-            $this->_init();
-            return $edit;
-        }
-    }
-
-    function _init()
-    {
-        $this->orig = $this->final1 = $this->final2 = array();
-    }
-
-    function _append(&$array, $lines)
-    {
-        array_splice($array, sizeof($array), 0, $lines);
-    }
-
 }

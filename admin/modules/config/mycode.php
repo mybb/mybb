@@ -431,7 +431,7 @@ function test_regex($regex, $replacement, $test)
 {
 	$array = array();
 	$array['actual'] = @preg_replace("#".str_replace("\x0", "", $regex)."#si", $replacement, $test);
-	$array['html'] = htmlspecialchars($array['actual']);
+	$array['html'] = htmlspecialchars_uni($array['actual']);
 	return $array;
 }
 ?>

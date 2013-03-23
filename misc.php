@@ -12,9 +12,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'misc.php');
 
-$templatelist = "redirect_markallread,redirect_markforumread";
+$templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
@@ -437,7 +437,7 @@ elseif($mybb->input['action'] == "whoposted")
 	// Does the user have permission to view this thread?
 	$forumpermissions = forum_permissions($forum['fid']);
 	
-	if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}
@@ -668,7 +668,7 @@ elseif($mybb->input['action'] == "syndication")
 		$atom1check = '';
 		$rss2check = "checked=\"checked\"";
 	}
-	$forumselect = makesyndicateforums("", $blah);
+	$forumselect = makesyndicateforums();
 
 	$plugins->run_hooks("misc_syndication_end");
 

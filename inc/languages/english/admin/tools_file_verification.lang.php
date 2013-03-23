@@ -14,6 +14,7 @@ $l['error_communication'] = "There was a problem communicating with the MyBB ser
 $l['file'] = "File";
 $l['no_corrupt_files_found'] = "Congratulations! No corrupt files have been found on your installation.";
 $l['found_problems'] = "Found Problems";
+$l['no_problems_found'] = "No Problems Detected";
 $l['changed'] = "Changed";
 $l['missing'] = "Missing";
 $l['status'] = "Status";

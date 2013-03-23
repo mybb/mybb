@@ -381,7 +381,7 @@ if($mybb->input['action'] == "orphans")
 				}
 				$table->construct_cell($form->generate_check_box('orphaned_attachments[]', $attachment['aid'], '', array('checked' => true)));
 				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
-				$table->construct_cell("<span class=\"float_right\">".get_friendly_size($attachment['filesize'])."</span><a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a>", array('class' => $cell_class));
+				$table->construct_cell("<span class=\"float_right\">".get_friendly_size($attachment['filesize'])."</span>{$attachment['filename']}", array('class' => $cell_class));
 				$table->construct_cell($reason, array('class' => 'align_center'));
 				if($attachment['dateuploaded'])
 				{
@@ -928,7 +928,7 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 		$attachment['username'] = $attachment['username'];
 	}
 	$table->construct_cell(build_profile_link($attachment['username'], $attachment['uid'], "_blank"), array("class" => "align_center"));
-	$table->construct_cell("<a href=\"../".get_post_link($attachment['pid'])."\" target=\"_blank\">".htmlspecialchars($attachment['subject'])."</a>", array("class" => "align_center"));
+	$table->construct_cell("<a href=\"../".get_post_link($attachment['pid'])."\" target=\"_blank\">".htmlspecialchars_uni($attachment['subject'])."</a>", array("class" => "align_center"));
 	$table->construct_cell(my_number_format($attachment['downloads']), array("class" => "align_center"));
 	if($attachment['dateuploaded'] > 0)
 	{

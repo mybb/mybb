@@ -15,14 +15,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.6.9";
+	public $version = "1.6.10";
 	
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1609;
+	public $version_code = 1610;
 	
 	/**
 	 * The current working directory.
@@ -100,7 +100,11 @@ class MyBB {
 			"vid", "cid", "bid",
 			"pid", "gid", "mid",
 			"wid", "lid", "iid",
-			"sid"),
+			"sid"
+		),
+		"pos" => array(
+			"page", "perpage"
+		),
 		"a-z" => array(
 			"sortby", "order"
 		)
@@ -258,7 +262,7 @@ class MyBB {
 				}
 			}
 			
-			if(!$this->cookies[$key])
+			if(empty($this->cookies[$key]))
 			{
 				$this->cookies[$key] = $val;
 			}
@@ -322,13 +326,18 @@ class MyBB {
 
 				if(isset($this->input[$var]))
 				{
-					if($type == "int" && $this->input[$var] != "lastposter")
+					switch($type)
 					{
-						$this->input[$var] = intval($this->input[$var]);
-					}
-					else if($type == "a-z")
-					{
-						$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
+						case "int":
+							$this->input[$var] = intval($this->input[$var]);
+							break;
+						case "a-z":
+							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
+							break;
+						case "pos":
+							if (($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
+								$this->input[$var] = 0;
+							break;
 					}
 				}
 			}

@@ -103,6 +103,10 @@ class EventDataHandler extends DataHandler
 			$this->set_error("invalid_start_date");
 			return false;
 		}
+		
+		$event['start_date']['day'] = intval($event['start_date']['day']);
+		$event['start_date']['month'] = intval($event['start_date']['month']);
+		$event['start_date']['year'] = intval($event['start_date']['year']);
 
 		if($event['start_date']['day'] > date("t", mktime(0, 0, 0, $event['start_date']['month'], 1, $event['start_date']['year'])))
 		{
@@ -132,6 +136,10 @@ class EventDataHandler extends DataHandler
 				$this->set_error("invalid_end_date");
 				return false;
 			}
+		
+			$event['end_date']['day'] = intval($event['end_date']['day']);
+			$event['end_date']['month'] = intval($event['end_date']['month']);
+			$event['end_date']['year'] = intval($event['end_date']['year']);
 
 			if($event['end_date']['day'] > date("t", mktime(0, 0, 0, $event['end_date']['month'], 1, $event['end_date']['year'])))
 			{

@@ -55,7 +55,7 @@ $forum = get_forum($fid);
 // Permissions
 $forumpermissions = forum_permissions($fid);
 
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
 {
 	error_no_permission();
 }

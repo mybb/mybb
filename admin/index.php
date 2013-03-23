@@ -62,7 +62,7 @@ $ip_address = get_ip();
 unset($user);
 
 // Load Admin CP style
-if(!$cp_style)
+if(!isset($cp_style))
 {
 	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
 	{
@@ -79,6 +79,14 @@ $default_page = new DefaultPage;
 $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
+
+foreach(array('action', 'do', 'module') as $input)
+{
+	if(!isset($mybb->input[$input]))
+	{
+		$mybb->input[$input] = '';
+	}
+}
 
 if($mybb->input['action'] == "unlock")
 {
@@ -165,7 +173,7 @@ elseif($mybb->input['do'] == "login")
 		if(!empty($mybb->input['module']))
 		{
 			// $query_string should contain the module
-			$query_string = '?module='.htmlspecialchars($mybb->input['module']);
+			$query_string = '?module='.htmlspecialchars_uni($mybb->input['module']);
 			
 			// Now we look for any paramters passed in $_SERVER['QUERY_STRING']
 			if($_SERVER['QUERY_STRING'])
@@ -189,7 +197,7 @@ elseif($mybb->input['do'] == "login")
 				{
 					$params = explode("=", $param);
 					
-					$query_string .= '&'.htmlspecialchars($params[0])."=".htmlspecialchars($params[1]);
+					$query_string .= '&'.htmlspecialchars_uni($params[0])."=".htmlspecialchars_uni($params[1]);
 				}
 			}
 		
@@ -256,7 +264,7 @@ else
 		// No matching admin session found - show message on login screen
 		if(!$admin_session['sid'])
 		{
-			$login_message = $lang->invalid_admin_session;
+			$login_message = $lang->error_invalid_admin_session;
 		}
 		else
 		{
@@ -322,7 +330,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 	}
 }
 
-if(!$mybb->user['usergroup'])
+if(!isset($mybb->user['usergroup']))
 {
 	$mybbgroups = 1;
 }
@@ -334,7 +342,12 @@ $mybb->usergroup = usergroup_permissions($mybbgroups);
 
 if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 {
-	$db->delete_query("adminsessions", "uid='".intval($mybb->user['uid'])."'");
+	$uid = 0;
+	if(isset($mybb->user['uid']))
+	{
+		$uid = intval($mybb->user['uid']);
+	}
+	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
 	my_setcookie("adminsid", "");
 }
@@ -346,7 +359,7 @@ if($mybb->user['uid'])
 	
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
 	{
-		$page->style = $cp_style = $admin_options['cpstyle'];
+		$cp_style = $admin_options['cpstyle'];
 	}
 
 	// Update the session information in the DB
@@ -387,7 +400,7 @@ $page = new Page;
 $page->style = $cp_style;
 
 // Do not have a valid Admin user, throw back to login page.
-if(!$mybb->user['uid'] || $logged_out == true)
+if(!isset($mybb->user['uid']) || $logged_out == true)
 {	
 	if($logged_out == true)
 	{
@@ -400,7 +413,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 	else
 	{
 		// If we have this error while retreiving it from an AJAX request, then send back a nice error
-		if($mybb->input['ajax'] == 1)
+		if(isset($mybb->input['ajax']) && $mybb->input['ajax'] == 1)
 		{
 			echo "<error>login</error>";
 			die;
@@ -467,6 +480,11 @@ if(strpos($mybb->input['module'], "/") !== false)
 else
 {
 	$current_module = explode("-", $mybb->input['module'], 2);
+}
+
+if(!isset($current_module[1]))
+{
+	$current_module[1] = 'home';
 }
 
 if($mybb->input['module'] && isset($modules[$current_module[0]]))

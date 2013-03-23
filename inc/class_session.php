@@ -16,8 +16,6 @@ class session
 	public $ipaddress = '';
 	public $useragent = '';
 	public $is_spider = false;
-	public $logins = 1;
-	public $failedlogin = 0;
 
 	/**
 	 * Initialize a session
@@ -39,35 +37,18 @@ class session
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
 		{
-			$this->sid = $db->escape_string($mybb->cookies['sid']);
+			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
 				$this->sid = $session['sid'];
-				$this->uid = $session['uid'];
 			}
-			else
-			{
-				$this->sid = 0;
-				$this->uid = 0;
-				$this->logins = 1;
-				$this->failedlogin = 0;
-			}
-		}
-
-		// Still no session, fall back
-		if(!$this->sid)
-		{
-			$this->sid = 0;
-			$this->uid = 0;
-			$this->logins = 1;
-			$this->failedlogin = 0;
 		}
 
 		// If we have a valid session id and user id, load that users session.
-		if($mybb->cookies['mybbuser'])
+		if(!empty($mybb->cookies['mybbuser']))
 		{
 			$logon = explode("_", $mybb->cookies['mybbuser'], 2);
 			$this->load_user($logon[0], $logon[1]);
@@ -101,7 +82,7 @@ class session
 
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if($this->sid && ($mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
+		if($this->sid && (isset($mybb->cookies['sid'] ) && $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
 		{
 			my_setcookie("sid", $this->sid, -1, true);
 		}
@@ -137,10 +118,7 @@ class session
 		");
 		$mybb->user = $db->fetch_array($query);
 		
-		$this->logins = $mybb->user['loginattempts'];
-		$this->failedlogin = $mybb->user['failedlogin'];
-		
-		if($bannedcache[$uid])
+		if(!empty($bannedcache[$uid]))
 		{
 			$banned_user = $bannedcache[$uid];
 			$mybb->user['bandate'] = $banned_user['dateline'];
@@ -187,14 +165,18 @@ class session
 
 		if($mybb->user['lastip'] != $this->ipaddress && array_key_exists('lastip', $mybb->user))
 		{
-			$lastip_add .= ", lastip='".$db->escape_string($this->ipaddress)."', longlastip='".intval(my_ip2long($this->ipaddress))."'";
+			$lastip_add = ", lastip='".$db->escape_string($this->ipaddress)."', longlastip='".intval(my_ip2long($this->ipaddress))."'";
+		}
+		else
+		{
+			$lastip_add = '';
 		}
 
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
 		$time = TIME_NOW;
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' {$lastip_add} WHERE uid='{$mybb->user['uid']}'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time'{$lastip_add} WHERE uid='{$mybb->user['uid']}'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
@@ -202,7 +184,7 @@ class session
 		else
 		{
 			$timespent = TIME_NOW - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent {$lastip_add} WHERE uid='{$mybb->user['uid']}'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent{$lastip_add} WHERE uid='{$mybb->user['uid']}'");
 		}
 
 		// Sort out the language and forum preferences.

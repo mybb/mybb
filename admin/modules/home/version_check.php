@@ -86,6 +86,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
+		$version_warn = 0;
 		$latest_version = "<span style=\"color: green;\">".$latest_version."</span>";
 	}
 	

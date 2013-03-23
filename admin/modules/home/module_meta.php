@@ -121,9 +121,9 @@ function home_action_handler($action)
 		
 		foreach($online_admins as $user)
 		{
-			if(!$done_users["{$user['uid']}.{$user['ip']}"])
+			if(!isset($done_users["{$user['uid']}.{$user['ip']}"]))
 			{
-				if($user['type'] == "mobile")
+				if(isset($user['type']) == "mobile")
 				{
 					$class = " class=\"mobile_user\"";
 				}

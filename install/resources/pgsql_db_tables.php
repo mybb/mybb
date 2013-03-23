@@ -450,7 +450,7 @@ $tables[] = "CREATE TABLE mybb_polls (
   options text NOT NULL default '',
   votes text NOT NULL default '',
   numoptions smallint NOT NULL default '0',
-  numvotes smallint NOT NULL default '0',
+  numvotes text NOT NULL default '0',
   timeout bigint NOT NULL default '0',
   closed int NOT NULL default '0',
   multiple int NOT NULL default '0',
@@ -975,7 +975,6 @@ $tables[] = "CREATE TABLE mybb_users (
   coppauser int NOT NULL default '0',
   classicpostbit int NOT NULL default '0',
   loginattempts smallint NOT NULL default '1',
-  failedlogin bigint NOT NULL default '0',
   usernotes text NOT NULL default '',
   PRIMARY KEY (uid)
 );";

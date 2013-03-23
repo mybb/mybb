@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread";
+$templatelist = "sendthread,forumdisplay_password_wrongpass,forumdisplay_password";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -62,7 +62,7 @@ if(!$forum['fid'] || $forum['type'] != "f")
 }
 
 // This user can't view this forum or this thread
-if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }

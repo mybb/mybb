@@ -918,7 +918,7 @@ if($mybb->input['action'] == "change")
 	
 	// What type of page
 	$cache_groups = $cache_settings = array();
-	if($mybb->input['search'])
+	if(isset($mybb->input['search']))
 	{
 		// Search
 		
@@ -997,7 +997,7 @@ if($mybb->input['action'] == "change")
         }
 		
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
-		if($lang->$group_lang_var)
+		if(isset($lang->$group_lang_var))
 		{
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
@@ -1044,7 +1044,7 @@ if($mybb->input['action'] == "change")
 	foreach($cache_groups as $groupinfo)
 	{
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
-		if($lang->$group_lang_var)
+		if(isset($lang->$group_lang_var))
 		{
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
@@ -1123,12 +1123,12 @@ if($mybb->input['action'] == "change")
 				for($i=0; $i < count($type); $i++)
 				{
 					$optionsexp = explode("=", $type[$i]);
-					if(!$optionsexp[1])
+					if(!isset($optionsexp[1]))
 					{
 						continue;
 					}
 					$title_lang = "setting_{$setting['name']}_{$optionsexp[0]}";
-					if($lang->$title_lang)
+					if(isset($lang->$title_lang))
 					{
 						$optionsexp[1] = $lang->$title_lang;
 					}
@@ -1173,11 +1173,11 @@ if($mybb->input['action'] == "change")
 			// Do we have a custom language variable for this title or description?
 			$title_lang = "setting_".$setting['name'];
 			$desc_lang = $title_lang."_desc";
-			if($lang->$title_lang)
+			if(isset($lang->$title_lang))
 			{
 				$setting['title'] = $lang->$title_lang;
 			}
-			if($lang->$desc_lang)
+			if(isset($lang->$desc_lang))
 			{
 				$setting['description'] = $lang->$desc_lang;
 			}
@@ -1203,7 +1203,7 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("admin_config_settings_start");
 	
 	$page->output_header($lang->board_settings);
-	if($message)
+	if(isset($message))
 	{
 		$page->output_inline_message($message);
 	}
@@ -1268,7 +1268,7 @@ if(!$mybb->input['action'])
 	while($group = $db->fetch_array($query))
 	{
 		$group_lang_var = "setting_group_{$group['name']}";
-		if($lang->$group_lang_var)
+		if(isset($lang->$group_lang_var))
 		{
 			$group_title = htmlspecialchars_uni($lang->$group_lang_var);
 		}
@@ -1278,7 +1278,7 @@ if(!$mybb->input['action'])
 		}
 		
 		$group_desc_lang_var = "setting_group_{$group['name']}_desc";
-		if($lang->$group_desc_lang_var)
+		if(isset($lang->$group_desc_lang_var))
 		{
 			$group_desc = htmlspecialchars_uni($lang->$group_desc_lang_var);
 		}

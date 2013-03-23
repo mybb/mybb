@@ -36,7 +36,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -635,7 +635,7 @@ if($mybb->input['action'] == "export")
 		$plugins->run_hooks("admin_style_themes_export_commit");
 		
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 		
 		$theme['name'] = rawurlencode($theme['name']);
 		header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
@@ -712,7 +712,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_style_themes_add_commit");
 			
 			// Log admin action
-			log_admin_action($mybb->input['name'], $tid);
+			log_admin_action(htmlspecialchars_uni($mybb->input['name']), $tid);
 			
 			flash_message($lang->success_theme_created, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
@@ -839,7 +839,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_style_themes_delete_commit");
 		
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 		
 		flash_message($lang->success_theme_deleted, 'success');
 		admin_redirect("index.php?module=style-themes");
@@ -858,7 +858,7 @@ if($mybb->input['action'] == "edit")
 	$theme = $db->fetch_array($query);
 	
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -946,7 +946,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 			
 			// Log admin action
-			log_admin_action($theme['tid'], $theme['name']);
+			log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 			
 			flash_message($lang->success_theme_properties_updated, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -1004,7 +1004,7 @@ if($mybb->input['action'] == "edit")
 		$query = $db->simple_select("themestylesheets", "*", "", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
 		while($theme_stylesheet = $db->fetch_array($query))
 		{
-			if(!$theme_stylesheets[$theme_stylesheet['cachefile']] && in_array($theme_stylesheet['tid'], $inherited_load))
+			if(!isset($theme_stylesheets[$theme_stylesheet['cachefile']]) && in_array($theme_stylesheet['tid'], $inherited_load))
 			{
 				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
 			}
@@ -1079,7 +1079,7 @@ if($mybb->input['action'] == "edit")
 			
 			foreach($inherited_ary as $tid => $file)
 			{
-				if($count == $applied_to_count && $count != 0)
+				if(isset($applied_to_count) && $count == $applied_to_count && $count != 0)
 				{
 					$sep = ", {$lang->and} ";
 				}
@@ -1092,7 +1092,7 @@ if($mybb->input['action'] == "edit")
 			$inherited .= ")</small>";
 		}
 		
-		if(is_array($style['applied_to']) && $style['applied_to']['global'][0] != "global")
+		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = "<small>{$lang->attached_to}";
 			
@@ -1217,7 +1217,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1377,7 +1377,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$plugins->run_hooks("admin_style_themes_stylesheet_properties_commit");
 			
 			// Log admin action
-			log_admin_action($stylesheet['sid'], $mybb->input['name'], $theme['tid'], $theme['name']);
+			log_admin_action($stylesheet['sid'], $mybb->input['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 		
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -1562,7 +1562,7 @@ Event.observe(window, "load", function() {
 }
 
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
-if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $mybb->input['mode'] == "simple"))
+if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
 {
 	$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple");
 	
@@ -1570,7 +1570,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1652,7 +1652,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple_commit");
 		
 		// Log admin action
-		log_admin_action($theme['name'], $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
 
 		if(!$mybb->input['ajax'])
 		{			
@@ -1810,7 +1810,15 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	
 	// Get the properties from this item
 	$properties = parse_css_properties($editable_selector['values']);
-	
+
+	foreach(array('background', 'color', 'width', 'font-family', 'font-size', 'font-style', 'font-weight', 'text-decoration') as $_p)
+	{
+		if(!isset($properties[$_p]))
+		{
+			$properties[$_p] = '';
+		}
+	}
+
 	$form = new Form("index.php?module=style-themes&amp;action=edit_stylesheet", "post");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
@@ -1869,7 +1877,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -1922,7 +1930,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced_commit");
 		
 		// Log admin action
-		log_admin_action($theme['name'], $stylesheet['name']);
+		log_admin_action(htmlspecialchars_uni($theme['name']), $stylesheet['name']);
 
 		flash_message($lang->success_stylesheet_updated, 'success');
 		
@@ -2081,7 +2089,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2121,7 +2129,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		$plugins->run_hooks("admin_style_themes_delete_stylesheet_commit");
 		
 		// Log admin action
-		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
+		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 		
 		flash_message($lang->success_stylesheet_deleted, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
@@ -2140,7 +2148,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2194,6 +2202,8 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	if($mybb->request_method == "post")
 	{
+		// Remove special characters
+		$mybb->input['name'] = preg_replace('#([^a-z0-9-_\.]+)#i', '', $mybb->input['name']);
 		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
@@ -2277,7 +2287,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
 			
 			// Log admin action
-			log_admin_action($sid, $mybb->input['name'], $theme['tid'], $theme['name']);
+			log_admin_action($sid, $mybb->input['name'], $theme['tid'], htmlspecialchars_uni($theme['name']));
 		
 			flash_message($lang->success_stylesheet_added, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}&file=".urlencode($mybb->input['name']));
@@ -2360,7 +2370,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
 	
-	if(is_array($mybb->input['applied_to']) && $mybb->input['applied_to']['global'][0] != "global")
+	if(is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
 		$check_actions = "";
 		
@@ -2528,7 +2538,7 @@ if($mybb->input['action'] == "set_default")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2540,7 +2550,7 @@ if($mybb->input['action'] == "set_default")
 	$plugins->run_hooks("admin_style_themes_set_default_commit");
 	
 	// Log admin action
-	log_admin_action($theme['tid'], $theme['name']);
+	log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 	
 	flash_message($lang->success_theme_set_default, 'success');
 	admin_redirect("index.php?module=style-themes");
@@ -2554,7 +2564,7 @@ if($mybb->input['action'] == "force")
 	$theme = $db->fetch_array($query);
 
 	// Does the theme not exist?
-	if(!$theme['tid'])
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
@@ -2577,7 +2587,7 @@ if($mybb->input['action'] == "force")
 		$plugins->run_hooks("admin_style_themes_force_commit");
 		
 		// Log admin action
-		log_admin_action($theme['tid'], $theme['name']);
+		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
 
 		flash_message($lang->success_theme_forced, 'success');
 		admin_redirect("index.php?module=style-themes");

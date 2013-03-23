@@ -184,6 +184,7 @@ if($mybb->input['action'] == "edit")
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
 				"format" => intval($mybb->input['format']),
 				"type" => intval($mybb->input['type']),
+				"perpage" => intval($mybb->input['perpage'])
 			);
 			$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
@@ -661,9 +662,9 @@ if($mybb->input['action'] == "send")
 		}
 		else
 		{
+			$input = array();
 			if($email['senddate'] != 0)
 			{
-				$input = array();
 				if($email['senddate'] <= TIME_NOW)
 				{
 					$input['delivery_type'] = "now";
@@ -932,6 +933,26 @@ if($mybb->input['action'] == "send")
 					"conditions" => unserialize($email['conditions'])
 				);
 			}
+			else
+			{
+				$input = array();
+			}
+		}
+
+		$options = array(
+			'username', 'email', 'postnum_dir', 'numposts'
+		);
+
+		foreach($options as $option)
+		{
+			if(!isset($input['conditions'][$option]))
+			{
+				$input['conditions'][$option] = '';
+			}
+		}
+		if(!isset($input['conditions']['usergroup']) || !is_array($input['conditions']['usergroup']))
+		{
+			$input['conditions']['usergroup'] = array();
 		}
 
 		$form_container = new FormContainer("{$lang->send_mass_mail}: {$lang->step_three} - {$lang->define_the_recipients}");
@@ -939,6 +960,7 @@ if($mybb->input['action'] == "send")
 		$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
 		$form_container->output_row($lang->email_addr_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
+		$options = array();
 		$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 		while($usergroup = $db->fetch_array($query))
 		{

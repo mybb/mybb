@@ -107,14 +107,14 @@ if(!$mybb->input['action'])
 	$update_check = $cache->read("update_check");
 
 	// If last update check was greater than two weeks ago (14 days) show an alert
-	if($update_check['last_check'] <= TIME_NOW-60*60*24*14)
+	if(isset($update_check['last_check']) && $update_check['last_check'] <= TIME_NOW-60*60*24*14)
 	{
 		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?module=home-version_check");
 		$page->output_error("<p>{$lang->last_update_check_two_weeks}</p>");
 	}
 
 	// If the update check contains information about a newer version, show an alert
-	if($update_check['latest_version_code'] > $mybb->version_code)
+	if(isset($update_check['latest_version_code']) && $update_check['latest_version_code'] > $mybb->version_code)
 	{
 		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");

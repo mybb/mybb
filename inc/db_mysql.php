@@ -185,12 +185,12 @@ class DB_MySQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "mysql_connect";
-				if($single_connection['pconnect'])
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "mysql_pconnect";
 				}
-				
-				$link = $type."_link";
+
+				$link = "{$type}_link";
 
 				$this->get_execution_time();
 
@@ -340,6 +340,8 @@ class DB_MySQL
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+
+		$debug_extra = '';
 		if($plugins->current_hook)
 		{
 			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
@@ -352,7 +354,7 @@ class DB_MySQL
 				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
 				"<td><strong>table</strong></td>\n".

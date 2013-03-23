@@ -32,7 +32,8 @@ if(!@chdir($forumdir) && !empty($forumdir))
 	}
 }
 
-$templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread_lastpost,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
+$templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
+$templatelist = ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -71,17 +72,20 @@ if($mybb->settings['portal_showwelcome'] != 0)
 			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 			$newthreads = $db->fetch_field($query, "newthreads");
 
-			$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-			if(is_array($announcementsfids))
+			if(!empty($mybb->settings['portal_announcementsfid']))
 			{
-				foreach($announcementsfids as $fid)
+				$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
+				if(is_array($announcementsfids))
 				{
-					$fid_array[] = intval($fid);	
+					foreach($announcementsfids as $fid)
+					{
+						$fid_array[] = intval($fid);	
+					}
+					
+					$announcementsfids = implode(',', $fid_array);
+					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids.") $unviewwhere");
+					$newann = $db->fetch_field($query, "newann");
 				}
-				
-				$announcementsfids = implode(',', $fid_array);
-				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids.") $unviewwhere");
-				$newann = $db->fetch_field($query, "newann");
 			}
 
 			if(!$newthreads)
@@ -366,242 +370,249 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	}
 }
 
-// Get latest news announcements
-// First validate announcement fids:
-$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-if(is_array($announcementsfids))
-{
-	foreach($announcementsfids as $fid)
-	{
-		$fid_array[] = intval($fid);
-	}
-	$announcementsfids = implode(',', $fid_array);
-}
-// And get them!
-foreach($forum_cache as $fid => $f)
-{
-	if(is_array($fid_array) && in_array($fid, $fid_array))
-	{
-		$forum[$fid] = $f;
-	}
-}
-
-$numannouncements = intval($mybb->settings['portal_numannouncements']);
-if(!$numannouncements)
-{
-	$numannouncements = 10; // Default back to 10
-}
-
-$pids = '';
-$tids = '';
-$comma = '';
-$query = $db->query("
-	SELECT p.pid, p.message, p.tid, p.smilieoff
-	FROM ".TABLE_PREFIX."posts p
-	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-	WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
-	ORDER BY t.dateline DESC 
-	LIMIT 0, {$numannouncements}"
-);
-while($getid = $db->fetch_array($query))
-{
-	$pids .= ",'{$getid['pid']}'";
-	$tids .= ",'{$getid['tid']}'";
-	$posts[$getid['tid']] = $getid;
-}
-$pids = "pid IN(0{$pids})";
-// Now lets fetch all of the attachments for these posts
-$query = $db->simple_select("attachments", "*", $pids);
-while($attachment = $db->fetch_array($query))
-{
-	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-}
-
-if(is_array($forum))
-{
-	foreach($forum as $fid => $forumrow)
-	{
-		$forumpermissions[$fid] = forum_permissions($fid);
-	}
-}
-
-$icon_cache = $cache->read("posticons");
-
 $announcements = '';
-$query = $db->query("
-	SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-	WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-	ORDER BY t.dateline DESC
-	LIMIT 0, {$numannouncements}"
-);
-while($announcement = $db->fetch_array($query))
+if(!empty($mybb->settings['portal_announcementsfid']))
 {
-	// Make sure we can view this announcement
-	if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+	// Get latest news announcements
+	// First validate announcement fids:
+	$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
+	if(is_array($announcementsfids))
 	{
-		continue;
-	}
-
-	$announcement['message'] = $posts[$announcement['tid']]['message'];
-	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
-	$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
-	$announcement['threadlink'] = get_thread_link($announcement['tid']);
-	
-	if($announcement['uid'] == 0)
-	{
-		$profilelink = htmlspecialchars_uni($announcement['threadusername']);
-	}
-	else
-	{
-		$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
-	}
-	
-	if(!$announcement['username'])
-	{
-		$announcement['username'] = $announcement['threadusername'];
-	}
-	$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
-	if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
-	{
-		$icon = $icon_cache[$announcement['icon']];
-		$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
-	}
-	else
-	{
-		$icon = "&nbsp;";
-	}
-	if($announcement['avatar'] != '')
-	{
-		$avatar_dimensions = explode("|", $announcement['avatardimensions']);
-		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		foreach($announcementsfids as $fid)
 		{
-			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+			$fid_array[] = intval($fid);
 		}
-		if (!stristr($announcement['avatar'], 'http://'))
+		$announcementsfids = implode(',', $fid_array);
+	}
+	// And get them!
+	foreach($forum_cache as $fid => $f)
+	{
+		if(is_array($fid_array) && in_array($fid, $fid_array))
 		{
-			$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
-		}		
-		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"\" {$avatar_width_height} /></td>";
+			$forum[$fid] = $f;
+		}
 	}
-	else
-	{
-		$avatar = '';
-	}
-	$anndate = my_date($mybb->settings['dateformat'], $announcement['dateline']);
-	$anntime = my_date($mybb->settings['timeformat'], $announcement['dateline']);
 
-	if($announcement['replies'])
+	$numannouncements = intval($mybb->settings['portal_numannouncements']);
+	if(!$numannouncements)
 	{
-		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments")."\";");
+		$numannouncements = 10; // Default back to 10
 	}
-	else
-	{
-		eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
-		$lastcomment = '';
-	}
-	
-	$plugins->run_hooks("portal_announcement");
 
-	$parser_options = array(
-		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
-		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
-		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
-		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],
-		"allow_videocode" => $forum[$announcement['fid']]['allowvideocode'],
-		"filter_badwords" => 1
+	$pids = '';
+	$tids = '';
+	$comma = '';
+	$posts = array();
+	$query = $db->query("
+		SELECT p.pid, p.message, p.tid, p.smilieoff
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+		ORDER BY t.dateline DESC 
+		LIMIT 0, {$numannouncements}"
 	);
-	if($announcement['smilieoff'] == 1)
+	while($getid = $db->fetch_array($query))
 	{
-		$parser_options['allow_smilies'] = 0;
+		$pids .= ",'{$getid['pid']}'";
+		$tids .= ",'{$getid['tid']}'";
+		$posts[$getid['tid']] = $getid;
 	}
-
-	$message = $parser->parse_message($announcement['message'], $parser_options);
-	
-	if(is_array($attachcache[$announcement['pid']]))
-	{ // This post has 1 or more attachments
-		$validationcount = 0;
-		$id = $announcement['pid'];
-		foreach($attachcache[$id] as $aid => $attachment)
+	if(!empty($posts))
+	{
+		$pids = "pid IN(0{$pids})";
+		// Now lets fetch all of the attachments for these posts
+		$query = $db->simple_select("attachments", "*", $pids);
+		while($attachment = $db->fetch_array($query))
 		{
-			if($attachment['visible'])
-			{ // There is an attachment thats visible!
-				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
-				$ext = get_extension($attachment['filename']);
-				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
-				{
-					$isimage = true;
-				}
-				else
-				{
-					$isimage = false;
-				}
-				$attachment['icon'] = get_attachment_icon($ext);
-				// Support for [attachment=id] code
-				if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
-				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-					{ // We have a thumbnail to show (and its not the "SMALL" enough image
-						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-					{
-						// Image is small enough to show - no thumbnail
-						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						// Show standard link to attachment
-						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
-					}
-					$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
-				}
-				else
-				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
-					{ // We have a thumbnail to show
-						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
-						if($tcount == 5)
-						{
-							$thumblist .= "<br />";
-							$tcount = 0;
-						}
-						++$tcount;
-					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
-					{
-						// Image is small enough to show - no thumbnail
-						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
-					}
-					else
-					{
-						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
-					}
-				}
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+		}
+
+		if(is_array($forum))
+		{
+			foreach($forum as $fid => $forumrow)
+			{
+				$forumpermissions[$fid] = forum_permissions($fid);
+			}
+		}
+
+		$icon_cache = $cache->read("posticons");
+
+		$query = $db->query("
+			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
+			FROM ".TABLE_PREFIX."threads t
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+			WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+			ORDER BY t.dateline DESC
+			LIMIT 0, {$numannouncements}"
+		);
+		while($announcement = $db->fetch_array($query))
+		{
+			// Make sure we can view this announcement
+			if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+			{
+				continue;
+			}
+
+			$announcement['message'] = $posts[$announcement['tid']]['message'];
+			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
+			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
+			$announcement['threadlink'] = get_thread_link($announcement['tid']);
+			
+			if($announcement['uid'] == 0)
+			{
+				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
 			}
 			else
 			{
-				$validationcount++;
+				$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
 			}
-		}
-		if($post['thumblist'])
-		{
-			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
-		}
-		if($post['imagelist'])
-		{
-			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
-		}
-		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
-		{
-			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
+			
+			if(!$announcement['username'])
+			{
+				$announcement['username'] = $announcement['threadusername'];
+			}
+			$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
+			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
+			{
+				$icon = $icon_cache[$announcement['icon']];
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+			}
+			else
+			{
+				$icon = "&nbsp;";
+			}
+			if($announcement['avatar'] != '')
+			{
+				$avatar_dimensions = explode("|", $announcement['avatardimensions']);
+				if($avatar_dimensions[0] && $avatar_dimensions[1])
+				{
+					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+				}
+				if (!stristr($announcement['avatar'], 'http://'))
+				{
+					$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
+				}		
+				$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"\" {$avatar_width_height} /></td>";
+			}
+			else
+			{
+				$avatar = '';
+			}
+			$anndate = my_date($mybb->settings['dateformat'], $announcement['dateline']);
+			$anntime = my_date($mybb->settings['timeformat'], $announcement['dateline']);
+
+			if($announcement['replies'])
+			{
+				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments")."\";");
+			}
+			else
+			{
+				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
+				$lastcomment = '';
+			}
+			
+			$plugins->run_hooks("portal_announcement");
+
+			$parser_options = array(
+				"allow_html" => $forum[$announcement['fid']]['allowhtml'],
+				"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
+				"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
+				"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],
+				"allow_videocode" => $forum[$announcement['fid']]['allowvideocode'],
+				"filter_badwords" => 1
+			);
+			if($announcement['smilieoff'] == 1)
+			{
+				$parser_options['allow_smilies'] = 0;
+			}
+
+			$message = $parser->parse_message($announcement['message'], $parser_options);
+			
+			if(is_array($attachcache[$announcement['pid']]))
+			{ // This post has 1 or more attachments
+				$validationcount = 0;
+				$id = $announcement['pid'];
+				foreach($attachcache[$id] as $aid => $attachment)
+				{
+					if($attachment['visible'])
+					{ // There is an attachment thats visible!
+						$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+						$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+						$ext = get_extension($attachment['filename']);
+						if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
+						{
+							$isimage = true;
+						}
+						else
+						{
+							$isimage = false;
+						}
+						$attachment['icon'] = get_attachment_icon($ext);
+						// Support for [attachment=id] code
+						if(stripos($message, "[attachment=".$attachment['aid']."]") !== false)
+						{
+							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
+							{ // We have a thumbnail to show (and its not the "SMALL" enough image
+								eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+							}
+							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
+							{
+								// Image is small enough to show - no thumbnail
+								eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
+							}
+							else
+							{
+								// Show standard link to attachment
+								eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+							}
+							$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
+						}
+						else
+						{
+							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
+							{ // We have a thumbnail to show
+								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+								if($tcount == 5)
+								{
+									$thumblist .= "<br />";
+									$tcount = 0;
+								}
+								++$tcount;
+							}
+							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
+							{
+								// Image is small enough to show - no thumbnail
+								eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+							}
+							else
+							{
+								eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
+							}
+						}
+					}
+					else
+					{
+						$validationcount++;
+					}
+				}
+				if($post['thumblist'])
+				{
+					eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+				}
+				if($post['imagelist'])
+				{
+					eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
+				}
+				if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
+				{
+					eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
+				}
+			}
+
+			eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
+			unset($post);
 		}
 	}
-
-	eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
-	unset($post);
 }
 
 $plugins->run_hooks("portal_end");

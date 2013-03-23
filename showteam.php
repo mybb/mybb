@@ -12,9 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'showteam.php');
 
-$templatelist = 'showteam,showteam_row,showteam_row_mod,postbit_email,postbit_pm';
-$templatelist .= ',showteam_usergroup_user,showteam_usergroup,showteam_moderators_mod';
-$templatelist .= ',showteam_moderators,showteam_moderators_forum';
+$templatelist = 'showteam,postbit_email,postbit_pm,showteam_usergroup_user,showteam_usergroup,showteam_moderators_mod,showteam_moderators,showteam_moderators_forum';
 require_once "./global.php";
 
 // Load global language phrases

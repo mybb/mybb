@@ -12,15 +12,16 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'modcp.php');
 
-$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban";
-$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_banning_auser,modcp_banning_error";
-$templatelist .= ",modcp_banning_edit,modcp_banning_banned_user,modcp_nav,modcp_modlogs_noresults,modcp";
-$templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements";
-$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special";
-$templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields";
-$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs";
-$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature_info,modcp_editprofile_signature_options,modcp_editprofile_signature";
+$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread";
+$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty";
+$templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
+$templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults";
+$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
+$templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
+$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
+$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -79,6 +80,10 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 
 	$unviewableforums = str_replace("'", '', $unviewableforums);
 	$unviewableforums = explode(',', $unviewableforums);
+}
+else
+{
+	$unviewableforums = array();
 }
 
 // Fetch the Mod CP menu
@@ -324,7 +329,7 @@ if($mybb->input['action'] == "allreports")
 		while($report = $db->fetch_array($query))
 		{
 			$trow = alt_trow();
-			$report['threadsubject'] = $lang->na;
+			
 			$report['threadlink'] = get_thread_link($report['tid']);
 
 			$report['posterlink'] = get_profile_link($report['postuid']);
@@ -339,12 +344,19 @@ if($mybb->input['action'] == "allreports")
 			{
 				$trow = "trow_shaded";
 			}
-	
-			if($report['threadsubject'])
+			
+			// No subject? Set it to N/A
+			if($report['threadsubject'] == '')
 			{
-				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-				$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
+				$report['threadsubject'] = $lang->na;
 			}
+			else
+			{
+				// Only parse bad words and sanitize subject if there is one...
+				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+			}
+			
+			$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
 
 			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
 		}
@@ -604,7 +616,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
-
+	
 	$startdate = @explode(" ", $mybb->input['starttime_time']);
 	$startdate = @explode(":", $startdate[0]);
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
@@ -635,8 +647,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -652,11 +663,11 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -729,11 +740,11 @@ if($mybb->input['action'] == "new_announcement")
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
-		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$starttime_time = htmlspecialchars_uni($mybb->input['starttime_time']);
 		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
-		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		$endtime_time = htmlspecialchars_uni($mybb->input['endtime_time']);
 	}
 	else
 	{
@@ -884,7 +895,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	{
 		$errors[] = $lang->error_missing_forum;
 	}
-
+	
 	$startdate = @explode(" ", $mybb->input['starttime_time']);
 	$startdate = @explode(":", $startdate[0]);
 	$enddate = @explode(" ", $mybb->input['endtime_time']);
@@ -915,7 +926,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -931,11 +942,11 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1037,11 +1048,11 @@ if($mybb->input['action'] == "edit_announcement")
 		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
-		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$starttime_time = htmlspecialchars_uni($mybb->input['starttime_time']);
 		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
-		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		$endtime_time = htmlspecialchars_uni($mybb->input['endtime_time']);
 
 		$errored = true;
 	}
@@ -1365,7 +1376,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=threads");
+		$multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
 		$query = $db->query("
 			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
@@ -1451,7 +1462,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
+		$multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
 			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
@@ -1537,7 +1548,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
+		$multipage = multipage($unapproved_attachments, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
 		$query = $db->query("
 			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
@@ -1710,6 +1721,7 @@ if($mybb->input['action'] == "do_editprofile")
 		require_once MYBB_ROOT."inc/functions_warnings.php";
 		foreach($moderator_options as $option)
 		{
+			$mybb->input[$option['time']] = intval($mybb->input[$option['time']]);
 			if(!$mybb->input[$option['action']])
 			{
 				if($user[$option['update_field']] == 1)
@@ -1725,7 +1737,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 			if($mybb->input[$option['action']])
 			{
-				if(intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+				if($mybb->input[$option['time']] == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 				{
 					// User has selected a type of ban, but not entered a valid time frame
 					$string = $option['action']."_error";
@@ -1840,25 +1852,33 @@ if($mybb->input['action'] == "editprofile")
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
 	}
 
-	if($user['usertitle'] == "")
+	// Custom user title, check to see if we have a default group title
+	if(!$user['displaygroup'])
 	{
-		$query = $db->simple_select("usertitles", "*", "posts <='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-		$utitle = $db->fetch_array($query);
-		$defaulttitle = $utitle['title'];
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
+	$displaygroupfields = array('usertitle');
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+
+	if(!empty($display_group['usertitle']))
+	{
+		$defaulttitle = $display_group['usertitle'];
 	}
 	else
 	{
-		if(!$user['displaygroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
+		// Go for post count title if a group default isn't set
+		$usertitles = $cache->read('usertitles');
 
-		$displaygroupfields = array(
-			"usertitle"
-		);
-		$display_group = usergroup_displaygroup($user['displaygroup']);
-		$defaulttitle = $display_group['usertitle'];
+		foreach($usertitles as $title)
+		{
+			if($title['posts'] <= $mybb->user['postnum'])
+			{
+				$defaulttitle = $title['title'];
+			}
+		}
 	}
+
 	if(empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';
@@ -3061,6 +3081,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		if($mybb->input['uid'])
 		{
+			$username_select = $db->simple_select('users', 'username', "uid='" . (int)$mybb->input['uid'] . "'");
+			$user['username'] = $db->fetch_field($username_select, 'username');
 			$update_array = array(
 				'gid' => intval($mybb->input['usergroup']),
 				'admin' => intval($mybb->user['uid']),
@@ -3099,7 +3121,16 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$db->update_query('users', $update_array, "uid = {$user['uid']}");
 
 		$cache->update_banned();
-		log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+
+		// Log edit or add ban
+		if($mybb->input['uid'])
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->edited_user_ban);
+		}
+		else
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+		}
 		
 		$plugins->run_hooks("modcp_do_banuser_end");
 

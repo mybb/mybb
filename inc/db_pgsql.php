@@ -199,7 +199,7 @@ class DB_PgSQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "pg_connect";
-				if($single_connection['pconnect'])
+				if(isset($single_connection['pconnect']))
 				{
 					$connect_function = "pg_pconnect";
 				}
@@ -357,7 +357,7 @@ class DB_PgSQL
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
 				"<td><strong>Info</strong></td>\n".
