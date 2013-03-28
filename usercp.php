@@ -613,6 +613,7 @@ if($mybb->input['action'] == "profile")
 				if($title['posts'] <= $mybb->user['postnum'])
 				{
 					$defaulttitle = $title['title'];
+					break;
 				}
 			}
 		}
