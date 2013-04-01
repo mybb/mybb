@@ -325,7 +325,7 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 	if(verify_post_check($mybb->input['my_post_key']))
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
-		my_setcookie("adminsid", "");
+		my_unsetcookie('adminsid');
 		$logged_out = true;
 	}
 }
@@ -349,7 +349,7 @@ if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 	}
 	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
-	my_setcookie("adminsid", "");
+	my_unsetcookie('adminsid');
 }
 
 if($mybb->user['uid'])
