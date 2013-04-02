@@ -1036,7 +1036,7 @@ class PostDataHandler extends DataHandler
 		$attachmentcount = $db->fetch_field($query, "attachmentcount");
 		if($attachmentcount > 0)
 		{
-			update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}"));
+			update_thread_counters($post['tid'], array("attachmentcount" => "+{$attachmentcount}"));
 		}
 
 		// Return the post's pid and whether or not it is visible.
