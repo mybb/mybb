@@ -6,6 +6,9 @@
  * $Id$
  */
 
+/* Uncomment the lines below to use these language strings rather than the help documents set in the database */
+
+/*
 // Help Document 1
 $l['d1_name'] = "User Registration";
 $l['d1_desc'] = "Perks and privileges to user registration.";
@@ -68,4 +71,5 @@ $l['d7_document'] = "You can use MyCode, a simplified version of HTML, in your p
 <p><br />[list]<br />[*]List Item #1<br />[*]List Item #2<br />[*]List Item #3<br />[/list]<br /><ul><li>List item #1</li><li>List item #2</li><li>List Item #3</li>
 </ul>
 <p>You can make an ordered list by using [list=1] for a numbered, and [list=a] for an alphabetical list.</p>";
+*/
 ?>
