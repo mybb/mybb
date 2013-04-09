@@ -506,9 +506,6 @@ input.button {
 	background: #eee url(images/buttons_bg.gif) repeat-x;
 	border: 1px solid #bbb;
 	color: #333;
-	cursor: pointer;
-	font-family: Tahoma, Verdana, Arial, Sans-Serif;
-	font-size: 13px;
 }
 
 input.button:hover {
