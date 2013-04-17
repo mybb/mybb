@@ -397,13 +397,14 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
-	$extensions = $mybb->cache->read('attachtypes');
+    $attachtypes = $cache->read('attachtypes');
+    $attachment = $plugins->run_hooks("upload_attachment_start", $attachment);
 
-	$ext = get_extension($attachment['name']);
-	// Check if we have a valid extension
-	if(!isset($extensions[$ext]))
-	{
-		$ret['error'] = $lang->error_attachtype;
+    $ext = get_extension($attachment['name']);
+    // Check if we have a valid extension
+    if(!isset($attachtypes[$ext]))
+    { 
+    	$ret['error'] = $lang->error_attachtype;
 		return $ret;
 	}
 
@@ -546,7 +547,6 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 
 		$supported_mimes = array();
-		$attachtypes = $cache->read("attachtypes");
 		foreach($attachtypes as $attachtype)
 		{
 			if(!empty($attachtype['mimetype']))
@@ -579,6 +579,9 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 		require_once MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
+		
+		$attachment = $plugins->run_hooks("upload_attachment_thumb_start"); 
+		
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
 		if($thumbnail['filename'])
