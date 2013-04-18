@@ -580,7 +580,7 @@ function upload_attachment($attachment, $update_attachment=false)
 		require_once MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
 		
-		$attachment = $plugins->run_hooks("upload_attachment_thumb_start"); 
+		$attacharray = $plugins->run_hooks("upload_attachment_thumb_start", $attacharray); 
 		
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
