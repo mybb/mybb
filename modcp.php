@@ -2429,18 +2429,21 @@ if($mybb->input['action'] == "editprofile")
 		1 => array(
 			"action" => "suspendsignature", // The input action for this option
 			"option" => "suspendsignature", // The field in the database that this option relates to
+			"time" => "action_time", // The time we've entered
 			"length" => "suspendsigtime", // The length of suspension field in the database
 			"select_option" => "action" // The name of the select box of this option
 		),
 		2 => array(
 			"action" => "moderateposting",
 			"option" => "moderateposts",
+			"time" => "modpost_time",
 			"length" => "moderationtime",
 			"select_option" => "modpost"
 		),
 		3 => array(
 			"action" => "suspendposting",
 			"option" => "suspendposting",
+			"time" => "suspost_time",
 			"length" => "suspensiontime",
 			"select_option" => "suspost"
 		)
@@ -2456,6 +2459,7 @@ if($mybb->input['action'] == "editprofile")
 
 	foreach($moderator_options as $option)
 	{
+		$mybb->input[$option['time']] = intval($mybb->input[$option['time']]);
 		// Display the suspension info, if this user has this option suspended
 		if($user[$option['option']])
 		{
