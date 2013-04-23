@@ -546,8 +546,10 @@ class Moderation
 		");
 		$num_unapproved_posts = $num_approved_posts = 0;
 		$message = '';
+		$threads = array();
 		while($post = $db->fetch_array($query))
 		{
+			$threads[$post['tid']] = $post['tid'];
 			if($first == 1)
 			{ // all posts will be merged into this one
 				$masterpid = $post['pid'];
@@ -607,11 +609,6 @@ class Moderation
 			}
 		}
 
-		$query2 = $db->simple_select("attachments", "COUNT(aid) as count", "pid IN({$pidin}) AND visible='1'");
-		$attachment_count = $db->fetch_field($query2, "count");
-
-		$db->update_query("threads", array("attachmentcount" => $attachment_count), "tid = '{$mastertid}'");
-
 		// Update the message
 		$mergepost = array(
 			"message" => $db->escape_string($message),
@@ -667,6 +664,26 @@ class Moderation
 		update_thread_data($mastertid);
 
 		update_forum_lastpost($fid);
+
+		foreach($threads as $tid)
+		{
+			$count = array();
+			// Attachment count
+			$query = $db->query("
+					SELECT COUNT(aid) AS attachment_count
+					FROM ".TABLE_PREFIX."attachments a
+					LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
+					WHERE p.tid='$tid'
+			");
+			$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
+
+			if(!$count['attachmentcount'])
+			{
+				$count['attachmentcount'] = 0;
+			}
+
+			update_thread_counters($tid, $count);
+		}
 
 		if(is_array($forum_counters))
 		{
