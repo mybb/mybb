@@ -40,7 +40,7 @@ foreach($options as $option)
 }
 
 // Get the pid and tid and replyto from the input.
-$tid = $mybb->input['tid'];
+$tid = intval($mybb->input['tid']);
 
 $replyto = 0;
 if($mybb->input['replyto'])
