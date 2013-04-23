@@ -49,6 +49,11 @@ if($mybb->input['action'] == "newpoll")
 	$plugins->run_hooks("polls_newpoll_start");
 
 	$thread = get_thread($mybb->input['tid']);
+	if(!$thread['tid'])
+	{
+		error($lang->error_invalidthread);
+	}
+	
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 
@@ -66,11 +71,6 @@ if($mybb->input['action'] == "newpoll")
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
-	}
-
-	if(!$thread['tid'])
-	{
-		error($lang->error_invalidthread);
 	}
 	// Make navigation
 	build_forum_breadcrumb($fid);
@@ -150,6 +150,11 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$plugins->run_hooks("polls_do_newpoll_start");
 
 	$thread = get_thread($mybb->input['tid']);
+	if(!$thread['tid'])
+	{
+		error($lang->error_invalidthread);
+	}
+	
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 
@@ -167,11 +172,6 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
-	}
-
-	if(!$thread['tid'])
-	{
-		error($lang->error_invalidthread);
 	}
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
@@ -307,6 +307,11 @@ if($mybb->input['action'] == "editpoll")
 	$query = $db->simple_select("threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
 	$tid = $thread['tid'];
+	if(!$tid)
+	{
+		error($lang->error_invalidthread);
+	}
+	
 	$fid = $thread['fid'];
 
 	// Make navigation
@@ -330,11 +335,6 @@ if($mybb->input['action'] == "editpoll")
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
-	}
-
-	if(!$tid)
-	{
-		error($lang->error_invalidthread);
 	}
 
 	if(!is_moderator($fid, "caneditposts"))
@@ -482,6 +482,10 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$query = $db->simple_select("threads", "*", "poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
+	if(!$thread['tid'])
+	{
+		error($lang->error_invalidthread);
+	}
 
 	$forumpermissions = forum_permissions($thread['fid']);
 
@@ -499,11 +503,6 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
-	}
-
-	if($thread['visible'] == 0 || !$thread['tid'])
-	{
-		error($lang->error_invalidthread);
 	}
 
 	if(!is_moderator($thread['fid'], "caneditposts"))
@@ -636,6 +635,11 @@ if($mybb->input['action'] == "showresults")
 
 	$tid = $poll['tid'];
 	$thread = get_thread($tid);
+	if(!$thread['tid'])
+	{
+		error($lang->error_invalidthread);
+	}
+
 	$fid = $thread['fid'];
 
 	// Get forum info
@@ -652,16 +656,6 @@ if($mybb->input['action'] == "showresults")
 	if($forumpermissions['canviewthreads'] == 0 || $forumpermissions['canview'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
-	}
-
-	if(!$poll['pid'])
-	{
-		error($lang->error_invalidpoll);
-	}
-
-	if(!$thread['tid'])
-	{
-		error($lang->error_invalidthread);
 	}
 
 	// Make navigation
@@ -807,7 +801,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$query = $db->simple_select("threads", "*", "poll='".$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
-	if(!$thread['tid'])
+	if(!$thread['tid'] || $thread['visible'] == 0)
 	{
 		error($lang->error_invalidthread);
 	}
@@ -964,6 +958,11 @@ if($mybb->input['action'] == "do_undovote")
 	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
 	// Get thread ID and then get forum info
 	$thread = get_thread($poll['tid']);
+	if(!$thread['tid'] || $thread['visible'] == 0)
+	{
+		error($lang->error_invalidthread);
+	}
+
 	$fid = $thread['fid'];
 
 	// Get forum info
