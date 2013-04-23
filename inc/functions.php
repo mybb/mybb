@@ -1295,7 +1295,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 				}
 			}
 
-			if(!$level_permissions["canonlyviewownthreads"])
+			if($level_permissions["canview"] && !$level_permissions["canonlyviewownthreads"])
 			{
 				$only_view_own_threads = 0;
 			}
