@@ -30,7 +30,7 @@ $parser = new postParser;
 $lang->load("newreply");
 
 // Get the pid and tid and replyto from the input.
-$tid = $mybb->input['tid'];
+$tid = intval($mybb->input['tid']);
 
 $replyto = 0;
 if(isset($mybb->input['replyto']))
