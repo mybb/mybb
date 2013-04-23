@@ -48,6 +48,7 @@ if($mybb->input['action'] == "delete_post_tool")
 
 		// Log admin action
 		log_admin_action($tool['tid'], $tool['name']);
+		$cache->update_forumsdisplay();
 
 		flash_message($lang->success_post_tool_deleted, 'success');
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
@@ -1099,6 +1100,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
+			$cache->update_forumsdisplay();
 
 			flash_message($lang->success_mod_tool_updated, 'success');
 			admin_redirect("index.php?module=config-mod_tools&action=post_tools");
@@ -1563,6 +1565,7 @@ if($mybb->input['action'] == "add_post_tool")
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
+			$cache->update_forumsdisplay();
 
 			flash_message($lang->success_mod_tool_created, 'success');
 			admin_redirect("index.php?module=config-mod_tools&action=post_tools");
