@@ -1457,6 +1457,8 @@ function create_tables()
 		$db_encoding = "// \$config['database']['encoding'] = '{$config['encoding']}';";
 	}
 
+	$config['dbpass'] = addslashes($config['dbpass']);
+
 	// Write the configuration file
 	$configdata = "<?php
 /**
