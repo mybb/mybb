@@ -1767,6 +1767,13 @@ if($mybb->input['action'] == "merge")
 			$db->delete_query("users", "uid='{$source_user['uid']}'");
 			$db->delete_query("banned", "uid='{$source_user['uid']}'");
 
+			// Did the old user have an uploaded avatar?
+			if($source_user['avatartype'] == "upload")
+			{
+				// Removes the ./ at the beginning the timestamp on the end...
+				@unlink("../".substr($source_user['avatar'], 2, -20));
+			}
+
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
 			$query = $db->simple_select("forums", "fid", "usepostcounts=0");
