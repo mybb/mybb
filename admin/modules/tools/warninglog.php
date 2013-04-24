@@ -138,7 +138,7 @@ if($mybb->input['action'] == "view")
 		$table->construct_row();
 	}
 
-	$issuedby = build_profile_link($warning['username'], $warning['uid'], "_blank");
+	$issuedby = build_profile_link($warning['username'], $warning['issuedby'], "_blank");
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 
 	$date_issued = my_date('relative', $warning['dateline']);
