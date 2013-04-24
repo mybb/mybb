@@ -228,7 +228,7 @@ a:hover, a:active {
 	background: #efefef;
 	border-top: 1px solid #bbb;
 	border-bottom: 1px solid #bbb;
-	padding: 6px;	
+	padding: 6px;
 	font-size: 12px;
 	overflow: hidden;
 }
@@ -329,7 +329,7 @@ table {
 	border-top: 1px solid #444;
 	border-bottom: 1px solid #000;
 	padding: 6px;
-	
+
 	font-size: 12px;
 }
 
@@ -1291,7 +1291,7 @@ a.button.report_user_button span {
 	outline: 1px solid #ccc;
 	padding: 5px;
 	margin-top: 5px;
-	
+
 	font-weight: normal;
 }
 
@@ -1775,7 +1775,7 @@ a.button {
 	-webkit-border-top-left-radius: 6px;
 	-webkit-border-top-right-radius: 6px;
 	border-top-left-radius: 6px;
-	border-top-right-radius: 6px;	
+	border-top-right-radius: 6px;
 }
 
 .popup_menu .popup_item_container:last-child .popup_item {
@@ -3021,11 +3021,11 @@ a.button {
 		<div class="wrapper">
 			<span id="current_time">{$lang->welcome_current_time}</span>
 			<span id="copyright">
-				<!-- MyBB is free software developed and maintained by a volunteer community. 
-					It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
-					to show your support for MyBB.  If you choose to remove or modify the copyright below, 
+				<!-- MyBB is free software developed and maintained by a volunteer community.
+					It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact,
+					to show your support for MyBB.  If you choose to remove or modify the copyright below,
 					you may be refused support on the MyBB Community Forums.
-				 
+
 					This is free software, support us and we'll support you. -->
 				{$lang->powered_by} <a href="http://www.mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybb.com" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
@@ -5936,7 +5936,7 @@ body {
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1405"><![CDATA[<html>
+		<template name="modcp_finduser" version="1611"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -5957,7 +5957,7 @@ body {
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->usergroup}</strong></span></td>
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->regdate}</strong></span></td>
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
-							<td class="tcat" align="right" width="10%"><span class="smalltext"><strong>{$lang->postnum}</strong></span></td>
+							<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->postnum}</strong></span></td>
 						</tr>
 						{$users}
 					</table>
@@ -8355,7 +8355,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</tr>
 	<tr>
 		<td class="trow1" width="20%"><strong><label for="sort">{$lang->sort_by}</label></strong></td>
-	
+
 		<td class="trow1">
 			<select name="sort" id="sort">
 				<option value="subject">{$lang->sort_by_subject}</option>
