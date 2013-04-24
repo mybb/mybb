@@ -10606,7 +10606,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1405"><![CDATA[<html>
+		<template name="modcp_finduser" version="1611"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -10627,7 +10627,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->usergroup}</strong></span></td>
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->regdate}</strong></span></td>
 							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
-							<td class="tcat" align="right" width="10%"><span class="smalltext"><strong>{$lang->postnum}</strong></span></td>
+							<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->postnum}</strong></span></td>
 						</tr>
 						{$users}
 					</table>
