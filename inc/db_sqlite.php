@@ -134,7 +134,7 @@ class DB_SQLite
 
 		$this->query_time += $query_time;
 
-		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".number_format($query_time, 0)."s)";
+		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".format_time_duration($query_time).")";
 
 		if($this->db)
 		{
@@ -236,7 +236,7 @@ class DB_SQLite
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -251,7 +251,7 @@ class DB_SQLite
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";

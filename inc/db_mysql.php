@@ -202,7 +202,7 @@ class DB_MySQL
 				// Successful connection? break down brother!
 				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".format_time_duration($time_spent).")";
 					break;
 				}
 				else
@@ -382,7 +382,7 @@ class DB_MySQL
 			}
 			$this->explain .=
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
+				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";
@@ -397,7 +397,7 @@ class DB_MySQL
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr>\n".
-				"<td bgcolor=\"#ffffff\">Query Time: ".$qtime."</td>\n".
+				"<td bgcolor=\"#ffffff\">Query Time: ".format_time_duration($qtime)."</td>\n".
 				"</tr>\n".
 				"</table>\n".
 				"<br />\n";

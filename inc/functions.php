@@ -20,14 +20,14 @@ function output_page($contents)
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
-	$totaltime = $maintimer->stop();
+	$totaltime = format_time_duration($maintimer->stop());
 
 	if($mybb->usergroup['cancp'] == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
-			$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
-			$query_time = $maintimer->format($db->query_time);
+			$phptime = $maintimer->totaltime - $db->query_time;
+			$query_time = $db->query_time;
 
 			if($maintimer->totaltime > 0)
 			{
@@ -41,8 +41,6 @@ function output_page($contents)
 				$percentsql = 0;
 			}
 
-			$phpversion = PHP_VERSION;
-
 			$serverload = get_server_load();
 
 			if(my_strpos(getenv("REQUEST_URI"), "?"))
@@ -52,15 +50,6 @@ function output_page($contents)
 			else
 			{
 				$debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "?debug=1";
-			}
-
-			if($mybb->settings['gzipoutput'] != 0)
-			{
-				$gzipen = "Enabled";
-			}
-			else
-			{
-				$gzipen = "Disabled";
 			}
 
 			$memory_usage = get_memory_usage();
@@ -74,8 +63,7 @@ function output_page($contents)
 				$memory_usage = '';
 			}
 
-			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
-			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
@@ -3211,6 +3199,37 @@ function get_friendly_size($size)
 }
 
 /**
+ * Format a decimal number in to microseconds, milliseconds, or seconds.
+ *
+ * @param int The time in microseconds
+ * @return string The friendly time duration
+ */
+function format_time_duration($time)
+{
+	global $lang;
+
+	if(!is_numeric($time))
+	{
+		return $lang->na;
+	}
+
+	if(round(1000000 * $time, 2) < 1000)
+	{
+		$time = number_format(round(1000000 * $time, 2))." μs";
+	}
+	elseif(round(1000000 * $time, 2) >= 1000 && round(1000000 * $time, 2) < 1000000)
+	{
+		$time = number_format(round((1000 * $time), 2))." ms";
+	}
+	else
+	{
+		$time = round($time, 3)." seconds";
+	}
+
+	return $time;
+}
+
+/**
  * Get the attachment icon for a specific file extension
  *
  * @param string The file extension
@@ -3568,12 +3587,19 @@ function debug_page()
 {
 	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang;
 
-	$totaltime = $maintimer->totaltime;
-	$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
-	$query_time = $maintimer->format($db->query_time);
+	$totaltime = format_time_duration($maintimer->totaltime);
+	$phptime = $maintimer->totaltime - $db->query_time;
+	$query_time = $db->query_time;
+	$globaltime = format_time_duration($globaltime);
+
+	// $phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
+	// $query_time = $maintimer->format($db->query_time);
 
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($query_time/$maintimer->totaltime)*100), 2);
+
+	$phptime = format_time_duration($maintimer->totaltime - $db->query_time);
+	$query_time = format_time_duration($db->query_time);
 
 	$phpversion = PHP_VERSION;
 
@@ -3603,21 +3629,21 @@ function debug_page()
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Generation Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime seconds</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. DB Queries:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime seconds ($percentphp%)</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime ($percentphp%)</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">DB Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$query_time seconds ($percentsql%)</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$query_time ($percentsql%)</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Extensions Used:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$mybb->config['database']['type']}, xml</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Global.php Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime seconds</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Version:</font></b></td>\n";

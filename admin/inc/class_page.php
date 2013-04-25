@@ -157,7 +157,7 @@ var imagepath = '../images';
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
-		$totaltime = $maintimer->stop();
+		$totaltime = format_time_duration($maintimer->stop());
 		$querycount = $db->query_count;
 		echo "			</div>\n";
 		echo "		</div>\n";
@@ -370,7 +370,7 @@ EOF;
 				$lang_username = $lang->username;
 				break;
 		}
-		
+
 		// Secret PIN
 		global $config;
 		if(isset($config['secret_pin']) && $config['secret_pin'] != '')
@@ -396,7 +396,7 @@ print <<<EOF
 
 			<div class="label"{$login_label_width}><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
-			
+
             {$secret_pin}
 		</div>
 		<p class="submit">
