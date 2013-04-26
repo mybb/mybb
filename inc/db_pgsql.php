@@ -145,6 +145,13 @@ class DB_PgSQL
 	public $query_time = 0;
 
 	/**
+	 * The last result run on the database (needed for affected_rows)
+	 *
+	 * @var resource
+	 */
+	public $last_result;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -321,6 +328,7 @@ class DB_PgSQL
 		$query_time = $this->get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
+		$this->last_result = $query;
 
 		if($mybb->debug_mode)
 		{
@@ -569,7 +577,7 @@ class DB_PgSQL
 	 */
 	function affected_rows()
 	{
-		return pg_affected_rows($this->current_link);
+		return pg_affected_rows($this->last_result);
 	}
 
 	/**
