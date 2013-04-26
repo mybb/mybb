@@ -822,20 +822,23 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			$query = $db->query("
-				SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
-				WHERE p.tid='$tid'
-				AND p.dateline <= '".$post['dateline']."'
-				$visible
-			");
-			$result = $db->fetch_field($query, "count");
-			if(($result % $perpage) == 0)
+			if($post)
 			{
-				$page = $result / $perpage;
-			}
-			else
-			{
-				$page = intval($result / $perpage) + 1;
+				$query = $db->query("
+					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
+					WHERE p.tid = '{$tid}'
+					AND p.dateline <= '{$post['dateline']}'
+					{$visible}
+				");
+				$result = $db->fetch_field($query, "count");
+				if(($result % $perpage) == 0)
+				{
+					$page = $result / $perpage;
+				}
+				else
+				{
+					$page = intval($result / $perpage) + 1;
+				}
 			}
 		}
 
