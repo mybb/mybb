@@ -240,7 +240,12 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
-				$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+				if ($mybb->settings['minifycss']) {
+					$page_stylesheetmin = str_replace('.css', '.min.css', $page_stylesheet);
+					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheetmin}\" />\n";
+				} else {
+					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+				}
 				$already_loaded[$page_stylesheet] = 1;
 			}
 		}
