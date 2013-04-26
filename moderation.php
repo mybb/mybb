@@ -359,16 +359,6 @@ switch($mybb->input['action'])
 						$where_array[] = "','||d.tids||',' LIKE '%,".$db->escape_string($like).",%'";
 					}
 					$where_statement = implode(" OR ", $where_array);
-					$query = $db->query("
-						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
-						FROM ".TABLE_PREFIX."delayedmoderation d
-						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
-						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
-						WHERE ".$where_statement."
-						ORDER BY d.dateline DESC
-						LIMIT  0, 20
-					");
 					break;
 				default:
 					foreach($tids as $like)
@@ -376,17 +366,16 @@ switch($mybb->input['action'])
 						$where_array[] = "CONCAT(',',d.tids,',') LIKE  '%,".$db->escape_string($like).",%'";
 					}
 					$where_statement = implode(" OR ", $where_array);
-					$query = $db->query("
-						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
-						FROM ".TABLE_PREFIX."delayedmoderation d
-						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
-						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
-						WHERE ".$where_statement."
-						ORDER BY d.dateline DESC
-						LIMIT  0, 20
-					");
 			}
+			$query = $db->query("
+				SELECT d.*, u.username, f.name AS fname
+				FROM ".TABLE_PREFIX."delayedmoderation d
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
+				WHERE ".$where_statement."
+				ORDER BY d.dateline DESC
+				LIMIT  0, 20
+			");
 		}
 		else
 		{
@@ -395,10 +384,9 @@ switch($mybb->input['action'])
 				case "pgsql":
 				case "sqlite":
 					$query = $db->query("
-						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
+						SELECT d.*, u.username, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE ','||d.tids||',' LIKE '%,{$tid},%'
 						ORDER BY d.dateline DESC
@@ -407,10 +395,9 @@ switch($mybb->input['action'])
 					break;
 				default:
 					$query = $db->query("
-						SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
+						SELECT d.*, u.username, f.name AS fname
 						FROM ".TABLE_PREFIX."delayedmoderation d
 						LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
 						LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 						WHERE CONCAT(',',d.tids,',') LIKE '%,{$tid},%'
 						ORDER BY d.dateline DESC
@@ -424,9 +411,10 @@ switch($mybb->input['action'])
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
-			if($delayedmod['tsubject'] && strpos($delayedmod['tids'], ',') === false)
+			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($delayedmod['tsubject'])."</a><br />";
+				$thread = get_thread($delayedmod['tids']);
+				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($thread['subject'])."</a><br />";
 			}
 			else
 			{
@@ -1046,16 +1034,16 @@ switch($mybb->input['action'])
 
 		$forum_cache = $cache->read("forums");
 
+		$thread = get_thread($tid);
 		$trow = alt_trow(1);
 		switch($db->type)
 		{
 			case "pgsql":
 			case "sqlite":
 				$query = $db->query("
-					SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
+					SELECT d.*, u.username, f.name AS fname
 					FROM ".TABLE_PREFIX."delayedmoderation d
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
 					LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 					WHERE ','||d.tids||',' LIKE '%,{$tid},%'
 					ORDER BY d.dateline DESC
@@ -1064,10 +1052,9 @@ switch($mybb->input['action'])
 				break;
 			default:
 				$query = $db->query("
-					SELECT d.*, u.username, t.subject AS tsubject, f.name AS fname
+					SELECT d.*, u.username, f.name AS fname
 					FROM ".TABLE_PREFIX."delayedmoderation d
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=d.uid)
-					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=d.tids)
 					LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=d.fid)
 					WHERE CONCAT(',',d.tids,',') LIKE '%,{$tid},%'
 					ORDER BY d.dateline DESC
@@ -1080,9 +1067,9 @@ switch($mybb->input['action'])
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
-			if($delayedmod['tsubject'] && strpos($delayedmod['tids'], ',') === false)
+			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($delayedmod['tsubject'])."</a><br />";
+				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($thread['subject'])."</a><br />";
 			}
 			else
 			{
