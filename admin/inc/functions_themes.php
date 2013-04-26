@@ -414,9 +414,19 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace("#url\((\"|'|)(.*)\\1\)#e", "fix_css_urls('$2')", $stylesheet);
-	$stylesheet = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $stylesheet);
-	$stylesheet = str_replace(': ', ':', $stylesheet);
-	$stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
+
+	if ($mybb->settings['minifycss']) {
+		$stylesheetmin = minify_stylesheet($stylesheet);
+		$filenamemin = str_replace('.css', '.min.css', $filename);
+		$fpmin = @fopen(MYBB_ROOT."{$theme_directory}/{$filenamemin}", "wb");
+		if(!$fpmin)
+		{
+			return false;
+		}
+
+		@fwrite($fpmin, $stylesheetmin);
+		@fclose($fpmin);
+	}
 
 	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -427,6 +437,19 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp, $stylesheet);
 	@fclose($fp);
 	return "{$theme_directory}/{$filename}";
+}
+
+/**
+ * Minify a stylesheet to remove comments, linebreaks and whitespace.
+ * @param $stylesheet string The stylesheet in it's normal form.
+ * @return string The minified stylesheet
+ */
+function minify_stylesheet($stylesheet)
+{
+	$stylesheet = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $stylesheet);
+	$stylesheet = str_replace(': ', ':', $stylesheet);
+	$stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
+	return $stylesheet;
 }
 
 function resync_stylesheet($stylesheet)

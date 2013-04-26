@@ -432,6 +432,15 @@ none=Hide Errors and Warnings
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="minifycss">
+			<title>Minify CSS?</title>
+			<description><![CDATA[DO you wish to enable CSS minification?]]></description>
+			<disporder>18</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="1">
 		<setting name="dateformat">
