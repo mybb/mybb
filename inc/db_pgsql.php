@@ -282,7 +282,7 @@ class DB_PgSQL
 	{
 		global $pagestarttime, $db, $mybb;
 		
-		$string = preg_replace("#LIMIT ([0-9]+),([ 0-9]+)#i", "LIMIT $2 OFFSET $1", $string);
+		$string = preg_replace("#LIMIT (\s*)([0-9]+),(\s*)([0-9]+)#i", "LIMIT $4 OFFSET $2", $string);
 		
 		$this->last_query = $string;
 		
