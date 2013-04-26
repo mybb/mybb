@@ -111,6 +111,11 @@ function add_shutdown($name, $arguments=array())
 {
 	global $shutdown_functions;
 	
+	if(!is_array($shutdown_functions))
+	{
+		$shutdown_functions = array();
+	}
+	
 	if(!is_array($arguments))
 	{
 		$arguments = array($arguments);
@@ -118,12 +123,12 @@ function add_shutdown($name, $arguments=array())
 
 	if(is_array($name) && method_exists($name[0], $name[1]))
 	{
-		$shutdown_functions["class_".get_class($name[0])."_".$name[1]] = array('function' => $name, 'arguments' => $arguments);
+		$shutdown_functions[] = array('function' => $name, 'arguments' => $arguments);
 		return true;
 	}
 	else if(!is_array($name) && function_exists($name))
 	{
-		$shutdown_functions[$name] = array('function' => $name, 'arguments' => $arguments);
+		$shutdown_functions[] = array('function' => $name, 'arguments' => $arguments);
 		return true;
 	}
 
