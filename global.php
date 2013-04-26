@@ -241,8 +241,8 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					continue;
 				}
 				if ($mybb->settings['minifycss']) {
-					$page_stylesheetmin = str_replace('.css', '.min.css', $page_stylesheet);
-					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheetmin}\" />\n";
+					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
+					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
 				} else {
 					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
 				}
