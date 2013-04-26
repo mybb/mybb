@@ -2685,7 +2685,7 @@ if($mybb->input['action'] == "usergroups")
 		case "pgsql":
 		case "sqlite":
 			$query = $db->query("
-				SELECT g.title, g.gid, g.type, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
 				FROM ".TABLE_PREFIX."groupleaders l
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
