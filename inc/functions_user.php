@@ -570,6 +570,13 @@ function update_pm_count($uid=0, $count_to_update=7)
 		$uid = $mybb->user['uid'];
 	}
 
+	$uid = intval($uid);
+	$pmcount = array();
+	if($uid == 0)
+	{
+		return $pmcount;
+	}
+
 	// Update total number of messages.
 	if($count_to_update & 1)
 	{
@@ -586,9 +593,9 @@ function update_pm_count($uid=0, $count_to_update=7)
 		$pmcount['unreadpms'] = $unread['pms_unread'];
 	}
 
-	if(is_array($pmcount))
+	if(!empty($pmcount))
 	{
-		$db->update_query("users", $pmcount, "uid='".intval($uid)."'");
+		$db->update_query("users", $pmcount, "uid='".$uid."'");
 	}
 	return $pmcount;
 }
