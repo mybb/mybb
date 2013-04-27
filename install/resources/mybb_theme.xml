@@ -4742,7 +4742,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1600"><![CDATA[<html>
+		<template name="private_advanced_search" version="1611"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -4807,8 +4807,8 @@ body {
 				<option value="dateline" selected="selected">{$lang->sort_by_date}</option>
 			</select><br />
 			<span class="smalltext">
-				<input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{$lang->ascending_order}</label><br />
-				<input type="radio" class="radio" name="order" id="order_desc" checked="checked" value="desc" /> <label for="order_desc">{$lang->descending_order}</label>
+				<input type="radio" class="radio" name="sortordr" id="order_asc" value="asc" /> <label for="order_asc">{$lang->ascending_order}</label><br />
+				<input type="radio" class="radio" name="sortordr" id="order_desc" checked="checked" value="desc" /> <label for="order_desc">{$lang->descending_order}</label>
 			</span>
 		</td>
 	</tr>
