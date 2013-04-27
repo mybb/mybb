@@ -1682,10 +1682,6 @@ if($mybb->input['action'] == "merge")
 				$cache->update_moderators();
 			}
 
-			// Forums & Threads
-			$db->update_query("forums", array("lastposteruid" => $destination_user['uid']), "lastposteruid = '{$source_user['uid']}'");
-			$db->update_query("threads", array("lastposteruid" => $destination_user['uid']), "lastposteruid = '{$source_user['uid']}'");
-
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
 
