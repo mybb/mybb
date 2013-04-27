@@ -597,11 +597,10 @@ function upload_attachment($attachment, $update_attachment=false)
 	else
 	{
 		$aid = $db->insert_query("attachments", $attacharray);
-	}
-
-	if($pid)
-	{
-		update_thread_counters($tid, array("attachmentcount" => "+1"));
+		if($pid)
+		{
+			update_thread_counters($tid, array("attachmentcount" => "+1"));
+		}
 	}
 	$ret['aid'] = $aid;
 	return $ret;

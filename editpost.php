@@ -211,11 +211,13 @@ if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $myb
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
 	elseif($mybb->input['attachmentact'] == "unapprove" && is_moderator($fid, 'caneditposts'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
 	if(!$mybb->input['submit'])
 	{
