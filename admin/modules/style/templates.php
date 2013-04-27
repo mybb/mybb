@@ -477,7 +477,7 @@ if($mybb->input['action'] == "edit_template")
 {
 	$plugins->run_hooks("admin_style_templates_edit_template");
 
-	if(!$mybb->input['title'] || !$sid)
+	if(!$mybb->input['title'] || !$sid || !isset($template_sets[$sid]))
 	{
 		flash_message($lang->error_missing_input, 'error');
 		admin_redirect("index.php?module=style-templates");
@@ -1429,7 +1429,7 @@ if($mybb->input['action'] == "delete_template")
 if($mybb->input['action'] == "diff_report")
 {
 	// Compares a template of sid1 with that of sid2, if no sid1, it is assumed -2
-	if(!$mybb->input['sid1'])
+	if(!$mybb->input['sid1'] || !isset($template_sets[$mybb->input['sid1']]))
 	{
 		$mybb->input['sid1'] = -2;
 	}
@@ -1440,6 +1440,12 @@ if($mybb->input['action'] == "diff_report")
 			'title' => $lang->find_updated,
 			'link' => "index.php?module=style-templates&amp;action=find_updated"
 		);
+	}
+	
+	if(!isset($template_sets[$mybb->input['sid2']]))
+	{
+		flash_message($lang->error_invalid_input, 'error');
+		admin_redirect("index.php?module=style-templates");
 	}
 
 	if(!$mybb->input['from'])
@@ -1576,6 +1582,12 @@ if($mybb->input['action'] == "revert")
 
 if($mybb->input['sid'] && !$mybb->input['action'])
 {
+	if(!isset($template_sets[$mybb->input['sid']]))
+	{
+		flash_message($lang->error_invalid_input, 'error');
+		admin_redirect("index.php?module=style-templates");
+	}
+	
 	$plugins->run_hooks("admin_style_templates_set");
 
 	$table = new Table;
