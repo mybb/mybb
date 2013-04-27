@@ -129,6 +129,7 @@ $l['coppa_agreement_1'] = "Users under the age of 13 must receive permission fro
 $l['coppa_agreement_2'] = "A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\" target=\"_blank\">COPPA Compliance &amp; Permission form</a> before membership will be granted.";
 $l['coppa_agreement_3'] = "If you'd like to, you can begin the registration process now, however the account will be inaccessible until the above compliance form is received.";
 
+$l['error_invalid_birthday'] = 'The birthday you entered is invalid. Please enter a valid birthday.';
 $l['error_awaitingcoppa'] = "You cannot login using this account as it is still awaiting COPPA validation from a parent or guardian.<br /><br />A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a>.<br /><br />Once we receive a completed copy of this form, the account will be activated.";
 
 $l['lang_select'] = "Language Settings:";
