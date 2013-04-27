@@ -960,7 +960,7 @@ if($mybb->input['action'] == "read")
 
 	if($pm['receipt'] == 1)
 	{
-		if($mybb->usergroup['cantrackpms'] == 1 && $mybb->usergroup['candenypmreceipts'] == 1 && $mybb->input['denyreceipt'] == 1)
+		if($mybb->usergroup['candenypmreceipts'] == 1 && $mybb->input['denyreceipt'] == 1)
 		{
 			$receiptadd = 0;
 		}
@@ -2105,7 +2105,7 @@ if(!$mybb->input['action'])
 
 			$tofromusername = build_profile_link($tofromusername, $tofromuid);
 
-			if($mybb->usergroup['cantrackpms'] == 1 && $mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
+			if($mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{
 				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
 			}
