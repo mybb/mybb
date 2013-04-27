@@ -767,7 +767,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$attachcache = array();
-		if($thread['attachmentcount'] > 0)
+		if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 		{
 			// Get the attachments for this post.
 			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
@@ -956,7 +956,7 @@ if($mybb->input['action'] == "thread")
 			$pids = "pid IN($pids)";
 
 			$attachcache = array();
-			if($thread['attachmentcount'] > 0)
+			if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 			{
 				// Now lets fetch all of the attachments for these posts.
 				$query = $db->simple_select("attachments", "*", $pids);
