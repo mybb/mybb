@@ -61,7 +61,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 }
 
 // Error if attachment is invalid or not visible
-if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && $attachment['visible'] != 1))
+if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
 {
 	error($lang->error_invalidattachment);
 }
