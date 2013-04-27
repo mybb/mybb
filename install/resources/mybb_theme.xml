@@ -5340,7 +5340,7 @@ body {
 </tr>
 </table>
 <br />]]></template>
-		<template name="member_login" version="1600"><![CDATA[<html>
+		<template name="member_login" version="1611"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->login}</title>
 {$headerinclude}
@@ -5357,7 +5357,7 @@ body {
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->username}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="25" maxlength="{$mybb->settings['maxnamelength']}" style="width: 200px;" value="{$username}" /></td>
+<td class="trow1"><input type="text" class="textbox" name="username" size="25" style="width: 200px;" value="{$username}" /></td>
 </tr>
 <tr>
 <td class="trow2"><strong>{$lang->password}</strong><br /><span class="smalltext">{$lang->pw_note}</span></td>
