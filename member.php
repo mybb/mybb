@@ -383,6 +383,15 @@ if($mybb->input['action'] == "register")
 		{
 			my_unsetcookie("coppauser");
 			
+			$mybb->input['bday1'] = intval($mybb->input['bday1']);
+			$mybb->input['bday2'] = intval($mybb->input['bday2']);
+			$mybb->input['bday3'] = intval($mybb->input['bday3']);
+			$months = get_bdays($mybb->input['bday3']);
+			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
+			{
+				error($lang->error_invalid_birthday);
+			}
+			
 			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 			
 			// Store DOB in cookie so we can save it with the registration
