@@ -565,7 +565,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
 	$reputation = $db->fetch_array($query);
 
-	$sync_reputation = $reputation['reputation'];
+	$sync_reputation = intval($reputation['reputation']);
 	$total_reputation = $reputation['total_reputation'];
 
 	if($sync_reputation != $user['reputation'])
