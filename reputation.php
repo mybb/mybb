@@ -120,31 +120,57 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	{
 		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
 		$post = get_post($mybb->input['pid']);
-		if($uid != $post['uid'])
+		if($post)
 		{
-			$mybb->input['pid'] = 0;
+			$thread = get_thread($post['tid']);
+			$forum = get_forum($thread['fid']);
+			$forumpermissions = forum_permissions($forum['fid']);
+			// Post doesn't belong to that user or isn't visible
+			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid)) || $post['visible'] < 0)
+			{
+				$mybb->input['pid'] = 0;
+			}
+			// Thread isn't visible
+			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'])) || $thread['visible'] < 0)
+			{
+				$mybb->input['pid'] = 0;
+			}
+			// Current user can't see the forum
+			elseif($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
+			{
+				$mybb->input['pid'] = 0;
+			}
+			// Current user can't see that thread
+			elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+			{
+				$mybb->input['pid'] = 0;
+			}
+			else
+			// We have the correct post, but has the user given too much reputation to another in the same thread?
+			if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
+			{
+				$timesearch = TIME_NOW - (60 * 60 * 24);
+				$query = $db->query("
+					SELECT COUNT(p.pid) AS posts
+					FROM ".TABLE_PREFIX."reputation r
+					LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
+					WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
+				");
+
+				$numtoday = $db->fetch_field($query, 'posts');
+
+				if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
+				{
+					$message = $lang->add_maxperthread;
+					eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+					output_page($error);
+					exit;
+				}
+			}
 		}
 		else
-		// We have the correct post, but has the user given too much reputation to another in the same thread?
-		if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 		{
-			$timesearch = TIME_NOW - (60 * 60 * 24);
-			$query = $db->query("
-				SELECT COUNT(p.pid) AS posts
-				FROM ".TABLE_PREFIX."reputation r
-				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
-				WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
-			");
-
-			$numtoday = $db->fetch_field($query, 'posts');
-
-			if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
-			{
-				$message = $lang->add_maxperthread;
-				eval("\$error = \"".$templates->get("reputation_add_error")."\";");
-				output_page($error);
-				exit;
-			}
+			$mybb->input['pid'] = 0;
 		}
 	}
 
@@ -573,7 +599,7 @@ if(!$mybb->input['action'])
 	$sync_reputation = intval($reputation['reputation']);
 	$total_reputation = $reputation['total_reputation'];
 
-	if($sync_reputation != $user['reputation'])
+	if(true)
 	{
 		// We're out of sync! Oh noes!
 		$db->update_query("users", array("reputation" => $sync_reputation), "uid = '".$user['uid']."'");
