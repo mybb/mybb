@@ -33,12 +33,11 @@ else
 /* Defines the root directory for MyBB.
 
 	Uncomment the below line and set the path manually
-	if you experience problems. Acceptable values are:
+	if you experience problems.
 
 	Always add a trailing slash to the end of the path.
 
 	* Path to your copy of MyBB
-	* "./"
  */
 //define('MYBB_ROOT', "./");
 
