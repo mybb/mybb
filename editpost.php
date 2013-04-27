@@ -62,6 +62,11 @@ $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 // Get forum info
 $fid = $post['fid'];
 $forum = get_forum($fid);
+
+if(($thread['visible'] == 0 && !is_moderator($fid)) || ($thread['visible'] < 0 && $thread['uid'] != $mybb->user['uid']))
+{
+	error($lang->error_invalidthread);
+}
 if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
