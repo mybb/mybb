@@ -360,7 +360,7 @@ function build_postbit($post, $post_type=0)
 		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has (only show if not announcement)
-		if($post_type != 3 && $usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
+		if($post_type != 3 && $usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1)
 		{
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
