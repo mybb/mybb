@@ -468,8 +468,8 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   includesig int(1) NOT NULL default '0',
   smilieoff int(1) NOT NULL default '0',
   receipt int(1) NOT NULL default '0',
-  readtime bigint(30) NOT NULL default '0'
-  ipaddress varchar(30) NOT NULL default '',
+  readtime bigint(30) NOT NULL default '0',
+  ipaddress varchar(30) NOT NULL default ''
 );";
 
 
@@ -529,7 +529,7 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   type varchar(50) NOT NULL default '',
   reports int NOT NULL default '0',
   reporters text NOT NULL,
-  dateline bigint(30) NOT NULL default '0'
+  dateline bigint(30) NOT NULL default '0',
   lastreport bigint(30) NOT NULL default '0'
 );";
 
@@ -643,8 +643,7 @@ $tables[] = "CREATE TABLE mybb_templategroups (
   gid INTEGER PRIMARY KEY,
   prefix varchar(50) NOT NULL default '',
   title varchar(100) NOT NULL default '',
-  isdefault int(1) NOT NULL default '0',
-);";
+  isdefault int(1) NOT NULL default '0' );";
 
 $tables[] = "CREATE TABLE mybb_templates (
   tid INTEGER PRIMARY KEY,
