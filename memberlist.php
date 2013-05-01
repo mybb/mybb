@@ -198,6 +198,21 @@ else
 		$search_url .= "&yahoo=".urlencode($mybb->input['yahoo']);
 	}
 
+	// Groups we want hidden from the member list
+	$hiddengroups = array();
+	$query = $db->simple_select('usergroups','gid',"hideinmemberlist='1'");
+	while($gid = $db->fetch_field($query,'gid'))
+	{
+		$hiddengroups[] = $gid;
+	}
+
+	if(!empty($hiddengroups))
+	{
+		$hidden_groups = implode(',',$hiddengroups);
+		$search_query .= ' AND u.usergroup NOT IN('.$hidden_groups.')';
+	}
+
+	// Get the users!
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
 
