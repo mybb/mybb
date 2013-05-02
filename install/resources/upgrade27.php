@@ -21,7 +21,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade28_dbchanges()
+function upgrade27_dbchanges()
 {
 	global $cache, $output, $mybb;
 
@@ -126,10 +126,10 @@ function upgrade28_dbchanges()
 	sync_tasks(0);
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_updatetheme");
+	$output->print_footer("27_updatetheme");
 }
 
-function upgrade28_updatetheme()
+function upgrade27_updatetheme()
 {
 	global $db, $mybb, $output;
 
@@ -246,6 +246,6 @@ function upgrade28_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_done");
+	$output->print_footer("27_done");
 }
 ?>
