@@ -246,12 +246,24 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				}
 				if ($mybb->settings['minifycss']) {
 					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
-					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
 				} else {
-					$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
 				}
 				$already_loaded[$page_stylesheet] = 1;
 			}
+		}
+	}
+}
+unset($actions);
+
+if(!empty($theme_stylesheets))
+{
+	foreach($theme['disporder'] as $style_name => $order)
+	{
+		if($theme_stylesheets[$style_name])
+		{
+			$stylesheets .= $theme_stylesheets[$style_name];
 		}
 	}
 }
