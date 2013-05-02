@@ -214,15 +214,19 @@ $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
 $stylesheets = '';
-$theme['stylesheets'] = unserialize($theme['stylesheets']);
+$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
 $stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
+if(!empty($theme['color']))
+{
+	$stylesheet_scripts[] = $theme['color'];
+}
+$stylesheet_actions = array("global");
+if(!empty($mybb->input['action']))
+{
+	$stylesheet_actions[] = $mybb->input['action'];
+}
 foreach($stylesheet_scripts as $stylesheet_script)
 {
-	$stylesheet_actions = array("global");
-	if(!empty($mybb->input['action']))
-	{
-		$stylesheet_actions[] = $mybb->input['action'];
-	}
 	// Load stylesheets for global actions and the current action
 	foreach($stylesheet_actions as $stylesheet_action)
 	{
