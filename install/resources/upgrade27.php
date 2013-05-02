@@ -23,7 +23,7 @@ $upgrade_detail = array(
 
 function upgrade27_dbchanges()
 {
-	global $cache, $output, $mybb;
+	global $cache, $output, $mybb, $db;
 
 	$output->print_header("Updating Database");
 
