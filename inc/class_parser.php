@@ -280,6 +280,12 @@ class postParser
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
 
+		$standard_mycode['time_simple']['regex'] = "#\[time\](.*?)\[/time\]#esi";
+		$standard_mycode['time_simple']['replacement'] = "\$this->mycode_parse_time(\"$1\")";
+
+		$standard_mycode['time_complex']['regex'] = "#\[time=([a-zA-Z0-9\s+-.:]*)\](.*?)\[/time\]#esi";
+		$standard_mycode['time_complex']['replacement'] = "\$this->mycode_parse_time(\"$2\", \"$1\")";
+
 		$nestable_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#si";
 		$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
 
@@ -1093,6 +1099,114 @@ class postParser
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;
+	}
+	
+	/**
+	* Parses time MyCode.
+	*
+	* @param string The time to be parsed
+	* @param string The timezone in which this is
+	* @return string The parsed message.
+	*/
+	function mycode_parse_time($time, $zone="")
+	{
+		global $mybb;
+		if(!empty($zone))
+		{
+			if(strpos($zone, "GMT") !== false)
+			{
+				$offset = trim(substr($zone, 3));
+			}
+			else
+			{
+				$offset = $zone;
+			}
+				
+			if(substr($offset, -3) == ":30")
+			{
+				$offset = substr($offset, 0, -3).".5";
+			}
+			elseif(substr($offset, -3) == ":00")
+			{
+				$offset = substr($offset, 0, -3);
+			}
+		}
+		else
+		{
+			$user = $post['user'];
+
+			if(isset($user['uid']) && $user['uid'] != 0 && array_key_exists("timezone", $user))
+			{
+				$offset = $user['timezone'];
+				$dstcorrection = $user['dst'];
+			}
+			else
+			{
+				$offset = $mybb->settings['timezoneoffset'];
+				$dstcorrection = $mybb->settings['dstcorrection'];
+			}
+
+			// If DST correction is enabled, add an additional hour to the timezone.
+
+			if($dstcorrection == 1)
+			{
+				++$offset;
+				if(my_substr($offset, 0, 1) != "-")
+				{
+					$offset = "+".$offset;
+				}
+			}
+		}
+		
+		//Probably GMT?
+		if(!is_numeric($offset))
+		{
+			$offset = 0;
+		}
+		
+		//Have we a date?
+		$usedate = false;
+		$temp = explode(" ", $time);
+		if(sizeOf($temp) == 2)
+		{
+			$usedate = true;
+			foreach($temp as $k => $temp2)
+			{
+				// We need at least 2 dots for our date
+				if(substr_count($temp2, ".") >= 2)
+				{
+					if(substr($temp2, -1) == ".")
+					{
+						$temp[$k] .= my_date("Y", TIME_NOW);
+					}
+				}
+			}
+			$time = implode(" ", $temp);
+		}
+
+		$tz = date_default_timezone_get();
+		date_default_timezone_set("GMT");
+		$stamp = strtotime($time);
+		date_default_timezone_set($tz);
+
+		if($stamp === false)
+		{
+			//Error, just return the normal time
+			return $time;
+		}
+
+		//Generate GMT Time
+		$gmtstamp = $stamp - ($offset*3600);
+
+		$return = "";
+		if($usedate)
+		{
+			$return = my_date($mybb->settings['dateformat'], $gmtstamp)." ";
+		}
+
+		$return .= my_date($mybb->settings['timeformat'], $gmtstamp);
+		
+		return $return;
 	}
 
 	/**
