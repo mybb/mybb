@@ -1110,7 +1110,7 @@ class postParser
 	*/
 	function mycode_parse_time($time, $zone="")
 	{
-		global $mybb;
+		global $mybb, $post;
 		if(!empty($zone))
 		{
 			if(strpos($zone, "GMT") !== false)
@@ -1133,12 +1133,10 @@ class postParser
 		}
 		else
 		{
-			$user = $post['user'];
-
-			if(isset($user['uid']) && $user['uid'] != 0 && array_key_exists("timezone", $user))
+			if(isset($post['uid']) && $post['uid'] != 0 && array_key_exists("timezone", $post))
 			{
-				$offset = $user['timezone'];
-				$dstcorrection = $user['dst'];
+				$offset = $post['timezone'];
+				$dstcorrection = $post['dst'];
 			}
 			else
 			{
