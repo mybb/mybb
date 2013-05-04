@@ -2121,6 +2121,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
+		$plist = array();
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
@@ -2131,6 +2132,66 @@ switch($mybb->input['action'])
 		if(!is_moderator_by_pids($plist, "canmanagethreads"))
 		{
 			error_no_permission();
+		}
+
+		// Ensure all posts exist
+		$posts = array();
+		if(!empty($plist))
+		{
+			$query = $db->simple_select('posts', 'pid', 'pid IN ('.implode(',', $plist).')');
+			while($pid = $db->fetch_field($query, 'pid'))
+			{
+				$posts[] = $pid;
+			}
+		}
+
+		if(empty($posts))
+		{
+			error($lang->error_inline_nopostsselected);
+		}
+
+		$pidin = implode(',', $posts);
+
+		// Make sure that we are not splitting a thread with one post
+		// Select number of posts in each thread that the splitted post is in
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin)
+			GROUP BY p.tid, p.pid
+		");
+		$pcheck = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if(intval($tcheck['count']) <= 1)
+			{
+				error($lang->error_cantsplitonepost);
+			}
+			$pcheck[] = $tcheck['tid']; // Save tids for below
+		}
+
+		// Make sure that we are not splitting all posts in the thread
+		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
+			GROUP BY p.tid, p.pid
+		");
+		$pcheck2 = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if($tcheck['count'] > 0)
+			{
+				$pcheck2[] = $tcheck['tid'];
+			}
+		}
+		if(count($pcheck2) != count($pcheck))
+		{
+			// One or more threads do not have posts after splitting
+			error($lang->error_cantsplitall);
 		}
 
 		if($mybb->input['moveto'])
@@ -2149,9 +2210,9 @@ switch($mybb->input['action'])
 		}
 
 		$newsubject = $mybb->input['newsubject'];
-		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
+		$newtid = $moderation->split_posts($posts, $tid, $moveto, $newsubject);
 
-		$pid_list = implode(', ', $plist);
+		$pid_list = implode(', ', $posts);
 		$lang->split_selective_posts = $lang->sprintf($lang->split_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
 
