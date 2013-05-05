@@ -8268,9 +8268,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<strong>{$lang->pms_in_folder}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
-<td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
-<td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
+<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="private.php?fid={$folder}&amp;sortby=subject&amp;order=asc">{$lang->message_title}</a> {$orderarrow['subject']}</strong></span></td>
+<td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong><a href="private.php?fid={$folder}&amp;sortby=username&amp;order=asc">{$sender}</a> {$orderarrow['username']}</strong></span></td>
+<td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong><a href="private.php?fid={$folder}&amp;sortby=dateline&amp;order=desc">{$lang->date_sent}</a> {$orderarrow['dateline']}</strong></span></td>
 <td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="{$lang->check_all}" type="checkbox" class="checkbox checkall" value="{$lang->check_all}" /></span></td>
 </tr>
 {$messagelist}
@@ -8613,6 +8613,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_nomessages" version="120"><![CDATA[<tr>
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
+		<template name="private_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="private.php?fid={$folder}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="private_pmspace" version="120"><![CDATA[<span style="float:right"><table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
 	<tr>
 		<td width="{$spaceused}" bgcolor="red" align="center"><span class="smalltext"><strong>{$overhalf}</strong></span></td>
