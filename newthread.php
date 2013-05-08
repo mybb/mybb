@@ -564,6 +564,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Editing a draft thread
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
+		$mybb->input['threadprefix'] = $thread['prefix'];
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != 0)
@@ -955,6 +956,5 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	eval("\$newthread = \"".$newthread_template."\";");
 	output_page($newthread);
-
 }
 ?>
