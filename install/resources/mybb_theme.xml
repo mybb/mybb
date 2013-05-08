@@ -1729,9 +1729,9 @@ body {
 			</ul>
 		</div>
 </div>]]></template>
-		<template name="forumjump_advanced" version="1608"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1611"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
-<select name="{$name}" onchange="window.location=({$forum_link})">
+<select name="{$name}" class="forumjump">
 <option value="-1" {$jumpsel['default']}>{$lang->forumjump_select}</option>
 <option value="-1">--------------------</option>
 <option value="-4">{$lang->forumjump_pms}</option>
@@ -1743,7 +1743,22 @@ body {
 </select>
 {$gobutton}
 </form>
-]]></template>
+<script type="text/javascript">
+<!--
+	$$('.forumjump').invoke('observe', 'change', function(e)
+	{
+		var option = this.options[this.selectedIndex].value
+
+		if(option < 0)
+		{
+			window.location=('forumdisplay.php?fid='+option)
+			return
+		}
+
+		window.location=({$forum_link})
+	})
+//-->
+</script>]]></template>
 		<template name="forumdisplay_searchforum" version="120"><![CDATA[<form action="search.php" method="post">
 	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
 	<input type="text" class="textbox" name="keywords" /> {$gobutton}
