@@ -401,6 +401,10 @@ class MyBB {
 				$message = "Your server does not have memcache support enabled.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
+			case "memcached_load_error":
+				$message = "Your server does not have memcached support enabled.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
 			case "xcache_load_error":
 				$message = "Xcache needs to be configured with PHP to use the Xcache cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;

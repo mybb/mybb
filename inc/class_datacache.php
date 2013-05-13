@@ -52,6 +52,11 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
 				$this->handler = new memcacheCacheHandler($this->silent);
 				break;
+			// Memcached cache
+			case "memcached":
+				require_once MYBB_ROOT."/inc/cachehandlers/memcached.php";
+				$this->handler = new memcachedCacheHandler($this->silent);
+				break;
 			// eAccelerator cache
 			case "eaccelerator":
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
