@@ -1512,17 +1512,17 @@ function create_tables()
  *  of the most commonly accessed data in MyBB.
  *  By default, the database is used to store this data.
  *
- *  If you wish to use the file system (cache/ directory), MemCache, xcache, APC, or eAccelerator
- *  you can change the value below to 'files', 'memcache', 'xcache', 'apc' or 'eaccelerator' from 'db'.
+ *  If you wish to use the file system (cache/ directory), MemCache (or MemCached), xcache, APC, or eAccelerator
+ *  you can change the value below to 'files', 'memcache', 'memcached', 'xcache', 'apc' or 'eaccelerator' from 'db'.
  */
 
 \$config['cache_store'] = 'db';
 
 /**
  * Memcache configuration
- *  If you are using memcache as your data-cache,
- *  you need to configure the hostname and port
- *  of your memcache server below.
+ *  If you are using memcache or memcached as your
+ *  data-cache, you need to configure the hostname
+ *  and port of your memcache server below.
  *
  * If not using memcache, ignore this section.
  */
