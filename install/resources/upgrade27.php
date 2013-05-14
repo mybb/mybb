@@ -95,11 +95,7 @@ function upgrade27_dbchanges()
 			break;
 	}
 
-	$groups = array();
-	for($i = 1; $i <= 39; $i++)
-	{
-		$groups[] = $i;
-	}
+	$groups = range(1, 39);
 
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
