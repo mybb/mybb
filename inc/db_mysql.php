@@ -266,10 +266,11 @@ class DB_MySQL
 
 		if($success && $this->db_encoding)
 		{
-			$this->query("SET NAMES '{$this->db_encoding}'");
+			@mysql_set_charset($this->db_encoding, $this->read_link);
+
 			if($write_success && count($this->connections) > 1)
 			{
-				$this->write_query("SET NAMES '{$this->db_encoding}'");
+				@mysql_set_charset($this->db_encoding, $this->write_link);
 			}
 		}
 		return $success;

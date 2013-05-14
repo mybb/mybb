@@ -280,11 +280,11 @@ class DB_MySQLi
 
 		if($success && $this->db_encoding)
 		{
-			$this->query("SET NAMES '{$this->db_encoding}'");
+			@mysqli_set_charset($this->read_link, $this->db_encoding);
 
-			if($slave_success && count($this->connections) > 1)
+			if($write_success && count($this->connections) > 1)
 			{
-				$this->write_query("SET NAMES '{$this->db_encoding}'");
+				@mysqli_set_charset($this->write_link, $this->db_encoding);
 			}
 		}
 		return $success;
