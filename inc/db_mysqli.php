@@ -282,7 +282,7 @@ class DB_MySQLi
 		{
 			@mysqli_set_charset($this->read_link, $this->db_encoding);
 
-			if($write_success && count($this->connections) > 1)
+			if($slave_success && count($this->connections) > 1)
 			{
 				@mysqli_set_charset($this->write_link, $this->db_encoding);
 			}
