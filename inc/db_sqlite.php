@@ -124,13 +124,13 @@ class DB_SQLite
 	 */
 	function connect($config)
 	{
-		$this->get_execution_time();
+		get_execution_time();
 
 		require_once MYBB_ROOT."inc/db_pdo.php";
 
 		$this->db = new dbpdoEngine("sqlite:{$config['database']}");
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 
 		$this->query_time += $query_time;
 
@@ -158,7 +158,7 @@ class DB_SQLite
 	{
 		global $pagestarttime, $db, $mybb;
 
-		$this->get_execution_time();
+		get_execution_time();
 
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
@@ -207,7 +207,7 @@ class DB_SQLite
 			exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
 
@@ -1292,29 +1292,11 @@ class DB_SQLite
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
-
-		$time = microtime(true);
-
-
-		// Just starting timer, init and return
-		if(!$time_start)
-		{
-			$time_start = $time;
-			return;
-		}
-		// Timer has run, return execution time
-		else
-		{
-			$total = $time-$time_start;
-			if($total < 0) $total = 0;
-			$time_start = 0;
-			return $total;
-		}
+		return get_execution_time();
 	}
 }
 

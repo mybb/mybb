@@ -33,6 +33,34 @@ class datacache
 	var $silent = false;
 
 	/**
+	 * A count of the number of calls.
+	 *
+	 * @var int
+	 */
+	public $call_count = 0;
+
+	/**
+	 * A list of the performed calls.
+	 *
+	 * @var array
+	 */
+	public $calllist = array();
+
+	/**
+	 * The time spent on cache operations
+	 *
+	 * @var float
+	 */
+	public $call_time = 0;
+
+	/**
+	 * Explanation of a cache call.
+	 *
+	 * @var string
+	 */
+	public $cache_debug;
+
+	/**
 	 * Build cache data.
 	 *
 	 */
@@ -120,7 +148,23 @@ class datacache
 
 		if(is_object($this->handler))
 		{
+			get_execution_time();
+
 			$data = $this->handler->fetch($name);
+
+			$call_time = get_execution_time();
+			$this->call_time += $call_time;
+			$this->call_count++;
+
+			if($mybb->debug_mode)
+			{
+				$hit = true;
+				if($data === false)
+				{
+					$hit = false;
+				}
+				$this->debug_call('read:'.$name, $call_time, $hit);
+			}
 
 			// No data returned - cache gone bad?
 			if($data === false)
@@ -131,7 +175,18 @@ class datacache
 				$data = @unserialize($cache_data['cache']);
 
 				// Update cache for handler
-				$this->handler->put($name, $data);
+				get_execution_time();
+
+				$hit = $this->handler->put($name, $data);
+
+				$call_time = get_execution_time();
+				$this->call_time += $call_time;
+				$this->call_count++;
+
+				if($mybb->debug_mode)
+				{
+					$this->debug_call('set:'.$name, $call_time, $hit);
+				}
 			}
 		}
 		// Else, using internal database cache
@@ -187,7 +242,18 @@ class datacache
 		// Do we have a cache handler we're using?
 		if(is_object($this->handler))
 		{
-			$this->handler->put($name, $contents);
+			get_execution_time();
+
+			$hit = $this->handler->put($name, $contents);
+
+			$call_time = get_execution_time();
+			$this->call_time += $call_time;
+			$this->call_count++;
+
+			if($mybb->debug_mode)
+			{
+				$this->debug_call('update:'.$name, $call_time, $hit);
+			}
 		}
 	}
 
@@ -201,7 +267,7 @@ class datacache
 	 */
 	 function delete($name, $greedy = false)
 	 {
-		 global $db, $cache;
+		 global $db, $mybb, $cache;
 
 		// Prepare for database query.
 		$dbname = $db->escape_string($name);
@@ -210,7 +276,18 @@ class datacache
 		// Delete on-demand or handler cache
 		if($this->handler)
 		{
-			$this->handler->delete($name);
+			get_execution_time();
+
+			$hit = $this->handler->delete($name);
+
+			$call_time = get_execution_time();
+			$this->call_time += $call_time;
+			$this->call_count++;
+
+			if($mybb->debug_mode)
+			{
+				$this->debug_call('delete:'.$name, $call_time, $hit);
+			}
 		}
 
 		// Greedy?
@@ -260,7 +337,18 @@ class datacache
 
 				foreach($names as $key => $val)
 				{
-					$this->handler->delete($key);
+					get_execution_time();
+
+					$hit = $this->handler->delete($key);
+
+					$call_time = get_execution_time();
+					$this->call_time += $call_time;
+					$this->call_count++;
+
+					if($mybb->debug_mode)
+					{
+						$this->debug_call('delete:'.$name, $call_time, $hit);
+					}
 				}
 			}
 		}
@@ -268,6 +356,53 @@ class datacache
 		// Delete database cache
 		$db->delete_query("datacache", $where);
 	}
+
+	/**
+	 * Debug a cache call to a non-database cache handler
+	 *
+	 * @param string The cache key
+	 * @param string The time it took to perform the call.
+	 * @param boolean Hit or miss status
+	 */
+	function debug_call($string, $qtime, $hit)
+	{
+		global $mybb, $plugins;
+		$debug_extra = '';
+		if($plugins->current_hook)
+		{
+			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
+		}
+
+		if($hit)
+		{
+			$hit_status = 'HIT';
+		}
+		else
+		{
+			$hit_status = 'MISS';
+		}
+
+		$cache_data = explode(':', $string);
+		$cache_method = $cache_data[0];
+		$cache_key = $cache_data[1];
+
+		$this->cache_debug .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
+			"<tr>\n".
+			"<td style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->call_count." - ".ucfirst($cache_method)." Call</strong></div></td>\n".
+			"</tr>\n".
+			"<tr style=\"background-color: #fefefe;\">\n".
+			"<td><span style=\"font-family: Courier; font-size: 14px;\">(".$mybb->config['cache_store'].") [".$hit_status."] ".htmlspecialchars_uni($cache_key)."</span></td>\n".
+			"</tr>\n".
+			"<tr>\n".
+			"<td bgcolor=\"#ffffff\">Call Time: ".format_time_duration($qtime)."</td>\n".
+			"</tr>\n".
+			"</table>\n".
+			"<br />\n";
+
+		$this->calllist[$this->call_count]['key'] = $string;
+		$this->calllist[$this->call_count]['time'] = $qtime;
+	}
+
 
 	/**
 	 * Select the size of the cache

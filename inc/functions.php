@@ -3590,7 +3590,7 @@ function build_archive_link($type, $id="")
  */
 function debug_page()
 {
-	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang;
+	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang, $cache;
 
 	$totaltime = format_time_duration($maintimer->totaltime);
 	$phptime = $maintimer->totaltime - $db->query_time;
@@ -3605,6 +3605,8 @@ function debug_page()
 
 	$phptime = format_time_duration($maintimer->totaltime - $db->query_time);
 	$query_time = format_time_duration($db->query_time);
+
+	$call_time = format_time_duration($cache->call_time);
 
 	$phpversion = PHP_VERSION;
 
@@ -3692,6 +3694,13 @@ function debug_page()
 
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
+
+	if($cache->call_count > 0)
+	{
+		echo "<h2>Cache Calls (".$cache->call_count." Total, ".$call_time.") </h2>\n";
+		echo $cache->cache_debug;
+	}
+
 	echo "<h2>Template Statistics</h2>\n";
 
 	if(count($templates->cache) > 0)
@@ -6302,6 +6311,34 @@ function my_long2ip($long)
 		$long += 4294967296;
 	}
 	return long2ip($long);
+}
+
+/**
+ * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
+ *
+ * @return float The time taken
+ */
+function get_execution_time()
+{
+	static $time_start;
+
+	$time = microtime(true);
+
+
+	// Just starting timer, init and return
+	if(!$time_start)
+	{
+		$time_start = $time;
+		return;
+	}
+	// Timer has run, return execution time
+	else
+	{
+		$total = $time-$time_start;
+		if($total < 0) $total = 0;
+		$time_start = 0;
+		return $total;
+	}
 }
 
 

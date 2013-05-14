@@ -192,11 +192,11 @@ class DB_MySQL
 
 				$link = $type."_link";
 
-				$this->get_execution_time();
+				get_execution_time();
 
 				$this->$link = @$connect_function($single_connection['hostname'], $single_connection['username'], $single_connection['password'], 1);
 
-				$time_spent = $this->get_execution_time();
+				$time_spent = get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
@@ -287,7 +287,7 @@ class DB_MySQL
 	{
 		global $pagestarttime, $db, $mybb;
 
-		$this->get_execution_time();
+		get_execution_time();
 
 		// Only execute write queries on slave database
 		if($write_query && $this->write_link)
@@ -307,7 +307,7 @@ class DB_MySQL
 			 exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
 
@@ -1338,30 +1338,13 @@ class DB_MySQL
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
-
-		$time = microtime(true);
-
-
-		// Just starting timer, init and return
-		if(!$time_start)
-		{
-			$time_start = $time;
-			return;
-		}
-		// Timer has run, return execution time
-		else
-		{
-			$total = $time-$time_start;
-			$time_start = 0;
-			if($total < 0) $total = 0;
-			return $total;
-		}
+		return get_execution_time();
 	}
+
 }
 
 ?>
