@@ -339,8 +339,6 @@ else
 		require_once INSTALL_ROOT."resources/upgrade".intval($mybb->input['from']).".php";
 		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->input['donewarning'] != "true")
 		{
-			require_once MYBB_ROOT."inc/class_datacache.php";
-			$cache = new datacache;
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
