@@ -1023,7 +1023,7 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if (!stristr($user['avatar'], 'http://'))
+		if (!stristr($user['avatar'], 'http://') || !stristr($user['avatar'], 'https://'))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
