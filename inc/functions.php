@@ -3716,7 +3716,7 @@ function debug_page()
 		echo "<br />\n";
 	}
 
-	if(count($templates->uncached_templates > 0))
+	if(count($templates->uncached_templates) > 0)
 	{
 		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
 		echo "<tr>\n";
