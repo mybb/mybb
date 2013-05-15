@@ -16,6 +16,7 @@ $l['postdata_subject_too_long'] = 'The subject is too long. Please enter a subje
 $l['postdata_post_flooding'] = 'You are trying to post a message too quickly after posting a previous message. Please wait {1} more seconds.';
 $l['postdata_post_flooding_one_second'] = 'You are trying to post a message too quickly after posting a previous message. Please wait 1 more second.';
 $l['postdata_too_many_images'] = 'The message you entered contained {1} images, while only {2} images per message are allowed. Please lower the image count in your message to meet the limit.';
+$l['postdata_too_many_video'] = 'The message you entered contained {1} videos, while only {2} videos per message are allowed. Please lower the video count in your message to meet the limit.';
 
 $l['thread_closed'] = "Thread Closed";
 $l['thread_opened'] = "Thread Opened";

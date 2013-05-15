@@ -500,7 +500,7 @@ class PostDataHandler extends DataHandler
 		if($post['savedraft'] != 1 && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
 		{
 			// And count the number of video tags in the message.
-			$video_count = substr_count($post['message'], "[video]");
+			$video_count = substr_count($post['message'], "[video=");
 			if($video_count > $mybb->settings['maxpostvideos'])
 			{
 				// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
