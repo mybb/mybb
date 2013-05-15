@@ -1671,6 +1671,10 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("reportedposts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
+			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
+			$db->update_query("users", array("warningpoints" => $destination_user['warningpoints']+$source_user['warningpoints']), "uid='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
 
 			// Is the source user a moderator?
