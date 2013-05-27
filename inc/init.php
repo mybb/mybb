@@ -256,7 +256,6 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('CALENDAR_URL_DAY', 'calendar-{calendar}-year-{year}-month-{month}-day-{day}.html');
 	define('CALENDAR_URL_WEEK', 'calendar-{calendar}-week-{week}.html');
 	define('EVENT_URL', "event-{eid}.html");
-	define('INDEX_URL', "index.php");
 }
 else
 {
@@ -275,8 +274,8 @@ else
 	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
 	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
-	define('INDEX_URL', "index.php");
 }
+define('INDEX_URL', "index.php");
 
 // An array of valid date formats (Used for user selections etc)
 $date_formats = array(

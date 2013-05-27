@@ -394,7 +394,6 @@ function build_postbit($post, $post_type=0)
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
-		$post['username'] = $post['username'];
 		$post['profilelink'] = format_name($post['username'], 1);
 
 		if($usergroup['usertitle'])
