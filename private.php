@@ -2022,9 +2022,25 @@ if(!$mybb->input['action'])
 	// Cache users in multiple recipients for sent & drafts folder
 	if($folder == 2 || $folder == 3)
 	{
+		if($sortfield == "username")
+		{
+			$u = "u.";
+		}
+		else
+		{
+			$u = "pm.";
+		}
+
 		// Get all recipients into an array
 		$cached_users = $get_users = array();
-		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $perpage, 'order_by' => $mybb->input['sortby'], 'order_dir' => $mybb->input['order']));
+		$users_query = $db->query("
+			SELECT pm.recipients
+			FROM ".TABLE_PREFIX."privatemessages pm
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+			WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
+			ORDER BY {$u}{$sortfield} {$mybb->input['order']}
+			LIMIT {$start}, {$perpage}
+		");
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = unserialize($row['recipients']);
