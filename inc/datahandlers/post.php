@@ -834,23 +834,26 @@ class PostDataHandler extends DataHandler
 					$db->delete_query("posts", "pid='".$post['pid']."'");
 				}
 
-				// Assign any uploaded attachments with the specific posthash to the merged post.
-				$post['posthash'] = $db->escape_string($post['posthash']);
-
-				$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-				$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-				if($attachmentcount > 0)
+				if($post['posthash'])
 				{
-					// Update forum count
-					update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-				}
+					// Assign any uploaded attachments with the specific posthash to the merged post.
+					$post['posthash'] = $db->escape_string($post['posthash']);
 
-				$attachmentassign = array(
-					"pid" => $double_post['pid'],
-					"posthash" => ''
-				);
-				$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+					$attachmentcount = $db->fetch_field($query, "attachmentcount");
+
+					if($attachmentcount > 0)
+					{
+						// Update forum count
+						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+					}
+
+					$attachmentassign = array(
+						"pid" => $double_post['pid'],
+						"posthash" => ''
+					);
+					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+				}
 
 				// Return the post's pid and whether or not it is visible.
 				return array(
@@ -932,7 +935,7 @@ class PostDataHandler extends DataHandler
 				"pid" => $this->pid,
 				"posthash" => ''
 			);
-			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
 		}
 
 		if($visible == 1 && $thread['visible'] == 1)
@@ -1473,7 +1476,7 @@ class PostDataHandler extends DataHandler
 				"pid" => $this->pid,
 				"posthash" => ''
 			);
-			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}' AND pid='0'");
 		}
 
 		if($visible == 1)
