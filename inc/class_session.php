@@ -536,7 +536,18 @@ class session
 				$array[2] = intval($mybb->input['pid']);
 			}
 
-			$thread = get_thread(intval($array[2]));
+			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
+			if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
+			{
+				$options = array(
+					"limit" => 1
+				);
+				$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
+				$post = $db->fetch_array($query);
+				$mybb->input['tid'] = $post['tid'];
+			}
+
+			$thread = get_thread(intval($mybb->input['tid']));
 			$array[1] = $thread['fid'];
 		}
 		return $array;
