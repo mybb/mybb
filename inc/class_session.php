@@ -523,10 +523,19 @@ class session
 			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
 		}
-		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
+		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
 			global $db;
-			$array[2] = intval($mybb->input['tid']);
+
+			if($mybb->input['tid'] && intval($mybb->input['tid']) > 0)
+			{
+				$array[2] = intval($mybb->input['tid']);
+			}
+			elseif($mybb->input['pid'] && intval($mybb->input['pid']) > 0)
+			{
+				$array[2] = intval($mybb->input['pid']);
+			}
+
 			$thread = get_thread(intval($array[2]));
 			$array[1] = $thread['fid'];
 		}
