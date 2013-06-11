@@ -33,7 +33,7 @@ class session
 		{
 			$this->useragent = my_substr($this->useragent, 0, 100);
 		}
-		
+
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
 		{
@@ -97,27 +97,27 @@ class session
 	function load_user($uid, $password='')
 	{
 		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
-		
+
 		// Read the banned cache
-		$bannedcache = $cache->read("banned");	
-		
+		$bannedcache = $cache->read("banned");
+
 		// If the banned cache doesn't exist, update it and re-read it
 		if(!is_array($bannedcache))
 		{
 			$cache->update_banned();
 			$bannedcache = $cache->read("banned");
 		}
-		
+
 		$uid = intval($uid);
 		$query = $db->query("
 			SELECT u.*, f.*
-			FROM ".TABLE_PREFIX."users u 
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			WHERE u.uid='$uid'
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
-		
+
 		if(!empty($bannedcache[$uid]))
 		{
 			$banned_user = $bannedcache[$uid];
@@ -222,7 +222,7 @@ class session
 		{
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
-		
+
 		// Does this user prefer posts in classic mode?
 		if($mybb->user['classicpostbit'])
 		{
@@ -276,7 +276,7 @@ class session
 		{
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
-		
+
 		if(!$mybb->user['usertitle'])
 		{
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
@@ -349,7 +349,7 @@ class session
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-		
+
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
@@ -523,10 +523,19 @@ class session
 			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
 		}
-		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
+		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
 			global $db;
-			$array[2] = intval($mybb->input['tid']);
+
+			if($mybb->input['tid'] && intval($mybb->input['tid']) > 0)
+			{
+				$array[2] = intval($mybb->input['tid']);
+			}
+			elseif($mybb->input['pid'] && intval($mybb->input['pid']) > 0)
+			{
+				$array[2] = intval($mybb->input['pid']);
+			}
+
 			$thread = get_thread(intval($array[2]));
 			$array[1] = $thread['fid'];
 		}
