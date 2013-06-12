@@ -129,8 +129,11 @@ messageEditor.prototype = {
 		// An array of video services to be shown (youtube, vimeo, etc) 
 		this.videos = new Object();
 		this.videos["dailymotion"] = this.options.lang.video_dailymotion;
+		this.videos["facebook"] = this.options.lang.video_facebook;
+		this.videos["liveleak"] = this.options.lang.video_liveleak;
 		this.videos["metacafe"] = this.options.lang.video_metacafe;
 		this.videos["myspacetv"] = this.options.lang.video_myspacetv;
+		this.videos["veoh"] = this.options.lang.video_veoh;
 		this.videos["vimeo"] = this.options.lang.video_vimeo;
 		this.videos["yahoo"] = this.options.lang.video_yahoo;
 		this.videos["youtube"] = this.options.lang.video_youtube;
