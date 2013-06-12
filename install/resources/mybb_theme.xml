@@ -11881,7 +11881,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</div>]]></template>
 		<template name="announcement" version="1800"><![CDATA[<html>
 <head>
-<title>{$lang->announcements}</title>
+<title>{$lang->forum_announcement}</title>
 {$headerinclude}
 </head>
 <body>
