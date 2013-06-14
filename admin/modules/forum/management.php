@@ -849,7 +849,6 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 
 	$page->add_breadcrumb_item($lang->add_forum);
@@ -1415,7 +1414,6 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
@@ -2183,7 +2181,6 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
@@ -2540,10 +2537,19 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		// Autocompletion for usernames
 		echo '
-		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=1400"></script>
+		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
-			new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+	        $(\'#username\').typeahead({
+	            name: \'username\',
+	            remote: {
+	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+	                filter: function(response){
+	                	return response.users;
+	                },
+	            },
+	            limit: 10
+	        });
 		// -->
 		</script>';
 

@@ -124,7 +124,6 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 		// Write in our JS based field selector
-		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 
 		$page->add_breadcrumb_item($lang->create_new_view);
@@ -310,7 +309,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 
 		// Write in our JS based field selector
-		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 
 		$page->add_breadcrumb_item($lang->edit_view);

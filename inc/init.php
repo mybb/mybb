@@ -57,6 +57,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
+if(!function_exists('json_encode') || !function_exists('json_decode'))
+{
+	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
+}
+
 require_once MYBB_ROOT."inc/functions.php";
 
 require_once MYBB_ROOT."inc/class_timers.php";

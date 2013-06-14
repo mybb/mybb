@@ -720,8 +720,8 @@ function error($error="", $title="")
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		@header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$error}</error>\n";
+		@header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => array($error)));
 		exit;
 	}
 
@@ -764,10 +764,9 @@ function inline_error($errors, $title="")
 	// AJAX error message?
 	if($mybb->input['ajax'])
 	{
-		$error = implode("\n\n", $errors);
 		// Send our headers.
-		@header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$error}</error>\n";
+		@header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => $errors));
 		exit;
 	}
 
@@ -802,8 +801,8 @@ function error_no_permission()
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$lang->error_nopermission_user_ajax}</error>\n";
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => array($lang->error_nopermission_user_ajax)));
 		exit;
 	}
 

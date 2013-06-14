@@ -91,7 +91,7 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
@@ -320,7 +320,7 @@ var imagepath = '../images';
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/prototype.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js"></script>
 <script type="text/javascript" src="../jscripts/general.js"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">

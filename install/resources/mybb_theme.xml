@@ -526,15 +526,27 @@ input.button:hover {
 	background: #f5f5f5;
 }
 
-.autocomplete {
+.twitter-typeahead > input {
+    vertical-align: middle !important;
+}
+
+.tt-dropdown-menu {
 	background: #fff;
 	color: black;
 	border: 1px solid #ccc;
 	padding: 1px;
+    margin-top: 3px;
+    width: 98%;
 }
 
-.autocomplete_selected {
-	background: #0072BC;
+.tt-suggestion {
+    font-size: 12px;
+    line-height: 0;
+    padding: 1px
+}
+
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #0072BC;
 	color: #fff;
 }
 
@@ -4433,7 +4445,7 @@ a.button {
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>
 ]]></template>
-		<template name="member_register_referrer" version="1400"><![CDATA[<br />
+		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -4446,13 +4458,22 @@ a.button {
 </td>
 </tr></table>
 </fieldset>
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("referrer", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#referrer').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>]]></template>
 		<template name="member_register_regimage" version="1400"><![CDATA[<br />
@@ -4560,7 +4581,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="memberlist" version="1602"><![CDATA[<html>
+		<template name="memberlist" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -4659,20 +4680,29 @@ a.button {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#username').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
 </html>]]></template>
 		<template name="memberlist_referrals" version="1600"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->referrals}</strong></span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1405"><![CDATA[<html>
+		<template name="memberlist_search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -4756,13 +4786,22 @@ a.button {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#username').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
@@ -5561,7 +5600,7 @@ body {
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
-		<template name="modcp_banuser" version="1400"><![CDATA[<html>
+		<template name="modcp_banuser" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_user}</title>
 {$headerinclude}
@@ -5608,13 +5647,22 @@ body {
 		</tr>
 	</table>
 	{$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#username').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
@@ -5951,7 +5999,7 @@ body {
 		<template name="modcp_editprofile_suspensions_info" version="1600"><![CDATA[<tr>
 	<td colspan="2" class="smalltext"><em>{$suspension_info}</em></td>
 </tr>]]></template>
-		<template name="modcp_finduser" version="1611"><![CDATA[<html>
+		<template name="modcp_finduser" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
 {$headerinclude}
@@ -6013,13 +6061,22 @@ body {
 		</table>
 	</form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#username').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
@@ -6607,7 +6664,7 @@ body {
 	<td class="{$trow} smalltext" align="right">{$lastreport_date}<br />{$lang->by} <a href="{$lastreporter_link}">{$lastreporter_name}</a></td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
-		<template name="modcp_warninglogs" version="1405"><![CDATA[<html>
+		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
 {$headerinclude}
@@ -6683,13 +6740,22 @@ body {
 		</tr>
 	</table>
 	{$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#username').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
@@ -8833,7 +8899,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+		<template name="private_send_autocomplete" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -9267,7 +9333,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<strong class="{$vote_type_class}">{$vote_type} {$vote_reputation}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
-		<template name="search" version="1600"><![CDATA[<html>
+		<template name="search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -9350,13 +9416,22 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-	}
+        $('#author').typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
 // -->
 </script>
 </body>
@@ -10337,7 +10412,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="usercp_drafts_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
-		<template name="usercp_editlists" version="1400"><![CDATA[<html>
+		<template name="usercp_editlists" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
@@ -10371,14 +10446,23 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<span class="smalltext">{$lang->add_buddies_desc}</span><br />
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
-							<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+							<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 							<script type="text/javascript">
-							<!--
-								if(use_xmlhttprequest == "1")
-								{
-									new autoComplete("buddy_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-								}
-							// -->
+                            <!--
+                                if(use_xmlhttprequest == "1")
+                                {
+                                    $('#buddy_add_username').typeahead({
+                                        name: 'username',
+                                        remote: {
+                                          url: 'xmlhttp.php?action=get_users&query=%QUERY',
+                                          filter: function(response){
+                                            return response.users;
+                                          },
+                                        },
+                                        limit: 10
+                                    });
+                                }
+                            // -->
 							</script>
 						</fieldset>
 						<fieldset id="buddy_container">
@@ -10408,12 +10492,21 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
-							<!--
-								if(use_xmlhttprequest == "1")
-								{
-									new autoComplete("ignored_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-								}
-							// -->
+                            <!--
+                                if(use_xmlhttprequest == "1")
+                                {
+                                    $('#ignored_add_username').typeahead({
+                                        name: 'username',
+                                        remote: {
+                                          url: 'xmlhttp.php?action=get_users&query=%QUERY',
+                                          filter: function(response){
+                                            return response.users;
+                                          },
+                                        },
+                                        limit: 10
+                                    });
+                                }
+                            // -->
 							</script>
 						</fieldset>
 						<fieldset id="ignored_container">
@@ -11974,7 +12067,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=1603"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1603"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
 {$stylesheets}

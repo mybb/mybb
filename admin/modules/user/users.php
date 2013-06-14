@@ -1836,11 +1836,29 @@ if($mybb->input['action'] == "merge")
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("source_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
-		new autoComplete("destination_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $(\'#source_username\').typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },            limit: 10
+        });
+        $(\'#destination_username\').typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
+
 	// -->
 	</script>';
 
@@ -3363,10 +3381,19 @@ function build_users_view($view)
 
 	// Autocompletion for usernames
 	$built_view .= '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("search_keywords", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $(\'#search_keywords\').typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 
@@ -3766,10 +3793,19 @@ function user_search_conditions($input=array(), &$form)
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $(\'#username\').typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 }

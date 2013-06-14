@@ -128,7 +128,7 @@ elseif($mybb->input['do'] == "login")
 	$loginhandler = new LoginDataHandler("get");
 
 	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
-	
+
 	// Validate PIN first
 	if (isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
 	{
@@ -414,7 +414,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 		// If we have this error while retreiving it from an AJAX request, then send back a nice error
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<error>login</error>";
+			echo json_encode(array("errors" => array("login")));
 			die;
 		}
 		$page->show_login($login_message, "error");

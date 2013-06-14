@@ -39,7 +39,7 @@ class installerOutput {
 <head>
 	<title>$this->title &gt; $title</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
-	<script type="text/javascript" src="../jscripts/prototype.js"></script>
+	<script type="text/javascript" src="../jscripts/jquery.js"></script>
 	<script type="text/javascript" src="../jscripts/general.js"></script>
 	{$dbconfig_add}
 </head>

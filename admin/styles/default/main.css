@@ -203,7 +203,7 @@ a:hover {
 }
 }
 /* Fix IE. Hide from IE Mac \*/
-* html #left_menu li a, , * html #left_menu li { 
+* html #left_menu li a, , * html #left_menu li {
 	height: 1%;
 }
 /* End */
@@ -222,7 +222,7 @@ a:hover {
 }
 
 * html .border_wrapper {
-	height: 1px;	
+	height: 1px;
 }
 
 .border_wrapper div.title {
@@ -565,7 +565,7 @@ form p.legend {
 	margin-bottom: 10px;
 }
 
-form p.legend em { 
+form p.legend em {
 	color: #C00; font-style: normal;
 }
 
@@ -613,7 +613,7 @@ input.submit_button:hover {
 	color: #C00;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;	
+	-webkit-border-radius: 5px;
 }
 
 .confirm_action p {
@@ -699,7 +699,7 @@ input.radio_input {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	background: #ffc url('images/icons/warning.gif') no-repeat;
-	color: #C00; 
+	color: #C00;
 	font-style: normal;
 	font-weight: bold;
 	padding-left: 24px;
@@ -793,18 +793,18 @@ div.success ul, div.error.ul {
 	text-decoration: none;
 }
 
-	 
-.nav_tabs li.active a { 
+
+.nav_tabs li.active a {
     color: #555;
     font-size: 150%;
-	font-weight: bold; 
+	font-weight: bold;
 	padding-top: 5px;
 	border-bottom: 3px solid #555;
-} 
-	 
-.nav_tabs .tab_description { 
-	background: #f3f3f3; 
-	padding: 10px; 
+}
+
+.nav_tabs .tab_description {
+	background: #f3f3f3;
+	padding: 10px;
 	border: 1px solid #ddd;
 	border-top: 3px solid #bbb;
 	color: #555;
@@ -812,10 +812,10 @@ div.success ul, div.error.ul {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-} 
+}
 
 * html .nav_tabs .tab_description {
-	margin-left: 3px;	
+	margin-left: 3px;
 }
 *.align_center, table.general th.align_center, input.align_center {
 	text-align: center;
@@ -829,7 +829,7 @@ a img {
 	border: 0;
 }
 
-option { 
+option {
 	padding-right: 10px;
 }
 
@@ -1042,14 +1042,31 @@ ul.tabs li a.active {
 }
 
 /* Auto Complete */
-.autocomplete {
-	background: #fff;
-	border: 1px solid #ccc;
-	color: black;
+.twitter-typeahead > input {
+    vertical-align: middle !important;
 }
 
-.autocomplete_selected {
-	background: #666;
+.tt-dropdown-menu {
+	background: #fff;
+	color: black;
+	border: 1px solid #ccc;
+	padding: 1px;
+    margin-top: 3px;
+    width: 98%;
+}
+
+.tt-suggestion {
+    font-size: 12px;
+    line-height: 0;
+    padding: 1px;
+}
+
+.tt-suggestion p {
+    line-height: 0 !important;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #0072bc;
 	color: #fff;
 }
 

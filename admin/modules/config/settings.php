@@ -982,7 +982,7 @@ if($mybb->input['action'] == "change")
 		{
 			if(isset($mybb->input['ajax_search']))
 			{
-				echo("<error>{$lang->error_no_settings_found}</error>");
+				echo json_encode(array("errors" => array($lang->error_no_settings_found)));
 				exit;
 			}
 			else

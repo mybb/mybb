@@ -126,7 +126,7 @@ $plugins->run_hooks("ratethread_end");
 
 if($mybb->input['ajax'])
 {
-	echo "<success>{$lang->rating_added}</success>\n";
+	$json = array("success" => $lang->rating_added);
 	$query = $db->simple_select("threads", "totalratings, numratings", "tid='$tid'", array('limit' => 1));
 	$fetch = $db->fetch_array($query);
 	$width = 0;
@@ -136,9 +136,13 @@ if($mybb->input['ajax'])
 		$width = intval(round($averagerating))*20;
 		$fetch['numratings'] = intval($fetch['numratings']);
 		$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $fetch['numratings'], $averagerating);
-		echo "<average>{$ratingvotesav}</average>\n";
+		$json = $json + array("average" => $ratingvotesav);
 	}
-	echo "<width>{$width}</width>";
+	$json = $json + array("width" => $width);
+
+	@header("Content-type: application/json; charset={$lang->settings['charset']}");
+	echo json_encode($json);
+
 	exit;
 }
 
