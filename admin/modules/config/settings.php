@@ -78,7 +78,7 @@ if($mybb->input['action'] == "addgroup")
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 				"isdefault" => 0
-				);
+			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
 
 			$plugins->run_hooks("admin_config_settings_addgroup_commit");
@@ -97,23 +97,23 @@ if($mybb->input['action'] == "addgroup")
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings"
-		);
+	);
 
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
-		);
+	);
 
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup",
 		'description' => $lang->add_new_setting_group_desc
-		);
+	);
 
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage"
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting_group');
 
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "editgroup")
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
-				);
+			);
 
 			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
 
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "editgroup")
 		'title' => $lang->edit_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=editgroup&amp;gid={$group['gid']}",
 		'description' => $lang->edit_setting_group_desc
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_setting_group');
 
@@ -354,7 +354,7 @@ if($mybb->input['action'] == "add")
 				"value" => $db->escape_string($mybb->input['value']),
 				"disporder" => intval($mybb->input['disporder']),
 				"gid" => intval($mybb->input['gid'])
-				);
+			);
 
 			$sid = $db->insert_query("settings", $new_setting);
 			rebuild_settings();
@@ -375,23 +375,23 @@ if($mybb->input['action'] == "add")
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings"
-		);
+	);
 
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add",
 		'description' => $lang->add_new_setting_desc
-		);
+	);
 
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
-		);
+	);
 
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage"
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting');
 
@@ -428,7 +428,7 @@ if($mybb->input['action'] == "add")
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
-		);
+	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
 	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
@@ -442,7 +442,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
-	add_star("row_extra");
+		add_star("row_extra");
 	</script>';
 
 	$page->output_footer();
@@ -529,7 +529,7 @@ if($mybb->input['action'] == "edit")
 				"value" => $db->escape_string($mybb->input['value']),
 				"disporder" => intval($mybb->input['disporder']),
 				"gid" => intval($mybb->input['gid'])
-				);
+			);
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
 
@@ -549,23 +549,23 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings",
-		);
+	);
 
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
-		);
+	);
 
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
-		);
+	);
 
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
 		'description' => $lang->modify_existing_settings_desc
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'modify_setting');
 
@@ -614,7 +614,7 @@ if($mybb->input['action'] == "edit")
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
-		);
+	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
 	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
@@ -628,7 +628,7 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
-	add_star("row_extra");
+		add_star("row_extra");
 	</script>';
 
 	$page->output_footer();
@@ -727,23 +727,23 @@ if($mybb->input['action'] == "manage")
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings",
-		);
+	);
 
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
-		);
+	);
 
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
-		);
+	);
 
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
 		'description' => $lang->modify_existing_settings_desc
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'modify_setting');
 
@@ -875,7 +875,7 @@ if($mybb->input['action'] == "change")
 				'step',
 				'action',
 				'regsubmit'
-				);
+			);
 
 			if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields))
 			{
@@ -916,13 +916,13 @@ if($mybb->input['action'] == "change")
 			{
 				$updated_task = array(
 					"enabled" => 0
-					);
+				);
 			}
 			else
 			{
 				$updated_task = array(
 					"enabled" => 1
-					);
+				);
 			}
 			$db->update_query("tasks", $updated_task, "file='threadviews'");
 		}
@@ -972,7 +972,7 @@ if($mybb->input['action'] == "change")
 			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
 			WHERE s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%'
 			ORDER BY s.disporder
-			");
+		");
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
@@ -1033,10 +1033,10 @@ if($mybb->input['action'] == "change")
 		}
 
 		if(!$db->num_rows($query))
-		{
-			flash_message($lang->error_no_settings_found, 'error');
-			admin_redirect("index.php?module=config-settings");
-		}
+        {
+            flash_message($lang->error_no_settings_found, 'error');
+            admin_redirect("index.php?module=config-settings");
+        }
 
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
 		if($lang->$group_lang_var)
@@ -1094,15 +1094,15 @@ if($mybb->input['action'] == "change")
 		$form_container = new FormContainer($groupinfo['title']);
 
 		if(empty($cache_settings[$groupinfo['gid']]))
-		{
-			$form_container->output_cell($lang->error_no_settings_found);
-			$form_container->construct_row();
+        {
+            $form_container->output_cell($lang->error_no_settings_found);
+            $form_container->construct_row();
 
-			$form_container->end();
-			echo '<br />';
+            $form_container->end();
+            echo '<br />';
 
-			continue;
-		}
+            continue;
+        }
 
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{
@@ -1254,22 +1254,22 @@ if(!$mybb->input['action'])
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings",
 		'description' => $lang->change_settings_desc
-		);
+	);
 
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
-		);
+	);
 
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
-		);
+	);
 
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
-		);
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 
@@ -1296,7 +1296,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault = 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
-			ORDER BY g.disporder
+			ORDER BY g.title
 			");
 		break;
 		default:
@@ -1306,7 +1306,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault = 1
 			GROUP BY g.gid
-			ORDER BY g.disporder
+			ORDER BY g.title
 			");
 	}
 	while($group = $db->fetch_array($query))
@@ -1349,7 +1349,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault <> 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
-			ORDER BY g.disporder
+			ORDER BY g.title
 			");
 		break;
 		default:
@@ -1359,7 +1359,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault <> 1
 			GROUP BY g.gid
-			ORDER BY g.disporder
+			ORDER BY g.title
 			");
 	}
 	if($db->num_rows($query) == 0)
@@ -1372,7 +1372,6 @@ if(!$mybb->input['action'])
 		while($group = $db->fetch_array($query))
 		{
 			$group_lang_var = "setting_group_{$group['name']}";
-
 			if($lang->$group_lang_var)
 			{
 				$group_title = htmlspecialchars_uni($lang->$group_lang_var);
@@ -1383,7 +1382,6 @@ if(!$mybb->input['action'])
 			}
 
 			$group_desc_lang_var = "setting_group_{$group['name']}_desc";
-
 			if($lang->$group_desc_lang_var)
 			{
 				$group_desc = htmlspecialchars_uni($lang->$group_desc_lang_var);
@@ -1398,141 +1396,141 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$table->output($lang->plugin_settings);
+	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config-settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->plugin_settings}");
 
 	echo '</div>';
 
 	echo '
-	<script type="text/javascript">
+<script type="text/javascript">
 //<!--
-	var SettingSearch = Class.create();
-	SettingSearch.prototype = {
+var SettingSearch = Class.create();
+SettingSearch.prototype = {
 
-		spinner: null,
-		form: null,
-		result_div: null,
-		hide_div: null,
-		search_box: null,
+	spinner: null,
+	form: null,
+	result_div: null,
+	hide_div: null,
+	search_box: null,
 
-		initialize: function(form, search_box, result_div, hide_div)
-		{
-			Event.observe(form, "submit", this.onSubmit.bind(this));
-			this.form = form;
-			this.result_div = result_div;
-			this.hide_div = hide_div;
-			result_div.style.display = "none";
-			this.search_box = search_box;
-			Event.observe(search_box, "focus", function() {
-				if($("search").value == "'.$lang->settings_search.'")
-				{
-					$("search").removeClassName("search_default");
-					$("search").value = "";
-				}
-			});
-Event.observe(search_box, "blur", function() {
-	if($("search").value == "")
+	initialize: function(form, search_box, result_div, hide_div)
 	{
-		$("search").addClassName("search_default");
-		$("search").value = "'.$lang->settings_search.'";
-		$("search_results").style.display = "none";
-		$("group_list").style.display = "";
-	}
-});
-},
-
-onSubmit: function(e)
-{
-	Event.stop(e);
-	if(this.search_box.value != "")
-	{
-		this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
-		pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
-		new Ajax.Request("index.php", {
-			method: "get",
-			parameters: pars,
-			onComplete: this.onComplete.bind(this)
+		Event.observe(form, "submit", this.onSubmit.bind(this));
+		this.form = form;
+		this.result_div = result_div;
+		this.hide_div = hide_div;
+		result_div.style.display = "none";
+		this.search_box = search_box;
+		Event.observe(search_box, "focus", function() {
+			if($("search").value == "'.$lang->settings_search.'")
+			{
+				$("search").removeClassName("search_default");
+				$("search").value = "";
+			}
 		});
-}
-},
+		Event.observe(search_box, "blur", function() {
+			if($("search").value == "")
+			{
+				$("search").addClassName("search_default");
+				$("search").value = "'.$lang->settings_search.'";
+				$("search_results").style.display = "none";
+				$("group_list").style.display = "";
+			}
+		});
+	},
 
-onComplete: function(request)
-{
-	if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
+	onSubmit: function(e)
 	{
-		message = request.responseText.match(/<error>(.*)<\/error>/);
-		if(!message[1])
+		Event.stop(e);
+		if(this.search_box.value != "")
 		{
-			message[1] = "'.$lang->error_ajax_unknown.'";
+			this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
+			pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
+			new Ajax.Request("index.php", {
+			    method: "get",
+				parameters: pars,
+			    onComplete: this.onComplete.bind(this)
+			});
 		}
-		alert(message[1]);
-	}
-	else if(request.responseText)
+	},
+
+	onComplete: function(request)
 	{
-		this.result_div.style.display = "";
-		this.hide_div.style.display = "none";
-		this.result_div.innerHTML = request.responseText;
-		loadPeekers();
+		if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "'.$lang->error_ajax_unknown.'";
+			}
+			alert(message[1]);
+		}
+		else if(request.responseText)
+		{
+			this.result_div.style.display = "";
+			this.hide_div.style.display = "none";
+			this.result_div.innerHTML = request.responseText;
+			loadPeekers();
+		}
+		this.spinner.destroy();
 	}
-	this.spinner.destroy();
-}
 }
 new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
 //-->
 </script>';
 
-print_setting_peekers();
-$page->output_footer();
+	print_setting_peekers();
+	$page->output_footer();
 }
 
 function print_setting_peekers()
 {
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
-	Event.observe(window, "load", function() {
-		loadPeekers();
-	});
-function loadPeekers()
-{
-	new Peeker($$(".setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true);
-	new Peeker($$(".setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true);
-	new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true);
-	new Peeker($$(".setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true);
-	new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true);
-	new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
-	new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true);
-	new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
-	new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true);
-	new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true);
-	new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
-	new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
-	new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
-	new Peeker($$(".setting_postfloodcheck"), $("row_setting_postfloodsecs"), /1/, true);
-	new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
-	new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
-	new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
-	new Peeker($$(".setting_enablememberlist"), $("row_setting_membersperpage"), /1/, true);
-	new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /1/, true);
-	new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_order"), /1/, true);
-	new Peeker($$(".setting_enablereputation"), $("row_setting_repsperpage"), /1/, true);
-	new Peeker($$(".setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /1/, true);
-	new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true);
-	new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true);
-	new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true);
-	new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true);
-	new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true);
-	new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
-	new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowvideocode"), /1/, true);
-	new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true);
-	new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true);
-	new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
-	new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
-	new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
-	new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
-	new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
-	new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
-	new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false);
-	new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false);
-}
-</script>';
+		Event.observe(window, "load", function() {
+			loadPeekers();
+		});
+		function loadPeekers()
+		{
+			new Peeker($$(".setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true);
+			new Peeker($$(".setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true);
+			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true);
+			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true);
+			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true);
+			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
+			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true);
+			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
+			new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true);
+			new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true);
+			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
+			new Peeker($$(".setting_postfloodcheck"), $("row_setting_postfloodsecs"), /1/, true);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
+			new Peeker($$(".setting_enablememberlist"), $("row_setting_membersperpage"), /1/, true);
+			new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /1/, true);
+			new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_order"), /1/, true);
+			new Peeker($$(".setting_enablereputation"), $("row_setting_repsperpage"), /1/, true);
+			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /1/, true);
+			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true);
+			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true);
+			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true);
+			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true);
+			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true);
+			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
+			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowvideocode"), /1/, true);
+			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true);
+			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
+			new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false);
+			new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false);
+		}
+	</script>';
 }
 ?>
