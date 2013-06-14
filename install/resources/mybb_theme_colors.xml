@@ -80,8 +80,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #333;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #333;
 	color: #fff;
 }
 
@@ -127,8 +127,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #48715b;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #48715b;
 	color: #fff;
 }
 
@@ -173,8 +173,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #f2a555;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #f2a555;
 	color: #fff;
 }
 
@@ -219,8 +219,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #6d5545;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #6d5545;
 	color: #fff;
 }
 
@@ -265,8 +265,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #a20000;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #a20000;
 	color: #fff;
 }
 
@@ -311,8 +311,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #5aaf33;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #5aaf33;
 	color: #fff;
 }
 
@@ -357,8 +357,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #023a61;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #023a61;
 	color: #fff;
 }
 
@@ -412,10 +412,11 @@ a:active {
 	color: #000;
 }
 
-.autocomplete_selected {
-	background: #ffea9c;
-	color: #000;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #ffea9c;
+	color: #fff;
 }
+
 
 .pagination a:hover {
 	background-color: #ffea9c;
@@ -458,8 +459,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #426276;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #426276;
 	color: #fff;
 }
 
@@ -504,8 +505,8 @@ a:active {
 	color: #fff;
 }
 
-.autocomplete_selected {
-	background: #2d9595;
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #2d9595;
 	color: #fff;
 }
 
