@@ -4459,7 +4459,7 @@ a.button {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#referrer').typeahead({
+        $("#referrer").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -4681,7 +4681,7 @@ a.button {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#username').typeahead({
+        $("#username").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -4787,7 +4787,7 @@ a.button {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#username').typeahead({
+        $("#username").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -5648,7 +5648,7 @@ body {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#username').typeahead({
+        $("#username").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -6062,7 +6062,7 @@ body {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#username').typeahead({
+        $("#username").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -6741,7 +6741,7 @@ body {
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#username').typeahead({
+        $("#username").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -9417,7 +9417,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-        $('#author').typeahead({
+        $("#author").typeahead({
             name: 'username',
             remote: {
               url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -10447,7 +10447,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
                             <!--
                                 if(use_xmlhttprequest == "1")
                                 {
-                                    $('#buddy_add_username').typeahead({
+                                    $("#buddy_add_username").typeahead({
                                         name: 'username',
                                         remote: {
                                           url: 'xmlhttp.php?action=get_users&query=%QUERY',
@@ -10491,7 +10491,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
                             <!--
                                 if(use_xmlhttprequest == "1")
                                 {
-                                    $('#ignored_add_username').typeahead({
+                                    $("#ignored_add_username").typeahead({
                                         name: 'username',
                                         remote: {
                                           url: 'xmlhttp.php?action=get_users&query=%QUERY',

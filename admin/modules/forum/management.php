@@ -2540,7 +2540,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
-	        $(\'#username\').typeahead({
+	        $("#username").typeahead({
 	            name: \'username\',
 	            remote: {
 	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',

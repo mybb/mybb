@@ -1839,7 +1839,7 @@ if($mybb->input['action'] == "merge")
 	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-        $(\'#source_username\').typeahead({
+        $("#source_username").typeahead({
             name: \'username\',
             remote: {
             	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
@@ -1848,7 +1848,7 @@ if($mybb->input['action'] == "merge")
                 },
             },            limit: 10
         });
-        $(\'#destination_username\').typeahead({
+        $("#destination_username").typeahead({
             name: \'username\',
             remote: {
             	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
@@ -3384,7 +3384,7 @@ function build_users_view($view)
 	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-        $(\'#search_keywords\').typeahead({
+        $("#search_keywords").typeahead({
             name: \'username\',
             remote: {
             	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
@@ -3796,7 +3796,7 @@ function user_search_conditions($input=array(), &$form)
 	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-        $(\'#username\').typeahead({
+        $("#username").typeahead({
             name: \'username\',
             remote: {
             	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
