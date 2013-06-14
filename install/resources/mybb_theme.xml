@@ -779,10 +779,6 @@ form {
 	text-decoration: none;
 }
 
-.autocomplete {
-	text-align: left;
-}
-
 .subject_new {
 	font-weight: bold;
 }
