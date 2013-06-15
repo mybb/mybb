@@ -1296,7 +1296,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault = 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
-			ORDER BY g.title
+			ORDER BY g.disporder
 			");
 		break;
 		default:
@@ -1306,7 +1306,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault = 1
 			GROUP BY g.gid
-			ORDER BY g.title
+			ORDER BY g.disporder
 			");
 	}
 	while($group = $db->fetch_array($query))
@@ -1349,7 +1349,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault <> 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
-			ORDER BY g.title
+			ORDER BY g.disporder
 			");
 		break;
 		default:
@@ -1359,7 +1359,7 @@ if(!$mybb->input['action'])
 			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 			WHERE g.isdefault <> 1
 			GROUP BY g.gid
-			ORDER BY g.title
+			ORDER BY g.disporder
 			");
 	}
 	if($db->num_rows($query) == 0)
