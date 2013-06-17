@@ -31,7 +31,7 @@ $l['success_rebuilt_user_counters'] = "The user posts count have been recounted 
 $l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have been rebuilt successfully.";
 $l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
 $l['success_rebuilt_reputation'] = "The user reputation has been rebuilt successfully.";
-$l['success_rebuilt_warning'] = "The user warning points has been rebuilt successfully.";
+$l['success_rebuilt_warning'] = "The user warning points have been rebuilt successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
 $l['automatically_redirecting'] = "Automatically Redirecting...";
