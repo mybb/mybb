@@ -74,6 +74,11 @@ function upgrade27_dbchanges()
 		$db->drop_column('usergroups', 'canbereported');
 	}
 
+	if($db->field_exists('ipaddress', 'privatemessages'))
+	{
+		$db->drop_column('privatemessages', 'ipaddress');
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -84,7 +89,7 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int NOT NULL default '0'");
-			$db->add_column("privatemessages", "ipaddress" "varchar(120) NOT NULL default ''");
+			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -93,7 +98,7 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reporters", "text NOT NULL");
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0'");
-			$db->add_column("privatemessages", "ipaddress" "varchar(120) NOT NULL default ''");
+			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
 			break;
 	}
 
