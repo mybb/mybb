@@ -67,12 +67,14 @@ if($report_type == 'post')
 		{
 			$error = $lang->error_invalid_report;
 		}
+		else
+		{
+			$verified = true;
+		}
 
 		// Password protected forums ......... yhummmmy!
 		$fid = $forum['fid'];
 		check_forum_password($forum['parentlist']);
-
-		$verified = true;
 
 		// Check for an existing report
 		$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND (type = 'post' OR type = '')");
@@ -80,6 +82,43 @@ if($report_type == 'post')
 		if($db->num_rows($query))
 		{
 			// Existing report
+			$report = $db->fetch_array($query);
+			$report['reporters'] = unserialize($report['reporters']);
+
+			if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
+			{
+				$error = $lang->success_report_voted;
+			}
+		}
+	}
+}
+else if($report_type == 'profile')
+{
+	$user = get_user($mybb->input['pid']);
+
+	if(!isset($user['uid']))
+	{
+		$error = $lang->error_invalid_report;
+	}
+	else
+	{
+		$tid = $fid = 0;
+		$pid = $user['uid'];
+		$permissions = user_permissions($user['uid']);
+
+		if(empty($permissions['canbereported']))
+		{
+			$error = $lang->error_invalid_report;
+		}
+		else
+		{
+			$verified = true;
+		}
+
+		$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$user['uid']}' AND type = 'profile'");
+
+		if($db->num_rows($query))
+		{
 			$report = $db->fetch_array($query);
 			$report['reporters'] = unserialize($report['reporters']);
 

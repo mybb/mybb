@@ -313,6 +313,10 @@ if($mybb->input['action'] == "reports")
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
+				case 'profile':
+					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
+					break;
 			}
 
 			// Report reason and comment
@@ -423,12 +427,13 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
+		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
+		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.pid)
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -453,6 +458,11 @@ if($mybb->input['action'] == "allreports")
 				$thread_subject = $report['threadsubject'];
 				$thread_link = get_thread_link($report['tid']);
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
+			}
+			else if($report['type'] == 'profile')
+			{
+				$user = build_profile_link($report['profileusername'], $report['pid']);
+				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 			}
 
 			// Report reason and comment
