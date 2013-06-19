@@ -9013,7 +9013,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
+<title>{$mybb->settings['bbname']} - {$report_title}</title>
 {$headerinclude}
 </head>
 <body>
@@ -9022,88 +9022,106 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$type}" />
 <input type="hidden" name="pid" value="{$pid}" />
-
+{$inline_errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<thead>
-	<tr>
-		<td class="thead" colspan="2"><strong>{$report_type}</strong>
-	</tr>
-</thead>
+<tr>
+	<td class="thead" colspan="2"><strong>{$report_title}</strong>
+</tr>
 <tr>
 	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
 </tr>
 {$report_reasons}
 </table>
-
-<br />
-<div align="center">
-	<input type="submit" class="button" value="{$report_type}" />
-</div>
 </form>
+
+<script type="text/javascript">
+<!--
+	if($("#report_reason option:selected").val() != 'other')
+	{
+		$("#reason").hide()
+	}
+
+	$("#report_reason").change(function()
+	{
+		if($(this).find("option:selected").val() == 'other')
+		{
+			$("#reason").show()
+			return
+		}
+
+		$("#reason").hide()
+	})
+// -->
+</script>
+
 </body>
 </html>]]></template>
 		<template name="report_duplicate" version="1800"><![CDATA[<tr>
-	<td class="trow1" colspan="2">{$lang->error_report_duplicate}</td>
+	<td class="trow1">{$lang->error_report_duplicate}</td>
+</tr>
+<tr>
+	<td class="tfoot"><input type="submit" class="button" value="{$report_title}" /></td>
 </tr>]]></template>
-		<template name="report_error" version="1800"><![CDATA[<html>
+		<template name="report_error" version="1800"><![CDATA[<tr>
+	<td colspan="2" class="trow1">{$error}</td>
+</tr>
+<tr>
+	<td colspan="2" class="tfoot">
+		<script type="text/javascript">
+		<!--
+			document.write('{$go_back} <input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
+		// -->
+		</script>
+	</td>
+</tr>]]></template>
+		<template name="report_reasons" version="1800"><![CDATA[<tr>
+	<td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
+	<td class="trow1" align="left">
+		<select name="reason" id="report_reason">
+			<option value="rules">{$lang->report_reason_rules}</option>
+			<option value="bad">{$lang->report_reason_bad}</option>
+			<option value="spam">{$lang->report_reason_spam}</option>
+			<option value="wrong">{$lang->report_reason_wrong}</option>
+			<option value="other">{$lang->report_reason_other}</option>
+		</select>
+	</td>
+</tr>
+<tr id="reason">
+	<td class="trow2">&nbsp;</td>
+	<td class="trow2" align="left">
+		<div>If 'Other' please provide a reason for reporting this content.</div>
+		<input type="text" class="textbox" name="comment" size="40" maxlength="250" />
+	</td>
+</tr>
+<tr>
+	<td colspan="2" class="tfoot"><input type="submit" class="button" value="{$report_title}" /></td>
+</tr>]]></template>
+		<template name="report_thanks" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
+<title>{$mybb->settings['bbname']} - {$report_title}</title>
 {$headerinclude}
 </head>
 <body>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
-		<td class="thead"><strong>{$report_type}</strong></td>
+		<td class="thead"><strong>{$report_title}</strong></td>
 	</tr>
 	<tr>
 		<td class="tcat">{$lang->report_to_mod}</td>
 	</tr>
 	<tr>
-		<td class="trow1">{$error}</td>
-	</tr>
-</table>
-
-<br />
-<div style="text-align: center;">
-	<script type="text/javascript">
-	<!--
-		document.write('{$go_back} <input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-	// -->
-	</script>
-</div>
-</body>
-</html>]]></template>
-		<template name="report_reasons" version="1800"><![CDATA[<tr>
-	<td class="trow1" align="left"><span class="smalltext">{$lang->report_reason}</span></td>
-	<td class="trow1" align="left"><select name="reason">{$reasons}</select></td>
-</tr>
-<tr>
-	<td class="trow2" align="left"><span class="smalltext">{$lang->report_add_comment}</span></td>
-	<td class="trow2" align="left"><input type="text" class="textbox" name="comment" size="40" maxlength="250" /></td>
-</tr>]]></template>
-		<template name="report_thanks" version="1800"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
-{$headerinclude}
-</head>
-<body>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="thead"><strong>{$lang->thank_you}</strong></td>
-	</tr>
-	<tr>
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
+	<tr>
+		<td class="tfoot">
+			<script type="text/javascript">
+			<!--
+				document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
+			// -->
+			</script>
+		</td>
+	</tr>
 </table>
-
-<br />
-<div style="text-align: center;">
-	<script type="text/javascript">
-	<!--
-		document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-	// -->
-	</script>
-</div>
 </body>
 </html>]]></template>
 		<template name="reputation" version="1605"><![CDATA[<html>
