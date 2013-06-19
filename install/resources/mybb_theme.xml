@@ -6607,14 +6607,13 @@ body {
 		<template name="modcp_reports_allnoreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_allreport" version="1400"><![CDATA[<tr>
-<td class="{$trow}" align="center"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
-<td class="{$trow}" align="center">{$report['postusername']}</td>
-<td class="{$trow}">{$report['threadsubject']}</td>
-<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
-<td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}</span></td>
-</tr>]]></template>
+		<template name="modcp_reports_allreport" version="1800"><![CDATA[				<tr>
+					<td class="{$trow}">{$report_data['content']}</td>
+					<td class="{$trow}">{$report_data['comment']}</td>
+					<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
+					<td class="{$trow}" align="center">{$report_data['reports']}</td>
+					<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$report_data['time']}</span></td>
+				</tr>]]></template>
 		<template name="modcp_reports_allreports" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->all_reports}</title>
@@ -6623,26 +6622,25 @@ body {
 <body>
 {$header}
 <table width="100%" border="0" align="center">
-<tr>
-{$modcp_nav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->all_reports}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
-</tr>
-{$allreports}
-{$allreportspages}
-</table>
-</td>
-</tr>
+	<tr>
+		{$modcp_nav}
+		<td valign="top">
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td class="thead" align="center" colspan="6"><strong>{$lang->all_reports}</strong></td>
+				</tr>
+				<tr>
+					<td class="tcat" width="30%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+					<td class="tcat" width="20%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
+					<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
+					<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
+					<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
+				</tr>
+				{$allreports}
+				{$allreportspages}
+			</table>
+		</td>
+	</tr>
 </table>
 {$footer}
 </body>

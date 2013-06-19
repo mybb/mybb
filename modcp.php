@@ -125,6 +125,7 @@ if($mybb->input['action'] == "do_reports")
 
 if($mybb->input['action'] == "reports")
 {
+	$lang->load('report');
 	add_breadcrumb($lang->mcp_nav_report_center, "modcp.php?action=reports");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -297,86 +298,51 @@ if($mybb->input['action'] == "reports")
 			}
 
 			// Report Information
-			$report_information = $report_extra = '';
+			$report_data = array();
 			$string = "report_info_{$report['type']}";
 
 			switch($report['type'])
 			{
-				case 'profile':
-					// For profiles, we only need user data
-					$profile_username = $usercache[$report['pid']]['username'];
-					$profile_link = get_profile_link($report['pid']);
+				case 'post':
+					$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+					$user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
 
-					$report_information = $lang->sprintf($lang->$string, $profile_username, $profile_link);
-					break;
-				case 'reputation':
-					// For reputation we need a handful of things
-					// First, the profile on which the offending comment has been made (comment is FID)
-					$profile_link = get_profile_link($report['pid']);
-					$profile_username = $usercache[$report['pid']]['username'];
-					$profile_rep_link = "reputation.php?uid={$report['pid']}&amp;comment={$report['fid']}";
-
-					// Who is the offender? It's the TID!
-					//$content_user = build_profile_link($usercache[$report['tid']]['username'], $report['tid']);
-
-					$report_information = $lang->sprintf($lang->$string, $profile_rep_link, $profile_link, $profile_username);
-					break;
-				default:
-					// For posts, the first step is thread info for report_extra
 					$thread_subject = $postcache[$report['pid']]['subject'];
 					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
+					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
-					$report_extra = $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
-
-					// Next, it's the post and user information
-					$type_link = get_post_link($report['pid'])."#pid{$report['pid']}";
-					$content_user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
-
-					$report_information = $lang->sprintf($lang->$string, $type_link, $content_user);
 					break;
 			}
 
 			// Report reason and comment
-			$report_reason = $lang->na;
-			$report_comment = $lang->na;
+			$report_data['comment'] = $lang->na;
+			$report_string = "report_reason_{$report['reason']}";
 
-			if($report['reason'])
+			if(isset($lang->$report_string))
 			{
-				$reason = explode("\n", $report['reason']);
-				$lang_string = "report_reason_{$reason[0]}";
-
-				if(isset($lang->$lang_string))
-				{
-					// Translated string
-					$report_reason = $lang->$lang_string;
-				}
-				else if(isset($reportedposts['reasons'][$reason[0]]))
-				{
-					// Non-translated string, use the ACP version
-					$report_reason = $reportedposts['reasons'][$reason[0]];
-				}
-
-				if($reason[1])
-				{
-					$report_comment = htmlspecialchars_uni($reason[1]);
-				}
+				$report_data['comment'] = $lang->$report_string;
+			}
+			else if(!empty($report['reason']))
+			{
+				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
 			}
 
 			$report_reports = 1;
 			if($report['reports'])
 			{
-				$report_reports = my_number_format($report['reports']);
+				$report_data['reports'] = my_number_format($report['reports']);
 			}
 
 			if($report['lastreporter'])
 			{
-				$lastreporter_link = get_profile_link($report['lastreporter']);
-				$lastreporter_name = $usercache[$report['lastreporter']]['username'];
+				$lastreport_date = my_date('relative', $report['lastreport']);
+				$lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+
+				$report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
 			}
 
-			$lastreport_date = my_date('relative', $report['lastreport']);
-
-			// Plugin hook
+			$plugins->run_hooks("modcp_reports_report");
 			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
 		}
 	}
@@ -389,7 +355,10 @@ if($mybb->input['action'] == "reports")
 
 if($mybb->input['action'] == "allreports")
 {
-	add_breadcrumb($lang->mcp_nav_all_reported_posts, "modcp.php?action=allreports");
+	$lang->load('report');
+
+	add_breadcrumb($lang->report_center, "modcp.php?action=reports");
+	add_breadcrumb($lang->all_reports, "modcp.php?action=allreports");
 
 	if(!$mybb->settings['threadsperpage'])
 	{
@@ -475,33 +444,34 @@ if($mybb->input['action'] == "allreports")
 		{
 			$trow = alt_trow();
 
-			$report['threadlink'] = get_thread_link($report['tid']);
-
-			$report['posterlink'] = get_profile_link($report['postuid']);
-			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
-			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
-			$report['reporterlink'] = get_profile_link($report['uid']);
-
-			$reportdate = my_date('relative', $report['dateline']);
-
-			if($report['reportstatus'] == 0)
+			if($report['type'] == 'post')
 			{
-				$trow = "trow_shaded";
+				$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+				$user = build_profile_link($report['postusername'], $report['postuid']);
+				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
+
+				$thread_subject = $report['threadsubject'];
+				$thread_link = get_thread_link($report['tid']);
+				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 
-			// No subject? Set it to N/A
-			if($report['threadsubject'] == '')
+			// Report reason and comment
+			$report_data['comment'] = $lang->na;
+			$report_string = "report_reason_{$report['reason']}";
+
+			if(isset($lang->$report_string))
 			{
-				$report['threadsubject'] = $lang->na;
+				$report_data['comment'] = $lang->$report_string;
 			}
-			else
+			else if(!empty($report['reason']))
 			{
-				// Only parse bad words and sanitize subject if there is one...
-				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
 			}
 
-			$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
+			$report_data['reports'] = my_number_format($report['reports']);
+			$report_data['time'] = my_date('relative', $report['dateline']);
 
+			$plugins->run_hooks("modcp_allreports_report");
 			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
 		}
 	}

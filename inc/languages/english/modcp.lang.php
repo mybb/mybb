@@ -30,7 +30,7 @@ $l['mcp_nav_modqueue_attachments'] = "Attachment Moderation Queue";
 
 $l['modcp'] = "Moderator Control Panel";
 
-$l['view_all_reports'] = "View all Reports";
+$l['view_all_reports'] = "View All Reports";
 $l['all_reports'] = "All Reports";
 $l['report_center'] = "Report Center";
 $l['post_id'] = "Post ID";
@@ -49,16 +49,17 @@ $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
 $l['for'] = "For";
 $l['report_info'] = "Reported Content";
-$l['report_type'] = "Comments";
-$l['report_count'] = "Reports";
+$l['report_type'] = "Report Reason";
+$l['report_count'] = "# of Reports";
 $l['report_lastpost'] = "Last Reported";
 
 $l['report_reason_other'] = "Other Reason";
 
 $l['report_info_post'] = "A <a href=\"{1}\">Post</a> by {2}";
-$l['report_info_post_thread'] = "In <a href=\"{1}\">{2}</a>";
+$l['report_info_post_thread'] = "<br /><span class=\"smalltext\">In <a href=\"{1}\">{2}</a></span>";
 $l['report_info_profile'] = "<a href=\"{2}\">{1}</a>";
 $l['report_info_reputation'] = "<a href=\"{1}\">Reputation Comment</a> on <a href=\"{2}\">{3}</a>";
+$l['report_info_lastreporter'] = "{1}<br />by {2}";
 
 $l['moderator_notes'] = "Moderator Notes";
 $l['notes_public_all'] = "These notes are public to all moderators.";
