@@ -6565,9 +6565,9 @@ body {
 			<td class="thead" colspan="5"><strong>{$lang->report_center}</strong></td>
 		</tr>
 		<tr>
-			<td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+			<td class="tcat" width="35%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
 			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
-			<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
+			<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
 			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
 		</tr>
@@ -6652,10 +6652,10 @@ body {
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
-	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$report_extra} {$lang->for} {$report_reason}</td>
-	<td class="{$trow}" align="left">{$report_comment}</td>
-	<td class="{$trow}" align="center">{$report_reports}</td>
-	<td class="{$trow} smalltext" align="right">{$lastreport_date}<br />{$lang->by} <a href="{$lastreporter_link}">{$lastreporter_name}</a></td>
+	<td class="{$trow}">{$report_data['content']}</td>
+	<td class="{$trow}" align="left">{$report_data['comment']}</td>
+	<td class="{$trow}" align="center">{$report_data['reports']}</td>
+	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
 		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
