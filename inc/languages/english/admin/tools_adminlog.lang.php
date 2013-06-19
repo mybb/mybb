@@ -168,6 +168,7 @@ $l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' a
 $l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
 
 $l['admin_log_style_themes_import'] = "Imported theme #{1}";
+$l['admin_log_style_themes_duplicate'] = "Duplicated theme #{2} to #{1}";
 $l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
 $l['admin_log_style_themes_edit_stylesheet'] = "Edited stylesheet {2} in {1}";
 $l['admin_log_style_themes_delete_stylesheet'] = "Deleted / Reverted stylesheet #{1} ({2}) in theme #{3} ({4})";
