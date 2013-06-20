@@ -735,7 +735,7 @@ if($mybb->input['action'] == "duplicate")
 			{
 				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['name'])." Templates"));
 				
-				//Copy all old Templates to our new templateset
+				// Copy all old Templates to our new templateset
 				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
 				while($template = $db->fetch_array($query))
 				{
@@ -756,7 +756,7 @@ if($mybb->input['action'] == "duplicate")
 					$db->insert_query("templates", $insert);
 				}
 				
-				//We need to change the templateset so we need to work out the others properties too
+				// We need to change the templateset so we need to work out the others properties too
 				foreach($properties as $property => $value)
 				{
 					if($property == "inherited")
