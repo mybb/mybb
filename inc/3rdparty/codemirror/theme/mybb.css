@@ -1,6 +1,6 @@
 .cm-s-mybb { font:13px/1.4em Trebuchet, Verdana, sans-serif; }	/* - customized editor font - */
 
-.cm-s-mybb.CodeMirror { background: #fafafa; color: black; }
+.cm-s-mybb.CodeMirror { background: #fafafa; color: black; height: 500px; }
 .cm-s-mybb div.CodeMirror-selected { background: #b3c6d3 !important; }
 .cm-s-mybb .CodeMirror-gutters { background: #1F4661; border-right: 7px solid #3E7087; }
 .cm-s-mybb .CodeMirror-linenumber { color: white; }
