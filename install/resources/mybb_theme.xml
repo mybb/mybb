@@ -9351,7 +9351,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</td>
 </tr>]]></template>
 		<template name="reputation_vote_delete" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
+			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
