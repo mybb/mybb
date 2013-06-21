@@ -56,6 +56,8 @@ $l['save_display_orders'] = "Save Display Orders";
 $l['update_setting_group'] = "Update Setting Group";
 $l['modify_setting'] = "Modify Setting";
 $l['search'] = "Search";
+$l['plugin_settings'] = "Plugin Settings";
+$l['plugin_settings_none'] = "None of your plugins have settings or, you have no plugins installed.";
 
 $l['show_all_settings'] = "Show All Settings";
 $l['settings_search'] = "Search For Settings";
