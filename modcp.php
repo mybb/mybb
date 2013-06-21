@@ -308,8 +308,8 @@ if($mybb->input['action'] == "reports")
 					$user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
 
-					$thread_subject = $postcache[$report['pid']]['subject'];
 					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
+					$thread_subject = htmlspecialchars_uni($postcache[$report['pid']]['subject']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
@@ -455,8 +455,8 @@ if($mybb->input['action'] == "allreports")
 				$user = build_profile_link($report['postusername'], $report['postuid']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
-				$thread_subject = $report['threadsubject'];
 				$thread_link = get_thread_link($report['tid']);
+				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 			else if($report['type'] == 'profile')
