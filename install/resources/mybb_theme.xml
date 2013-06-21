@@ -8117,7 +8117,7 @@ body {
 	</div>
 </div>
 <div class="post_content">
-	<div class="post_head" title="{$post['subject']}">
+	<div class="post_head" title="{$post['subject_title']}">
 		{$post['posturl']}
 		{$post['icon']}
 		<span class="post_date">{$post['postdate']} <span class="post_edit" id="edited_by_{$post['pid']}">{$post['editedmsg']}</span></span>
@@ -8183,7 +8183,7 @@ body {
 	</div>
 </div>
 <div class="post_content">
-	<div class="post_head" title="{$post['subject']}">
+	<div class="post_head" title="{$post['subject_title']}">
 		{$post['posturl']}
 		{$post['icon']}
 		<span class="post_date">{$post['postdate']} <span class="post_edit" id="edited_by_{$post['pid']}">{$post['editedmsg']}</span></span>

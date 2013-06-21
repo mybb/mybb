@@ -169,6 +169,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['author'] = $post['uid'];
+	$post['subject_title'] = $post['subject'];
 
 	// Get the usergroup
 	if($post['userusername'])
