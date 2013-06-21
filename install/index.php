@@ -2270,6 +2270,10 @@ function install_done()
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
 
+	// Attempt to run an update check
+	require_once MYBB_ROOT.'inc/functions_task.php';
+	run_task(12);
+
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

@@ -285,17 +285,10 @@ elseif(!$mybb->input['action'])
 
 	$table->output($lang->dashboard);
 
-	// Latest news widget
-	if (!empty($update_check['news']) && is_array($update_check['news'])) {
-		foreach ($update_check['news'] as $newsItem) {
-			$table->construct_cell("<strong><a href='{$newsItem['link']}'>{$newsItem['title']}</a></strong>", array('colspan' => '2'));
-			$table->construct_row();
-			$table->construct_cell($newsItem['description'], array('colspan' => '2'));
-			$table->construct_row();
-		}
-		$table->output($lang->latest_mybb_announcements);
-	}
+	echo '
+	<div class="float_right" style="width: 48%;">';
 
+	$table = new Table;
 	$table->construct_header($lang->admin_notes_public);
 
 	$form = new Form("index.php", "post");
@@ -306,8 +299,32 @@ elseif(!$mybb->input['action'])
 
 	$buttons[] = $form->generate_submit_button($lang->save_notes);
 	$form->output_submit_wrapper($buttons);
-
 	$form->end();
+
+	echo '</div>
+	<div class="float_left" style="width: 48%;">';
+
+	// Latest news widget
+	$table = new Table;
+
+	if(!empty($update_check['news']) && is_array($update_check['news']))
+	{
+		foreach($update_check['news'] as $newsItem)
+		{
+			$table->construct_cell("<strong><a href=\"{$newsItem['link']}\" target=\"_blank\">{$newsItem['title']}</a></strong>");
+			$table->construct_row();
+			$table->construct_cell(htmlspecialchars_uni($newsItem['description']));
+			$table->construct_row();
+		}
+	}
+	else
+	{
+		$table->construct_cell($lang->no_announcements);
+		$table->construct_row();
+	}
+
+	$table->output($lang->latest_mybb_announcements);
+	echo '</div>';
 
 	$page->output_footer();
 }

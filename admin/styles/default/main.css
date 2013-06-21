@@ -825,6 +825,10 @@ div.success ul, div.error.ul {
 	float: right;
 }
 
+.float_left {
+	float: left;
+}
+
 a img {
 	border: 0;
 }
