@@ -247,13 +247,13 @@ if($mybb->input['action'] == "add_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 
@@ -596,13 +596,13 @@ if($mybb->input['action'] == "edit_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 
@@ -1114,13 +1114,13 @@ if($mybb->input['action'] == "search_replace")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 

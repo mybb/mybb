@@ -2119,10 +2119,10 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
 ';
 	}
 
@@ -2383,10 +2383,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
 ';
 	}
 
