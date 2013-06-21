@@ -4873,18 +4873,18 @@ body {
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline" version="1800"><![CDATA[					<tr>
 						<td class="trow1">
-						<div class="buddy_avatar"><img src="{$buddy['avatar']}" alt="" width="{$scaled_dimensions['width']}" height="{$scaled_dimensions['height']}" style="margin-top: {$margin_top}px;" /></div>
-						<div class="buddy_details">
-							<img src="{$theme['imgdir']}/buddy_offline.png" alt="{$lang->offline}" title="{$lang->offline}" /> {$profile_link}
-							<div class="buddy_action">
-								<span class="smalltext">{$last_active}<br />{$send_pm}</span>
+							<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
+							<div class="buddy_details">
+								<img src="{$theme['imgdir']}/buddy_offline.png" alt="{$lang->offline}" title="{$lang->offline}" /> {$profile_link}
+								<div class="buddy_action">
+									<span class="smalltext">{$last_active}<br />{$send_pm}</span>
+								</div>
 							</div>
-						</div>
 						</td>
 					</tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="1800"><![CDATA[					<tr>
 						<td class="trow1">
-						<div class="buddy_avatar"><img src="{$buddy['avatar']}" alt="" width="{$scaled_dimensions['width']}" height="{$scaled_dimensions['height']}" style="margin-top: {$margin_top}px;" /></div>
+						<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
 						<div class="buddy_details">
 							<img src="{$theme['imgdir']}/buddy_online.png" alt="{$lang->online}" title="{$lang->online}" /> {$profile_link}
 							<div class="buddy_action">
