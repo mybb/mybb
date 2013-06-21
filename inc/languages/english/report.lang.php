@@ -15,6 +15,7 @@ $l['close_window'] = "Close Window";
 $l['report_content'] = "Report Content";
 $l['report_reason_post'] = "Report Post";
 $l['report_reason_profile'] = "Report Profile";
+$l['report_reason_reputation'] = "Report Reputation";
 
 // Content reasons
 $l['report_reason_bad'] = "Inappropriate Content";

@@ -217,9 +217,17 @@ if($mybb->input['action'] == "reports")
 				}
 
 				// Reputation comment? The offender is the TID
-				if($report['type'] == 'reputation' && !isset($usercache[$report['tid']]))
+				if($report['type'] == 'reputation')
 				{
-					$usercache[$report['tid']] = $report['tid'];
+					if(!isset($usercache[$report['tid']]))
+					{
+						$usercache[$report['tid']] = $report['tid'];
+					}
+					if(!isset($usercache[$report['fid']]))
+					{
+						// The user who was offended
+						$usercache[$report['fid']] = $report['fid'];
+					}
 				}
 			}
 			else if(!$report['type'] || $report['type'] == 'post')
@@ -316,6 +324,14 @@ if($mybb->input['action'] == "reports")
 				case 'profile':
 					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
+					break;
+				case 'reputation':
+					$reputation_link = "reputation.php?uid={$usercache[$report['tid']]['uid']}#rid{$report['pid']}";
+					$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
+
+					$good_user = build_profile_link($usercache[$report['fid']]['username'], $usercache[$report['fid']]['uid']);
+					$report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
 					break;
 			}
 
@@ -463,6 +479,12 @@ if($mybb->input['action'] == "allreports")
 			{
 				$user = build_profile_link($report['profileusername'], $report['pid']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
+			}
+			else if($report['type'] == 'reputation')
+			{
+				$user = build_profile_link($report['profileusername'], $report['fid']);
+				$reputation_link = "reputation.php?uid={$report['fid']}#rid{$report['pid']}";
+				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
 
 			// Report reason and comment

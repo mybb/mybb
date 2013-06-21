@@ -26,7 +26,7 @@ if(!$mybb->user['uid'])
 $report = array();
 $verified = false;
 $report_type = 'post';
-$error = $go_back = '';
+$error = $go_back = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
@@ -59,6 +59,7 @@ if($report_type == 'post')
 	{
 		$pid = $post['pid'];
 		$tid = $post['tid'];
+		$report_type_db = "(type = 'post' OR type = '')";
 
 		// Check for a valid forum
 		$forum = get_forum($post['fid']);
@@ -75,21 +76,6 @@ if($report_type == 'post')
 		// Password protected forums ......... yhummmmy!
 		$fid = $forum['fid'];
 		check_forum_password($forum['parentlist']);
-
-		// Check for an existing report
-		$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND (type = 'post' OR type = '')");
-
-		if($db->num_rows($query))
-		{
-			// Existing report
-			$report = $db->fetch_array($query);
-			$report['reporters'] = unserialize($report['reporters']);
-
-			if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
-			{
-				$error = $lang->success_report_voted;
-			}
-		}
 	}
 }
 else if($report_type == 'profile')
@@ -102,8 +88,8 @@ else if($report_type == 'profile')
 	}
 	else
 	{
-		$tid = $fid = 0;
-		$pid = $user['uid'];
+		$tid = $fid = 0; // We don't use these on the profile
+		$pid = $user['uid']; // pid is now the profile user
 		$permissions = user_permissions($user['uid']);
 
 		if(empty($permissions['canbereported']))
@@ -113,19 +99,48 @@ else if($report_type == 'profile')
 		else
 		{
 			$verified = true;
+			$report_type_db = "type = 'profile'";
 		}
+	}
+}
+else if($report_type == 'reputation')
+{
+	// Any member can report a reputation comment but let's make sure it exists first
+	$query = $db->simple_select("reputation", "*", "rid = '{$mybb->input['pid']}'");
 
-		$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$user['uid']}' AND type = 'profile'");
+	if(!$db->num_rows($query))
+	{
+		$error = $lang->error_invalid_report;
+	}
+	else
+	{
+		$verified = true;
+		$reputation = $db->fetch_array($query);
 
-		if($db->num_rows($query))
+		$pid = $reputation['rid']; // pid is the reputation id
+		$tid = $reputation['adduid']; // tid is now the user who gave the comment
+		$fid = $reputation['uid']; // fid is now the user who received the comment
+
+		$report_type_db = "type = 'reputation'";
+	}
+}
+
+// Plugin hook?
+
+// Check for an existing report
+if(!empty($report_type_db))
+{
+	$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND {$report_type_db}");
+
+	if($db->num_rows($query))
+	{
+		// Existing report
+		$report = $db->fetch_array($query);
+		$report['reporters'] = unserialize($report['reporters']);
+
+		if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
 		{
-			$report = $db->fetch_array($query);
-			$report['reporters'] = unserialize($report['reporters']);
-
-			if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
-			{
-				$error = $lang->success_report_voted;
-			}
+			$error = $lang->success_report_voted;
 		}
 	}
 }
@@ -183,6 +198,11 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 if(!empty($error) || $verified == false)
 {
 	unset($mybb->input['action']);
+
+	if($verified == false && empty($error))
+	{
+		$error = $lang->error_invalid_report;
+	}
 }
 
 if(!$mybb->input['action'])

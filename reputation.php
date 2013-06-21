@@ -835,6 +835,7 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 
 		// Is this rating specific to a post?
+		$postrep_given = '';
 		if($reputation_vote['pid'])
 		{
 			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
@@ -847,24 +848,23 @@ if(!$mybb->input['action'])
 				$thread_link = get_thread_link($post['tid']);
 				$subject = htmlspecialchars_uni($post['subject']);
 
-				$thread_link = $lang->sprintf($lang->postrep_given_thread, "<a href=\"{$thread_link}\">{$subject}</a>");
+				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
 			}
 
 			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
 		}
-		else
-		{
-			$postrep_given = '';
-		}
 
 		// Does the current user have permission to delete this reputation? Show delete link
+		$delete_link = '';
 		if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
-			$delete_link = "[<a href=\"reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}\" onclick=\"MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;\">{$lang->delete_vote}</a>]";
+			eval("\$delete_link = \"".$templates->get("reputation_vote_delete")."\";");
 		}
-		else
+
+		$report_link = '';
+		if($mybb->user['uid'] != 0)
 		{
-			$delete_link = '';
+			eval("\$report_link = \"".$templates->get("reputation_vote_report")."\";");
 		}
 
 		// Parse smilies in the reputation vote

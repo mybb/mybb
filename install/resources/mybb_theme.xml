@@ -9018,7 +9018,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <form action="report.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
-<input type="hidden" name="type" value="{$type}" />
+<input type="hidden" name="type" value="{$report_type}" />
 <input type="hidden" name="pid" value="{$pid}" />
 {$inline_errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -9122,7 +9122,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 </body>
 </html>]]></template>
-		<template name="reputation" version="1605"><![CDATA[<html>
+		<template name="reputation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -9153,10 +9153,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 					<br />
 					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$user['reputation']}</span><br /><br />
 					<strong>{$lang->reputation_members} {$rep_members}</strong><br />
-					<strong>{$lang->reputation_posts} {$rep_posts}</strong><br />
-					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count} {$pos_rep_info}<br />
-					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count} {$neu_rep_info}<br />
-					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count} {$neg_rep_info}
+					<strong>{$lang->reputation_posts} {$rep_posts}</strong>
 				</span>
 			</td>
 			<td align="right" style="width: 300px;">
@@ -9184,6 +9181,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td style="text-align: center;"><span class="smalltext">{$positive_6months}</span></td>
 							<td style="text-align: center;"><span class="smalltext">{$neutral_6months}</span></td>
 							<td style="text-align: center;"><span class="smalltext">{$negative_6months}</span></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;"><span class="smalltext">{$lang->all_time}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$positive_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$neutral_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$negative_count}</span></td>
 						</tr>
 					</table>
 			</td>
@@ -9339,12 +9342,22 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>
-		<template name="reputation_vote" version="1600"><![CDATA[<tr>
-	<td class="trow1 {$status_class}">
-		{$reputation_vote['username']} <span class="smalltext">{$reputation_vote['user_reputation']} - {$last_updated} {$delete_link}<br />{$postrep_given}<br /></span>
+		<template name="reputation_vote" version="1800"><![CDATA[<tr>
+	<td class="trow1 {$status_class}" id="rid{$reputation_vote['rid']}">
+		{$report_link}{$delete_link}
+		{$reputation_vote['username']} <span class="smalltext">{$reputation_vote['user_reputation']} - {$last_updated}<br />{$postrep_given}</span>
+		<br />
 		<strong class="{$vote_type_class}">{$vote_type} {$vote_reputation}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
+		<template name="reputation_vote_delete" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
+			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
+		</div>]]>
+		</template>
+		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
+			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, 'reportReputation', 400, 300); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
+		</div>]]>
+		</template>
 		<template name="search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
