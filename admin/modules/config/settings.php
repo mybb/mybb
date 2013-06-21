@@ -1297,7 +1297,7 @@ if(!$mybb->input['action'])
 			WHERE g.isdefault = 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
 			ORDER BY g.disporder
-			");
+		");
 		break;
 		default:
 		$query = $db->query("
@@ -1307,7 +1307,7 @@ if(!$mybb->input['action'])
 			WHERE g.isdefault = 1
 			GROUP BY g.gid
 			ORDER BY g.disporder
-			");
+		");
 	}
 	while($group = $db->fetch_array($query))
 	{
@@ -1337,9 +1337,7 @@ if(!$mybb->input['action'])
 
 	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config-settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");
 
-	$table = new Table;
-	$table->construct_header($lang->setting_groups);
-
+	// Plugin Settings
 	switch($db->type)
 	{
 		case "pgsql":
@@ -1350,7 +1348,7 @@ if(!$mybb->input['action'])
 			WHERE g.isdefault <> 1
 			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
 			ORDER BY g.disporder
-			");
+		");
 		break;
 		default:
 		$query = $db->query("
@@ -1360,15 +1358,14 @@ if(!$mybb->input['action'])
 			WHERE g.isdefault <> 1
 			GROUP BY g.gid
 			ORDER BY g.disporder
-			");
+		");
 	}
-	if($db->num_rows($query) == 0)
+
+	if($db->num_rows($query))
 	{
-		$table->construct_cell($lang->plugin_settings_none);
-		$table->construct_row();
-	}
-	else
-	{
+		$table = new Table;
+		$table->construct_header($lang->setting_groups);
+
 		while($group = $db->fetch_array($query))
 		{
 			$group_lang_var = "setting_group_{$group['name']}";
@@ -1394,9 +1391,9 @@ if(!$mybb->input['action'])
 			$table->construct_cell("<strong><a href=\"index.php?module=config-settings&amp;action=change&amp;gid={$group['gid']}\">{$group_title}</a></strong> ({$group['settingcount']} {$lang->bbsettings})<br /><small>{$group_desc}</small>");
 			$table->construct_row();
 		}
-	}
 
-	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config-settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->plugin_settings}");
+		$table->output($lang->plugin_settings);
+	}
 
 	echo '</div>';
 
