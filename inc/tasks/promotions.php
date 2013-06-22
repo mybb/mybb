@@ -55,6 +55,13 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
+		if(in_array('warnings', $requirements) && intval($promotion['warnings']) >= 0 && !empty($promotion['warningstype']))
+		{
+			$sql_where .= "{$and}warningpoints {$promotion['warningstype']} '{$promotion['warnings']}'";
+
+			$and = " AND ";
+		}
+
 		if(in_array('timeregistered', $requirements) && intval($promotion['registered']) > 0 && !empty($promotion['registeredtype']))
 		{
 			switch($promotion['registeredtype'])

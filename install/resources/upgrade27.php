@@ -79,6 +79,16 @@ function upgrade27_dbchanges()
 		$db->drop_column('privatemessages', 'ipaddress');
 	}
 
+	if($db->field_exists('warnings', 'promotions'))
+	{
+		$db->drop_column("promotions", "warnings");
+	}
+
+	if($db->field_exists('warningstype', 'promotions'))
+	{
+		$db->drop_column("promotions", "warningstype");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -90,6 +100,8 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int NOT NULL default '0'");
 			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -99,6 +111,8 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0'");
 			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
 			break;
 	}
 
