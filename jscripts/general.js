@@ -208,9 +208,9 @@ var MyBB = {
 	forumMarkedRead: function(fid, request)
 	{
 		if(request == 1) {
-			$("#mark_read_"+fid).attr("src", $("#mark_read_"+fid).attr("src").replace("on.png", "off.png"));
-			$("#mark_read_"+fid).css("cursor", "default");
-			$("#mark_read_"+fid).attr("title", lang.no_new_posts);
+			$("#mark_read_"+fid).attr("src", $("#mark_read_"+fid).attr("src").replace("on.png", "off.png"))
+								.css("cursor", "default")
+								.attr("title", lang.no_new_posts);
 		}
 	},
 
@@ -466,16 +466,16 @@ var expandables = {
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse_collapsed.gif", "collapse.gif"))
-									.element.attr("alt", "[-]")
-									.element.attr("title", "[-]");
+									.attr("alt", "[-]")
+									.attr("title", "[-]");
 				this.saveCollapsed(controls);
 			}
 			else
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse.gif", "collapse_collapsed.gif"))
-									.element.attr("alt", "[+]")
-									.element.attr("title", "[+]");
+									.attr("alt", "[+]")
+									.attr("title", "[+]");
 				this.saveCollapsed(controls, 1);
 			}
 		}
