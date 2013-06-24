@@ -8468,7 +8468,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1611"><![CDATA[<html>
+		<template name="private_advanced_search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -8540,7 +8540,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</tr>
 </table>
 <br />
-<div align="center"><input type="submit" value="{$lang->search_private_messages}" /></div>
+<div align="center"><input type="submit" value="{$lang->search_private_messages}" class="button" /></div>
 </td>
 </tr>
 </table>
