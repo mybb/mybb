@@ -3418,9 +3418,9 @@ a.button {
 	}
 // -->
 </script>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1400"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
-		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
+		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
 			lang.stars = new Array();
@@ -4472,9 +4472,9 @@ a.button {
     }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1400"><![CDATA[<br />
+		<template name="member_register_regimage" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
-<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -8043,10 +8043,10 @@ body {
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1400"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
-<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -9971,8 +9971,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</tbody>
 	</table>
 </form>]]></template>
-		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
-		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
+		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<div id="success_rating_{$thread['tid']}" style="float: left; padding-top: 2px; padding-right: 10px;">&nbsp;</div>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
@@ -12093,7 +12093,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1603"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
 {$stylesheets}
 <script type="text/javascript">
