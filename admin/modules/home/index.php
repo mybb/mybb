@@ -311,8 +311,10 @@ elseif(!$mybb->input['action'])
 	{
 		foreach($update_check['news'] as $newsItem)
 		{
-			$table->construct_cell("<strong><a href=\"{$newsItem['link']}\" target=\"_blank\">{$newsItem['title']}</a></strong>");
+			$posted = my_date('relative', $newsItem['dateline']);
+			$table->construct_cell("<strong><a href=\"{$newsItem['link']}\" target=\"_blank\">{$newsItem['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
+
 			$table->construct_cell(htmlspecialchars_uni($newsItem['description']));
 			$table->construct_row();
 		}

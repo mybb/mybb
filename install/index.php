@@ -1976,6 +1976,14 @@ function create_admin_user()
 			$taskcount++;
 		}
 
+		// For the version check task, set a random date and hour (so all MyBB installs don't query mybb.com all at the same time)
+		$update_array = array(
+			'hour' => rand(0, 23),
+			'weekday' => rand(0, 6)
+		);
+
+		$db->update_query("tasks", $update_array, "file = 'versioncheck'");
+
 		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
 		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');

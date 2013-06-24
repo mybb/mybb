@@ -28,6 +28,7 @@ function upgrade27_dbchanges()
 	$output->print_header("Updating Database");
 
 	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
@@ -110,6 +111,7 @@ function upgrade27_dbchanges()
 	$db->update_query("reportedposts", array('type' => 'post'));
 
 	// Sync usergroups with canbereported; no moderators or banned groups
+	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();
 	$usergroups = $cache->read('usergroups');
 
@@ -126,7 +128,18 @@ function upgrade27_dbchanges()
 	$usergroups = implode(',', $groups);
 	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
 
-	sync_tasks(0);
+	// Update tasks
+	$added_tasks = sync_tasks();
+
+	// For the version check task, set a random date and hour (so all MyBB installs don't query mybb.com all at the same time)
+	$update_array = array(
+		'hour' => rand(0, 23),
+		'weekday' => rand(0, 6)
+	);
+
+	$db->update_query("tasks", $update_array, "file = 'versioncheck'");
+
+	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("27_updatetheme");
