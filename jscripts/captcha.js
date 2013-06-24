@@ -22,8 +22,8 @@ var captcha = {
 		var json = $.parseJSON(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
-			$.each(json.errors, function(i,error){
-			  $.jGrowl('There was an error fetching the new captcha. '+error);
+			$.each(json.errors[0], function(i,error){
+			  	$.jGrowl('There was an error fetching the new captcha. '+error);
 			});
 		}
 		else if(json.imagehash)
