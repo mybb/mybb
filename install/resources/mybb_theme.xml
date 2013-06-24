@@ -5600,8 +5600,8 @@ body {
 								{$startdatemonth}
 								</select>
 								&nbsp;
-								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
+								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4" class="textbox" />
+								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" class="textbox" />
 							</td>
 						</tr>
 						<tr>
@@ -5616,8 +5616,8 @@ body {
 								{$enddatemonth}
 								</select>
 								&nbsp;
-								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
+								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4" class="textbox" />
+								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" class="textbox" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
 							</td>
 						</tr>
