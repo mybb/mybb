@@ -249,7 +249,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="cookiepath" id="cookiepath" value="{6}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Contact Details (Shown in footer)</th>
+					<th colspan="2" class="first last">Contact Details</th>
 				</tr>
 				<tr class="last">
 					<td class="first"><label for="contactemail">Contact Email:</label></td>

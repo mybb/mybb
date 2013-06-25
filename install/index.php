@@ -1942,7 +1942,7 @@ function create_admin_user()
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiedomain'])), "name='cookiedomain'");
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiepath'])), "name='cookiepath'");
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['contactemail'])), "name='adminemail'");
-		$db->update_query("settings", array('value' => 'mailto:'.$db->escape_string($mybb->input['contactemail'])), "name='contactlink'");
+		$db->update_query("settings", array('value' => 'contact.php'), "name='contactlink'");
 
 		write_settings();
 
