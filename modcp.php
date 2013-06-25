@@ -2801,10 +2801,10 @@ if($mybb->input['action'] == "iplookup")
 			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
 			if($ip_record)
 			{
-				$ipaddress_location = htmlspecialchars_uni($ip_record['country_name']);
+				$ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
 				if($ip_record['city'])
 				{
-					$ipaddress_location .= $lang->comma.htmlspecialchars_uni($ip_record['city']);
+					$ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
 				}
 			}
 		}
