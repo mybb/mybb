@@ -140,7 +140,7 @@ while($postrow = $db->fetch_array($query))
 		$postrow['username'] = $postrow['userusername'];
 	}
 	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-	$postrow['date'] = my_date('relative', $postrow['dateline']);
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
 	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],
