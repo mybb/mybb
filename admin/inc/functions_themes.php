@@ -440,15 +440,22 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 }
 
 /**
- * Minify a stylesheet to remove comments, linebreaks and whitespace.
- * @param $stylesheet string The stylesheet in it's normal form.
+ * Minify a stylesheet to remove comments, linebreaks, whitespace,
+ * unnecessary semicolons, and prefers #rgb over #rrggbb.
+ * @param $stylesheet string The stylesheet in it's untouched form.
  * @return string The minified stylesheet
  */
 function minify_stylesheet($stylesheet)
 {
-	$stylesheet = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $stylesheet);
-	$stylesheet = str_replace(': ', ':', $stylesheet);
-	$stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
+	// Remove comments.
+	$stylesheet = preg_replace('@/\*.*?\*/@s', '', $stylesheet);
+	// Remove whitespace around symbols.
+	$stylesheet = preg_replace('@\s*([{}:;,])\s*@', '\1', $stylesheet);
+	// Remove unnecessary semicolons.
+	$stylesheet = preg_replace('@;}@', '}', $stylesheet);
+	// Replace #rrggbb with #rgb when possible.
+	$stylesheet = preg_replace('@#([a-f0-9])\1([a-f0-9])\2([a-f0-9])\3@i','#\1\2\3',$stylesheet);
+	$stylesheet = trim($stylesheet);
 	return $stylesheet;
 }
 
@@ -483,12 +490,6 @@ function resync_stylesheet($stylesheet)
 			}
 		}
 
-		return true;
-	}
-	else if($stylesheet['sid'] != 1 && @filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}") > $stylesheet['lastmodified'])
-	{
-		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}"));
-		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents), 'lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 		return true;
 	}
 

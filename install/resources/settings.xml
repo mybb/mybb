@@ -421,8 +421,8 @@ none=Hide Errors and Warnings
 			<helpkey></helpkey>
 		</setting>
 		<setting name="minifycss">
-			<title>Minify CSS?</title>
-			<description><![CDATA[DO you wish to enable CSS minification?]]></description>
+			<title>Minify Stylesheets?</title>
+			<description><![CDATA[Do you want to minify stylesheets? Choosing yes can save bandwidth and overall provide faster page loads.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
