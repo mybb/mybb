@@ -21,6 +21,9 @@ $lang->load("contact");
 
 $plugins->run_hooks('contact_start');
 
+// Make navigation
+add_breadcrumb($lang->nav_contact, "contact.php");
+
 if(!$mybb->user['uid'])
 {
 	if($mybb->settings['contact_guests'] == 1)
