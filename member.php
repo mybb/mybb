@@ -1522,7 +1522,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
