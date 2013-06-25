@@ -26,7 +26,7 @@ if($mybb->settings['enablememberlist'] == 0)
 
 $plugins->run_hooks("memberlist_start");
 
-add_breadcrumb($lang->nav_memberlist);
+add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 
 if($mybb->usergroup['canviewmemberlist'] == 0)
 {
