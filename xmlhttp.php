@@ -29,9 +29,6 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
 
-$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
-$templates->cache($db->escape_string($templatelist));
-
 $shutdown_queries = array();
 
 // Load some of the stock caches we'll be using.
@@ -101,6 +98,9 @@ else
 		$theme['imglangdir'] = $theme['imgdir'];
 	}
 }
+
+$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
+$templates->cache($db->escape_string($templatelist));
 
 if($lang->settings['charset'])
 {
