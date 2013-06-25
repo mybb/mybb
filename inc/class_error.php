@@ -508,23 +508,23 @@ class errorHandler {
 			$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 
 			echo <<<EOF
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$mybb->settings['bbname']} - Internal Error</title>
 	<style type="text/css">
-		body { background: #efefef; color: #000; font-family: Verdana; font-size: 12px; text-align: center; line-height: 1.4; }
+		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
 		a:link { color: #026CB1; text-decoration: none;	}
 		a:visited {	color: #026CB1;	text-decoration: none; }
 		a:hover, a:active {	color: #000; text-decoration: underline; }
-		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; }
+		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
 		h1 { margin: 0; background: url({$_SERVER['PHP_SELF']}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
-		#content { border: 1px solid #B60101; background: #fff; }
-		h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		#content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; }
 		.invisible { display: none; }
 		#error { padding: 6px; }
-		#footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		#footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
 		dt { font-weight: bold; }
 	</style>
 </head>
@@ -539,7 +539,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
+				<p id="footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -561,7 +561,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
+			<p id="mybb_error_footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;
