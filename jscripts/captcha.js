@@ -37,11 +37,11 @@ var captcha = {
 		imagestring_status.removeClass("validation_success")
 						  .removeClass("validation_error")
 						  .removeClass("validation_loading")
-						  .innerHTML = ""
+						  .html("")
 						  .hide();
 
 		var imagestring = $("#imagestring");
 
-		imagestring.class("textbox").attr("value", "");
+		imagestring.addClass("textbox").attr("value", "");
 	}
 };
