@@ -124,7 +124,7 @@ $valid = array(
 	'newthread.php',
 	'ewreply.php',
 	'ratethread.php',
-	'ditpost.php',
+	'editpost.php',
 	'polls.php',
 	'sendthread.php',
 	'printthread.php',
