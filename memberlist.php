@@ -37,6 +37,7 @@ if($mybb->usergroup['canviewmemberlist'] == 0)
 if($mybb->input['action'] == "search")
 {
 	$plugins->run_hooks("memberlist_search");
+	add_breadcrumb($lang->nav_memberlist_search);
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
 	output_page($search_page);
 }
