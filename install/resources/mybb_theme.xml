@@ -3550,9 +3550,8 @@ a.button {
 </form>
 <script type="text/javascript">
 <!--
-	$$('.forumjump').invoke('observe', 'change', function(e)
-	{
-		var option = this.options[this.selectedIndex].value
+	$('.forumjump').change(function() {
+		var option = $(".forumjump").get(0).selectedIndex.value;
 
 		if(option < 0)
 		{
