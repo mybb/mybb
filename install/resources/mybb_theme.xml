@@ -6610,7 +6610,7 @@ body {
 	<tr><td class="trow1 smalltext"><a href="modcp.php" class="modcp_nav_item modcp_nav_home">{$lang->mcp_nav_home}</a></td></tr>
 	<tr>
 		<td class="tcat">
-			<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.gif" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.gif" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
 	</tr>
@@ -6622,7 +6622,7 @@ body {
 	</tbody>
 	<tr>
 		<td class="tcat">
-			<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.gif" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.gif" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
 	</tr>
