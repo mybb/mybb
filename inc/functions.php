@@ -63,7 +63,7 @@ function output_page($contents)
 				$memory_usage = '';
 			}
 
-			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% ".$mybb->config['database']['type'].")<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
