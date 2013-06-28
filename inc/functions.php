@@ -75,7 +75,7 @@ function output_page($contents)
 			}
 
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
-			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% ".$mybb->config['database']['type'].")<br />SQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
