@@ -89,17 +89,18 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if(isset($mybb->input['regtime']))
 		{
 			// Check how long it took for this person to register
-			$time = TIME_NOW;
-			$timetook = time() - (int)$mybb->input['regtime'];
+			$timetook = TIME_NOW - (int)$mybb->input['regtime'];
 
 			// See if they registered faster than normal
 			if($timetook < $mybb->settings['regtime'])
 			{
 				// This user registered pretty quickly, bot detected!
-				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time,$mybb->settings['regtime'],$timetook);
+				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time, $mybb->settings['regtime'], $timetook);
 				error($lang->error_spam_deny_time);
 			}
-		} else {
+		}
+		else
+		{
 			error($lang->error_spam_deny."s");
 		}
 	}
