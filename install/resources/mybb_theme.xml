@@ -4197,7 +4197,7 @@ a.button {
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
 		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
-		<template name="member_profile_modoptions" version="1600"><![CDATA[
+		<template name="member_profile_modoptions" version="1800"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->mod_options}</strong></td>
@@ -4213,7 +4213,7 @@ a.button {
 <tr>
 <td class="trow2">
 {$memprofile['usernotes']}<br />
-<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_usernotes}</a>
+<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}#usernotes">{$lang->edit_usernotes}</a>
 </td>
 </tr>
 </table>
