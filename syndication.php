@@ -110,7 +110,7 @@ $feedgenerator->set_feed_format($mybb->input['type']);
 $channel = array(
     "title" => $title,
     "link" => $mybb->settings['bburl']."/",
-    "date" => time(),
+    "date" => TIME_NOW,
     "description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
 );
 $feedgenerator->set_channel($channel);
