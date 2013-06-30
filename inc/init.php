@@ -91,6 +91,11 @@ if($not_installed !== false)
 {
 	if(file_exists(MYBB_ROOT."install/index.php"))
 	{
+		if(defined("IN_ARCHIVE") || defined("IN_ADMINCP"))
+		{
+			header("Location: ../install/index.php");
+			exit;
+		}
 		header("Location: ./install/index.php");
 		exit;
 	}
