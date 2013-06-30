@@ -3596,9 +3596,6 @@ function debug_page()
 	$query_time = $db->query_time;
 	$globaltime = format_time_duration($globaltime);
 
-	// $phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
-	// $query_time = $maintimer->format($db->query_time);
-
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($query_time/$maintimer->totaltime)*100), 2);
 
