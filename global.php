@@ -122,7 +122,7 @@ $valid = array(
 	'showthread.php',
 	'forumdisplay.php',
 	'newthread.php',
-	'ewreply.php',
+	'newreply.php',
 	'ratethread.php',
 	'editpost.php',
 	'polls.php',
