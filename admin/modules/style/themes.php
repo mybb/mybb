@@ -2676,6 +2676,8 @@ if($mybb->input['action'] == "set_default")
 		admin_redirect("index.php?module=style-themes");
 	}
 
+	$cache->update('default_theme', $theme);
+
 	$db->update_query("themes", array('def' => 0));
 	$db->update_query("themes", array('def' => 1), "tid='".intval($mybb->input['tid'])."'");
 

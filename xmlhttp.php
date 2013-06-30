@@ -78,8 +78,22 @@ else
 }
 
 // Load basic theme information that we could be needing.
-$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
-$theme = $db->fetch_array($query);
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		// Fetch the theme to load from the database
+		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
+		$theme = $db->fetch_array($query);
+		$cache->update('default_theme', $theme);
+	}
+	else
+	{
+		$theme = $cache->read('default_theme');
+	}
+
+}
+
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.

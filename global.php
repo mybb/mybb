@@ -185,12 +185,24 @@ if(isset($style['style']) && $style['style'] > 0)
 // After all of that no theme? Load the board default
 if(empty($loadstyle))
 {
-	$loadstyle = "def = '1'";
+	$loadstyle = "def='1'";
 }
 
 // Fetch the theme to load from the database
-$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
-$theme = $db->fetch_array($query);
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		// Fetch the theme to load from the database
+		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
+		$theme = $db->fetch_array($query);
+		$cache->update('default_theme', $theme);
+	}
+	else
+	{
+		$theme = $cache->read('default_theme');
+	}
+}
 
 // No theme was found - we attempt to load the master or any other theme
 if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])

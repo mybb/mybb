@@ -880,7 +880,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 
 function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = false)
 {
-	global $db;
+	global $db, $cache;
 
 	$stylesheets = array();
 
@@ -1015,6 +1015,10 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			update_theme_stylesheet_list($id, false, $update_disporders);
 		}
 	}
+
+	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
+	$theme = $db->fetch_array($query);
+	$cache->update('default_theme', $theme);
 
 	return true;
 }
