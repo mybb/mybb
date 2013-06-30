@@ -151,7 +151,10 @@ class DB_MySQL
 			{
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key))
+					{
+						$connections['read'][] = $settings;
+					}
 				}
 			}
 			// Specified both read & write servers
