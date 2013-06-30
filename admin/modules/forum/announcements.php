@@ -783,8 +783,6 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_announcements_start");
 
-	$page->add_breadcrumb_item($lang->forum_announcements, "index.php?module=forum-announcements");
-
 	$page->output_header($lang->forum_announcements);
 
 	$page->output_nav_tabs($sub_tabs, "forum_announcements");
