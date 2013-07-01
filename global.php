@@ -188,20 +188,14 @@ if(empty($loadstyle))
 	$loadstyle = "def='1'";
 }
 
-// Fetch the theme to load from the database
+// Fetch the theme to load from the cache
 if($loadstyle == "def='1'")
 {
 	if(!$cache->read('default_theme'))
 	{
-		// Fetch the theme to load from the database
-		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
-		$theme = $db->fetch_array($query);
-		$cache->update('default_theme', $theme);
+		$cache->update_default_theme();
 	}
-	else
-	{
-		$theme = $cache->read('default_theme');
-	}
+	$theme = $cache->read('default_theme');
 }
 
 // No theme was found - we attempt to load the master or any other theme

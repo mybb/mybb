@@ -1016,9 +1016,8 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 		}
 	}
 
-	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
-	$theme = $db->fetch_array($query);
-	$cache->update('default_theme', $theme);
+	$cache->update_default_theme();
+}
 
 	return true;
 }

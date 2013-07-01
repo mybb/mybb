@@ -2265,6 +2265,7 @@ function install_done()
 	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
+	$cache->update_default_theme();
 
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");

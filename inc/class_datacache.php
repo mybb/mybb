@@ -367,6 +367,7 @@ class datacache
 	function debug_call($string, $qtime, $hit)
 	{
 		global $mybb, $plugins;
+
 		$debug_extra = '';
 		if($plugins->current_hook)
 		{
@@ -646,6 +647,7 @@ class datacache
 	function update_stats()
 	{
 		global $db;
+
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 		rebuild_stats();
 	}
@@ -776,6 +778,7 @@ class datacache
 	function update_forums()
 	{
 		global $db;
+
 		$forums = array();
 
 		// Things we don't want to cache
@@ -804,6 +807,7 @@ class datacache
 	function update_usertitles()
 	{
 		global $db;
+
 		$usertitles = array();
 		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($usertitle = $db->fetch_array($query))
@@ -863,6 +867,7 @@ class datacache
 	function update_mycode()
 	{
 		global $db;
+
 		$mycodes = array();
 		$query = $db->simple_select("mycode", "regex, replacement", "active=1", array('order_by' => 'parseorder'));
 		while($mycode = $db->fetch_array($query))
@@ -911,11 +916,24 @@ class datacache
 	}
 
 	/**
+	 * Update default_theme cache
+	 */
+	function update_default_theme()
+	{
+		global $db;
+
+		$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "def='1'", array('limit' => 1));
+		$theme = $db->fetch_array($query);
+		$this->update("default_theme", $theme);
+	}
+
+	/**
 	 * Updates the tasks cache saving the next run time
 	 */
 	function update_tasks()
 	{
 		global $db;
+
 		$query = $db->simple_select("tasks", "nextrun", "enabled=1", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
 		$next_task = $db->fetch_array($query);
 
@@ -941,6 +959,7 @@ class datacache
 	function update_bannedips()
 	{
 		global $db;
+
 		$banned_ips = array();
 		$query = $db->simple_select("banfilters", "fid,filter", "type=1");
 		while($banned_ip = $db->fetch_array($query))
@@ -974,6 +993,7 @@ class datacache
 	function update_spiders()
 	{
 		global $db;
+
 		$spiders = array();
 		$query = $db->simple_select("spiders", "sid, name, useragent, usergroup", "", array("order_by" => "LENGTH(useragent)", "order_dir" => "DESC"));
 		while($spider = $db->fetch_array($query))
