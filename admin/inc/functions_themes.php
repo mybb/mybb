@@ -1017,7 +1017,6 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	}
 
 	$cache->update_default_theme();
-}
 
 	return true;
 }
