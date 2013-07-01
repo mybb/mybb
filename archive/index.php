@@ -176,7 +176,7 @@ switch($action)
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$post['date'] = my_date('relative', $post['dateline'], "", 0);
+			$post['date'] = my_date('relative', $post['dateline']);
 			if($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];
