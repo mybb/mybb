@@ -259,7 +259,7 @@ function send_mail_queue($count=10)
 
 			if($db->affected_rows() == 1)
 			{
-				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers'], true);
 			}
 		}
 		// Update the mailqueue cache and remove the lock
