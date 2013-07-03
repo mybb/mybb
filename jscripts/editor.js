@@ -125,8 +125,8 @@ messageEditor.prototype = {
 		this.colors[38] = "#E6E6FA";
 		this.colors[39] = "#DDA0DD";
 		this.colors[40] = "#FFFFFF";
-		
-		// An array of video services to be shown (youtube, vimeo, etc) 
+
+		// An array of video services to be shown (youtube, vimeo, etc)
 		this.videos = new Object();
 		this.videos["dailymotion"] = this.options.lang.video_dailymotion;
 		this.videos["metacafe"] = this.options.lang.video_metacafe;
@@ -253,7 +253,7 @@ messageEditor.prototype = {
 
 		// Set the width/height of the area
 		subtract = 20;
-		subtract2 = 12;
+		subtract2 = 8;
 		areaContainer.style.height = parseInt(Element.getDimensions(this.editor).height)-this.toolbarHeight-subtract+"px";
 		areaContainer.style.width = parseInt(Element.getDimensions(this.editor).width)-subtract2+"px";
 
@@ -369,10 +369,10 @@ messageEditor.prototype = {
 		if(toolbar.lastChild.previousSibling)
 			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 	},
-	
+
 	setElementState: function(element, state) {
 		element.addClassName('toolbar_'+state);
-		
+
 		if(element.hasClassName('toolbar_button_group_first')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -383,7 +383,7 @@ messageEditor.prototype = {
 			append += '_button_group_first';
 			element.addClassName(append);
 		}
-		
+
 		if(element.hasClassName('toolbar_button_group_last')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -395,11 +395,11 @@ messageEditor.prototype = {
 			element.addClassName(append);
 		}
 	},
-	
+
 	removeElementState: function(element, state)
 	{
 		element.removeClassName('toolbar_'+state);
-		
+
 		if(element.hasClassName('toolbar_button_group_first')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -410,7 +410,7 @@ messageEditor.prototype = {
 			append += '_button_group_first';
 			element.removeClassName(append);
 		}
-		
+
 		if(element.hasClassName('toolbar_button_group_last')) {
 			if(state == 'clicked') {
 				append = 'toolbar_clicked';
@@ -420,7 +420,7 @@ messageEditor.prototype = {
 			}
 			append += '_button_group_last';
 			element.removeClassName(append);
-		}	
+		}
 	},
 
 	dropDownMenuItemClick: function(e)
@@ -430,17 +430,17 @@ messageEditor.prototype = {
 
 		if(!element)
 			return;
-		
+
 		if(!element.extra)
 			element = element.up('li');
-		
+
 		var mnu = element.up('ul');
 		var dropdown = this.getElementToolbarItem(mnu);
 		var label = dropdown.down('.editor_dropdown_label');
 
 		if(!dropdown.insertText || (dropdown.insertText != "video" && mnu.activeItem && mnu.activeItem == element))
 			return;
-		
+
 		mnu.lastItemValue = element.extra;
 
 		if(this.getSelectedText($(this.textarea)))
@@ -596,7 +596,7 @@ messageEditor.prototype = {
 				this.setDropDownMenuActiveItem(dropdown, 0);
 			}.bindAsEventListener(this));
 		}
-		
+
 		$H(options.options).each(function(option)
 		{
 			if(options.draw_option)
@@ -633,9 +633,9 @@ messageEditor.prototype = {
 			return;
 		if(!element.elementType)
 			element = this.getElementToolbarItem(element);
-		
+
 		var mnu = $(element).down('ul');
-		
+
 		// This menu is already open, close it
 		if(mnu.style.display != 'none')
 		{
@@ -695,7 +695,7 @@ messageEditor.prototype = {
 		{
 			return;
 		}
-		
+
 		// Internet explorer errors if you try and select an element... so just handle that by try catch
 		try {
 			var range = document.selection.createRange();
@@ -799,7 +799,7 @@ messageEditor.prototype = {
 		button.insertExtra = '';
 		if(typeof(options.extra) != 'undefined')
 			button.insertExtra = options.extra;
-		
+
 		if(typeof(options.sprite) != 'undefined')
 		{
 			var img = document.createElement('span');
@@ -1103,7 +1103,7 @@ messageEditor.prototype = {
 			this.performInsert("[img]"+image+"[/img]", "", true);
 		}
 	},
-	
+
 	insertVideo: function(type)
 	{
 		selectedText = this.getSelectedText($(this.textarea));
@@ -1359,7 +1359,7 @@ messageEditor.prototype = {
 		textarea.focus();
 		this.trackingCaret = true;
 		this.storeCaret();
-		this.trackingCaret = false;		
+		this.trackingCaret = false;
 		return is_closed;
 	},
 
