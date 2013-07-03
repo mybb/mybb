@@ -415,7 +415,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 		if($mybb->input['ajax'] == 1)
 		{
 			echo json_encode(array("errors" => array("login")));
-			die;
+			exit;
 		}
 		$page->show_login($login_message, "error");
 	}

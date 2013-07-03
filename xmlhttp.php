@@ -158,6 +158,7 @@ if($mybb->input['action'] == "get_users")
 	}
 
 	echo json_encode(array("users" => $data));
+	exit;
 }
 else if($mybb->input['action'] == "get_usergroups")
 {
@@ -512,6 +513,7 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		echo json_encode(array("message" => $post['message']."\n", "editedmsg" => $editedmsg_response));
+		exit;
 	}
 }
 // Fetch the list of multiquoted posts which are not in a specific thread
@@ -610,6 +612,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 	$db->insert_query("captcha", $regimagearray);
 	header("Content-type: application/json; charset={$charset}");
 	echo json_encode(array("imagehash" => $imagehash));
+	exit;
 }
 else if($mybb->input['action'] == "validate_captcha")
 {

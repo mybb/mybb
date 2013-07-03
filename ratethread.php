@@ -142,7 +142,6 @@ if($mybb->input['ajax'])
 
 	@header("Content-type: application/json; charset={$lang->settings['charset']}");
 	echo json_encode($json);
-
 	exit;
 }
 
