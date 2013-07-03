@@ -139,7 +139,7 @@ $l['req_step_span_fail'] = '<span class="fail"><strong>{1}</strong></span>';
 $l['req_step_span_pass'] = '<span class="pass">{1}</span>';
 
 $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
-$l['req_step_error_phpversion'] = 'MyBB Requires PHP 5.1.0 or later to run. You currently have {1} installed.';
+$l['req_step_error_phpversion'] = 'MyBB Requires PHP 5.2.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
 $l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="http://mybb.com/support" targert="_blank">MyBB Support.</a>';
