@@ -551,10 +551,13 @@ EOF;
 		{
 			echo <<<EOF
 	<style type="text/css">
-		#mybb_error_content { border: 1px solid #B60101; background: #fff; }
-		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		#mybb_error_content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		#mybb_error_content a:link { color: #026CB1; text-decoration: none;	}
+		#mybb_error_content a:visited {	color: #026CB1;	text-decoration: none; }
+		#mybb_error_content a:hover, a:active {	color: #000; text-decoration: underline; }
+		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; border-bottom: none; }
 		#mybb_error_error { padding: 6px; }
-		#mybb_error_footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		#mybb_error_footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
 		#mybb_error_content dt { font-weight: bold; }
 	</style>
 	<div id="mybb_error_content">
