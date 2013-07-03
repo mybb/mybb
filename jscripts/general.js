@@ -22,7 +22,7 @@ var MyBB = {
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
-			mark_read_imgs = $(".trow1 img.ajax_mark_read");
+			mark_read_imgs = $("img.ajax_mark_read");
 			mark_read_imgs.each(function() {
 				var element = $(this);
 				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
