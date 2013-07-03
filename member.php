@@ -1284,6 +1284,14 @@ if($mybb->input['action'] == "login")
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
 
+	if(!empty($errors))
+	{
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+
+		$inline_errors = inline_error($errors);
+	}
+
 	switch($mybb->settings['username_method'])
 	{
 		case 1:
