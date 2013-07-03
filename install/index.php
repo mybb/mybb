@@ -1223,21 +1223,24 @@ function database_info()
 	echo "<script type=\"text/javascript\">
 		function updateDBSettings()
 		{
-			dbengine = \$('dbengine').options[\$('dbengine').selectedIndex].value;
-			$$('.db_settings').each(function(element)
+			var dbengine = \$(\"#dbengine\").val();
+			$('.db_settings').each(function()
 			{
-				element.className = 'db_settings';
-				if(dbengine+'_settings' == element.id)
+				var element = $(this);
+				element.addClass('db_settings');
+				if(dbengine+'_settings' == element.attr('id'))
 				{
-					Element.show(element);
+					element.show();
 				}
 				else
 				{
-					Element.hide(element);
+					element.hide();
 				}
 			});
 		}
-		Event.observe(window, 'load', updateDBSettings);
+		$(function() {
+			updateDBSettings();
+		});
 		</script>";
 
 	// Check for errors from this stage
