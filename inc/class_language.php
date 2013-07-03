@@ -221,8 +221,19 @@ class MyLanguage
 	 */
 	function parse($contents)
 	{
-		$contents = preg_replace("#<lang:([a-zA-Z0-9_]+)>#e", "\$this->$1", $contents);
+		$contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'parse_replace'), $contents);
 		return $contents;
+	}
+
+	/**
+	 * Replace content with language variable.
+	 *
+	 * @param array Matches.
+	 * @return string Language variable.
+	 */
+	function parse_replace($matches)
+	{
+		return $this->$matches[1];
 	}
 }
 ?>
