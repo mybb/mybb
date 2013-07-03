@@ -282,6 +282,8 @@ class MailHandler
 	 */
 	function set_common_headers()
 	{
+		global $mybb;
+
 		// Build mail headers
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
 

@@ -129,6 +129,13 @@ class SmtpMail extends MailHandler
 	 */
 	public $keep_alive = false;
 
+	/**
+	 * Whether to use TLS encryption.
+	 *
+	 * @var boolean
+	 */
+	public $use_tls = false;
+
 	function __construct()
 	{
 		global $mybb;
@@ -140,7 +147,7 @@ class SmtpMail extends MailHandler
 				$protocol = 'ssl://';
 				break;
 			case MYBB_TLS:
-				$protocol = 'tls://';
+				$this->use_tls = true;
 				break;
 		}
 
@@ -185,7 +192,10 @@ class SmtpMail extends MailHandler
 
 		if(!$this->connected())
 		{
-			$this->connect();
+			if(!$this->connect())
+			{
+				$this->close();
+			}
 		}
 
 		if($this->connected())
@@ -274,26 +284,48 @@ class SmtpMail extends MailHandler
 				return false;
 			}
 
-			if(!empty($this->username) && !empty($this->password))
+			if($this->use_tls || (!empty($this->username) && !empty($this->password)))
 			{
-				$data = $this->send_data('EHLO ' . $this->helo, '250');
+				$helo = 'EHLO';
+			}
+			else
+			{
+				$helo = 'HELO';
+			}
+
+			$data = $this->send_data("{$helo} {$this->helo}", '250');
+			if(!$data)
+			{
+				$this->fatal_error("The server did not understand the {$helo} command");
+				return false;
+			}
+
+			if($this->use_tls && preg_match("#250( |-)STARTTLS#mi", $data))
+			{
+				if(!$this->send_data('STARTTLS', '220'))
+				{
+						$this->fatal_error("The server did not understand the STARTTLS command. Reason: ".$this->get_error());
+					return false;
+				}
+				if(!@stream_socket_enable_crypto($this->connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT))
+				{
+					$this->fatal_error("Failed to start TLS encryption");
+					return false;
+				}
+				// Resend EHLO to get updated service list
+				$data = $this->send_data("{$helo} {$this->helo}", '250');
 				if(!$data)
 				{
 					$this->fatal_error("The server did not understand the EHLO command");
 					return false;
 				}
-				preg_match("#250-AUTH( |=)(.+)$#mi", $data, $matches);
-				if(!$this->auth($matches[2]))
-				{
-					$this->fatal_error("MyBB was unable to authenticate you against the SMTP server");
-					return false;
-				}
 			}
-			else
+
+			if(!empty($this->username) && !empty($this->password))
 			{
-				if(!$this->send_data('HELO ' . $this->helo, '250'))
+				preg_match("#250( |-)AUTH( |=)(.+)$#mi", $data, $matches);
+				if(!$this->auth($matches[3]))
 				{
-					$this->fatal_error("The server did not understand the HELO command");
 					return false;
 				}
 			}
@@ -316,7 +348,7 @@ class SmtpMail extends MailHandler
 	{
 		global $lang, $mybb;
 
-		$auth_methods = explode(" ", $auth_methods);
+		$auth_methods = explode(" ", trim($auth_methods));
 
 		if(in_array("LOGIN", $auth_methods))
 		{
@@ -387,8 +419,9 @@ class SmtpMail extends MailHandler
 				break;
 			}
 		}
+		$string = trim($string);
 		$this->data = $string;
-		$this->code = substr(trim($this->data), 0, 3);
+		$this->code = substr($this->data, 0, 3);
 		return $string;
 	}
 
