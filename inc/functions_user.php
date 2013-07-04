@@ -112,68 +112,77 @@ function validate_password_from_uid($uid, $password, $user = array())
 		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".intval($uid)."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
-	if(!$user['salt'])
-	{
-		// Generate a salt for this user and assume the password stored in db is a plain md5 password
-		$user['salt'] = generate_salt();
-		$user['password'] = salt_password($user['password'], $user['salt']);
-		$sql_array = array(
-			"salt" => $user['salt'],
-			"password" => $user['password']
-		);
-		$db->update_query("users", $sql_array, "uid='".$user['uid']."'", 1);
-	}
+    if(!$user['loginkey'])
+    {
+        $user['loginkey'] = generate_loginkey();
+        $sql_array = array(
+            "loginkey" => $user['loginkey']
+        );
+        $db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
+    }
+    if ($mybb->settings['password_hashing_method'] == 'blowfish' && substr($user['password'], 0, 4) == '$2y$') {
+        if (password_verify($password, $user['password'])) {
+            return $user;
+        }
+    } else {
+        if(!$user['salt'])
+        {
+            // Generate a salt for this user and assume the password stored in db is a plain md5 password
+            $user['salt'] = generate_salt();
+            $user['password'] = salt_password($user['password'], $user['salt']);
+            $sql_array = array(
+                "salt" => $user['salt'],
+                "password" => $user['password']
+            );
+            $db->update_query("users", $sql_array, "uid='".$user['uid']."'", 1);
+        }
 
-	if(!$user['loginkey'])
-	{
-		$user['loginkey'] = generate_loginkey();
-		$sql_array = array(
-			"loginkey" => $user['loginkey']
-		);
-		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
-	}
-	if(salt_password(md5($password), $user['salt']) == $user['password'])
-	{
-		return $user;
-	}
-	else
-	{
-		return false;
-	}
+
+        if(salt_password(md5($password), $user['salt']) == $user['password'])
+        {
+            return $user;
+        }
+    }
+
+	return false;
 }
 
 /**
  * Updates a user's password.
  *
  * @param int The user's id.
- * @param string The md5()'ed password.
+ * @param string The password.
  * @param string (Optional) The salt of the user.
  * @return array The new password.
  */
 function update_password($uid, $password, $salt="")
 {
-	global $db, $plugins;
+	global $db, $plugins, $mybb;
 
 	$newpassword = array();
 
-	// If no salt was specified, check in database first, if still doesn't exist, create one
-	if(!$salt)
-	{
-		$query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
-		$user = $db->fetch_array($query);
-		if($user['salt'])
-		{
-			$salt = $user['salt'];
-		}
-		else
-		{
-			$salt = generate_salt();
-		}
-		$newpassword['salt'] = $salt;
-	}
+    if ($mybb->settings['password_hashing_method'] == 'blowfish') {
+        $saltedpw = password_hash($password, PASSWORD_BCRYPT);
+    } else {
+	    // If no salt was specified, check in database first, if still doesn't exist, create one
+        if(!$salt)
+        {
+            $query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
+            $user = $db->fetch_array($query);
+            if($user['salt'])
+            {
+                $salt = $user['salt'];
+            }
+            else
+            {
+                $salt = generate_salt();
+            }
+            $newpassword['salt'] = $salt;
+        }
 
-	// Create new password based on salt
-	$saltedpw = salt_password($password, $salt);
+        // Create new password based on salt
+        $saltedpw = salt_password(md5($password), $salt);
+    }
 
 	// Generate new login key
 	$loginkey = generate_loginkey();

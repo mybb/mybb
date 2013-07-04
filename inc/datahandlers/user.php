@@ -195,17 +195,21 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// MD5 the password
-		$user['md5password'] = md5($user['password']);
+        if ($mybb->settings['password_hashing_method'] == 'blowfish') {
+            $user['saltedpw'] = password_hash($user['password'], PASSWORD_BCRYPT);
+        } else {
+            // MD5 the password
+            $user['md5password'] = md5($user['password']);
 
-		// Generate our salt
-		$user['salt'] = generate_salt();
+            // Generate our salt
+            $user['salt'] = generate_salt();
 
-		// Combine the password and salt
-		$user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
+            // Combine the password and salt
+            $user['saltedpw'] = salt_password($user['md5password'], $user['salt']);
+        }
 
-		// Generate the user login key
-		$user['loginkey'] = generate_loginkey();
+        // Generate the user login key
+        $user['loginkey'] = generate_loginkey();
 
 		return true;
 	}

@@ -578,6 +578,17 @@ email=Sent via Email]]></optionscode>
 			<isdefault>0</isdefault>
 			<helpkey></helpkey>
 		</setting>
+        <setting name="password_hashing_method">
+            <title>Password Hashing Method</title>
+            <description><![CDATA[The hashing method you wish to use for password hashing.]]></description>
+            <disporder>26</disporder>
+            <optionscode><![CDATA[select
+default=Default (salted md5)
+blowfish=Blowfish (stronger): PHP 5.3.7 or higher]]></optionscode>
+            <settingvalue><![CDATA[0]]></settingvalue>
+            <isdefault>0</isdefault>
+            <helpkey></helpkey>
+        </setting>
 	</settinggroup>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="22" isdefault="1">
 		<setting name="mail_handler">
