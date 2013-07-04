@@ -131,6 +131,9 @@ $plugins = new pluginSystem;
 // Include our base data handler class
 require_once MYBB_ROOT."inc/datahandler.php";
 
+// Include password_compat for blowfish password hashing
+require_once MYBB_ROOT."inc/3rdparty/password_compat/password.php";
+
 // Connect to Database
 define("TABLE_PREFIX", $config['database']['table_prefix']);
 $db->connect($config['database']);
