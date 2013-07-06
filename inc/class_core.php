@@ -213,6 +213,12 @@ class MyBB {
 			$this->safemode = true;
 		}
 
+		// Are we running on a development server?
+		if(isset($_SERVER['MYBB_DEV_MODE']) && $_SERVER['MYBB_DEV_MODE'] == 1)
+		{
+			$this->dev_mode = 1;
+		}
+
 		// Are we running in debug mode?
 		if(isset($this->input['debug']) && $this->input['debug'] == 1)
 		{

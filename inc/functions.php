@@ -22,7 +22,7 @@ function output_page($contents)
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
 
-	if($mybb->usergroup['cancp'] == 1)
+	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
