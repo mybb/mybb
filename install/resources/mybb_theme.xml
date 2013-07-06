@@ -6365,8 +6365,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_modlogs_multipage" version="1400"><![CDATA[<tr>
-<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+		<template name="modcp_modlogs_multipage" version="1800"><![CDATA[<tr>
+<td class="tfoot" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 		<template name="modcp_modlogs_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="5">{$lang->error_no_results}</td>
