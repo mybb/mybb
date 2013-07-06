@@ -3553,15 +3553,19 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	$bangroups = '';
-	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
-	while($item = $db->fetch_array($query))
+	$groupscache = $cache->read("usergroups");
+
+	foreach($groupscache as $key => $group)
 	{
-		$selected = "";
-		if($banned['gid'] == $item['gid'])
+		if($group['isbannedgroup'])
 		{
-			$selected = " selected=\"selected\"";
+			$selected = "";
+			if($banned['gid'] == $group['gid'])
+			{
+				$selected = " selected=\"selected\"";
+			}
+			$bangroups .= "<option value=\"{$group['gid']}\"{$selected}>".htmlspecialchars_uni($group['title'])."</option>\n";
 		}
-		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>".htmlspecialchars_uni($item['title'])."</option>\n";
 	}
 
 	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
