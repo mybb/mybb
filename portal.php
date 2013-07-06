@@ -228,26 +228,9 @@ if($mybb->settings['portal_showpms'] != 0)
 {
 	if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
-		switch($db->type)
-		{
-			case "sqlite":
-			case "pgsql":
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='".$mybb->user['uid']."'");
-				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
+		$messages['pms_total'] = $mybb->user['pms_total'];
+		$messages['pms_unread'] = $mybb->user['pms_unread'];
 
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
-				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
-				break;
-			default:
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
-				$messages = $db->fetch_array($query);
-		}
-
-		// the SUM() thing returns "" instead of 0
-		if($messages['pms_unread'] == "")
-		{
-			$messages['pms_unread'] = 0;
-		}
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
 		eval("\$pms = \"".$templates->get("portal_pms")."\";");
 	}
