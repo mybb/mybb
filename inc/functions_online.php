@@ -476,10 +476,17 @@ function build_friendly_wol_location($user_activity)
 	if(!is_array($usernames) && count($uid_list) > 0)
 	{
 		$uid_sql = implode(",", $uid_list);
-		$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
-		while($user = $db->fetch_array($query))
+		if($uid_sql != $mybb->user['uid'])
 		{
-			$usernames[$user['uid']] = $user['username'];
+			$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
+			while($user = $db->fetch_array($query))
+			{
+				$usernames[$user['uid']] = $user['username'];
+			}
+		}
+		else
+		{
+			$usernames[$mybb->user['uid']] = $mybb->user['username'];
 		}
 	}
 
