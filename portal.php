@@ -464,8 +464,9 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	$tids = '';
 	$comma = '';
 	$posts = array();
+	$attachmentcount = array();
 	$query = $db->query("
-		SELECT p.pid, p.message, p.tid, p.smilieoff
+		SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
@@ -474,18 +475,28 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	);
 	while($getid = $db->fetch_array($query))
 	{
-		$pids .= ",'{$getid['pid']}'";
-		$tids .= ",'{$getid['tid']}'";
-		$posts[$getid['tid']] = $getid;
+		$attachmentcount[$getid['tid']] = $getid['attachmentcount'];
+		foreach($attachmentcount as $tid => $attach_count)
+		{
+			if($attach_count > 0)
+			{
+				$pids .= ",'{$getid['pid']}'";
+			}
+				$tids .= ",'{$getid['tid']}'";
+				$posts[$getid['tid']] = $getid;
+		}
 	}
 	if(!empty($posts))
 	{
-		$pids = "pid IN(0{$pids})";
-		// Now lets fetch all of the attachments for these posts
-		$query = $db->simple_select("attachments", "*", $pids);
-		while($attachment = $db->fetch_array($query))
+		if($pids != '')
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			$pids = "pid IN(0{$pids})";
+			// Now lets fetch all of the attachments for these posts
+			$query = $db->simple_select("attachments", "*", $pids);
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
 		}
 
 		if(is_array($forum))
