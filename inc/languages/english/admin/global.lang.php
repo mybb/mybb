@@ -120,9 +120,9 @@ $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
 
-$l['rel_in'] = "In";
+$l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
-$l['rel_less_than'] = "Less than";
+$l['rel_less_than'] = "Less than ";
 $l['rel_minute'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
