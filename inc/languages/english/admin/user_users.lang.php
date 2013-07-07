@@ -368,4 +368,18 @@ $l['table'] = "Table";
 $l['title'] = "Title";
 
 $l['view_title_1'] = "All Users";
+
+$l['emailsubject_activateaccount'] = "Account Activation at {1}";
+$l['email_adminactivateaccount'] = "{1},
+
+The administrator has activated your forum account on {2}.
+
+To proceed, please go to
+
+{3}
+
+You will be able to login with the credentials you registered with.
+
+Thank you,
+{2} Staff";
 ?>

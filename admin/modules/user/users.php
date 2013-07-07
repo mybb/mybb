@@ -187,6 +187,9 @@ if($mybb->input['action'] == "activate_user")
 
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
 
+	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
+
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
