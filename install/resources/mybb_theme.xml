@@ -8343,7 +8343,7 @@ body {
 		<template name="postbit_online" version="1800"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.png" border="0" alt="{$lang->postbit_status_online}" class="buddy_status" /></a>]]></template>
 		<template name="postbit_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}" title="{$lang->postbit_pm}" class="postbit_pm"><span>{$lang->postbit_button_pm}</span></a>]]></template>
 		<template name="postbit_posturl" version="1800"><![CDATA[<div style="float: right; width: auto; vertical-align: top">
-<strong><a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>
+<strong><a href="{$post['postlink']}#pid{$post['pid']}">#{$post_number}</a></strong>
 {$post['inlinecheck']}
 </div>]]></template>
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$lang->postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>

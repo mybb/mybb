@@ -507,6 +507,7 @@ function build_postbit($post, $post_type=0)
 			$post['inlinecheck'] = "";
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+		$post_number = my_number_format($postcounter);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
