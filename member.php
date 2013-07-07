@@ -1630,6 +1630,7 @@ if($mybb->input['action'] == "profile")
 	// Get the user title for this user
 	unset($usertitle);
 	unset($stars);
+	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
 		// User has custom user title
@@ -1704,12 +1705,12 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(!isset($starimage))
+	if(empty($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
 
-	if($starimage)
+	if(!empty($starimage))
 	{
 		// Only display stars if we have an image to use...
 		$starimage = str_replace("{theme}", $theme['imgdir'], $starimage);
