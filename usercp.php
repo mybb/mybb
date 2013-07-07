@@ -2501,6 +2501,20 @@ if($mybb->input['action'] == "usergroups")
 		exit;
 	}
 
+	// List of usergroup leaders
+	$query = $db->query("
+		SELECT g.*, u.username, u.displaygroup, u.usergroup
+		FROM ".TABLE_PREFIX."groupleaders g
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
+		ORDER BY u.username ASC
+	");
+	while($leader = $db->fetch_array($query))
+	{
+		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
+	}
+
+	$usergroups = $mybb->cache->read('usergroups');
+
 	// Joining a group
 	if($mybb->input['joingroup'])
 	{
@@ -2539,6 +2553,18 @@ if($mybb->input['action'] == "usergroups")
 			);
 
 			$db->insert_query("joinrequests", $joinrequest);
+
+			foreach($groupleaders as $key => $groupleader)
+			{
+				foreach($groupleader as $leader)
+				{
+					$leader_user = get_user($leader['uid']);
+					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->input['reason'], $mybb->settings['bburl'], $leader['gid']);
+					my_mail($leader_user['email'], $subject, $message);
+				}
+			}
+
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
 			redirect("usercp.php?action=usergroups", $lang->group_join_requestsent);
 			exit;
@@ -2558,18 +2584,6 @@ if($mybb->input['action'] == "usergroups")
 		}
 	}
 	// Show listing of various group related things
-
-	// List of usergroup leaders
-	$query = $db->query("
-		SELECT g.*, u.username, u.displaygroup, u.usergroup
-		FROM ".TABLE_PREFIX."groupleaders g
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
-		ORDER BY u.username ASC
-	");
-	while($leader = $db->fetch_array($query))
-	{
-		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
-	}
 
 	// List of groups this user is a leader of
 	$groupsledlist = '';
@@ -2624,7 +2638,6 @@ if($mybb->input['action'] == "usergroups")
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
-	$usergroups = $mybb->cache->read('usergroups');
 	$usergroup = $usergroups[$mybb->user['usergroup']];
 	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();

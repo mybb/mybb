@@ -91,6 +91,7 @@ $l['emailsubject_reportpost'] = "Reported post at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1}";
+$l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting Web Page at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
@@ -403,4 +404,17 @@ If you don't want other members to be able to email you please visit your User C
 {4}/usercp.php?action=options
 
 ------------------------------------------";
+
+$l['email_groupleader_joinrequest'] = "{1},
+
+{2} has requested to join {3} on {4} (see below).
+
+Reason: {5}
+
+To accept or decline this request, go to
+
+{6}/managegroup.php?gid={7}
+
+Thank you,
+{4} Staff";
 ?>
