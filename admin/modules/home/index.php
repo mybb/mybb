@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -249,7 +249,7 @@ elseif(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 

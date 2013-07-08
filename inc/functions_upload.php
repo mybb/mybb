@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -403,7 +403,7 @@ function upload_attachment($attachment, $update_attachment=false)
     $ext = get_extension($attachment['name']);
     // Check if we have a valid extension
     if(!isset($attachtypes[$ext]))
-    { 
+    {
     	$ret['error'] = $lang->error_attachtype;
 		return $ret;
 	}
@@ -579,9 +579,9 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 		require_once MYBB_ROOT."inc/functions_image.php";
 		$thumbname = str_replace(".attach", "_thumb.$ext", $filename);
-		
-		$attacharray = $plugins->run_hooks("upload_attachment_thumb_start", $attacharray); 
-		
+
+		$attacharray = $plugins->run_hooks("upload_attachment_thumb_start", $attacharray);
+
 		$thumbnail = generate_thumbnail($mybb->settings['uploadspath']."/".$filename, $mybb->settings['uploadspath'], $thumbname, $mybb->settings['attachthumbh'], $mybb->settings['attachthumbw']);
 
 		if($thumbnail['filename'])

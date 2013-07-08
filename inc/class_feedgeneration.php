@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -99,7 +99,7 @@ class FeedGenerator
 				$this->xml .= "\t<id>{$this->channel['link']}</id>\n";
 				$this->xml .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"{$this->channel['link']}\"/>\n";
 				$this->xml .= "\t<updated>{$this->channel['date']}</updated>\n";
-				$this->xml .= "\t<generator uri=\"http://mybb.com\">MyBB</generator>\n";
+				$this->xml .= "\t<generator uri=\"http://www.mybb.com\">MyBB</generator>\n";
 				break;
 			// The default is the RSS 2.0 format.
 			default:

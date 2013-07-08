@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -531,7 +531,7 @@ class errorHandler {
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="http://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="http://www.mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -539,7 +539,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for technical support.</p>
+				<p id="footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -564,7 +564,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for technical support.</p>
+			<p id="mybb_error_footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;

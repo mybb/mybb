@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -1175,7 +1175,7 @@ if($mybb->input['action'] == "search_replace")
 				tabMode: \"indent\",
 				theme: \"mybb\"
 			});
-			
+
 			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
 				lineNumbers: true,
 				lineWrapping: true,
@@ -1445,7 +1445,7 @@ if($mybb->input['action'] == "diff_report")
 			'link' => "index.php?module=style-templates&amp;action=find_updated"
 		);
 	}
-	
+
 	if(!isset($template_sets[$mybb->input['sid2']]))
 	{
 		flash_message($lang->error_invalid_input, 'error');
@@ -1591,7 +1591,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=style-templates");
 	}
-	
+
 	$plugins->run_hooks("admin_style_templates_set");
 
 	$table = new Table;

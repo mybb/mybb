@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -142,7 +142,7 @@ $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
 $l['req_step_error_phpversion'] = 'MyBB Requires PHP 5.2.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
-$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="http://mybb.com/support" targert="_blank">MyBB Support.</a>';
+$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="http://www.mybb.com/support" targert="_blank">MyBB Support.</a>';
 $l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://docs.mybb.com/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
@@ -329,7 +329,7 @@ $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://mybb.com/mailing-list" target="_blank">Subscribe to the updates mailing list!</a></p>';
+$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://www.mybb.com/mailing-list" target="_blank">Subscribe to the updates mailing list!</a></p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";

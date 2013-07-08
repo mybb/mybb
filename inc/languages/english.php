@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -13,7 +13,7 @@ $langinfo['name'] = "English (American)";
 $langinfo['author'] = "MyBB Group";
 
 // The language authors website
-$langinfo['website'] = "http://mybb.com/";
+$langinfo['website'] = "http://www.mybb.com/";
 
 // Compatible version of MyBB
 $langinfo['version'] = "1700";

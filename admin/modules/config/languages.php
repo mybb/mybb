@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -617,7 +617,7 @@ if(!$mybb->input['action'])
 	);
 	$sub_tabs['find_language'] = array(
 		'title' => $lang->find_language_packs,
-		'link' => "http://mybb.com/downloads/translations",
+		'link' => "http://www.mybb.com/downloads/translations",
 		'target' => "_blank"
 	);
 
