@@ -57,7 +57,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($user['uid'])
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
-		if ($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			join_usergroup($user['uid'], $gid);
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);

@@ -130,9 +130,9 @@ elseif($mybb->input['do'] == "login")
 	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
 
 	// Validate PIN first
-	if (isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
+	if(isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
 	{
-		$default_page->show_login($lang->error_invalid_secret_pin,"error");
+		$default_page->show_login($lang->error_invalid_secret_pin, "error");
 	}
 
 	$loginhandler->set_data(array(

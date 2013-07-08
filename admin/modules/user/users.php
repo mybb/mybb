@@ -824,7 +824,7 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if (!stristr($user['avatar'], 'http://') || !stristr($user['avatar'], 'https://'))
+		if(!stristr($user['avatar'], 'http://') || !stristr($user['avatar'], 'https://'))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -3206,7 +3206,9 @@ function build_users_view($view)
 				// Yes, so do we want to edit the ban or pardon his crime?
 				$popup->add_item($lang->edit_ban, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 				$popup->add_item($lang->lift_ban, "index.php?module=user-banning&action=lift&uid={$user['uid']}&my_post_key={$mybb->post_code}");
-			} else {
+			}
+			else
+			{
 				// Not banned... but soon maybe!
 				$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 			}

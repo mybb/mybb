@@ -415,7 +415,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
 
-	if ($mybb->settings['minifycss']) {
+	if($mybb->settings['minifycss'])
+	{
 		$stylesheet_min = minify_stylesheet($stylesheet);
 		$filename_min = str_replace('.css', '.min.css', $filename);
 		$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");

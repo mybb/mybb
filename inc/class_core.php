@@ -355,7 +355,7 @@ class MyBB {
 							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
 							break;
 						case "pos":
-							if (($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
+							if(($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
 								$this->input[$var] = 0;
 							break;
 					}

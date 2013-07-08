@@ -543,7 +543,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				{
 					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 				}
-				if (!stristr($announcement['avatar'], 'http://'))
+				if(!stristr($announcement['avatar'], 'http://'))
 				{
 					$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
 				}

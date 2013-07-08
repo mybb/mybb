@@ -39,7 +39,7 @@ $l['username'] = "Username:";
 $l['username1'] = "Email:";
 $l['username2'] = "Username/Email:";
 $l['password'] = "Password:";
-$l['secret_pin'] = "Secret PIN";
+$l['secret_pin'] = "Secret PIN:";
 $l['login'] = "Login";
 $l['lost_password'] = "Forgot your password?";
 

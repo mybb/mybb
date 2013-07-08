@@ -6519,7 +6519,7 @@ function my_rand($min=null, $max=null, $force_seed=false)
 	if($min !== null && $max !== null)
 	{
 		$distance = $max - $min;
-		if ($distance > 0)
+		if($distance > 0)
 		{
 			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
 		}

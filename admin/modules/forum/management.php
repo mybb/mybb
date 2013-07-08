@@ -1820,7 +1820,7 @@ if($mybb->input['action'] == "deletemod")
 	if($mybb->request_method == "post")
 	{
 		$mid = $mod['mid'];
-		if ($mybb->input['isgroup'])
+		if($mybb->input['isgroup'])
 		{
 			$query = $db->query("
 				SELECT m.*, g.title
@@ -1856,7 +1856,7 @@ if($mybb->input['action'] == "deletemod")
 		$forum = get_forum($fid);
 
 		// Log admin action
-		if ($isgroup)
+		if($isgroup)
 		{
 			log_admin_action($mod['id'], $mod['title'], $forum['fid'], $forum['name']);
 		}

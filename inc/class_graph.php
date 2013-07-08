@@ -185,13 +185,13 @@ class Graph {
 	 */
 	private function imagelinethick($x1, $y1, $x2, $y2, $color, $thick = 1)
 	{
-		if ($thick == 1)
+		if($thick == 1)
 		{
 			return imageline($this->im, $x1, $y1, $x2, $y2, $color);
 		}
 
 		$t = $thick / 2 - 0.5;
-		if ($x1 == $x2 || $y1 == $y2)
+		if($x1 == $x2 || $y1 == $y2)
 		{
 			return imagefilledrectangle($this->im, round(min($x1, $x2) - $t), round(min($y1, $y2) - $t), round(max($x1, $x2) + $t), round(max($y1, $y2) + $t), $color);
 		}

@@ -53,7 +53,7 @@ if($mybb->input['action'] == "newpoll")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 
@@ -66,7 +66,7 @@ if($mybb->input['action'] == "newpoll")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "editpoll")
 	{
 		error($lang->error_invalidthread);
 	}
-	
+
 	$fid = $thread['fid'];
 
 	// Make navigation
@@ -822,7 +822,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -974,7 +974,7 @@ if($mybb->input['action'] == "do_undovote")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);

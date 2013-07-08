@@ -250,10 +250,13 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
-				if ($mybb->settings['minifycss']) {
+				if($mybb->settings['minifycss'])
+				{
 					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
 					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
-				} else {
+				}
+				else
+				{
 					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
 				}
 				$already_loaded[$page_stylesheet] = 1;
