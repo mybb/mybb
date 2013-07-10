@@ -73,9 +73,15 @@ function output_page($contents)
 			{
 				$memory_usage = '';
 			}
-
+			// MySQLi is still MySQL, so present it that way to the user
+			$database_server = $db->short_title;
+			
+			if($database_server == 'MySQLi')
+			{
+				$database_server = 'MySQL';
+			}
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
-			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% ".$database_server.")<br />SQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
