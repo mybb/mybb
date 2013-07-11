@@ -2218,33 +2218,33 @@ if($mybb->input['action'] == "do_editlists")
 
 		if($message)
 		{
-			$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+			$message_js = "$.jGrowl('{$message}');";
 		}
 
 		if($error_message)
 		{
-			$message_js .= " var error = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(error, element); 	error.innerHTML = '{$error_message}'; error.className = 'error_message'; window.setTimeout(function() { Element.remove(error) }, 5000);";
+			$message_js .= " $.jGrowl('{$error_message}');";
 		}
 
 		if($mybb->input['delete'])
 		{
 			header("Content-type: text/javascript");
-			echo "Element.remove('{$mybb->input['manage']}_{$mybb->input['delete']}');\n";
+			echo "$(\"#{$mybb->input['manage']}_{$mybb->input['delete']}\").remove();\n";
 			if($new_list == "")
 			{
-				echo "\$('{$mybb->input['manage']}_count').innerHTML = '0';\n";
+				echo "\$(\"#{$mybb->input['manage']}_count\").html(\"0\");\n";
 				if($mybb->input['manage'] == "ignored")
 				{
-					echo "\$('ignore_list').innerHTML = '<li>{$lang->ignore_list_empty}</li>';\n";
+					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
 				}
 				else
 				{
-					echo "\$('buddy_list').innerHTML = '<li>{$lang->buddy_list_empty}</li>';\n";
+					echo "\$(\"#buddy_list\").html(\"<li>{$lang->buddy_list_empty}</li>\");\n";
 				}
 			}
 			else
 			{
-				echo "\$('{$mybb->input['manage']}_count').innerHTML = '".count(explode(",", $new_list))."';\n";
+				echo "\$(\"#{$mybb->input['manage']}_count\").html(\"".count(explode(",", $new_list))."\");\n";
 			}
 			echo $message_js;
 			exit;
@@ -2329,12 +2329,12 @@ if($mybb->input['action'] == "editlists")
 		if($mybb->input['manage'] == "ignored")
 		{
 			echo $ignore_list;
-			echo "<script type=\"text/javascript\"> $('ignored_count').innerHTML = '{$ignore_count}'; {$message_js}</script>";
+			echo "<script type=\"text/javascript\"> $(\"#ignored_count\").html(\"{$ignore_count}\"); {$message_js}</script>";
 		}
 		else
 		{
 			echo $buddy_list;
-			echo "<script type=\"text/javascript\"> $('buddy_count').innerHTML = '{$buddy_count}'; {$message_js}</script>";
+			echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
 		}
 		exit;
 	}

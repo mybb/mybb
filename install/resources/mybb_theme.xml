@@ -3780,7 +3780,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1400"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1800"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -3791,9 +3791,27 @@ a.button {
 </tr>
 <tr>
 <td class="trow1">{$lang->username}</td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
+<td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
 </tr>
 </table>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+        $("#username").typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
+// -->
+</script>
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
@@ -8898,7 +8916,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/usercp.js?ver=1600"></script>
+<script type="text/javascript" src="jscripts/usercp.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -8966,20 +8984,20 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 <script type="text/javascript">
 <!--
-	if($('bcc_area') && $('bcc').value == "")
+	if($("#bcc_area").length > 0 && $("#bcc").val() == "")
 	{
-		$('bcc_area').style.display = 'none';
+		$("#bcc_area").css("display", "none");
 	}
 
 	function showBcc()
 	{
-		if($('bcc_area').style.display == 'none')
+		if($("#bcc_area").css("display") == 'none')
 		{
-			$('bcc_area').style.display = '';
+			$("#bcc_area").css("display", "");
 		}
 		else
 		{
-			$('bcc_area').style.display = 'none';
+			$("#bcc_area").css("display", "none");
 		}
 	}
 // -->
