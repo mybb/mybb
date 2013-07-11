@@ -396,7 +396,7 @@ if($mybb->input['action'] == "add")
 		if($mybb->settings['neurep'])
 		{
 			$neutral_title = $lang->power_neutral;
-			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"$('reputation').className='reputation_neutral'\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
+			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"\$('#reputation').attr('class', 'reputation_neutral')\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
 		}
 
 		for($i = 1; $i <= $reputationpower; ++$i)
@@ -404,13 +404,13 @@ if($mybb->input['action'] == "add")
 			if($mybb->settings['posrep'])
 			{
 				$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
-				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
+				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"\$('#reputation').attr('class', 'reputation_positive')\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
 			}
 
 			if($mybb->settings['negrep'])
 			{
 				$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
-				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
+				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"\$('#reputation').attr('class', 'reputation_negative')\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 			}
 		}
 
