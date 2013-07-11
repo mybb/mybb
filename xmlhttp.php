@@ -74,7 +74,7 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 }
 else
 {
-	$loadstyle = "def=1";
+	$loadstyle = "def='1'";
 }
 
 // Load basic theme information that we could be needing.
