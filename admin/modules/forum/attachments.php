@@ -470,10 +470,10 @@ if($mybb->input['action'] == "orphans")
 			echo $form->generate_hidden_field("incomplete_attachments", $incomplete_attachments);
 		}
 		$form->end();
-		echo "<script type=\"text/javascript\">Event.observe(window, 'load', function() {
+		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$('redirect_form').submit();
+						$(\"#redirect_form\").submit();
 					}, 100
 				);
 			});</script>";
@@ -590,10 +590,10 @@ if($mybb->input['action'] == "orphans")
 			echo $form->generate_hidden_field("bad_attachments", $bad_attachments);
 		}
 		$form->end();
-		echo "<script type=\"text/javascript\">Event.observe(window, 'load', function() {
+		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$('redirect_form').submit();
+						$(\"#redirect_form\").submit();
 					}, 100
 				);
 			});</script>";
