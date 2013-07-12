@@ -385,14 +385,13 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
-	}
 
-	// Forum is closed - no editing allowed (for anyone)
-	if($forum['open'] == 0)
-	{
-		xmlhttp_error($lang->no_permission_edit_post);
+		// Forum is closed - no editing allowed
+		if($forum['open'] == 0)
+		{
+			xmlhttp_error($lang->no_permission_edit_post);
+		}
 	}
-
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.

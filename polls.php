@@ -66,7 +66,7 @@ if($mybb->input['action'] == "newpoll")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0)
+		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0)
+		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -330,7 +330,7 @@ if($mybb->input['action'] == "editpoll")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0)
+		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -498,7 +498,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0)
+		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
