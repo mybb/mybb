@@ -1066,6 +1066,7 @@ ul.tabs li a.active {
 
 .tt-suggestion p {
     line-height: 0 !important;
+    text-align: left;
 }
 
 .tt-suggestion.tt-is-under-cursor {
