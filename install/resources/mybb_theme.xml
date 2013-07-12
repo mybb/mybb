@@ -1975,7 +1975,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_addevent" version="1402"><![CDATA[<html>
+		<template name="calendar_addevent" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
 {$headerinclude}
@@ -2008,29 +2008,29 @@ a.button {
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($("#type_single").prop("checked"))
 						{
-							Element.hide('ranged_selects');
-							Element.show('single_selects');
+							$("#ranged_selects").hide();
+							$("#single_selects").show();
 						}
 						else
 						{
-							Element.hide('single_selects');
-							Element.show('ranged_selects');
+							$("#single_selects").hide();
+							$("#ranged_selects").show();
 							toggleRepeats();
 						}
 					}
 
 					function toggleRepeats()
 					{
-						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						$$('.repeats_type').each(function(e)
+						var repeats = $("#repeats").get(0).selectedIndex;
+						$(".repeats_type").each(function()
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('repeats_type_'+repeats))
+						if($("#repeats_type_"+repeats).length > 0)
 						{
-							Element.show('repeats_type_'+repeats);
+							$("#repeats_type_"+repeats).show();
 						}
 					}
 				// -->
@@ -2385,7 +2385,7 @@ a.button {
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
-		<template name="calendar_editevent" version="1402"><![CDATA[<html>
+		<template name="calendar_editevent" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
@@ -2426,29 +2426,29 @@ a.button {
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($("#type_single").prop("checked"))
 						{
-							Element.hide('ranged_selects');
-							Element.show('single_selects');
+							$("#ranged_selects").hide();
+							$("#single_selects").show();
 						}
 						else
 						{
-							Element.hide('single_selects');
-							Element.show('ranged_selects');
+							$("#single_selects").hide();
+							$("#ranged_selects").show();
 							toggleRepeats();
 						}
 					}
 
 					function toggleRepeats()
 					{
-						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						$$('.repeats_type').each(function(e)
+						var repeats = $("#repeats").get(0).selectedIndex;
+						$(".repeats_type").each(function()
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('repeats_type_'+repeats))
+						if($("#repeats_type_"+repeats).length > 0)
 						{
-							Element.show('repeats_type_'+repeats);
+							$("#repeats_type_"+repeats).show();
 						}
 					}
 				// -->
