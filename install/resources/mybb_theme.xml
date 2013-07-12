@@ -3550,7 +3550,7 @@ a.button {
 </form>
 <script type="text/javascript">
 <!--
-	$('.forumjump').change(function() {
+	$(".forumjump").change(function() {
 		var option = $(".forumjump").get(0).selectedIndex.value;
 
 		if(option < 0)
@@ -6022,7 +6022,7 @@ body {
 		if(action == "modposts")
 		{
 			$("#susposts_action").hide();
-			$('#suspost').attr("checked", false);
+			$("#suspost").attr("checked", false);
 
 			if($("#modpost").prop("checked") == false)
 			{
