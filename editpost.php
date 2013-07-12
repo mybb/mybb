@@ -71,7 +71,7 @@ if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
+if(($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }
