@@ -5783,7 +5783,7 @@ body {
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
-		<template name="modcp_editprofile" version="1600"><![CDATA[<html>
+		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -6009,49 +6009,47 @@ body {
 <!--
 	if(mod_posts == 0)
 	{
-		$('modposts_action').hide();
+		$("#modposts_action").hide();
 	}
 
 	if(susp_posts == 0)
 	{
-		$('susposts_action').hide();
+		$("#susposts_action").hide();
 	}
 
 	function toggleSuspend(action)
 	{
-		var item = action + "_action";
-
 		if(action == "modposts")
 		{
-			$('susposts_action').hide();
-			$('suspost').checked = false;
+			$("#susposts_action").hide();
+			$('#suspost').attr("checked", false);
 
-			if($("modpost").checked == false)
+			if($("#modpost").prop("checked") == false)
 			{
-				$("modpost").checked = false;
-				$("modposts_action").hide();
+				$("#modpost").attr("checked", false);
+				$("#modposts_action").hide();
 			}
 			else
 			{
-				$("modpost").checked = true;
-				$("modposts_action").show();
+				$("#modpost").attr("checked", true);
+				$("#modposts_action").show();
 			}
 		}
 
 		if(action == "susposts")
 		{
-			$('modposts_action').hide();
-			$('modpost').checked = false;
+			$("#modposts_action").hide();
+			$("#modpost").attr("checked", false);
 
-			if($("suspost").checked == false)
+			if($("#suspost").prop("checked") == false)
 			{
-				$("suspost").checked = false;
-				$("susposts_action").hide();
+				$("#suspost").attr("checked", false);
+				$("#susposts_action").hide();
 			}
 			else
 			{
-				$("suspost").checked = true;
-				$("susposts_action").show();
+				$("#suspost").attr("checked", true);
+				$("#susposts_action").show();
 			}
 		}
 	}
@@ -6063,7 +6061,7 @@ body {
 	{$selection_options}
 </select>]]></template>
 		<template name="modcp_editprofile_select_option" version="1600"><![CDATA[<option value="{$key}" {$selected}>{$value}</option>]]></template>
-		<template name="modcp_editprofile_signature" version="1600"><![CDATA[<tr>
+		<template name="modcp_editprofile_signature" version="1800"><![CDATA[<tr>
 <td class="trow1" valign="top">
 <script type="text/javascript">
 <!--
@@ -6071,13 +6069,13 @@ body {
 
 	function toggleAction()
 	{
-		if($("suspend_action").visible() == true)
+		if($("#suspend_action").is(":visible") == true)
 		{
-			$("suspend_action").hide();
+			$("#suspend_action").hide();
 		}
 		else
 		{
-			$("suspend_action").show();
+			$("#suspend_action").show();
 		}
 	}
 // -->
@@ -6098,7 +6096,7 @@ body {
 <!--
 	if(sig_checked == 0)
 	{
-		$("suspend_action").hide();
+		$("#suspend_action").hide();
 	}
 // -->
 </script>
