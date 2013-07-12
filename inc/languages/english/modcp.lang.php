@@ -227,9 +227,9 @@ $l['suspend_posts'] = "Suspend this user's posting privileges";
 $l['modpost_length'] = "Moderate for:";
 $l['suspost_length'] = "Suspend for:";
 
-$l['moderateposts_for'] = "Moderated until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendposting_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendsignature_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
+$l['moderateposts_for'] = "Moderated until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendposting_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendsignature_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendposting_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
 $l['moderateposts_perm'] = "Moderated permanently.<br />Untick this option to remove, or change below.";
 $l['suspendsignature_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
