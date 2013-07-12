@@ -23,12 +23,6 @@ define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
 
-if(!defined("E_STRICT"))
-{
-	// This constant has been defined since PHP 5.
-	define("E_STRICT", 2048);
-}
-
 if(!defined("E_RECOVERABLE_ERROR"))
 {
 	// This constant has been defined since PHP 5.2.
@@ -41,6 +35,12 @@ if(!defined("E_DEPRECATED"))
 	define("E_DEPRECATED", 8192);
 }
 
+if(!defined("E_USER_DEPRECATED"))
+{
+	// This constant has been defined since PHP 5.3.
+	define("E_USER_DEPRECATED", 16384);
+}
+
 class errorHandler {
 
 	/**
@@ -49,29 +49,30 @@ class errorHandler {
 	 * @var array
 	 */
 	public $error_types = array(
-		E_ERROR              => 'Error',
-		E_WARNING            => 'Warning',
-		E_PARSE              => 'Parsing Error',
-		E_NOTICE             => 'Notice',
-		E_CORE_ERROR         => 'Core Error',
-		E_CORE_WARNING       => 'Core Warning',
-		E_COMPILE_ERROR      => 'Compile Error',
-		E_COMPILE_WARNING    => 'Compile Warning',
-		E_DEPRECATED		 => 'Deprecated Warning',
-		E_USER_ERROR         => 'User Error',
-		E_USER_WARNING       => 'User Warning',
-		E_USER_NOTICE        => 'User Notice',
-		E_STRICT             => 'Runtime Notice',
-		E_RECOVERABLE_ERROR  => 'Catchable Fatal Error',
-		MYBB_SQL 			 => 'MyBB SQL Error',
-		MYBB_TEMPLATE		 => 'MyBB Template Error',
-		MYBB_GENERAL		 => 'MyBB Error',
-		MYBB_NOT_INSTALLED	 => 'MyBB Error',
-		MYBB_NOT_UPGRADED 	 => 'MyBB Error',
-		MYBB_INSTALL_DIR_EXISTS => 'MyBB Error',
-		MYBB_SQL_LOAD_ERROR  => 'MyBB Error',
-		MYBB_CACHE_NO_WRITE  => 'MyBB Error',
-		MYBB_CACHEHANDLER_LOAD_ERROR => 'MyBB Error',
+		E_ERROR							=> 'Error',
+		E_WARNING						=> 'Warning',
+		E_PARSE							=> 'Parsing Error',
+		E_NOTICE						=> 'Notice',
+		E_CORE_ERROR					=> 'Core Error',
+		E_CORE_WARNING					=> 'Core Warning',
+		E_COMPILE_ERROR					=> 'Compile Error',
+		E_COMPILE_WARNING				=> 'Compile Warning',
+		E_DEPRECATED					=> 'Deprecated Warning',
+		E_USER_ERROR					=> 'User Error',
+		E_USER_WARNING					=> 'User Warning',
+		E_USER_NOTICE					=> 'User Notice',
+		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
+		E_STRICT						=> 'Runtime Notice',
+		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
+		MYBB_SQL 						=> 'MyBB SQL Error',
+		MYBB_TEMPLATE					=> 'MyBB Template Error',
+		MYBB_GENERAL					=> 'MyBB Error',
+		MYBB_NOT_INSTALLED				=> 'MyBB Error',
+		MYBB_NOT_UPGRADED				=> 'MyBB Error',
+		MYBB_INSTALL_DIR_EXISTS			=> 'MyBB Error',
+		MYBB_SQL_LOAD_ERROR				=> 'MyBB Error',
+		MYBB_CACHE_NO_WRITE				=> 'MyBB Error',
+		MYBB_CACHEHANDLER_LOAD_ERROR	=> 'MyBB Error',
 	);
 
 	/**
@@ -129,6 +130,7 @@ class errorHandler {
 		{
 			$error_types = $error_types & ~$bit;
 		}
+		error_reporting($error_types);
 		set_error_handler(array(&$this, "error"), $error_types);
 	}
 

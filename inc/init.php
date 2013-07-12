@@ -15,21 +15,6 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
-
 /* Defines the root directory for MyBB.
 
 	Uncomment the below line and set the path manually
