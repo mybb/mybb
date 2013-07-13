@@ -242,7 +242,7 @@ elseif(!$mybb->input['action'])
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= TIME_NOW-60*60*24*14)
 	{
-		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?module=home&amp;version_check");
+		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?module=home&amp;action=version_check");
 		$page->output_error("<p>{$lang->last_update_check_two_weeks}</p>");
 	}
 
