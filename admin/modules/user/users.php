@@ -1677,7 +1677,6 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
-			$db->update_query("users", array("warningpoints" => $destination_user['warningpoints']+$source_user['warningpoints']), "uid='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
 
 			// Is the source user a moderator?
@@ -1744,6 +1743,22 @@ if($mybb->input['action'] == "merge")
 			$total_reputation = $db->fetch_field($query, "total_rep");
 
 			$db->update_query("users", array('reputation' => intval($total_reputation)), "uid='{$destination_user['uid']}'");
+
+			// Calculate warning points
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$source_user['uid']}' AND expired='0'
+			");
+			$original_warn_level = $db->fetch_field($query, "warn_lev");
+
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$destination_user['uid']}' AND expired='0'
+			");
+			$new_warn_level = $db->fetch_field($query, "warn_lev");
+			$db->update_query("users", array("warningpoints" => intval($original_warn_level + $new_warn_level)), "uid='{$destination_user['uid']}'");
 
 			// Additional updates for non-uid fields
 			$last_poster = array(
