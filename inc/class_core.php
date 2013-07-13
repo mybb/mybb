@@ -95,6 +95,13 @@ class MyBB {
 	public $request_method = "";
 
 	/**
+	 * Whether or not PHP's safe_mode is enabled
+	 *
+	 * @var boolean
+	 */
+	public $safemode = false;
+
+	/**
 	 * Loads templates directly from the master theme
 	 *
 	 * @var boolean
@@ -208,7 +215,8 @@ class MyBB {
 		}
 		$this->clean_input();
 
-		if(@ini_get("safe_mode") == 1)
+		$safe_mode_status = @ini_get("safe_mode");
+		if($safe_mode_status == 1 || strtolower($safe_mode_status) == 'on')
 		{
 			$this->safemode = true;
 		}

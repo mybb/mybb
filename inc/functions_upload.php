@@ -356,7 +356,7 @@ function upload_avatar($avatar=array(), $uid=0)
  */
 function upload_attachment($attachment, $update_attachment=false)
 {
-	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
+	global $mybb, $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 
 	$posthash = $db->escape_string($mybb->input['posthash']);
 	$pid = intval($pid);
@@ -456,7 +456,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	}
 
 	$month_dir = '';
-	if(ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
+	if($mybb->safemode == false)
 	{
 		// Check if the attachment directory (YYYYMM) exists, if not, create it
 		$month_dir = gmdate("Ym");

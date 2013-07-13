@@ -64,7 +64,7 @@ function output_page($contents)
 			}
 			// MySQLi is still MySQL, so present it that way to the user
 			$database_server = $db->short_title;
-			
+
 			if($database_server == 'MySQLi')
 			{
 				$database_server = 'MySQL';
@@ -1851,7 +1851,7 @@ function my_unserialize($data)
  */
 function get_server_load()
 {
-	global $lang;
+	global $mybb, $lang;
 
 	$serverload = array();
 
@@ -1871,7 +1871,7 @@ function get_server_load()
 		}
 		if(!is_numeric($serverload[0]))
 		{
-			if(@ini_get('safe_mode') == 'On')
+			if($mybb->safemode)
 			{
 				return $lang->unknown;
 			}
