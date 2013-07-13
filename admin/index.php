@@ -154,7 +154,7 @@ elseif($mybb->input['do'] == "login")
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
-		$sid = md5(uniqid(microtime(true)));
+		$sid = md5(uniqid(microtime(true), true));
 
 		// Create a new admin session for this user
 		$admin_session = array(

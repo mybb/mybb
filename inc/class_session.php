@@ -495,7 +495,7 @@ class session
 		}
 		else
 		{
-			$onlinedata['sid'] = md5(uniqid(microtime(true)));
+			$onlinedata['sid'] = md5(uniqid(microtime(true), true));
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_string($this->ipaddress);

@@ -196,7 +196,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
