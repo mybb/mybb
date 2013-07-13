@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -301,9 +301,9 @@ function upgrade1_dbchanges3()
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (1, 'boardclosed', 'Board Closed', 'If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />\r\n<br />\r\n<b>Administrators will still be able to view the forums.</b>', 'yesno', 'no', 1, 26);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (2, 'boardclosed_reason', 'Board Closed Reason', 'If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.', 'textarea', 'These forums are currently closed for maintenance. Please check back later.', 2, 26);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (3, 'bbname', 'Board Name', 'The name of your message boards. We recommend that it is not over 75 characters.', 'text', 'MyBB Community Forums', 1, 1);");
-	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (4, 'bburl', 'Board URL', 'The url to your forums.<br />Include the http://. Do NOT include a trailing slash.', 'text', 'http://mybb.com/community', 2, 1);");
+	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (4, 'bburl', 'Board URL', 'The url to your forums.<br />Include the http://. Do NOT include a trailing slash.', 'text', 'http://www.mybb.com/community', 2, 1);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (5, 'homename', 'Homepage Name', 'The name of your homepage. This will appear in the footer with a link to it.', 'text', 'MyBB', 3, 1);");
-	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (6, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://mybb.com', 4, 1);");
+	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (6, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://www.mybb.com', 4, 1);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (7, 'reportviapms', 'Send Reported Posts via PMS', 'Do you want to send reported post messages via the private messaging function to moderators?', 'yesno', 'yes', 5, 8);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (8, 'dateformat', 'Date Format', 'The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'm-d-Y', 1, 3);");
 	$db->write_query("INSERT INTO `settings` (`sid`, `name`, `title`, `description`, `optionscode`, `value`, `disporder`, `gid`) VALUES (9, 'adminemail', 'Admin Email', 'The administrator\'s email address. This will be used for outgoing emails sent via the forums.', 'text', 'contact@mybb.com', 1, 1);");

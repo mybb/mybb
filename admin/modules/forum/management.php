@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -1820,7 +1820,7 @@ if($mybb->input['action'] == "deletemod")
 	if($mybb->request_method == "post")
 	{
 		$mid = $mod['mid'];
-		if ($mybb->input['isgroup'])
+		if($mybb->input['isgroup'])
 		{
 			$query = $db->query("
 				SELECT m.*, g.title
@@ -1856,7 +1856,7 @@ if($mybb->input['action'] == "deletemod")
 		$forum = get_forum($fid);
 
 		// Log admin action
-		if ($isgroup)
+		if($isgroup)
 		{
 			log_admin_action($mod['id'], $mod['title'], $forum['fid'], $forum['name']);
 		}

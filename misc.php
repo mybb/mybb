@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -356,32 +356,8 @@ elseif($mybb->input['action'] == "buddypopup")
 				$last_active = $lang->sprintf($lang->last_active, $lang->never);
 			}
 
-			if($buddy['avatar'])
-			{
-				$buddy['avatar'] = htmlspecialchars_uni($buddy['avatar']);
-				if($buddy['avatardimensions'])
-				{
-					require_once MYBB_ROOT."inc/functions_image.php";
-					list($width, $height) = explode("|", $buddy['avatardimensions']);
-					$scaled_dimensions = scale_image($width, $height, 44, 44);
-				}
-				else
-				{
-					$scaled_dimensions = array(
-						"width" => 44,
-						"height" => 44
-					);
-				}
-			}
-			else
-			{
-				$buddy['avatar'] = $theme['imgdir'] . "/default_avatar.gif";
-				$scaled_dimensions = array(
-					"width" => 44,
-					"height" => 44
-				);
-			}
-			$margin_top = ceil((50-$scaled_dimensions['height'])/2);
+			$buddy['avatar'] = format_avatar(htmlspecialchars_uni($buddy['avatar']), $buddy['avatardimensions'], '44x44');
+
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");

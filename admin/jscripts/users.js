@@ -7,4 +7,6 @@ var Users = {
 	}
 };
 
-Event.observe(window, 'load', Users.init);
+$(function() {
+	Users.init();
+});

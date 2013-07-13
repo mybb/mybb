@@ -1,28 +1,13 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
-
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
 
 @set_time_limit(0);
 
@@ -37,11 +22,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
-require_once MYBB_ROOT.'inc/class_core.php';
-$mybb = new MyBB;
-
 require_once MYBB_ROOT.'inc/class_error.php';
 $error_handler = new errorHandler();
+
+require_once MYBB_ROOT.'inc/class_core.php';
+$mybb = new MyBB;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT.'inc/class_timers.php';
@@ -1054,7 +1039,7 @@ function requirements_check()
 	}
 
 	// Check PHP Version
-	if(version_compare(PHP_VERSION, '5.1.0', "<"))
+	if(version_compare(PHP_VERSION, '5.2.0', "<"))
 	{
 		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_phpversion, PHP_VERSION));
 		$phpversion = $lang->sprintf($lang->req_step_span_fail, PHP_VERSION);
@@ -1223,21 +1208,24 @@ function database_info()
 	echo "<script type=\"text/javascript\">
 		function updateDBSettings()
 		{
-			dbengine = \$('dbengine').options[\$('dbengine').selectedIndex].value;
-			$$('.db_settings').each(function(element)
+			var dbengine = \$(\"#dbengine\").val();
+			$('.db_settings').each(function()
 			{
-				element.className = 'db_settings';
-				if(dbengine+'_settings' == element.id)
+				var element = $(this);
+				element.addClass('db_settings');
+				if(dbengine+'_settings' == element.attr('id'))
 				{
-					Element.show(element);
+					element.show();
 				}
 				else
 				{
-					Element.hide(element);
+					element.hide();
 				}
 			});
 		}
-		Event.observe(window, 'load', updateDBSettings);
+		$(function() {
+			updateDBSettings();
+		});
 		</script>";
 
 	// Check for errors from this stage
@@ -1942,7 +1930,7 @@ function create_admin_user()
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiedomain'])), "name='cookiedomain'");
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['cookiepath'])), "name='cookiepath'");
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['contactemail'])), "name='adminemail'");
-		$db->update_query("settings", array('value' => 'mailto:'.$db->escape_string($mybb->input['contactemail'])), "name='contactlink'");
+		$db->update_query("settings", array('value' => 'contact.php'), "name='contactlink'");
 
 		write_settings();
 
@@ -1975,6 +1963,14 @@ function create_admin_user()
 			$db->insert_query("tasks", $new_task);
 			$taskcount++;
 		}
+
+		// For the version check task, set a random date and hour (so all MyBB installs don't query mybb.com all at the same time)
+		$update_array = array(
+			'hour' => rand(0, 23),
+			'weekday' => rand(0, 6)
+		);
+
+		$db->update_query("tasks", $update_array, "file = 'versioncheck'");
 
 		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
@@ -2257,6 +2253,7 @@ function install_done()
 	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
+	$cache->update_default_theme();
 
 	$version_history = array();
 	$dh = opendir(INSTALL_ROOT."resources");
@@ -2269,6 +2266,10 @@ function install_done()
 	}
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
+
+	// Attempt to run an update check
+	require_once MYBB_ROOT.'inc/functions_task.php';
+	run_task(12);
 
 	echo $lang->done . '</p>';
 

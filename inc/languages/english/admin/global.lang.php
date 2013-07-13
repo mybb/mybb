@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -39,7 +39,7 @@ $l['username'] = "Username:";
 $l['username1'] = "Email:";
 $l['username2'] = "Username/Email:";
 $l['password'] = "Password:";
-$l['secret_pin'] = "Secret PIN";
+$l['secret_pin'] = "Secret PIN:";
 $l['login'] = "Login";
 $l['lost_password'] = "Forgot your password?";
 
@@ -120,10 +120,10 @@ $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
 
-$l['rel_in'] = "In";
+$l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
-$l['rel_less_than'] = "Less than";
-$l['rel_minute'] = "{1} {2} {3} {4}";
+$l['rel_less_than'] = "Less than ";
+$l['rel_minute'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 

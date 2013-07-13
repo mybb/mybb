@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -93,6 +93,13 @@ class MyBB {
 	 * @var string.
 	 */
 	public $request_method = "";
+
+	/**
+	 * Whether or not PHP's safe_mode is enabled
+	 *
+	 * @var boolean
+	 */
+	public $safemode = false;
 
 	/**
 	 * Loads templates directly from the master theme
@@ -208,9 +215,16 @@ class MyBB {
 		}
 		$this->clean_input();
 
-		if(@ini_get("safe_mode") == 1)
+		$safe_mode_status = @ini_get("safe_mode");
+		if($safe_mode_status == 1 || strtolower($safe_mode_status) == 'on')
 		{
 			$this->safemode = true;
+		}
+
+		// Are we running on a development server?
+		if(isset($_SERVER['MYBB_DEV_MODE']) && $_SERVER['MYBB_DEV_MODE'] == 1)
+		{
+			$this->dev_mode = 1;
 		}
 
 		// Are we running in debug mode?
@@ -349,7 +363,7 @@ class MyBB {
 							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
 							break;
 						case "pos":
-							if (($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
+							if(($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
 								$this->input[$var] = 0;
 							break;
 					}
@@ -386,7 +400,7 @@ class MyBB {
 				$error_code = MYBB_NOT_UPGRADED;
 				break;
 			case "sql_load_error":
-				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"http://mybb.com\">MyBB Website</a>";
+				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"http://www.mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_SQL_LOAD_ERROR;
 				break;
 			case "apc_load_error":
@@ -410,7 +424,7 @@ class MyBB {
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
 				break;
 			default:
-				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://mybb.com\">MyBB Website</a>";
+				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_GENERAL;
 		}
 		$error_handler->trigger($message, $error_code);

@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -228,26 +228,9 @@ if($mybb->settings['portal_showpms'] != 0)
 {
 	if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
-		switch($db->type)
-		{
-			case "sqlite":
-			case "pgsql":
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='".$mybb->user['uid']."'");
-				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
+		$messages['pms_total'] = $mybb->user['pms_total'];
+		$messages['pms_unread'] = $mybb->user['pms_unread'];
 
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
-				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
-				break;
-			default:
-				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
-				$messages = $db->fetch_array($query);
-		}
-
-		// the SUM() thing returns "" instead of 0
-		if($messages['pms_unread'] == "")
-		{
-			$messages['pms_unread'] = 0;
-		}
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
 		eval("\$pms = \"".$templates->get("portal_pms")."\";");
 	}
@@ -464,8 +447,9 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	$tids = '';
 	$comma = '';
 	$posts = array();
+	$attachmentcount = array();
 	$query = $db->query("
-		SELECT p.pid, p.message, p.tid, p.smilieoff
+		SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
@@ -474,18 +458,28 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	);
 	while($getid = $db->fetch_array($query))
 	{
-		$pids .= ",'{$getid['pid']}'";
-		$tids .= ",'{$getid['tid']}'";
-		$posts[$getid['tid']] = $getid;
+		$attachmentcount[$getid['tid']] = $getid['attachmentcount'];
+		foreach($attachmentcount as $tid => $attach_count)
+		{
+			if($attach_count > 0)
+			{
+				$pids .= ",'{$getid['pid']}'";
+			}
+				$tids .= ",'{$getid['tid']}'";
+				$posts[$getid['tid']] = $getid;
+		}
 	}
 	if(!empty($posts))
 	{
-		$pids = "pid IN(0{$pids})";
-		// Now lets fetch all of the attachments for these posts
-		$query = $db->simple_select("attachments", "*", $pids);
-		while($attachment = $db->fetch_array($query))
+		if($pids != '')
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			$pids = "pid IN(0{$pids})";
+			// Now lets fetch all of the attachments for these posts
+			$query = $db->simple_select("attachments", "*", $pids);
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
 		}
 
 		if(is_array($forum))
@@ -549,7 +543,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				{
 					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 				}
-				if (!stristr($announcement['avatar'], 'http://'))
+				if(!stristr($announcement['avatar'], 'http://'))
 				{
 					$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
 				}

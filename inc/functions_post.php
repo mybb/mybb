@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -169,6 +169,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['author'] = $post['uid'];
+	$post['subject_title'] = $post['subject'];
 
 	// Get the usergroup
 	if($post['userusername'])
@@ -506,6 +507,7 @@ function build_postbit($post, $post_type=0)
 			$post['inlinecheck'] = "";
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+		$post_number = my_number_format($postcounter);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 

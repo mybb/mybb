@@ -1,4 +1,4 @@
-[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](http://mybb.com "MyBB")
+[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](http://www.mybb.com "MyBB")
 
 ## Free never tasted so good.
 MyBB is a free and open source, community-based, forum software project.
@@ -18,7 +18,7 @@ Contributing to MyBB is easy:
 6. SQA will provide feedback and, if it passes verification, your pull request will be merged into MyBB
 
 ### Community
-Visit our community at [MyBB.com](http://mybb.com) for support.
+Visit our community at [MyBB.com](http://www.mybb.com) for support.
 
 ### License
-MyBB is licensed under [GNU Lesser General Public License v3](http://mybb.com/about/license).
+MyBB is licensed under [GNU Lesser General Public License v3](http://www.mybb.com/about/license).

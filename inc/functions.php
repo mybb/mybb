@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -22,7 +22,7 @@ function output_page($contents)
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
 
-	if($mybb->usergroup['cancp'] == 1)
+	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
@@ -62,8 +62,15 @@ function output_page($contents)
 			{
 				$memory_usage = '';
 			}
+			// MySQLi is still MySQL, so present it that way to the user
+			$database_server = $db->short_title;
 
-			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			if($database_server == 'MySQLi')
+			{
+				$database_server = 'MySQL';
+			}
+
+			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% ".$database_server.")<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
@@ -247,7 +254,7 @@ function send_mail_queue($count=10)
 
 			if($db->affected_rows() == 1)
 			{
-				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers'], true);
 			}
 		}
 		// Update the mailqueue cache and remove the lock
@@ -1844,7 +1851,7 @@ function my_unserialize($data)
  */
 function get_server_load()
 {
-	global $lang;
+	global $mybb, $lang;
 
 	$serverload = array();
 
@@ -1864,7 +1871,7 @@ function get_server_load()
 		}
 		if(!is_numeric($serverload[0]))
 		{
-			if(@ini_get('safe_mode') == 'On')
+			if($mybb->safemode)
 			{
 				return $lang->unknown;
 			}
@@ -3596,9 +3603,6 @@ function debug_page()
 	$query_time = $db->query_time;
 	$globaltime = format_time_duration($globaltime);
 
-	// $phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
-	// $query_time = $maintimer->format($db->query_time);
-
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($query_time/$maintimer->totaltime)*100), 2);
 
@@ -3623,7 +3627,7 @@ function debug_page()
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
 	echo "<head>";
-	echo "<meta name=\"robots\" content=\"noindex\">";
+	echo "<meta name=\"robots\" content=\"noindex\" />";
 	echo "<title>MyBB Debug Information</title>";
 	echo "</head>";
 	echo "<body>";
@@ -4770,8 +4774,8 @@ function my_strtoupper($string)
 function unhtmlentities($string)
 {
 	// Replace numeric entities
-	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'unichr(hexdec("\\1"))', $string);
-	$string = preg_replace('~&#([0-9]+);~e', 'unichr("\\1")', $string);
+	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', create_function('$matches', 'return unichr(hexdec($matches[1]));'), $string);
+	$string = preg_replace_callback('~&#([0-9]+);~', create_function('$matches', 'return unichr($matches[1]);'), $string);
 
 	// Replace literal entities
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
@@ -6352,7 +6356,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	global $mybb, $checksums, $bad_verify_files;
 
 	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif");
+	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif", "logo.png");
 	$ignore_ext = array("attach");
 
 	if(substr($path, -1, 1) == "/")
@@ -6522,7 +6526,7 @@ function my_rand($min=null, $max=null, $force_seed=false)
 	if($min !== null && $max !== null)
 	{
 		$distance = $max - $min;
-		if ($distance > 0)
+		if($distance > 0)
 		{
 			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
 		}

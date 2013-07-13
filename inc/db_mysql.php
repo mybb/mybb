@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -151,7 +151,10 @@ class DB_MySQL
 			{
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key))
+					{
+						$connections['read'][] = $settings;
+					}
 				}
 			}
 			// Specified both read & write servers

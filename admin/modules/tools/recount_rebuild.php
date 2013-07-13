@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -220,7 +220,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
 		echo "<br />\n";
-		echo "<script type=\"text/javascript\">window.onload = function() { var button = $$('#proceed_button'); if(button[0]) { button[0].value = '{$lang->automatically_redirecting}'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
 		echo "<p class=\"buttons\">\n";
 		echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
 		echo "</p>\n";

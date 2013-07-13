@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -28,9 +28,6 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
-
-$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
-$templates->cache($db->escape_string($templatelist));
 
 $shutdown_queries = array();
 
@@ -77,12 +74,19 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 }
 else
 {
-	$loadstyle = "def=1";
+	$loadstyle = "def='1'";
 }
 
 // Load basic theme information that we could be needing.
-$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
-$theme = $db->fetch_array($query);
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		$cache->update_default_theme();
+	}
+	$theme = $cache->read('default_theme');
+}
+
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
@@ -101,6 +105,9 @@ else
 		$theme['imglangdir'] = $theme['imgdir'];
 	}
 }
+
+$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
+$templates->cache($db->escape_string($templatelist));
 
 if($lang->settings['charset'])
 {
@@ -151,6 +158,7 @@ if($mybb->input['action'] == "get_users")
 	}
 
 	echo json_encode(array("users" => $data));
+	exit;
 }
 else if($mybb->input['action'] == "get_usergroups")
 {
@@ -377,14 +385,13 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
-	}
 
-	// Forum is closed - no editing allowed (for anyone)
-	if($forum['open'] == 0)
-	{
-		xmlhttp_error($lang->no_permission_edit_post);
+		// Forum is closed - no editing allowed
+		if($forum['open'] == 0)
+		{
+			xmlhttp_error($lang->no_permission_edit_post);
+		}
 	}
-
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.
@@ -505,6 +512,7 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		echo json_encode(array("message" => $post['message']."\n", "editedmsg" => $editedmsg_response));
+		exit;
 	}
 }
 // Fetch the list of multiquoted posts which are not in a specific thread
@@ -603,6 +611,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 	$db->insert_query("captcha", $regimagearray);
 	header("Content-type: application/json; charset={$charset}");
 	echo json_encode(array("imagehash" => $imagehash));
+	exit;
 }
 else if($mybb->input['action'] == "validate_captcha")
 {

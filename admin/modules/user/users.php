@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -186,6 +186,9 @@ if($mybb->input['action'] == "activate_user")
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
+
+	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
@@ -821,7 +824,7 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if (!stristr($user['avatar'], 'http://'))
+		if(!stristr($user['avatar'], 'http://') || !stristr($user['avatar'], 'https://'))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -1674,7 +1677,6 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
-			$db->update_query("users", array("warningpoints" => $destination_user['warningpoints']+$source_user['warningpoints']), "uid='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
 
 			// Is the source user a moderator?
@@ -1741,6 +1743,22 @@ if($mybb->input['action'] == "merge")
 			$total_reputation = $db->fetch_field($query, "total_rep");
 
 			$db->update_query("users", array('reputation' => intval($total_reputation)), "uid='{$destination_user['uid']}'");
+
+			// Calculate warning points
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$source_user['uid']}' AND expired='0'
+			");
+			$original_warn_level = $db->fetch_field($query, "warn_lev");
+
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$destination_user['uid']}' AND expired='0'
+			");
+			$new_warn_level = $db->fetch_field($query, "warn_lev");
+			$db->update_query("users", array("warningpoints" => intval($original_warn_level + $new_warn_level)), "uid='{$destination_user['uid']}'");
 
 			// Additional updates for non-uid fields
 			$last_poster = array(
@@ -3203,7 +3221,9 @@ function build_users_view($view)
 				// Yes, so do we want to edit the ban or pardon his crime?
 				$popup->add_item($lang->edit_ban, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 				$popup->add_item($lang->lift_ban, "index.php?module=user-banning&action=lift&uid={$user['uid']}&my_post_key={$mybb->post_code}");
-			} else {
+			}
+			else
+			{
 				// Not banned... but soon maybe!
 				$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 			}

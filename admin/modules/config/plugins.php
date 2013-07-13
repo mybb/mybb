@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -136,37 +136,38 @@ if($mybb->input['action'] == "browse")
 	echo $search->generate_text_box('keywords', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
 	echo "<script type='text/javascript'>
-		var form = document.getElementById('search_form');
-		form.onsubmit = function() {
-			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_plugins}')
+		var form = $(\"#search_form\");
+		form.submit(function() {
+			var search = $(\"#search_keywords\");
+			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
 			{
 				search.focus();
 				return false;
 			}
-		}
+		})
 
-		var search = document.getElementById('search_keywords');
-		search.onfocus = function()
-		{
-			if(this.value == '{$lang->search_for_plugins}')
+		var search = $(\"#search_keywords\");
+		search.focus(function() {
+			var searched_focus = $(this);
+			if(searched_focus.val() == '{$lang->search_for_plugins}')
 			{
-				$(this).removeClassName('search_default');
-				this.value = '';
+				searched_focus.removeClass('search_default');
+				searched_focus.val(\"\");
 			}
-		}
-		search.onblur = function()
-		{
-			if(this.value == '')
+		})
+
+		search.blur(function() {
+			var searched_blur = $(this);
+			if(searched_blur.val() == '')
 			{
-				$(this).addClassName('search_default');
-				this.value = '{$lang->search_for_plugins}';
+				searched_blur.addClass('search_default');
+				searched_blur.val('{$lang->search_for_plugins}');
 			}
-		}
+		})
 		// fix the styling used if we have a different default value
-        if(search.value != '{$lang->search_for_plugins}')
+        if(search.val() != '{$lang->search_for_plugins}')
         {
-            $(search).removeClassName('search_default');
+            search.removeClass('search_default');
         }
 		</script>\n";
 	echo "</div>\n";

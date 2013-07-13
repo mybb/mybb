@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -413,9 +413,10 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace("#url\((\"|'|)(.*)\\1\)#e", "fix_css_urls('$2')", $stylesheet);
+	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
 
-	if ($mybb->settings['minifycss']) {
+	if($mybb->settings['minifycss'])
+	{
 		$stylesheet_min = minify_stylesheet($stylesheet);
 		$filename_min = str_replace('.css', '.min.css', $filename);
 		$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");
@@ -440,15 +441,22 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 }
 
 /**
- * Minify a stylesheet to remove comments, linebreaks and whitespace.
- * @param $stylesheet string The stylesheet in it's normal form.
+ * Minify a stylesheet to remove comments, linebreaks, whitespace,
+ * unnecessary semicolons, and prefers #rgb over #rrggbb.
+ * @param $stylesheet string The stylesheet in it's untouched form.
  * @return string The minified stylesheet
  */
 function minify_stylesheet($stylesheet)
 {
-	$stylesheet = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $stylesheet);
-	$stylesheet = str_replace(': ', ':', $stylesheet);
-	$stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
+	// Remove comments.
+	$stylesheet = preg_replace('@/\*.*?\*/@s', '', $stylesheet);
+	// Remove whitespace around symbols.
+	$stylesheet = preg_replace('@\s*([{}:;,])\s*@', '\1', $stylesheet);
+	// Remove unnecessary semicolons.
+	$stylesheet = preg_replace('@;}@', '}', $stylesheet);
+	// Replace #rrggbb with #rgb when possible.
+	$stylesheet = preg_replace('@#([a-f0-9])\1([a-f0-9])\2([a-f0-9])\3@i','#\1\2\3',$stylesheet);
+	$stylesheet = trim($stylesheet);
 	return $stylesheet;
 }
 
@@ -483,12 +491,6 @@ function resync_stylesheet($stylesheet)
 			}
 		}
 
-		return true;
-	}
-	else if($stylesheet['sid'] != 1 && @filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}") > $stylesheet['lastmodified'])
-	{
-		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}"));
-		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents), 'lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 		return true;
 	}
 
@@ -879,7 +881,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 
 function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = false)
 {
-	global $db;
+	global $db, $cache;
 
 	$stylesheets = array();
 
@@ -1014,6 +1016,8 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			update_theme_stylesheet_list($id, false, $update_disporders);
 		}
 	}
+
+	$cache->update_default_theme();
 
 	return true;
 }

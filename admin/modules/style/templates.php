@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -247,13 +247,13 @@ if($mybb->input['action'] == "add_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 
@@ -295,6 +295,7 @@ if($mybb->input['action'] == "add_template")
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
 				lineNumbers: true,
+				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
 				theme: \"mybb\"
@@ -595,13 +596,13 @@ if($mybb->input['action'] == "edit_template")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 
@@ -679,6 +680,7 @@ if($mybb->input['action'] == "edit_template")
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
 				lineNumbers: true,
+				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
 				theme: \"mybb\"
@@ -1112,13 +1114,13 @@ if($mybb->input['action'] == "search_replace")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/xml/xml.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/javascript/javascript.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/xml/xml.js"></script>
+<script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
 ';
 	}
 
@@ -1168,13 +1170,15 @@ if($mybb->input['action'] == "search_replace")
 		echo "<script type=\"text/javascript\">
 			var editor1 = CodeMirror.fromTextArea(document.getElementById(\"find\"), {
 				lineNumbers: true,
+				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
 				theme: \"mybb\"
 			});
-			
+
 			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
 				lineNumbers: true,
+				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
 				theme: \"mybb\"
@@ -1441,7 +1445,7 @@ if($mybb->input['action'] == "diff_report")
 			'link' => "index.php?module=style-templates&amp;action=find_updated"
 		);
 	}
-	
+
 	if(!isset($template_sets[$mybb->input['sid2']]))
 	{
 		flash_message($lang->error_invalid_input, 'error');
@@ -1587,7 +1591,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=style-templates");
 	}
-	
+
 	$plugins->run_hooks("admin_style_templates_set");
 
 	$table = new Table;

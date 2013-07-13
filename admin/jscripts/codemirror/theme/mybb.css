@@ -1,0 +1,41 @@
+.cm-s-mybb { font:13px/1.4em Trebuchet, Verdana, sans-serif; }	/* - customized editor font - */
+
+.cm-s-mybb.CodeMirror { background: #fafafa; color: black; height: 500px; }
+.cm-s-mybb div.CodeMirror-selected { background: #b3c6d3 !important; }
+.cm-s-mybb .CodeMirror-gutters { background: #1F4661; border-right: 7px solid #3E7087; }
+.cm-s-mybb .CodeMirror-linenumber { color: white; }
+.cm-s-mybb .CodeMirror-cursor { border-left: 1px solid black !important; }
+.cm-s-mybb .CodeMirror-scroll { overflow-x: auto; }
+
+.cm-s-mybb .cm-keyword {color: #708;}
+.cm-s-mybb .cm-atom {color: #219;}
+.cm-s-mybb .cm-number {color: #164;}
+.cm-s-mybb .cm-def {color: #00f;}
+.cm-s-mybb .cm-variable {color: black;}
+.cm-s-mybb .cm-variable-2 {color: #05a;}
+.cm-s-mybb .cm-variable-3 {color: #085;}
+.cm-s-mybb .cm-property {color: black;}
+.cm-s-mybb .cm-operator {color: black;}
+.cm-s-mybb .cm-comment {color: #a50;}
+.cm-s-mybb .cm-string {color: #a11;}
+.cm-s-mybb .cm-string-2 {color: #f50;}
+.cm-s-mybb .cm-meta {color: #555;}
+.cm-s-mybb .cm-error {color: #f00;}
+.cm-s-mybb .cm-qualifier {color: #555;}
+.cm-s-mybb .cm-builtin {color: #30a;}
+.cm-s-mybb .cm-bracket {color: #997;}
+.cm-s-mybb .cm-tag {color: #170;}
+.cm-s-mybb .cm-attribute {color: #00c;}
+.cm-s-mybb .cm-header {color: blue;}
+.cm-s-mybb .cm-quote {color: #090;}
+.cm-s-mybb .cm-hr {color: #999;}
+.cm-s-mybb .cm-link {color: #00c;}
+
+.cm-negative {color: #d44;}
+.cm-positive {color: #292;}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-emstrong {font-style: italic; font-weight: bold;}
+.cm-link {text-decoration: underline;}
+
+.cm-invalidchar {color: #f00;}

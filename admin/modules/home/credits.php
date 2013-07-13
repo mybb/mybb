@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -33,7 +33,7 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['credits_about'] = array(
 		'title' => $lang->about_the_team,
-		'link' => "http://mybb.com/about/team",
+		'link' => "http://www.mybb.com/about/team",
 		'link_target' => "_blank",
 	);
 

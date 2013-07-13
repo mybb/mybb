@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -89,17 +89,18 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if(isset($mybb->input['regtime']))
 		{
 			// Check how long it took for this person to register
-			$time = TIME_NOW;
-			$timetook = time() - (int)$mybb->input['regtime'];
+			$timetook = TIME_NOW - (int)$mybb->input['regtime'];
 
 			// See if they registered faster than normal
 			if($timetook < $mybb->settings['regtime'])
 			{
 				// This user registered pretty quickly, bot detected!
-				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time,$mybb->settings['regtime'],$timetook);
+				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time, $mybb->settings['regtime'], $timetook);
 				error($lang->error_spam_deny_time);
 			}
-		} else {
+		}
+		else
+		{
 			error($lang->error_spam_deny."s");
 		}
 	}
@@ -1283,6 +1284,14 @@ if($mybb->input['action'] == "login")
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
 
+	if(!empty($errors))
+	{
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+
+		$inline_errors = inline_error($errors);
+	}
+
 	switch($mybb->settings['username_method'])
 	{
 		case 1:
@@ -1522,7 +1531,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
@@ -1621,6 +1630,7 @@ if($mybb->input['action'] == "profile")
 	// Get the user title for this user
 	unset($usertitle);
 	unset($stars);
+	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
 		// User has custom user title
@@ -1695,12 +1705,12 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(!isset($starimage))
+	if(empty($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
 
-	if($starimage)
+	if(!empty($starimage))
 	{
 		// Only display stars if we have an image to use...
 		$starimage = str_replace("{theme}", $theme['imgdir'], $starimage);

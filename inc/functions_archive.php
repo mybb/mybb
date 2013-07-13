@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -178,7 +178,7 @@ function archive_footer()
 </div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://mybb.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="http://www.mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybb.com">MyBB Group</a>
 </div>
 </body>
 </html>

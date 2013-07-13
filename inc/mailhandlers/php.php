@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -53,7 +53,7 @@ class PhpMail extends MailHandler
 		}
 
 		// If safe mode is on, don't send the additional parameters as we're not allowed to
-		if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
+		if($mybb->safemode)
 		{
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
 		}

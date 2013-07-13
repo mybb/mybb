@@ -840,7 +840,7 @@ div.error p em {
 	padding-left: 24px;
 	display: block;
 	color: #C00;
-	background: url(images/error.gif) no-repeat 0;
+	background: url(images/error.png) no-repeat 0;
 }
 
 div.error ul {
@@ -1320,6 +1320,101 @@ form #message {
 
 .pollbar .percent {
 	display: none;
+}
+
+div.jGrowl {
+	z-index: 9999;
+	color: #fff;
+	font-size: 12px;
+}
+
+div.jGrowl {
+	position: absolute;
+}
+
+body > div.jGrowl {
+	position: fixed;
+}
+
+div.jGrowl.top-left {
+	left: 0px;
+	top: 0px;
+}
+
+div.jGrowl.top-right {
+	right: 0px;
+	top: 0px;
+}
+
+div.jGrowl.bottom-left {
+	left: 0px;
+	bottom: 0px;
+}
+
+div.jGrowl.bottom-right {
+	right: 0px;
+	bottom: 0px;
+}
+
+div.jGrowl.center {
+	top: 0px;
+	width: 50%;
+	left: 25%;
+}
+
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left:  auto;
+	margin-right: auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: #000;
+	opacity: .85;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
+	zoom: 1;
+	width: 235px;
+	padding: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	text-align: left;
+	display: none;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 40px;
+}
+
+div.jGrowl div.jGrowl-notification,
+div.jGrowl div.jGrowl-closer {
+	margin: 10px;
+}
+
+div.jGrowl div.jGrowl-notification div.jGrowl-header {
+	font-weight: bold;
+	font-size: .85em;
+}
+
+div.jGrowl div.jGrowl-notification div.jGrowl-close {
+	z-index: 99;
+	float: right;
+	font-weight: bold;
+	font-size: 1em;
+	cursor:	pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	cursor: pointer;
+	font-size: .9em;
+	font-weight: bold;
+	text-align: center;
 }]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
@@ -1880,7 +1975,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_addevent" version="1402"><![CDATA[<html>
+		<template name="calendar_addevent" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
 {$headerinclude}
@@ -1913,29 +2008,29 @@ a.button {
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($("#type_single").prop("checked"))
 						{
-							Element.hide('ranged_selects');
-							Element.show('single_selects');
+							$("#ranged_selects").hide();
+							$("#single_selects").show();
 						}
 						else
 						{
-							Element.hide('single_selects');
-							Element.show('ranged_selects');
+							$("#single_selects").hide();
+							$("#ranged_selects").show();
 							toggleRepeats();
 						}
 					}
 
 					function toggleRepeats()
 					{
-						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						$$('.repeats_type').each(function(e)
+						var repeats = $("#repeats").get(0).selectedIndex;
+						$(".repeats_type").each(function()
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('repeats_type_'+repeats))
+						if($("#repeats_type_"+repeats).length > 0)
 						{
-							Element.show('repeats_type_'+repeats);
+							$("#repeats_type_"+repeats).show();
 						}
 					}
 				// -->
@@ -2290,7 +2385,7 @@ a.button {
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
-		<template name="calendar_editevent" version="1402"><![CDATA[<html>
+		<template name="calendar_editevent" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
@@ -2331,29 +2426,29 @@ a.button {
 				<!--
 					function toggleType()
 					{
-						if($('type_single').checked == true)
+						if($("#type_single").prop("checked"))
 						{
-							Element.hide('ranged_selects');
-							Element.show('single_selects');
+							$("#ranged_selects").hide();
+							$("#single_selects").show();
 						}
 						else
 						{
-							Element.hide('single_selects');
-							Element.show('ranged_selects');
+							$("#single_selects").hide();
+							$("#ranged_selects").show();
 							toggleRepeats();
 						}
 					}
 
 					function toggleRepeats()
 					{
-						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						$$('.repeats_type').each(function(e)
+						var repeats = $("#repeats").get(0).selectedIndex;
+						$(".repeats_type").each(function()
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('repeats_type_'+repeats))
+						if($("#repeats_type_"+repeats).length > 0)
 						{
-							Element.show('repeats_type_'+repeats);
+							$("#repeats_type_"+repeats).show();
 						}
 					}
 				// -->
@@ -3418,9 +3513,9 @@ a.button {
 	}
 // -->
 </script>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1400"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
-		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
+		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
 			lang.stars = new Array();
@@ -3455,9 +3550,8 @@ a.button {
 </form>
 <script type="text/javascript">
 <!--
-	$$('.forumjump').invoke('observe', 'change', function(e)
-	{
-		var option = this.options[this.selectedIndex].value
+	$(".forumjump").change(function() {
+		var option = $(".forumjump").get(0).selectedIndex.value;
 
 		if(option < 0)
 		{
@@ -3686,7 +3780,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_adduser" version="1400"><![CDATA[<br />
+		<template name="managegroup_adduser" version="1800"><![CDATA[<br />
 <form method="post" action="managegroup.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
@@ -3697,9 +3791,27 @@ a.button {
 </tr>
 <tr>
 <td class="trow1">{$lang->username}</td>
-<td class="trow1"><input type="text" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
+<td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
 </tr>
 </table>
+<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+        $("#username").typeahead({
+            name: 'username',
+            remote: {
+              url: 'xmlhttp.php?action=get_users&query=%QUERY',
+              filter: function(response){
+                return response.users;
+              },
+            },
+            limit: 10
+        });
+    }
+// -->
+</script>
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
@@ -4103,7 +4215,7 @@ a.button {
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
 		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
-		<template name="member_profile_modoptions" version="1600"><![CDATA[
+		<template name="member_profile_modoptions" version="1800"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->mod_options}</strong></td>
@@ -4119,7 +4231,7 @@ a.button {
 <tr>
 <td class="trow2">
 {$memprofile['usernotes']}<br />
-<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_usernotes}</a>
+<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}#usernotes">{$lang->edit_usernotes}</a>
 </td>
 </tr>
 </table>
@@ -4472,9 +4584,9 @@ a.button {
     }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1400"><![CDATA[<br />
+		<template name="member_register_regimage" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
-<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -4873,18 +4985,18 @@ body {
 </html>]]></template>
 		<template name="misc_buddypopup_user_offline" version="1800"><![CDATA[					<tr>
 						<td class="trow1">
-						<div class="buddy_avatar"><img src="{$buddy['avatar']}" alt="" width="{$scaled_dimensions['width']}" height="{$scaled_dimensions['height']}" style="margin-top: {$margin_top}px;" /></div>
-						<div class="buddy_details">
-							<img src="{$theme['imgdir']}/buddy_offline.png" alt="{$lang->offline}" title="{$lang->offline}" /> {$profile_link}
-							<div class="buddy_action">
-								<span class="smalltext">{$last_active}<br />{$send_pm}</span>
+							<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
+							<div class="buddy_details">
+								<img src="{$theme['imgdir']}/buddy_offline.png" alt="{$lang->offline}" title="{$lang->offline}" /> {$profile_link}
+								<div class="buddy_action">
+									<span class="smalltext">{$last_active}<br />{$send_pm}</span>
+								</div>
 							</div>
-						</div>
 						</td>
 					</tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="1800"><![CDATA[					<tr>
 						<td class="trow1">
-						<div class="buddy_avatar"><img src="{$buddy['avatar']}" alt="" width="{$scaled_dimensions['width']}" height="{$scaled_dimensions['height']}" style="margin-top: {$margin_top}px;" /></div>
+						<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
 						<div class="buddy_details">
 							<img src="{$theme['imgdir']}/buddy_online.png" alt="{$lang->online}" title="{$lang->online}" /> {$profile_link}
 							<div class="buddy_action">
@@ -5505,8 +5617,8 @@ body {
 								{$startdatemonth}
 								</select>
 								&nbsp;
-								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
+								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4" class="textbox" />
+								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" class="textbox" />
 							</td>
 						</tr>
 						<tr>
@@ -5521,8 +5633,8 @@ body {
 								{$enddatemonth}
 								</select>
 								&nbsp;
-								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
+								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4" class="textbox" />
+								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" class="textbox" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
 							</td>
 						</tr>
@@ -5671,7 +5783,7 @@ body {
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
-		<template name="modcp_editprofile" version="1600"><![CDATA[<html>
+		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -5897,49 +6009,47 @@ body {
 <!--
 	if(mod_posts == 0)
 	{
-		$('modposts_action').hide();
+		$("#modposts_action").hide();
 	}
 
 	if(susp_posts == 0)
 	{
-		$('susposts_action').hide();
+		$("#susposts_action").hide();
 	}
 
 	function toggleSuspend(action)
 	{
-		var item = action + "_action";
-
 		if(action == "modposts")
 		{
-			$('susposts_action').hide();
-			$('suspost').checked = false;
+			$("#susposts_action").hide();
+			$("#suspost").attr("checked", false);
 
-			if($("modpost").checked == false)
+			if($("#modpost").prop("checked") == false)
 			{
-				$("modpost").checked = false;
-				$("modposts_action").hide();
+				$("#modpost").attr("checked", false);
+				$("#modposts_action").hide();
 			}
 			else
 			{
-				$("modpost").checked = true;
-				$("modposts_action").show();
+				$("#modpost").attr("checked", true);
+				$("#modposts_action").show();
 			}
 		}
 
 		if(action == "susposts")
 		{
-			$('modposts_action').hide();
-			$('modpost').checked = false;
+			$("#modposts_action").hide();
+			$("#modpost").attr("checked", false);
 
-			if($("suspost").checked == false)
+			if($("#suspost").prop("checked") == false)
 			{
-				$("suspost").checked = false;
-				$("susposts_action").hide();
+				$("#suspost").attr("checked", false);
+				$("#susposts_action").hide();
 			}
 			else
 			{
-				$("suspost").checked = true;
-				$("susposts_action").show();
+				$("#suspost").attr("checked", true);
+				$("#susposts_action").show();
 			}
 		}
 	}
@@ -5951,7 +6061,7 @@ body {
 	{$selection_options}
 </select>]]></template>
 		<template name="modcp_editprofile_select_option" version="1600"><![CDATA[<option value="{$key}" {$selected}>{$value}</option>]]></template>
-		<template name="modcp_editprofile_signature" version="1600"><![CDATA[<tr>
+		<template name="modcp_editprofile_signature" version="1800"><![CDATA[<tr>
 <td class="trow1" valign="top">
 <script type="text/javascript">
 <!--
@@ -5959,13 +6069,13 @@ body {
 
 	function toggleAction()
 	{
-		if($("suspend_action").visible() == true)
+		if($("#suspend_action").is(":visible") == true)
 		{
-			$("suspend_action").hide();
+			$("#suspend_action").hide();
 		}
 		else
 		{
-			$("suspend_action").show();
+			$("#suspend_action").show();
 		}
 	}
 // -->
@@ -5986,7 +6096,7 @@ body {
 <!--
 	if(sig_checked == 0)
 	{
-		$("suspend_action").hide();
+		$("#suspend_action").hide();
 	}
 // -->
 </script>
@@ -6271,8 +6381,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_modlogs_multipage" version="1400"><![CDATA[<tr>
-<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+		<template name="modcp_modlogs_multipage" version="1800"><![CDATA[<tr>
+<td class="tfoot" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 		<template name="modcp_modlogs_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="5">{$lang->error_no_results}</td>
@@ -6516,7 +6626,7 @@ body {
 	<tr><td class="trow1 smalltext"><a href="modcp.php" class="modcp_nav_item modcp_nav_home">{$lang->mcp_nav_home}</a></td></tr>
 	<tr>
 		<td class="tcat">
-			<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.gif" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.gif" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
 	</tr>
@@ -6528,7 +6638,7 @@ body {
 	</tbody>
 	<tr>
 		<td class="tcat">
-			<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.gif" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.gif" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
 	</tr>
@@ -6565,9 +6675,9 @@ body {
 			<td class="thead" colspan="5"><strong>{$lang->report_center}</strong></td>
 		</tr>
 		<tr>
-			<td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+			<td class="tcat" width="35%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
 			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
-			<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
+			<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
 			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
 		</tr>
@@ -6607,14 +6717,13 @@ body {
 		<template name="modcp_reports_allnoreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_allreport" version="1400"><![CDATA[<tr>
-<td class="{$trow}" align="center"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
-<td class="{$trow}" align="center">{$report['postusername']}</td>
-<td class="{$trow}">{$report['threadsubject']}</td>
-<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
-<td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}</span></td>
-</tr>]]></template>
+		<template name="modcp_reports_allreport" version="1800"><![CDATA[				<tr>
+					<td class="{$trow}">{$report_data['content']}</td>
+					<td class="{$trow}">{$report_data['comment']}</td>
+					<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
+					<td class="{$trow}" align="center">{$report_data['reports']}</td>
+					<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$report_data['time']}</span></td>
+				</tr>]]></template>
 		<template name="modcp_reports_allreports" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->all_reports}</title>
@@ -6623,26 +6732,25 @@ body {
 <body>
 {$header}
 <table width="100%" border="0" align="center">
-<tr>
-{$modcp_nav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->all_reports}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
-</tr>
-{$allreports}
-{$allreportspages}
-</table>
-</td>
-</tr>
+	<tr>
+		{$modcp_nav}
+		<td valign="top">
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td class="thead" align="center" colspan="6"><strong>{$lang->all_reports}</strong></td>
+				</tr>
+				<tr>
+					<td class="tcat" width="30%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+					<td class="tcat" width="20%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
+					<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
+					<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
+					<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
+				</tr>
+				{$allreports}
+				{$allreportspages}
+			</table>
+		</td>
+	</tr>
 </table>
 {$footer}
 </body>
@@ -6654,10 +6762,10 @@ body {
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
-	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$report_extra} {$lang->for} {$report_reason}</td>
-	<td class="{$trow}" align="left">{$report_comment}</td>
-	<td class="{$trow}" align="center">{$report_reports}</td>
-	<td class="{$trow} smalltext" align="right">{$lastreport_date}<br />{$lang->by} <a href="{$lastreporter_link}">{$lastreporter_name}</a></td>
+	<td class="{$trow}">{$report_data['content']}</td>
+	<td class="{$trow}" align="left">{$report_data['comment']}</td>
+	<td class="{$trow}" align="center">{$report_data['reports']}</td>
+	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
 		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
@@ -8045,10 +8153,10 @@ body {
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1400"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
-<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -8119,7 +8227,7 @@ body {
 	</div>
 </div>
 <div class="post_content">
-	<div class="post_head" title="{$post['subject']}">
+	<div class="post_head" title="{$post['subject_title']}">
 		{$post['posturl']}
 		{$post['icon']}
 		<span class="post_date">{$post['postdate']} <span class="post_edit" id="edited_by_{$post['pid']}">{$post['editedmsg']}</span></span>
@@ -8185,7 +8293,7 @@ body {
 	</div>
 </div>
 <div class="post_content">
-	<div class="post_head" title="{$post['subject']}">
+	<div class="post_head" title="{$post['subject_title']}">
 		{$post['posturl']}
 		{$post['icon']}
 		<span class="post_date">{$post['postdate']} <span class="post_edit" id="edited_by_{$post['pid']}">{$post['editedmsg']}</span></span>
@@ -8251,7 +8359,7 @@ body {
 		<template name="postbit_online" version="1800"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.png" border="0" alt="{$lang->postbit_status_online}" class="buddy_status" /></a>]]></template>
 		<template name="postbit_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}" title="{$lang->postbit_pm}" class="postbit_pm"><span>{$lang->postbit_button_pm}</span></a>]]></template>
 		<template name="postbit_posturl" version="1800"><![CDATA[<div style="float: right; width: auto; vertical-align: top">
-<strong><a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>
+<strong><a href="{$post['postlink']}#pid{$post['pid']}">#{$post_number}</a></strong>
 {$post['inlinecheck']}
 </div>]]></template>
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$lang->postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
@@ -8375,7 +8483,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_advanced_search" version="1611"><![CDATA[<html>
+		<template name="private_advanced_search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->advanced_private_message_search}</title>
 {$headerinclude}
@@ -8447,7 +8555,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</tr>
 </table>
 <br />
-<div align="center"><input type="submit" value="{$lang->search_private_messages}" /></div>
+<div align="center"><input type="submit" value="{$lang->search_private_messages}" class="button" /></div>
 </td>
 </tr>
 </table>
@@ -8806,7 +8914,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/usercp.js?ver=1600"></script>
+<script type="text/javascript" src="jscripts/usercp.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -8874,20 +8982,20 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 <script type="text/javascript">
 <!--
-	if($('bcc_area') && $('bcc').value == "")
+	if($("#bcc_area").length > 0 && $("#bcc").val() == "")
 	{
-		$('bcc_area').style.display = 'none';
+		$("#bcc_area").css("display", "none");
 	}
 
 	function showBcc()
 	{
-		if($('bcc_area').style.display == 'none')
+		if($("#bcc_area").css("display") == 'none')
 		{
-			$('bcc_area').style.display = '';
+			$("#bcc_area").css("display", "");
 		}
 		else
 		{
-			$('bcc_area').style.display = 'none';
+			$("#bcc_area").css("display", "none");
 		}
 	}
 // -->
@@ -9013,100 +9121,118 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
+<title>{$mybb->settings['bbname']} - {$report_title}</title>
 {$headerinclude}
 </head>
 <body>
 <form action="report.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
-<input type="hidden" name="type" value="{$type}" />
+<input type="hidden" name="type" value="{$report_type}" />
 <input type="hidden" name="pid" value="{$pid}" />
-
+{$inline_errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<thead>
-	<tr>
-		<td class="thead" colspan="2"><strong>{$report_type}</strong>
-	</tr>
-</thead>
+<tr>
+	<td class="thead" colspan="2"><strong>{$report_title}</strong>
+</tr>
 <tr>
 	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
 </tr>
 {$report_reasons}
 </table>
-
-<br />
-<div align="center">
-	<input type="submit" class="button" value="{$report_type}" />
-</div>
 </form>
+
+<script type="text/javascript">
+<!--
+	if($("#report_reason option:selected").val() != 'other')
+	{
+		$("#reason").hide()
+	}
+
+	$("#report_reason").change(function()
+	{
+		if($(this).find("option:selected").val() == 'other')
+		{
+			$("#reason").show()
+			return
+		}
+
+		$("#reason").hide()
+	})
+// -->
+</script>
+
 </body>
 </html>]]></template>
 		<template name="report_duplicate" version="1800"><![CDATA[<tr>
-	<td class="trow1" colspan="2">{$lang->error_report_duplicate}</td>
+	<td class="trow1">{$lang->error_report_duplicate}</td>
+</tr>
+<tr>
+	<td class="tfoot"><input type="submit" class="button" value="{$report_title}" /></td>
 </tr>]]></template>
-		<template name="report_error" version="1800"><![CDATA[<html>
+		<template name="report_error" version="1800"><![CDATA[<tr>
+	<td colspan="2" class="trow1">{$error}</td>
+</tr>
+<tr>
+	<td colspan="2" class="tfoot">
+		<script type="text/javascript">
+		<!--
+			document.write('{$go_back} <input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
+		// -->
+		</script>
+	</td>
+</tr>]]></template>
+		<template name="report_reasons" version="1800"><![CDATA[<tr>
+	<td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
+	<td class="trow1" align="left">
+		<select name="reason" id="report_reason">
+			<option value="rules">{$lang->report_reason_rules}</option>
+			<option value="bad">{$lang->report_reason_bad}</option>
+			<option value="spam">{$lang->report_reason_spam}</option>
+			<option value="wrong">{$lang->report_reason_wrong}</option>
+			<option value="other">{$lang->report_reason_other}</option>
+		</select>
+	</td>
+</tr>
+<tr id="reason">
+	<td class="trow2">&nbsp;</td>
+	<td class="trow2" align="left">
+		<div>If 'Other' please provide a reason for reporting this content.</div>
+		<input type="text" class="textbox" name="comment" size="40" maxlength="250" />
+	</td>
+</tr>
+<tr>
+	<td colspan="2" class="tfoot"><input type="submit" class="button" value="{$report_title}" /></td>
+</tr>]]></template>
+		<template name="report_thanks" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
+<title>{$mybb->settings['bbname']} - {$report_title}</title>
 {$headerinclude}
 </head>
 <body>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
-		<td class="thead"><strong>{$report_type}</strong></td>
+		<td class="thead"><strong>{$report_title}</strong></td>
 	</tr>
 	<tr>
 		<td class="tcat">{$lang->report_to_mod}</td>
 	</tr>
 	<tr>
-		<td class="trow1">{$error}</td>
-	</tr>
-</table>
-
-<br />
-<div style="text-align: center;">
-	<script type="text/javascript">
-	<!--
-		document.write('{$go_back} <input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-	// -->
-	</script>
-</div>
-</body>
-</html>]]></template>
-		<template name="report_reasons" version="1800"><![CDATA[<tr>
-	<td class="trow1" align="left"><span class="smalltext">{$lang->report_reason}</span></td>
-	<td class="trow1" align="left"><select name="reason">{$reasons}</select></td>
-</tr>
-<tr>
-	<td class="trow2" align="left"><span class="smalltext">{$lang->report_add_comment}</span></td>
-	<td class="trow2" align="left"><input type="text" class="textbox" name="comment" size="40" maxlength="250" /></td>
-</tr>]]></template>
-		<template name="report_thanks" version="1800"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$report_type}</title>
-{$headerinclude}
-</head>
-<body>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="thead"><strong>{$lang->thank_you}</strong></td>
-	</tr>
-	<tr>
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
+	<tr>
+		<td class="tfoot">
+			<script type="text/javascript">
+			<!--
+				document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
+			// -->
+			</script>
+		</td>
+	</tr>
 </table>
-
-<br />
-<div style="text-align: center;">
-	<script type="text/javascript">
-	<!--
-		document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-	// -->
-	</script>
-</div>
 </body>
 </html>]]></template>
-		<template name="reputation" version="1605"><![CDATA[<html>
+		<template name="reputation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -9137,10 +9263,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 					<br />
 					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$user['reputation']}</span><br /><br />
 					<strong>{$lang->reputation_members} {$rep_members}</strong><br />
-					<strong>{$lang->reputation_posts} {$rep_posts}</strong><br />
-					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count} {$pos_rep_info}<br />
-					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count} {$neu_rep_info}<br />
-					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count} {$neg_rep_info}
+					<strong>{$lang->reputation_posts} {$rep_posts}</strong>
 				</span>
 			</td>
 			<td align="right" style="width: 300px;">
@@ -9168,6 +9291,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td style="text-align: center;"><span class="smalltext">{$positive_6months}</span></td>
 							<td style="text-align: center;"><span class="smalltext">{$neutral_6months}</span></td>
 							<td style="text-align: center;"><span class="smalltext">{$negative_6months}</span></td>
+						</tr>
+						<tr>
+							<td style="text-align: right;"><span class="smalltext">{$lang->all_time}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$positive_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$neutral_count}</span></td>
+							<td style="text-align: center;"><span class="smalltext">{$negative_count}</span></td>
 						</tr>
 					</table>
 			</td>
@@ -9323,12 +9452,22 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>
-		<template name="reputation_vote" version="1600"><![CDATA[<tr>
-	<td class="trow1 {$status_class}">
-		{$reputation_vote['username']} <span class="smalltext">{$reputation_vote['user_reputation']} - {$last_updated} {$delete_link}<br />{$postrep_given}<br /></span>
+		<template name="reputation_vote" version="1800"><![CDATA[<tr>
+	<td class="trow1 {$status_class}" id="rid{$reputation_vote['rid']}">
+		{$report_link}{$delete_link}
+		{$reputation_vote['username']} <span class="smalltext">{$reputation_vote['user_reputation']} - {$last_updated}<br />{$postrep_given}</span>
+		<br />
 		<strong class="{$vote_type_class}">{$vote_type} {$vote_reputation}:</strong> {$reputation_vote['comments']}
 	</td>
 </tr>]]></template>
+		<template name="reputation_vote_delete" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
+			<a href="reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;" class="postbit_qdelete"><span>{$lang->delete_vote}</span></a>
+		</div>]]>
+		</template>
+		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
+			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, 'reportReputation', 400, 300); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
+		</div>]]>
+		</template>
 		<template name="search" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
@@ -9942,9 +10081,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</tbody>
 	</table>
 </form>]]></template>
-		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
-		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
-		<div id="success_rating_{$thread['tid']}" style="float: left; padding-top: 2px; padding-right: 10px;">&nbsp;</div>
+		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -12064,7 +12202,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1603"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
 {$stylesheets}
 <script type="text/javascript">

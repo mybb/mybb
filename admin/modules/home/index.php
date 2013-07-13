@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -242,14 +242,14 @@ elseif(!$mybb->input['action'])
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= TIME_NOW-60*60*24*14)
 	{
-		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?module=home&amp;version_check");
+		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?module=home&amp;action=version_check");
 		$page->output_error("<p>{$lang->last_update_check_two_weeks}</p>");
 	}
 
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybb.com/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
@@ -285,17 +285,10 @@ elseif(!$mybb->input['action'])
 
 	$table->output($lang->dashboard);
 
-	// Latest news widget
-	if (!empty($update_check['news']) && is_array($update_check['news'])) {
-		foreach ($update_check['news'] as $newsItem) {
-			$table->construct_cell("<strong><a href='{$newsItem['link']}'>{$newsItem['title']}</a></strong>", array('colspan' => '2'));
-			$table->construct_row();
-			$table->construct_cell($newsItem['description'], array('colspan' => '2'));
-			$table->construct_row();
-		}
-		$table->output($lang->latest_mybb_announcements);
-	}
+	echo '
+	<div class="float_right" style="width: 48%;">';
 
+	$table = new Table;
 	$table->construct_header($lang->admin_notes_public);
 
 	$form = new Form("index.php", "post");
@@ -306,8 +299,34 @@ elseif(!$mybb->input['action'])
 
 	$buttons[] = $form->generate_submit_button($lang->save_notes);
 	$form->output_submit_wrapper($buttons);
-
 	$form->end();
+
+	echo '</div>
+	<div class="float_left" style="width: 48%;">';
+
+	// Latest news widget
+	$table = new Table;
+
+	if(!empty($update_check['news']) && is_array($update_check['news']))
+	{
+		foreach($update_check['news'] as $newsItem)
+		{
+			$posted = my_date('relative', $newsItem['dateline']);
+			$table->construct_cell("<strong><a href=\"{$newsItem['link']}\" target=\"_blank\">{$newsItem['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$table->construct_row();
+
+			$table->construct_cell(htmlspecialchars_uni($newsItem['description']));
+			$table->construct_row();
+		}
+	}
+	else
+	{
+		$table->construct_cell($lang->no_announcements);
+		$table->construct_row();
+	}
+
+	$table->output($lang->latest_mybb_announcements);
+	echo '</div>';
 
 	$page->output_footer();
 }

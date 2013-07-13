@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -55,7 +55,7 @@ $l['error_invalid_limit'] = "The feed item limit you entered is invalid. Please 
 
 $l['syndication'] = "Latest Thread Syndication";
 $l['syndication_generated_url'] = "Your Generated Syndication URL:";
-$l['syndication_note'] = "Below you can generate links to specific RSS syndication feeds. Links can be generated for all forums, per forum, or for a specific number of forums. You will then be presented with a link which you can copy in to an RSS reader such as <a href=\"http://www.google.com/reader/\" target=\"_blank\">Google Reader</a>. <i><a href=\"http://www.xml.com/pub/a/2002/12/18/dive-into-xml.html\">What is RSS?</a></i>";
+$l['syndication_note'] = "Below you can generate links to specific RSS syndication feeds. Links can be generated for all forums, per forum, or for a specific number of forums. You will then be presented with a link which you can copy in to an RSS reader. <i><a href=\"http://en.wikipedia.org/wiki/RSS\">What is RSS?</a></i>";
 $l['syndication_forum'] = "Forum to Syndicate:";
 $l['syndication_forum_desc'] = "Please select a forum from the right. Use the CTRL key to select multiple forums.";
 $l['syndication_version'] = "Feed Version:";

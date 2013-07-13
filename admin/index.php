@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -130,9 +130,9 @@ elseif($mybb->input['do'] == "login")
 	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
 
 	// Validate PIN first
-	if (isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
+	if(isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
 	{
-		$default_page->show_login($lang->error_invalid_secret_pin,"error");
+		$default_page->show_login($lang->error_invalid_secret_pin, "error");
 	}
 
 	$loginhandler->set_data(array(
@@ -154,7 +154,7 @@ elseif($mybb->input['do'] == "login")
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
-		$sid = md5(uniqid(microtime(true)));
+		$sid = md5(uniqid(microtime(true), true));
 
 		// Create a new admin session for this user
 		$admin_session = array(
@@ -415,7 +415,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 		if($mybb->input['ajax'] == 1)
 		{
 			echo json_encode(array("errors" => array("login")));
-			die;
+			exit;
 		}
 		$page->show_login($login_message, "error");
 	}

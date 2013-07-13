@@ -201,7 +201,6 @@ a:hover {
 	font-size: 120%;
 	color: #000;
 }
-}
 /* Fix IE. Hide from IE Mac \*/
 * html #left_menu li a, , * html #left_menu li {
 	height: 1%;
@@ -825,6 +824,10 @@ div.success ul, div.error.ul {
 	float: right;
 }
 
+.float_left {
+	float: left;
+}
+
 a img {
 	border: 0;
 }
@@ -1063,6 +1066,7 @@ ul.tabs li a.active {
 
 .tt-suggestion p {
     line-height: 0 !important;
+    text-align: left;
 }
 
 .tt-suggestion.tt-is-under-cursor {
