@@ -365,10 +365,19 @@ no=Disabled]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="useerrorperm">
+			<title>Show error only to administrators?</title>
+			<description><![CDATA[Do you want to show errors only to users with ACP access?]]></description>
+			<disporder>13</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="errorlogmedium">
 			<title>Error Logging Medium</title>
 			<description><![CDATA[The type of the error handling to use.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[select
 none=Neither
 log=Log errors
@@ -382,7 +391,7 @@ both=Log and email errors
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
 			<description><![CDATA[The type of errors to show.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
 error=Errors
@@ -396,7 +405,7 @@ none=Hide Errors and Warnings
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
 			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -405,7 +414,7 @@ none=Hide Errors and Warnings
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -414,7 +423,7 @@ none=Hide Errors and Warnings
 		<setting name="ip_forwarded_check">
 			<title>Scrutinize User's IP address?</title>
 			<description><![CDATA[Do you want to check a user's IP address for HTTP_X_FORWARDED_FOR or HTTP_X_REAL_IP headers? If you're unsure, set this to no.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

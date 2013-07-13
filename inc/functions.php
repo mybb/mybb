@@ -298,7 +298,7 @@ function parse_page($contents)
 		$contents = str_replace("<html", "<html xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
 	}
 
-	if($error_handler->warnings)
+	if($error_handler->warnings && ($mybb->settings['useerrorperm'] == 1 && $mybb->usergroup['cancp'] == 1 || $mybb->settings['useerrorperm'] != 1))
 	{
 		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
 	}
