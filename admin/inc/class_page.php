@@ -450,8 +450,10 @@ EOF;
 	/**
 	 * Generate the lockout unlock page
 	 *
+	 * @param string The any message to output on the page if there is one.
+	 * @param string The class name of the message (defaults to success)
 	 */
-	function show_lockout_unlock()
+	function show_lockout_unlock($message="", $class="success")
 	{
 		global $lang, $mybb, $cp_style;
 
@@ -470,6 +472,11 @@ EOF;
 			default:
 				$lang_username = $lang->username;
 				break;
+		}
+
+		if($message)
+		{
+			$message = "<p id=\"message\" class=\"error\"><span class=\"text\">{$message}</span></p>";
 		}
 
 		print <<<EOF
@@ -491,6 +498,7 @@ EOF;
 	</div>
 	<div id="content">
 		<h2>{$lang->lockout_unlock}</h2>
+		{$message}
 		<p>{$lang->enter_username_and_token}</p>
 		<form method="post" action="index.php">
 		<div class="form_container">

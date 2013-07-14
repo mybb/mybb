@@ -91,13 +91,29 @@ foreach(array('action', 'do', 'module') as $input)
 if($mybb->input['action'] == "unlock")
 {
 	$user = array();
+	$error = '';
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		$username = $db->escape_string(my_strtolower($mybb->input['username']));
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+			case 1:
+				$query = $db->simple_select("users", "*", "LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+		}
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			$error[] = $lang->error_invalid_username;
+			$error = $lang->error_invalid_username;
 		}
 	}
 	else if($mybb->input['uid'])
@@ -106,7 +122,7 @@ if($mybb->input['action'] == "unlock")
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			$error[] = $lang->error_invalid_uid;
+			$error = $lang->error_invalid_uid;
 		}
 	}
 	
@@ -125,11 +141,11 @@ if($mybb->input['action'] == "unlock")
 		}
 		else
 		{
-			$error[] = $lang->error_invalid_token;
+			$error = $lang->error_invalid_token;
 		}
 	}
 	
-	$default_page->show_lockout_unlock();
+	$default_page->show_lockout_unlock($error, 'error');
 }
 elseif($mybb->input['do'] == "login")
 {	
@@ -206,7 +222,22 @@ elseif($mybb->input['do'] == "login")
 	}
 	else
 	{
-		$query = $db->simple_select("users", "uid,email", "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		$username = $db->escape_string(my_strtolower($mybb->input['username']));
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+			case 1:
+				$query = $db->simple_select("users", "uid,email", "LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+		}
 		$login_user = $db->fetch_array($query);
 		
 		if($login_user['uid'] > 0)
