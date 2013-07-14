@@ -160,38 +160,6 @@ if($mybb->input['action'] == "get_users")
 	echo json_encode(array("users" => $data));
 	exit;
 }
-else if($mybb->input['action'] == "get_usergroups")
-{
-	// If the string is less than 3 characters, quit.
-	if(my_strlen($mybb->input['query']) < 3)
-	{
-		exit;
-	}
-
-	// Send our headers.
-	header("Content-type: text/plain; charset={$charset}");
-
-	// Sanitize the input.
-	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
-
-	// Query for any matching usergroups.
-	$query_options = array(
-		"order_by" => "title",
-		"order_dir" => "asc",
-		"limit_start" => 0,
-		"limit" => 15
-	);
-
-	$query = $db->simple_select("usergroups", "gid, title", "title LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
-	while($group = $db->fetch_array($query))
-	{
-		$group['title'] = htmlspecialchars_uni($group['title']);
-		// Send the result to the browser for this usergroup.
-		echo "<div>\n";
-		echo "<span class=\"usergroup\">{$group['title']} ({$lang->usergroup} {$group['gid']})</span>\n";
-		echo "</div>\n";
-	}
-}
 // This action provides editing of thread/post subjects from within their respective list pages.
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
