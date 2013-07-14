@@ -90,7 +90,7 @@ if($mybb->input['action'] == "browse")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 	
-	if(!array_key_exists("results", $tree))
+	if(!is_array($tree) || !isset($tree['results']))
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
@@ -243,7 +243,14 @@ if($mybb->input['action'] == "check")
 	
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
-	
+
+	if(!is_array($tree) || !isset($tree['plugins']))
+	{
+		$page->output_inline_error($lang->error_communication_problem);
+		$page->output_footer();
+		exit;
+	}
+
 	if(array_key_exists('error', $tree['plugins']))
 	{
 		switch($tree['plugins'][0]['error'])

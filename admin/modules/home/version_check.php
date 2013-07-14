@@ -75,6 +75,13 @@ if(!$mybb->input['action'])
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
+	if(!is_array($tree) || !isset($tree['mybb']))
+	{
+		$page->output_inline_error($lang->error_communication);
+		$page->output_footer();
+		exit;
+	}
+
 	$latest_code = $tree['mybb']['version_code']['value'];
 	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
