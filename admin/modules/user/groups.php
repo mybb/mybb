@@ -97,47 +97,6 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 
 $plugins->run_hooks("admin_user_groups_begin");
 
-if($mybb->input['action'] == "export")
-{
-	$plugins->run_hooks("admin_user_groups_export_start");
-
-	// Log admin action
-	log_admin_action();
-
-	$gidwhere = "";
-	if($mybb->input['gid'])
-	{
-		$gidwhere = "gid='".intval($mybb->input['gid'])."'";
-	}
-	$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\n";
-	$xml = "<usergroups version=\"{$mybb->version_code}\" exported=\"".TIME_NOW."\">\n";
-
-	$query = $db->simple_select("usergroups", "*", $gidwhere, array('order_by' => 'gid', 'order_dir' => 'ASC'));
-	while($usergroup = $db->fetch_array($query))
-	{
-		$xml .= "\t\t<usergroup>\n";
-		foreach($usergroup as $key => $value)
-		{
-			$xml .= "\t\t\t<{$key}><![CDATA[{$value}]]></{$key}>\n";
-		}
-		$xml .= "\t\t</usergroup>\n";
-	}
-
-	$xml .= "</usergroups>";
-	$mybb->settings['bbname'] = urlencode($mybb->settings['bbname']);
-
-	header("Content-disposition: filename=".$mybb->settings['bbname']."-usergroups.xml");
-	header("Content-Length: ".my_strlen($xml));
-	header("Content-type: unknown/unknown");
-	header("Pragma: no-cache");
-	header("Expires: 0");
-
-	$plugins->run_hooks("admin_user_groups_export_end");
-
-	echo $xml;
-	exit;
-}
-
 if($mybb->input['action'] == "approve_join_request")
 {
 	$plugins->run_hooks("admin_user_groups_approve_join_request");

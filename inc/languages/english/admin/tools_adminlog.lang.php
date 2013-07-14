@@ -239,7 +239,6 @@ $l['admin_log_user_group_promotions_enable'] = "Enabled group promotion #{1} ({2
 $l['admin_log_user_group_promotions_edit'] = "Edited group promotion #{1} ({2})";
 $l['admin_log_user_group_promotions_add'] = "Added group promotion #{1} ({2})";
 
-$l['admin_log_user_groups_export'] = "Exported usergroups to XML";
 $l['admin_log_user_groups_add_leader'] = "Added user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_delete_leader'] = "Removed user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_edit_leader'] = "Edited user #{1} ({2}) as a leader for usergroup #{3} ({4})";
