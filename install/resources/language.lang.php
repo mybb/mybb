@@ -322,7 +322,7 @@ $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Follow the MyBB Blog for news!</strong></p><p>The MyBB Blog contains information about all new releases to the MyBB software, be it a security fix or feature update, information can be found there. The blog also contains occasional posts about development of new features and showcases of heavily customized MyBB forums. Go check out the <a href="http://blog.mybb.com" target="_blank">MyBB Blog</a>!</p>';
+$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Follow the MyBB Blog!</strong></p><p>The MyBB Blog contains information about all new releases to the MyBB software, be it a security fix or feature update, information can be found there. The blog also contains occasional posts about development of new features and showcases of heavily customized MyBB forums. Go check out the <a href="http://blog.mybb.com" target="_blank">MyBB Blog</a>!</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";
