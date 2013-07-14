@@ -196,7 +196,7 @@ $l['db_step_error_sqlite_invalid_dbname'] = 'You may not use relative URLs for S
 $l['db_step_error_invalid_tableprefix'] = 'You may only use an underscore (_) and alphanumeric characters in a table prefix. Please use a valid table prefix before continuing.';
 $l['db_step_error_tableprefix_too_long'] = 'You may only use a table prefix with a length of 40 characters or less. Please use a shorter table prefix before continuing.';
 
-$l['tablecreate_step_connected'] = '<p>Connection to the database server and table you specified was successful.</p>
+$l['tablecreate_step_connected'] = '<p>Connection to the database server and database you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>
 <p>The MyBB database tables will now be created.</p>';
 $l['tablecreate_step_created'] = 'Creating table {1}...';
