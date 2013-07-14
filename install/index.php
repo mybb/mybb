@@ -2290,7 +2290,7 @@ function install_done()
 	{
 		echo $lang->done_step_dirdelete;
 	}
-	echo $lang->done_subscribe_mailing;
+	echo $lang->done_whats_next;
 	$output->print_footer('');
 }
 

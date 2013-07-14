@@ -326,10 +326,10 @@ $l['done_step_admincreated'] = '<p>Creating Administrator account...';
 $l['done_step_adminoptions'] = '<p>Building Administrator permissions...';
 $l['done_step_cachebuilding'] = '<p>Building data caches...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
-<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
+<p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the <a href="http://community.mybb.com/" target="_blank">Community Forums</a> if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="color:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Follow the MyBB Blog!</strong></p><p>The MyBB Blog contains information about all new releases to the MyBB software, be it a security fix or feature update, information can be found there. The blog also contains occasional posts about development of new features and showcases of heavily customized MyBB forums. Go check out the <a href="http://blog.mybb.com" target="_blank">MyBB Blog</a>!</p>';
+$l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>MyBB offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to MyBB. If you\'re looking to switch to MyBB, you\'re heading in the right direction! Check out the <a target="_blank" href="http://www.mybb.com/downloads/merge-system">Merge System</a> for more information.</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";
