@@ -189,7 +189,7 @@ $l['db_step_error_sqlite_invalid_dbname'] = 'You may not use relative URLs for S
 $l['db_step_error_invalid_tableprefix'] = 'You may only use an underscore (_) and alphanumeric characters in a table prefix. Please use a valid table prefix before continuing.';
 $l['db_step_error_tableprefix_too_long'] = 'You may only use a table prefix with a length of 40 characters or less. Please use a shorter table prefix before continuing.';
 
-$l['tablecreate_step_connected'] = '<p>Connection to the database server and table you specified was successful.</p>
+$l['tablecreate_step_connected'] = '<p>Connection to the database server and database you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>
 <p>The MyBB database tables will now be created.</p>';
 $l['tablecreate_step_created'] = 'Creating table {1}...';
@@ -322,7 +322,7 @@ $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://mybb.com/mailing-list" target="_blank">Subscribe to the updates mailing list!</a></p>';
+$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Follow the MyBB Blog!</strong></p><p>The MyBB Blog contains information about all new releases to the MyBB software, be it a security fix or feature update, information can be found there. The blog also contains occasional posts about development of new features and showcases of heavily customized MyBB forums. Go check out the <a href="http://blog.mybb.com" target="_blank">MyBB Blog</a>!</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";
