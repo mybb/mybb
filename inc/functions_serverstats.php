@@ -248,14 +248,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	}
 
 	// We need a unique ID for the host so hash it to keep it private and send it over
-	if($_SERVER['HTTP_HOST'] == "localhost")
-	{
-		$id = $_SERVER['HTTP_HOST'].time();
-	}
-	else
-	{
-		$id = $_SERVER['HTTP_HOST'];
-	}
+	$id = $_SERVER['HTTP_HOST'].time();
 
 	if(function_exists('sha1'))
 	{
