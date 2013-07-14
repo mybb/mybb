@@ -178,7 +178,7 @@ if($mybb->input['action'] == "browse")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	if(!array_key_exists("results", $tree))
+	if(!is_array($tree) || !isset($tree['results']))
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
