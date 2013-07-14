@@ -12,7 +12,7 @@
 function build_server_stats($is_install=1, $prev_version='', $current_version='', $charset='')
 {
 	$info = array();
-	
+
 	// Is this an upgrade or an install?
 	if($is_install == 1)
 	{
@@ -22,23 +22,23 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['is_install'] = 0;
 	}
-	
+
 	// If we are upgrading....
 	if($info['is_install'] == 0)
 	{
 		// What was the previous version?
 		$info['prev_version'] = $prev_version;
 	}
-	
+
 	// What's our current version?
 	$info['current_version'] = $current_version;
-	
+
 	// What is our current charset?
 	$info['charset'] = $charset;
 
 	// Parse phpinfo into array
 	$phpinfo = parse_php_info();
-	
+
 	// PHP Version
 	$info['phpversion'] = phpversion();
 
@@ -62,7 +62,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['sqlite'] = $phpinfo['sqlite']['SQLite Library'];
 	}
-	
+
 	// Iconv Library Extension Version
 	$info['iconvlib'] = 0;
 	if(array_key_exists('iconv', $phpinfo))
@@ -85,17 +85,17 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['cgimode'] = 1;
 	}
-	
+
 	// Server Software
 	$info['server_software'] = $_SERVER['SERVER_SOFTWARE'];
-	
+
 	// Allow url fopen php.ini setting
 	$info['allow_url_fopen'] = 0;
 	if(ini_get('safe_mode') == 0 && ini_get('allow_url_fopen'))
 	{
 		$info['allow_url_fopen'] = 1;
 	}
-	
+
 	// Check classes, extensions, php info, functions, and php ini settings
 	$check = array(
 		'classes' => array(
@@ -104,7 +104,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'xmlwriter' => array('bitwise' => 4, 'title' => 'XMLWriter'),
 			'imagemagick' => array('bitwise' => 8, 'title' => 'Imagick'),
 		),
-		
+
 		'extensions' => array(
 			'zendopt' => array('bitwise' => 1, 'title' => 'Zend Optimizer'),
 			'xcache' => array('bitwise' => 2, 'title' => 'XCache'),
@@ -117,15 +117,15 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'pdo_oci' => array('bitwise' => 256, 'title' => 'pdo_oci'),
 			'pdo_odbc' => array('bitwise' => 512, 'title' => 'pdo_odbc'),
 		),
-		
+
 		'phpinfo' => array(
 			'zlib' => array('bitwise' => 1, 'title' => 'zlib'),
 			'mbstring' => array('bitwise' => 2, 'title' => 'mbstring'),
 			'exif' => array('bitwise' => 4, 'title' => 'exif'),
 			'zlib' => array('bitwise' => 8, 'title' => 'zlib'),
-			
+
 		),
-		
+
 		'functions' => array(
 			'sockets' => array('bitwise' => 1, 'title' => 'fsockopen'),
 			'mcrypt' => array('bitwise' => 2, 'title' => 'mcrypt_encrypt'),
@@ -139,14 +139,14 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			'curl' => array('bitwise' => 512, 'title' => 'curl_init'),
 			'iconv' => array('bitwise' => 1024, 'title' => 'iconv'),
 		),
-		
+
 		'php_ini' => array(
 			'post_max_size' => 'post_max_size',
 			'upload_max_filesize' => 'upload_max_filesize',
 			'safe_mode' => 'safe_mode',
 		),
 	);
-	
+
 	foreach($check as $cat_name => $category)
 	{
 		foreach($category as $name => $what)
@@ -190,7 +190,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 			}
 		}
 	}
-	
+
 	// Host URL & hostname
 	$info['hosturl'] = $info['hostname'] = "unknown/local";
 	if($_SERVER['HTTP_HOST'] == 'localhost')
@@ -208,7 +208,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		if($hosting)
 		{
 			preg_match('#We believe \<a href\="http:\/\/www.whoishostingthis.com\/linkout\/\?t\=[0-9]&url\=?([^"]*)" (title="([^"]*)" )target\=\_blank\>([^<]*)\<\/a\>#ism', $hosting, $matches);
-			
+
 			$info['hosturl'] = "unknown/no-url";
 			if(isset($matches[1]) && strlen(trim($matches[1])) != 0 && strpos($matches[1], '.') !== false)
 			{
@@ -246,16 +246,9 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['useragent'] = $_SERVER['HTTP_USER_AGENT'];
 	}
-	
+
 	// We need a unique ID for the host so hash it to keep it private and send it over
-	if($_SERVER['HTTP_HOST'] == "localhost")
-	{
-		$id = $_SERVER['HTTP_HOST'].time();
-	}
-	else
-	{
-		$id = $_SERVER['HTTP_HOST'];
-	}
+	$id = $_SERVER['HTTP_HOST'].time();
 
 	if(function_exists('sha1'))
 	{
@@ -265,7 +258,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$info['id'] = md5($id);
 	}
-	
+
 	$string = "";
 	$amp = "";
 	foreach($info as $key => $value)
@@ -306,7 +299,7 @@ function parse_php_info()
 	$phpinfo_html = preg_replace("#<td[^>]*>([^<]+)<\/td>#", "<info>$1</info>", $phpinfo_html);
 	$phpinfo_html = preg_split("#(<h2[^>]*>[^<]+<\/h2>)#", $phpinfo_html, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$modules = array();
-	
+
 	for($i=1; $i < count($phpinfo_html); $i++)
 	{
 		if(preg_match("#<h2[^>]*>([^<]+)<\/h2>#", $phpinfo_html[$i], $match))
@@ -318,7 +311,7 @@ function parse_php_info()
 				$pat = '<info>([^<]+)<\/info>';
 				$pat3 = "/$pat\s*$pat\s*$pat/";
 				$pat2 = "/$pat\s*$pat/";
-				
+
 				// 3 columns
 				if(preg_match($pat3, $one, $match))
 				{
