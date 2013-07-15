@@ -63,7 +63,7 @@ function upgrade3_dbchanges()
 
 	if($errors)
 	{
-		$output->print_contents($contents."<p><font color=\"red\">To be able to do this you must perform the following:</font></p>$errors");
+		$output->print_contents($contents."<p><span style=\"color: red\">To be able to do this you must perform the following:</span></p>$errors");
 		$output->print_footer("3_dbchanges");
 		exit;
 	}
