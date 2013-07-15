@@ -1834,6 +1834,14 @@ tr td.trow_shaded:last-child {
 	border-top-right-radius: 6px;
 }
 
+.thead_left {
+    border-top-right-radius: 0;
+}
+
+.thead_right {
+    border-top-left-radius: 0;
+}
+
 tr:last-child td.tfoot:first-child {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
@@ -7758,7 +7766,7 @@ body {
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="modcp.php?action=ipsearch&amp;ipaddress={$user['ip']}&amp;search_users=1">{$lang->lookup}</a></span>]]></template>
-		<template name="online_today" version="1604"><![CDATA[<html>
+		<template name="online_today" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->online_today}</title>
 {$headerinclude}
@@ -7767,8 +7775,8 @@ body {
 {$header}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" width="50%"><span class="smalltext"><strong>{$lang->on_username}</strong></span></td>
-<td class="thead" align="center" width="50%"><span class="smalltext"><strong>{$lang->time}</strong></span></td>
+<td class="thead thead_left" align="center" width="50%"><span class="smalltext"><strong>{$lang->on_username}</strong></span></td>
+<td class="thead thead_right" align="center" width="50%"><span class="smalltext"><strong>{$lang->time}</strong></span></td>
 </tr>
 {$todayrows}
 <tr>
