@@ -229,7 +229,7 @@ if(!$mybb->input['action'])
 	{
 		$information = '';
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
