@@ -39,6 +39,7 @@ $l['in'] = "in";
 $l['order'] = "order";
 
 $l['success_pruned_admin_logs'] = "The administrator logs have been pruned successfully.";
+$l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
