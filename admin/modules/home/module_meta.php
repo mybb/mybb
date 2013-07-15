@@ -78,6 +78,14 @@ function home_action_handler($action)
 		$online_users = "<ul class=\"menu online_admins\">";
 		$online_admins = array();
 
+		// Are we on a mobile device?
+		// Stolen from http://stackoverflow.com/a/10989424
+		$user_type = "desktop";
+		if(preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER['HTTP_USER_AGENT']))
+		{
+			$user_type = "mobile";
+		}
+
 		// If there's only 1 user online, it has to be us.
 		if($db->num_rows($query) == 1)
 		{
@@ -86,7 +94,8 @@ function home_action_handler($action)
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
-				"ip" => $db->fetch_field($query, "ip")
+				"ip" => $db->fetch_field($query, "ip"),
+				"type" => $user_type
 			);
 		}
 		else
@@ -95,10 +104,12 @@ function home_action_handler($action)
 			while($user = $db->fetch_array($query))
 			{
 				$uid_in[] = $user['uid'];
+
 				$online_admins[$user['uid']] = array(
 					"uid" => $user['uid'],
 					"username" => "",
-					"ip" => $user['ip']
+					"ip" => $user['ip'],
+					"type" => $user_type
 				);
 			}
 
@@ -108,7 +119,8 @@ function home_action_handler($action)
 				$online_admins[$user['username']] = array(
 					"uid" => $user['uid'],
 					"username" => $user['username'],
-					"ip" => $online_admins[$user['uid']]['ip']
+					"ip" => $online_admins[$user['uid']]['ip'],
+					"type" => $user_type
 				);
 				unset($online_admins[$user['uid']]);
 			}
