@@ -125,7 +125,8 @@ function home_action_handler($action)
 				$online_admins[$user['username']] = array(
 					"uid" => $user['uid'],
 					"username" => $user['username'],
-					"ip" => $online_admins[$user['uid']]['ip']
+					"ip" => $online_admins[$user['uid']]['ip'],
+					"type" => $user_type[$user['uid']]
 				);
 				unset($online_admins[$user['uid']]);
 			}
