@@ -36,6 +36,12 @@ if($mybb->input['action'] == 'prune')
 
 	if($mybb->request_method == 'post')
 	{
+		$is_today = false;
+		if($mybb->input['older_than'] <= 0)
+		{
+			$is_today = true;
+			$mybb->input['older_than'] = 1;
+		}
 		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
 
 		// Searching for entries by a particular user
@@ -63,7 +69,17 @@ if($mybb->input['action'] == 'prune')
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['fid'], $num_deleted, $forum_cache[$mybb->input['fid']]['name']);
 
-		flash_message($lang->success_pruned_mod_logs, 'success');
+		$success = $lang->success_pruned_mod_logs;
+		if($is_today == true && $num_deleted > 0)
+		{
+			$success .= ' '.$lang->note_logs_locked;
+		}
+		elseif($is_today == true && $num_deleted == 0)
+		{
+			flash_message($lang->note_logs_locked, 'error');
+			admin_redirect("index.php?module=tools-modlog");
+		}
+		flash_message($success, 'success');
 		admin_redirect("index.php?module=tools-modlog");
 	}
 	$page->add_breadcrumb_item($lang->prune_mod_logs, "index.php?module=tools-modlog&amp;action=prune");
