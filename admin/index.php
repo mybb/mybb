@@ -172,6 +172,12 @@ elseif($mybb->input['do'] == "login")
 
 		$sid = md5(uniqid(microtime(true), true));
 
+		$useragent = $_SERVER['HTTP_USER_AGENT'];
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+
 		// Create a new admin session for this user
 		$admin_session = array(
 			"sid" => $sid,
@@ -181,6 +187,7 @@ elseif($mybb->input['do'] == "login")
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
 			"data" => serialize(array()),
+			"useragent" => $db->escape_string($useragent),
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();

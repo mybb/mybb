@@ -103,6 +103,7 @@ function upgrade27_dbchanges()
 			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -114,6 +115,7 @@ function upgrade27_dbchanges()
 			$db->add_column("privatemessages", "ipaddress", "varchar(120) NOT NULL default ''");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			break;
 	}
 

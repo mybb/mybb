@@ -632,6 +632,17 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 }
 
 /**
+ * Checks whether the administrator is on a mobile device
+ *
+ * @param string The useragent to be checked
+ * @return boolean A true/false depending on if the administrator is on a mobile
+ */
+function is_mobile($useragent)
+{
+	return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $useragent);
+}
+
+/**
  * Checks whether there are any 'security' issues in templates via complex syntax
  *
  * @param string The template to be scanned

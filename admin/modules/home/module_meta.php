@@ -74,22 +74,22 @@ function home_action_handler($action)
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;
-		$query = $db->simple_select("adminsessions", "uid, ip", "lastactive > {$timecut}");
+		$query = $db->simple_select("adminsessions", "uid, ip, useragent", "lastactive > {$timecut}");
 		$online_users = "<ul class=\"menu online_admins\">";
 		$online_admins = array();
-
-		// Are we on a mobile device?
-		// Stolen from http://stackoverflow.com/a/10989424
-		$user_type = "desktop";
-		if(preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER['HTTP_USER_AGENT']))
-		{
-			$user_type = "mobile";
-		}
 
 		// If there's only 1 user online, it has to be us.
 		if($db->num_rows($query) == 1)
 		{
 			global $mybb;
+
+			// Are we on a mobile device?
+			// Stolen from http://stackoverflow.com/a/10989424
+			$user_type = "desktop";
+			if(is_mobile($db->fetch_field($query, "useragent")))
+			{
+				$user_type = "mobile";
+			}
 
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
@@ -105,6 +105,12 @@ function home_action_handler($action)
 			{
 				$uid_in[] = $user['uid'];
 
+				$user_type = "desktop";
+				if(is_mobile($user['useragent']))
+				{
+					$user_type = "mobile";
+				}
+
 				$online_admins[$user['uid']] = array(
 					"uid" => $user['uid'],
 					"username" => "",
@@ -116,6 +122,12 @@ function home_action_handler($action)
 			$query = $db->simple_select("users", "uid, username", "uid IN(".implode(',', $uid_in).")", array('order_by' => 'username'));
 			while($user = $db->fetch_array($query))
 			{
+				$user_type = "desktop";
+				if(is_mobile($user['useragent']))
+				{
+					$user_type = "mobile";
+				}
+
 				$online_admins[$user['username']] = array(
 					"uid" => $user['uid'],
 					"username" => $user['username'],
