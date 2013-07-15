@@ -85,17 +85,17 @@ function home_action_handler($action)
 
 			// Are we on a mobile device?
 			// Stolen from http://stackoverflow.com/a/10989424
-			$user_type = "desktop";
+			$user_type[$mybb->user['uid']] = "desktop";
 			if(is_mobile($db->fetch_field($query, "useragent")))
 			{
-				$user_type = "mobile";
+				$user_type[$mybb->user['uid']] = "mobile";
 			}
 
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
 				"ip" => $db->fetch_field($query, "ip"),
-				"type" => $user_type
+				"type" => $user_type[$mybb->user['uid']]
 			);
 		}
 		else
@@ -105,34 +105,27 @@ function home_action_handler($action)
 			{
 				$uid_in[] = $user['uid'];
 
-				$user_type = "desktop";
+				$user_type[$user['uid']] = "desktop";
 				if(is_mobile($user['useragent']))
 				{
-					$user_type = "mobile";
+					$user_type[$user['uid']] = "mobile";
 				}
 
 				$online_admins[$user['uid']] = array(
 					"uid" => $user['uid'],
 					"username" => "",
 					"ip" => $user['ip'],
-					"type" => $user_type
+					"type" => $user_type[$user['uid']]
 				);
 			}
 
 			$query = $db->simple_select("users", "uid, username", "uid IN(".implode(',', $uid_in).")", array('order_by' => 'username'));
 			while($user = $db->fetch_array($query))
 			{
-				$user_type = "desktop";
-				if(is_mobile($user['useragent']))
-				{
-					$user_type = "mobile";
-				}
-
 				$online_admins[$user['username']] = array(
 					"uid" => $user['uid'],
 					"username" => $user['username'],
-					"ip" => $online_admins[$user['uid']]['ip'],
-					"type" => $user_type
+					"ip" => $online_admins[$user['uid']]['ip']
 				);
 				unset($online_admins[$user['uid']]);
 			}
