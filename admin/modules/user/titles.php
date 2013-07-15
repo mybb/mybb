@@ -75,7 +75,7 @@ if($mybb->input['action'] == "add")
 	{
 		$mybb->input = array(
 			'stars' => '1',
-			'starimage' => '{theme}/star.gif',
+			'starimage' => '{theme}/star.png',
 		);
 	}
 

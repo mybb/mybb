@@ -597,7 +597,7 @@ if($mybb->input['action'] == "add")
 
 			if(!$mybb->input['starimage'])
 			{
-				$mybb->input['starimage'] = "images/star.gif";
+				$mybb->input['starimage'] = "images/star.png";
 			}
 
 			$new_usergroup = array(

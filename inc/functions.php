@@ -3290,7 +3290,7 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
 	}
 }
 

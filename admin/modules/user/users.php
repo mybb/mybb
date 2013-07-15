@@ -831,7 +831,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
+		$user['avatar'] = "../".$mybb->settings['useravatar'];
 		$scaled_dimensions = array(
 			"width" => 120,
 			"height" => 120
@@ -3280,7 +3280,7 @@ function build_users_view($view)
 			}
 			if(!$user['avatar'])
 			{
-				$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
+				$user['avatar'] = "../".$mybb->settings['useravatar'];
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
