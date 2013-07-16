@@ -324,12 +324,12 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$icon = array(
+			$updated_icon = array(
 				'name'	=> $db->escape_string($mybb->input['name']),
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->update_query("icons", $icon, "iid='".intval($mybb->input['iid'])."'");
+			$db->update_query("icons", $updated_icon, "iid='".intval($mybb->input['iid'])."'");
 
 			$cache->update_posticons();
 

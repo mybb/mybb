@@ -299,7 +299,7 @@ if($mybb->input['action'] == "editmod")
 			$forum = get_forum($fid);
 			if($mod_data['isgroup'])
 			{
-				$mod = $mybb->usergroups[$mod_data['id']];
+				$mod = $groupscache[$mod_data['id']];
 			}
 			else
 			{
@@ -1858,11 +1858,11 @@ if($mybb->input['action'] == "deletemod")
 		// Log admin action
 		if($isgroup)
 		{
-			log_admin_action($mod['id'], $mod['title'], $forum['fid'], $forum['name']);
+			log_admin_action($mid, $mod['title'], $forum['fid'], $forum['name']);
 		}
 		else
 		{
-			log_admin_action($mod['id'], $mod['username'], $forum['fid'], $forum['name']);
+			log_admin_action($mid, $mod['username'], $forum['fid'], $forum['name']);
 		}
 
 		flash_message($lang->success_moderator_deleted, 'success');
@@ -2142,7 +2142,7 @@ if(!$mybb->input['action'])
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
 
 					// Log admin action
-					log_admin_action('addmod', $new_mod['fid'], $newmod['name'], $fid, $forum['name']);
+					log_admin_action('addmod', $mid, $newmod['name'], $fid, $forum['name']);
 
 					flash_message($lang->success_moderator_added, 'success');
 					admin_redirect("index.php?module=forum-management&action=editmod&mid={$mid}");

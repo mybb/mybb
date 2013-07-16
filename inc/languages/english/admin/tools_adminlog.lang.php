@@ -183,14 +183,14 @@ $l['admin_log_style_themes_export'] = "Exported theme #{1} ({2})";
 $l['admin_log_tools_system_health_utf8_conversion'] = "Converted table {1} to UTF-8 Character Set.";
 
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
-$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
+$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user #{2}";
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";
-$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user {2} and module {3}";
+$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user #{2} and module {3}";
 
 $l['admin_log_tools_modlog_prune'] = "Pruned {4} moderator logs older than {1} days";
-$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user {2}";
+$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user #{2}";
 $l['admin_log_tools_modlog_prune_forum'] = "Pruned {4} moderator logs older than {1} days for forum #{3} ({5})";
-$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user {2} and forum #{5} ({4})";
+$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user #{2} and forum #{3} ({5})";
 
 $l['admin_log_tools_backupdb_dlbackup'] = "Downloaded an existing backup: {1}";
 $l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";
