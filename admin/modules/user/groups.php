@@ -1263,11 +1263,11 @@ if(!$mybb->input['action'])
 	{
 		if($usergroup['type'] > 1)
 		{
-			$icon = "<img src=\"styles/default/images/icons/custom.gif\" alt=\"{$lang->custom_user_group}\" style=\"vertical-align: middle;\" />";
+			$icon = "<img src=\"styles/default/images/icons/custom.png\" alt=\"{$lang->custom_user_group}\" style=\"vertical-align: middle;\" />";
 		}
 		else
 		{
-			$icon = "<img src=\"styles/default/images/icons/default.gif\" alt=\"{$lang->default_user_group}\" style=\"vertical-align: middle;\" />";
+			$icon = "<img src=\"styles/default/images/icons/default.png\" alt=\"{$lang->default_user_group}\" style=\"vertical-align: middle;\" />";
 		}
 
 		$leaders_list = '';
@@ -1340,8 +1340,8 @@ if(!$mybb->input['action'])
 	<br />
 	<fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_user_group}" style="vertical-align: middle;" /> {$lang->custom_user_group}<br />
-<img src="styles/default/images/icons/default.gif" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
+<img src="styles/default/images/icons/custom.png" alt="{$lang->custom_user_group}" style="vertical-align: middle;" /> {$lang->custom_user_group}<br />
+<img src="styles/default/images/icons/default.png" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
 </fieldset>
 LEGEND;
 

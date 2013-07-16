@@ -309,9 +309,9 @@ if(!$mybb->input['action'])
 			{
 				$thread_link = $lang->deleted;
 			}
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.png\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
 			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
@@ -326,9 +326,9 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
 			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
@@ -337,7 +337,7 @@ if(!$mybb->input['action'])
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
-			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['to_username'])
 			{
 				$table->construct_cell("{$find_to}<div>{$lang->deleted_user}</div>");

@@ -2480,14 +2480,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			if($moderator['isgroup'])
 			{
-				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/group.gif\" alt=\"{$lang->group}\" title=\"{$lang->group}\" />";
+				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/group.png\" alt=\"{$lang->group}\" title=\"{$lang->group}\" />";
 				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$moderator['id']}\">".htmlspecialchars_uni($moderator['title'])." ({$lang->usergroup} {$moderator['id']})</a>");
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=deletemod&amp;id={$moderator['id']}&amp;isgroup=1&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/user.gif\" alt=\"{$lang->user}\" title=\"{$lang->user}\" />";
+				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/user.png\" alt=\"{$lang->user}\" title=\"{$lang->user}\" />";
 				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$moderator['id']}\">".htmlspecialchars_uni($moderator['username'])."</a>");
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=deletemod&amp;id={$moderator['id']}&amp;isgroup=0&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));

@@ -315,7 +315,7 @@ if($mybb->input['action'] == "group")
 			$perm_type = "default";
 		}
 		$uid = -$group['gid'];
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
 		if($group['permissions'] != "")
 		{
@@ -345,8 +345,8 @@ if($mybb->input['action'] == "group")
 <br />
 <fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->using_custom_perms}" style="vertical-align: middle;" /> {$lang->using_custom_perms}<br />
-<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
+<img src="styles/{$page->style}/images/icons/group.png" alt="{$lang->using_custom_perms}" style="vertical-align: middle;" /> {$lang->using_custom_perms}<br />
+<img src="styles/{$page->style}/images/icons/default.png" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
 LEGEND;
 
 	$page->output_footer();
@@ -463,7 +463,7 @@ if(!$mybb->input['action'])
 		}
 		$usergroup_list = implode(", ", $usergroup_list);
 
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.png\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 
 		$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
 
@@ -494,9 +494,9 @@ if(!$mybb->input['action'])
 <br />
 <fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/{$page->style}/images/icons/user.gif" alt="{$lang->using_individual_perms}" style="vertical-align: middle;" /> {$lang->using_individual_perms}<br />
-<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->using_group_perms}" style="vertical-align: middle;" /> {$lang->using_group_perms}<br />
-<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
+<img src="styles/{$page->style}/images/icons/user.png" alt="{$lang->using_individual_perms}" style="vertical-align: middle;" /> {$lang->using_individual_perms}<br />
+<img src="styles/{$page->style}/images/icons/group.png" alt="{$lang->using_group_perms}" style="vertical-align: middle;" /> {$lang->using_group_perms}<br />
+<img src="styles/{$page->style}/images/icons/default.png" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
 LEGEND;
 	$page->output_footer();
 }

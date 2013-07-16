@@ -810,11 +810,11 @@ if(!$mybb->input['action'])
 		{
 			if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 			{
-				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
 			}
 			else
 			{
-				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 			}
 
 			$table->construct_cell($icon."<a href=\"index.php?module=forum-announcements&amp;action=edit&amp;aid={$aid}\">".htmlspecialchars_uni($announcement['subject'])."</a>");
@@ -888,11 +888,11 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 				{
 					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 					{
-						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
 					else
 					{
-						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
 
 					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?module=forum-announcements&amp;action=edit&amp;aid={$aid}\">".htmlspecialchars_uni($announcement['subject'])."</a></div>");

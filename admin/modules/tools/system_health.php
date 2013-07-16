@@ -585,11 +585,11 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
+			$status = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.png) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{
-			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt=\"{$lang->ok}\" />";
+			$status = "<img src=\"styles/{$page->style}/images/icons/tick.png\" alt=\"{$lang->ok}\" />";
 		}
 		$table->construct_cell("<strong>{$tablename}</strong>");
 		$table->construct_cell($status, array("class" => "align_center", 'width' => '15%'));

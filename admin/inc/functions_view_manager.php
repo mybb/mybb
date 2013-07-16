@@ -594,7 +594,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$view['title'] = $lang->$title_string;
 			}
 
-			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$view_type}.gif\" title=\"".$lang->sprintf($lang->this_is_a_view, $view_type)."\" alt=\"{$view_type}\" /></div><div class=\"{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
+			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$view_type}.png\" title=\"".$lang->sprintf($lang->this_is_a_view, $view_type)."\" alt=\"{$view_type}\" /></div><div class=\"{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
 
 			$popup = new PopupMenu("view_{$view['vid']}", $lang->options);
 			$popup->add_item($lang->edit_view, "{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}");
@@ -618,9 +618,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 <br />
 <fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->default}" style="vertical-align: middle;" /> {$lang->default_view_desc}<br />
-<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->public}" style="vertical-align: middle;" /> {$lang->public_view_desc}<br />
-<img src="styles/{$page->style}/images/icons/user.gif" alt="{$lang->private}" style="vertical-align: middle;" /> {$lang->private_view_desc}</fieldset>
+<img src="styles/{$page->style}/images/icons/default.png" alt="{$lang->default}" style="vertical-align: middle;" /> {$lang->default_view_desc}<br />
+<img src="styles/{$page->style}/images/icons/group.png" alt="{$lang->public}" style="vertical-align: middle;" /> {$lang->public_view_desc}<br />
+<img src="styles/{$page->style}/images/icons/user.png" alt="{$lang->private}" style="vertical-align: middle;" /> {$lang->private_view_desc}</fieldset>
 LEGEND;
 		$page->output_footer();
 	}
