@@ -239,7 +239,7 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$mycode = array(
+			$updated_mycode = array(
 				'title'	=> $db->escape_string($mybb->input['title']),
 				'description' => $db->escape_string($mybb->input['description']),
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "edit")
 				'parseorder' => intval($mybb->input['parseorder'])
 			);
 
-			$db->update_query("mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
+			$db->update_query("mycode", $updated_mycode, "cid='".intval($mybb->input['cid'])."'");
 
 			$cache->update_mycode();
 			
