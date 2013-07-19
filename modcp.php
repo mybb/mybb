@@ -2133,24 +2133,15 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if(validate_website_format($user['website']))
+	if($user['website'] == "" || $user['website'] == "http://")
 	{
-		$user['website'] = htmlspecialchars_uni($user['website']);
-	}
-	else
-	{
-		$user['website'] = '';
+		$user['website'] = "http://";
 	}
 
-	$user['icq'] = (int)$user['icq'];
-	if(!$user['icq'])
+	if($user['icq'] != "0")
 	{
-		$user['icq'] = '';
+		$user['icq'] = intval($user['icq']);
 	}
-
-	$user['msn'] = htmlspecialchars_uni($user['msn']);
-	$user['aim'] = htmlspecialchars_uni($user['aim']);
-	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
 	if(!$errors)
 	{

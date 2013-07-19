@@ -329,25 +329,15 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if(validate_website_format($post['website']))
+		if($post['website'] != "")
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
 		}
 		else
 		{
-			$post['website'] = $post['button_www'] = '';
+			$post['button_www'] = "";
 		}
-
-		$post['icq'] = (int)$post['icq'];
-		if(!$post['icq'])
-		{
-			$post['icq'] = '';
-		}
-
-		$post['msn'] = htmlspecialchars_uni($post['msn']);
-		$post['aim'] = htmlspecialchars_uni($post['aim']);
-		$post['yahoo'] = htmlspecialchars_uni($post['yahoo']);
 
 		if($post['hideemail'] != 1 && $mybb->usergroup['cansendemail'] == 1)
 		{
