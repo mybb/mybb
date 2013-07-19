@@ -286,12 +286,12 @@ elseif($mybb->input['action'] == "help")
 					$sname = "sid_".$section['sid']."_c";
 					if($collapsed[$sname] == "display: show;")
 					{
-						$expcolimage = "collapse_collapsed.gif";
+						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 					}
 					else
 					{
-						$expcolimage = "collapse.gif";
+						$expcolimage = "collapse.png";
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");

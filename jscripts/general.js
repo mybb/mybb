@@ -465,7 +465,7 @@ var expandables = {
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace("collapse_collapsed.gif", "collapse.gif"))
+				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
 				this.saveCollapsed(controls);
@@ -473,7 +473,7 @@ var expandables = {
 			else
 			{
 				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace("collapse.gif", "collapse_collapsed.gif"))
+				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
 				this.saveCollapsed(controls, 1);
