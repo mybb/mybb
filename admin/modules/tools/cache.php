@@ -180,7 +180,7 @@ if(!$mybb->input['action'])
 
 		$table->construct_row();
 	}
-	$table->output("<div style=\"float: right; text-decoration: underline\"><small><a href=\"index.php?module=tools-cache&amp;action=rebuild_all&amp;my_post_key={$mybb->post_code}\">(Rebuild & Reload All)</a></small></div>".$lang->cache_manager);
+	$table->output("<div style=\"float: right;\"><small><a href=\"index.php?module=tools-cache&amp;action=rebuild_all&amp;my_post_key={$mybb->post_code}\">(Rebuild & Reload All)</a></small></div>".$lang->cache_manager);
 
 	$page->output_footer();
 }
