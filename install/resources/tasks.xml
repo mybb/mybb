@@ -134,7 +134,7 @@
 	</task>
 	<task>
 		<title>Version Check</title>
-		<description><![CDATA[Automatically checks for news and new versions of MyBB twice a month.]]></description>
+		<description><![CDATA[Automatically checks for news and new versions of MyBB every day.]]></description>
 		<file>versioncheck</file>
 		<minute>0</minute>
 		<hour>0</hour>
