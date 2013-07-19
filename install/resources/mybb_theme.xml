@@ -4938,7 +4938,7 @@ a.button {
 		<template name="memberlist_error" version="1800"><![CDATA[<tr>
 <td colspan="{$colspan}" align="center" class="trow1">{$lang->error_no_members}</td>
 </tr>]]></template>
-		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
+		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="misc_buddypopup" version="1400"><![CDATA[<html>
 <head>
