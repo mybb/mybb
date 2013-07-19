@@ -730,7 +730,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post. If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[70x70]]></settingvalue>
+			<settingvalue><![CDATA[55x55]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
