@@ -55,6 +55,10 @@ if($mybb->input['action'] == 'prune')
 		{
 			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
 		}
+		else
+		{
+			$mybb->input['fid'] = 0;
+		}
 
 		$db->delete_query("moderatorlog", $where);
 		$num_deleted = $db->affected_rows();
