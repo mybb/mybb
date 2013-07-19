@@ -1006,15 +1006,8 @@ div.error ul {
 
 .post .post_author div.author_avatar img {
 	padding: 5px;
-	max-width: 55px;
-	max-height: 55px;
 	border: 1px solid #ddd;
 	background: #fff;
-}
-
-.post.classic .post_author div.author_avatar img {
-	max-width: 100px;
-	max-height: 100px;
 }
 
 .post .post_author div.author_information {
