@@ -1491,9 +1491,6 @@ if($mybb->input['action'] == "profile")
 	{
 		$memprofile['icq'] = '';
 	}
-	$memprofile['msn'] = htmlspecialchars_uni($memprofile['msn']);
-	$memprofile['aim'] = htmlspecialchars_uni($memprofile['aim']);
-	$memprofile['yahoo'] = htmlspecialchars_uni($memprofile['yahoo']);
 
 	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
