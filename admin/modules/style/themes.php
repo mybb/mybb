@@ -972,6 +972,11 @@ if($mybb->input['action'] == "edit")
 		{
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
 
+			if($theme['def'] == 1)
+			{
+				$cache->update_default_theme();
+			}
+
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
@@ -1075,6 +1080,10 @@ if($mybb->input['action'] == "edit")
 
 		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
 
+		if($theme['def'] == 1)
+		{
+			$cache->update_default_theme();
+		}
 		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
