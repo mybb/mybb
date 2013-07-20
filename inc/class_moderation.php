@@ -2074,7 +2074,7 @@ class Moderation
 		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
-		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
+		$query = $db->simple_select("threads", 'tid, sticky', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			if($thread['sticky'] == 1)
