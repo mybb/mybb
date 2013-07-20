@@ -1754,23 +1754,23 @@ if($mybb->input['action'] == "profile")
 
 			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 		}
-	}
-	// User is offline
-	else
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
+		// User is offline
+		else
 		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
+			$memlastvisitsep = '';
+			$memlastvisittime = '';
+			$memlastvisitdate = $lang->lastvisit_never;
+
+			if($memprofile['lastactive'])
+			{
+				// We have had at least some active time, hide it instead
+				$memlastvisitdate = $lang->lastvisit_hidden;
+			}
+
+			$timeonline = $lang->timeonline_hidden;
+
+			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 		}
-
-		$timeonline = $lang->timeonline_hidden;
-
-		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Build Referral
