@@ -203,6 +203,11 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$mybb->input['openthread'] = '';
 		}
 
+		if($mybb->input['stickthread'] != '' && $mybb->input['stickthread'] != 'stick' && $mybb->input['stickthread'] != 'unstick' && $mybb->input['stickthread'] != 'toggle')
+		{
+			$mybb->input['stickthread'] = '';
+		}
+
 		if($mybb->input['move_type'] == 2)
 		{
 			$move_checked[1] = '';
@@ -277,6 +282,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
+				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
 				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
@@ -358,6 +364,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
+		$mybb->input['stickthread'] = $thread_options['stickthread'];
 		$mybb->input['move_1_forum'] = $thread_options['movethread'];
 		$mybb->input['move_2_redirect'] = $thread_options['movethreadredirect'];
 		$mybb->input['move_3_redirecttime'] = $thread_options['movethreadredirectexpire'];
@@ -456,9 +463,17 @@ if($mybb->input['action'] == "edit_thread_tool")
 		'toggle' => $lang->toggle
 	);
 
+	$stick_unstick = array(
+		'' => $lang->no_change,
+		'stick' => $lang->stick,
+		'unstick' => $lang->unstick,
+		'toggle' => $lang->toggle
+	);
+
 	$form_container = new FormContainer($lang->thread_moderation);
 	$form_container->output_row($lang->approve_unapprove." <em>*</em>", '', $form->generate_select_box('approvethread', $approve_unapprove, $mybb->input['approvethread'], array('id' => 'approvethread')), 'approvethread');
 	$form_container->output_row($lang->open_close_thread." <em>*</em>", '', $form->generate_select_box('openthread', $open_close, $mybb->input['openthread'], array('id' => 'openthread')), 'openthread');
+	$form_container->output_row($lang->stick_unstick_thread." <em>*</em>", '', $form->generate_select_box('stickthread', $stick_unstick, $mybb->input['stickthread'], array('id' => 'stickthread')), 'stickthread');
 
 
 	$actions = "
@@ -591,6 +606,11 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['openthread'] = '';
 		}
 
+		if($mybb->input['stickthread'] != '' && $mybb->input['stickthread'] != 'stick' && $mybb->input['stickthread'] != 'unstick' && $mybb->input['stickthread'] != 'toggle')
+		{
+			$mybb->input['stickthread'] = '';
+		}
+
 		if(!intval($mybb->input['threadprefix']))
 		{
 			$mybb->input['threadprefix'] = '';
@@ -660,6 +680,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
+				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
 				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
@@ -751,6 +772,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$forum_checked[2] = '';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['openthread'] = '';
+		$mybb->input['stickthread'] = '';
 		$mybb->input['move_1_forum'] = '';
 		$mybb->input['move_2_redirect'] = '0';
 		$mybb->input['move_3_redirecttime'] = '';
@@ -830,9 +852,17 @@ if($mybb->input['action'] == "add_thread_tool")
 		'toggle' => $lang->toggle
 	);
 
+	$stick_unstick = array(
+		'' => $lang->no_change,
+		'stick' => $lang->stick,
+		'unstick' => $lang->unstick,
+		'toggle' => $lang->toggle
+	);
+
 	$form_container = new FormContainer($lang->thread_moderation);
 	$form_container->output_row($lang->approve_unapprove." <em>*</em>", '', $form->generate_select_box('approvethread', $approve_unapprove, $mybb->input['approvethread'], array('id' => 'approvethread')), 'approvethread');
 	$form_container->output_row($lang->open_close_thread." <em>*</em>", '', $form->generate_select_box('openthread', $open_close, $mybb->input['openthread'], array('id' => 'openthread')), 'openthread');
+	$form_container->output_row($lang->stick_unstick_thread." <em>*</em>", '', $form->generate_select_box('stickthread', $stick_unstick, $mybb->input['stickthread'], array('id' => 'stickthread')), 'stickthread');
 
 
 	$actions = "
@@ -965,6 +995,11 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['openthread'] = '';
 		}
 
+		if($mybb->input['stickthread'] != '' && $mybb->input['stickthread'] != 'stick' && $mybb->input['stickthread'] != 'unstick' && $mybb->input['stickthread'] != 'toggle')
+		{
+			$mybb->input['stickthread'] = '';
+		}
+
 		if($mybb->input['move_type'] == 2)
 		{
 			if(!$mybb->input['move_1_forum'])
@@ -1051,6 +1086,7 @@ if($mybb->input['action'] == "edit_post_tool")
 				'deletethread' => $mybb->input['deletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
+				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
 				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
@@ -1149,6 +1185,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
+		$mybb->input['stickthread'] = $thread_options['stickthread'];
 		$mybb->input['move_1_forum'] = $thread_options['movethread'];
 		$mybb->input['move_2_redirect'] = $thread_options['movethreadredirect'];
 		$mybb->input['move_3_redirecttime'] = $thread_options['movethreadredirectexpire'];
@@ -1308,9 +1345,17 @@ if($mybb->input['action'] == "edit_post_tool")
 		'toggle' => $lang->toggle
 	);
 
+	$stick_unstick = array(
+		'' => $lang->no_change,
+		'stick' => $lang->stick,
+		'unstick' => $lang->unstick,
+		'toggle' => $lang->toggle
+	);
+
 	$form_container = new FormContainer($lang->thread_moderation);
 	$form_container->output_row($lang->approve_unapprove." <em>*</em>", '', $form->generate_select_box('approvethread', $approve_unapprove, $mybb->input['approvethread'], array('id' => 'approvethread')), 'approvethread');
 	$form_container->output_row($lang->open_close_thread." <em>*</em>", '', $form->generate_select_box('openthread', $open_close, $mybb->input['openthread'], array('id' => 'openthread')), 'openthread');
+	$form_container->output_row($lang->stick_unstick_thread." <em>*</em>", '', $form->generate_select_box('stickthread', $stick_unstick, $mybb->input['stickthread'], array('id' => 'stickthread')), 'stickthread');
 
 
 	$actions = "
@@ -1418,6 +1463,11 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['openthread'] = '';
 		}
 
+		if($mybb->input['stickthread'] != '' && $mybb->input['stickthread'] != 'stick' && $mybb->input['stickthread'] != 'unstick' && $mybb->input['stickthread'] != 'toggle')
+		{
+			$mybb->input['stickthread'] = '';
+		}
+
 		if($mybb->input['move_type'] == 2)
 		{
 			$move_checked[1] = '';
@@ -1516,6 +1566,7 @@ if($mybb->input['action'] == "add_post_tool")
 				'deletethread' => $mybb->input['deletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
+				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
 				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
@@ -1610,6 +1661,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$forum_checked[2] = '';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['openthread'] = '';
+		$mybb->input['stickthread'] = '';
 		$mybb->input['move_1_forum'] = '';
 		$mybb->input['move_2_redirect'] = '0';
 		$mybb->input['move_3_redirecttime'] = '';
@@ -1714,9 +1766,18 @@ if($mybb->input['action'] == "add_post_tool")
 		'toggle' => $lang->toggle
 	);
 
+	$stick_unstick = array(
+		'' => $lang->no_change,
+		'stick' => $lang->stick,
+		'unstick' => $lang->unstick,
+		'toggle' => $lang->toggle
+	);
+
+
 	$form_container = new FormContainer($lang->thread_moderation);
 	$form_container->output_row($lang->approve_unapprove." <em>*</em>", '', $form->generate_select_box('approvethread', $approve_unapprove, $mybb->input['approvethread'], array('id' => 'approvethread')), 'approvethread');
 	$form_container->output_row($lang->open_close_thread." <em>*</em>", '', $form->generate_select_box('openthread', $open_close, $mybb->input['openthread'], array('id' => 'openthread')), 'openthread');
+	$form_container->output_row($lang->stick_unstick_thread." <em>*</em>", '', $form->generate_select_box('stickthread', $stick_unstick, $mybb->input['stickthread'], array('id' => 'stickthread')), 'stickthread');
 
 
 	$actions = "

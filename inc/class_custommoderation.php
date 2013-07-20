@@ -328,6 +328,19 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_status($tids);
 			}
 
+			if($thread_options['stickthread'] == 'stick') // Stick thread
+			{
+				$this->stick_threads($tids);
+			}
+			elseif($thread_options['stickthread'] == 'unstick') // Unstick thread
+			{
+				$this->unstick_threads($tids);
+			}
+			elseif($thread_options['stickthread'] == 'toggle') // Toggle thread importance
+			{
+				$this->toggle_thread_importance($tids);
+			}
+
 			if($thread_options['threadprefix'] != '-1')
 			{
 				$this->apply_thread_prefix($tids, $thread_options['threadprefix']); // Update thread prefix
