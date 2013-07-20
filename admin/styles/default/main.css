@@ -682,16 +682,15 @@ input.radio_input {
 
 .alert {
 	margin: 10px 0;
-	padding: 10px;
+	padding: 10px 10px 10px 32px;
 	border: #FC6 1px solid;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	background: #ffc url('images/icons/warning.png') no-repeat;
+	background: #ffc url('images/icons/warning.png') no-repeat 10px 8px;
 	color: #C00;
 	font-style: normal;
 	font-weight: bold;
-	padding-left: 24px;
 	display: block;
 }
 
