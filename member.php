@@ -1431,10 +1431,10 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$website = '';
-	if(validate_website_format($memprofile['website']))
+	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'.$memprofile['website'].'</a>';
+		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
 	}
 
 	$signature = '';
@@ -1483,14 +1483,14 @@ if($mybb->input['action'] == "profile")
 		$percent = 100;
 	}
 
-	$memprofile['icq'] = (int)$memprofile['icq'];
-	if(!$memprofile['icq'])
+	if(!empty($memprofile['icq']))
+	{
+		$memprofile['icq'] = intval($memprofile['icq']);
+	}
+	else
 	{
 		$memprofile['icq'] = '';
 	}
-	$memprofile['msn'] = htmlspecialchars_uni($memprofile['msn']);
-	$memprofile['aim'] = htmlspecialchars_uni($memprofile['aim']);
-	$memprofile['yahoo'] = htmlspecialchars_uni($memprofile['yahoo']);
 
 	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
@@ -1754,23 +1754,23 @@ if($mybb->input['action'] == "profile")
 
 			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 		}
-	}
-	// User is offline
-	else
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
+		// User is offline
+		else
 		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
+			$memlastvisitsep = '';
+			$memlastvisittime = '';
+			$memlastvisitdate = $lang->lastvisit_never;
+
+			if($memprofile['lastactive'])
+			{
+				// We have had at least some active time, hide it instead
+				$memlastvisitdate = $lang->lastvisit_hidden;
+			}
+
+			$timeonline = $lang->timeonline_hidden;
+
+			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 		}
-
-		$timeonline = $lang->timeonline_hidden;
-
-		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Build Referral

@@ -596,7 +596,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_row();
 	}
 
-	$table->output("<div style=\"float: right; text-decoration: underline\"><small><a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;do=all\">({$lang->convert_all})</a></small></div><div>{$lang->utf8_conversion}</div>");
+	$table->output("<div style=\"float: right;\"><small><a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;do=all\">({$lang->convert_all})</a></small></div><div>{$lang->utf8_conversion}</div>");
 
 	$page->output_footer();
 }

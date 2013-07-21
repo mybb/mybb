@@ -90,6 +90,11 @@ function upgrade27_dbchanges()
 		$db->drop_column("promotions", "warningstype");
 	}
 
+	if($db->field_exists('useragent', 'adminsessions'))
+	{
+		$db->drop_column("adminsessions", "useragent");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":

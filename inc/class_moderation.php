@@ -2061,6 +2061,43 @@ class Moderation
 	}
 
 	/**
+	 * Toggle threads stick/unstick
+	 *
+	 * @param array Thread IDs
+	 * @return boolean true
+	 */
+	function toggle_thread_importance($tids)
+	{
+		global $db;
+
+		// Make sure we only have valid values
+		$tids = array_map('intval', $tids);
+
+		$tid_list = implode(',', $tids);
+		$query = $db->simple_select("threads", 'tid, sticky', "tid IN ($tid_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			if($thread['sticky'] == 1)
+			{
+				$stick[] = $thread['tid'];
+			}
+			elseif($thread['sticky'] == 0)
+			{
+				$unstick[] = $thread['tid'];
+			}
+		}
+		if(is_array($stick))
+		{
+			$this->stick_threads($stick);
+		}
+		if(is_array($unstick))
+		{
+			$this->unstick_threads($unstick);
+		}
+		return true;
+	}
+
+	/**
 	 * Remove thread subscriptions (from one or multiple threads in the same forum)
 	 *
 	 * @param int $tids Thread ID, or an array of thread IDs from the same forum.

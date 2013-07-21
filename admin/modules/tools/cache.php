@@ -88,7 +88,6 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 	elseif(method_exists($cache, "reload_{$mybb->input['title']}"))
 	{
 		$func = "reload_{$mybb->input['title']}";
-
 		$cache->$func();
 
 		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
@@ -104,6 +103,41 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 		flash_message($lang->error_cannot_rebuild, 'error');
 		admin_redirect("index.php?module=tools-cache");
 	}
+}
+
+if($mybb->input['action'] == "rebuild_all")
+{
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=tools-cache");
+	}
+
+	$plugins->run_hooks("admin_tools_cache_rebuild_all");
+
+	$query = $db->simple_select("datacache");
+	while($cacheitem = $db->fetch_array($query))
+	{
+		if(method_exists($cache, "update_{$cacheitem['title']}"))
+		{
+			$func = "update_{$cacheitem['title']}";
+			$cache->$func();
+		}
+		elseif(method_exists($cache, "reload_{$cacheitem['title']}"))
+		{
+			$func = "reload_{$cacheitem['title']}";
+
+			$cache->$func();
+		}
+	}
+
+	$plugins->run_hooks("admin_tools_cache_rebuild_all_commit");
+
+	// Log admin action
+	log_admin_action();
+
+	flash_message($lang->success_cache_reloaded, 'success');
+	admin_redirect("index.php?module=tools-cache");
 }
 
 if(!$mybb->input['action'])
@@ -146,7 +180,7 @@ if(!$mybb->input['action'])
 
 		$table->construct_row();
 	}
-	$table->output($lang->cache_manager);
+	$table->output("<div style=\"float: right;\"><small><a href=\"index.php?module=tools-cache&amp;action=rebuild_all&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_reload_all."</a></small></div>".$lang->cache_manager);
 
 	$page->output_footer();
 }

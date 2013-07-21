@@ -536,23 +536,10 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$icon = "&nbsp;";
 			}
-			if($announcement['avatar'] != '')
-			{
-				$avatar_dimensions = explode("|", $announcement['avatardimensions']);
-				if($avatar_dimensions[0] && $avatar_dimensions[1])
-				{
-					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-				}
-				if(!stristr($announcement['avatar'], 'http://'))
-				{
-					$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
-				}
-				eval("\$avatar = \"".$templates->get("portal_announcement_avatar")."\";");
-			}
-			else
-			{
-				$avatar = '';
-			}
+
+			$useravatar = format_avatar(htmlspecialchars_uni($announcement['avatar']), $announcement['avatardimensions']);
+			eval("\$avatar = \"".$templates->get("portal_announcement_avatar")."\";");
+
 			$anndate = my_date('relative', $announcement['dateline']);
 
 			if($announcement['replies'])
