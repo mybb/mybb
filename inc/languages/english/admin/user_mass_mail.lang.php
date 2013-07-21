@@ -52,6 +52,16 @@ $l['greater_than'] = "Greater Than";
 $l['is_exactly'] = "Is Exactly";
 $l['less_than'] = "Less Than";
 $l['post_count_is'] = "Post Count is";
+$l['hours'] = "Hours";
+$l['days'] = "Days";
+$l['weeks'] = "Weeks";
+$l['months'] = "Months";
+$l['years'] = "Years";
+$l['ago'] = "ago";
+$l['and_older'] = "and older";
+$l['and_newer'] = "and newer";
+$l['user_last_active'] = "User was Last Active";
+$l['user_registered'] = "User Registered";
 $l['save_mass_mail'] = "Save Mass Mail";
 
 $l['step_four'] = "Step 4";

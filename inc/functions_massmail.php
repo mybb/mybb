@@ -58,6 +58,50 @@ function build_mass_mail_query($conditions)
 		}
 	}
 
+	// Time-based search fields
+	$time_fields = array("regdate", "lastactive");
+	foreach($time_fields as $search_field)
+	{
+		$time_field = $search_field."_date";
+		$direction_field = $search_field."_dir";
+		if($conditions[$search_field] && $conditions[$time_field] && $conditions[$direction_field])
+		{
+			switch($conditions[$time_field])
+			{
+				case "hours":
+					$date = $conditions[$search_field]*60*60;
+					break;
+				case "days":
+					$date = $conditions[$search_field]*60*60*24;
+					break;
+				case "weeks":
+					$date = $conditions[$search_field]*60*60*24*7;
+					break;
+				case "months":
+					$date = $conditions[$search_field]*60*60*24*30;
+					break;
+				case "years":
+					$date = $conditions[$search_field]*60*60*24*365;
+					break;
+				default:
+					$date = $conditions[$search_field]*60*60*24;
+			}
+
+			switch($conditions[$direction_field])
+			{
+				case "and_newer":
+					$direction = ">";
+					break;
+				case "and_older":
+					$direction = "<";
+					break;
+				default:
+					$direction = "<";
+			}
+			$search_sql .= " AND u.{$search_field}{$direction}'".(TIME_NOW-$date)."'";
+		}
+	}
+
 	// Usergroup based searching
 	if($conditions['usergroup'])
 	{

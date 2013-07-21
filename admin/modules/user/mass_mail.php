@@ -559,9 +559,23 @@ if($mybb->input['action'] == "edit")
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
-	// Need to do reg date & last visit periods. FIGURE OUT HOW TO HANDLE/DISPLAY (Do the same as StoreSuite)
+	$newer_options = array(
+		"and_older" => $lang->and_older,
+		"and_newer" => $lang->and_newer
+	);
+
+	$date_options = array(
+		"hours" => $lang->hours,
+		"days" => $lang->days,
+		"weeks" => $lang->weeks,
+		"months" => $lang->months,
+		"years" => $lang->years
+	);
+	$form_container->output_row($lang->user_registered, "", $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago} ".$form->generate_select_box('conditions[regdate_dir]', $newer_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir')), 'regdate');
+
+	$form_container->output_row($lang->user_last_active, "", $form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago} ".$form->generate_select_box('conditions[lastactive_dir]', $newer_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir')), 'lastactive');
 
 	$form_container->end();
 
@@ -940,7 +954,7 @@ if($mybb->input['action'] == "send")
 		}
 
 		$options = array(
-			'username', 'email', 'postnum_dir', 'numposts'
+			'username', 'email', 'postnum_dir', 'postnum', 'regdate', 'regdate_date', 'regdate_dir', 'lastactive', 'lastactive_date', 'lastactive_dir'
 		);
 
 		foreach($options as $option)
@@ -974,9 +988,23 @@ if($mybb->input['action'] == "send")
 			"is_exactly" => $lang->is_exactly,
 			"less_than" => $lang->less_than
 		);
-		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
-		// Need to do reg date & last visit periods. FIGURE OUT HOW TO HANDLE/DISPLAY (Do the same as StoreSuite)
+		$newer_options = array(
+			"and_older" => $lang->and_older,
+			"and_newer" => $lang->and_newer
+		);
+
+		$date_options = array(
+			"hours" => $lang->hours,
+			"days" => $lang->days,
+			"weeks" => $lang->weeks,
+			"months" => $lang->months,
+			"years" => $lang->years
+		);
+		$form_container->output_row($lang->user_registered, "", $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago} ".$form->generate_select_box('conditions[regdate_dir]', $newer_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir')), 'regdate');
+
+		$form_container->output_row($lang->user_last_active, "", $form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago} ".$form->generate_select_box('conditions[lastactive_dir]', $newer_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir')), 'lastactive');
 
 		$form_container->end();
 
