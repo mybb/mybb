@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread,showthread_moderationoptions";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,forumdisplay_password_wrongpass,forumdisplay_password";
@@ -707,6 +707,14 @@ if($mybb->input['action'] == "thread")
 		{
 			$ignored_users[$uid] = 1;
 		}
+	}
+
+	// Fetch profile fields to display on postbit
+	$profile_fields = array();
+	$query = $db->simple_select("profilefields", "*", "postbit='1' AND hidden != '1'", array('order_by' => 'disporder'));
+	while($profilefield = $db->fetch_array($query))
+	{
+		$profile_fields[$profilefield['fid']] = $profilefield;
 	}
 
 	// Which thread mode is our user using by default?
