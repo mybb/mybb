@@ -531,13 +531,13 @@ else
 $action_handler = $run_module."_action_handler";
 $action_file = $action_handler($current_module[1]);
 
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
 if($run_module != "home")
 {
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
 }
-
-// Set our POST validation code here
-$mybb->post_code = generate_post_check();
 
 // Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
 $post_check_ignores = array(
