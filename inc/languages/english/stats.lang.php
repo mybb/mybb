@@ -10,7 +10,6 @@ $l['nav_stats'] = "Board Statistics";
 
 $l['board_stats'] = "Board Statistics";
 $l['none'] = "None";
-$l['nobody'] = "Nobody";
 $l['totals'] = "Totals";
 $l['averages'] = "Averages";
 $l['posts'] = "Posts:";

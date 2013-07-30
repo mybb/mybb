@@ -244,7 +244,7 @@ if($mybb->settings['portal_showstats'] != 0)
 	$stats['numusers'] = my_number_format($stats['numusers']);
 	if(!$stats['lastusername'])
 	{
-		$newestmember = "<strong>" . $lang->no_one . "</strong>";
+		$newestmember = "<strong>" . $lang->nobody . "</strong>";
 	}
 	else
 	{

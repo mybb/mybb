@@ -284,7 +284,7 @@ if($mybb->settings['showindexstats'] != 0)
 	// Check who's the newest member.
 	if(!$stats['lastusername'])
 	{
-		$newestmember = 'no-one';
+		$newestmember = $lang->nobody;;
 	}
 	else
 	{
