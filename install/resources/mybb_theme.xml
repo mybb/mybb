@@ -9898,7 +9898,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<ul class="thread_tools">
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
 			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
-			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}">{$add_remove_subscription_text}</a></li>
+			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
 		</ul>
 	</div>
 
