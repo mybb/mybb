@@ -67,6 +67,11 @@ class memcachedCacheHandler
 				die;
 			}
 
+			if(!isset($memcached['port']))
+			{
+				$memcached['port'] = "11211";
+			}
+
 			$this->memcached->addServer($memcached['host'], $memcached['port']);
 
 			if(!$this->memcached)
