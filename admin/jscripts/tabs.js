@@ -1,17 +1,5 @@
 $(function () {
-	/*var tabContainers = $("[id^=tab_]");
 
-    $("ul#tabs a").click(function () {
-        tabContainers.hide().filter(this.hash).show();
-
-        $("ul#tabs a").removeClass("active");
-        $(this).addClass("active");
-
-        return false;
-    }).filter(":first").click();*/
-	
-	
-	
 	$('ul.tabs').each(function(){
 		var $activeTab, $activeContent, $links = $(this).find('a');
 
@@ -32,6 +20,9 @@ $(function () {
 
 			$activeTab = $(this);
 			$activeContent = $($(this).attr('href'));
+			
+			// update address bar
+			window.location.hash = $(this).attr('href');
 
 			$activeTab.addClass('active');
 			$activeContent.show();
@@ -39,6 +30,5 @@ $(function () {
 			e.preventDefault();
 		});
 	});
-	
 	
 });
