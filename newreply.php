@@ -47,7 +47,7 @@ if($mybb->input['ajax'])
 // Edit a draft post.
 $pid = 0;
 $editdraftpid = '';
-if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newreply") && $mybb->input['pid'])
 {
 	$post = get_post($pid);
 	if(!$post['pid'])
