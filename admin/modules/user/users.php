@@ -1023,7 +1023,7 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if (!stristr($user['avatar'], 'http://'))
+		if (!preg_match("~^(?:f|ht)tps?://~i", $user['avatar']))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -1464,7 +1464,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_gallery_avatar}</strong>";
 	}
-	elseif($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== false)
+	elseif($user['avatartype'] == "remote" || preg_match("~^(?:f|ht)tps?://~i", $user['avatar']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
@@ -3502,7 +3502,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && !stristr($user['avatar'], 'http://'))
+			if($user['avatar'] && !preg_match("~^(?:f|ht)tps?://~i", $user['avatar']))
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}
