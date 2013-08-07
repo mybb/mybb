@@ -269,11 +269,24 @@ class DB_MySQL
 
 		if($success && $this->db_encoding)
 		{
-			@mysql_set_charset($this->db_encoding, $this->read_link);
+			// A little magic to support PHP 5.2.0, 5.2.1 and 5.2.2
+			if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+				@mysql_set_charset($this->db_encoding, $this->read_link);
+			}
+			else
+			{
+				$this->query("SET NAMES '{$this->db_encoding}'");
+			}
 
 			if($write_success && count($this->connections) > 1)
 			{
-				@mysql_set_charset($this->db_encoding, $this->write_link);
+				if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+					@mysql_set_charset($this->db_encoding, $this->write_link);
+				}
+				else
+				{
+					$this->write_query("SET NAMES '{$this->db_encoding}'");
+				}
 			}
 		}
 		return $success;
