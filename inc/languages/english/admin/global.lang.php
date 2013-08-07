@@ -28,7 +28,7 @@ $l['view_board'] = "View Forum";
 $l['logout'] = "Log Out";
 
 // Footer language strings
-$l['generated_in'] = "Generated in {1} seconds with {2} queries. Memory Usage: {3}";
+$l['generated_in'] = "Generated in {1} with {2} queries. Memory Usage: {3}";
 
 // Login page
 $l['enter_username_and_password'] = "Please enter your username and password to continue.";
