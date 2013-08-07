@@ -43,10 +43,10 @@ $l['secret_pin'] = "Secret PIN:";
 $l['login'] = "Login";
 $l['lost_password'] = "Forgot your password?";
 
-$l['error_invalid_admin_session'] = "Invalid administration session";
-$l['error_admin_session_expired'] = "Your administration session has expired";
-$l['error_invalid_ip'] = "Your IP address is not valid for this session";
-$l['error_mybb_admin_lockedout'] = "This account has been locked out";
+$l['error_invalid_admin_session'] = "Invalid administration session.";
+$l['error_admin_session_expired'] = "Your administration session has expired.";
+$l['error_invalid_ip'] = "Your IP address is not valid for this session.";
+$l['error_mybb_admin_lockedout'] = "This account has been locked out.";
 $l['error_mybb_admin_lockedout_message'] = "Your account is currently locked out after failing to login {1} times. You have been sent an email with instructions on how to unlock your account.";
 $l['error_invalid_secret_pin'] = 'You have entered an invalid secret PIN.';
 
