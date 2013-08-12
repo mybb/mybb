@@ -49,68 +49,6 @@ $portal_url = get_current_location();
 
 add_breadcrumb($lang->nav_portal, "portal.php");
 
-// This allows users to login if the portal is stored offsite or in a different directory
-if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("portal_do_login_start");
-
-	// Checks to make sure the user can login; they haven't had too many tries at logging in.
-	// Is a fatal call if user has had too many tries
-	$logins = login_attempt_check();
-	$login_text = '';
-
-	if(!username_exists($mybb->input['username']))
-	{
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				error($lang->error_invalidpworusername.$login_text);
-				break;
-			case 1:
-				error($lang->error_invalidpworusername1.$login_text);
-				break;
-			case 2:
-				error($lang->error_invalidpworusername2.$login_text);
-				break;
-			default:
-				error($lang->error_invalidpworusername.$login_text);
-				break;
-		}
-	}
-	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-	if(!$user['uid'])
-	{
-		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'", 1, true);
-		if($mybb->settings['failedlogintext'] == 1)
-		{
-			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-		}
-		error($lang->error_invalidpassword.$login_text);
-	}
-
-	my_setcookie('loginattempts', 1);
-	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-	$newsession = array(
-		"uid" => $user['uid'],
-	);
-	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-
-	$db->update_query("users", array("loginattempts" => 1), "uid='{$mybb->user['uid']}'");
-
-	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], ($mybb->input['remember'] == "yes" ? null : 0), true);
-	my_setcookie("sid", $session->sid, -1, true);
-
-	if(function_exists("loggedIn"))
-	{
-		loggedIn($user['uid']);
-	}
-
-	$plugins->run_hooks("portal_do_login_end");
-
-	redirect("portal.php", $lang->redirect_loggedin);
-}
-
 $plugins->run_hooks("portal_start");
 
 
