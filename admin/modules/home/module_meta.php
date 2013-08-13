@@ -81,12 +81,13 @@ function home_action_handler($action)
 		// If there's only 1 user online, it has to be us.
 		if($db->num_rows($query) == 1)
 		{
+			$user = $db->fetch_array($query);
 			global $mybb;
 
 			// Are we on a mobile device?
 			// Stolen from http://stackoverflow.com/a/10989424
 			$user_type[$mybb->user['uid']] = "desktop";
-			if(is_mobile($db->fetch_field($query, "useragent")))
+			if(is_mobile($user["useragent"]))
 			{
 				$user_type[$mybb->user['uid']] = "mobile";
 			}
@@ -94,7 +95,7 @@ function home_action_handler($action)
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
-				"ip" => $db->fetch_field($query, "ip"),
+				"ip" => $user["ip"],
 				"type" => $user_type[$mybb->user['uid']]
 			);
 		}
@@ -148,7 +149,7 @@ function home_action_handler($action)
 				{
 					$class = "";
 				}
-				$online_users .= "<li{$class}>".build_profile_link($user['username'], $user['uid'], "_blank")."</li>";
+				$online_users .= "<li{$class}>".build_profile_link($user['username'].' ('.my_inet_ntop($user['ip']).')', $user['uid'], "_blank")."</li>";
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}

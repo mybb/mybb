@@ -3011,7 +3011,7 @@ function log_moderator_action($data, $action="")
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
-		"ipaddress" => $db->escape_string($session->ipaddress)
+		"ipaddress" => escape_binary($session->packedip)
 	);
 	$db->insert_query("moderatorlog", $sql_array);
 }
@@ -5673,6 +5673,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		return false;
 	}
 
+	$ip_address = my_inet_pton($ip_address);
 	foreach($banned_ips as $banned_ip)
 	{
 		if(!$banned_ip['filter'])
@@ -5680,9 +5681,21 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 			continue;
 		}
 
-		// Make regular expression * match
-		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
-		if(preg_match("#^{$banned_ip['filter']}$#i", $ip_address))
+		$banned = false;
+
+		$ip_range = fetch_ip_range($banned_ip['filter']);
+		if(is_array($ip_range))
+		{
+			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			{
+				$banned = true;
+			}
+		}
+		elseif($ip_address == $ip_range)
+		{
+			$banned = true;
+		}
+		if($banned)
 		{
 			// Updating last use
 			if($update_lastuse == true)
@@ -6014,6 +6027,7 @@ function escaped_explode($delimeter, $string, $escape="")
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible fetch_ip_range!
  * Fetch an IPv4 long formatted range for searching IPv4 IP addresses.
  *
  * @param string The IP address to convert to a range based LONG
@@ -6249,6 +6263,7 @@ function subforums_count($array)
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible my_inet_pton!
  * Fix for PHP's ip2long to guarantee a 32-bit signed integer value is produced (this is aimed
  * at 64-bit versions of PHP)
  *
@@ -6278,6 +6293,7 @@ function my_ip2long($ip)
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible my_inet_ntop!
  * As above, fix for PHP's long2ip on 64-bit versions
  *
  * @param integer The IP to convert (will accept 64-bit IPs as well)
@@ -6292,6 +6308,209 @@ function my_long2ip($long)
 		$long += 4294967296;
 	}
 	return long2ip($long);
+}
+
+/**
+ * Converts a human readable IP address to its packed in_addr representation
+ *
+ * @param string The IP to convert
+ * @return string IP in 32bit or 128bit binary format
+ */
+function my_inet_pton($ip)
+{
+	if(function_exists('inet_pton'))
+	{
+		return @inet_pton($ip);
+	}
+	else
+	{
+		/**
+		 * Replace inet_pton()
+		 *
+		 * @category    PHP
+		 * @package     PHP_Compat
+		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
+		 * @link        http://php.net/inet_pton
+		 * @author      Arpad Ray <arpad@php.net>
+		 * @version     $Revision: 269597 $
+		 */
+		$r = ip2long($ip);
+		if($r !== false && $r != -1)
+		{
+			return pack('N', $r);
+		}
+
+		$delim_count = substr_count($ip, ':');
+		if($delim_count < 1 || $delim_count > 7)
+		{
+			return false;
+		}
+
+		$r = explode(':', $ip);
+		$rcount = count($r);
+		if(($doub = array_search('', $r, 1)) !== false)
+		{
+			$length = (!$doub || $doub == $rcount - 1 ? 2 : 1);
+			array_splice($r, $doub, $length, array_fill(0, 8 + $length - $rcount, 0));
+		}
+
+		$r = array_map('hexdec', $r);
+		array_unshift($r, 'n*');
+		$r = call_user_func_array('pack', $r);
+
+		return $r;
+	}
+}
+
+/**
+ * Converts a packed internet address to a human readable representation
+ *
+ * @param string IP in 32bit or 128bit binary format
+ * @return string IP in human readable format
+ */
+function my_inet_ntop($ip)
+{
+	if(function_exists('inet_ntop'))
+	{
+		return @inet_ntop($ip);
+	}
+	else
+	{
+		/**
+		 * Replace inet_ntop()
+		 *
+		 * @category    PHP
+		 * @package     PHP_Compat
+		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
+		 * @link        http://php.net/inet_ntop
+		 * @author      Arpad Ray <arpad@php.net>
+		 * @version     $Revision: 269597 $
+		 */
+		switch(strlen($ip))
+		{
+			case 4:
+				list(,$r) = unpack('N', $ip);
+				return long2ip($r);
+			case 16:
+				$r = substr(chunk_split(bin2hex($ip), 4, ':'), 0, -1);
+				$r = preg_replace(
+					array('/(?::?\b0+\b:?){2,}/', '/\b0+([^0])/e'),
+					array('::', '(int)"$1"?"$1":"0$1"'),
+					$r);
+				return $r;
+		}
+		return false;
+	}
+}
+
+/**
+ * Fetch an binary formatted range for searching IPv4 and IPv6 IP addresses.
+ *
+ * @param string The IP address to convert to a range
+ * @rturn mixed If a full IP address is provided, the in_addr representation, otherwise an array of the upper & lower extremities of the IP
+ */
+function fetch_ip_range($ipaddress)
+{
+	// Wildcard
+	if(strpos($ipaddress, '*') !== false)
+	{
+		if(strpos($ipaddress, ':') !== false)
+		{
+			// IPv6
+			$upper = str_replace('*', 'ffff', $ipaddress);
+			$lower = str_replace('*', '0', $ipaddress);
+		}
+		else
+		{
+			// IPv4
+			$upper = str_replace('*', '255', $ipaddress);
+			$lower = str_replace('*', '0', $ipaddress);
+		}
+		$upper = my_inet_pton($upper);
+		$lower = my_inet_pton($lower);
+		if($upper === false || $lower === false)
+		{
+			return false;
+		}
+		return array($lower, $upper);
+	}
+	// CIDR notation
+	elseif(strpos($ipaddress, '/') !== false)
+	{
+		$ipaddress = explode('/', $ipaddress);
+		$ip_address = $ipaddress[0];
+		$ip_range = intval($ipaddress[1]);
+
+		if(empty($ip_address) || empty($ip_range))
+		{
+			// Invalid input
+			return false;
+		}
+		else
+		{
+			$ip_address = my_inet_pton($ip_address);
+
+			if(!$ip_address)
+			{
+				// Invalid IP address
+				return false;
+			}
+		}
+		
+		/**
+		 * Taken from: https://github.com/NewEraCracker/php_work/blob/master/ipRangeCalculate.php
+		 * Author: NewEraCracker
+		 * License: Public Domain
+		 */
+
+		// Pack IP, Set some vars
+		$ip_pack = $ip_address;
+		$ip_pack_size = strlen($ip_pack);
+		$ip_bits_size = $ip_pack_size*8;
+
+		// IP bits (lots of 0's and 1's)
+		$ip_bits = '';
+		for($i = 0; $i < $ip_pack_size; $i = $i+1)
+		{
+			$bit = decbin(ord($ip_pack[$i]));
+			$bit = str_pad($bit, 8, '0', STR_PAD_LEFT);
+			$ip_bits .= $bit;
+		}
+
+		// Significative bits (from the ip range)
+		$ip_bits = substr($ip_bits, 0, $ip_range);
+
+		// Some calculations
+		$ip_lower_bits = str_pad($ip_bits, $ip_bits_size, '0', STR_PAD_RIGHT);
+		$ip_higher_bits = str_pad($ip_bits, $ip_bits_size, '1', STR_PAD_RIGHT);
+
+		// Lower IP
+		$ip_lower_pack = '';
+		for($i=0; $i < $ip_bits_size; $i=$i+8)
+		{
+			$chr = substr($ip_lower_bits, $i, 8);
+			$chr = chr(bindec($chr));
+			$ip_lower_pack .= $chr;
+		}
+
+		// Higher IP
+		$ip_higher_pack = '';
+		for($i=0; $i < $ip_bits_size; $i=$i+8)
+		{
+			$chr = substr($ip_higher_bits, $i, 8);
+			$chr = chr( bindec($chr) );
+			$ip_higher_pack .= $chr;
+		}
+
+		return array($ip_lower_pack, $ip_higher_pack);
+	}
+	// Just on IP address
+	else
+	{
+		return my_inet_pton($ipaddress);
+	}
 }
 
 /**
@@ -6703,6 +6922,12 @@ function gd_version()
 	}
 
 	return $gd_version;
+}
+
+function escape_binary($string)
+{
+	global $db;
+	return $db->escape_string(bin2hex($string));
 }
 
 ?>

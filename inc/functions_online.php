@@ -1038,6 +1038,7 @@ function build_wol_row($user)
 	// Can view IPs, then fetch the IP template
 	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
+		$user['ip'] = my_inet_ntop($user['ip']);
 		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
 	}
 	else

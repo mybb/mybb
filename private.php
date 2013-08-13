@@ -201,7 +201,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => $resulttype,
@@ -574,7 +574,8 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
 		"do" => $mybb->input['do'],
-		"pmid" => $mybb->input['pmid']
+		"pmid" => $mybb->input['pmid'],
+		"ipaddress" => $session->packedip
 	);
 
 	// Split up any recipients we have

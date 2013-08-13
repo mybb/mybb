@@ -11,7 +11,7 @@
 
 $tables[] = "CREATE TABLE mybb_adminlog (
   uid int unsigned NOT NULL default '0',
-  ipaddress varchar(50) NOT NULL default '',
+  ipaddress varbinary(16) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
   module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
@@ -35,7 +35,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
   sid varchar(32) NOT NULL default '',
   uid int unsigned NOT NULL default '0',
   loginkey varchar(50) NOT NULL default '',
-  ip varchar(40) NOT NULL default '',
+  ip varbinary(16) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
   lastactive bigint(30) NOT NULL default '0',
   data TEXT NOT NULL,
@@ -390,7 +390,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	touid bigint(30) NOT NULL default '0',
 	toemail varchar(200) NOT NULL default '',
 	tid int unsigned NOT NULL default '0',
-	ipaddress varchar(20) NOT NULL default '',
+	ipaddress varbinary(16) NOT NULL default '',
 	PRIMARY KEY (mid)
 ) ENGINE=MyISAM;";
 
@@ -412,7 +412,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   pid int unsigned NOT NULL default '0',
   action text NOT NULL,
   data text NOT NULL,
-  ipaddress varchar(50) NOT NULL default '',
+  ipaddress varbinary(16) NOT NULL default '',
   KEY tid (tid)
 ) ENGINE=MyISAM;";
 
@@ -491,8 +491,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   username varchar(80) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
   message text NOT NULL,
-  ipaddress varchar(30) NOT NULL default '',
-  longipaddress int(11) NOT NULL default '0',
+  ipaddress varbinary(16) NOT NULL default '',
   includesig int(1) NOT NULL default '0',
   smilieoff int(1) NOT NULL default '0',
   edituid int unsigned NOT NULL default '0',
@@ -502,7 +501,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   KEY uid (uid),
   KEY visible (visible),
   KEY dateline (dateline),
-  KEY longipaddress (longipaddress),
+  KEY ipaddress (ipaddress),
   KEY tiddate (tid, dateline),
   PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
@@ -526,7 +525,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   smilieoff int(1) NOT NULL default '0',
   receipt int(1) NOT NULL default '0',
   readtime bigint(30) NOT NULL default '0',
-  ipaddress varchar(120) NOT NULL default '',
+  ipaddress varbinary(16) NOT NULL default '',
   KEY uid (uid, folder),
   KEY toid (toid),
   PRIMARY KEY (pmid)
@@ -620,7 +619,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
-  ipaddress varchar(120) NOT NULL default '',
+  ipaddress varbinary(16) NOT NULL default '',
   threads longtext NOT NULL,
   posts longtext NOT NULL,
   resulttype varchar(10) NOT NULL default '',
@@ -632,7 +631,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
 $tables[] = "CREATE TABLE mybb_sessions (
   sid varchar(32) NOT NULL default '',
   uid int unsigned NOT NULL default '0',
-  ip varchar(40) NOT NULL default '',
+  ip varbinary(16) NOT NULL default '',
   time bigint(30) NOT NULL default '0',
   location varchar(150) NOT NULL default '',
   useragent varchar(100) NOT NULL default '',
@@ -790,7 +789,7 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   tid int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   rating smallint unsigned NOT NULL default '0',
-  ipaddress varchar(30) NOT NULL default '',
+  ipaddress varbinary(16) NOT NULL default '',
   KEY tid (tid, uid),
   PRIMARY KEY (rid)
 ) ENGINE=MyISAM;";
@@ -997,10 +996,8 @@ $tables[] = "CREATE TABLE mybb_users (
   referrer int unsigned NOT NULL default '0',
   referrals int unsigned NOT NULL default '0',
   reputation bigint(30) NOT NULL default '0',
-  regip varchar(50) NOT NULL default '',
-  lastip varchar(50) NOT NULL default '',
-  longregip int(11) NOT NULL default '0',
-  longlastip int(11) NOT NULL default '0',
+  regip varbinary(16) NOT NULL default '',
+  lastip varbinary(16) NOT NULL default '',
   language varchar(50) NOT NULL default '',
   timeonline bigint(30) NOT NULL default '0',
   showcodebuttons int(1) NOT NULL default '1',
@@ -1020,8 +1017,8 @@ $tables[] = "CREATE TABLE mybb_users (
   UNIQUE KEY username (username),
   KEY usergroup (usergroup),
   KEY birthday (birthday),
-  KEY longregip (longregip),
-  KEY longlastip (longlastip),
+  KEY regip (regip),
+  KEY lastip (lastip),
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM;";
 

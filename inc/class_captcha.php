@@ -237,7 +237,7 @@ class captcha
 				// We have a reCAPTCHA to handle
 				$data = $this->_qsencode(array(
 					'privatekey' => $mybb->settings['captchaprivatekey'],
-					'remoteip' => $mybb->session->ipaddress,
+					'remoteip' => $session->ipaddress,
 					'challenge' => $challenge,
 					'response' => $response
 				));

@@ -14,6 +14,7 @@ class session
 	public $sid = 0;
 	public $uid = 0;
 	public $ipaddress = '';
+	public $packedip = '';
 	public $useragent = '';
 	public $is_spider = false;
 
@@ -26,6 +27,7 @@ class session
 
 		// Get our visitor's IP.
 		$this->ipaddress = get_ip();
+		$this->packedip = my_inet_pton($this->ipaddress);
 
 		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
@@ -39,7 +41,7 @@ class session
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=X'".escape_binary($this->packedip)."'", array('limit' => 1));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
@@ -163,9 +165,9 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		if($mybb->user['lastip'] != $this->ipaddress && array_key_exists('lastip', $mybb->user))
+		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user))
 		{
-			$lastip_add = ", lastip='".$db->escape_string($this->ipaddress)."', longlastip='".intval(my_ip2long($this->ipaddress))."'";
+			$lastip_add = ", lastip=X'".escape_binary($this->packedip)."'";
 		}
 		else
 		{
@@ -484,7 +486,7 @@ class session
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'");
+			$db->delete_query("sessions", "ip=X'".escape_binary($this->packedip)."'");
 			$onlinedata['uid'] = 0;
 		}
 
@@ -498,7 +500,7 @@ class session
 			$onlinedata['sid'] = md5(uniqid(microtime(true), true));
 		}
 		$onlinedata['time'] = TIME_NOW;
-		$onlinedata['ip'] = $db->escape_string($this->ipaddress);
+		$onlinedata['ip'] = escape_binary($this->packedip);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);

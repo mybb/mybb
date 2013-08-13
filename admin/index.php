@@ -183,7 +183,7 @@ elseif($mybb->input['do'] == "login")
 			"sid" => $sid,
 			"uid" => $mybb->user['uid'],
 			"loginkey" => $mybb->user['loginkey'],
-			"ip" => $db->escape_string(get_ip()),
+			"ip" => escape_binary(my_inet_pton(get_ip())),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
 			"data" => serialize(array()),
@@ -402,7 +402,7 @@ if($mybb->user['uid'])
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
-		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_string(get_ip())), "sid='".$db->escape_string($admin_session['sid'])."'");
+		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => escape_binary(my_inet_pton(get_ip()))), "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
 
 	// Fetch administrator permissions

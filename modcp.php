@@ -624,6 +624,7 @@ if($mybb->input['action'] == "modlogs")
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		$logitem['ipaddress'] = my_inet_ntop($logitem['ipaddress']);
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
@@ -2825,29 +2826,21 @@ if($mybb->input['action'] == "ipsearch")
 		}
 
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+		
+		$ip_range = fetch_ip_range($mybb->input['ipaddress']);
 
 		// Searching post IP addresses
 		if($mybb->input['search_posts'])
 		{
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if($ip_range)
 			{
-				$post_ip_sql = "ipaddress LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-
-				if($ip_range)
+				if(!is_array($ip_range))
 				{
-					if(!is_array($ip_range))
-					{
-						$post_ip_sql = "longipaddress='{$ip_range}'";
-					}
-					else
-					{
-						$post_ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
-					}
+					$post_ip_sql = "ipaddress=X'".escape_binary($ip_range)."'";
+				}
+				else
+				{
+					$post_ip_sql = "ipaddress BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
 				}
 			}
 
@@ -2868,25 +2861,15 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching user IP addresses
 		if($mybb->input['search_users'])
 		{
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if($ip_range)
 			{
-				$user_ip_sql = "regip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."' OR lastip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-
-				if($ip_range)
+				if(!is_array($ip_range))
 				{
-					if(!is_array($ip_range))
-					{
-						$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
-					}
-					else
-					{
-						$user_ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
-					}
+					$user_ip_sql = "regip=X'".escape_binary($ip_range)."' OR lastip=X'".escape_binary($ip_range)."'";
+				}
+				else
+				{
+					$user_ip_sql = "regip BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."' OR lastip BETWEEN x'".escape_binary($ip_range[0])."' AND x'".escape_binary($ip_range[1])."'";
 				}
 			}
 
@@ -2970,24 +2953,35 @@ if($mybb->input['action'] == "ipsearch")
 				$result = false;
 				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				$trow = alt_trow();
-				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
-				// Reg IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['regip']))
+				$ip = false;
+				if(is_array($ip_range))
 				{
-					$ip = $ipaddress['regip'];
+					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
+					{
+						$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
+						$ip = my_inet_ntop($ipaddress['regip']);
+					}
+					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
+					{
+						$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+						$ip = my_inet_ntop($ipaddress['lastip']);
+					}
+				}
+				elseif($ipaddress['regip'] == $ip_range)
+				{
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
-					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
-					$result = true;
+					$ip = my_inet_ntop($ipaddress['regip']);
 				}
-				// Last known IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
+				elseif($ipaddress['lastip'] == $ip_range)
 				{
-					$ip = $ipaddress['lastip'];
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+					$ip = my_inet_ntop($ipaddress['lastip']);
+				}
+				if($ip)
+				{
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
 					$result = true;
 				}
-
 				if($result)
 				{
 					--$post_limit;
@@ -3038,7 +3032,7 @@ if($mybb->input['action'] == "ipsearch")
 
 				foreach($ipaddresses as $ipaddress)
 				{
-					$ip = $ipaddress['ipaddress'];
+					$ip = my_inet_ntop($ipaddress['ipaddress']);
 					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					$trow = alt_trow();
 					if(!$ipaddress['subject'])
@@ -3065,7 +3059,7 @@ if($mybb->input['action'] == "ipsearch")
 			$lang->ipsearch_results = $lang->ipsearch;
 		}
 
-		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/"))
 		{
 			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
 		}
@@ -3100,7 +3094,7 @@ if($mybb->input['action'] == "iplookup")
 	$ipaddress_location = $lang->na;
 	$ipaddress_host_name = $lang->na;
 	$modcp_ipsearch_misc_info = '';
-	if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+	if(!strstr($mybb->input['ipaddress'], "*"))
 	{
 		// Return GeoIP information if it is available to us
 		if(function_exists('geoip_record_by_name'))

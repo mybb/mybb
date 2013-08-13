@@ -82,7 +82,7 @@ if($mybb->user['uid'] != 0)
 }
 else
 {
-	$whereclause = "ipaddress='".$db->escape_string($session->ipaddress)."'";
+	$whereclause = "ipaddress=X'".escape_binary($session->packedip)."'";
 }
 $query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
@@ -106,7 +106,7 @@ else
 			'tid' => $tid,
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_string($session->ipaddress)
+			'ipaddress' => escape_binary($session->packedip)
 		);
 		$db->insert_query("threadratings", $insertarray);
 	}
@@ -115,7 +115,7 @@ else
 		$insertarray = array(
 			'tid' => $tid,
 			'rating' => $mybb->input['rating'],
-			'ipaddress' => $db->escape_string($session->ipaddress)
+			'ipaddress' => escape_binary($session->packedip)
 		);
 		$db->insert_query("threadratings", $insertarray);
 		$time = TIME_NOW;

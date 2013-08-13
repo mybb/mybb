@@ -68,7 +68,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = TIME_NOW;
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select("users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
+		$query = $db->simple_select("users", "*", "regip=X'".escape_binary($session->packedip)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -147,8 +147,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"timezone" => $mybb->input['timezoneoffset'],
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
-		"regip" => $session->ipaddress,
-		"longregip" => my_ip2long($session->ipaddress),
+		"regip" => $session->packedip,
 		"coppa_user" => intval($mybb->cookies['coppauser']),
 		"regcheck1" => $mybb->input['regcheck1'],
 		"regcheck2" => $mybb->input['regcheck2']
@@ -2038,7 +2037,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"touid" => $to_user['uid'],
 				"toemail" => $db->escape_string($to_user['email']),
 				"tid" => 0,
-				"ipaddress" => $db->escape_string($session->ipaddress)
+				"ipaddress" => escape_binary($session->packedip)
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

@@ -720,16 +720,31 @@ class DB_MySQL
 	 */
 	function insert_query($table, $array)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
 		}
+
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$array[$field] = "X'{$value}'";
+			}
+			else
+			{
+				$array[$field] = "'{$value}'";
+			}
+		}
+
 		$fields = "`".implode("`,`", array_keys($array))."`";
-		$values = implode("','", $array);
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
-			VALUES ('".$values."')
+			VALUES (".$values.")
 		");
 		return $this->insert_id();
 	}
@@ -743,6 +758,8 @@ class DB_MySQL
 	 */
 	function insert_query_multiple($table, $array)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -754,7 +771,18 @@ class DB_MySQL
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			$insert_rows[] = "('".implode("','", $values)."')";
+			foreach($values as $field => $value)
+			{
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					$values[$field] = "X'{$value}'";
+				}
+				else
+				{
+					$values[$field] = "'{$value}'";
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -777,6 +805,8 @@ class DB_MySQL
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -793,7 +823,14 @@ class DB_MySQL
 
 		foreach($array as $field => $value)
 		{
-			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$query .= $comma."`".$field."`=X{$quote}{$value}{$quote}";
+			}
+			else
+			{
+				$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+			}
 			$comma = ', ';
 		}
 
@@ -1116,11 +1153,20 @@ class DB_MySQL
 	 */
 	function replace_query($table, $replacements=array())
 	{
+		global $mybb;
+
 		$values = '';
 		$comma = '';
 		foreach($replacements as $column => $value)
 		{
-			$values .= $comma."`".$column."`='".$value."'";
+			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
+			{
+				$values .= $comma."`".$column."`=X'".$value."'";
+			}
+			else
+			{
+				$values .= $comma."`".$column."`='".$value."'";
+			}
 
 			$comma = ',';
 		}

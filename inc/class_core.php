@@ -149,6 +149,22 @@ class MyBB {
 	public $debug_mode = false;
 
 	/**
+	 * Binary database fields require special attention due to a problem with SQLite: https://bugs.php.net/bug.php?id=63419
+	 */
+	public $binary_fields = array(
+		'adminlog' => array('ipaddress' => true),
+		'adminsessions' => array('ip' => true),
+		'maillogs' => array('ipaddress' => true),
+		'moderatorlog' => array('ipaddress' => true),
+		'posts' => array('ipaddress' => true),
+		'privatemessages' => array('ipaddress' => true),
+		'searchlog' => array('ipaddress' => true),
+		'sessions' => array('ip' => true),
+		'threadratings' => array('ipaddress' => true),
+		'users' => array('regip' => true, 'lastip' => true)
+	);
+
+	/**
 	 * Constructor of class.
 	 *
 	 * @return MyBB

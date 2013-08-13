@@ -1083,7 +1083,7 @@ elseif($mybb->input['action'] == "findguest")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $db->escape_string($tids),
 		"posts" => $db->escape_string($pids),
 		"resulttype" => "posts",
@@ -1160,7 +1160,7 @@ elseif($mybb->input['action'] == "finduser")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $db->escape_string($tids),
 		"posts" => $db->escape_string($pids),
 		"resulttype" => "posts",
@@ -1208,7 +1208,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1275,7 +1275,7 @@ elseif($mybb->input['action'] == "getnew")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1352,7 +1352,7 @@ elseif($mybb->input['action'] == "getdaily")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1378,7 +1378,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
+			$conditions = "uid='0' AND ipaddress=X'".escape_binary($session->packedip)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
@@ -1452,7 +1452,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"resulttype" => $resulttype,
@@ -1514,7 +1514,7 @@ else if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
+			$conditions = "uid='0' AND ipaddress=x'".escape_binary($session->packedip)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
@@ -1563,7 +1563,7 @@ else if($mybb->input['action'] == "thread")
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"resulttype" => 'posts',

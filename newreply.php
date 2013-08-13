@@ -315,7 +315,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress='".$db->escape_string($session->ipaddress)."'";
+		$user_check = "p.ipaddress=X'".escape_binary($session->packedip)."'";
 	}
 	if(!$mybb->input['savedraft'])
 	{
@@ -341,7 +341,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"uid" => $uid,
 		"username" => $username,
 		"message" => $mybb->input['message'],
-		"ipaddress" => get_ip(),
+		"ipaddress" => $session->packedip,
 		"posthash" => $mybb->input['posthash']
 	);
 
@@ -841,7 +841,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			"uid" => $uid,
 			"username" => $username,
 			"message" => $mybb->input['message'],
-			"ipaddress" => get_ip(),
+			"ipaddress" => $session->packedip,
 			"posthash" => $mybb->input['posthash']
 		);
 

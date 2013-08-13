@@ -11,7 +11,7 @@
 
 $tables[] = "CREATE TABLE mybb_adminlog (
 	uid int unsigned NOT NULL default '0',
-	ipaddress varchar(50) NOT NULL default '',
+	ipaddress blob(16) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	module varchar(50) NOT NULL default '',
 	action varchar(50) NOT NULL default '',
@@ -33,7 +33,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
 	loginkey varchar(50) NOT NULL default '',
-	ip varchar(40) NOT NULL default '',
+	ip blob(16) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0',
 	data TEXT NOT NULL,
@@ -354,7 +354,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	touid bigint(30) NOT NULL default '0',
 	toemail varchar(200) NOT NULL default '',
 	tid int NOT NULL default '0',
-	ipaddress varchar(20) NOT NULL default ''
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_mailqueue (
@@ -373,7 +373,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
 	pid int NOT NULL default '0',
 	action TEXT NOT NULL,
 	data text NOT NULL,
-	ipaddress varchar(50) NOT NULL default ''
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_moderators (
@@ -444,8 +444,7 @@ $tables[] = "CREATE TABLE mybb_posts (
 	username varchar(80) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	message TEXT NOT NULL,
-	ipaddress varchar(30) NOT NULL default '',
-	longipaddress int(11) NOT NULL default '0',
+	ipaddress blob(16) NOT NULL default '',
 	includesig int(1) NOT NULL default '0',
 	smilieoff int(1) NOT NULL default '0',
 	edituid int NOT NULL default '0',
@@ -472,7 +471,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
 	smilieoff int(1) NOT NULL default '0',
 	receipt int(1) NOT NULL default '0',
 	readtime bigint(30) NOT NULL default '0',
-	ipaddress varchar(30) NOT NULL default ''
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 
@@ -552,7 +551,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
-	ipaddress varchar(120) NOT NULL default '',
+	ipaddress blob(16) NOT NULL default '',
 	threads LONGTEXT NOT NULL,
 	posts LONGTEXT NOT NULL,
 	resulttype varchar(10) NOT NULL default '',
@@ -563,7 +562,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
 $tables[] = "CREATE TABLE mybb_sessions (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
-	ip varchar(40) NOT NULL default '',
+	ip blob(16) NOT NULL default '',
 	time bigint(30) NOT NULL default '0',
 	location varchar(150) NOT NULL default '',
 	useragent varchar(100) NOT NULL default '',
@@ -702,7 +701,7 @@ $tables[] = "CREATE TABLE mybb_threadratings (
 	tid int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	rating smallint NOT NULL default '0',
-	ipaddress varchar(30) NOT NULL default ''
+	ipaddress blob(16) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_threadviews (
@@ -892,10 +891,8 @@ $tables[] = "CREATE TABLE mybb_users (
 	referrer int NOT NULL default '0',
 	referrals int NOT NULL default '0',
 	reputation bigint(30) NOT NULL default '0',
-	regip varchar(50) NOT NULL default '',
-	lastip varchar(50) NOT NULL default '',
-	longregip int(11) NOT NULL default '0',
-	longlastip int(11) NOT NULL default '0',
+	regip blob(16) NOT NULL default '',
+	lastip blob(16) NOT NULL default '',
 	language varchar(50) NOT NULL default '',
 	timeonline bigint(30) NOT NULL default '0',
 	showcodebuttons int(1) NOT NULL default '1',
