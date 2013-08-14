@@ -31,10 +31,6 @@ class session
 
 		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($this->useragent) > 100)
-		{
-			$this->useragent = my_substr($this->useragent, 0, 100);
-		}
 
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
@@ -453,7 +449,12 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$onlinedata['useragent'] = $db->escape_string($this->useragent);
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
@@ -502,7 +503,12 @@ class session
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = escape_binary($this->packedip);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$onlinedata['useragent'] = $db->escape_string($this->useragent);
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
