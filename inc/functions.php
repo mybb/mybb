@@ -3094,29 +3094,28 @@ function get_ip()
 {
     global $mybb, $plugins;
 
-    $ip = 0;
-
-    if(!preg_match("#^(10|172\.16|192\.168)\.#", $_SERVER['REMOTE_ADDR']))
-    {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
+	$ip = $_SERVER['REMOTE_ADDR'];
 
     if($mybb->settings['ip_forwarded_check'])
     {
+		$addresses = array();
+
         if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
         {
-            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses);
+            $addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         }
         elseif(isset($_SERVER['HTTP_X_REAL_IP']))
         {
-            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_REAL_IP'], $addresses);
+            $addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
         }
 
-		if(is_array($addresses[0]))
+		if(is_array($addresses))
 		{
-			foreach($addresses[0] as $key => $val)
+			foreach($addresses as $val)
 			{
-				if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
+				$val = trim($val);
+				// Validate IP address and exclude private addresses
+				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-2])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
 				{
 					$ip = $val;
 					break;
