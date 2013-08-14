@@ -199,7 +199,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
+	if($pid)
 	{
 		$attachwhere = "pid='{$pid}'";
 	}
@@ -943,7 +943,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	if($forumpermissions['canpostattachments'] != 0)
 	{
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+		if($pid)
 		{
 			$attachwhere = "pid='$pid'";
 		}
