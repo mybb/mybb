@@ -23,7 +23,7 @@ var Rating = {
 				elements.each(function()
 				{
 					var element = $(this);
-					element.click(function() { return false; });
+					element.attr("onclick", "return false;");
 					element.css("cursor", "default");
 					var element_id = element.attr("href").replace(/.*\?(.*)/, "$1").match(/tid=(.*)&(.*)&/)[1];
 					element.attr("title", $("#current_rating_"+element_id).text());
@@ -112,10 +112,10 @@ var Rating = {
 					elements.each(function()
 					{
 						var element = $(this);
-						if(element.attr("id", "rating_thread_" + element_id))
+						if(element.attr("id") == "rating_thread_" + element_id)
 						{
-							element.click(function() { return false; });
-							element.css("cursor", "default")
+							element.attr("onclick", "return false;")
+								   .css("cursor", "default")
 							       .attr("title", $("#current_rating_"+element_id).text());
 						}
 					});
