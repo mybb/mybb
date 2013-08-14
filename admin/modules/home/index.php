@@ -309,13 +309,13 @@ elseif(!$mybb->input['action'])
 
 	if(!empty($update_check['news']) && is_array($update_check['news']))
 	{
-		foreach($update_check['news'] as $newsItem)
+		foreach($update_check['news'] as $news_item)
 		{
-			$posted = my_date('relative', $newsItem['dateline']);
-			$table->construct_cell("<strong><a href=\"{$newsItem['link']}\" target=\"_blank\">{$newsItem['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
+			$posted = my_date('relative', $news_item['dateline']);
+			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell(htmlspecialchars_uni($newsItem['description']));
+			$table->construct_cell(htmlspecialchars_uni($news_item['description']));
 			$table->construct_row();
 		}
 	}

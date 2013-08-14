@@ -149,7 +149,8 @@ function home_action_handler($action)
 				{
 					$class = "";
 				}
-				$online_users .= "<li{$class}>".build_profile_link($user['username'].' ('.my_inet_ntop($user['ip']).')', $user['uid'], "_blank")."</li>";
+				$ip_address = my_inet_ntop($user['ip']);
+				$online_users .= "<li title=\"{$lang->ipaddress} {$ip_address}\"{$class}>".build_profile_link($user['username'].' ('.$ip_address.')', $user['uid'], "_blank")."</li>";
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}

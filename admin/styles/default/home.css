@@ -1,9 +1,15 @@
 #left_menu div.left_menu_box ul.online_admins li a {
 	background: url('images/icons/user.png') no-repeat 15px 4px;
 	padding-left: 37px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #left_menu div.left_menu_box ul.online_admins li.mobile_user a {
 	background: url('images/icons/mobile_user.png') no-repeat 15px 4px;
 	padding-left: 37px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

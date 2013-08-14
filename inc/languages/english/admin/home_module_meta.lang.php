@@ -20,5 +20,6 @@ $l['plugins'] = "Plugins";
 $l['database_backups'] = "Database Backups";
 $l['quick_access'] = "Quick Access";
 $l['online_admins'] = "Online Admins";
+$l['ipaddress'] = "IP Address:";
 
 ?>

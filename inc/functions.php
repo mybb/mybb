@@ -6457,7 +6457,7 @@ function fetch_ip_range($ipaddress)
 				return false;
 			}
 		}
-		
+
 		/**
 		 * Taken from: https://github.com/NewEraCracker/php_work/blob/master/ipRangeCalculate.php
 		 * Author: NewEraCracker
