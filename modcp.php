@@ -15,7 +15,7 @@ define('THIS_SCRIPT', 'modcp.php');
 $templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit";
 $templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread";
 $templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty";
-$templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
+$templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults";
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
@@ -2826,7 +2826,7 @@ if($mybb->input['action'] == "ipsearch")
 		}
 
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
-		
+
 		$ip_range = fetch_ip_range($mybb->input['ipaddress']);
 
 		// Searching post IP addresses
@@ -3733,7 +3733,7 @@ if(!$mybb->input['action'])
 
 	if(!$modlogresults)
 	{
-		eval("\$modlogresults = \"".$templates->get("modcp_modlogs_noresults")."\";");
+		eval("\$modlogresults = \"".$templates->get("modcp_modlogs_nologs")."\";");
 	}
 
 	$query = $db->query("

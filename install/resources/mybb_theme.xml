@@ -6389,6 +6389,10 @@ body {
 	<td class="trow1" align="center" colspan="5">{$lang->error_no_results}</td>
 
 </tr>]]></template>
+		<template name="modcp_modlogs_nologs" version="1800"><![CDATA[<tr>
+	<td class="trow1" align="center" colspan="5">{$lang->no_logs}</td>
+
+</tr>]]></template>
 		<template name="modcp_modlogs_result" version="1800"><![CDATA[<tr>
 <td class="{$trow}" valign="top">{$logitem['profilelink']}</td>
 <td class="{$trow}" align="center" valign="top">{$log_date}</td>

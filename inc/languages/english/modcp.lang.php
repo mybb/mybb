@@ -41,6 +41,7 @@ $l['report_reason'] = "Reason";
 $l['report_time'] = "Reported";
 $l['mark_read'] = "Mark Selected as Read";
 $l['no_reports'] = "There are currently no unread reports.";
+$l['no_logs'] = "No moderator actions are currently logged.";
 $l['error_noselected_reports'] = "Sorry, but you did not select any reported posts to mark as read. Either that or the selected posts have already been marked read by another user.";
 $l['error_missing_ipaddress'] = "Sorry, but you did not enter in an IP Address to find.";
 $l['error_no_results'] = "Sorry, there were no results found with the criteria you selected.";
