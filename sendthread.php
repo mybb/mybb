@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -147,7 +147,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 				"touid" => 0,
 				"toemail" => $db->escape_string($mybb->input['email']),
 				"tid" => $thread['tid'],
-				"ipaddress" => $db->escape_string($session->ipaddress)
+				"ipaddress" => escape_binary($session->packedip)
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

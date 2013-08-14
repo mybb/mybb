@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -282,18 +282,17 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		$website_lower = my_strtolower($website);
-		if(empty($website) || $website_lower == 'http://' || $website_lower == 'https://')
+		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
 		{
 			$website = '';
 			return true;
 		}
 
 		// Does the website start with http(s)://?
-		if(!validate_website_format($website))
+		if(my_strtolower(substr($website, 0, 4)) != "http")
 		{
-			$this->set_error('invalid_website');
-			return false;
+			// Website does not start with http://, let's see if the user forgot.
+			$website = "http://".$website;
 		}
 
 		return true;
@@ -476,7 +475,7 @@ class UserDataHandler extends DataHandler
 		$userfields = array();
 		$comma = '';
 		$editable = '';
-		
+
 		if(!$this->data['profile_fields_editable'])
 		{
 			$editable = "editable=1";
@@ -1005,11 +1004,11 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string($user['website']),
+			"website" => $db->escape_string(htmlspecialchars($user['website'])),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string($user['aim']),
-			"yahoo" => $db->escape_string($user['yahoo']),
-			"msn" => $db->escape_string($user['msn']),
+			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
+			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
+			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1033,8 +1032,7 @@ class UserDataHandler extends DataHandler
 			"daysprune" => intval($user['options']['daysprune']),
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
-			"regip" => $db->escape_string($user['regip']),
-			"longregip" => intval(my_ip2long($user['regip'])),
+			"regip" => escape_binary($user['regip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
 			"away" => $user['away']['away'],
@@ -1186,7 +1184,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string($user['website']);
+			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
 		}
 		if(isset($user['icq']))
 		{
@@ -1194,15 +1192,15 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
+			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
+			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
 		}
 		if(isset($user['msn']))
 		{
-			$this->user_update_data['msn'] = $db->escape_string($user['msn']);
+			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars_uni($user['msn']));
 		}
 		if(isset($user['bday']))
 		{

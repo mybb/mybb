@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -13,21 +13,6 @@
 if(!defined("IN_MYBB"))
 {
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
-
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
 }
 
 /* Defines the root directory for MyBB.
@@ -56,6 +41,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
+
+if(!function_exists('json_encode') || !function_exists('json_decode'))
+{
+	require_once MYBB_ROOT.'inc/3rdparty/json/json.php';
+}
 
 require_once MYBB_ROOT."inc/functions.php";
 
@@ -86,6 +76,11 @@ if($not_installed !== false)
 {
 	if(file_exists(MYBB_ROOT."install/index.php"))
 	{
+		if(defined("IN_ARCHIVE") || defined("IN_ADMINCP"))
+		{
+			header("Location: ../install/index.php");
+			exit;
+		}
 		header("Location: ./install/index.php");
 		exit;
 	}
@@ -256,7 +251,6 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('CALENDAR_URL_DAY', 'calendar-{calendar}-year-{year}-month-{month}-day-{day}.html');
 	define('CALENDAR_URL_WEEK', 'calendar-{calendar}-week-{week}.html');
 	define('EVENT_URL', "event-{eid}.html");
-	define('INDEX_URL', "index.php");
 }
 else
 {
@@ -275,8 +269,8 @@ else
 	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
 	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
-	define('INDEX_URL', "index.php");
 }
+define('INDEX_URL', "index.php");
 
 // An array of valid date formats (Used for user selections etc)
 $date_formats = array(

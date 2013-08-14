@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -324,12 +324,12 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$icon = array(
+			$updated_icon = array(
 				'name'	=> $db->escape_string($mybb->input['name']),
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->update_query("icons", $icon, "iid='".intval($mybb->input['iid'])."'");
+			$db->update_query("icons", $updated_icon, "iid='".intval($mybb->input['iid'])."'");
 
 			$cache->update_posticons();
 

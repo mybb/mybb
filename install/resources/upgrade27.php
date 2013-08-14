@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -28,6 +28,7 @@ function upgrade27_dbchanges()
 	$output->print_header("Updating Database");
 
 	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
@@ -74,6 +75,26 @@ function upgrade27_dbchanges()
 		$db->drop_column('usergroups', 'canbereported');
 	}
 
+	if($db->field_exists('ipaddress', 'privatemessages'))
+	{
+		$db->drop_column('privatemessages', 'ipaddress');
+	}
+
+	if($db->field_exists('warnings', 'promotions'))
+	{
+		$db->drop_column("promotions", "warnings");
+	}
+
+	if($db->field_exists('warningstype', 'promotions'))
+	{
+		$db->drop_column("promotions", "warningstype");
+	}
+
+	if($db->field_exists('useragent', 'adminsessions'))
+	{
+		$db->drop_column("adminsessions", "useragent");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -84,6 +105,9 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int NOT NULL default '0'");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -92,14 +116,26 @@ function upgrade27_dbchanges()
 			$db->add_column("reportedposts", "reporters", "text NOT NULL");
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
 			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0'");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			break;
 	}
 
-	$groups = array();
-	for($i = 1; $i <= 39; $i++)
+	switch($db->type)
 	{
-		$groups[] = $i;
+		case "pgsql":
+			$db->add_column("privatemessages", "ipaddress", "bytea(16) NOT NULL default ''");
+			break;
+		case "sqlite":
+			$db->add_column("privatemessages", "ipaddress", "blob(16) NOT NULL default ''");
+			break;
+		default:
+			$db->add_column("privatemessages", "ipaddress", "varbinary(16) NOT NULL default ''");
+			break;
 	}
+
+	$groups = range(1, 39);
 
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
@@ -107,6 +143,7 @@ function upgrade27_dbchanges()
 	$db->update_query("reportedposts", array('type' => 'post'));
 
 	// Sync usergroups with canbereported; no moderators or banned groups
+	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();
 	$usergroups = $cache->read('usergroups');
 
@@ -123,10 +160,401 @@ function upgrade27_dbchanges()
 	$usergroups = implode(',', $groups);
 	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
 
-	sync_tasks(0);
+	// Update tasks
+	$added_tasks = sync_tasks();
+
+	// For the version check task, set a random date and hour (so all MyBB installs don't query mybb.com all at the same time)
+	$update_array = array(
+		'hour' => rand(0, 23),
+		'weekday' => rand(0, 6)
+	);
+
+	$db->update_query("tasks", $update_array, "file = 'versioncheck'");
+
+	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("27_updatetheme");
+	$output->print_footer("27_dbchanges_ip");
+}
+
+function upgrade27_dbchanges_ip()
+{
+	global $mybb, $db, $output;
+
+	$output->print_header("IP Conversion");
+	
+	$ipstart = $iptable = '';
+	
+	switch($mybb->input['iptask'])
+	{
+		case 8:
+			echo "<p>Adding database indices (3/3)...</p>";
+			flush();
+
+			if($db->type == "mysql" || $db->type == "mysqli")
+			{
+				// This may take a while
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
+			}
+			$next_task = 9;
+			break;
+		case 7:
+			echo "<p>Adding database indices (2/3)...</p>";
+			flush();
+
+			if($db->type == "mysql" || $db->type == "mysqli")
+			{
+				// This may take a while
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
+			}
+			$next_task = 8;
+			break;
+		case 6:
+			echo "<p>Adding database indices (1/3)...</p>";
+			flush();
+
+			if($db->type == "mysql" || $db->type == "mysqli")
+			{
+				// This may take a while
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
+			}
+			$next_task = 7;
+			break;
+		case 5:
+			if(!$_POST['ipspage'])
+			{
+				$ipp = 5000;
+			}
+			else
+			{
+				$ipp = $_POST['ipspage'];
+			}
+
+			if($_POST['ipstart'])
+			{
+				$startat = $_POST['ipstart'];
+				$upper = $startat+$ipp-1;
+				$lower = $startat;
+			}
+			else
+			{
+				$startat = 0;
+				$upper = $ipp;
+				$lower = 0;
+			}
+	
+			$next_task = 5;
+			switch($mybb->input['iptable'])
+			{
+				case 7:
+					echo "<p>Converting user IPs...</p>";
+					flush();
+					$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
+					if($db->type == "mysql" || $db->type == "mysqli")
+					{
+						$next_task = 6;
+					}
+					else
+					{
+						$next_task = 9;
+					}
+					break;
+				case 6:
+					echo "<p>Converting thread rating IPs...</p>";
+					flush();
+					$query = $db->simple_select("threadratings", "COUNT(rid) AS ipcount");
+					break;
+					echo "<p>Converting session IPs...</p>";
+					flush();
+				case 5:
+					$query = $db->simple_select("sessions", "COUNT(sid) AS ipcount");
+					break;
+				case 4:
+					echo "<p>Converting post IPs...</p>";
+					flush();
+					$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
+					break;
+				case 3:
+					echo "<p>Converting moderator log IPs...</p>";
+					flush();
+					$query = $db->simple_select("moderatorlog", "COUNT(DISTINCT ipaddress) AS ipcount");
+					break;
+				case 2:
+					echo "<p>Converting mail log IPs...</p>";
+					flush();
+					$query = $db->simple_select("maillogs", "COUNT(mid) AS ipcount");
+					break;
+				default:
+					echo "<p>Converting admin log IPs...</p>";
+					flush();
+					$query = $db->simple_select("adminlog", "COUNT(DISTINCT ipaddress) AS ipcount");
+					break;
+			}
+			$cnt = $db->fetch_array($query);
+
+			if($upper > $cnt['ipcount'])
+			{
+				$upper = $cnt['ipcount'];
+			}
+
+			echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+			flush();
+
+			$ipaddress = false;
+
+			switch($mybb->input['iptable'])
+			{
+				case 7:
+					$query = $db->simple_select("users", "uid, regip, lastip", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				case 6:
+					$query = $db->simple_select("threadratings", "rid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				case 5:
+					$query = $db->simple_select("sessions", "sid, ip", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				case 4:
+					$query = $db->simple_select("posts", "pid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				case 3:
+					$query = $db->simple_select("moderatorlog", "DISTINCT(ipaddress)", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				case 2:
+					$query = $db->simple_select("maillogs", "mid, ipaddress", "", array('limit_start' => $lower, 'limit' => $ipp));
+					break;
+				default:
+					$query = $db->simple_select("adminlog", "DISTINCT(ipaddress)", "", array('limit_start' => $lower, 'limit' => $ipp));
+					$mybb->input['iptable'] = 1;
+					break;
+			}
+			while($data = $db->fetch_array($query))
+			{
+				// Skip invalid IPs
+				switch($mybb->input['iptable'])
+				{
+					case 7:
+						$ip1 = my_inet_pton($data['regip']);
+						$ip2 = my_inet_pton($data['lastip']);
+						if($ip1 === false && $ip2 === false)
+						{
+							continue;
+						}
+						break;
+					case 5:
+						$ip = my_inet_pton($data['ip']);
+						if($ip === false)
+						{
+							continue;
+						}
+						break;
+					case 6:
+					case 4:
+					case 3:
+					case 2:
+					default:
+						$ip = my_inet_pton($data['ipaddress']);
+						if($ip === false)
+						{
+							continue;
+						}
+						break;
+				}
+
+				switch($mybb->input['iptable'])
+				{
+					case 7:
+						$db->update_query("users", array('regip' => escape_binary(my_inet_pton($data['regip'])), 'lastip' => escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
+						break;
+					case 6:
+						$db->update_query("threadratings", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
+						break;
+					case 5:
+						$db->update_query("sessions", array('ip' => escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
+						break;
+					case 4:
+						$db->update_query("posts", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
+						break;
+					case 3:
+						$db->update_query("moderatorlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						break;
+					case 2:
+						$db->update_query("maillogs", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
+						break;
+					default:
+						$db->update_query("adminlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						break;
+				}
+				$ipaddress = true;
+			}
+
+			$remaining = $upper-$cnt['ipcount'];
+			if($remaining && $ipaddress)
+			{
+				$startat = $startat+$ipp;
+				$ipstart = "<input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />";
+				$iptable = $mybb->input['iptable'];
+			}
+			else
+			{
+				$iptable = $mybb->input['iptable']+1;
+			}
+			if($iptable <= 10)
+			{
+				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"$iptable\" />";
+			}
+			break;
+		case 4:
+			$next_task = 4;
+			switch($mybb->input['iptable'])
+			{
+				case 10:
+					echo "<p>Updating user table (4/4)...</p>";
+					flush();
+
+					$table = 'users';
+					$column = 'lastip';
+					$next_task = 5;
+					break;
+				case 9:
+					echo "<p>Updating user table (3/4)...</p>";
+					flush();
+
+					$table = 'users';
+					$column = 'regip';
+					break;
+				case 8:
+					echo "<p>Updating threadreating table...</p>";
+					flush();
+
+					$table = 'threadratings';
+					$column = 'ipaddress';
+					break;
+				case 7:
+					echo "<p>Updating session table...</p>";
+					flush();
+
+					$table = 'sessions';
+					$column = 'ip';
+					break;
+				case 6:
+					echo "<p>Updating searchlog table...</p>";
+					flush();
+
+					$table = 'searchlog';
+					$column = 'ipaddress';
+					// Skip conversation
+					$db->delete_query('searchlog');
+					break;
+				case 5:
+					echo "<p>Updating post table (2/2)...</p>";
+					flush();
+
+					$table = 'posts';
+					$column = 'ipaddress';
+					break;
+				case 4:
+					echo "<p>Updating moderatorlog table...</p>";
+					flush();
+
+					$table = 'moderatorlog';
+					$column = 'ipaddress';
+					break;
+				case 3:
+					echo "<p>Updating maillog table...</p>";
+					flush();
+
+					$table = 'maillogs';
+					$column = 'ipaddress';
+					break;
+				case 2:
+					echo "<p>Updating adminsession table...</p>";
+					flush();
+
+					$table = 'adminsessions';
+					$column = 'ip';
+					// Skip conversation
+					$db->delete_query('adminsessions');
+					break;
+				default:
+					echo "<p>Updating adminlog table...</p>";
+					flush();
+
+					$mybb->input['iptable'] = 1;
+					$table = 'adminlog';
+					$column = 'ipaddress';
+					break;
+			}
+			// Truncate invalid IPs
+			$db->write_query("UPDATE ".TABLE_PREFIX."{$table} SET {$column} = SUBSTR({$column}, 16) WHERE LENGTH({$column})>16");
+			switch($db->type)
+			{
+				case "pgsql":
+					$db->modify_column($table, $column, "bytea(16) NOT NULL default ''");
+					break;
+				case "sqlite":
+					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
+					break;
+				default:
+					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
+					break;
+			}
+			if($mybb->input['iptable'] < 10)
+			{
+				$iptable = "<input type=\"hidden\" name=\"iptable\" value=\"".($mybb->input['iptable']+1)."\" />";
+			}
+			break;
+		case 3:
+			echo "<p>Updating user table (2/4)...</p>";
+			flush();
+
+			if($db->field_exists('longlastip', 'users'))
+			{
+				// This may take a while
+				$db->drop_column("users", "longlastip");
+			}
+			$next_task = 4;
+			break;
+		case 2:
+			echo "<p>Updating user table (1/4)...</p>";
+			flush();
+
+			if($db->field_exists('longregip', 'users'))
+			{
+				// This may take a while
+				$db->drop_column("users", "longregip");
+			}
+			$next_task = 3;
+			break;
+		default:
+			echo "<p>Updating post table (1/2)...</p>";
+			flush();
+
+			if($db->field_exists('longipaddress', 'posts'))
+			{
+				// This may take a while
+				$db->drop_column("posts", "longipaddress");
+			}
+			$next_task = 2;
+			break;
+	}
+
+	if($next_task == 9)
+	{
+		$contents = "<p>Click next to continue with the upgrade process.</p>";
+		$nextact = "27_updatetheme";
+	}
+	else
+	{
+		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversation.</p>";
+	
+		global $footer_extra;
+		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		$nextact = "27_dbchanges_ip";
+	}
+
+	$output->print_contents($contents);
+
+	$output->print_footer($nextact);
 }
 
 function upgrade27_updatetheme()

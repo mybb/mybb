@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -26,7 +26,7 @@ if($mybb->settings['enablememberlist'] == 0)
 
 $plugins->run_hooks("memberlist_start");
 
-add_breadcrumb($lang->nav_memberlist);
+add_breadcrumb($lang->nav_memberlist, "memberlist.php");
 
 if($mybb->usergroup['canviewmemberlist'] == 0)
 {
@@ -37,6 +37,7 @@ if($mybb->usergroup['canviewmemberlist'] == 0)
 if($mybb->input['action'] == "search")
 {
 	$plugins->run_hooks("memberlist_search");
+	add_breadcrumb($lang->nav_memberlist_search);
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
 	output_page($search_page);
 }
@@ -321,25 +322,6 @@ else
 				$user['userstars'] .= "<img src=\"{$starimage}\" border=\"0\" alt=\"*\" />";
 			}
 		}
-
-		if(validate_website_format($user['website']))
-		{
-			$user['website'] = htmlspecialchars_uni($user['website']);
-		}
-		else
-		{
-			$user['website'] = '';
-		}
-
-		$user['icq'] = (int)$user['icq'];
-		if(!$user['icq'])
-		{
-			$user['icq'] = '';
-		}
-
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
-		$user['aim'] = htmlspecialchars_uni($user['aim']);
-		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
 		if($user['userstars'] && $usergroup['groupimage'])
 		{

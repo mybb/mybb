@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -282,6 +282,8 @@ class MailHandler
 	 */
 	function set_common_headers()
 	{
+		global $mybb;
+
 		// Build mail headers
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
 
@@ -304,7 +306,7 @@ class MailHandler
 			$http_host = "unknown.local";
 		}
 
-		$msg_id = md5(uniqid(TIME_NOW)) . "@" . $http_host;
+		$msg_id = md5(uniqid(TIME_NOW, true)) . "@" . $http_host;
 
 		if($mybb->settings['mail_message_id'])
 		{

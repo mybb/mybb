@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -22,7 +22,7 @@ function output_page($contents)
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
 
-	if($mybb->usergroup['cancp'] == 1)
+	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
@@ -62,8 +62,15 @@ function output_page($contents)
 			{
 				$memory_usage = '';
 			}
+			// MySQLi is still MySQL, so present it that way to the user
+			$database_server = $db->short_title;
 
-			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% MySQL)<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			if($database_server == 'MySQLi')
+			{
+				$database_server = 'MySQL';
+			}
+
+			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% ".$database_server.")<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
@@ -247,7 +254,7 @@ function send_mail_queue($count=10)
 
 			if($db->affected_rows() == 1)
 			{
-				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers'], true);
 			}
 		}
 		// Update the mailqueue cache and remove the lock
@@ -720,8 +727,8 @@ function error($error="", $title="")
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		@header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$error}</error>\n";
+		@header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => array($error)));
 		exit;
 	}
 
@@ -764,10 +771,9 @@ function inline_error($errors, $title="")
 	// AJAX error message?
 	if($mybb->input['ajax'])
 	{
-		$error = implode("\n\n", $errors);
 		// Send our headers.
-		@header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$error}</error>\n";
+		@header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => $errors));
 		exit;
 	}
 
@@ -802,8 +808,8 @@ function error_no_permission()
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<error>{$lang->error_nopermission_user_ajax}</error>\n";
+		header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("errors" => array($lang->error_nopermission_user_ajax)));
 		exit;
 	}
 
@@ -1845,7 +1851,7 @@ function my_unserialize($data)
  */
 function get_server_load()
 {
-	global $lang;
+	global $mybb, $lang;
 
 	$serverload = array();
 
@@ -1865,7 +1871,7 @@ function get_server_load()
 		}
 		if(!is_numeric($serverload[0]))
 		{
-			if(@ini_get('safe_mode') == 'On')
+			if($mybb->safemode)
 			{
 				return $lang->unknown;
 			}
@@ -3005,7 +3011,7 @@ function log_moderator_action($data, $action="")
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
-		"ipaddress" => $db->escape_string($session->ipaddress)
+		"ipaddress" => escape_binary($session->packedip)
 	);
 	$db->insert_query("moderatorlog", $sql_array);
 }
@@ -3088,29 +3094,28 @@ function get_ip()
 {
     global $mybb, $plugins;
 
-    $ip = 0;
-
-    if(!preg_match("#^(10|172\.16|192\.168)\.#", $_SERVER['REMOTE_ADDR']))
-    {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
+	$ip = $_SERVER['REMOTE_ADDR'];
 
     if($mybb->settings['ip_forwarded_check'])
     {
+		$addresses = array();
+
         if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
         {
-            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses);
+            $addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         }
         elseif(isset($_SERVER['HTTP_X_REAL_IP']))
         {
-            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_REAL_IP'], $addresses);
+            $addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
         }
 
-		if(is_array($addresses[0]))
+		if(is_array($addresses))
 		{
-			foreach($addresses[0] as $key => $val)
+			foreach($addresses as $val)
 			{
-				if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
+				$val = trim($val);
+				// Validate IP address and exclude private addresses
+				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-2])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
 				{
 					$ip = $val;
 					break;
@@ -3284,7 +3289,7 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
 	}
 }
 
@@ -3590,21 +3595,20 @@ function build_archive_link($type, $id="")
  */
 function debug_page()
 {
-	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang;
+	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang, $cache;
 
 	$totaltime = format_time_duration($maintimer->totaltime);
 	$phptime = $maintimer->totaltime - $db->query_time;
 	$query_time = $db->query_time;
 	$globaltime = format_time_duration($globaltime);
 
-	// $phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
-	// $query_time = $maintimer->format($db->query_time);
-
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($query_time/$maintimer->totaltime)*100), 2);
 
 	$phptime = format_time_duration($maintimer->totaltime - $db->query_time);
 	$query_time = format_time_duration($db->query_time);
+
+	$call_time = format_time_duration($cache->call_time);
 
 	$phpversion = PHP_VERSION;
 
@@ -3622,7 +3626,7 @@ function debug_page()
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
 	echo "<head>";
-	echo "<meta name=\"robots\" content=\"noindex\">";
+	echo "<meta name=\"robots\" content=\"noindex\" />";
 	echo "<title>MyBB Debug Information</title>";
 	echo "</head>";
 	echo "<body>";
@@ -3630,37 +3634,37 @@ function debug_page()
 	echo "<h2>Page Generation</h2>\n";
 	echo "<table bgcolor=\"#666666\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#CCCCCC\" colspan=\"4\"><b><span style=\"size:2;\">Page Generation Statistics</span></b></td>\n";
+	echo "<td bgcolor=\"#cccccc\" colspan=\"4\"><b><span style=\"size:2;\">Page Generation Statistics</span></b></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Generation Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. DB Queries:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Page Generation Time:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$totaltime</span></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">No. DB Queries:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$db->query_count</span></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime ($percentphp%)</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">DB Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$query_time ($percentsql%)</font></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">PHP Processing Time:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$phptime ($percentphp%)</span></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">DB Processing Time:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$query_time ($percentsql%)</span></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Extensions Used:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$mybb->config['database']['type']}, xml</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Global.php Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime</font></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Extensions Used:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$mybb->config['database']['type']}, xml</span></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Global.php Processing Time:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$globaltime</span></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Version:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phpversion</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Server Load:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$serverload</font></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">PHP Version:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$phpversion</span></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Server Load:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$serverload</span></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">GZip Encoding Status:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$gzipen</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. Templates Used:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">GZip Encoding Status:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$gzipen</span></td>\n";
+	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">No. Templates Used:</span></b></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</span></td>\n";
 	echo "</tr>\n";
 
 	$memory_usage = get_memory_usage();
@@ -3674,10 +3678,10 @@ function debug_page()
 	}
 	$memory_limit = @ini_get("memory_limit");
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_usage}</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Memory Usage:</span></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$memory_usage}</span></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">Memory Limit:</span></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">{$memory_limit}</span></td>\n";
 	echo "</tr>\n";
 
 	echo "</table>\n";
@@ -3692,6 +3696,13 @@ function debug_page()
 
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
+
+	if($cache->call_count > 0)
+	{
+		echo "<h2>Cache Calls (".$cache->call_count." Total, ".$call_time.") </h2>\n";
+		echo $cache->cache_debug;
+	}
+
 	echo "<h2>Template Statistics</h2>\n";
 
 	if(count($templates->cache) > 0)
@@ -3707,7 +3718,7 @@ function debug_page()
 		echo "<br />\n";
 	}
 
-	if(count($templates->uncached_templates > 0))
+	if(count($templates->uncached_templates) > 0)
 	{
 		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
 		echo "<tr>\n";
@@ -4762,8 +4773,8 @@ function my_strtoupper($string)
 function unhtmlentities($string)
 {
 	// Replace numeric entities
-	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'unichr(hexdec("\\1"))', $string);
-	$string = preg_replace('~&#([0-9]+);~e', 'unichr("\\1")', $string);
+	$string = preg_replace_callback('~&#x([0-9a-f]+);~i', create_function('$matches', 'return unichr(hexdec($matches[1]));'), $string);
+	$string = preg_replace_callback('~&#([0-9]+);~', create_function('$matches', 'return unichr($matches[1]);'), $string);
 
 	// Replace literal entities
 	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
@@ -5343,28 +5354,6 @@ function validate_email_format($email)
 }
 
 /**
- * Validates the format of a website address.
- *
- * @param string The string to check.
- * @return boolean True when valid, false when invalid.
- */
-function validate_website_format($website)
-{
-	if(empty($website) || !trim($website) || !my_strtolower(substr($website, 0, 4)) == 'http')
-	{
-		return false;
-	}
-
-	$website_lower = my_strtolower($website);
-	if($website_lower == 'http://' || $website_lower == 'https://')
-	{
-		return false;
-	}
-
-	return preg_match("/^(http(s?):\/\/)?(www\.)+[a-zA-Z0-9\.\-\_]+(\.[a-zA-Z]{2,3})+(\/[a-zA-Z0-9\_\-\s\.\/\?\%\#\&\=]*)?$/", $website);
-}
-
-/**
  * Checks to see if the email is already in use by another
  *
  * @param string The email to check.
@@ -5683,6 +5672,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		return false;
 	}
 
+	$ip_address = my_inet_pton($ip_address);
 	foreach($banned_ips as $banned_ip)
 	{
 		if(!$banned_ip['filter'])
@@ -5690,9 +5680,21 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 			continue;
 		}
 
-		// Make regular expression * match
-		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
-		if(preg_match("#^{$banned_ip['filter']}$#i", $ip_address))
+		$banned = false;
+
+		$ip_range = fetch_ip_range($banned_ip['filter']);
+		if(is_array($ip_range))
+		{
+			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			{
+				$banned = true;
+			}
+		}
+		elseif($ip_address == $ip_range)
+		{
+			$banned = true;
+		}
+		if($banned)
 		{
 			// Updating last use
 			if($update_lastuse == true)
@@ -5942,7 +5944,7 @@ function is_member($groups, $user = false)
 		$user = get_user($user);
 	}
 
-	$memberships = explode(',', array_map('intval', $user['additionalgroups']));
+	$memberships = array_map('intval', explode(',', $user['additionalgroups']));
 	$memberships[] = $user['usergroup'];
 
 	if(!is_array($groups))
@@ -6024,6 +6026,7 @@ function escaped_explode($delimeter, $string, $escape="")
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible fetch_ip_range!
  * Fetch an IPv4 long formatted range for searching IPv4 IP addresses.
  *
  * @param string The IP address to convert to a range based LONG
@@ -6259,6 +6262,7 @@ function subforums_count($array)
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible my_inet_pton!
  * Fix for PHP's ip2long to guarantee a 32-bit signed integer value is produced (this is aimed
  * at 64-bit versions of PHP)
  *
@@ -6288,6 +6292,7 @@ function my_ip2long($ip)
 }
 
 /**
+ * DEPRECATED! Please use IPv6 compatible my_inet_ntop!
  * As above, fix for PHP's long2ip on 64-bit versions
  *
  * @param integer The IP to convert (will accept 64-bit IPs as well)
@@ -6304,6 +6309,237 @@ function my_long2ip($long)
 	return long2ip($long);
 }
 
+/**
+ * Converts a human readable IP address to its packed in_addr representation
+ *
+ * @param string The IP to convert
+ * @return string IP in 32bit or 128bit binary format
+ */
+function my_inet_pton($ip)
+{
+	if(function_exists('inet_pton'))
+	{
+		return @inet_pton($ip);
+	}
+	else
+	{
+		/**
+		 * Replace inet_pton()
+		 *
+		 * @category    PHP
+		 * @package     PHP_Compat
+		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
+		 * @link        http://php.net/inet_pton
+		 * @author      Arpad Ray <arpad@php.net>
+		 * @version     $Revision: 269597 $
+		 */
+		$r = ip2long($ip);
+		if($r !== false && $r != -1)
+		{
+			return pack('N', $r);
+		}
+
+		$delim_count = substr_count($ip, ':');
+		if($delim_count < 1 || $delim_count > 7)
+		{
+			return false;
+		}
+
+		$r = explode(':', $ip);
+		$rcount = count($r);
+		if(($doub = array_search('', $r, 1)) !== false)
+		{
+			$length = (!$doub || $doub == $rcount - 1 ? 2 : 1);
+			array_splice($r, $doub, $length, array_fill(0, 8 + $length - $rcount, 0));
+		}
+
+		$r = array_map('hexdec', $r);
+		array_unshift($r, 'n*');
+		$r = call_user_func_array('pack', $r);
+
+		return $r;
+	}
+}
+
+/**
+ * Converts a packed internet address to a human readable representation
+ *
+ * @param string IP in 32bit or 128bit binary format
+ * @return string IP in human readable format
+ */
+function my_inet_ntop($ip)
+{
+	if(function_exists('inet_ntop'))
+	{
+		return @inet_ntop($ip);
+	}
+	else
+	{
+		/**
+		 * Replace inet_ntop()
+		 *
+		 * @category    PHP
+		 * @package     PHP_Compat
+		 * @license     LGPL - http://www.gnu.org/licenses/lgpl.html
+		 * @copyright   2004-2007 Aidan Lister <aidan@php.net>, Arpad Ray <arpad@php.net>
+		 * @link        http://php.net/inet_ntop
+		 * @author      Arpad Ray <arpad@php.net>
+		 * @version     $Revision: 269597 $
+		 */
+		switch(strlen($ip))
+		{
+			case 4:
+				list(,$r) = unpack('N', $ip);
+				return long2ip($r);
+			case 16:
+				$r = substr(chunk_split(bin2hex($ip), 4, ':'), 0, -1);
+				$r = preg_replace(
+					array('/(?::?\b0+\b:?){2,}/', '/\b0+([^0])/e'),
+					array('::', '(int)"$1"?"$1":"0$1"'),
+					$r);
+				return $r;
+		}
+		return false;
+	}
+}
+
+/**
+ * Fetch an binary formatted range for searching IPv4 and IPv6 IP addresses.
+ *
+ * @param string The IP address to convert to a range
+ * @rturn mixed If a full IP address is provided, the in_addr representation, otherwise an array of the upper & lower extremities of the IP
+ */
+function fetch_ip_range($ipaddress)
+{
+	// Wildcard
+	if(strpos($ipaddress, '*') !== false)
+	{
+		if(strpos($ipaddress, ':') !== false)
+		{
+			// IPv6
+			$upper = str_replace('*', 'ffff', $ipaddress);
+			$lower = str_replace('*', '0', $ipaddress);
+		}
+		else
+		{
+			// IPv4
+			$upper = str_replace('*', '255', $ipaddress);
+			$lower = str_replace('*', '0', $ipaddress);
+		}
+		$upper = my_inet_pton($upper);
+		$lower = my_inet_pton($lower);
+		if($upper === false || $lower === false)
+		{
+			return false;
+		}
+		return array($lower, $upper);
+	}
+	// CIDR notation
+	elseif(strpos($ipaddress, '/') !== false)
+	{
+		$ipaddress = explode('/', $ipaddress);
+		$ip_address = $ipaddress[0];
+		$ip_range = intval($ipaddress[1]);
+
+		if(empty($ip_address) || empty($ip_range))
+		{
+			// Invalid input
+			return false;
+		}
+		else
+		{
+			$ip_address = my_inet_pton($ip_address);
+
+			if(!$ip_address)
+			{
+				// Invalid IP address
+				return false;
+			}
+		}
+		
+		/**
+		 * Taken from: https://github.com/NewEraCracker/php_work/blob/master/ipRangeCalculate.php
+		 * Author: NewEraCracker
+		 * License: Public Domain
+		 */
+
+		// Pack IP, Set some vars
+		$ip_pack = $ip_address;
+		$ip_pack_size = strlen($ip_pack);
+		$ip_bits_size = $ip_pack_size*8;
+
+		// IP bits (lots of 0's and 1's)
+		$ip_bits = '';
+		for($i = 0; $i < $ip_pack_size; $i = $i+1)
+		{
+			$bit = decbin(ord($ip_pack[$i]));
+			$bit = str_pad($bit, 8, '0', STR_PAD_LEFT);
+			$ip_bits .= $bit;
+		}
+
+		// Significative bits (from the ip range)
+		$ip_bits = substr($ip_bits, 0, $ip_range);
+
+		// Some calculations
+		$ip_lower_bits = str_pad($ip_bits, $ip_bits_size, '0', STR_PAD_RIGHT);
+		$ip_higher_bits = str_pad($ip_bits, $ip_bits_size, '1', STR_PAD_RIGHT);
+
+		// Lower IP
+		$ip_lower_pack = '';
+		for($i=0; $i < $ip_bits_size; $i=$i+8)
+		{
+			$chr = substr($ip_lower_bits, $i, 8);
+			$chr = chr(bindec($chr));
+			$ip_lower_pack .= $chr;
+		}
+
+		// Higher IP
+		$ip_higher_pack = '';
+		for($i=0; $i < $ip_bits_size; $i=$i+8)
+		{
+			$chr = substr($ip_higher_bits, $i, 8);
+			$chr = chr( bindec($chr) );
+			$ip_higher_pack .= $chr;
+		}
+
+		return array($ip_lower_pack, $ip_higher_pack);
+	}
+	// Just on IP address
+	else
+	{
+		return my_inet_pton($ipaddress);
+	}
+}
+
+/**
+ * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
+ *
+ * @return float The time taken
+ */
+function get_execution_time()
+{
+	static $time_start;
+
+	$time = microtime(true);
+
+
+	// Just starting timer, init and return
+	if(!$time_start)
+	{
+		$time_start = $time;
+		return;
+	}
+	// Timer has run, return execution time
+	else
+	{
+		$total = $time-$time_start;
+		if($total < 0) $total = 0;
+		$time_start = 0;
+		return $total;
+	}
+}
+
 
 /**
  * Processes a checksum list on MyBB files and returns a result set
@@ -6316,7 +6552,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	global $mybb, $checksums, $bad_verify_files;
 
 	// We don't need to check these types of files
-	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif");
+	$ignore = array(".", "..", ".svn", "config.php", "settings.php", "Thumb.db", "config.default.php", "lock", "htaccess.txt", "logo.gif", "logo.png");
 	$ignore_ext = array("attach");
 
 	if(substr($path, -1, 1) == "/")
@@ -6486,7 +6722,7 @@ function my_rand($min=null, $max=null, $force_seed=false)
 	if($min !== null && $max !== null)
 	{
 		$distance = $max - $min;
-		if ($distance > 0)
+		if($distance > 0)
 		{
 			return $min + (int)((float)($distance + 1) * (float)(mt_rand() ^ $obfuscator) / (mt_getrandmax() + 1));
 		}
@@ -6685,6 +6921,12 @@ function gd_version()
 	}
 
 	return $gd_version;
+}
+
+function escape_binary($string)
+{
+	global $db;
+	return $db->escape_string(bin2hex($string));
 }
 
 ?>

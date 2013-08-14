@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -334,17 +334,21 @@ if($mybb->input['action'] == "profile")
 		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
 	}
 
-	if(validate_website_format($user['website']))
+	if($user['website'] == "" || $user['website'] == "http://")
 	{
-		$user['website'] = htmlspecialchars_uni($user['website']);
+		$user['website'] = "http://";
 	}
 	else
 	{
-		$user['website'] = '';
+		$user['website'] = htmlspecialchars_uni($user['website']);
 	}
 
-	$user['icq'] = (int)$user['icq'];
-	if(!$user['icq'])
+	if($user['icq'] != "0")
+	{
+		$user['icq'] = intval($user['icq']);
+	}
+
+	if($user['icq'] == 0)
 	{
 		$user['icq'] = '';
 	}
@@ -2218,33 +2222,33 @@ if($mybb->input['action'] == "do_editlists")
 
 		if($message)
 		{
-			$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+			$message_js = "$.jGrowl('{$message}');";
 		}
 
 		if($error_message)
 		{
-			$message_js .= " var error = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(error, element); 	error.innerHTML = '{$error_message}'; error.className = 'error_message'; window.setTimeout(function() { Element.remove(error) }, 5000);";
+			$message_js .= " $.jGrowl('{$error_message}');";
 		}
 
 		if($mybb->input['delete'])
 		{
 			header("Content-type: text/javascript");
-			echo "Element.remove('{$mybb->input['manage']}_{$mybb->input['delete']}');\n";
+			echo "$(\"#{$mybb->input['manage']}_{$mybb->input['delete']}\").remove();\n";
 			if($new_list == "")
 			{
-				echo "\$('{$mybb->input['manage']}_count').innerHTML = '0';\n";
+				echo "\$(\"#{$mybb->input['manage']}_count\").html(\"0\");\n";
 				if($mybb->input['manage'] == "ignored")
 				{
-					echo "\$('ignore_list').innerHTML = '<li>{$lang->ignore_list_empty}</li>';\n";
+					echo "\$(\"#ignore_list\").html(\"<li>{$lang->ignore_list_empty}</li>\");\n";
 				}
 				else
 				{
-					echo "\$('buddy_list').innerHTML = '<li>{$lang->buddy_list_empty}</li>';\n";
+					echo "\$(\"#buddy_list\").html(\"<li>{$lang->buddy_list_empty}</li>\");\n";
 				}
 			}
 			else
 			{
-				echo "\$('{$mybb->input['manage']}_count').innerHTML = '".count(explode(",", $new_list))."';\n";
+				echo "\$(\"#{$mybb->input['manage']}_count\").html(\"".count(explode(",", $new_list))."\");\n";
 			}
 			echo $message_js;
 			exit;
@@ -2329,12 +2333,12 @@ if($mybb->input['action'] == "editlists")
 		if($mybb->input['manage'] == "ignored")
 		{
 			echo $ignore_list;
-			echo "<script type=\"text/javascript\"> $('ignored_count').innerHTML = '{$ignore_count}'; {$message_js}</script>";
+			echo "<script type=\"text/javascript\"> $(\"#ignored_count\").html(\"{$ignore_count}\"); {$message_js}</script>";
 		}
 		else
 		{
 			echo $buddy_list;
-			echo "<script type=\"text/javascript\"> $('buddy_count').innerHTML = '{$buddy_count}'; {$message_js}</script>";
+			echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
 		}
 		exit;
 	}
@@ -2501,6 +2505,20 @@ if($mybb->input['action'] == "usergroups")
 		exit;
 	}
 
+	// List of usergroup leaders
+	$query = $db->query("
+		SELECT g.*, u.username, u.displaygroup, u.usergroup
+		FROM ".TABLE_PREFIX."groupleaders g
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
+		ORDER BY u.username ASC
+	");
+	while($leader = $db->fetch_array($query))
+	{
+		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
+	}
+
+	$usergroups = $mybb->cache->read('usergroups');
+
 	// Joining a group
 	if($mybb->input['joingroup'])
 	{
@@ -2539,6 +2557,18 @@ if($mybb->input['action'] == "usergroups")
 			);
 
 			$db->insert_query("joinrequests", $joinrequest);
+
+			foreach($groupleaders as $key => $groupleader)
+			{
+				foreach($groupleader as $leader)
+				{
+					$leader_user = get_user($leader['uid']);
+					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->input['reason'], $mybb->settings['bburl'], $leader['gid']);
+					my_mail($leader_user['email'], $subject, $message);
+				}
+			}
+
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
 			redirect("usercp.php?action=usergroups", $lang->group_join_requestsent);
 			exit;
@@ -2548,7 +2578,7 @@ if($mybb->input['action'] == "usergroups")
 			$joingroup = $mybb->input['joingroup'];
 			eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
 			output_page($joinpage);
-			exit();
+			exit;
 		}
 		else
 		{
@@ -2558,18 +2588,6 @@ if($mybb->input['action'] == "usergroups")
 		}
 	}
 	// Show listing of various group related things
-
-	// List of usergroup leaders
-	$query = $db->query("
-		SELECT g.*, u.username, u.displaygroup, u.usergroup
-		FROM ".TABLE_PREFIX."groupleaders g
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
-		ORDER BY u.username ASC
-	");
-	while($leader = $db->fetch_array($query))
-	{
-		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
-	}
 
 	// List of groups this user is a leader of
 	$groupsledlist = '';
@@ -2624,7 +2642,6 @@ if($mybb->input['action'] == "usergroups")
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
-	$usergroups = $mybb->cache->read('usergroups');
 	$usergroup = $usergroups[$mybb->user['usergroup']];
 	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();

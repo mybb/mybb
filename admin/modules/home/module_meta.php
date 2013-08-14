@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -74,19 +74,29 @@ function home_action_handler($action)
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;
-		$query = $db->simple_select("adminsessions", "uid, ip", "lastactive > {$timecut}");
+		$query = $db->simple_select("adminsessions", "uid, ip, useragent", "lastactive > {$timecut}");
 		$online_users = "<ul class=\"menu online_admins\">";
 		$online_admins = array();
 
 		// If there's only 1 user online, it has to be us.
 		if($db->num_rows($query) == 1)
 		{
+			$user = $db->fetch_array($query);
 			global $mybb;
+
+			// Are we on a mobile device?
+			// Stolen from http://stackoverflow.com/a/10989424
+			$user_type[$mybb->user['uid']] = "desktop";
+			if(is_mobile($user["useragent"]))
+			{
+				$user_type[$mybb->user['uid']] = "mobile";
+			}
 
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
-				"ip" => $db->fetch_field($query, "ip")
+				"ip" => $user["ip"],
+				"type" => $user_type[$mybb->user['uid']]
 			);
 		}
 		else
@@ -95,10 +105,18 @@ function home_action_handler($action)
 			while($user = $db->fetch_array($query))
 			{
 				$uid_in[] = $user['uid'];
+
+				$user_type[$user['uid']] = "desktop";
+				if(is_mobile($user['useragent']))
+				{
+					$user_type[$user['uid']] = "mobile";
+				}
+
 				$online_admins[$user['uid']] = array(
 					"uid" => $user['uid'],
 					"username" => "",
-					"ip" => $user['ip']
+					"ip" => $user['ip'],
+					"type" => $user_type[$user['uid']]
 				);
 			}
 
@@ -108,7 +126,8 @@ function home_action_handler($action)
 				$online_admins[$user['username']] = array(
 					"uid" => $user['uid'],
 					"username" => $user['username'],
-					"ip" => $online_admins[$user['uid']]['ip']
+					"ip" => $online_admins[$user['uid']]['ip'],
+					"type" => $user_type[$user['uid']]
 				);
 				unset($online_admins[$user['uid']]);
 			}
@@ -130,7 +149,7 @@ function home_action_handler($action)
 				{
 					$class = "";
 				}
-				$online_users .= "<li{$class}>".build_profile_link($user['username'], $user['uid'], "_blank")."</li>";
+				$online_users .= "<li{$class}>".build_profile_link($user['username'].' ('.my_inet_ntop($user['ip']).')', $user['uid'], "_blank")."</li>";
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}

@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -96,47 +96,6 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 }
 
 $plugins->run_hooks("admin_user_groups_begin");
-
-if($mybb->input['action'] == "export")
-{
-	$plugins->run_hooks("admin_user_groups_export_start");
-
-	// Log admin action
-	log_admin_action();
-
-	$gidwhere = "";
-	if($mybb->input['gid'])
-	{
-		$gidwhere = "gid='".intval($mybb->input['gid'])."'";
-	}
-	$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\n";
-	$xml = "<usergroups version=\"{$mybb->version_code}\" exported=\"".TIME_NOW."\">\n";
-
-	$query = $db->simple_select("usergroups", "*", $gidwhere, array('order_by' => 'gid', 'order_dir' => 'ASC'));
-	while($usergroup = $db->fetch_array($query))
-	{
-		$xml .= "\t\t<usergroup>\n";
-		foreach($usergroup as $key => $value)
-		{
-			$xml .= "\t\t\t<{$key}><![CDATA[{$value}]]></{$key}>\n";
-		}
-		$xml .= "\t\t</usergroup>\n";
-	}
-
-	$xml .= "</usergroups>";
-	$mybb->settings['bbname'] = urlencode($mybb->settings['bbname']);
-
-	header("Content-disposition: filename=".$mybb->settings['bbname']."-usergroups.xml");
-	header("Content-Length: ".my_strlen($xml));
-	header("Content-type: unknown/unknown");
-	header("Pragma: no-cache");
-	header("Expires: 0");
-
-	$plugins->run_hooks("admin_user_groups_export_end");
-
-	echo $xml;
-	exit;
-}
 
 if($mybb->input['action'] == "approve_join_request")
 {
@@ -638,7 +597,7 @@ if($mybb->input['action'] == "add")
 
 			if(!$mybb->input['starimage'])
 			{
-				$mybb->input['starimage'] = "images/star.gif";
+				$mybb->input['starimage'] = "images/star.png";
 			}
 
 			$new_usergroup = array(
@@ -1304,11 +1263,11 @@ if(!$mybb->input['action'])
 	{
 		if($usergroup['type'] > 1)
 		{
-			$icon = "<img src=\"styles/default/images/icons/custom.gif\" alt=\"{$lang->custom_user_group}\" style=\"vertical-align: middle;\" />";
+			$icon = "<img src=\"styles/default/images/icons/custom.png\" alt=\"{$lang->custom_user_group}\" style=\"vertical-align: middle;\" />";
 		}
 		else
 		{
-			$icon = "<img src=\"styles/default/images/icons/default.gif\" alt=\"{$lang->default_user_group}\" style=\"vertical-align: middle;\" />";
+			$icon = "<img src=\"styles/default/images/icons/default.png\" alt=\"{$lang->default_user_group}\" style=\"vertical-align: middle;\" />";
 		}
 
 		$leaders_list = '';
@@ -1381,8 +1340,8 @@ if(!$mybb->input['action'])
 	<br />
 	<fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_user_group}" style="vertical-align: middle;" /> {$lang->custom_user_group}<br />
-<img src="styles/default/images/icons/default.gif" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
+<img src="styles/default/images/icons/custom.png" alt="{$lang->custom_user_group}" style="vertical-align: middle;" /> {$lang->custom_user_group}<br />
+<img src="styles/default/images/icons/default.png" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
 </fieldset>
 LEGEND;
 

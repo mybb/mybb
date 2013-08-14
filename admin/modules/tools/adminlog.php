@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -41,6 +41,12 @@ if($mybb->input['action'] == 'prune')
 	}
 	if($mybb->request_method == 'post')
 	{
+		$is_today = false;
+		if($mybb->input['older_than'] <= 0)
+		{
+			$is_today = true;
+			$mybb->input['older_than'] = 1;
+		}
 		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
 
 		// Searching for entries by a particular user
@@ -63,7 +69,17 @@ if($mybb->input['action'] == 'prune')
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['filter_module'], $num_deleted);
 
-		flash_message($lang->success_pruned_admin_logs, 'success');
+		$success = $lang->success_pruned_admin_logs;
+		if($is_today == true && $num_deleted > 0)
+		{
+			$success .= ' '.$lang->note_logs_locked;
+		}
+		elseif($is_today == true && $num_deleted == 0)
+		{
+			flash_message($lang->note_logs_locked, 'error');
+			admin_redirect("index.php?module=tools-adminlog");
+		}
+		flash_message($success, 'success');
 		admin_redirect("index.php?module=tools-adminlog");
 	}
 	$page->add_breadcrumb_item($lang->prune_admin_logs, "index.php?module=tools-adminlog&amp;action=prune");
@@ -228,7 +244,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array('class' => 'align_center'));
 		$table->construct_cell($information);
-		$table->construct_cell($logitem['ipaddress'], array('class' => 'align_center'));
+		$table->construct_cell(my_inet_ntop($logitem['ipaddress']), array('class' => 'align_center'));
 		$table->construct_row();
 	}
 

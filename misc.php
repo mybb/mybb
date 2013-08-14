@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -286,12 +286,12 @@ elseif($mybb->input['action'] == "help")
 					$sname = "sid_".$section['sid']."_c";
 					if($collapsed[$sname] == "display: show;")
 					{
-						$expcolimage = "collapse_collapsed.gif";
+						$expcolimage = "collapse_collapsed.png";
 						$expdisplay = "display: none;";
 					}
 					else
 					{
-						$expcolimage = "collapse.gif";
+						$expcolimage = "collapse.png";
 					}
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
@@ -356,32 +356,8 @@ elseif($mybb->input['action'] == "buddypopup")
 				$last_active = $lang->sprintf($lang->last_active, $lang->never);
 			}
 
-			if($buddy['avatar'])
-			{
-				$buddy['avatar'] = htmlspecialchars_uni($buddy['avatar']);
-				if($buddy['avatardimensions'])
-				{
-					require_once MYBB_ROOT."inc/functions_image.php";
-					list($width, $height) = explode("|", $buddy['avatardimensions']);
-					$scaled_dimensions = scale_image($width, $height, 44, 44);
-				}
-				else
-				{
-					$scaled_dimensions = array(
-						"width" => 44,
-						"height" => 44
-					);
-				}
-			}
-			else
-			{
-				$buddy['avatar'] = $theme['imgdir'] . "/default_avatar.gif";
-				$scaled_dimensions = array(
-					"width" => 44,
-					"height" => 44
-				);
-			}
-			$margin_top = ceil((50-$scaled_dimensions['height'])/2);
+			$buddy['avatar'] = format_avatar(htmlspecialchars_uni($buddy['avatar']), $buddy['avatardimensions'], '44x44');
+
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
@@ -552,35 +528,17 @@ elseif($mybb->input['action'] == "imcenter")
 	$navigationbar = $navsep = '';
 	if($user['aim'])
 	{
-		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
 		$navsep = ' - ';
 	}
 	if($user['msn'])
 	{
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
-		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
-	}
-
-	$user['icq'] = (int)$user['icq'];
-	if(!$user['icq'])
-	{
-		$user['icq'] = '';
-	}
-
-	if(validate_website_format($user['website']))
-	{
-		$user['website'] = htmlspecialchars_uni($user['website']);
-	}
-	else
-	{
-		$user['website'] = '';
 	}
 
 	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);

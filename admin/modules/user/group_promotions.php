@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -238,6 +238,8 @@ if($mybb->input['action'] == "edit")
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
 				"referrals" => intval($mybb->input['referrals']),
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
+				"warnings" => intval($mybb->input['warnings']),
+				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"newusergroup" => intval($mybb->input['newusergroup']),
@@ -286,6 +288,8 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['posttype'] = $promotion['posttype'];
 		$mybb->input['referrals'] = $promotion['referrals'];
 		$mybb->input['referralstype'] = $promotion['referralstype'];
+		$mybb->input['warnings'] = $promotion['warnings'];
+		$mybb->input['warningstype'] = $promotion['warningstype'];
 		$mybb->input['timeregistered'] = $promotion['registered'];
 		$mybb->input['timeregisteredtype'] = $promotion['registeredtype'];
 		$mybb->input['originalusergroup'] = explode(',', $promotion['originalusergroup']);
@@ -303,10 +307,11 @@ if($mybb->input['action'] == "edit")
 		"postcount" => $lang->post_count,
 		"reputation" => $lang->reputation,
 		"referrals" => $lang->referrals,
+		"warnings" => $lang->warning_points,
 		"timeregistered" => $lang->time_registered
 	);
 
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 3)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
 
 	$options_type = array(
 		">" => $lang->greater_than,
@@ -329,6 +334,8 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->referral_count, $lang->referral_count_desc, $form->generate_text_box('referrals', $mybb->input['referrals'], array('id' => 'referrals'))." ".$form->generate_select_box("referralstype", $options_type, $mybb->input['referralstype'], array('id' => 'referralstype')), 'referrals');
+
+	$form_container->output_row($lang->warning_points, $lang->warning_points_desc, $form->generate_text_box('warnings', $mybb->input['warnings'], array('id' => 'warnings'))." ".$form->generate_select_box("warningstype", $options_type, $mybb->input['warningstype'], array('id' => 'warningstype')), 'warnings');
 
 	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
 
@@ -423,6 +430,8 @@ if($mybb->input['action'] == "add")
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
 				"referrals" => intval($mybb->input['referrals']),
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
+				"warnings" => intval($mybb->input['warnings']),
+				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
@@ -471,6 +480,7 @@ if($mybb->input['action'] == "add")
 	{
 		$mybb->input['reputationcount'] = '0';
 		$mybb->input['referrals'] = '0';
+		$mybb->input['warnings'] = '0';
 		$mybb->input['postcount'] = '0';
 		$mybb->input['timeregistered'] = '0';
 		$mybb->input['timeregisteredtype'] = 'days';
@@ -487,10 +497,11 @@ if($mybb->input['action'] == "add")
 		"postcount" => $lang->post_count,
 		"reputation" => $lang->reputation,
 		"referrals" => $lang->referrals,
+		"warnings" => $lang->warning_points,
 		"timeregistered" => $lang->time_registered
 	);
 
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 4)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 5)), 'requirements');
 
 	$options_type = array(
 		">" => $lang->greater_than,
@@ -513,6 +524,8 @@ if($mybb->input['action'] == "add")
 	);
 
 	$form_container->output_row($lang->referral_count, $lang->referral_count_desc, $form->generate_text_box('referrals', $mybb->input['referrals'], array('id' => 'referrals'))." ".$form->generate_select_box("referralstype", $options_type, $mybb->input['referralstype'], array('id' => 'referralstype')), 'referrals');
+
+	$form_container->output_row($lang->warning_points, $lang->warning_points_desc, $form->generate_text_box('warnings', $mybb->input['warnings'], array('id' => 'warnings'))." ".$form->generate_select_box("warningstype", $options_type, $mybb->input['warningstype'], array('id' => 'warningstype')), 'warnings');
 
 	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
 	$options = array();

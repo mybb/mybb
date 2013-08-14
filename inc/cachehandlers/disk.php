@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -76,7 +76,7 @@ class diskCacheHandler
 		$cache_file = fopen(MYBB_ROOT."cache/{$name}.php", "w") or $mybb->trigger_generic_error("cache_no_write");
 		flock($cache_file, LOCK_EX);
 		$cache_contents = "<?php\n\n/** MyBB Generated Cache - Do Not Alter\n * Cache Name: $name\n * Generated: ".gmdate("r")."\n*/\n\n";
-		$cache_contents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
+		$cache_contents .= "\$$name = ".var_export($contents, true).";\n\n?>";
 		fwrite($cache_file, $cache_contents);
 		flock($cache_file, LOCK_UN);
 		fclose($cache_file);

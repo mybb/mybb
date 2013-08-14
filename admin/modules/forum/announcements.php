@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -767,7 +767,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_forum_announcements_delete_commit");
 
 		// Log admin action
-		log_admin_action($announcement['aid'], $announcement['title']);
+		log_admin_action($announcement['aid'], $announcement['subject']);
 		$cache->update_forumsdisplay();
 
 		flash_message($lang->success_announcement_deleted, 'success');
@@ -782,8 +782,6 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_announcements_start");
-
-	$page->add_breadcrumb_item($lang->forum_announcements, "index.php?module=forum-announcements");
 
 	$page->output_header($lang->forum_announcements);
 
@@ -812,11 +810,11 @@ if(!$mybb->input['action'])
 		{
 			if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 			{
-				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
 			}
 			else
 			{
-				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 			}
 
 			$table->construct_cell($icon."<a href=\"index.php?module=forum-announcements&amp;action=edit&amp;aid={$aid}\">".htmlspecialchars_uni($announcement['subject'])."</a>");
@@ -890,11 +888,11 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 				{
 					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 					{
-						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
 					else
 					{
-						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
 
 					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?module=forum-announcements&amp;action=edit&amp;aid={$aid}\">".htmlspecialchars_uni($announcement['subject'])."</a></div>");

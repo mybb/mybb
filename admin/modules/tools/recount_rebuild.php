@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -138,6 +138,34 @@ function acp_recount_reputation()
 	check_proceed($num_users, $end, ++$page, $per_page, "reputation", "do_recountreputation", $lang->success_rebuilt_reputation);
 }
 
+function acp_recount_warning()
+{
+	global $db, $mybb, $lang;
+
+	$query = $db->simple_select("users", "COUNT(uid) as num_users");
+	$num_users = $db->fetch_field($query, 'num_users');
+
+	$page = intval($mybb->input['page']);
+	$per_page = intval($mybb->input['warning']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($user = $db->fetch_array($query))
+	{
+		$query2 = $db->query("
+			SELECT SUM(points) as warn_lev
+			FROM ".TABLE_PREFIX."warnings
+			WHERE uid='{$user['uid']}' AND expired='0'
+		");
+		$warn_lev = $db->fetch_field($query2, "warn_lev");
+
+		$db->update_query("users", array("warningpoints" => intval($warn_lev)), "uid='{$user['uid']}'");
+	}
+
+	check_proceed($num_users, $end, ++$page, $per_page, "warning", "do_recountwarning", $lang->success_rebuilt_warning);
+}
+
 function acp_rebuild_attachment_thumbnails()
 {
 	global $db, $mybb, $lang;
@@ -192,7 +220,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
 		echo "<br />\n";
-		echo "<script type=\"text/javascript\">window.onload = function() { var button = $$('#proceed_button'); if(button[0]) { button[0].value = '{$lang->automatically_redirecting}'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		echo "<script type=\"text/javascript\">$(function() { var button = $(\"#proceed_button\"); if(button.length > 0) { button.val(\"{$lang->automatically_redirecting}\"); button.attr(\"disabled\", true); button.css(\"color\", \"#aaa\"); button.css(\"borderColor\", \"#aaa\"); document.forms[0].submit(); }})</script>";
 		echo "<p class=\"buttons\">\n";
 		echo $form->generate_submit_button($lang->proceed, array('class' => 'button_yes', 'id' => 'proceed_button'));
 		echo "</p>\n";
@@ -300,6 +328,23 @@ if(!$mybb->input['action'])
 
 			acp_recount_reputation();
 		}
+		elseif(isset($mybb->input['do_recountwarning']))
+		{
+			$plugins->run_hooks("admin_tools_recount_recount_warning");
+
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("warning");
+			}
+
+			if(!intval($mybb->input['warning']))
+			{
+				$mybb->input['warning'] = 500;
+			}
+
+			acp_recount_warning();
+		}
 		else
 		{
 			$cache->update_stats();
@@ -359,6 +404,11 @@ if(!$mybb->input['action'])
 	$form_container->output_cell("<label>{$lang->recount_reputation}</label><div class=\"description\">{$lang->recount_reputation_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("reputation", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreputation")));
+	$form_container->construct_row();
+
+	$form_container->output_cell("<label>{$lang->recount_warning}</label><div class=\"description\">{$lang->recount_warning_desc}</div>");
+	$form_container->output_cell($form->generate_text_box("warning", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountwarning")));
 	$form_container->construct_row();
 
 	$plugins->run_hooks("admin_tools_recount_rebuild_output_list");

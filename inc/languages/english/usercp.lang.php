@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -255,7 +255,7 @@ $l['usergroup_leaders'] = "Group led by:";
 $l['usergroups_joinable'] = "Groups You Can Join";
 $l['join_conditions'] = "Join Conditions";
 $l['join_group'] = "Join Group";
-$l['join_group_applied'] = "You applied to join this group: {1}, {2}";
+$l['join_group_applied'] = "You applied to join this group: {1}";
 $l['usergroups_leader'] = "Groups You Lead";
 $l['usergroup_members'] = "Group Members";
 $l['join_requests'] = "Pending Join Requests";

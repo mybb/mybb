@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -410,13 +410,13 @@ function build_forumbits($pid=0, $depth=1)
 			$collapsed_name = "cat_{$forum['fid']}_c";
 			if(isset($collapsed[$collapsed_name]) && $collapsed[$collapsed_name] == "display: show;")
 			{
-				$expcolimage = "collapse_collapsed.gif";
+				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
 				$expaltext = "[+]";
 			}
 			else
 			{
-				$expcolimage = "collapse.gif";
+				$expcolimage = "collapse.png";
 				$expaltext = "[-]";
 			}
 

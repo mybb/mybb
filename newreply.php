@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -47,7 +47,7 @@ if($mybb->input['ajax'])
 // Edit a draft post.
 $pid = 0;
 $editdraftpid = '';
-if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newreply") && $mybb->input['pid'])
 {
 	$post = get_post($pid);
 	if(!$post['pid'])
@@ -199,7 +199,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
+	if($pid)
 	{
 		$attachwhere = "pid='{$pid}'";
 	}
@@ -315,7 +315,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress='".$db->escape_string($session->ipaddress)."'";
+		$user_check = "p.ipaddress=X'".escape_binary($session->packedip)."'";
 	}
 	if(!$mybb->input['savedraft'])
 	{
@@ -341,7 +341,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		"uid" => $uid,
 		"username" => $username,
 		"message" => $mybb->input['message'],
-		"ipaddress" => get_ip(),
+		"ipaddress" => $session->packedip,
 		"posthash" => $mybb->input['posthash']
 	);
 
@@ -841,7 +841,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			"uid" => $uid,
 			"username" => $username,
 			"message" => $mybb->input['message'],
-			"ipaddress" => get_ip(),
+			"ipaddress" => $session->packedip,
 			"posthash" => $mybb->input['posthash']
 		);
 
@@ -943,7 +943,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	if($forumpermissions['canpostattachments'] != 0)
 	{
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+		if($pid)
 		{
 			$attachwhere = "pid='$pid'";
 		}

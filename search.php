@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -1078,12 +1078,12 @@ elseif($mybb->input['action'] == "findguest")
 			$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $db->escape_string($tids),
 		"posts" => $db->escape_string($pids),
 		"resulttype" => "posts",
@@ -1155,12 +1155,12 @@ elseif($mybb->input['action'] == "finduser")
 			$comma = ',';
 	}
 
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $db->escape_string($tids),
 		"posts" => $db->escape_string($pids),
 		"resulttype" => "posts",
@@ -1203,12 +1203,12 @@ elseif($mybb->input['action'] == "finduserthreads")
 		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
 
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1270,12 +1270,12 @@ elseif($mybb->input['action'] == "getnew")
 		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
 
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1347,12 +1347,12 @@ elseif($mybb->input['action'] == "getdaily")
 		$where_sql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
 	}
 
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => "threads",
@@ -1378,7 +1378,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
+			$conditions = "uid='0' AND ipaddress=X'".escape_binary($session->packedip)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
@@ -1447,12 +1447,12 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"resulttype" => $resulttype,
@@ -1514,7 +1514,7 @@ else if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
+			$conditions = "uid='0' AND ipaddress=x'".escape_binary($session->packedip)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
@@ -1558,12 +1558,12 @@ else if($mybb->input['action'] == "thread")
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => $now,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
 		"resulttype" => 'posts',

@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -10,7 +10,6 @@ $l['nav_stats'] = "Board Statistics";
 
 $l['board_stats'] = "Board Statistics";
 $l['none'] = "None";
-$l['nobody'] = "Nobody";
 $l['totals'] = "Totals";
 $l['averages'] = "Averages";
 $l['posts'] = "Posts:";

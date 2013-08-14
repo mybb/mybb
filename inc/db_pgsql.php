@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
@@ -213,7 +213,7 @@ class DB_PgSQL
 
 				$link = $type."_link";
 
-				$this->get_execution_time();
+				get_execution_time();
 
 				$this->connect_string = "dbname={$single_connection['database']} user={$single_connection['username']}";
 
@@ -238,7 +238,7 @@ class DB_PgSQL
 				}
 				$this->$link = @$connect_function($this->connect_string);
 
-				$time_spent = $this->get_execution_time();
+				$time_spent = get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
@@ -293,7 +293,7 @@ class DB_PgSQL
 
 		$this->last_query = $string;
 
-		$this->get_execution_time();
+		get_execution_time();
 
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{
@@ -325,7 +325,7 @@ class DB_PgSQL
 			exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
 		$this->last_result = $query;
@@ -716,17 +716,31 @@ class DB_PgSQL
 	 */
 	function insert_query($table, $array, $insert_id=true)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
 		}
 
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$array[$field] = "X'{$value}'";
+			}
+			else
+			{
+				$array[$field] = "'{$value}'";
+			}
+		}
+
 		$fields = implode(",", array_keys($array));
-		$values = implode("','", $array);
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
-			VALUES ('".$values."')
+			VALUES (".$values.")
 		");
 
 		if($insert_id != false)
@@ -748,6 +762,8 @@ class DB_PgSQL
 	 */
 	function insert_query_multiple($table, $array)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -759,7 +775,18 @@ class DB_PgSQL
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			$insert_rows[] = "('".implode("','", $values)."')";
+			foreach($values as $field => $value)
+			{
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					$values[$field] = "X'{$value}'";
+				}
+				else
+				{
+					$values[$field] = "'{$value}'";
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -782,6 +809,8 @@ class DB_PgSQL
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -798,7 +827,14 @@ class DB_PgSQL
 
 		foreach($array as $field => $value)
 		{
-			$query .= $comma.$field."={$quote}".$value."{$quote}";
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$query .= $comma.$field."=X{$quote}{$value}{$quote}";
+			}
+			else
+			{
+				$query .= $comma.$field."={$quote}{$value}{$quote}";
+			}
 			$comma = ', ';
 		}
 		if(!empty($where))
@@ -1188,6 +1224,8 @@ class DB_PgSQL
 	 */
 	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
+		global $mybb;
+
 		if($default_field == "")
 		{
 			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
@@ -1205,7 +1243,14 @@ class DB_PgSQL
 			$string = '';
 			foreach($main_field as $field)
 			{
-				$search_bit[] = "{$field} = '".$replacements[$field]."'";
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					$search_bit[] = "{$field} = X'".$replacements[$field]."'";
+				}
+				else
+				{
+					$search_bit[] = "{$field} = '".$replacements[$field]."'";
+				}
 			}
 
 			$search_bit = implode(" AND ", $search_bit);
@@ -1410,30 +1455,13 @@ class DB_PgSQL
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
-
-		$time = microtime(true);
-
-
-		// Just starting timer, init and return
-		if(!$time_start)
-		{
-			$time_start = $time;
-			return;
-		}
-		// Timer has run, return execution time
-		else
-		{
-			$total = $time-$time_start;
-			if($total < 0) $total = 0;
-			$time_start = 0;
-			return $total;
-		}
+		return get_execution_time();
 	}
+
 }
 
 ?>

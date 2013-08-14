@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -982,7 +982,7 @@ if($mybb->input['action'] == "change")
 		{
 			if(isset($mybb->input['ajax_search']))
 			{
-				echo("<error>{$lang->error_no_settings_found}</error>");
+				echo json_encode(array("errors" => array($lang->error_no_settings_found)));
 				exit;
 			}
 			else
@@ -1290,22 +1290,24 @@ if(!$mybb->input['action'])
 	switch($db->type)
 	{
 		case "pgsql":
-			$query = $db->query("
-				SELECT g.*, COUNT(s.sid) AS settingcount
-				FROM ".TABLE_PREFIX."settinggroups g
-				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
-				GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
-				ORDER BY g.disporder
-			");
-			break;
+		$query = $db->query("
+			SELECT g.*, COUNT(s.sid) AS settingcount
+			FROM ".TABLE_PREFIX."settinggroups g
+			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
+			WHERE g.isdefault = 1
+			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
+			ORDER BY g.disporder
+		");
+		break;
 		default:
-			$query = $db->query("
-				SELECT g.*, COUNT(s.sid) AS settingcount
-				FROM ".TABLE_PREFIX."settinggroups g
-				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
-				GROUP BY g.gid
-				ORDER BY g.disporder
-			");
+		$query = $db->query("
+			SELECT g.*, COUNT(s.sid) AS settingcount
+			FROM ".TABLE_PREFIX."settinggroups g
+			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
+			WHERE g.isdefault = 1
+			GROUP BY g.gid
+			ORDER BY g.disporder
+		");
 	}
 	while($group = $db->fetch_array($query))
 	{
@@ -1332,7 +1334,66 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong><a href=\"index.php?module=config-settings&amp;action=change&amp;gid={$group['gid']}\">{$group_title}</a></strong> ({$group['settingcount']} {$lang->bbsettings})<br /><small>{$group_desc}</small>");
 		$table->construct_row();
 	}
+
 	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config-settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");
+
+	// Plugin Settings
+	switch($db->type)
+	{
+		case "pgsql":
+		$query = $db->query("
+			SELECT g.*, COUNT(s.sid) AS settingcount
+			FROM ".TABLE_PREFIX."settinggroups g
+			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
+			WHERE g.isdefault <> 1
+			GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
+			ORDER BY g.disporder
+		");
+		break;
+		default:
+		$query = $db->query("
+			SELECT g.*, COUNT(s.sid) AS settingcount
+			FROM ".TABLE_PREFIX."settinggroups g
+			LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
+			WHERE g.isdefault <> 1
+			GROUP BY g.gid
+			ORDER BY g.disporder
+		");
+	}
+
+	if($db->num_rows($query))
+	{
+		$table = new Table;
+		$table->construct_header($lang->setting_groups);
+
+		while($group = $db->fetch_array($query))
+		{
+			$group_lang_var = "setting_group_{$group['name']}";
+			if($lang->$group_lang_var)
+			{
+				$group_title = htmlspecialchars_uni($lang->$group_lang_var);
+			}
+			else
+			{
+				$group_title = htmlspecialchars_uni($group['title']);
+			}
+
+			$group_desc_lang_var = "setting_group_{$group['name']}_desc";
+			if($lang->$group_desc_lang_var)
+			{
+				$group_desc = htmlspecialchars_uni($lang->$group_desc_lang_var);
+			}
+			else
+			{
+				$group_desc = htmlspecialchars_uni($group['description']);
+			}
+
+			$table->construct_cell("<strong><a href=\"index.php?module=config-settings&amp;action=change&amp;gid={$group['gid']}\">{$group_title}</a></strong> ({$group['settingcount']} {$lang->bbsettings})<br /><small>{$group_desc}</small>");
+			$table->construct_row();
+		}
+
+		$table->output($lang->plugin_settings);
+	}
 
 	echo '</div>';
 

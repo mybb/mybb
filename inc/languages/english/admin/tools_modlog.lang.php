@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -47,5 +47,6 @@ $l['date_range'] = "Date range:";
 $l['all_forums'] = "All Forums";
 
 $l['success_pruned_mod_logs'] = "The moderator logs have been pruned successfully.";
+$l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
 ?>

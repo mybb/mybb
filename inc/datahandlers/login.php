@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -263,8 +263,8 @@ class LoginDataHandler extends DataHandler
 		my_setcookie('loginattempts', 1);
 		my_setcookie("sid", $session->sid, -1, true);
 
-		$ip_address = $db->escape_string($session->ipaddress);
-		$db->delete_query("sessions", "ip = '{$ip_address}' AND sid != '{$session->sid}'");
+		$ip_address = escape_binary($session->packedip);
+		$db->delete_query("sessions", "ip = X'{$ip_address}' AND sid != '{$session->sid}'");
 
 		$newsession = array(
 			"uid" => $user['uid'],

@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -30,7 +30,7 @@ function log_admin_action()
 
 	$log_entry = array(
 		"uid" => $mybb->user['uid'],
-		"ipaddress" => $db->escape_string(get_ip()),
+		"ipaddress" => escape_binary(my_inet_pton(get_ip())),
 		"dateline" => TIME_NOW,
 		"module" => $db->escape_string($mybb->input['module']),
 		"action" => $db->escape_string($mybb->input['action']),
@@ -629,6 +629,17 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 	}
 
 	return false;
+}
+
+/**
+ * Checks whether the administrator is on a mobile device
+ *
+ * @param string The useragent to be checked
+ * @return boolean A true/false depending on if the administrator is on a mobile
+ */
+function is_mobile($useragent)
+{
+	return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $useragent);
 }
 
 /**

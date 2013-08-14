@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -83,13 +83,29 @@ $post_verify = true;
 if($mybb->input['action'] == "unlock")
 {
 	$user = array();
+	$error = '';
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		$username = $db->escape_string(my_strtolower($mybb->input['username']));
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+			case 1:
+				$query = $db->simple_select("users", "*", "LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+		}
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			$error[] = $lang->error_invalid_username;
+			$error = $lang->error_invalid_username;
 		}
 	}
 	else if($mybb->input['uid'])
@@ -97,7 +113,7 @@ if($mybb->input['action'] == "unlock")
 		$user = get_user($mybb->input['uid']);
 		if(!$user['uid'])
 		{
-			$error[] = $lang->error_invalid_uid;
+			$error = $lang->error_invalid_uid;
 		}
 	}
 
@@ -116,11 +132,11 @@ if($mybb->input['action'] == "unlock")
 		}
 		else
 		{
-			$error[] = $lang->error_invalid_token;
+			$error = $lang->error_invalid_token;
 		}
 	}
 
-	$default_page->show_lockout_unlock();
+	$default_page->show_lockout_unlock($error, 'error');
 }
 elseif($mybb->input['do'] == "login")
 {
@@ -128,11 +144,11 @@ elseif($mybb->input['do'] == "login")
 	$loginhandler = new LoginDataHandler("get");
 
 	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
-	
+
 	// Validate PIN first
-	if (isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
+	if(isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
 	{
-		$default_page->show_login($lang->error_invalid_secret_pin,"error");
+		$default_page->show_login($lang->error_invalid_secret_pin, "error");
 	}
 
 	$loginhandler->set_data(array(
@@ -154,17 +170,24 @@ elseif($mybb->input['do'] == "login")
 
 		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
 
-		$sid = md5(uniqid(microtime(true)));
+		$sid = md5(uniqid(microtime(true), true));
+
+		$useragent = $_SERVER['HTTP_USER_AGENT'];
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
 
 		// Create a new admin session for this user
 		$admin_session = array(
 			"sid" => $sid,
 			"uid" => $mybb->user['uid'],
 			"loginkey" => $mybb->user['loginkey'],
-			"ip" => $db->escape_string(get_ip()),
+			"ip" => escape_binary(my_inet_pton(get_ip())),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
 			"data" => serialize(array()),
+			"useragent" => $db->escape_string($useragent),
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
@@ -211,7 +234,22 @@ elseif($mybb->input['do'] == "login")
 	}
 	else
 	{
-		$query = $db->simple_select("users", "uid,email", "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		$username = $db->escape_string(my_strtolower($mybb->input['username']));
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+			case 1:
+				$query = $db->simple_select("users", "uid,email", "LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				break;
+		}
 		$login_user = $db->fetch_array($query);
 
 		if($login_user['uid'] > 0)
@@ -364,7 +402,7 @@ if($mybb->user['uid'])
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
-		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_string(get_ip())), "sid='".$db->escape_string($admin_session['sid'])."'");
+		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => escape_binary(my_inet_pton(get_ip()))), "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
 
 	// Fetch administrator permissions
@@ -414,8 +452,8 @@ if(!$mybb->user['uid'] || $logged_out == true)
 		// If we have this error while retreiving it from an AJAX request, then send back a nice error
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<error>login</error>";
-			die;
+			echo json_encode(array("errors" => array("login")));
+			exit;
 		}
 		$page->show_login($login_message, "error");
 	}
@@ -493,13 +531,13 @@ else
 $action_handler = $run_module."_action_handler";
 $action_file = $action_handler($current_module[1]);
 
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
 if($run_module != "home")
 {
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
 }
-
-// Set our POST validation code here
-$mybb->post_code = generate_post_check();
 
 // Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
 $post_check_ignores = array(

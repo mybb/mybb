@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "browse")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	if(!array_key_exists("results", $tree))
+	if(!is_array($tree) || !isset($tree['results']))
 	{
 		$page->output_inline_error($lang->error_communication_problem);
 		$page->output_footer();
@@ -972,6 +972,11 @@ if($mybb->input['action'] == "edit")
 		{
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
 
+			if($theme['def'] == 1)
+			{
+				$cache->update_default_theme();
+			}
+
 			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
@@ -1075,6 +1080,10 @@ if($mybb->input['action'] == "edit")
 
 		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
 
+		if($theme['def'] == 1)
+		{
+			$cache->update_default_theme();
+		}
 		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
@@ -1652,7 +1661,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 		</dl>";
 
 			$form_container = new FormContainer();
-			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.gif\" alt=\"{$lang->delete}\" title=\"{$lang->delete}\" /></a></span>{$lang->file} &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
+			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.png\" alt=\"{$lang->delete}\" title=\"{$lang->delete}\" /></a></span>{$lang->file} &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
 
 			$form_container->output_row("", "", $specific_file);
 
@@ -2119,10 +2128,10 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
 ';
 	}
 
@@ -2383,10 +2392,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/theme/mybb.css" rel="stylesheet">
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/lib/codemirror.js"></script>
-<script src="'.$mybb->settings['bburl'].'/inc/3rdparty/codemirror/mode/css/css.js"></script>
+<link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<script src="./jscripts/codemirror/lib/codemirror.js"></script>
+<script src="./jscripts/codemirror/mode/css/css.js"></script>
 ';
 	}
 
@@ -2500,7 +2509,7 @@ if($mybb->input['action'] == "add_stylesheet")
 		</dl>";
 
 			$form_container = new FormContainer();
-			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.gif\" alt=\"{$lang->delete}\" title=\"{$lang->delete}\" /></a></span>{$lang->file} &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
+			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.png\" alt=\"{$lang->delete}\" title=\"{$lang->delete}\" /></a></span>{$lang->file} &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
 
 			$form_container->output_row("", "", $specific_file);
 
@@ -2675,6 +2684,8 @@ if($mybb->input['action'] == "set_default")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$cache->update('default_theme', $theme);
 
 	$db->update_query("themes", array('def' => 0));
 	$db->update_query("themes", array('def' => 1), "tid='".intval($mybb->input['tid'])."'");

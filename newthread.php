@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress='".$db->escape_string($session->ipaddress)."'";
+		$user_check = "p.ipaddress=X'".escape_binary($session->packedip)."'";
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
@@ -285,7 +285,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		"uid" => $uid,
 		"username" => $username,
 		"message" => $mybb->input['message'],
-		"ipaddress" => get_ip(),
+		"ipaddress" => $session->packedip,
 		"posthash" => $mybb->input['posthash']
 	);
 
@@ -564,6 +564,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Editing a draft thread
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
+		$mybb->input['threadprefix'] = $thread['prefix'];
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != 0)
@@ -632,7 +633,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			"uid" => $uid,
 			"username" => $username,
 			"message" => $mybb->input['message'],
-			"ipaddress" => get_ip(),
+			"ipaddress" => $session->packedip,
 			"posthash" => $mybb->input['posthash']
 		);
 
@@ -945,6 +946,5 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);
-
 }
 ?>

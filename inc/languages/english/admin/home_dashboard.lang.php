@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -32,9 +32,10 @@ $l['last_update_check_two_weeks'] = "Your last <a href=\"{1}\">MyBB version chec
 $l['new_version_available'] = "You are currently running {1} whilst the latest generally available release is {2}.";
 $l['version_check_description'] = "Here you can check that you are currently running the latest copy of MyBB and see the latest announcements directly from MyBB.";
 $l['latest_mybb_announcements'] = "Latest MyBB Announcements";
+$l['no_announcements'] = "No stored announcements. <a href=\"index.php?module=home&amp;action=version_check\">Check for Updates</a>.";
 $l['your_version'] = "Your Version";
 $l['latest_version'] = "Latest Version";
-$l['update_forum'] = "Please upgrade to the latest version of MyBB by visiting the <a href=\"http://mybb.com\" target=\"_blank\">MyBB Website</a>.";
+$l['update_forum'] = "Please upgrade to the latest version of MyBB by visiting the <a href=\"http://www.mybb.com\" target=\"_blank\">MyBB Website</a>.";
 $l['read_more'] = "Read more";
 
 $l['success_up_to_date'] = "Congratulations, you are running the latest version of MyBB.";

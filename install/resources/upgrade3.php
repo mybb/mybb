@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -63,7 +63,7 @@ function upgrade3_dbchanges()
 
 	if($errors)
 	{
-		$output->print_contents($contents."<p><font color=\"red\">To be able to do this you must perform the following:</font></p>$errors");
+		$output->print_contents($contents."<p><span style=\"color: red\">To be able to do this you must perform the following:</span></p>$errors");
 		$output->print_footer("3_dbchanges");
 		exit;
 	}

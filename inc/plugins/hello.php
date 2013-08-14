@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -34,9 +34,9 @@ function hello_info()
 	return array(
 		"name"			=> "Hello World!",
 		"description"	=> "A sample plugin that prints hello world and prepends the content of each post to 'Hello world!'",
-		"website"		=> "http://mybb.com",
+		"website"		=> "http://www.mybb.com",
 		"author"		=> "MyBB Group",
-		"authorsite"	=> "http://mybb.com",
+		"authorsite"	=> "http://www.mybb.com",
 		"version"		=> "1.0",
 		"guid" 			=> "",
 		"compatibility" => "*"

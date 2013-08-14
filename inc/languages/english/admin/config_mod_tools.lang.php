@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -58,6 +58,8 @@ $l['stick'] = "Stick";
 $l['unstick'] = "Unstick";
 $l['open'] = "Open";
 $l['close'] = "Close";
+$l['stick'] = "Stick";
+$l['unstick'] = "Unstick";
 $l['toggle'] = "Toggle";
 $l['days'] = "Days";
 $l['no_prefix'] = "No Prefix";
@@ -72,6 +74,7 @@ $l['move_thread_desc'] = "If moving the thread(s), the \"delete redirect after..
 $l['forum_to_copy_to'] = "Forum to copy to:";
 $l['copy_thread'] = "Copy thread?";
 $l['open_close_thread'] = "Open/close thread?";
+$l['stick_unstick_thread'] = "Stick/unstick thread?";
 $l['delete_thread'] = "Delete thread?";
 $l['merge_thread'] = "Merge thread?";
 $l['merge_thread_desc'] = "Only if used in inline moderation.";

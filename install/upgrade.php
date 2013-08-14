@@ -1,28 +1,13 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
-
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
@@ -34,6 +19,9 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 {
 	date_default_timezone_set('GMT');
 }
+
+require_once MYBB_ROOT.'inc/class_error.php';
+$error_handler = new errorHandler();
 
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
@@ -339,8 +327,6 @@ else
 		require_once INSTALL_ROOT."resources/upgrade".intval($mybb->input['from']).".php";
 		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->input['donewarning'] != "true")
 		{
-			require_once MYBB_ROOT."inc/class_datacache.php";
-			$cache = new datacache;
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{

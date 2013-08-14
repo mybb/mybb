@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -110,6 +110,8 @@ $l['no'] = "No";
 
 $l['and'] = "and";
 $l['date'] = "Date";
+
+$l['nobody'] = "Nobody";
 
 $l['attachments'] = "Attachments";
 $l['attachments_desc'] = "Optionally you may attach one or more attachments to this post. Please select the file on the right and click 'Add Attachment' to upload it.";
@@ -297,10 +299,10 @@ $l['second_short'] ="s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 
-$l['rel_in'] = "In";
+$l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
-$l['rel_less_than'] = "Less than";
-$l['rel_minute'] = "{1} {2} {3} {4}";
+$l['rel_less_than'] = "Less than ";
+$l['rel_minute'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 

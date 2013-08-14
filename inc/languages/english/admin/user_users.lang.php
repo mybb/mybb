@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -331,7 +331,7 @@ $l['is_exactly'] = "Is exactly";
 $l['less_than'] = "Less than";
 $l['post_count_is'] = "Post count is";
 $l['reg_ip_matches'] = "Registration IP address matches";
-$l['wildcard'] = "* denotes an IP byte wild card: 1.2.*.*";
+$l['wildcard'] = "To search for ranges of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['posted_with_ip'] = "Has posted with the IP address";
 $l['custom_profile_fields_match'] = "Where custom profile fields match...";
 $l['is_not_blank'] = " is not empty";
@@ -368,4 +368,18 @@ $l['table'] = "Table";
 $l['title'] = "Title";
 
 $l['view_title_1'] = "All Users";
+
+$l['emailsubject_activateaccount'] = "Account Activation at {1}";
+$l['email_adminactivateaccount'] = "{1},
+
+The administrator has activated your forum account on {2}.
+
+To proceed, please go to
+
+{3}
+
+You will be able to login with the credentials you registered with.
+
+Thank you,
+{2} Staff";
 ?>

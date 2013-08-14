@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -46,7 +46,6 @@ $l['online'] = "Online Users";
 $l['online_user'] = "There is currently 1 user online";
 $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
-$l['no_one'] = "no-one";
 $l['print_this_item'] = "Print this item";
 $l['send_to_friend'] = "Send this item to a friend";
 ?>

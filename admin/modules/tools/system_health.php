@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -585,18 +585,18 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
+			$status = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.png) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{
-			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt=\"{$lang->ok}\" />";
+			$status = "<img src=\"styles/{$page->style}/images/icons/tick.png\" alt=\"{$lang->ok}\" />";
 		}
 		$table->construct_cell("<strong>{$tablename}</strong>");
 		$table->construct_cell($status, array("class" => "align_center", 'width' => '15%'));
 		$table->construct_row();
 	}
 
-	$table->output("<div style=\"float: right; text-decoration: underline\"><small><a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;do=all\">({$lang->convert_all})</a></small></div><div>{$lang->utf8_conversion}</div>");
+	$table->output("<div style=\"float: right;\"><small><a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;do=all\">({$lang->convert_all})</a></small></div><div>{$lang->utf8_conversion}</div>");
 
 	$page->output_footer();
 }

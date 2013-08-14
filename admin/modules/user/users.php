@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -186,6 +186,9 @@ if($mybb->input['action'] == "activate_user")
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
+
+	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
@@ -821,14 +824,14 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if (!stristr($user['avatar'], 'http://'))
+		if(!stristr($user['avatar'], 'http://') || !stristr($user['avatar'], 'https://'))
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
 	}
 	else
 	{
-		$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
+		$user['avatar'] = "../".$mybb->settings['useravatar'];
 		$scaled_dimensions = array(
 			"width" => 120,
 			"height" => 120
@@ -918,8 +921,8 @@ if($mybb->input['action'] == "edit")
 	$table->construct_cell("<strong>{$lang->percent_of_total_posts}:</strong> {$percent_posts}");
 	$table->construct_cell("<strong>{$lang->warning_level}:</strong> {$warning_level}");
 	$table->construct_row();
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> {$user['regip']}");
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> {$user['lastip']}");
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($user['regip']));
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($user['lastip']));
 	$table->construct_row();
 
 	$table->output("{$lang->user_overview}: {$user['username']}");
@@ -1566,7 +1569,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> {$user['lastip']}");
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($user['lastip']));
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1584,7 +1587,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> {$user['regip']}");
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($user['regip']));
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1601,7 +1604,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
 
-		$table->construct_cell($ip['ipaddress']);
+		$table->construct_cell(my_inet_ntop($ip['ipaddress']));
 		$table->construct_cell($controls, array('class' => "align_center"));
 		$table->construct_row();
 	}
@@ -1671,6 +1674,9 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("reportedposts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
+			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
 
 			// Is the source user a moderator?
@@ -1737,6 +1743,22 @@ if($mybb->input['action'] == "merge")
 			$total_reputation = $db->fetch_field($query, "total_rep");
 
 			$db->update_query("users", array('reputation' => intval($total_reputation)), "uid='{$destination_user['uid']}'");
+
+			// Calculate warning points
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$source_user['uid']}' AND expired='0'
+			");
+			$original_warn_level = $db->fetch_field($query, "warn_lev");
+
+			$query = $db->query("
+				SELECT SUM(points) as warn_lev
+				FROM ".TABLE_PREFIX."warnings
+				WHERE uid='{$destination_user['uid']}' AND expired='0'
+			");
+			$new_warn_level = $db->fetch_field($query, "warn_lev");
+			$db->update_query("users", array("warningpoints" => intval($original_warn_level + $new_warn_level)), "uid='{$destination_user['uid']}'");
 
 			// Additional updates for non-uid fields
 			$last_poster = array(
@@ -1832,11 +1854,29 @@ if($mybb->input['action'] == "merge")
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("source_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
-		new autoComplete("destination_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $("#source_username").typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },            limit: 10
+        });
+        $("#destination_username").typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
+
 	// -->
 	</script>';
 
@@ -2918,23 +2958,14 @@ function build_users_view($view)
 	{
 		if($view['conditions'][$search_field])
 		{
-			// IPv6 IP
-			if(strpos($view['conditions'][$search_field], ":") !== false)
+			$ip_range = fetch_ip_range($view['conditions'][$search_field]);
+			if(!is_array($ip_range))
 			{
-				$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
-				$ip_sql = "{$search_field} LIKE '".$db->escape_string($view['conditions'][$search_field])."'";
+				$ip_sql = "{$search_field}=X'".escape_binary($ip_range)."'";
 			}
 			else
 			{
-				$ip_range = fetch_longipv4_range($view['conditions'][$search_field]);
-				if(!is_array($ip_range))
-				{
-					$ip_sql = "long{$search_field}='{$ip_range}'";
-				}
-				else
-				{
-					$ip_sql = "long{$search_field} > '{$ip_range[0]}' AND long{$search_field} < '{$ip_range[1]}'";
-				}
+				$ip_sql = "{$search_field} BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
 			}
 			$search_sql .= " AND {$ip_sql}";
 		}
@@ -2943,23 +2974,14 @@ function build_users_view($view)
 	// Post IP searching
 	if($view['conditions']['postip'])
 	{
-		// IPv6 IP
-		if(strpos($view['conditions']['postip'], ":") !== false)
+		$ip_range = fetch_ip_range($view['conditions']['postip']);
+		if(!is_array($ip_range))
 		{
-			$view['conditions']['postip'] = str_replace("*", "%", $view['conditions']['postip']);
-			$ip_sql = "ipaddress LIKE '".$db->escape_string($view['conditions']['postip'])."'";
+			$ip_sql = "ipaddress=X'".escape_binary($ip_range)."'";
 		}
 		else
 		{
-			$ip_range = fetch_longipv4_range($view['conditions']['postip']);
-			if(!is_array($ip_range))
-			{
-				$ip_sql = "longipaddress='{$ip_range}'";
-			}
-			else
-			{
-				$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
-			}
+			$ip_sql = "ipaddress BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
 		}
 		$ip_uids = array(0);
 		$query = $db->simple_select("posts", "uid", $ip_sql);
@@ -3181,7 +3203,9 @@ function build_users_view($view)
 				// Yes, so do we want to edit the ban or pardon his crime?
 				$popup->add_item($lang->edit_ban, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 				$popup->add_item($lang->lift_ban, "index.php?module=user-banning&action=lift&uid={$user['uid']}&my_post_key={$mybb->post_code}");
-			} else {
+			}
+			else
+			{
 				// Not banned... but soon maybe!
 				$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
 			}
@@ -3238,7 +3262,7 @@ function build_users_view($view)
 			}
 			if(!$user['avatar'])
 			{
-				$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
+				$user['avatar'] = "../".$mybb->settings['useravatar'];
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
@@ -3359,10 +3383,19 @@ function build_users_view($view)
 
 	// Autocompletion for usernames
 	$built_view .= '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("search_keywords", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $("#search_keywords").typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 
@@ -3762,10 +3795,19 @@ function user_search_conditions($input=array(), &$form)
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $("#username").typeahead({
+            name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 }

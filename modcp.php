@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -125,6 +125,7 @@ if($mybb->input['action'] == "do_reports")
 
 if($mybb->input['action'] == "reports")
 {
+	$lang->load('report');
 	add_breadcrumb($lang->mcp_nav_report_center, "modcp.php?action=reports");
 
 	$perpage = $mybb->settings['threadsperpage'];
@@ -216,9 +217,17 @@ if($mybb->input['action'] == "reports")
 				}
 
 				// Reputation comment? The offender is the TID
-				if($report['type'] == 'reputation' && !isset($usercache[$report['tid']]))
+				if($report['type'] == 'reputation')
 				{
-					$usercache[$report['tid']] = $report['tid'];
+					if(!isset($usercache[$report['tid']]))
+					{
+						$usercache[$report['tid']] = $report['tid'];
+					}
+					if(!isset($usercache[$report['fid']]))
+					{
+						// The user who was offended
+						$usercache[$report['fid']] = $report['fid'];
+					}
 				}
 			}
 			else if(!$report['type'] || $report['type'] == 'post')
@@ -297,86 +306,63 @@ if($mybb->input['action'] == "reports")
 			}
 
 			// Report Information
-			$report_information = $report_extra = '';
+			$report_data = array();
 			$string = "report_info_{$report['type']}";
 
 			switch($report['type'])
 			{
-				case 'profile':
-					// For profiles, we only need user data
-					$profile_username = $usercache[$report['pid']]['username'];
-					$profile_link = get_profile_link($report['pid']);
+				case 'post':
+					$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+					$user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
 
-					$report_information = $lang->sprintf($lang->$string, $profile_username, $profile_link);
+					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
+					$thread_subject = htmlspecialchars_uni($postcache[$report['pid']]['subject']);
+					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
+
+					break;
+				case 'profile':
+					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
-					// For reputation we need a handful of things
-					// First, the profile on which the offending comment has been made (comment is FID)
-					$profile_link = get_profile_link($report['pid']);
-					$profile_username = $usercache[$report['pid']]['username'];
-					$profile_rep_link = "reputation.php?uid={$report['pid']}&amp;comment={$report['fid']}";
+					$reputation_link = "reputation.php?uid={$usercache[$report['tid']]['uid']}#rid{$report['pid']}";
+					$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
-					// Who is the offender? It's the TID!
-					//$content_user = build_profile_link($usercache[$report['tid']]['username'], $report['tid']);
-
-					$report_information = $lang->sprintf($lang->$string, $profile_rep_link, $profile_link, $profile_username);
-					break;
-				default:
-					// For posts, the first step is thread info for report_extra
-					$thread_subject = $postcache[$report['pid']]['subject'];
-					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
-
-					$report_extra = $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
-
-					// Next, it's the post and user information
-					$type_link = get_post_link($report['pid'])."#pid{$report['pid']}";
-					$content_user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
-
-					$report_information = $lang->sprintf($lang->$string, $type_link, $content_user);
+					$good_user = build_profile_link($usercache[$report['fid']]['username'], $usercache[$report['fid']]['uid']);
+					$report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
 					break;
 			}
 
 			// Report reason and comment
-			$report_reason = $lang->na;
-			$report_comment = $lang->na;
+			$report_data['comment'] = $lang->na;
+			$report_string = "report_reason_{$report['reason']}";
 
-			if($report['reason'])
+			if(isset($lang->$report_string))
 			{
-				$reason = explode("\n", $report['reason']);
-				$lang_string = "report_reason_{$reason[0]}";
-
-				if(isset($lang->$lang_string))
-				{
-					// Translated string
-					$report_reason = $lang->$lang_string;
-				}
-				else if(isset($reportedposts['reasons'][$reason[0]]))
-				{
-					// Non-translated string, use the ACP version
-					$report_reason = $reportedposts['reasons'][$reason[0]];
-				}
-
-				if($reason[1])
-				{
-					$report_comment = htmlspecialchars_uni($reason[1]);
-				}
+				$report_data['comment'] = $lang->$report_string;
+			}
+			else if(!empty($report['reason']))
+			{
+				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
 			}
 
 			$report_reports = 1;
 			if($report['reports'])
 			{
-				$report_reports = my_number_format($report['reports']);
+				$report_data['reports'] = my_number_format($report['reports']);
 			}
 
 			if($report['lastreporter'])
 			{
-				$lastreporter_link = get_profile_link($report['lastreporter']);
-				$lastreporter_name = $usercache[$report['lastreporter']]['username'];
+				$lastreport_date = my_date('relative', $report['lastreport']);
+				$lastreport_user = build_profile_link($usercache[$report['lastreporter']]['username'], $report['lastreporter']);
+
+				$report_data['lastreporter'] = $lang->sprintf($lang->report_info_lastreporter, $lastreport_date, $lastreport_user);
 			}
 
-			$lastreport_date = my_date('relative', $report['lastreport']);
-
-			// Plugin hook
+			$plugins->run_hooks("modcp_reports_report");
 			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
 		}
 	}
@@ -389,7 +375,10 @@ if($mybb->input['action'] == "reports")
 
 if($mybb->input['action'] == "allreports")
 {
-	add_breadcrumb($lang->mcp_nav_all_reported_posts, "modcp.php?action=allreports");
+	$lang->load('report');
+
+	add_breadcrumb($lang->report_center, "modcp.php?action=reports");
+	add_breadcrumb($lang->all_reports, "modcp.php?action=allreports");
 
 	if(!$mybb->settings['threadsperpage'])
 	{
@@ -454,12 +443,13 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
+		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
+		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.pid)
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -475,33 +465,45 @@ if($mybb->input['action'] == "allreports")
 		{
 			$trow = alt_trow();
 
-			$report['threadlink'] = get_thread_link($report['tid']);
-
-			$report['posterlink'] = get_profile_link($report['postuid']);
-			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
-			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
-			$report['reporterlink'] = get_profile_link($report['uid']);
-
-			$reportdate = my_date('relative', $report['dateline']);
-
-			if($report['reportstatus'] == 0)
+			if($report['type'] == 'post')
 			{
-				$trow = "trow_shaded";
+				$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+				$user = build_profile_link($report['postusername'], $report['postuid']);
+				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
+
+				$thread_link = get_thread_link($report['tid']);
+				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
+				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
+			}
+			else if($report['type'] == 'profile')
+			{
+				$user = build_profile_link($report['profileusername'], $report['pid']);
+				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
+			}
+			else if($report['type'] == 'reputation')
+			{
+				$user = build_profile_link($report['profileusername'], $report['fid']);
+				$reputation_link = "reputation.php?uid={$report['fid']}#rid{$report['pid']}";
+				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
 
-			// No subject? Set it to N/A
-			if($report['threadsubject'] == '')
+			// Report reason and comment
+			$report_data['comment'] = $lang->na;
+			$report_string = "report_reason_{$report['reason']}";
+
+			if(isset($lang->$report_string))
 			{
-				$report['threadsubject'] = $lang->na;
+				$report_data['comment'] = $lang->$report_string;
 			}
-			else
+			else if(!empty($report['reason']))
 			{
-				// Only parse bad words and sanitize subject if there is one...
-				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+				$report_data['comment'] = htmlspecialchars_uni($report['reason']);
 			}
 
-			$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
+			$report_data['reports'] = my_number_format($report['reports']);
+			$report_data['time'] = my_date('relative', $report['dateline']);
 
+			$plugins->run_hooks("modcp_allreports_report");
 			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
 		}
 	}
@@ -622,6 +624,7 @@ if($mybb->input['action'] == "modlogs")
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		$logitem['ipaddress'] = my_inet_ntop($logitem['ipaddress']);
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
@@ -2131,24 +2134,15 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 
-	if(validate_website_format($user['website']))
+	if($user['website'] == "" || $user['website'] == "http://")
 	{
-		$user['website'] = htmlspecialchars_uni($user['website']);
-	}
-	else
-	{
-		$user['website'] = '';
+		$user['website'] = "http://";
 	}
 
-	$user['icq'] = (int)$user['icq'];
-	if(!$user['icq'])
+	if($user['icq'] != "0")
 	{
-		$user['icq'] = '';
+		$user['icq'] = intval($user['icq']);
 	}
-
-	$user['msn'] = htmlspecialchars_uni($user['msn']);
-	$user['aim'] = htmlspecialchars_uni($user['aim']);
-	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 
 	if(!$errors)
 	{
@@ -2832,29 +2826,21 @@ if($mybb->input['action'] == "ipsearch")
 		}
 
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+		
+		$ip_range = fetch_ip_range($mybb->input['ipaddress']);
 
 		// Searching post IP addresses
 		if($mybb->input['search_posts'])
 		{
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if($ip_range)
 			{
-				$post_ip_sql = "ipaddress LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-
-				if($ip_range)
+				if(!is_array($ip_range))
 				{
-					if(!is_array($ip_range))
-					{
-						$post_ip_sql = "longipaddress='{$ip_range}'";
-					}
-					else
-					{
-						$post_ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
-					}
+					$post_ip_sql = "ipaddress=X'".escape_binary($ip_range)."'";
+				}
+				else
+				{
+					$post_ip_sql = "ipaddress BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
 				}
 			}
 
@@ -2875,25 +2861,15 @@ if($mybb->input['action'] == "ipsearch")
 		// Searching user IP addresses
 		if($mybb->input['search_users'])
 		{
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			if($ip_range)
 			{
-				$user_ip_sql = "regip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."' OR lastip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-
-				if($ip_range)
+				if(!is_array($ip_range))
 				{
-					if(!is_array($ip_range))
-					{
-						$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
-					}
-					else
-					{
-						$user_ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
-					}
+					$user_ip_sql = "regip=X'".escape_binary($ip_range)."' OR lastip=X'".escape_binary($ip_range)."'";
+				}
+				else
+				{
+					$user_ip_sql = "regip BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."' OR lastip BETWEEN x'".escape_binary($ip_range[0])."' AND x'".escape_binary($ip_range[1])."'";
 				}
 			}
 
@@ -2977,24 +2953,35 @@ if($mybb->input['action'] == "ipsearch")
 				$result = false;
 				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				$trow = alt_trow();
-				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
-				// Reg IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['regip']))
+				$ip = false;
+				if(is_array($ip_range))
 				{
-					$ip = $ipaddress['regip'];
+					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
+					{
+						$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
+						$ip = my_inet_ntop($ipaddress['regip']);
+					}
+					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
+					{
+						$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+						$ip = my_inet_ntop($ipaddress['lastip']);
+					}
+				}
+				elseif($ipaddress['regip'] == $ip_range)
+				{
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
-					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
-					$result = true;
+					$ip = my_inet_ntop($ipaddress['regip']);
 				}
-				// Last known IP matches
-				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
+				elseif($ipaddress['lastip'] == $ip_range)
 				{
-					$ip = $ipaddress['lastip'];
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+					$ip = my_inet_ntop($ipaddress['lastip']);
+				}
+				if($ip)
+				{
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
 					$result = true;
 				}
-
 				if($result)
 				{
 					--$post_limit;
@@ -3045,7 +3032,7 @@ if($mybb->input['action'] == "ipsearch")
 
 				foreach($ipaddresses as $ipaddress)
 				{
-					$ip = $ipaddress['ipaddress'];
+					$ip = my_inet_ntop($ipaddress['ipaddress']);
 					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					$trow = alt_trow();
 					if(!$ipaddress['subject'])
@@ -3072,7 +3059,7 @@ if($mybb->input['action'] == "ipsearch")
 			$lang->ipsearch_results = $lang->ipsearch;
 		}
 
-		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/"))
 		{
 			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
 		}
@@ -3107,7 +3094,7 @@ if($mybb->input['action'] == "iplookup")
 	$ipaddress_location = $lang->na;
 	$ipaddress_host_name = $lang->na;
 	$modcp_ipsearch_misc_info = '';
-	if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
+	if(!strstr($mybb->input['ipaddress'], "*"))
 	{
 		// Return GeoIP information if it is available to us
 		if(function_exists('geoip_record_by_name'))
@@ -3115,10 +3102,10 @@ if($mybb->input['action'] == "iplookup")
 			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
 			if($ip_record)
 			{
-				$ipaddress_location = htmlspecialchars_uni($ip_record['country_name']);
+				$ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
 				if($ip_record['city'])
 				{
-					$ipaddress_location .= $lang->comma.htmlspecialchars_uni($ip_record['city']);
+					$ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
 				}
 			}
 		}
@@ -3551,15 +3538,19 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	$bangroups = '';
-	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
-	while($item = $db->fetch_array($query))
+	$groupscache = $cache->read("usergroups");
+
+	foreach($groupscache as $key => $group)
 	{
-		$selected = "";
-		if($banned['gid'] == $item['gid'])
+		if($group['isbannedgroup'])
 		{
-			$selected = " selected=\"selected\"";
+			$selected = "";
+			if($banned['gid'] == $group['gid'])
+			{
+				$selected = " selected=\"selected\"";
+			}
+			$bangroups .= "<option value=\"{$group['gid']}\"{$selected}>".htmlspecialchars_uni($group['title'])."</option>\n";
 		}
-		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>".htmlspecialchars_uni($item['title'])."</option>\n";
 	}
 
 	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";

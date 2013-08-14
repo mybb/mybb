@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -30,6 +30,7 @@ $l['order_asc'] = "ascending order";
 $l['order_desc'] = "descending order";
 $l['forumteam'] = "Show Forum Team";
 $l['advanced_search'] = "Advanced Search";
+$l['nav_memberlist_search'] = "Search";
 $l['search_member_list'] = "Search Member List";
 $l['search_criteria'] = "Search Criteria";
 $l['begins_with'] = "begins with";

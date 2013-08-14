@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -28,7 +28,7 @@ $l['view_board'] = "View Forum";
 $l['logout'] = "Log Out";
 
 // Footer language strings
-$l['generated_in'] = "Generated in {1} seconds with {2} queries. Memory Usage: {3}";
+$l['generated_in'] = "Generated in {1} with {2} queries. Memory Usage: {3}";
 
 // Login page
 $l['enter_username_and_password'] = "Please enter your username and password to continue.";
@@ -39,16 +39,20 @@ $l['username'] = "Username:";
 $l['username1'] = "Email:";
 $l['username2'] = "Username/Email:";
 $l['password'] = "Password:";
-$l['secret_pin'] = "Secret PIN";
+$l['secret_pin'] = "Secret PIN:";
 $l['login'] = "Login";
 $l['lost_password'] = "Forgot your password?";
 
-$l['error_invalid_admin_session'] = "Invalid administration session";
-$l['error_admin_session_expired'] = "Your administration session has expired";
-$l['error_invalid_ip'] = "Your IP address is not valid for this session";
-$l['error_mybb_admin_lockedout'] = "This account has been locked out";
+$l['error_invalid_admin_session'] = "Invalid administration session.";
+$l['error_admin_session_expired'] = "Your administration session has expired.";
+$l['error_invalid_ip'] = "Your IP address is not valid for this session.";
+$l['error_mybb_admin_lockedout'] = "This account has been locked out.";
 $l['error_mybb_admin_lockedout_message'] = "Your account is currently locked out after failing to login {1} times. You have been sent an email with instructions on how to unlock your account.";
 $l['error_invalid_secret_pin'] = 'You have entered an invalid secret PIN.';
+
+$l['error_invalid_username'] = "The username you entered is invalid.";
+$l['error_invalid_uid'] = "The user id you entered is invalid.";
+$l['error_invalid_token'] = "The activation code you entered is invalid.";
 
 $l['success_logged_out'] = "You have been logged out successfully.";
 $l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
@@ -120,10 +124,10 @@ $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
 
-$l['rel_in'] = "In";
+$l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
-$l['rel_less_than'] = "Less than";
-$l['rel_minute'] = "{1} {2} {3} {4}";
+$l['rel_less_than'] = "Less than ";
+$l['rel_minute'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
 

@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -140,7 +140,7 @@ while($postrow = $db->fetch_array($query))
 		$postrow['username'] = $postrow['userusername'];
 	}
 	$postrow['subject'] = htmlspecialchars_uni($parser->parse_badwords($postrow['subject']));
-	$postrow['date'] = my_date('relative', $postrow['dateline']);
+	$postrow['date'] = my_date($mybb->settings['dateformat'], $postrow['dateline'], null, 0);
 	$postrow['profilelink'] = build_profile_link($postrow['username'], $postrow['uid']);
 	$parser_options = array(
 		"allow_html" => $forum['allowhtml'],

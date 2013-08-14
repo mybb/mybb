@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -30,6 +30,8 @@ $l['reputation_count'] = "Reputation Count";
 $l['reputation_count_desc'] = "Enter the amount of reputation to be required. Reputation must be selected as a required value for this to be included. Select the type of comparison for reputation.";
 $l['referral_count'] = "Referral Count";
 $l['referral_count_desc'] = "Enter the number of referrals required. Referral count must be selected as a required value for this to be included. Select the type of comparison for referrals.";
+$l['warning_points'] = "Warning Points";
+$l['warning_points_desc'] = "Enter the number of warning points required. Warning Points must be selected as a required value for this to be included. Select the type of comparison for warning points.";
 $l['post_count_desc'] = "Enter the number of posts required. Post count must be selected as a required value for this to be included. Select the type of comparison for posts.";
 $l['hours'] = "Hours";
 $l['days'] = "Days";

@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -68,7 +68,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = TIME_NOW;
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select("users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
+		$query = $db->simple_select("users", "*", "regip=X'".escape_binary($session->packedip)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -89,17 +89,18 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if(isset($mybb->input['regtime']))
 		{
 			// Check how long it took for this person to register
-			$time = TIME_NOW;
-			$timetook = time() - (int)$mybb->input['regtime'];
+			$timetook = TIME_NOW - (int)$mybb->input['regtime'];
 
 			// See if they registered faster than normal
 			if($timetook < $mybb->settings['regtime'])
 			{
 				// This user registered pretty quickly, bot detected!
-				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time,$mybb->settings['regtime'],$timetook);
+				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time, $mybb->settings['regtime'], $timetook);
 				error($lang->error_spam_deny_time);
 			}
-		} else {
+		}
+		else
+		{
 			error($lang->error_spam_deny."s");
 		}
 	}
@@ -146,8 +147,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"timezone" => $mybb->input['timezoneoffset'],
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
-		"regip" => $session->ipaddress,
-		"longregip" => my_ip2long($session->ipaddress),
+		"regip" => $session->packedip,
 		"coppa_user" => intval($mybb->cookies['coppauser']),
 		"regcheck1" => $mybb->input['regcheck1'],
 		"regcheck2" => $mybb->input['regcheck2']
@@ -1283,6 +1283,14 @@ if($mybb->input['action'] == "login")
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
 
+	if(!empty($errors))
+	{
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+
+		$inline_errors = inline_error($errors);
+	}
+
 	switch($mybb->settings['username_method'])
 	{
 		case 1:
@@ -1422,10 +1430,10 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$website = '';
-	if(validate_website_format($memprofile['website']))
+	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = '<a href="'.$memprofile['website'].'" target="_blank">.'.$memprofile['website'].'</a>';
+		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
 	}
 
 	$signature = '';
@@ -1474,14 +1482,14 @@ if($mybb->input['action'] == "profile")
 		$percent = 100;
 	}
 
-	$memprofile['icq'] = (int)$memprofile['icq'];
-	if(!$memprofile['icq'])
+	if(!empty($memprofile['icq']))
+	{
+		$memprofile['icq'] = intval($memprofile['icq']);
+	}
+	else
 	{
 		$memprofile['icq'] = '';
 	}
-	$memprofile['msn'] = htmlspecialchars_uni($memprofile['msn']);
-	$memprofile['aim'] = htmlspecialchars_uni($memprofile['aim']);
-	$memprofile['yahoo'] = htmlspecialchars_uni($memprofile['yahoo']);
 
 	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
@@ -1522,7 +1530,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
@@ -1621,6 +1629,7 @@ if($mybb->input['action'] == "profile")
 	// Get the user title for this user
 	unset($usertitle);
 	unset($stars);
+	$starimage = '';
 	if(trim($memprofile['usertitle']) != '')
 	{
 		// User has custom user title
@@ -1695,12 +1704,12 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(!isset($starimage))
+	if(empty($starimage))
 	{
 		$starimage = $displaygroup['starimage'];
 	}
 
-	if($starimage)
+	if(!empty($starimage))
 	{
 		// Only display stars if we have an image to use...
 		$starimage = str_replace("{theme}", $theme['imgdir'], $starimage);
@@ -1744,23 +1753,23 @@ if($mybb->input['action'] == "profile")
 
 			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
 		}
-	}
-	// User is offline
-	else
-	{
-		$memlastvisitsep = '';
-		$memlastvisittime = '';
-		$memlastvisitdate = $lang->lastvisit_never;
-
-		if($memprofile['lastactive'])
+		// User is offline
+		else
 		{
-			// We have had at least some active time, hide it instead
-			$memlastvisitdate = $lang->lastvisit_hidden;
+			$memlastvisitsep = '';
+			$memlastvisittime = '';
+			$memlastvisitdate = $lang->lastvisit_never;
+
+			if($memprofile['lastactive'])
+			{
+				// We have had at least some active time, hide it instead
+				$memlastvisitdate = $lang->lastvisit_hidden;
+			}
+
+			$timeonline = $lang->timeonline_hidden;
+
+			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 		}
-
-		$timeonline = $lang->timeonline_hidden;
-
-		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Build Referral
@@ -2028,7 +2037,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"touid" => $to_user['uid'],
 				"toemail" => $db->escape_string($to_user['email']),
 				"tid" => 0,
-				"ipaddress" => $db->escape_string($session->ipaddress)
+				"ipaddress" => escape_binary($session->packedip)
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

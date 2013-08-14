@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -151,7 +151,10 @@ class DB_MySQL
 			{
 				foreach($config as $key => $settings)
 				{
-					if(is_int($key)) $connections['read'][] = $settings;
+					if(is_int($key))
+					{
+						$connections['read'][] = $settings;
+					}
 				}
 			}
 			// Specified both read & write servers
@@ -192,11 +195,11 @@ class DB_MySQL
 
 				$link = $type."_link";
 
-				$this->get_execution_time();
+				get_execution_time();
 
 				$this->$link = @$connect_function($single_connection['hostname'], $single_connection['username'], $single_connection['password'], 1);
 
-				$time_spent = $this->get_execution_time();
+				$time_spent = get_execution_time();
 				$this->query_time += $time_spent;
 
 				// Successful connection? break down brother!
@@ -266,10 +269,24 @@ class DB_MySQL
 
 		if($success && $this->db_encoding)
 		{
-			$this->query("SET NAMES '{$this->db_encoding}'");
+			// A little magic to support PHP 5.2.0, 5.2.1 and 5.2.2
+			if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+				@mysql_set_charset($this->db_encoding, $this->read_link);
+			}
+			else
+			{
+				$this->query("SET NAMES '{$this->db_encoding}'");
+			}
+
 			if($write_success && count($this->connections) > 1)
 			{
-				$this->write_query("SET NAMES '{$this->db_encoding}'");
+				if(version_compare(PHP_VERSION, '5.2.3', '>=')) {
+					@mysql_set_charset($this->db_encoding, $this->write_link);
+				}
+				else
+				{
+					$this->write_query("SET NAMES '{$this->db_encoding}'");
+				}
 			}
 		}
 		return $success;
@@ -287,7 +304,7 @@ class DB_MySQL
 	{
 		global $pagestarttime, $db, $mybb;
 
-		$this->get_execution_time();
+		get_execution_time();
 
 		// Only execute write queries on slave database
 		if($write_query && $this->write_link)
@@ -307,7 +324,7 @@ class DB_MySQL
 			 exit;
 		}
 
-		$query_time = $this->get_execution_time();
+		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
 
@@ -716,16 +733,31 @@ class DB_MySQL
 	 */
 	function insert_query($table, $array)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
 		}
+
+		foreach($array as $field => $value)
+		{
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$array[$field] = "X'{$value}'";
+			}
+			else
+			{
+				$array[$field] = "'{$value}'";
+			}
+		}
+
 		$fields = "`".implode("`,`", array_keys($array))."`";
-		$values = implode("','", $array);
+		$values = implode(",", $array);
 		$this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
-			VALUES ('".$values."')
+			VALUES (".$values.")
 		");
 		return $this->insert_id();
 	}
@@ -739,6 +771,8 @@ class DB_MySQL
 	 */
 	function insert_query_multiple($table, $array)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -750,7 +784,18 @@ class DB_MySQL
 		$insert_rows = array();
 		foreach($array as $values)
 		{
-			$insert_rows[] = "('".implode("','", $values)."')";
+			foreach($values as $field => $value)
+			{
+				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+				{
+					$values[$field] = "X'{$value}'";
+				}
+				else
+				{
+					$values[$field] = "'{$value}'";
+				}
+			}
+			$insert_rows[] = "(".implode(",", $values).")";
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
@@ -773,6 +818,8 @@ class DB_MySQL
 	 */
 	function update_query($table, $array, $where="", $limit="", $no_quote=false)
 	{
+		global $mybb;
+
 		if(!is_array($array))
 		{
 			return false;
@@ -789,7 +836,14 @@ class DB_MySQL
 
 		foreach($array as $field => $value)
 		{
-			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
+			{
+				$query .= $comma."`".$field."`=X{$quote}{$value}{$quote}";
+			}
+			else
+			{
+				$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+			}
 			$comma = ', ';
 		}
 
@@ -1112,11 +1166,20 @@ class DB_MySQL
 	 */
 	function replace_query($table, $replacements=array())
 	{
+		global $mybb;
+
 		$values = '';
 		$comma = '';
 		foreach($replacements as $column => $value)
 		{
-			$values .= $comma."`".$column."`='".$value."'";
+			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
+			{
+				$values .= $comma."`".$column."`=X'".$value."'";
+			}
+			else
+			{
+				$values .= $comma."`".$column."`='".$value."'";
+			}
 
 			$comma = ',';
 		}
@@ -1338,30 +1401,13 @@ class DB_MySQL
 	/**
 	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
 	 *
-	 * @return float The time taken
+	 * @deprecated
 	 */
 	function get_execution_time()
 	{
-		static $time_start;
-
-		$time = microtime(true);
-
-
-		// Just starting timer, init and return
-		if(!$time_start)
-		{
-			$time_start = $time;
-			return;
-		}
-		// Timer has run, return execution time
-		else
-		{
-			$total = $time-$time_start;
-			$time_start = 0;
-			if($total < 0) $total = 0;
-			return $total;
-		}
+		return get_execution_time();
 	}
+
 }
 
 ?>

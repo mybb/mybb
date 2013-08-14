@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -91,7 +91,7 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
@@ -320,7 +320,7 @@ var imagepath = '../images';
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
-<script type="text/javascript" src="../jscripts/prototype.js"></script>
+<script type="text/javascript" src="../jscripts/jquery.js"></script>
 <script type="text/javascript" src="../jscripts/general.js"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>
 <script type="text/javascript">
@@ -459,8 +459,10 @@ EOF;
 	/**
 	 * Generate the lockout unlock page
 	 *
+	 * @param string The any message to output on the page if there is one.
+	 * @param string The class name of the message (defaults to success)
 	 */
-	function show_lockout_unlock()
+	function show_lockout_unlock($message="", $class="success")
 	{
 		global $lang, $mybb, $cp_style;
 
@@ -479,6 +481,11 @@ EOF;
 			default:
 				$lang_username = $lang->username;
 				break;
+		}
+
+		if($message)
+		{
+			$message = "<p id=\"message\" class=\"error\"><span class=\"text\">{$message}</span></p>";
 		}
 
 		print <<<EOF
@@ -500,6 +507,7 @@ EOF;
 	</div>
 	<div id="content">
 		<h2>{$lang->lockout_unlock}</h2>
+		{$message}
 		<p>{$lang->enter_username_and_token}</p>
 		<form method="post" action="index.php">
 		<div class="form_container">

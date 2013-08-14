@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -51,6 +51,13 @@ function task_promotions($task)
 		if(in_array('referrals', $requirements) && intval($promotion['referrals']) >= 0 && !empty($promotion['referralstype']))
 		{
 			$sql_where .= "{$and}referrals {$promotion['referralstype']} '{$promotion['referrals']}'";
+
+			$and = " AND ";
+		}
+
+		if(in_array('warnings', $requirements) && intval($promotion['warnings']) >= 0 && !empty($promotion['warningstype']))
+		{
+			$sql_where .= "{$and}warningpoints {$promotion['warningstype']} '{$promotion['warnings']}'";
 
 			$and = " AND ";
 		}

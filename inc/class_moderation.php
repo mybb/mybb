@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -896,7 +896,7 @@ class Moderation
 						'uid' => $post['uid'],
 						'username' => $db->escape_string($post['username']),
 						'dateline' => $post['dateline'],
-						'ipaddress' => $post['ipaddress'],
+						'ipaddress' => escape_binary($post['ipaddress']),
 						'includesig' => $post['includesig'],
 						'smilieoff' => $post['smilieoff'],
 						'edituid' => $post['edituid'],
@@ -2056,6 +2056,43 @@ class Moderation
 		if(is_array($close))
 		{
 			$this->close_threads($close);
+		}
+		return true;
+	}
+
+	/**
+	 * Toggle threads stick/unstick
+	 *
+	 * @param array Thread IDs
+	 * @return boolean true
+	 */
+	function toggle_thread_importance($tids)
+	{
+		global $db;
+
+		// Make sure we only have valid values
+		$tids = array_map('intval', $tids);
+
+		$tid_list = implode(',', $tids);
+		$query = $db->simple_select("threads", 'tid, sticky', "tid IN ($tid_list)");
+		while($thread = $db->fetch_array($query))
+		{
+			if($thread['sticky'] == 1)
+			{
+				$stick[] = $thread['tid'];
+			}
+			elseif($thread['sticky'] == 0)
+			{
+				$unstick[] = $thread['tid'];
+			}
+		}
+		if(is_array($stick))
+		{
+			$this->stick_threads($stick);
+		}
+		if(is_array($unstick))
+		{
+			$this->unstick_threads($unstick);
 		}
 		return true;
 	}

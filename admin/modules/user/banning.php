@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -531,10 +531,19 @@ if(!$mybb->input['action'])
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+        $("#username").typeahead({
+        	name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 

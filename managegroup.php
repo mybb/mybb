@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	if($user['uid'])
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
-		if ($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			join_usergroup($user['uid'], $gid);
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);

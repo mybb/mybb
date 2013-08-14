@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -30,7 +30,7 @@ $l['mcp_nav_modqueue_attachments'] = "Attachment Moderation Queue";
 
 $l['modcp'] = "Moderator Control Panel";
 
-$l['view_all_reports'] = "View all Reports";
+$l['view_all_reports'] = "View All Reports";
 $l['all_reports'] = "All Reports";
 $l['report_center'] = "Report Center";
 $l['post_id'] = "Post ID";
@@ -49,16 +49,18 @@ $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
 $l['for'] = "For";
 $l['report_info'] = "Reported Content";
-$l['report_type'] = "Comments";
-$l['report_count'] = "Reports";
+$l['report_type'] = "Report Reason";
+$l['report_count'] = "# of Reports";
 $l['report_lastpost'] = "Last Reported";
 
 $l['report_reason_other'] = "Other Reason";
 
 $l['report_info_post'] = "A <a href=\"{1}\">Post</a> by {2}";
-$l['report_info_post_thread'] = "In <a href=\"{1}\">{2}</a>";
-$l['report_info_profile'] = "<a href=\"{2}\">{1}</a>";
-$l['report_info_reputation'] = "<a href=\"{1}\">Reputation Comment</a> on <a href=\"{2}\">{3}</a>";
+$l['report_info_post_thread'] = "<br /><span class=\"smalltext\">In <a href=\"{1}\">{2}</a></span>";
+$l['report_info_profile'] = "Profile of {1}";
+$l['report_info_reputation'] = "<a href=\"{1}\">Reputation</a> from {2}";
+$l['report_info_rep_profile'] = "<br /><span class=\"smalltext\">On {1}'s profile</span>";
+$l['report_info_lastreporter'] = "{1}<br />by {2}";
 
 $l['moderator_notes'] = "Moderator Notes";
 $l['notes_public_all'] = "These notes are public to all moderators.";
@@ -112,7 +114,7 @@ $l['users'] = "Users";
 $l['regdate'] = "Registration Date";
 $l['lastvisit'] = "Last Visit";
 $l['postnum'] = "Post Count";
-$l['username_contains'] = "Username contains";
+$l['username_contains'] = "Username contains:";
 $l['no_user_results'] = "No users were found with the specified search criteria.";
 $l['edit_profile'] = "Edit Profile of {1}";
 $l['birthday'] = "Date of Birth:";
@@ -225,9 +227,9 @@ $l['suspend_posts'] = "Suspend this user's posting privileges";
 $l['modpost_length'] = "Moderate for:";
 $l['suspost_length'] = "Suspend for:";
 
-$l['moderateposts_for'] = "Moderated until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendposting_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
-$l['suspendsignature_for'] = "Suspended until {1}, {2}.<br />Untick this option to remove, or extend below.";
+$l['moderateposts_for'] = "Moderated until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendposting_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
+$l['suspendsignature_for'] = "Suspended until {1}.<br />Untick this option to remove, or extend below.";
 $l['suspendposting_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";
 $l['moderateposts_perm'] = "Moderated permanently.<br />Untick this option to remove, or change below.";
 $l['suspendsignature_perm'] = "Suspended permanently.<br />Untick this option to remove, or change below.";

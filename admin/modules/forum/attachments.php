@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -470,10 +470,10 @@ if($mybb->input['action'] == "orphans")
 			echo $form->generate_hidden_field("incomplete_attachments", $incomplete_attachments);
 		}
 		$form->end();
-		echo "<script type=\"text/javascript\">Event.observe(window, 'load', function() {
+		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$('redirect_form').submit();
+						$(\"#redirect_form\").submit();
 					}, 100
 				);
 			});</script>";
@@ -590,10 +590,10 @@ if($mybb->input['action'] == "orphans")
 			echo $form->generate_hidden_field("bad_attachments", $bad_attachments);
 		}
 		$form->end();
-		echo "<script type=\"text/javascript\">Event.observe(window, 'load', function() {
+		echo "<script type=\"text/javascript\">$(function() {
 				window.setTimeout(
 					function() {
-						$('redirect_form').submit();
+						$(\"#redirect_form\").submit();
 					}, 100
 				);
 			});</script>";

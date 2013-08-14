@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -416,7 +416,7 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			$user_check = "ipaddress='".$db->escape_string($session->ipaddress)."'";
+			$user_check = "ipaddress=X'".escape_binary($session->packedip)."'";
 		}
 
 		$query = $db->simple_select("posts", "pid,message,visible", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
@@ -500,7 +500,7 @@ class PostDataHandler extends DataHandler
 		if($post['savedraft'] != 1 && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
 		{
 			// And count the number of video tags in the message.
-			$video_count = substr_count($post['message'], "[video]");
+			$video_count = substr_count($post['message'], "[video=");
 			if($video_count > $mybb->settings['maxpostvideos'])
 			{
 				// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
@@ -834,23 +834,26 @@ class PostDataHandler extends DataHandler
 					$db->delete_query("posts", "pid='".$post['pid']."'");
 				}
 
-				// Assign any uploaded attachments with the specific posthash to the merged post.
-				$post['posthash'] = $db->escape_string($post['posthash']);
-
-				$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-				$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-				if($attachmentcount > 0)
+				if($post['posthash'])
 				{
-					// Update forum count
-					update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
-				}
+					// Assign any uploaded attachments with the specific posthash to the merged post.
+					$post['posthash'] = $db->escape_string($post['posthash']);
 
-				$attachmentassign = array(
-					"pid" => $double_post['pid'],
-					"posthash" => ''
-				);
-				$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+					$attachmentcount = $db->fetch_field($query, "attachmentcount");
+
+					if($attachmentcount > 0)
+					{
+						// Update forum count
+						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+					}
+
+					$attachmentassign = array(
+						"pid" => $double_post['pid'],
+						"posthash" => ''
+					);
+					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
+				}
 
 				// Return the post's pid and whether or not it is visible.
 				return array(
@@ -887,8 +890,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => intval($post['dateline']),
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => $db->escape_string($post['ipaddress']),
-				"longipaddress" => intval(my_ip2long($post['ipaddress'])),
+				"ipaddress" => escape_binary($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -912,8 +914,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => $post['dateline'],
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => $db->escape_string($post['ipaddress']),
-				"longipaddress" => intval(my_ip2long($post['ipaddress'])),
+				"ipaddress" => escape_binary($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -932,7 +933,7 @@ class PostDataHandler extends DataHandler
 				"pid" => $this->pid,
 				"posthash" => ''
 			);
-			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
 		}
 
 		if($visible == 1 && $thread['visible'] == 1)
@@ -1223,7 +1224,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => $db->escape_string(get_ip()),
+				"ipaddress" => escape_binary(my_inet_pton(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible
@@ -1267,8 +1268,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => $db->escape_string(get_ip()),
-				"longipaddress" => intval(my_ip2long(get_ip())),
+				"ipaddress" => escape_binary(my_inet_pton(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible
@@ -1473,7 +1473,7 @@ class PostDataHandler extends DataHandler
 				"pid" => $this->pid,
 				"posthash" => ''
 			);
-			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
+			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}' AND pid='0'");
 		}
 
 		if($visible == 1)

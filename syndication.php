@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -110,7 +110,7 @@ $feedgenerator->set_feed_format($mybb->input['type']);
 $channel = array(
     "title" => $title,
     "link" => $mybb->settings['bburl']."/",
-    "date" => time(),
+    "date" => TIME_NOW,
     "description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
 );
 $feedgenerator->set_channel($channel);

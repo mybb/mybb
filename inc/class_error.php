@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -23,12 +23,6 @@ define("MYBB_SQL_LOAD_ERROR", 44);
 define("MYBB_CACHE_NO_WRITE", 45);
 define("MYBB_CACHEHANDLER_LOAD_ERROR", 46);
 
-if(!defined("E_STRICT"))
-{
-	// This constant has been defined since PHP 5.
-	define("E_STRICT", 2048);
-}
-
 if(!defined("E_RECOVERABLE_ERROR"))
 {
 	// This constant has been defined since PHP 5.2.
@@ -41,6 +35,12 @@ if(!defined("E_DEPRECATED"))
 	define("E_DEPRECATED", 8192);
 }
 
+if(!defined("E_USER_DEPRECATED"))
+{
+	// This constant has been defined since PHP 5.3.
+	define("E_USER_DEPRECATED", 16384);
+}
+
 class errorHandler {
 
 	/**
@@ -49,29 +49,30 @@ class errorHandler {
 	 * @var array
 	 */
 	public $error_types = array(
-		E_ERROR              => 'Error',
-		E_WARNING            => 'Warning',
-		E_PARSE              => 'Parsing Error',
-		E_NOTICE             => 'Notice',
-		E_CORE_ERROR         => 'Core Error',
-		E_CORE_WARNING       => 'Core Warning',
-		E_COMPILE_ERROR      => 'Compile Error',
-		E_COMPILE_WARNING    => 'Compile Warning',
-		E_DEPRECATED		 => 'Deprecated Warning',
-		E_USER_ERROR         => 'User Error',
-		E_USER_WARNING       => 'User Warning',
-		E_USER_NOTICE        => 'User Notice',
-		E_STRICT             => 'Runtime Notice',
-		E_RECOVERABLE_ERROR  => 'Catchable Fatal Error',
-		MYBB_SQL 			 => 'MyBB SQL Error',
-		MYBB_TEMPLATE		 => 'MyBB Template Error',
-		MYBB_GENERAL		 => 'MyBB Error',
-		MYBB_NOT_INSTALLED	 => 'MyBB Error',
-		MYBB_NOT_UPGRADED 	 => 'MyBB Error',
-		MYBB_INSTALL_DIR_EXISTS => 'MyBB Error',
-		MYBB_SQL_LOAD_ERROR  => 'MyBB Error',
-		MYBB_CACHE_NO_WRITE  => 'MyBB Error',
-		MYBB_CACHEHANDLER_LOAD_ERROR => 'MyBB Error',
+		E_ERROR							=> 'Error',
+		E_WARNING						=> 'Warning',
+		E_PARSE							=> 'Parsing Error',
+		E_NOTICE						=> 'Notice',
+		E_CORE_ERROR					=> 'Core Error',
+		E_CORE_WARNING					=> 'Core Warning',
+		E_COMPILE_ERROR					=> 'Compile Error',
+		E_COMPILE_WARNING				=> 'Compile Warning',
+		E_DEPRECATED					=> 'Deprecated Warning',
+		E_USER_ERROR					=> 'User Error',
+		E_USER_WARNING					=> 'User Warning',
+		E_USER_NOTICE					=> 'User Notice',
+		E_USER_DEPRECATED	 			=> 'User Deprecated Warning',
+		E_STRICT						=> 'Runtime Notice',
+		E_RECOVERABLE_ERROR				=> 'Catchable Fatal Error',
+		MYBB_SQL 						=> 'MyBB SQL Error',
+		MYBB_TEMPLATE					=> 'MyBB Template Error',
+		MYBB_GENERAL					=> 'MyBB Error',
+		MYBB_NOT_INSTALLED				=> 'MyBB Error',
+		MYBB_NOT_UPGRADED				=> 'MyBB Error',
+		MYBB_INSTALL_DIR_EXISTS			=> 'MyBB Error',
+		MYBB_SQL_LOAD_ERROR				=> 'MyBB Error',
+		MYBB_CACHE_NO_WRITE				=> 'MyBB Error',
+		MYBB_CACHEHANDLER_LOAD_ERROR	=> 'MyBB Error',
 	);
 
 	/**
@@ -129,6 +130,7 @@ class errorHandler {
 		{
 			$error_types = $error_types & ~$bit;
 		}
+		error_reporting($error_types);
 		set_error_handler(array(&$this, "error"), $error_types);
 	}
 
@@ -508,30 +510,30 @@ class errorHandler {
 			$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 
 			echo <<<EOF
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$mybb->settings['bbname']} - Internal Error</title>
 	<style type="text/css">
-		body { background: #efefef; color: #000; font-family: Verdana; font-size: 12px; text-align: center; line-height: 1.4; }
+		body { background: #efefef; color: #000; font-family: Tahoma,Verdana,Arial,Sans-Serif; font-size: 12px; text-align: center; line-height: 1.4; }
 		a:link { color: #026CB1; text-decoration: none;	}
 		a:visited {	color: #026CB1;	text-decoration: none; }
 		a:hover, a:active {	color: #000; text-decoration: underline; }
-		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; }
+		#container { width: 600px; padding: 20px; background: #fff;	border: 1px solid #e4e4e4; margin: 100px auto; text-align: left; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
 		h1 { margin: 0; background: url({$_SERVER['PHP_SELF']}?action=mybb_logo) no-repeat;	height: 82px; width: 248px; }
-		#content { border: 1px solid #B60101; background: #fff; }
-		h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		#content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; }
 		.invisible { display: none; }
 		#error { padding: 6px; }
-		#footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		#footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
 		dt { font-weight: bold; }
 	</style>
 </head>
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="http://mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="http://www.mybb.com/" title="MyBB"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -539,7 +541,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
+				<p id="footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -551,17 +553,20 @@ EOF;
 		{
 			echo <<<EOF
 	<style type="text/css">
-		#mybb_error_content { border: 1px solid #B60101; background: #fff; }
-		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		#mybb_error_content { border: 1px solid #026CB1; background: #fff; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+		#mybb_error_content a:link { color: #026CB1; text-decoration: none;	}
+		#mybb_error_content a:visited {	color: #026CB1;	text-decoration: none; }
+		#mybb_error_content a:hover, a:active {	color: #000; text-decoration: underline; }
+		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #026CB1; color: #fff; margin: 0; border-bottom: none; }
 		#mybb_error_error { padding: 6px; }
-		#mybb_error_footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		#mybb_error_footer { font-size: 12px; border-top: 1px dotted #DDDDDD; padding-top: 10px; }
 		#mybb_error_content dt { font-weight: bold; }
 	</style>
 	<div id="mybb_error_content">
 		<h2>{$title}</h2>
 		<div id="mybb_error_error">
 		{$error_message}
-			<p id="mybb_error_footer">Please contact the <a href="http://mybb.com">MyBB Group</a> for support.</p>
+			<p id="mybb_error_footer">Please contact the <a href="http://www.mybb.com">MyBB Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;

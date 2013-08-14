@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -37,9 +37,9 @@ class installerOutput {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>$this->title &gt; $title</title>
+	<title>{$this->title} &gt; {$title}</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
-	<script type="text/javascript" src="../jscripts/prototype.js"></script>
+	<script type="text/javascript" src="../jscripts/jquery.js"></script>
 	<script type="text/javascript" src="../jscripts/general.js"></script>
 	{$dbconfig_add}
 </head>
@@ -57,7 +57,7 @@ END;
 			<h1><span class="invisible">MyBB</span></h1>
 		</div>
 		<div id="inner_container">
-		<div id="header">$this->title</div>
+		<div id="header">{$this->title}</div>
 END;
 		if($mybb->version_code >= 1700 && $mybb->version_code < 1800)
 		{
@@ -75,11 +75,11 @@ END;
 				{
 					if($action == $mybb->input['action'])
 					{
-						echo "				<li class=\"{$action} active\"><strong>$step</strong></li>\n";
+						echo "				<li class=\"{$action} active\"><strong>{$step}</strong></li>\n";
 					}
 					else
 					{
-						echo "				<li class=\"{$action}\">$step</li>\n";
+						echo "				<li class=\"{$action}\">{$step}</li>\n";
 					}
 				}
 				echo "			</ul>";
@@ -94,7 +94,7 @@ END;
 		if($title != "")
 		{
 		echo <<<END
-			<h2 class="$image">$title</h2>\n
+			<h2 class="{$image}">{$title}</h2>\n
 END;
 		}
 	}
@@ -124,7 +124,7 @@ END;
 		global $lang, $footer_extra;
 		if($nextact && $this->openedform)
 		{
-			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
+			echo "\n			<input type=\"hidden\" name=\"action\" value=\"{$nextact}\" />";
 			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
 			$formend = "</form>";
 		}
@@ -141,13 +141,13 @@ END;
 		$copyyear = date('Y');
 		echo <<<END
 			<div id="copyright">
-				MyBB &copy; 2002-$copyyear MyBB Group
+				MyBB &copy; 2002-{$copyyear} MyBB Group
 			</div>
 		</div>
 		</div>
 		</div>
-		$formend
-		$footer_extra
+		{$formend}
+		{$footer_extra}
 </body>
 </html>
 END;

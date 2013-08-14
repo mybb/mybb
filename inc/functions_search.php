@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -823,7 +823,7 @@ function perform_search_mysql($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if($search['forums'] != "all")
+	if($search['forums'][0] != "all")
 	{
 		if(!is_array($search['forums']))
 		{
@@ -1200,7 +1200,7 @@ function perform_search_mysql_ft($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if($search['forums'] != "all")
+	if($search['forums'][0] != "all")
 	{
 		if(!is_array($search['forums']))
 		{

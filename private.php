@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
+$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";
@@ -196,12 +196,12 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 	{
 		error($lang->error_no_search_support);
 	}
-	$sid = md5(uniqid(microtime(), 1));
+	$sid = md5(uniqid(microtime(), true));
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
 		"dateline" => TIME_NOW,
-		"ipaddress" => $db->escape_string($session->ipaddress),
+		"ipaddress" => escape_binary($session->packedip),
 		"threads" => '',
 		"posts" => '',
 		"resulttype" => $resulttype,
@@ -574,7 +574,8 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"icon" => $mybb->input['icon'],
 		"fromid" => $mybb->user['uid'],
 		"do" => $mybb->input['do'],
-		"pmid" => $mybb->input['pmid']
+		"pmid" => $mybb->input['pmid'],
+		"ipaddress" => $session->packedip
 	);
 
 	// Split up any recipients we have
@@ -1935,6 +1936,45 @@ if(!$mybb->input['action'])
 		$sender = $lang->sender;
 	}
 
+	$mybb->input['order'] = htmlspecialchars_uni($mybb->input['order']);
+
+	switch(my_strtolower($mybb->input['order']))
+	{
+		case "asc":
+			$sortordernow = "asc";
+			$ordersel['asc'] = "selected=\"selected\"";
+			$oppsort = $lang->desc;
+			$oppsortnext = "desc";
+			break;
+		default:
+			$sortordernow = "desc";
+			$ordersel['desc'] = "selected=\"selected\"";
+			$oppsort = $lang->asc;
+			$oppsortnext = "asc";
+			break;
+	}
+
+	// Sort by which field?
+	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
+	switch($mybb->input['sortby'])
+	{
+		case "subject":
+			$sortfield = "subject";
+			break;
+		case "username":
+			$sortfield = "username";
+			break;
+		default:
+			$sortby = "dateline";
+			$sortfield = "dateline";
+			$mybb->input['sortby'] = "dateline";
+			break;
+	}
+
+	$sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
+
+	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
+
 	// Do Multi Pages
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
 	$pmscount = $db->fetch_array($query);
@@ -1965,7 +2005,17 @@ if(!$mybb->input['action'])
 	{
 		$upper = $threadcount;
 	}
-	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?fid=$folder");
+
+	if($mybb->input['order'] || $mybb->input['sortby'] && $sortby != "dateline")
+	{
+		$page_url = "private.php?fid={$folder}&sortby={$mybb->input['sortby']}&order={$mybb->input['order']}";
+	}
+	else
+	{
+		$page_url = "private.php?fid={$folder}";
+	}
+
+	$multipage = multipage($pmscount['total'], $perpage, $page, $page_url);
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -1973,9 +2023,25 @@ if(!$mybb->input['action'])
 	// Cache users in multiple recipients for sent & drafts folder
 	if($folder == 2 || $folder == 3)
 	{
+		if($sortfield == "username")
+		{
+			$u = "u.";
+		}
+		else
+		{
+			$u = "pm.";
+		}
+
 		// Get all recipients into an array
 		$cached_users = $get_users = array();
-		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $perpage, 'order_by' => 'dateline', 'order_dir' => 'DESC'));
+		$users_query = $db->query("
+			SELECT pm.recipients
+			FROM ".TABLE_PREFIX."privatemessages pm
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
+			WHERE pm.folder='{$folder}' AND pm.uid='{$mybb->user['uid']}'
+			ORDER BY {$u}{$sortfield} {$mybb->input['order']}
+			LIMIT {$start}, {$perpage}
+		");
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = unserialize($row['recipients']);
@@ -2003,13 +2069,36 @@ if(!$mybb->input['action'])
 		}
 	}
 
+	if($folder == 2 || $folder == 3)
+	{
+		if($sortfield == "username")
+		{
+			$pm = "tu.";
+		}
+		else
+		{
+			$pm = "pm.";
+		}
+	}
+	else
+	{
+		if($sortfield == "username")
+		{
+			$pm = "fu.";
+		}
+		else
+		{
+			$pm = "pm.";
+		}
+	}
+
 	$query = $db->query("
 		SELECT pm.*, fu.username AS fromusername, tu.username as tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
 		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
-		ORDER BY pm.dateline DESC
+		ORDER BY {$pm}{$sortfield} {$sortordernow}
 		LIMIT $start, $perpage
 	");
 

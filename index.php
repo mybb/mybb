@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -12,7 +12,7 @@
 define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
-$templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators,forumbit_subforums";
+$templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators,forumbit_subforums";
 $templatelist .= ",index_birthdays_birthday,index_birthdays,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
 
 require_once './global.php';
@@ -284,7 +284,7 @@ if($mybb->settings['showindexstats'] != 0)
 	// Check who's the newest member.
 	if(!$stats['lastusername'])
 	{
-		$newestmember = 'no-one';
+		$newestmember = $lang->nobody;;
 	}
 	else
 	{

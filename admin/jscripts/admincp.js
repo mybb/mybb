@@ -9,15 +9,14 @@ var AdminCP = {
 		confirmReturn = confirm(message);
 		if(confirmReturn == true)
 		{
-			form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", element.href);
-			form.setAttribute("style", "display: none;");
-			document.getElementsByTagName("body")[0].appendChild(form);
+			form = $("<form />", { method: "post", action: element.href, style: "display: none;" });
+			$("body").append(form);
 			form.submit();
 		}
 		return false;
 	}
 };
 
-Event.observe(window, 'load', AdminCP.init);
+$(function() {
+	AdminCP.init();
+});

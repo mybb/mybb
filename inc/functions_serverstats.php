@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -248,14 +248,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	}
 
 	// We need a unique ID for the host so hash it to keep it private and send it over
-	if($_SERVER['HTTP_HOST'] == "localhost")
-	{
-		$id = $_SERVER['HTTP_HOST'].time();
-	}
-	else
-	{
-		$id = $_SERVER['HTTP_HOST'];
-	}
+	$id = $_SERVER['HTTP_HOST'].time();
 
 	if(function_exists('sha1'))
 	{

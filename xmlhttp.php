@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -28,9 +28,6 @@ define('THIS_SCRIPT', 'xmlhttp.php');
 
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";
-
-$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
-$templates->cache($db->escape_string($templatelist));
 
 $shutdown_queries = array();
 
@@ -77,12 +74,19 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 }
 else
 {
-	$loadstyle = "def=1";
+	$loadstyle = "def='1'";
 }
 
 // Load basic theme information that we could be needing.
-$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
-$theme = $db->fetch_array($query);
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		$cache->update_default_theme();
+	}
+	$theme = $cache->read('default_theme');
+}
+
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
@@ -101,6 +105,9 @@ else
 		$theme['imglangdir'] = $theme['imgdir'];
 	}
 }
+
+$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
+$templates->cache($db->escape_string($templatelist));
 
 if($lang->settings['charset'])
 {
@@ -129,7 +136,7 @@ if($mybb->input['action'] == "get_users")
 	}
 
 	// Send our headers.
-	header("Content-type: text/plain; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 
 	// Sanitize the input.
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
@@ -143,46 +150,15 @@ if($mybb->input['action'] == "get_users")
 	);
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
+	$data = array();
 	while($user = $db->fetch_array($query))
 	{
 		$user['username'] = htmlspecialchars_uni($user['username']);
-		// Send the result to the browser for this user.
-		echo "<div>\n";
-		echo "<span class=\"username\">{$user['username']}</span>\n";
-		echo "</div>\n";
-	}
-}
-else if($mybb->input['action'] == "get_usergroups")
-{
-	// If the string is less than 3 characters, quit.
-	if(my_strlen($mybb->input['query']) < 3)
-	{
-		exit;
+		$data[] = $user['username'];
 	}
 
-	// Send our headers.
-	header("Content-type: text/plain; charset={$charset}");
-
-	// Sanitize the input.
-	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
-
-	// Query for any matching usergroups.
-	$query_options = array(
-		"order_by" => "title",
-		"order_dir" => "asc",
-		"limit_start" => 0,
-		"limit" => 15
-	);
-
-	$query = $db->simple_select("usergroups", "gid, title", "title LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
-	while($group = $db->fetch_array($query))
-	{
-		$group['title'] = htmlspecialchars_uni($group['title']);
-		// Send the result to the browser for this usergroup.
-		echo "<div>\n";
-		echo "<span class=\"usergroup\">{$group['title']} ({$lang->usergroup} {$group['gid']})</span>\n";
-		echo "</div>\n";
-	}
+	echo json_encode(array("users" => $data));
+	exit;
 }
 // This action provides editing of thread/post subjects from within their respective list pages.
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
@@ -295,8 +271,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	if(!$posthandler->validate_post())
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-		$errors = implode("\n\n", $post_errors);
-		xmlhttp_error($errors);
+		xmlhttp_error($post_errors);
 	}
 	// No errors were found, we can call the update method.
 	else
@@ -317,12 +292,13 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	$parser = new postParser;
 
 	// Send our headers.
-	header("Content-type: text/plain; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 
 	$mybb->input['value'] = $parser->parse_badwords($mybb->input['value']);
 
 	// Spit the subject back to the browser.
-	echo substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
+	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
+	echo json_encode(array("subject" => $subject));
 
 	// Close the connection.
 	exit;
@@ -377,14 +353,13 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			xmlhttp_error($lang->post_moderation);
 		}
-	}
 
-	// Forum is closed - no editing allowed (for anyone)
-	if($forum['open'] == 0)
-	{
-		xmlhttp_error($lang->no_permission_edit_post);
+		// Forum is closed - no editing allowed
+		if($forum['open'] == 0)
+		{
+			xmlhttp_error($lang->no_permission_edit_post);
+		}
 	}
-
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.
@@ -440,8 +415,7 @@ else if($mybb->input['action'] == "edit_post")
 		if(!$posthandler->validate_post())
 		{
 			$post_errors = $posthandler->get_friendly_errors();
-			$errors = implode("\n\n", $post_errors);
-			xmlhttp_error($errors);
+			xmlhttp_error($post_errors);
 		}
 		// No errors were found, we can call the update method.
 		else
@@ -450,9 +424,7 @@ else if($mybb->input['action'] == "edit_post")
 			$visible = $postinfo['visible'];
 			if($visible == 0 && !is_moderator($post['fid']))
 			{
-				echo "<p>\n";
-				echo $lang->post_moderation;
-				echo "</p>\n";
+				echo json_encode(array("failed" => $lang->post_moderation));
 				exit;
 			}
 		}
@@ -499,12 +471,16 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		// Send our headers.
-		header("Content-type: text/plain; charset={$charset}");
-		echo $post['message']."\n";
+		header("Content-type: application/json; charset={$charset}");
+
+		$editedmsg_response = null;
 		if($editedmsg)
 		{
-			echo str_replace(array("\r", "\n"), "", "<editedmsg>{$editedmsg}</editedmsg>");
+			$editedmsg_response = str_replace(array("\r", "\n"), "", $editedmsg);
 		}
+
+		echo json_encode(array("message" => $post['message']."\n", "editedmsg" => $editedmsg_response));
+		exit;
 	}
 }
 // Fetch the list of multiquoted posts which are not in a specific thread
@@ -601,29 +577,30 @@ else if($mybb->input['action'] == "refresh_captcha")
 		"dateline" => TIME_NOW
 	);
 	$db->insert_query("captcha", $regimagearray);
-	header("Content-type: text/plain; charset={$charset}");
-	echo $imagehash;
+	header("Content-type: application/json; charset={$charset}");
+	echo json_encode(array("imagehash" => $imagehash));
+	exit;
 }
 else if($mybb->input['action'] == "validate_captcha")
 {
-	header("Content-type: text/xml; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 	$imagehash = $db->escape_string($mybb->input['imagehash']);
 	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
-		echo "<fail>{$lang->captcha_valid_not_exists}</fail>";
+		echo json_encode(array("fail" => $lang->captcha_valid_not_exists));
 		exit;
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
 
 	if(my_strtolower($imagestring) == my_strtolower($mybb->input['value']))
 	{
-		echo "<success>{$lang->captcha_matches}</success>";
+		echo json_encode(array("success" => $lang->captcha_matches));
 		exit;
 	}
 	else
 	{
-		echo "<fail>{$lang->captcha_does_not_match}</fail>";
+		echo json_encode(array("fail" => $lang->captcha_does_not_match));
 		exit;
 	}
 }
@@ -632,15 +609,15 @@ else if($mybb->input['action'] == "complex_password")
 	$password = trim($mybb->input['value']);
 	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
-	header("Content-type: text/xml; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 	if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $password))
 	{
-		echo "<fail>{$lang->complex_password_fails}</fail>";
+		echo json_encode(array("fail" => $lang->complex_password_fails));
 	}
 	else
 	{
 		// Return nothing but an OK password if passes regex
-		echo "<success></success>";
+		echo json_encode(array("success" => 1));
 	}
 
 	exit;
@@ -662,11 +639,11 @@ else if($mybb->input['action'] == "username_availability")
 	// Remove multiple spaces from the username
 	$username = preg_replace("#\s{2,}#", " ", $username);
 
-	header("Content-type: text/xml; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 
 	if(empty($username))
 	{
-		echo "<fail>{$lang->banned_characters_username}</fail>";
+		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;
 	}
 
@@ -674,14 +651,14 @@ else if($mybb->input['action'] == "username_availability")
 	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
-		echo "<fail>{$lang->banned_username}</fail>";
+		echo json_encode(array("fail" => $lang->banned_username));
 		exit;
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
 	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
 	{
-		echo "<fail>{$lang->banned_characters_username}</fail>";
+		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;
 	}
 
@@ -692,13 +669,13 @@ else if($mybb->input['action'] == "username_availability")
 	if($user['uid'])
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
-		echo "<fail>{$lang->username_taken}</fail>";
+		echo json_encode(array("fail" => $lang->username_taken));
 		exit;
 	}
 	else
 	{
 		$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo "<success>{$lang->username_available}</success>";
+		echo json_encode(array("success" => $lang->username_available));
 		exit;
 	}
 }
@@ -712,11 +689,11 @@ else if($mybb->input['action'] == "username_exists")
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->input['value'];
 
-	header("Content-type: text/xml; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 
 	if(!trim($username))
 	{
-		echo "<success></success>";
+		echo json_encode(array("success" => 1));
 		exit;
 	}
 
@@ -727,13 +704,13 @@ else if($mybb->input['action'] == "username_exists")
 	if($user['uid'])
 	{
 		$lang->valid_username = $lang->sprintf($lang->valid_username, htmlspecialchars_uni($username));
-		echo "<success>{$lang->valid_username}</success>";
+		echo json_encode(array("success" => $lang->valid_username));
 		exit;
 	}
 	else
 	{
 		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
-		echo "<fail>{$lang->invalid_username}</fail>";
+		echo json_encode(array("fail" => $lang->invalid_username));
 		exit;
 	}
 }
@@ -786,12 +763,26 @@ function xmlhttp_error($message)
 	global $charset;
 
 	// Send our headers.
-	header("Content-type: text/xml; charset={$charset}");
+	header("Content-type: application/json; charset={$charset}");
 
-	// Send the error message.
-	echo "<error>".$message."</error>";
+	// Do we have an array of messages?
+	if(is_array($message))
+	{
+		$response = array();
+		foreach($message as $error)
+		{
+			$response[] = $error;
+		}
 
-	// Exit
+		// Send the error messages.
+		echo json_encode(array("errors" => array($response)));
+
+		exit;
+	}
+
+	// Just a single error? Send it along.
+	echo json_encode(array("errors" => array($message)));
+
 	exit;
 }
 

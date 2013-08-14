@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -122,9 +122,9 @@ $valid = array(
 	'showthread.php',
 	'forumdisplay.php',
 	'newthread.php',
-	'ewreply.php',
+	'newreply.php',
 	'ratethread.php',
-	'ditpost.php',
+	'editpost.php',
 	'polls.php',
 	'sendthread.php',
 	'printthread.php',
@@ -185,12 +185,18 @@ if(isset($style['style']) && $style['style'] > 0)
 // After all of that no theme? Load the board default
 if(empty($loadstyle))
 {
-	$loadstyle = "def = '1'";
+	$loadstyle = "def='1'";
 }
 
-// Fetch the theme to load from the database
-$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
-$theme = $db->fetch_array($query);
+// Fetch the theme to load from the cache
+if($loadstyle == "def='1'")
+{
+	if(!$cache->read('default_theme'))
+	{
+		$cache->update_default_theme();
+	}
+	$theme = $cache->read('default_theme');
+}
 
 // No theme was found - we attempt to load the master or any other theme
 if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
@@ -244,10 +250,13 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
-				if ($mybb->settings['minifycss']) {
+				if($mybb->settings['minifycss'])
+				{
 					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
 					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
-				} else {
+				}
+				else
+				{
 					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
 				}
 				$already_loaded[$page_stylesheet] = 1;
@@ -653,11 +662,11 @@ if(is_banned_ip($session->ipaddress, true))
 {
 	if($mybb->user['uid'])
     {
-		$db->delete_query('sessions', "ip = '".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
+		$db->delete_query('sessions', "ip = X'".escape_binary($session->packedip)."' OR uid='{$mybb->user['uid']}'");
     }
     else
     {
-		$db->delete_query('sessions', "ip = '".$db->escape_string($session->ipaddress)."'");
+		$db->delete_query('sessions', "ip = X'".escape_binary($session->packedip)."'");
     }
 	error($lang->error_banned);
 }

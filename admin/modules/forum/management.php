@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "editmod")
 			$forum = get_forum($fid);
 			if($mod_data['isgroup'])
 			{
-				$mod = $mybb->usergroups[$mod_data['id']];
+				$mod = $groupscache[$mod_data['id']];
 			}
 			else
 			{
@@ -849,7 +849,6 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 
 	$page->add_breadcrumb_item($lang->add_forum);
@@ -1415,7 +1414,6 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
@@ -1822,7 +1820,7 @@ if($mybb->input['action'] == "deletemod")
 	if($mybb->request_method == "post")
 	{
 		$mid = $mod['mid'];
-		if ($mybb->input['isgroup'])
+		if($mybb->input['isgroup'])
 		{
 			$query = $db->query("
 				SELECT m.*, g.title
@@ -1858,13 +1856,13 @@ if($mybb->input['action'] == "deletemod")
 		$forum = get_forum($fid);
 
 		// Log admin action
-		if ($isgroup)
+		if($isgroup)
 		{
-			log_admin_action($mod['id'], $mod['title'], $forum['fid'], $forum['name']);
+			log_admin_action($mid, $mod['title'], $forum['fid'], $forum['name']);
 		}
 		else
 		{
-			log_admin_action($mod['id'], $mod['username'], $forum['fid'], $forum['name']);
+			log_admin_action($mid, $mod['username'], $forum['fid'], $forum['name']);
 		}
 
 		flash_message($lang->success_moderator_deleted, 'success');
@@ -2144,7 +2142,7 @@ if(!$mybb->input['action'])
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
 
 					// Log admin action
-					log_admin_action('addmod', $new_mod['fid'], $newmod['name'], $fid, $forum['name']);
+					log_admin_action('addmod', $mid, $newmod['name'], $fid, $forum['name']);
 
 					flash_message($lang->success_moderator_added, 'success');
 					admin_redirect("index.php?module=forum-management&action=editmod&mid={$mid}");
@@ -2183,7 +2181,6 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop,controls\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
 	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
@@ -2483,14 +2480,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			if($moderator['isgroup'])
 			{
-				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/group.gif\" alt=\"{$lang->group}\" title=\"{$lang->group}\" />";
+				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/group.png\" alt=\"{$lang->group}\" title=\"{$lang->group}\" />";
 				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$moderator['id']}\">".htmlspecialchars_uni($moderator['title'])." ({$lang->usergroup} {$moderator['id']})</a>");
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=deletemod&amp;id={$moderator['id']}&amp;isgroup=1&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/user.gif\" alt=\"{$lang->user}\" title=\"{$lang->user}\" />";
+				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/user.png\" alt=\"{$lang->user}\" title=\"{$lang->user}\" />";
 				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$moderator['id']}\">".htmlspecialchars_uni($moderator['username'])."</a>");
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=deletemod&amp;id={$moderator['id']}&amp;isgroup=0&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
@@ -2540,10 +2537,19 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		// Autocompletion for usernames
 		echo '
-		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=1400"></script>
+		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
-			new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+	        $("#username").typeahead({
+	            name: \'username\',
+	            remote: {
+	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+	                filter: function(response){
+	                	return response.users;
+	                },
+	            },
+	            limit: 10
+	        });
 		// -->
 		</script>';
 

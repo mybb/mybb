@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -169,6 +169,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['author'] = $post['uid'];
+	$post['subject_title'] = $post['subject'];
 
 	// Get the usergroup
 	if($post['userusername'])
@@ -328,25 +329,15 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if(validate_website_format($post['website']))
+		if($post['website'] != "")
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
 		}
 		else
 		{
-			$post['website'] = $post['button_www'] = '';
+			$post['button_www'] = "";
 		}
-
-		$post['icq'] = (int)$post['icq'];
-		if(!$post['icq'])
-		{
-			$post['icq'] = '';
-		}
-
-		$post['msn'] = htmlspecialchars_uni($post['msn']);
-		$post['aim'] = htmlspecialchars_uni($post['aim']);
-		$post['yahoo'] = htmlspecialchars_uni($post['yahoo']);
 
 		if($post['hideemail'] != 1 && $mybb->usergroup['cansendemail'] == 1)
 		{
@@ -394,7 +385,6 @@ function build_postbit($post, $post_type=0)
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
-		$post['username'] = $post['username'];
 		$post['profilelink'] = format_name($post['username'], 1);
 
 		if($usergroup['usertitle'])
@@ -507,6 +497,7 @@ function build_postbit($post, $post_type=0)
 			$post['inlinecheck'] = "";
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+		$post_number = my_number_format($postcounter);
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 

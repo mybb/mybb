@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -36,6 +36,12 @@ if($mybb->input['action'] == 'prune')
 
 	if($mybb->request_method == 'post')
 	{
+		$is_today = false;
+		if($mybb->input['older_than'] <= 0)
+		{
+			$is_today = true;
+			$mybb->input['older_than'] = 1;
+		}
 		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
 
 		// Searching for entries by a particular user
@@ -48,6 +54,10 @@ if($mybb->input['action'] == 'prune')
 		if($mybb->input['fid'] > 0)
 		{
 			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
+		}
+		else
+		{
+			$mybb->input['fid'] = 0;
 		}
 
 		$db->delete_query("moderatorlog", $where);
@@ -63,7 +73,17 @@ if($mybb->input['action'] == 'prune')
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['fid'], $num_deleted, $forum_cache[$mybb->input['fid']]['name']);
 
-		flash_message($lang->success_pruned_mod_logs, 'success');
+		$success = $lang->success_pruned_mod_logs;
+		if($is_today == true && $num_deleted > 0)
+		{
+			$success .= ' '.$lang->note_logs_locked;
+		}
+		elseif($is_today == true && $num_deleted == 0)
+		{
+			flash_message($lang->note_logs_locked, 'error');
+			admin_redirect("index.php?module=tools-modlog");
+		}
+		flash_message($success, 'success');
 		admin_redirect("index.php?module=tools-modlog");
 	}
 	$page->add_breadcrumb_item($lang->prune_mod_logs, "index.php?module=tools-modlog&amp;action=prune");
@@ -213,7 +233,7 @@ if(!$mybb->input['action'])
 	{
 		$information = '';
 		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
@@ -243,7 +263,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($logitem['dateline'], array("class" => "align_center"));
 		$table->construct_cell($logitem['action'], array("class" => "align_center"));
 		$table->construct_cell($information);
-		$table->construct_cell($logitem['ipaddress'], array("class" => "align_center"));
+		$table->construct_cell(my_inet_ntop($logitem['ipaddress']), array("class" => "align_center"));
 		$table->construct_row();
 	}
 

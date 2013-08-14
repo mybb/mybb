@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -396,7 +396,7 @@ if($mybb->input['action'] == "add")
 		if($mybb->settings['neurep'])
 		{
 			$neutral_title = $lang->power_neutral;
-			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"$('reputation').className='reputation_neutral'\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
+			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"\$('#reputation').attr('class', 'reputation_neutral')\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
 		}
 
 		for($i = 1; $i <= $reputationpower; ++$i)
@@ -404,13 +404,13 @@ if($mybb->input['action'] == "add")
 			if($mybb->settings['posrep'])
 			{
 				$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
-				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
+				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"\$('#reputation').attr('class', 'reputation_positive')\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
 			}
 
 			if($mybb->settings['negrep'])
 			{
 				$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
-				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
+				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"\$('#reputation').attr('class', 'reputation_negative')\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 			}
 		}
 
@@ -835,6 +835,7 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date);
 
 		// Is this rating specific to a post?
+		$postrep_given = '';
 		if($reputation_vote['pid'])
 		{
 			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
@@ -847,24 +848,23 @@ if(!$mybb->input['action'])
 				$thread_link = get_thread_link($post['tid']);
 				$subject = htmlspecialchars_uni($post['subject']);
 
-				$thread_link = $lang->sprintf($lang->postrep_given_thread, "<a href=\"{$thread_link}\">{$subject}</a>");
+				$thread_link = $lang->sprintf($lang->postrep_given_thread, $thread_link, $subject);
 			}
 
 			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
 		}
-		else
-		{
-			$postrep_given = '';
-		}
 
 		// Does the current user have permission to delete this reputation? Show delete link
+		$delete_link = '';
 		if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
-			$delete_link = "[<a href=\"reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}\" onclick=\"MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;\">{$lang->delete_vote}</a>]";
+			eval("\$delete_link = \"".$templates->get("reputation_vote_delete")."\";");
 		}
-		else
+
+		$report_link = '';
+		if($mybb->user['uid'] != 0)
 		{
-			$delete_link = '';
+			eval("\$report_link = \"".$templates->get("reputation_vote_report")."\";");
 		}
 
 		// Parse smilies in the reputation vote

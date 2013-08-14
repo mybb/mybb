@@ -1,10 +1,10 @@
 <?php
 /**
- * MyBB 1.6
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
- * Website: http://mybb.com
- * License: http://mybb.com/about/license
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
  *
  * $Id$
  */
@@ -226,7 +226,7 @@ class CustomModeration extends Moderation
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $post_options['splitpostsaddreply'],
-						"ipaddress" => $db->escape_string(get_ip()),
+						"ipaddress" => escape_binary(my_inet_pton(get_ip())),
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
@@ -328,6 +328,19 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_status($tids);
 			}
 
+			if($thread_options['stickthread'] == 'stick') // Stick thread
+			{
+				$this->stick_threads($tids);
+			}
+			elseif($thread_options['stickthread'] == 'unstick') // Unstick thread
+			{
+				$this->unstick_threads($tids);
+			}
+			elseif($thread_options['stickthread'] == 'toggle') // Toggle thread importance
+			{
+				$this->toggle_thread_importance($tids);
+			}
+
 			if($thread_options['threadprefix'] != '-1')
 			{
 				$this->apply_thread_prefix($tids, $thread_options['threadprefix']); // Update thread prefix
@@ -367,7 +380,7 @@ class CustomModeration extends Moderation
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $thread_options['addreply'],
-						"ipaddress" => $db->escape_string(get_ip()),
+						"ipaddress" => escape_binary(my_inet_pton(get_ip())),
 					);
 
 					// Set up the post options from the input.

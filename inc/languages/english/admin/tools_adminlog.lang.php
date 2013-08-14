@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -39,6 +39,7 @@ $l['in'] = "in";
 $l['order'] = "order";
 
 $l['success_pruned_admin_logs'] = "The administrator logs have been pruned successfully.";
+$l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
@@ -182,14 +183,14 @@ $l['admin_log_style_themes_export'] = "Exported theme #{1} ({2})";
 $l['admin_log_tools_system_health_utf8_conversion'] = "Converted table {1} to UTF-8 Character Set.";
 
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
-$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
+$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user #{2}";
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";
-$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user {2} and module {3}";
+$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user #{2} and module {3}";
 
 $l['admin_log_tools_modlog_prune'] = "Pruned {4} moderator logs older than {1} days";
-$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user {2}";
+$l['admin_log_tools_modlog_prune_user'] = "Pruned {4} moderator logs older than {1} days for user #{2}";
 $l['admin_log_tools_modlog_prune_forum'] = "Pruned {4} moderator logs older than {1} days for forum #{3} ({5})";
-$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user {2} and forum #{5} ({4})";
+$l['admin_log_tools_modlog_prune_user_forum'] = "Pruned {4} moderator logs older than {1} days for user #{2} and forum #{3} ({5})";
 
 $l['admin_log_tools_backupdb_dlbackup'] = "Downloaded an existing backup: {1}";
 $l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";
@@ -197,6 +198,7 @@ $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
 $l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
+$l['admin_log_tools_cache_rebuild_all'] = "Rebuilt & reloaded all caches";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
 
@@ -212,6 +214,8 @@ $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum count
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
+$l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
+$l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
@@ -237,7 +241,6 @@ $l['admin_log_user_group_promotions_enable'] = "Enabled group promotion #{1} ({2
 $l['admin_log_user_group_promotions_edit'] = "Edited group promotion #{1} ({2})";
 $l['admin_log_user_group_promotions_add'] = "Added group promotion #{1} ({2})";
 
-$l['admin_log_user_groups_export'] = "Exported usergroups to XML";
 $l['admin_log_user_groups_add_leader'] = "Added user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_delete_leader'] = "Removed user #{1} ({2}) as a leader for usergroup #{3} ({4})";
 $l['admin_log_user_groups_edit_leader'] = "Edited user #{1} ({2}) as a leader for usergroup #{3} ({4})";

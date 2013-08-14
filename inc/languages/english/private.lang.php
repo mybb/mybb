@@ -1,7 +1,7 @@
 <?php
 /**
- * MyBB 1.6 English Language Pack
- * Copyright 2010 MyBB Group, All Rights Reserved
+ * MyBB 1.8 English Language Pack
+ * Copyright 2013 MyBB Group, All Rights Reserved
  *
  * $Id$
  */
@@ -32,6 +32,8 @@ $l['message_title'] = "Message Title";
 $l['sender'] = "Sender";
 $l['sentto'] = "Sent To";
 $l['date_sent'] = "Date/Time Sent";
+$l['desc'] = "desc";
+$l['asc'] = "asc";
 $l['delete_pm'] = "Delete";
 $l['move_to'] = "Move To";
 $l['or'] = "or";
@@ -67,7 +69,6 @@ $l['empty_folders'] = "Empty Private Messaging Folders";
 $l['empty_folders2'] = "Empty Folders";
 $l['empty_note'] = "Here you can delete private messages from selected folders at one time. Simply select the folders you wish the messages to be deleted from and click 'Delete'. You cannot undo these changes.<br /><strong>Note: Once these messages are deleted there is no way to recover them.</strong>";
 $l['num_messages'] = "No. Messages:";
-$l['nobody'] = "Nobody";
 $l['empty_q'] = "Empty?";
 $l['keep_unread'] = "Keep Unread Messages";
 $l['pm_folders'] = "Private Messaging Folders";
