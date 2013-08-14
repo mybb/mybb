@@ -17,10 +17,12 @@ var UserCP = {
 		}
 		if(use_xmlhttprequest == 1)
 		{
-			$.ajax({
-			  url: 'xmlhttp.php?action=get_buddyselect',
-			  async: true,
-	            complete: function (request) {
+			$.ajax(
+			{
+				url: 'xmlhttp.php?action=get_buddyselect',
+				async: true,
+	            complete: function (request)
+	            {
 	                UserCP.buddySelectLoaded(request);
 	            }
 			});
@@ -37,7 +39,8 @@ var UserCP = {
 				var json = $.parseJSON(request.responseText);
 				if(json.hasOwnProperty("errors"))
 				{
-					$.each(json.errors, function(i,message){
+					$.each(json.errors, function(i, message)
+					{
 					  $.jGrowl('There was an error fetching the buddy list. '+message);
 					});
 					return false;
@@ -60,7 +63,8 @@ var UserCP = {
 		else
 		{
 			buddyselect_container.hide();
-			$("#buddyselect_container input:checked").each(function() {
+			$("#buddyselect_container input:checked").each(function()
+			{
 				$(this).attr("checked", false);
 			});
 			$("#buddyselect_buddies").html("");
@@ -76,14 +80,14 @@ var UserCP = {
 		     .remove();
 
 		// Center it on the page
-		$('#buddyselect_container').css("top", "50%")
+		$("#buddyselect_container").css("top", "50%")
 		                           .css("left", "50%")
 		                           .css("position", "fixed")
 		                           .css("display", "block")
-		                           .css("z-index", '1000')
-		                           .css("text-align", 'left')
-                                   .css('margin-left', -$('#buddyselect_container').outerWidth() / 2 + 'px')
-                                   .css('margin-top', -$('#buddyselect_container').outerHeight() / 2 + 'px');
+		                           .css("z-index", "1000")
+		                           .css("text-align", "left")
+                                   .css("margin-left", -$("#buddyselect_container").outerWidth() / 2 + 'px')
+                                   .css("margin-top", -$("#buddyselect_container").outerHeight() / 2 + 'px');
 	},
 
 	selectBuddy: function(uid, username)
@@ -181,19 +185,21 @@ var UserCP = {
 			var list = "buddy";
 		}
 
-		$.ajax({
+		$.ajax(
+		{
 			type: 'post',
 			url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type,
 			data: { ajax: 1, add_username: type_add_username.val() },
 			async: false,
-	        complete: function (request) {
-	         $("#"+list+"_list").html(request.responseText);
-	         type_submit.removeAttr("disabled");
-	         type_add_username.removeAttr("disabled");
-	         type_submit.attr("value", old_value);
-	         type_add_username.val("");
-	         type_add_username.typeahead("setQuery", "");
-	         type_add_username.focus();
+	        complete: function (request)
+	        {
+		        $("#"+list+"_list").html(request.responseText);
+		        type_submit.removeAttr("disabled");
+		        type_add_username.removeAttr("disabled");
+		        type_submit.attr("value", old_value);
+		        type_add_username.val("");
+		        type_add_username.typeahead("setQuery", "");
+		        type_add_username.focus();
 	        }
 		});
 
@@ -217,11 +223,12 @@ var UserCP = {
 			{
 				return true;
 			}
-			$.ajax({
-			  type: 'post',
-			  url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
-			  data: { ajax: 1 },
-			  async: false
+			$.ajax(
+			{
+				type: 'post',
+				url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
+				data: { ajax: 1 },
+				async: false
 			});
 		}
 

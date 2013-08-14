@@ -2,14 +2,17 @@ var Rating = {
 	init: function()
 	{
 		var rating_elements = $(".star_rating");
-		rating_elements.each(function() {
+		rating_elements.each(function()
+		{
 			var rating_element = $(this);
 			var elements = rating_element.find("li a");
 			if(rating_element.hasClass("star_rating_notrated"))
 			{
-				elements.each(function() {
+				elements.each(function()
+				{
 					var element = $(this);
-					element.click(function() {
+					element.click(function()
+					{
 						var parameterString = element.attr("href").replace(/.*\?(.*)/, "$1");
 						return Rating.add_rating(parameterString);
 					});
@@ -17,7 +20,8 @@ var Rating = {
 			}
 			else
 			{
-				elements.each(function() {
+				elements.each(function()
+				{
 					var element = $(this);
 					element.click(function() { return false; });
 					element.css("cursor", "default");
@@ -62,14 +66,16 @@ var Rating = {
 	{
 		var tid = parameterString.match(/tid=(.*)&(.*)&/)[1];
 		var rating = parameterString.match(/rating=(.*)&(.*)/)[1];
-		$.ajax({
+		$.ajax(
+		{
 			url: 'ratethread.php?ajax=1&my_post_key='+my_post_key+'&tid='+tid+'&rating='+rating,
 			async: true,
 			method: 'post',
 			dataType: 'json',
-	          complete: function (request) {
-	          	Rating.rating_added(request, tid);
-	          }
+	        complete: function (request)
+	        {
+	        	Rating.rating_added(request, tid);
+	        }
 		});
 		return false;
 	},
@@ -79,8 +85,9 @@ var Rating = {
 		var json = $.parseJSON(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
-			$.each(json.errors, function(i,error){
-			  $.jGrowl('There was an error performing the update. '+error);
+			$.each(json.errors, function(i, error)
+			{
+				$.jGrowl('There was an error performing the update. '+error);
 			});
 		}
 		else if(json.hasOwnProperty("success"))
@@ -96,14 +103,17 @@ var Rating = {
 			}
 
 			var rating_elements = $(".star_rating");
-			rating_elements.each(function() {
+			rating_elements.each(function()
+			{
 				var rating_element = $(this);
 				var elements = rating_element.find("li a");
 				if(rating_element.hasClass('star_rating_notrated'))
 				{
-					elements.each(function() {
+					elements.each(function()
+					{
 						var element = $(this);
-						if(element.attr("id", "rating_thread_" + element_id)) {
+						if(element.attr("id", "rating_thread_" + element_id))
+						{
 							element.click(function() { return false; });
 							element.css("cursor", "default")
 							       .attr("title", $("#current_rating_"+element_id).text());
@@ -118,7 +128,8 @@ var Rating = {
 
 if(use_xmlhttprequest == 1)
 {
-	$(function() {
+	$(function()
+	{
 		Rating.init();
 	});
 }

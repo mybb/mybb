@@ -2,7 +2,8 @@ var MyBB = {
 	init: function()
 	{
 		this.detectBrowser();
-		$(function() {
+		$(function()
+		{
 			MyBB.pageLoaded();
 		});
 
@@ -14,7 +15,7 @@ var MyBB = {
 		expandables.init();
 
 		// Initialise "initial focus" field if we have one
-		initialfocus = $("input.initial_focus");
+		var initialfocus = $("input.initial_focus");
 		if(initialfocus.length > 0)
 		{
 			initialfocus.focus();
@@ -23,11 +24,13 @@ var MyBB = {
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
 			mark_read_imgs = $("img.ajax_mark_read");
-			mark_read_imgs.each(function() {
+			mark_read_imgs.each(function()
+			{
 				var element = $(this);
 				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
-				element.click(function() {
+				element.click(function()
+				{
 					MyBB.markForumRead(this);
 				});
 
@@ -95,7 +98,12 @@ var MyBB = {
 
 		if(confirmReturn == true)
 		{
-			var form = $("<form />", { method: "post", action: "calendar.php", style: "display: none;" });
+			var form = $("<form />",
+			           {
+					   		method: "post",
+			             	action: "calendar.php",
+			             	style: "display: none;"
+			           });
 
 			form.append(
 			    $("<input />",
@@ -108,7 +116,8 @@ var MyBB = {
 
 			if(my_post_key)
 			{
-				form.append($("<input />",
+				form.append(
+				    $("<input />",
 					{
 						name: "my_post_key",
 						type: "hidden",
@@ -142,11 +151,16 @@ var MyBB = {
 
 	deleteReputation: function(uid, rid)
 	{
-		confirmReturn = confirm(delete_reputation_confirm);
+		var confirmReturn = confirm(delete_reputation_confirm);
 
 		if(confirmReturn == true)
 		{
-			var form = $("<form />", { method: "post", action: "reputation.php?action=delete", style: "display: none;" });
+			var form = $("<form />",
+			           {
+			           		method: "post",
+			           		action: "reputation.php?action=delete",
+			           		style: "display: none;"
+			           });
 
 			form.append(
 			    $("<input />",
@@ -185,7 +199,7 @@ var MyBB = {
 
 	markForumRead: function(event)
 	{
-		element = $(event);
+		var element = $(event);
 		if(!element)
 		{
 			return false;
@@ -196,18 +210,21 @@ var MyBB = {
 			return false;
 		}
 
-		$.ajax({
-		  url: 'misc.php?action=markread&fid='+fid+'&ajax=1&my_post_key='+my_post_key,
-		  async: true,
-            success: function (request) {
-                MyBB.forumMarkedRead(fid, request);
-            }
+		$.ajax(
+		{
+			url: 'misc.php?action=markread&fid=' + fid + '&ajax=1&my_post_key=' + my_post_key,
+			async: true,
+        	success: function (request)
+        	{
+		  		MyBB.forumMarkedRead(fid, request);
+          	}
 		});
 	},
 
 	forumMarkedRead: function(fid, request)
 	{
-		if(request == 1) {
+		if(request == 1)
+		{
 			$("#mark_read_"+fid).attr("src", $("#mark_read_"+fid).attr("src").replace("on.png", "off.png"))
 								.css("cursor", "default")
 								.attr("title", lang.no_new_posts);
@@ -249,16 +266,24 @@ var MyBB = {
 		var local_offset = date.getTimezoneOffset() / 60;
 		if(Math.abs(parseInt(timezone_with_dst) + local_offset) == 1)
 		{
-			$.ajax({
-			  url: 'misc.php?action=dstswitch&ajax=1',
-			  async: true,
-			  method: 'post',
-	            error: function (request) {
-	                if(use_xmlhttprequest != 1)
+			$.ajax(
+			{
+				url: 'misc.php?action=dstswitch&ajax=1',
+				async: true,
+				method: 'post',
+	          	error: function (request)
+	          	{
+	          		if(use_xmlhttprequest != 1)
 	                {
-						var form = $("<form />", { method: "post", action: "misc.php", style: "display: none;" });
+						var form = $("<form />",
+						           {
+						           		method: "post",
+						           		action: "misc.php",
+						           		style: "display: none;"
+						           });
 
-						form.append($("<input />",
+						form.append(
+						    $("<input />",
 							{
 								name: "action",
 								type: "hidden",
@@ -287,11 +312,12 @@ var MyBB = {
 			return true;
 		}
 
-		$.ajax({
-		  type: 'post',
-		  url: 'private.php?action=dismiss_notice',
-		  data: { ajax: 1, my_post_key: my_post_key },
-		  async: true
+		$.ajax(
+		{
+			type: 'post',
+			url: 'private.php?action=dismiss_notice',
+			data: { ajax: 1, my_post_key: my_post_key },
+			async: true
 		});
 		pm_notice.remove();
 		return false;
@@ -302,43 +328,45 @@ var MyBB = {
 		var quick_login = $("#header").find("span#quick_login");
 		if(quick_login)
 		{
-			var form = $("<form/>", { method: "post", action: "member.php" });
+			var form = $("<form/>",
+			           {
+			           		method: "post",
+			           		action: "member.php"
+			           });
+
 			form.append(
 			    $("<input/>",
-			    	{
-						name: "action",
-						type: "hidden",
-						value: "do_login"
-			        }
-			     )
+			    {
+					name: "action",
+					type: "hidden",
+					value: "do_login"
+			    })
 			);
 
 			if(document.location.href)
 			{
 				form.append(
 				    $("<input/>",
-				    	{
-							name: "url",
-							type: "hidden",
-							value: this.HTMLchars(document.location.href)
-				        }
-				     )
+				    {
+						name: "url",
+						type: "hidden",
+						value: this.HTMLchars(document.location.href)
+				    })
 				);
 			}
 
 			form.append(
 			    $("<input/>",
-			    	{
-						name: "quick_login",
-						type: "hidden",
-						value: "1"
-			        }
-			     )
+			    {
+					name: "quick_login",
+					type: "hidden",
+					value: "1"
+			    })
 			);
 
 			form.append(
 			    $("<input/>",
-			    	{
+			    {
 					name: "quick_username",
 					id: "quick_login_username",
 					type: "text",
@@ -346,13 +374,12 @@ var MyBB = {
 					"class": "textbox",
 					onfocus: "if(this.value == '"+lang.username+"') { this.value=''; }",
 					onblur: "if(this.value == '') { this.value='"+lang.username+"'; }"
-			        }
-			     )
+			    })
 			).append("&nbsp;");
 
 			form.append(
 			    $("<input/>",
-			    	{
+			    {
 					name: "quick_password",
 					id: "quick_login_password",
 					type: "password",
@@ -360,8 +387,7 @@ var MyBB = {
 					"class": "textbox",
 					onfocus: "if(this.value == '"+lang.password+"') { this.value=''; }",
 					onblur: "if(this.value == '') { this.value='"+lang.password+"'; }"
-			        }
-			     )
+			    })
 			).append("&nbsp;");
 
 			form.append(
@@ -377,14 +403,13 @@ var MyBB = {
 
 			var span = $("<span/>", { "class": "remember_me" }).append(
 			    $("<input/>",
-			    	{
-						name: "quick_remember",
-						id: "quick_login_remember",
-						type: "checkbox",
-						value: "yes",
-						"class": "checkbox"
-			        }
-			     )
+			    {
+					name: "quick_remember",
+					id: "quick_login_remember",
+					type: "checkbox",
+					value: "yes",
+					"class": "checkbox"
+			    })
 			);
 
 			$(span).append($("<label/>", { "for": "quick_login_remember" }).html(lang.remember_me));
@@ -410,14 +435,16 @@ var expandables = {
 		var expanders = $("div.expcolimage img.expander");
 		if(expanders.length)
 		{
-			expanders.each(function() {
+			expanders.each(function()
+			{
         		var expander = $(this);
 				if(expander.attr("id") == false)
 				{
 					return;
 				}
 
-				expander.click(function() {
+				expander.click(function()
+				{
 					controls = expander.attr("id").replace("_img", "");
 					expandables.expandCollapse(this, controls);
 				});
@@ -492,7 +519,8 @@ var expandables = {
 		{
 			saved = collapsed.split("|");
 
-			$.each(saved, function(intIndex, objValue){
+			$.each(saved, function(intIndex, objValue)
+			{
 				if(objValue != id && objValue != "")
 				{
 					newCollapsed[newCollapsed.length] = objValue;
