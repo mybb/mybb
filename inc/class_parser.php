@@ -282,11 +282,11 @@ class postParser
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
 
-		$standard_mycode['time_simple']['regex'] = "#\[time\](.*?)\[/time\]#esi";
-		$standard_mycode['time_simple']['replacement'] = "\$this->mycode_parse_time(\"$1\")";
+		$callback_mycode['time_simple']['regex'] = "#\[time\](.*?)\[/time\]#si";
+		$callback_mycode['time_simple']['replacement'] = array($this, 'mycode_parse_time_callback');
 
-		$standard_mycode['time_complex']['regex'] = "#\[time=([a-zA-Z0-9\s+-.:]*)\](.*?)\[/time\]#esi";
-		$standard_mycode['time_complex']['replacement'] = "\$this->mycode_parse_time(\"$2\", \"$1\")";
+		$callback_mycode['time_complex']['regex'] = "#\[time=([a-zA-Z0-9\s+-.:]*)\](.*?)\[/time\]#si";
+		$callback_mycode['time_complex']['replacement'] = array($this, 'mycode_parse_time_callback');
 
 		$nestable_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si";
 		$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
@@ -1269,6 +1269,24 @@ class postParser
 		return $list;
 	}
 	
+	/**
+	* Parses time MyCode.
+	*
+	* @param array Matches.
+	* @return string The parsed message.
+	*/
+	function mycode_parse_time_callback($matches)
+	{
+		if(!isset($matches[2]))
+		{
+			return $this->mycode_parse_time($matches[1], '');
+		}
+		else
+		{
+			return $this->mycode_parse_time($matches[2], $matches[1]);
+		}
+	}
+
 	/**
 	* Parses time MyCode.
 	*
