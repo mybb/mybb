@@ -440,4 +440,12 @@ $l['board_name'] = "Board Name";
 $l['board_url'] = "Board URL";
 
 $l['comma'] = ", ";
+
+$l['debug_generated_in'] = "Generated in {1}";
+$l['debug_weight'] = "({1}% PHP / {2}% {3})";
+$l['debug_sql_queries'] = "SQL Queries: {1}";
+$l['debug_server_load'] = "Server Load: {1}";
+$l['debug_memory_usage'] = "Memory Usage: {1}";
+$l['debug_advanced_details'] = "Advanced Details";
+
 ?>

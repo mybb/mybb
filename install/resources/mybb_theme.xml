@@ -3105,7 +3105,7 @@ a.button {
 </ol>
 <br />
 {$lang->error_nopermission_user_username}]]></template>
-		<template name="footer" version="1800"><![CDATA[<div id="debug"><debugstuff></div>
+		<template name="footer" version="1800"><![CDATA[<debugstuff>
 	</div>
 </div>
 <div id="footer">
@@ -12285,5 +12285,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="video_youtube_embed" version="1610"><![CDATA[<iframe width="560" height="315" src="http://www.youtube.com/embed/{$id}" frameborder="0" allowfullscreen></iframe>]]></template>
 	<template name="video_vimeo_embed" version="1610"><![CDATA[<iframe src="http://player.vimeo.com/video/{$id}" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>]]></template>
 	<template name="video_yahoo_embed" version="1610"><![CDATA[<iframe width="624" height="351" scrolling="no" frameborder="0" src="http://{$local}screen.yahoo.com/{$id}?format=embed"></iframe>]]></template>
+	<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
 	</templates>
 </theme>

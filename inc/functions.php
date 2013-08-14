@@ -16,7 +16,7 @@
  */
 function output_page($contents)
 {
-	global $db, $lang, $theme, $plugins, $mybb;
+	global $db, $lang, $theme, $templates, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
@@ -56,7 +56,7 @@ function output_page($contents)
 
 			if($memory_usage)
 			{
-				$memory_usage = " / Memory Usage: ".get_friendly_size($memory_usage);
+				$memory_usage = $lang->sprintf($lang->debug_memory_usage, get_friendly_size($memory_usage));
 			}
 			else
 			{
@@ -69,8 +69,12 @@ function output_page($contents)
 			{
 				$database_server = 'MySQL';
 			}
+			$generated_in = $lang->sprintf($lang->debug_generated_in, $totaltime);
+			$debug_weight = $lang->sprintf($lang->debug_weight, $percentphp, $percentsql, $database_server);
+			$sql_queries = $lang->sprintf($lang->debug_sql_queries, $db->query_count);
+			$server_load = $lang->sprintf($lang->debug_server_load, $serverload);
 
-			$debugstuff = "Generated in $totaltime ($percentphp% PHP / $percentsql% ".$database_server.")<br />SQL Queries: $db->query_count /  Server Load: $serverload$memory_usage<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
+			eval("\$debugstuff = \"".$templates->get("debug_summary")."\";");
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
