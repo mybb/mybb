@@ -281,7 +281,7 @@ elseif($mybb->input['do'] == "login")
 				$db->insert_query("awaitingactivation", $lockout_array);
 
 				$subject = $lang->sprintf($lang->locked_out_subject, $mybb->settings['bbname']);
-				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code']);
+				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
 				my_mail($login_user['email'], $subject, $message);
 			}
 

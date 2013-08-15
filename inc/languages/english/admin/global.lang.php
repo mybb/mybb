@@ -289,7 +289,7 @@ Your administrator account at {2} has been locked after {3} failed login attempt
 
 To unlock your account, please go to the URL below in your web browser.
 
-{4}/{5}/index.php?action=unlock&token={6}
+{4}/{5}/index.php?action=unlock&uid={7}&token={6}
 
 If the above link does not work correctly, go to
 
