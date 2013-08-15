@@ -11,6 +11,10 @@ body, td {
 	margin-bottom: 20px;
 }
 
+body {
+	overflow-y: scroll;
+}
+
 a {
 	color: #0072BC;
 	text-decoration: none;
