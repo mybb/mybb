@@ -6368,7 +6368,7 @@ body {
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->per_page}</strong></td>
-							<td class="trow1" width="75%"><input type="text" name="perpage" value="{$perpage}" size="4" /></td>
+							<td class="trow1" width="75%"><input type="text" name="perpage" value="{$perpage}" size="4" class="textbox" /></td>
 						</tr>
 					</table>
 					<br />
