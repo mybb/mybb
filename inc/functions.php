@@ -3643,6 +3643,7 @@ function debug_page()
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">";
 	echo "<head>";
 	echo "<meta name=\"robots\" content=\"noindex\" />";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
 	echo "<title>MyBB Debug Information</title>";
 	echo "</head>";
 	echo "<body>";
