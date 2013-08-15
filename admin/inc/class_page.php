@@ -476,7 +476,7 @@ EOF;
 
 		if($message)
 		{
-			$message = "<p id=\"message\" class=\"error\"><span class=\"text\">{$message}</span></p>";
+			$message = "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
 		}
 
 		print <<<EOF
