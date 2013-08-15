@@ -1223,7 +1223,8 @@ function database_info()
 				}
 			});
 		}
-		$(function() {
+		$(function()
+		{
 			updateDBSettings();
 		});
 		</script>";

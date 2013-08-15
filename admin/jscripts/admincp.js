@@ -17,6 +17,7 @@ var AdminCP = {
 	}
 };
 
-$(function() {
+$(function()
+{
 	AdminCP.init();
 });

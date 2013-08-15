@@ -7,6 +7,7 @@ var Users = {
 	}
 };
 
-$(function() {
+$(function()
+{
 	Users.init();
 });
