@@ -1805,7 +1805,8 @@ function configure()
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
 
-		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || ip2long($_SERVER['SERVER_NAME']) != false)
+		// IP addresses and hostnames are not valid
+		if($cookiedomain == 'localhost' || my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
 		{
 			$cookiedomain = '';
 		}
