@@ -233,11 +233,6 @@ if(!empty($mybb->input['action']))
 }
 foreach($stylesheet_scripts as $stylesheet_script)
 {
-	$stylesheet_actions = array("global");
-	if(!empty($mybb->input['action']))
-	{
-		$stylesheet_actions[] = $mybb->input['action'];
-	}
 	// Load stylesheets for global actions and the current action
 	foreach($stylesheet_actions as $stylesheet_action)
 	{
