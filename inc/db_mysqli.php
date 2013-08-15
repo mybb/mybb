@@ -189,18 +189,18 @@ class DB_MySQLi
 			{
 				$connect_function = "mysqli_connect";
 				$persist = "";
-				if(isset($single_connection['pconnect']) && $single_connection['pconnect'] && version_compare(PHP_VERSION, '5.3.0', '>='))
+				if(!empty($single_connection['pconnect']) && version_compare(PHP_VERSION, '5.3.0', '>='))
 				{
-					$persist = "p:";
+					$persist = 'p:';
 				}
 
-				$link = $type."_link";
+				$link = "{$type}_link";
 
 				get_execution_time();
 
 				// Specified a custom port for this connection?
-				$port = '';
-				if(strpos($single_connection['hostname'], ':'))
+				$port = 0;
+				if(strstr($single_connection['hostname'],':'))
 				{
 					list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
 				}
@@ -357,6 +357,7 @@ class DB_MySQLi
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+
 		$debug_extra = '';
 		if($plugins->current_hook)
 		{

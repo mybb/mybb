@@ -729,6 +729,21 @@ if($mybb->input['action'] == "edit")
 		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
 		$mybb->input = $user;
 
+		$options = array(
+			'bday1', 'bday2', 'bday3',
+			'new_password', 'confirm_new_password',
+			'action_time', 'action_period',
+			'modpost_period', 'moderateposting', 'modpost_time', 'suspost_period', 'suspost_time'
+		);
+
+		foreach($options as $option)
+		{
+			if(!isset($mybb->input[$option]))
+			{
+				$mybb->input[$option] = '';
+			}
+		}
+
 		// We need to fetch this users profile field values
 		$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
 		$mybb->input['profile_fields'] = $db->fetch_array($query);
@@ -958,6 +973,10 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 
 	// Output custom profile fields - required
+	if(!isset($profile_fields['required']))
+	{
+		$profile_fields['required'] = array();
+	}
 	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
@@ -1186,6 +1205,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$sig_checked = 0;
+		$user_suspend_info = '';
 	}
 
 	$actions = '
@@ -1236,7 +1256,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_radio_button("update_posts", "no", $lang->do_nothing, array("checked" => 1))
 	);
 
-	$form_container->output_row($lang->singature_preferences, "", implode("<br />", $signature_options));
+	$form_container->output_row($lang->signature_preferences, "", implode("<br />", $signature_options));
 
 	$form_container->end();
 	echo "</div>\n";
@@ -1250,6 +1270,7 @@ if($mybb->input['action'] == "edit")
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" width=\"{$scaled_dimensions['width']}\" style=\"margin-top: {$avatar_top}px\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('width' => 1));
 
+	$avatar_url = '';
 	if($user['avatartype'] == "upload" || stristr($user['avatar'], $mybb->settings['avataruploadpath']))
 	{
 		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
@@ -1322,6 +1343,7 @@ if($mybb->input['action'] == "edit")
 	$modpost_options = $form->generate_select_box('modpost_period', $periods, $mybb->input['modpost_period'], array('id' => 'modpost_period'));
 
 	// Do we have any existing suspensions here?
+	$existing_info = '';
 	if($user['moderateposts'] || ($mybb->input['moderateposting'] && !empty($errors)))
 	{
 		$mybb->input['moderateposting'] = 1;
@@ -2706,8 +2728,8 @@ if(!$mybb->input['action'])
 	echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
-
-	if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
+	
+	if(isset($mybb->input['search_id']) && $admin_session['data']['user_views'][$mybb->input['search_id']])
 	{
 		$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 		unset($admin_view['extra_sql']);
@@ -2715,7 +2737,7 @@ if(!$mybb->input['action'])
 	else
 	{
 		// Showing a specific view
-		if($mybb->input['vid'])
+		if(isset($mybb->input['vid']))
 		{
 			$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 			$admin_view = $db->fetch_array($query);
@@ -2727,7 +2749,7 @@ if(!$mybb->input['action'])
 		}
 
 		// Don't have a view? Fetch the default
-		if(!$admin_view)
+		if(!isset($admin_view))
 		{
 			$default_view = fetch_default_view("user");
 			if(!$default_view)
@@ -2750,7 +2772,7 @@ if(!$mybb->input['action'])
 	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?module=user-users&amp;action=views");
 	$admin_view['popup'] = $popup->fetch();
 
-	if($mybb->input['type'])
+	if(isset($mybb->input['type']))
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
@@ -2793,6 +2815,7 @@ function build_users_view($view)
 {
 	global $mybb, $db, $cache, $lang, $user_view_fields, $page;
 
+	$view_title = '';
 	if($view['title'])
 	{
 		$title_string = "view_title_{$view['vid']}";
@@ -2806,7 +2829,7 @@ function build_users_view($view)
 	}
 
 	// Build the URL to this view
-	if(!$view['url'])
+	if(!isset($view['url']))
 	{
 		$view['url'] = "index.php?module=user-users";
 	}
@@ -2822,7 +2845,7 @@ function build_users_view($view)
 	{
 		$view['custom_profile_fields'] = unserialize($view['custom_profile_fields']);
 	}
-	if($mybb->input['username'])
+	if(isset($mybb->input['username']))
 	{
 		$view['conditions']['username'] = $mybb->input['username'];
 	}
@@ -2843,8 +2866,8 @@ function build_users_view($view)
 		}
 		$view['url'] .= "&amp;search_id=".htmlspecialchars_uni($mybb->input['search_id']);
 	}
-
-	if($mybb->input['username'])
+	
+	if(isset($mybb->input['username']))
 	{
 		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
 	}
@@ -2898,7 +2921,7 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if($view['conditions'][$search_field] && !$view['conditions'][$search_field.'_blank'])
+		if(isset($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
 		}
@@ -2912,7 +2935,7 @@ function build_users_view($view)
 	$user_exact_fields = array("referrer");
 	foreach($user_exact_fields as $search_field)
 	{
-		if($view['conditions'][$search_field])
+		if(isset($view['conditions'][$search_field]))
 		{
 			$search_sql .= " AND u.{$search_field}='".$db->escape_string($view['conditions'][$search_field])."'";
 		}
@@ -2923,7 +2946,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -2944,7 +2967,7 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(intval($view['conditions'][$search_field]))
+		if(isset($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
 		{
 			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
 
@@ -2956,7 +2979,7 @@ function build_users_view($view)
 	$ip_fields = array("regip", "lastip");
 	foreach($ip_fields as $search_field)
 	{
-		if($view['conditions'][$search_field])
+		if(isset($view['conditions'][$search_field]))
 		{
 			$ip_range = fetch_ip_range($view['conditions'][$search_field]);
 			if(!is_array($ip_range))
@@ -2972,7 +2995,7 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if($view['conditions']['postip'])
+	if(isset($view['conditions']['postip']))
 	{
 		$ip_range = fetch_ip_range($view['conditions']['postip']);
 		if(!is_array($ip_range))
@@ -3057,7 +3080,7 @@ function build_users_view($view)
 	}
 
 	// Usergroup based searching
-	if($view['conditions']['usergroup'])
+	if(isset($view['conditions']['usergroup']))
 	{
 		if(!is_array($view['conditions']['usergroup']))
 		{
@@ -3088,13 +3111,13 @@ function build_users_view($view)
 	}
 
 	// COPPA users only?
-	if($view['conditions']['coppa'])
+	if(isset($view['conditions']['coppa']))
 	{
 		$search_sql .= " AND u.coppauser=1 AND u.usergroup=5";
 	}
 
 	// Extra SQL?
-	if($view['extra_sql'])
+	if(isset($view['extra_sql']))
 	{
 		$search_sql .= $view['extra_sql'];
 	}
@@ -3122,7 +3145,16 @@ function build_users_view($view)
 		$view['perpage'] = intval($view['perpage']);
 
 		// Establish which page we're viewing and the starting index for querying
-		$mybb->input['page'] = intval($mybb->input['page']);
+		// Establish which page we're viewing and the starting index for querying
+		if(!isset($mybb->input['page']))
+		{
+			$mybb->input['page'] = 1;
+		}
+		else
+		{
+			$mybb->input['page'] = intval($mybb->input['page']);
+		}
+
 		if($mybb->input['page'])
 		{
 			$start = ($mybb->input['page'] - 1) * $view['perpage'];
@@ -3134,7 +3166,7 @@ function build_users_view($view)
 		}
 
 		$from_bit = "";
-		if($mybb->input['from'] == "home")
+		if(isset($mybb->input['from']) && $mybb->input['from'] == "home")
 		{
 			$from_bit = "&amp;from=home";
 		}
@@ -3172,16 +3204,21 @@ function build_users_view($view)
 			ORDER BY {$view['sortby']} {$view['sortorder']}
 			LIMIT {$start}, {$view['perpage']}
 		");
+		$users = '';
 		while($user = $db->fetch_array($query))
 		{
+			$comma = $groups_list = '';
 			$user['view']['username'] = "<a href=\"index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
 			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
-			$additional_groups = explode(",", $user['additionalgroups']);
-			$comma = $groups_list = '';
-			foreach($additional_groups as $group)
+			if($user['additionalgroups'])
 			{
-				$groups_list .= "{$comma}{$usergroups[$group]['title']}";
-				$comma = $lang->comma;
+				$additional_groups = explode(",", $user['additionalgroups']);
+
+				foreach($additional_groups as $group)
+				{
+					$groups_list .= "{$comma}{$usergroups[$group]['title']}";
+					$comma = $lang->comma;
+				}
 			}
 			if(!$groups_list)
 			{
@@ -3283,8 +3320,8 @@ function build_users_view($view)
 			$table->construct_row();
 		}
 	}
-
-	if(!$view['table_id'])
+	
+	if(!isset($view['table_id']))
 	{
 		$view['table_id'] = "users_list";
 	}
@@ -3329,7 +3366,7 @@ function build_users_view($view)
 	$built_view = $search->construct_return;
 	$built_view .= "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
 	$built_view .= $search->generate_hidden_field('action', 'search')."\n";
-	if($view['conditions']['username'])
+	if(isset($view['conditions']['username']))
 	{
 		$default_class = '';
 		$value = $view['conditions']['username'];
@@ -3401,7 +3438,10 @@ function build_users_view($view)
 
 	$built_view .= $search->end();
 
-	$built_view .= $pagination;
+	if(isset($pagination))
+	{
+		$built_view .= $pagination;
+	}
 	if($view['view_type'] != "card")
 	{
 		$checkbox = '';
@@ -3411,7 +3451,10 @@ function build_users_view($view)
 		$checkbox = "<input type=\"checkbox\" name=\"allbox\" onclick=\"inlineModeration.checkAll(this)\" /> ";
 	}
 	$built_view .= $table->construct_html("{$switch_view}<div>{$checkbox}{$lang->users}{$view_title}</div>", 1, "", $view['table_id']);
-	$built_view .= $pagination;
+	if(isset($pagination))
+	{
+		$built_view .= $pagination;
+	}
 
 	$built_view .= '
 <script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1400"></script>
@@ -3475,7 +3518,7 @@ function build_user_view_card($user, $view, &$i)
 		// Otherwise, just user data
 		else if($field != "username")
 		{
-			if($user['view'][$field])
+			if(isset($user['view'][$field]))
 			{
 				$value = $user['view'][$field];
 			}
@@ -3691,7 +3734,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			case "textarea":
 				$extra = '';
-				if($mybb->input['action'] == "search")
+				if(isset($mybb->input['action']) && $mybb->input['action'] == "search")
 				{
 					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				}
@@ -3700,7 +3743,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				break;
 			default:
 				$extra = '';
-				if($mybb->input['action'] == "search")
+				if(isset($mybb->input['action']) && $mybb->input['action'] == "search")
 				{
 					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				}

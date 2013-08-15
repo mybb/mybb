@@ -332,7 +332,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 	if(!$offset && $offset != '0')
 	{
-		if($mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
+		if(isset($mybb->user['uid']) && $mybb->user['uid'] != 0 && array_key_exists("timezone", $mybb->user))
 		{
 			$offset = $mybb->user['timezone'];
 			$dstcorrection = $mybb->user['dst'];
@@ -950,6 +950,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 
 	$pages = ceil($count / $perpage);
 
+	$prevpage = '';
 	if($page > 1)
 	{
 		$prev = $page-1;
@@ -987,6 +988,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		$to = $pages;
 	}
 
+	$start = '';
 	if($from > 1)
 	{
 		if($from-1 == 1)
@@ -998,6 +1000,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$start = \"".$templates->get("multipage_start")."\";");
 	}
 
+	$mppage = '';
 	for($i = $from; $i <= $to; ++$i)
 	{
 		$page_url = fetch_page_url($url, $i);
@@ -1018,6 +1021,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		}
 	}
 
+	$end = '';
 	if($to < $pages)
 	{
 		if($to+1 == $pages)
@@ -1029,12 +1033,14 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$end = \"".$templates->get("multipage_end")."\";");
 	}
 
+	$nextpage = '';
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
+
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 
 	if($breadcrumb == true)
@@ -1314,7 +1320,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
-	if(!$fpermcache[$fid]) // This forum has no custom or inherited permissions so lets just return the group permissions
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
 		return $groupperms;
 	}
@@ -1665,6 +1671,7 @@ function get_post_icons()
 		$icon = $mybb->input['icon'];
 	}
 
+	$iconlist = '';
 	$no_icons_checked = " checked=\"checked\"";
 	// read post icons from cache, and sort them accordingly
 	$posticons_cache = $cache->read("posticons");
@@ -2628,7 +2635,7 @@ function build_mycode_inserter($bind="message")
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
 			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
 
-			if($editor_lang_strings[$key+1])
+			if(isset($editor_lang_strings[$key+1]))
 			{
 				$editor_language .= ",";
 			}
@@ -2690,6 +2697,7 @@ function build_clickable_smilies()
 		{
 			reset($smiliecache);
 
+			$getmore = '';
 			if($mybb->settings['smilieinsertertot'] >= $smiliecount)
 			{
 				$mybb->settings['smilieinsertertot'] = $smiliecount;
@@ -3370,7 +3378,10 @@ function get_unviewable_forums($only_readable_threads=false)
 		}
 	}
 
-	return $unviewableforums;
+	if(isset($unviewableforums))
+	{
+		return $unviewableforums;
+	}
 }
 
 /**
@@ -3402,6 +3413,7 @@ function build_breadcrumb()
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 
 	$i = 0;
+	$activesep = '';
 
 	if(is_array($navbits))
 	{
@@ -3500,7 +3512,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 		{
 			if($fid == $forumnav['fid'])
 			{
-				if(isset($pforumcache[$forumnav['pid']]))
+				if(!empty($pforumcache[$forumnav['pid']]))
 				{
 					build_forum_breadcrumb($forumnav['pid']);
 				}

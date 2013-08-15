@@ -192,6 +192,32 @@ if($mybb->input['action'] == "add")
 		$page->output_inline_error($errors);
 	}
 
+	$default_options = array(
+		'starttime_time',
+		'starttime_day',
+		'starttime_month',
+		'starttime_year',
+		'endtime_type',
+		'endtime_time',
+		'endtime_day',
+		'endtime_month',
+		'endtime_year',
+		'title',
+		'message',
+		'fid',
+		'allowhtml',
+		'allowmycode',
+		'allowsmilies'
+	);
+
+	foreach($default_options as $option)
+	{
+		if(!isset($mybb->input[$option]))
+		{
+			$mybb->input[$option] = '';
+		}
+	}
+
 	if($mybb->input['endtime_type'] == "1")
 	{
 		$endtime_checked[1] = "checked=\"checked\"";
@@ -233,6 +259,9 @@ if($mybb->input['action'] == "add")
 		$endday = gmdate("j", TIME_NOW);
 	}
 
+	$startdateday = $enddateday = $startdatemonth = $enddatemonth = '';
+
+	// Days
 	for($i = 1; $i <= 31; ++$i)
 	{
 		if($startday == $i)
@@ -252,6 +281,12 @@ if($mybb->input['action'] == "add")
 		{
 			$enddateday .= "<option value=\"$i\">$i</option>\n";
 		}
+	}
+
+	// Months
+	for($i = 1; $i <= 12; ++$i)
+	{
+		$endmonthsel[$i] = $startmonthsel[$i] = '';
 	}
 
 	if($mybb->input['starttime_month'])
@@ -788,6 +823,7 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, "forum_announcements");
 
 	// Fetch announcements into their proper arrays
+	$global_announcements = $announcements = array();
 	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
 	while($announcement = $db->fetch_array($query))
 	{
@@ -799,7 +835,7 @@ if(!$mybb->input['action'])
 		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
 	}
 
-	if($global_announcements)
+	if(!empty($global_announcements))
 	{
 		$table = new Table;
 		$table->construct_header($lang->announcement);
@@ -882,7 +918,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			$table->construct_cell("<a href=\"index.php?module=forum-announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
 
-			if($announcements[$forum['fid']])
+			if(isset($announcements[$forum['fid']]))
 			{
 				foreach($announcements[$forum['fid']] as $aid => $announcement)
 				{
@@ -903,7 +939,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			}
 
 			// Build the list for any sub forums of this forum
-			if($forums_by_parent[$forum['fid']])
+			if(isset($forums_by_parent[$forum['fid']]))
 			{
 				fetch_forum_announcements($table, $forum['fid'], $depth+1);
 			}

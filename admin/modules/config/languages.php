@@ -270,7 +270,7 @@ if($mybb->input['action'] == "quick_phrases")
 	$table = new Table;
 
 	// Check if file is writable, before allowing submission
-	$no_write = 0;
+	$no_write = null;
 
 	foreach($quick_phrases as $file => $phrases)
 	{
@@ -451,7 +451,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// Check if file is writable, before allowing submission
-		$no_write = 0;
+		$no_write = null;
 		if(!is_writable($editfile))
 		{
 			$no_write = 1;

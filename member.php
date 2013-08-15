@@ -1557,6 +1557,19 @@ if($mybb->input['action'] == "profile")
 
 	$localtime = $lang->sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
 
+	if($memprofile['lastactive'])
+	{
+		$memlastvisitdate = my_date($mybb->settings['dateformat'], $memprofile['lastactive']);
+		$memlastvisitsep = $lang->comma;
+		$memlastvisittime = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+	}
+	else
+	{
+		$memlastvisitdate = $lang->lastvisit_never;
+		$memlastvisitsep = '';
+		$memlastvisittime = '';
+	}
+
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
@@ -1892,6 +1905,14 @@ if($mybb->input['action'] == "profile")
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
 	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
+	if($memprofile['timeonline'] > 0)
+	{
+		$timeonline = nice_time($memprofile['timeonline']);
+	}
+	else
+	{
+		$timeonline = $lang->none_registered;
+	}
 
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)

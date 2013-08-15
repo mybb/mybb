@@ -193,7 +193,7 @@ class DB_MySQL
 					$connect_function = "mysql_pconnect";
 				}
 
-				$link = $type."_link";
+				$link = "{$type}_link";
 
 				get_execution_time();
 
@@ -357,6 +357,7 @@ class DB_MySQL
 	function explain_query($string, $qtime)
 	{
 		global $plugins;
+
 		$debug_extra = '';
 		if($plugins->current_hook)
 		{

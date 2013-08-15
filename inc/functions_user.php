@@ -103,7 +103,7 @@ function validate_password_from_username($username, $password)
 function validate_password_from_uid($uid, $password, $user = array())
 {
 	global $db, $mybb;
-	if($mybb->user['uid'] == $uid)
+	if(isset($mybb->user['uid']) && $mybb->user['uid'] == $uid)
 	{
 		$user = $mybb->user;
 	}
@@ -443,6 +443,7 @@ function usercp_menu_messenger()
 	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
+	$folderlinks = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -499,7 +500,7 @@ function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
-	$draftcount = $lang->ucp_nav_drafts;
+	$draftstart = $draftend = $draftcount = '';
 
 	$query = $db->simple_select("posts", "COUNT(pid) AS draftcount", "visible = '-2' AND uid = '{$mybb->user['uid']}'");
 	$count = $db->fetch_field($query, 'draftcount');

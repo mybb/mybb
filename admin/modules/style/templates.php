@@ -608,6 +608,11 @@ if($mybb->input['action'] == "edit_template")
 
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
 
+	if(!isset($mybb->input['from']))
+	{
+		$mybb->input['from'] = '';
+	}
+
 	if($mybb->input['from'] == "diff_report")
 	{
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
@@ -1632,6 +1637,10 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		$page->output_footer();
 	}
 
+	if(!isset($mybb->input['expand']))
+	{
+		$mybb->input['expand'] = '';
+	}
 	if($mybb->input['expand'] == 'all')
 	{
 		// If we're expanding everything, stick in the ungrouped templates in the list as well
@@ -1680,12 +1689,11 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		{
 			$group = -1;
 		}
-		$template['gid'] = $template_groups[$exploded[0]]['gid'];
 
-		// Ungrouped template?
-		if(!$template['gid'])
+		$template['gid'] = -1;
+		if(isset($template_groups[$exploded[0]]['gid']))
 		{
-			$template['gid'] = -1;
+			$template['gid'] = $template_groups[$exploded[0]]['gid'];
 		}
 
 		// If this template is not a master template, we simple add it to the list

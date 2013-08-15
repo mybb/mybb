@@ -45,6 +45,24 @@ if(!$mybb->user['pmfolders'])
 
 $errors = '';
 
+if(!isset($mybb->input['action']))
+{
+	$mybb->input['action'] = '';
+}
+
+$collapse_options = array('usercppms', 'usercpprofile', 'usercpmisc');
+foreach($collapse_options as $option)
+{
+	if(!isset($collapsedimg[$option]))
+	{
+		$collapsedimg[$option] = '';
+	}
+	if(!isset($collapsed[$option.'_e']))
+	{
+		$collapsed[$option.'_e'] = '';
+	}
+}
+
 usercp_menu();
 
 $plugins->run_hooks("usercp_start");
@@ -2976,6 +2994,7 @@ if(!$mybb->input['action'])
 		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
 	}
 
+	$latest_warnings = '';
 	if($mybb->settings['enablewarningsystem'] != 0 && $mybb->settings['canviewownwarning'] != 0)
 	{
 		$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
@@ -3236,6 +3255,7 @@ if(!$mybb->input['action'])
 	// User's Latest Threads
 
 	// Get unviewable forums
+	$f_perm_sql = '';
 	$unviewable_forums = get_unviewable_forums();
 	if($unviewable_forums)
 	{
@@ -3316,6 +3336,7 @@ if(!$mybb->input['action'])
 		$threadprefixes = build_prefixes();
 
 		// Run the threads...
+		$latest_threads_threads = '';
 		foreach($threadcache as $thread)
 		{
 			if($thread['tid'])
@@ -3373,6 +3394,7 @@ if(!$mybb->input['action'])
 					$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				}
 
+				$cutoff = 0;
 				if($thread['lastpost'] > $cutoff)
 				{
 					if($thread['lastread'])

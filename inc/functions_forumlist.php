@@ -457,11 +457,11 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	else
 	{
 		// Fetch the last read date for this forum
-		if(isset($forum['lastread']))
+		if(!empty($forum['lastread']))
 		{
 			$forum_read = $forum['lastread'];
 		}
-		elseif(isset($mybb->cookies['mybb']['readallforums']))
+		elseif(!empty($mybb->cookies['mybb']['readallforums']))
 		{
 			// We've hit the read all forums as a guest, so use the lastvisit of the user
 			$forum_read = $mybb->cookies['mybb']['lastvisit'];

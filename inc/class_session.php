@@ -46,7 +46,7 @@ class session
 		}
 
 		// If we have a valid session id and user id, load that users session.
-		if(isset($mybb->cookies['mybbuser']))
+		if(!empty($mybb->cookies['mybbuser']))
 		{
 			$logon = explode("_", $mybb->cookies['mybbuser'], 2);
 			$this->load_user($logon[0], $logon[1]);
@@ -116,7 +116,7 @@ class session
 		");
 		$mybb->user = $db->fetch_array($query);
 
-		if(isset($bannedcache[$uid]))
+		if(!empty($bannedcache[$uid]))
 		{
 			$banned_user = $bannedcache[$uid];
 			$mybb->user['bandate'] = $banned_user['dateline'];

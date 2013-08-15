@@ -86,7 +86,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		if($user['uid'] > 0)
 		{
 			// The user is registered.
-			if(!isset($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				// If the user is logged in anonymously, update the count for that.
 				if($user['invisible'] == 1)
@@ -361,7 +361,7 @@ while($forum = $db->fetch_array($query))
 {
 	if($mybb->user['uid'] == 0)
 	{
-		if(isset($forumsread[$forum['fid']]))
+		if(!empty($forumsread[$forum['fid']]))
 		{
 			$forum['lastread'] = $forumsread[$forum['fid']];
 		}

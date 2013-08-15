@@ -62,7 +62,7 @@ if(!$mybb->input['action'])
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
 	while($folder = readdir($dir))
 	{
-		if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/main.css"))
+		if($folder != "." && $folder != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/main.css"))
 		{
 			$folders[$folder] = ucfirst($folder);
 		}

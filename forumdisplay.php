@@ -245,8 +245,7 @@ foreach($parentlistexploded as $mfid)
 		}
 	}
 
-
-	if(isset($forum_stats[$mfid]) && isset($forum_stats[$mfid]['announcements']))
+	if(!empty($forum_stats[$mfid]['announcements']))
 	{
 		$has_announcements = true;
 	}
@@ -273,6 +272,8 @@ if($mybb->settings['browsingthisforum'] != 0)
 	$membercount = 0;
 	$inviscount = 0;
 	$onlinemembers = '';
+	$doneusers = array();
+
 	$query = $db->query("
 		SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -280,6 +281,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
 		ORDER BY u.username ASC, s.time DESC
 	");
+
 	while($user = $db->fetch_array($query))
 	{
 		if($user['uid'] == 0)
@@ -718,6 +720,7 @@ if($has_announcements == true)
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 	}
 
+	$announcementlist = '';
 	$bgcolor = alt_trow(true); // Reset the trow colors
 	while($announcement = $db->fetch_array($query))
 	{
@@ -785,6 +788,10 @@ if($has_announcements == true)
 		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
 	}
 }
+else
+{
+	$announcementlist = '';
+}
 
 $tids = $threadcache = array();
 $icon_cache = $cache->read("posticons");
@@ -845,7 +852,7 @@ if(is_moderator($fid) && $num_results > 0)
 	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
 }
 
-if(isset($tids))
+if(!empty($tids))
 {
 	$tids = implode(",", $tids);
 }
@@ -908,7 +915,7 @@ else
 $unreadpost = 0;
 $threads = '';
 $load_inline_edit_js = 0;
-if(is_array($threadcache))
+if(!empty($threadcache) && is_array($threadcache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
 	{
@@ -1065,7 +1072,7 @@ if(is_array($threadcache))
 
 		if($ismod)
 		{
-			if(my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				++$inlinecount;

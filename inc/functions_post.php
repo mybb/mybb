@@ -25,6 +25,15 @@ function build_postbit($post, $post_type=0)
 
 	$hascustomtitle = 0;
 
+	// Set default values for any fields not provided here
+	foreach(array('subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
+	{
+		if(empty($post[$post_field]))
+		{
+			$post[$post_field] = '';
+		}
+	}
+
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
@@ -207,17 +216,16 @@ function build_postbit($post, $post_type=0)
 	$post['groupimage'] = '';
 	if(!empty($usergroup['image']))
 	{
+		$language = $mybb->settings['bblanguage'];
 		if(!empty($mybb->user['language']))
 		{
 			$language = $mybb->user['language'];
 		}
-		else
-		{
-			$language = $mybb->settings['bblanguage'];
-		}
+
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
+
 		if($mybb->settings['postlayout'] == "classic")
 		{
 			$post['groupimage'] .= "<br />";
@@ -225,8 +233,8 @@ function build_postbit($post, $post_type=0)
 	}
 
 	if($post['userusername'])
-	{ // This post was made by a registered user
-
+	{
+		// This post was made by a registered user
 		$post['username'] = $post['userusername'];
 		$post['profilelink_plain'] = get_profile_link($post['uid']);
 		$post['username_formatted'] = format_name($post['username'], $post['usergroup'], $post['displaygroup']);
@@ -309,6 +317,10 @@ function build_postbit($post, $post_type=0)
 		{
 			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
+		}
+		else
+		{
+			$post['useravatar'] = '';
 		}
 
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
@@ -475,7 +487,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
+			if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;

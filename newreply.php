@@ -29,6 +29,16 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
+// Check to see if we are missing any indexes
+$options = array('pid', 'tid', 'replyto', 'ajax', 'action', 'attachmentaid', 'newattachment', 'updateattachment', 'attachmentaid', 'subject', 'message', 'previewpost', 'processed', 'method', 'posthash', 'rem', 'quoted_ids', 'icon');
+foreach($options as $option)
+{
+	if(!isset($mybb->input[$option]))
+	{
+		$mybb->input[$option] = '';
+	}
+}
+
 // Get the pid and tid and replyto from the input.
 $tid = intval($mybb->input['tid']);
 
@@ -104,7 +114,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 
 	error_no_permission();
 }
 
-if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 {
 	error_no_permission();
 }
@@ -194,6 +204,8 @@ if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 	error($lang->error_cannot_upload_php_post);
 }
 
+$errors = array();
+$maximageserror = $attacherror = '';
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->input['updateattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
@@ -251,7 +263,7 @@ if($mybb->input['attachmentaid'] && $mybb->input['attachmentact'] == "remove")
 	}
 }
 
-$reply_errors = "";
+$reply_errors = $quoted_ids = '';
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
@@ -630,14 +642,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 {
 	$plugins->run_hooks("newreply_start");
 
-	$quote_ids = '';
+	$quote_ids = $multiquote_external = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(!$mybb->input['previewpost'] && !$reply_errors && $mybb->input['action'] != "editdraft" && !$mybb->input['attachmentaid'] && !$mybb->input['newattachment'] && !$mybb->input['updateattachment'] && !$mybb->input['rem'])
 	{
 		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
-		if($mybb->cookies['multiquote'] && $mybb->settings['multiquote'] != 0)
+		if(isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0)
 		{
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
@@ -742,9 +754,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	// Set up the post options.
-	if($mybb->input['previewpost'] || $maximageserror || $reply_errors != '')
+	if($mybb->input['previewpost'] || $reply_errors != '')
 	{
 		$postoptions = $mybb->input['postoptions'];
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		if($postoptions['signature'] == 1)
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
@@ -769,6 +783,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	elseif($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
+		$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = $post['subject'];
 		if($post['includesig'] != 0)
@@ -795,6 +812,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 	else
 	{
+		$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
+		$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+
 		if($mybb->user['signature'] != '')
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
@@ -818,13 +838,21 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$posticons = get_post_icons();
 	}
 
-	// No subject, but post info?
-	if(!$subject && $mybb->input['subject'])
+	// No subject?
+	if(!isset($subject))
 	{
-		$subject = $mybb->input['subject'];
+		if($mybb->input['subject'])
+		{
+			$subject = $mybb->input['subject'];
+		}
+		else
+		{
+			$subject = $thread['subject'];
+		}
 	}
 
 	// Preview a post that was written.
+	$preview = '';
 	if($mybb->input['previewpost'])
 	{
 		// Set up posthandler.
@@ -976,12 +1004,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 			$attachcount++;
 		}
+
+		$noshowattach = '';
 		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
+
 		if($usage['ausage'] > ($mybb->usergroup['attachquota']*1024) && $mybb->usergroup['attachquota'] != 0)
 		{
 			$noshowattach = 1;
 		}
+
 		if($mybb->usergroup['attachquota'] == 0)
 		{
 			$friendlyquota = $lang->unlimited;
@@ -990,12 +1022,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
+
 		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
+
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
 

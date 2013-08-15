@@ -56,6 +56,11 @@ class DefaultPage
 	public $extra_header = "";
 
 	/**
+	 * @var string Show a post verify error
+	 */
+	public $show_post_verify_error = '';
+
+	/**
 	 * Output the page header.
 	 *
 	 * @param string The title of the page.
@@ -202,10 +207,10 @@ var imagepath = '../images';
 		$trail = "";
 		foreach($this->_breadcrumb_trail as $key => $crumb)
 		{
-			if($this->_breadcrumb_trail[$key+1])
+			if(isset($this->_breadcrumb_trail[$key+1]))
 			{
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->_breadcrumb_trail[$key+2])
+				if(isset($this->_breadcrumb_trail[$key+2]))
 				{
 					$trail .= " &raquo; ";
 				}
@@ -306,7 +311,7 @@ var imagepath = '../images';
 		$login_label_width = "";
 
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
-		if($lang->login_field_width)
+		if(isset($lang->login_field_width))
         {
         	$login_label_width = " style=\"width: ".(intval($lang->login_field_width)+100)."px;\"";
 			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
@@ -693,13 +698,18 @@ EOF;
 			{
 				$class = ' active';
 			}
-			if($tab['align'] == "right")
+			if(isset($tab['align']) == "right")
 			{
 				$class .= " right";
 			}
-			if($tab['link_target'])
+			$target = '';
+			if(isset($tab['link_target']))
 			{
 				$target = " target=\"{$tab['link_target']}\"";
+			}
+			if(!isset($tab['link']))
+			{
+				$tab['link'] = '';
 			}
 			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
 			$target = '';

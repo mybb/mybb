@@ -61,7 +61,7 @@ $mybb->user['ismoderator'] = is_moderator('', '', $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if(isset($mybb->input['language']) && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
+if(!empty($mybb->input['language']) && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
 {
 	$mybb->settings['bblanguage'] = $mybb->input['language'];
 	// If user is logged in, update their language selection with the new one
@@ -82,7 +82,7 @@ if(isset($mybb->input['language']) && $lang->language_exists($mybb->input['langu
 	$mybb->user['language'] = $mybb->settings['bblanguage'];
 }
 // Cookied language!
-else if(!$mybb->user['uid'] && isset($mybb->cookies['mybblang']) && $lang->language_exists($mybb->cookies['mybblang']))
+else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybblang']) && $lang->language_exists($mybb->cookies['mybblang']))
 {
 	$mybb->settings['bblanguage'] = $mybb->cookies['mybblang'];
 }
@@ -136,7 +136,7 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(isset($mybb->input['pid']))
+	if(!empty($mybb->input['pid']))
 	{
 		$pid = (int)$mybb->input['pid'];
 		$query = $db->simple_select("posts", "fid", "pid = '{$pid}'", array("limit" => 1));
@@ -149,7 +149,7 @@ if(in_array($current_page, $valid))
 		}
 	}
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
-	else if(isset($mybb->input['tid']))
+	else if(!empty($mybb->input['tid']))
 	{
 		$tid = (int)$mybb->input['tid'];
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
@@ -162,7 +162,7 @@ if(in_array($current_page, $valid))
 		}
 	}
 	// We have a forum id - simply load the theme from it
-	else if(isset($mybb->input['fid']))
+	else if(!empty($mybb->input['fid']))
 	{
 		$style = $forum_cache[(int)$mybb->input['fid']];
 		$load_from_forum = 1;
@@ -233,6 +233,11 @@ if(!empty($mybb->input['action']))
 }
 foreach($stylesheet_scripts as $stylesheet_script)
 {
+	$stylesheet_actions = array("global");
+	if(!empty($mybb->input['action']))
+	{
+		$stylesheet_actions[] = $mybb->input['action'];
+	}
 	// Load stylesheets for global actions and the current action
 	foreach($stylesheet_actions as $stylesheet_action)
 	{
@@ -614,7 +619,7 @@ if($task_cache['nextrun'] <= TIME_NOW)
 }
 
 // Are we showing the quick language selection box?
-$lang_select = '';
+$lang_select = $lang_options = '';
 if($mybb->settings['showlanguageselect'] != 0)
 {
 	$languages = $lang->get_languages();

@@ -305,8 +305,8 @@ class MyBB {
 					unset($this->cookies[$key]);
 				}
 			}
-
-			if(!isset($this->cookies[$key]))
+			
+			if(empty($this->cookies[$key]))
 			{
 				$this->cookies[$key] = $val;
 			}

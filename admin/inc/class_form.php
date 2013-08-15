@@ -206,19 +206,19 @@ class DefaultForm
 		{
 			$textarea .= " id=\"{$options['id']}\"";
 		}
-		if($options['style'])
+		if(isset($options['style']))
 		{
 			$textarea .= " style=\"{$options['style']}\"";
 		}
-		if($options['disabled'])
+		if(isset($options['disabled']))
 		{
 			$textarea .= " disabled=\"disabled\"";
 		}
-		if(!$options['rows'])
+		if(!isset($options['rows']))
 		{
 			$options['rows'] = 5;
 		}
-		if(!$options['cols'])
+		if(!isset($options['cols']))
 		{
 			$options['cols'] = 45;
 		}
@@ -307,7 +307,7 @@ class DefaultForm
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
-		if($options['checked'] === true || $options['checked'] == 1)
+		if(isset($options['checked']) && ($options['checked'] === true || $options['checked'] == 1))
 		{
 			$input .= " checked=\"checked\"";
 		}
@@ -390,17 +390,17 @@ class DefaultForm
 		{
 			$selectoptions = '';
 		}
-
-		if(!$options['depth'])
+		
+		if(!isset($options['depth']))
 		{
 			$options['depth'] = 0;
 		}
 
 		$options['depth'] = intval($options['depth']);
-
-		if(!$options['pid'])
+		
+		if(!isset($options['pid']))
 		{
-			$pid = 0;
+			$options['pid'] = 0;
 		}
 
 		$pid = intval($options['pid']);
@@ -428,8 +428,8 @@ class DefaultForm
 
 			$selectoptions .= "<option value=\"-1\"{$select_add}>{$options['main_option']}</option>\n";
 		}
-
-		if(is_array($fselectcache[$pid]))
+		
+		if(isset($fselectcache[$pid]))
 		{
 			foreach($fselectcache[$pid] as $main)
 			{
@@ -581,11 +581,11 @@ class DefaultForm
 		{
 			$input .= " name=\"".$options['name']."\"";
 		}
-		if($options['disabled'])
+		if(isset($options['disabled']))
 		{
 			$input .= " disabled=\"disabled\"";
 		}
-		if($options['onclick'])
+		if(isset($options['onclick']))
 		{
 			$input .= " onclick=\"".str_replace('"', '\"', $options['onclick'])."\"";
 		}
@@ -660,6 +660,17 @@ class DefaultForm
 			$yes_value = "yes";
 			$no_value = "no";
 		}
+
+		if(!isset($yes_options['class']))
+		{
+			$yes_options['class'] = '';
+		}
+
+		if(!isset($no_options['class']))
+		{
+			$no_options['class'] = '';
+		}
+
 		// Set the options straight
 		$yes_options['class'] = "radio_yes ".$yes_options['class'];
 		$yes_options['checked'] = $yes_checked;
@@ -709,6 +720,16 @@ class DefaultForm
 		}
 
 		// Set the options straight
+		if(!isset($on_options['class']))
+		{
+			$on_options['class'] = '';
+		}
+
+		if(!isset($off_options['class']))
+		{
+			$off_options['class'] = '';
+		}
+
 		$on_options['class'] = "radio_on ".$on_options['class'];
 		$on_options['checked'] = $on_checked;
 		$off_options['class'] = "radio_off ".$off_options['class'];
@@ -866,7 +887,10 @@ class DefaultFormContainer
 			'row_options' => &$row_options,
 			'this' => &$this
 		);
+
 		$plugins->run_hooks("admin_formcontainer_output_row", $pluginargs);
+
+		$row = $for = '';
 		if($label_for != '')
 		{
 			$for = " for=\"{$label_for}\"";
@@ -877,15 +901,20 @@ class DefaultFormContainer
 			$row = "<label{$for}>{$title}</label>";
 		}
 
-		if($options['id'])
+		if(isset($options['id']))
 		{
 			$options['id'] = " id=\"{$options['id']}\"";
+		}
+		else
+		{
+			$options['id'] = '';
 		}
 
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
+
 		$row .= "<div class=\"form_row\"{$options['id']}>{$content}</div>\n";
 
 		$this->_container->construct_cell($row, $options);

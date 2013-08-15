@@ -19,7 +19,7 @@ $page->add_breadcrumb_item($lang->forum_management, "index.php?module=forum-mana
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
-	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
+	if(isset($mybb->input['fid']) && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
 	{
 		$sub_tabs['view_forum'] = array(
 			'title' => $lang->view_forum,
@@ -30,7 +30,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "edit" || $mybb-
 		$sub_tabs['add_child_forum'] = array(
 			'title' => $lang->add_child_forum,
 			'link' => "index.php?module=forum-management&amp;action=add&amp;pid=".$mybb->input['fid'],
-			'description' => $lang->add_child_forum_desc
+			'description' => $lang->view_forum_desc
 		);
 
 		$sub_tabs['edit_forum_settings'] = array(
@@ -1093,7 +1093,7 @@ if($mybb->input['action'] == "add")
 	foreach($usergroups as $usergroup)
 	{
 		$perms = array();
-		if($mybb->input['default_permissions'][$usergroup['gid']])
+		if(isset($mybb->input['default_permissions']) && $mybb->input['default_permissions'][$usergroup['gid']])
 		{
 			if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 			{
@@ -1166,7 +1166,7 @@ if($mybb->input['action'] == "add")
 		$form_container->output_cell("<strong>{$usergroup['title']}</strong><br />".$form->generate_check_box("default_permissions[{$usergroup['gid']}]", 1, "", array("id" => "default_permissions_{$usergroup['gid']}", "checked" => $default_checked, "onclick" => $default_click))." <small><label for=\"default_permissions_{$usergroup['gid']}\">{$lang->permissions_use_group_default}</label></small>");
 
 		$field_select = "<div class=\"quick_perm_fields\">\n";
-		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
+		$field_select .= "<div class=\"enabled\"><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
 		foreach($perms_checked as $perm => $value)
 		{
 			if($value == 1)
@@ -1175,7 +1175,7 @@ if($mybb->input['action'] == "add")
 			}
 		}
 		$field_select .= "</ul></div>\n";
-		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
+		$field_select .= "<div class=\"disabled\"><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
 		foreach($perms_checked as $perm => $value)
 		{
 			if($value == 0)
@@ -2003,8 +2003,13 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_management_start");
-	$fid = intval($mybb->input['fid']);
 
+	if(!isset($mybb->input['fid']))
+	{
+		$mybb->input['fid'] = 0;
+	}
+
+	$fid = intval($mybb->input['fid']);
 	if($fid)
 	{
 		$forum = get_forum($fid);
@@ -2215,7 +2220,7 @@ if(!$mybb->input['action'])
 		$page->output_tab_control($tabs);
 
 		echo "<div id=\"tab_subforums\">\n";
-		if(!is_array($forum_cache))
+		if(!isset($forum_cache) || !is_array($forum_cache))
 		{
 			cache_forums();
 		}
@@ -2329,12 +2334,12 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
+				if(isset($existing_permissions) && is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 				{
 					$perms = $existing_permissions[$usergroup['gid']];
 					$default_checked = false;
 				}
-				elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
+				elseif(is_array($cached_forum_perms) && isset($cached_forum_perms[$forum['fid']]) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
 					$default_checked = true;
@@ -2390,7 +2395,7 @@ if(!$mybb->input['action'])
 			$form_container->output_cell("<strong>{$usergroup['title']}</strong> <small style=\"vertical-align: middle;\">({$inherited_text})</small>");
 
 			$field_select = "<div class=\"quick_perm_fields\">\n";
-			$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
+			$field_select .= "<div class=\"enabled\"><ul id=\"fields_enabled_{$usergroup['gid']}\">\n";
 			foreach($perms_checked as $perm => $value)
 			{
 				if($value == 1)
@@ -2399,7 +2404,7 @@ if(!$mybb->input['action'])
 				}
 			}
 			$field_select .= "</ul></div>\n";
-			$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
+			$field_select .= "<div class=\"disabled\"><ul id=\"fields_disabled_{$usergroup['gid']}\">\n";
 			foreach($perms_checked as $perm => $value)
 			{
 				if($value == 0)
@@ -2517,6 +2522,16 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		foreach($usergroups as $group)
 		{
 			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".$group['title'];
+		}
+
+		if(!isset($mybb->input['usergroup']))
+		{
+			$mybb->input['usergroup'] = '';
+		}
+
+		if(!isset($mybb->input['username']))
+		{
+			$mybb->input['username'] = '';
 		}
 
 		$form_container = new FormContainer($lang->add_usergroup_as_moderator);

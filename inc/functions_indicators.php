@@ -63,7 +63,7 @@ function fetch_unread_count($fid)
 	$permissions = forum_permissions($fid);
 	$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 
-	if(isset($permissions['canonlyviewownthreads']))
+	if(!empty($permissions['canonlyviewownthreads']))
 	{
 		$onlyview = " AND uid = '{$mybb->user['uid']}'";
 		$onlyview2 = " AND t.uid = '{$mybb->user['uid']}'";

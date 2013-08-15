@@ -806,6 +806,7 @@ if($mybb->input['action'] == "thread")
 	}
 	else // Linear display
 	{
+		$threadexbox = '';
 		if(!$mybb->settings['postsperpage'])
 		{
 			$mybb->settings['postsperpage'] = 20;
@@ -1180,6 +1181,7 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
+	$classic_header = '';
 	if($mybb->settings['postlayout'] == "classic")
 	{
 		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");
