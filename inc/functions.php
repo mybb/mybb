@@ -6940,6 +6940,13 @@ function gd_version()
 	return $gd_version;
 }
 
+/**
+ * Binary database fields require special attention due to a problem with SQLite.
+ * Reference: https://bugs.php.net/bug.php?id=63419
+ *
+ * @param string Binary value
+ * @return string Encoded binary value
+ */
 function escape_binary($string)
 {
 	global $db;
