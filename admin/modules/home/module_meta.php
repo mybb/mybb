@@ -141,7 +141,7 @@ function home_action_handler($action)
 		{
 			if(!isset($done_users["{$user['uid']}.{$user['ip']}"]))
 			{
-				if(isset($user['type']) == "mobile")
+				if($user['type'] == "mobile")
 				{
 					$class = " class=\"mobile_user\"";
 				}
