@@ -15,18 +15,18 @@ define('THIS_SCRIPT', 'attachment.php');
 require_once "./global.php";
 
 // Find the AID we're looking for
-if($mybb->input['thumbnail'])
+if(isset($mybb->input['thumbnail']))
 {
-	$aid = intval($mybb->input['thumbnail']);
+	$aid = $mybb->get_input('thumbnail', 1);
 }
 else
 {
-	$aid = intval($mybb->input['aid']);
+	$aid = $mybb->get_input('aid', 1);
 }
 
 $plugins->run_hooks("attachment_start");
 
-$pid = intval($mybb->input['pid']);
+$pid = $mybb->get_input('pid', 1);
 
 // Select attachment data from database
 if($aid)
@@ -38,12 +38,16 @@ else
 	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
 $attachment = $db->fetch_array($query);
+if(!$attachment)
+{
+	error($lang->error_invalidthread);
+}
 $pid = $attachment['pid'];
 
 $post = get_post($pid);
 $thread = get_thread($post['tid']);
 
-if(!$thread['tid'] && !$mybb->input['thumbnail'])
+if(!$thread && !isset($mybb->input['thumbnail']))
 {
 	error($lang->error_invalidthread);
 }
@@ -55,7 +59,7 @@ $forum = get_forum($fid);
 // Permissions
 $forumpermissions = forum_permissions($fid);
 
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
 {
 	error_no_permission();
 }
@@ -66,7 +70,7 @@ if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && 
 	error($lang->error_invalidattachment);
 }
 
-if(!$mybb->input['thumbnail']) // Only increment the download count if this is not a thumbnail
+if(!isset($mybb->input['thumbnail'])) // Only increment the download count if this is not a thumbnail
 {
 	$attachupdate = array(
 		"downloads" => $attachment['downloads']+1,
@@ -79,7 +83,7 @@ $attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
 $plugins->run_hooks("attachment_end");
 
-if($mybb->input['thumbnail'])
+if(isset($mybb->input['thumbnail']))
 {
 	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)

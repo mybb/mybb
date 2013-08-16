@@ -728,7 +728,7 @@ function error($error="", $title="")
 	}
 
 	// AJAX error message?
-	if($mybb->input['ajax'])
+	if(isset($mybb->input['ajax']))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -773,13 +773,15 @@ function inline_error($errors, $title="")
 	}
 
 	// AJAX error message?
-	if($mybb->input['ajax'])
+	if(isset($mybb->input['ajax']))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
 		echo json_encode(array("errors" => $errors));
 		exit;
 	}
+	
+	$errorlist = '';
 
 	foreach($errors as $error)
 	{
@@ -809,7 +811,7 @@ function error_no_permission()
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
 
-	if($mybb->input['ajax'])
+	if(isset($mybb->input['ajax']))
 	{
 		// Send our headers.
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -1429,11 +1431,11 @@ function check_forum_password($fid, $pid=0)
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
-		if($mybb->input['pwverify'] && $pid == 0)
+		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
-			if($password == $mybb->input['pwverify'])
+			if($password == $mybb->get_input('pwverify'))
 			{
-				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']), null, true);
+				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->get_input('pwverify')), null, true);
 				$showform = false;
 			}
 			else
@@ -1666,9 +1668,9 @@ function get_post_icons()
 	global $mybb, $cache, $icon, $theme, $templates, $lang;
 
 	$listed = 0;
-	if($mybb->input['icon'])
+	if(isset($mybb->input['icon']))
 	{
-		$icon = $mybb->input['icon'];
+		$icon = $mybb->get_input('icon');
 	}
 
 	$iconlist = '';
@@ -3560,7 +3562,10 @@ function reset_breadcrumb()
 
 	$newnav[0]['name'] = $navbits[0]['name'];
 	$newnav[0]['url'] = $navbits[0]['url'];
-	$newnav[0]['options'] = $navbits[0]['options'];
+	if(!empty($navbits[0]['options']))
+	{
+		$newnav[0]['options'] = $navbits[0]['options'];
+	}
 
 	unset($GLOBALS['navbits']);
 	$GLOBALS['navbits'] = $newnav;
@@ -4133,12 +4138,12 @@ function get_current_location($fields=false, $ignore=array())
 		{
 			foreach($mybb->input as $name => $value)
 			{
-				if(in_array($name, $ignore))
+				if(in_array($name, $ignore) || is_array($name) || is_array($value))
 				{
 					continue;
 				}
 
-				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars_uni((string)$name)."\" value=\"".htmlspecialchars_uni((string)$value)."\" />\n";
+				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars_uni($name)."\" value=\"".htmlspecialchars_uni($value)."\" />\n";
 			}
 		}
 
@@ -5049,12 +5054,10 @@ function get_calendar_link($calendar, $year=0, $month=0, $day=0)
 		$link = str_replace("{calendar}", $calendar, $link);
 		return htmlspecialchars_uni($link);
 	}
+	/* Not implemented
 	else if($year > 0)
 	{
-		$link = str_replace("{year}", $year, CALENDAR_URL_YEAR);
-		$link = str_replace("{calendar}", $calendar, $link);
-		return htmlspecialchars_uni($link);
-	}
+	}*/
 	else
 	{
 		$link = str_replace("{calendar}", $calendar, CALENDAR_URL);
@@ -5094,7 +5097,7 @@ function get_user($uid)
 
 	$uid = intval($uid);
 
-	if($uid == $mybb->user['uid'])
+	if(!empty($mybb->user) && $uid == $mybb->user['uid'])
 	{
 		return $mybb->user;
 	}

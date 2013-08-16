@@ -103,12 +103,12 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($this->options['filter_badwords'])
+		if(!empty($this->options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
 		}
 
-		if($this->options['allow_html'] != 1)
+		if(empty($this->options['allow_html']))
 		{
 			$message = $this->parse_html($message);
 		}
@@ -125,7 +125,7 @@ class postParser
 		}
 
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($this->options['allow_mycode'])
+		if(!empty($this->options['allow_mycode']))
 		{
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
@@ -135,7 +135,7 @@ class postParser
 		$message = $this->fix_javascript($message);
 
 		// Replace "me" code and slaps if we have a username
-		if($this->options['me_username'])
+		if(!empty($this->options['me_username']))
 		{
 			global $lang;
 
@@ -144,13 +144,13 @@ class postParser
 		}
 
 		// If we can, parse smilies
-		if($this->options['allow_smilies'])
+		if(!empty($this->options['allow_smilies']))
 		{
 			$message = $this->parse_smilies($message, $this->options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($this->options['allow_mycode'])
+		if(!empty($this->options['allow_mycode']))
 		{
 			$message = $this->parse_mycode($message, $this->options);
 		}
@@ -164,7 +164,7 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 
-		if($this->options['allow_mycode'])
+		if(!empty($this->options['allow_mycode']))
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
@@ -172,7 +172,7 @@ class postParser
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					if($options['allow_html'] != 0)
+					if(!empty($options['allow_html']))
 					{
 						$text[2] = $this->parse_html($text[2]);
 					}
@@ -191,7 +191,7 @@ class postParser
 		}
 
 		// Replace meta and base tags in our post - these are > dangerous <
-		if($this->options['allow_html'])
+		if(!empty($this->options['allow_html']))
 		{
 			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
 				'$matches',
@@ -199,7 +199,7 @@ class postParser
 			), $message);
 		}
 
-		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
+		if(!empty($this->options['nl2br']))
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -387,7 +387,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if($options['allow_imgcode'] != 0)
+		if(!empty($options['allow_imgcode']))
 		{
 			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback1'), $message);
 			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
@@ -396,7 +396,7 @@ class postParser
 		}
 
 		// Convert videos when allow.
-		if($options['allow_videocode'] != 0)
+		if(!empty($options['allow_videocode']))
 		{
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
 		}
@@ -547,7 +547,7 @@ class postParser
 				}
 			}
 		}
-		if(isset($options['strip_tags']) && $options['strip_tags'] == 1)
+		if(!empty($options['strip_tags']))
 		{
 			$message = strip_tags($message);
 		}
@@ -940,7 +940,7 @@ class postParser
 		$url = str_replace("\'", "'", $url);
 		$fullurl = str_replace("\'", "'", $fullurl);
 
-		if($name == $url && (!isset($this->options['shorten_urls']) || $this->options['shorten_urls'] != 0))
+		if($name == $url && !empty($this->options['shorten_urls']))
 		{
 			if(my_strlen($url) > 55)
 			{
@@ -949,7 +949,7 @@ class postParser
 		}
 
 		$nofollow = '';
-		if(isset($this->options['nofollow_on']))
+		if(!empty($this->options['nofollow_on']))
 		{
 			$nofollow = " rel=\"nofollow\"";
 		}
@@ -1337,7 +1337,7 @@ class postParser
 		global $plugins;
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] != 0)
+		if(!empty($options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -1364,7 +1364,7 @@ class postParser
 		$message = preg_replace($find, $replace, $message);
 
 		// Replace "me" code and slaps if we have a username
-		if($options['me_username'])
+		if(!empty($options['me_username']))
 		{
 			global $lang;
 

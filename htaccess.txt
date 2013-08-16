@@ -40,7 +40,6 @@ Options -MultiViews +FollowSymlinks -Indexes
 	RewriteRule ^user-([0-9]+)\.html$ member.php?action=profile&uid=$1 [L,QSA]
 
 	RewriteRule ^calendar-([0-9]+)\.html$ calendar.php?calendar=$1 [L,QSA]
-	RewriteRule ^calendar-([0-9]+)-year-([0-9]+)\.html$ calendar.php?action=yearview&calendar=$1&year=$2 [L,QSA]
 	RewriteRule ^calendar-([0-9]+)-year-([0-9]+)-month-([0-9]+)\.html$ calendar.php?calendar=$1&year=$2&month=$3 [L,QSA]
 	RewriteRule ^calendar-([0-9]+)-year-([0-9]+)-month-([0-9]+)-day-([0-9]+)\.html$ calendar.php?action=dayview&calendar=$1&year=$2&month=$3&day=$4 [L,QSA]
 	RewriteRule ^calendar-([0-9]+)-week-(n?[0-9]+)\.html$ calendar.php?action=weekview&calendar=$1&week=$2 [L,QSA]

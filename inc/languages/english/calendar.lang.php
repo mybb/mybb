@@ -141,4 +141,5 @@ $l['redirect_eventadded'] = "Your event has been added successfully.<br />You wi
 $l['redirect_eventadded_moderation'] = "Your event has been added successfully but requires moderation by a forum moderator before it is visible.<br />You will now be taken back to the calendar.";
 $l['redirect_eventunapproved'] = "The event has been unapproved successfully.<br />You will now be taken to it.";
 $l['redirect_eventapproved'] = "The event has been approved successfully.<br />You will now be taken to it.";
+$l['redirect_eventmoved'] = "The event has been successfully been moved.<br />You will now be returned to it.";
 ?>

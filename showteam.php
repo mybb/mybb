@@ -112,6 +112,8 @@ while($user = $db->fetch_array($query))
 $grouplist = '';
 foreach($usergroups as $usergroup)
 {
+	$usergrouprows = $modrows = '';
+
 	// If we have no users - don't show this group
 	if(!isset($usergroup['user_list']))
 	{
@@ -160,8 +162,6 @@ foreach($usergroups as $usergroup)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
 	}
-
-	$usergrouprows = $modrows = '';
 }
 
 if(empty($grouplist))

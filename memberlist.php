@@ -34,7 +34,7 @@ if($mybb->usergroup['canviewmemberlist'] == 0)
 }
 
 // Showing advanced search page?
-if($mybb->input['action'] == "search")
+if($mybb->get_input('action') == "search")
 {
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
@@ -54,14 +54,23 @@ else
 	}
 
 	// Incoming sort field?
-	if($mybb->input['sort'])
+	if(isset($mybb->input['sort']))
 	{
-		$mybb->input['sort'] = strtolower($mybb->input['sort']);
+		$mybb->input['sort'] = strtolower($mybb->get_input('sort'));
 	}
 	else
 	{
 		$mybb->input['sort'] = $mybb->settings['default_memberlist_sortby'];
 	}
+
+	$sort_selected = array(
+		'regdate' => '',
+		'lastvisit' => '',
+		'reputation' => '',
+		'postnum' => '',
+		'referrals' => '',
+		'username' => ''
+	);
 
 	switch($mybb->input['sort'])
 	{
@@ -88,7 +97,7 @@ else
 	$sort_selected[$mybb->input['sort']] = " selected=\"selected\"";
 
 	// Incoming sort order?
-	if($mybb->input['order'])
+	if(isset($mybb->input['order']))
 	{
 		$mybb->input['order'] = strtolower($mybb->input['order']);
 	}
@@ -97,6 +106,7 @@ else
 		$mybb->input['order'] = strtolower($mybb->settings['default_memberlist_order']);
 	}
 
+	$order_check = array('ascending' => '', 'descending' => '');
 	if($mybb->input['order'] == "ascending" || (!$mybb->input['order'] && $mybb->input['sort'] == 'username'))
 	{
 		$sort_order = "ASC";
@@ -110,7 +120,7 @@ else
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 
 	// Incoming results per page?
-	$mybb->input['perpage'] = intval($mybb->input['perpage']);
+	$mybb->input['perpage'] = intval($mybb->get_input('perpage'));
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
 	{
 		$per_page = $mybb->input['perpage'];
@@ -128,9 +138,9 @@ else
 	$search_url = "memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}";
 
 	// Limiting results to a certain letter
-	if($mybb->input['letter'])
+	if(isset($mybb->input['letter']))
 	{
-		$letter = chr(ord($mybb->input['letter']));
+		$letter = chr(ord($mybb->get_input('letter')));
 		if($mybb->input['letter'] == -1)
 		{
 			$search_query .= " AND u.username NOT REGEXP('[a-zA-Z]')";
@@ -143,7 +153,7 @@ else
 	}
 
 	// Searching for a matching username
-	$search_username = htmlspecialchars_uni(trim($mybb->input['username']));
+	$search_username = htmlspecialchars_uni(trim($mybb->get_input('username')));
 	if($search_username != '')
 	{
 		$username_like_query = $db->escape_string_like($search_username);
@@ -164,6 +174,7 @@ else
 	}
 
 	// Website contains
+	$mybb->input['website'] = trim($mybb->get_input('website'));
 	$search_website = htmlspecialchars_uni($mybb->input['website']);
 	if(trim($mybb->input['website']))
 	{
@@ -172,28 +183,32 @@ else
 	}
 
 	// AIM Identity
-	if(trim($mybb->input['aim']))
+	$mybb->input['aim'] = trim($mybb->get_input('aim'));
+	if($mybb->input['aim'])
 	{
 		$search_query .= " AND u.aim LIKE '%".$db->escape_string_like($mybb->input['aim'])."%'";
 		$search_url .= "&aim=".urlencode($mybb->input['aim']);
 	}
 
 	// ICQ Number
-	if(trim($mybb->input['icq']))
+	$mybb->input['icq'] = trim($mybb->get_input('icq'));
+	if($mybb->input['icq'])
 	{
 		$search_query .= " AND u.icq LIKE '%".$db->escape_string_like($mybb->input['icq'])."%'";
 		$search_url .= "&icq=".urlencode($mybb->input['icq']);
 	}
 
 	// MSN/Windows Live Messenger address
-	if(trim($mybb->input['msn']))
+	$mybb->input['msn'] = trim($mybb->get_input('msn'));
+	if($mybb->input['msn'])
 	{
 		$search_query .= " AND u.msn LIKE '%".$db->escape_string_like($mybb->input['msn'])."%'";
 		$search_url .= "&msn=".urlencode($mybb->input['msn']);
 	}
 
 	// Yahoo! Messenger address
-	if(trim($mybb->input['yahoo']))
+	$mybb->input['yahoo'] = trim($mybb->get_input('yahoo'));
+	if($mybb->input['yahoo'])
 	{
 		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string_like($mybb->input['yahoo'])."%'";
 		$search_url .= "&yahoo=".urlencode($mybb->input['yahoo']);
@@ -202,7 +217,7 @@ else
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
 
-	$page = intval($mybb->input['page']);
+	$page = $mybb->get_input('page', 1);
 	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
@@ -223,6 +238,7 @@ else
 	{
 		$usertitles_cache[$usertitle['posts']] = $usertitle;
 	}
+	$users = '';
 	$query = $db->query("
 		SELECT u.*, f.*
 		FROM ".TABLE_PREFIX."users u
@@ -246,7 +262,7 @@ else
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 
 		// Get the display usergroup
-		if(!$user['displaygroup'])
+		if(empty($user['displaygroup']))
 		{
 			$user['displaygroup'] = $user['usergroup'];
 		}
@@ -258,6 +274,7 @@ else
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
 		}
 
+		$usergroup['groupimage'] = '';
 		// Work out the usergroup/title stuff
 		if(!empty($usergroup['image']))
 		{
@@ -301,21 +318,21 @@ else
 			}
 		}
 
-		if($usergroup['stars'])
+		if(!empty($usergroup['stars']))
 		{
 			$user['stars'] = $usergroup['stars'];
 		}
 
-		if(!$user['starimage'])
+		if(empty($user['starimage']))
 		{
 			$user['starimage'] = $usergroup['starimage'];
 		}
 
-		if($user['starimage'])
+		$user['userstars'] = '';
+		if(!empty($user['starimage']))
 		{
 			// Only display stars if we have an image to use...
 			$starimage = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
-			$user['userstars'] = '';
 
 			for($i = 0; $i < $user['stars']; ++$i)
 			{

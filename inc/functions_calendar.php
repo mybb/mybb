@@ -80,12 +80,15 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$today = my_date("dnY");
 
 	// Build weekday headers
+	$weekday_headers = '';
 	foreach($weekdays as $weekday)
 	{
 		$weekday_name = fetch_weekday_name($weekday, true);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
 	}
 
+	$in_month = 0;
+	$day_bits = $calendar_rows = '';
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
@@ -127,6 +130,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 				break;
 			}
 
+			$link_to_day = false;
 			// Any events on this specific day?
 			if(@count($events_cache["$day-$calendar_month-$calendar_year"]) > 0)
 			{
@@ -157,7 +161,6 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 				$day_link = $day;
 			}
 			eval("\$day_bits .= \"".$templates->get("calendar_mini_weekrow_day")."\";");
-			$link_to_day = false;
 			++$day;
 		}
 		if($day_bits)
@@ -166,7 +169,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		}
 		$day_bits = "";
 	}
-	eval("\$mini_calendar .= \"".$templates->get("calendar_mini")."\";");
+	eval("\$mini_calendar = \"".$templates->get("calendar_mini")."\";");
 	return $mini_calendar;
 }
 
@@ -255,8 +258,11 @@ function get_calendar_permissions($cid=0)
 
 	if($cid > 0)
 	{
-		$permissions = fetch_calendar_permissions($cid, $gid, $calendar_permissions[$cid]);
-		if(!$permissions)
+		if(isset($calendar_permissions[$cid]))
+		{
+			$permissions = fetch_calendar_permissions($cid, $gid, $calendar_permissions[$cid]);
+		}
+		if(empty($permissions))
 		{
 			$permissions = $group_permissions;
 		}
@@ -265,8 +271,11 @@ function get_calendar_permissions($cid=0)
 	{
 		foreach($calendars as $calendar)
 		{
-			$permissions[$calendar['cid']] = fetch_calendar_permissions($calendar['cid'], $gid, $calendar_permissions[$calendar['cid']]);
-			if(!$permissions[$calendar['cid']])
+			if(isset($calendar_permissions[$calendar['cid']]))
+			{
+				$permissions[$calendar['cid']] = fetch_calendar_permissions($calendar['cid'], $gid, $calendar_permissions[$calendar['cid']]);
+			}
+			if(empty($permissions[$calendar['cid']]))
 			{
 				$permissions[$calendar['cid']] = $group_permissions;
 			}
@@ -330,6 +339,8 @@ function build_calendar_jump($selected=0)
 	{
 		return;
 	}
+	
+	$jump_options = '';
 
 	foreach($calendars as $calendar)
 	{
@@ -416,10 +427,13 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 	$start -= 12*3600;
 	$end += 12*3600;
 
+	$visible_where = '';
 	if($unapproved != 1)
 	{
 		$visible_where = " AND e.visible='1'";
 	}
+	
+	$events_cache = array();
 	$query = $db->query("
 		SELECT u.*, e.*
 		FROM ".TABLE_PREFIX."events e
@@ -493,9 +507,13 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 					}
 					else if(!$first)
 					{
-						$count = count($events_cache["{$day_date}"]);
+						if(!isset($events_cache[$day_date]))
+						{
+							$events_cache[$day_date] = array();
+						}
+						$count = count($events_cache[$day_date]);
 						$first = $day_date;
-						$events_cache["{$day_date}"][] = $event;
+						$events_cache[$day_date][] = $event;
 					}
 				}
 				if($event['repeats']['repeats'] == 0)
@@ -549,6 +567,8 @@ function get_birthdays($months, $day="")
 	}
 
 	$where = implode(" OR ", $where);
+	
+	$bdays = array();
 
 	$query = $db->simple_select("users", "uid, username, birthday, birthdayprivacy, usergroup, displaygroup", $where);
 	while($user = $db->fetch_array($query))
@@ -569,6 +589,10 @@ function get_birthdays($months, $day="")
 	}
 	if($day)
 	{
+		if(!isset($bdays["$day-$month"]))
+		{
+			return array();
+		}
 		return $bdays["$day-$month"];
 	}
 	return $bdays;
@@ -924,7 +948,7 @@ function fetch_friendly_repetition($event)
 
 	$repeats = $event['repeats'];
 
-	switch($repeats['repeats'])
+	switch($repeats)
 	{
 		case 1:
 			if($repeats['days'] <= 1)

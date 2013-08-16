@@ -67,6 +67,7 @@ if(!$most_replied)
 	$most_replied = $cache->read("most_replied_threads", true);
 }
 
+$mostreplies = '';
 if(!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
@@ -91,6 +92,7 @@ if(!$most_viewed)
 	$most_viewed = $cache->read("most_viewed_threads", true);
 }
 
+$mostviews = '';
 if(!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)

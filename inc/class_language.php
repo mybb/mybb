@@ -162,7 +162,7 @@ class MyLanguage
 		// We must unite and protect our language variables!
 		$lang_keys_ignore = array('language', 'path', 'settings');
 
-		if(is_array($l))
+		if(isset($l) && is_array($l))
 		{
 			foreach($l as $key => $val)
 			{

@@ -207,6 +207,11 @@ class EventDataHandler extends DataHandler
 			$end_time['hour'] -= $event['timezone'];
 		}
 
+		if(!isset($start_time))
+		{
+			$start_time = array("hour" => 0, "min" => 0);
+		}
+
 		$start_timestamp = gmmktime($start_time['hour'], $start_time['min'], 0, $event['start_date']['month'], $event['start_date']['day'], $event['start_date']['year']);
 
 		if($event['type'] == "ranged")
@@ -218,6 +223,11 @@ class EventDataHandler extends DataHandler
 				$this->set_error("end_in_past");
 				return false;
 			}
+		}
+
+		if(!isset($end_timestamp))
+		{
+			$end_timestamp = 0;
 		}
 
 		// Save our time stamps for saving
@@ -468,12 +478,32 @@ class EventDataHandler extends DataHandler
 			'private' => intval($event['private']),
 			'dateline' => TIME_NOW,
 			'starttime' => intval($event['starttime']),
-			'endtime' => intval($event['endtime']),
-			'timezone' => $db->escape_string(floatval($event['timezone'])),
-			'ignoretimezone' => intval($event['ignoretimezone']),
-			'usingtime' => intval($event['usingtime']),
-			'repeats' => $db->escape_string(serialize($event['repeats']))
+			'endtime' => intval($event['endtime'])
 		);
+
+		if(isset($event['timezone']))
+		{
+			$this->event_insert_data['timezone'] = $db->escape_string(floatval($event['timezone']));
+		}
+
+		if(isset($event['ignoretimezone']))
+		{
+			$this->event_insert_data['ignoretimezone'] = intval($event['ignoretimezone']);
+		}
+
+		if(isset($event['usingtime']))
+		{
+			$this->event_insert_data['usingtime'] = intval($event['usingtime']);
+		}
+
+		if(isset($event['repeats']))
+		{
+			$this->event_insert_data['repeats'] = $db->escape_string(serialize($event['repeats']));
+		}
+		else
+		{
+			$this->event_insert_data['repeats'] = '';
+		}
 
 		$plugins->run_hooks("datahandler_event_insert", $this);
 

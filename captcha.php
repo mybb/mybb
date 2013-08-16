@@ -26,6 +26,7 @@ $max_size = 32;
 $min_angle = -30;
 $max_angle = 30;
 
+$mybb->input['imagehash'] = $mybb->get_input('imagehash');
 if($mybb->input['imagehash'] == "test")
 {
 	$imagestring = "MyBB";
@@ -38,7 +39,7 @@ elseif($mybb->input['imagehash'])
 }
 else
 {
-	return false;
+	exit;
 }
 
 $ttf_fonts = array();

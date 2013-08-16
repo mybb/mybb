@@ -373,10 +373,10 @@ class MyBB {
 					switch($type)
 					{
 						case "int":
-							$this->input[$var] = intval($this->input[$var]);
+							$this->input[$var] = $this->get_input($var, 1);
 							break;
 						case "a-z":
-							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
+							$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->get_input($var));
 							break;
 						case "pos":
 							if(($this->input[$var] < 0 && $var != "page") || ($var == "page" && $this->input[$var] != "last" && $this->input[$var] < 0))
@@ -385,6 +385,38 @@ class MyBB {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Checks the input data type before usage.
+	 *
+	 * @param string Variable name ($mybb->input)
+	 * @param Data type (0/Default=String, 1=Integer, 2=Array)
+	 * @param Checked data
+	 */
+	function get_input($name, $type=0)
+	{
+		switch($type)
+		{
+			case 2:
+				if(!isset($this->input[$name]) || !is_array($this->input[$name]))
+				{
+					return array();
+				}
+				return $this->input[$name];
+			case 1:
+				if(!isset($this->input[$name]) || !is_numeric($this->input[$name]))
+				{
+					return 0;
+				}
+				return intval($this->input[$name]);
+			default:
+				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
+				{
+					return '';
+				}
+				return $this->input[$name];
 		}
 	}
 

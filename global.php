@@ -44,7 +44,7 @@ if($current_page != 'attachment.php')
 }
 
 // Do not use session system for defined pages
-if((@isset($mybb->input['action']) && @isset($nosession[$mybb->input['action']])) || (@isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
+if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
 {
 	define('NO_ONLINE', 1);
 }
@@ -61,9 +61,9 @@ $mybb->user['ismoderator'] = is_moderator('', '', $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if(!empty($mybb->input['language']) && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
+if(isset($mybb->input['language']) && $lang->language_exists($mybb->get_input('language')) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
-	$mybb->settings['bblanguage'] = $mybb->input['language'];
+	$mybb->settings['bblanguage'] = $mybb->get_input('language');
 	// If user is logged in, update their language selection with the new one
 	if($mybb->user['uid'])
 	{
@@ -136,10 +136,9 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(!empty($mybb->input['pid']))
+	if(isset($mybb->input['pid']))
 	{
-		$pid = (int)$mybb->input['pid'];
-		$query = $db->simple_select("posts", "fid", "pid = '{$pid}'", array("limit" => 1));
+		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -149,9 +148,8 @@ if(in_array($current_page, $valid))
 		}
 	}
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
-	else if(!empty($mybb->input['tid']))
+	else if(isset($mybb->input['tid']))
 	{
-		$tid = (int)$mybb->input['tid'];
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
@@ -162,9 +160,9 @@ if(in_array($current_page, $valid))
 		}
 	}
 	// We have a forum id - simply load the theme from it
-	else if(!empty($mybb->input['fid']))
+	else if(isset($mybb->input['fid']) && isset($forum_cache[$mybb->input['fid']]))
 	{
-		$style = $forum_cache[(int)$mybb->input['fid']];
+		$style = $forum_cache[$mybb->input['fid']];
 		$load_from_forum = 1;
 	}
 }
@@ -229,7 +227,7 @@ if(!empty($theme['color']))
 $stylesheet_actions = array("global");
 if(!empty($mybb->input['action']))
 {
-	$stylesheet_actions[] = $mybb->input['action'];
+	$stylesheet_actions[] = $mybb->get_input('action');
 }
 foreach($stylesheet_scripts as $stylesheet_script)
 {
@@ -270,7 +268,7 @@ if(!empty($theme_stylesheets))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{
-		if($theme_stylesheets[$style_name])
+		if(!empty($theme_stylesheets[$style_name]))
 		{
 			$stylesheets .= $theme_stylesheets[$style_name];
 		}
@@ -544,7 +542,7 @@ $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
 $pm_notice = '';
-if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
+if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->get_input('action') != "read"))
 {
 	if(!$parser)
 	{
@@ -681,7 +679,7 @@ $closed_bypass = array(
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->input['action'], $closed_bypass[$current_page])))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
@@ -701,11 +699,11 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 {
 	if(isset($mybb->input['referrername']))
 	{
-		$condition = "username = '".$db->escape_string($mybb->input['referrername'])."'";
+		$condition = "username = '".$db->escape_string($mybb->get_input('referrername'))."'";
 	}
 	else
 	{
-		$condition = "uid = '".(int)$mybb->input['referrer']."'";
+		$condition = "uid = '".$mybb->get_input('referrer', 1)."'";
 	}
 
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
@@ -725,7 +723,7 @@ if($mybb->usergroup['canview'] != 1)
 		if(is_string(ALLOWABLE_PAGE))
 		{
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
-			if(!in_array($mybb->input['action'], $allowable_actions))
+			if(!in_array($mybb->get_input('action'), $allowable_actions))
 			{
 				error_no_permission();
 			}
@@ -747,7 +745,7 @@ if($mybb->usergroup['canview'] != 1)
 // If they are, redirect them to change it
 if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->settings['emailkeep'] != 1)
 {
-	if(THIS_SCRIPT != 'usercp.php' || THIS_SCRIPT == 'usercp.php' && $mybb->input['action'] != 'email' && $mybb->input['action'] != 'do_email')
+	if(THIS_SCRIPT != 'usercp.php' || THIS_SCRIPT == 'usercp.php' && $mybb->get_input('action') != 'email' && $mybb->get_input('action') != 'do_email')
 	{
 		redirect('usercp.php?action=email');
 	}

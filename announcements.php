@@ -19,7 +19,7 @@ require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = intval($mybb->input['aid']);
+$aid = $mybb->get_input('aid');
 
 $plugins->run_hooks("announcements_start");
 
@@ -105,7 +105,7 @@ $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecia
 if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 {
 	$setcookie = true;
-	if($mybb->cookies['mybb']['announcements'])
+	if(isset($mybb->cookies['mybb']['announcements']) && is_scalar($mybb->cookies['mybb']['announcements']))
 	{
 		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 

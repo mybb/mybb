@@ -154,7 +154,7 @@ elseif($mybb->input['do'] == "login")
 	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
 
 	// Validate PIN first
-	if(isset($config['secret_pin']) && $mybb->input['pin'] != $config['secret_pin'])
+	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{
 		$default_page->show_login($lang->error_invalid_secret_pin, "error");
 	}
@@ -402,7 +402,7 @@ if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 	my_unsetcookie('adminsid');
 }
 
-if($mybb->user['uid'])
+if(!empty($mybb->user['uid']))
 {
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);

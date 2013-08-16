@@ -246,7 +246,6 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('PROFILE_URL', "user-{uid}.html");
 	define('ANNOUNCEMENT_URL', "announcement-{aid}.html");
 	define('CALENDAR_URL', "calendar-{calendar}.html");
-	define('CALENDAR_URL_YEAR', 'calendar-{calendar}-year-{year}.html');
 	define('CALENDAR_URL_MONTH', 'calendar-{calendar}-year-{year}-month-{month}.html');
 	define('CALENDAR_URL_DAY', 'calendar-{calendar}-year-{year}-month-{month}-day-{day}.html');
 	define('CALENDAR_URL_WEEK', 'calendar-{calendar}-week-{week}.html');
@@ -264,7 +263,6 @@ else
 	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
 	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
 	define('CALENDAR_URL', "calendar.php?calendar={calendar}");
-	define('CALENDAR_URL_YEAR', "calendar.php?action=yearview&calendar={calendar}&year={year}");
 	define('CALENDAR_URL_MONTH', "calendar.php?calendar={calendar}&year={year}&month={month}");
 	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
 	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');

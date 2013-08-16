@@ -55,16 +55,18 @@ $monthnames = array(
 // Make navigation
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
+$mybb->input['calendar'] = $mybb->get_input('calendar', 1);
 $calendar_jump = build_calendar_jump($mybb->input['calendar']);
 
+$mybb->input['action'] = $mybb->get_input('action');
 // Add an event
 if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -77,7 +79,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	}
 
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("calendar_do_addevent_start");
 
@@ -86,13 +88,15 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/datahandlers/event.php";
 	$eventhandler = new EventDataHandler("insert");
 
+	$mybb->input['type'] = $mybb->get_input('type');
+
 	// Prepare an array for the eventhandler.
 	$event = array(
 		"cid" => $calendar['cid'],
 		"uid" => $mybb->user['uid'],
-		"name" => $mybb->input['name'],
-		"description" => $mybb->input['description'],
-		"private" => $mybb->input['private'],
+		"name" => $mybb->get_input('name'),
+		"description" => $mybb->get_input('description'),
+		"private" => $mybb->get_input('private', 1),
 		"type" => $mybb->input['type']
 	);
 
@@ -100,81 +104,82 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 	if($mybb->input['type'] == "single")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->input['single_day'],
-			"month" => $mybb->input['single_month'],
-			"year" => $mybb->input['single_year']
+			"day" => $mybb->get_input('single_day', 1),
+			"month" => $mybb->get_input('single_month', 1),
+			"year" => $mybb->get_input('single_year', 1)
 		);
+		$event['repeats'] = '';
 	}
 	else if($mybb->input['type'] == "ranged")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->input['start_day'],
-			"month" => $mybb->input['start_month'],
-			"year" => $mybb->input['start_year'],
-			"time" => $mybb->input['start_time']
+			"day" => $mybb->get_input('start_day', 1),
+			"month" => $mybb->get_input('start_month', 1),
+			"year" => $mybb->get_input('start_year', 1),
+			"time" => $mybb->get_input('start_time')
 		);
 		$event['end_date'] = array(
-			"day" => $mybb->input['end_day'],
-			"month" => $mybb->input['end_month'],
-			"year" => $mybb->input['end_year'],
-			"time" => $mybb->input['end_time']
+			"day" => $mybb->get_input('end_day', 1),
+			"month" => $mybb->get_input('end_month', 1),
+			"year" => $mybb->get_input('end_year', 1),
+			"time" => $mybb->get_input('end_time')
 		);
-		$event['timezone'] = intval($mybb->input['timezone']);
-		$event['ignoretimezone'] =	intval($mybb->input['ignoretimezone']);
+		$event['timezone'] = $mybb->get_input('timezone');
+		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', 1);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
 			case 1:
 				$repeats['repeats'] = 1;
-				$repeats['days'] = $mybb->input['repeats_1_days'];
+				$repeats['days'] = $mybb->get_input('repeats_1_days', 1);
 				break;
 			case 2:
 				$repeats['repeats'] = 2;
 				break;
 			case 3:
 				$repeats['repeats'] = 3;
-				$repeats['weeks'] = $mybb->input['repeats_3_weeks'];
-				if(!is_array($mybb->input['repeats_3_days']))
-				{
-					$mybb->input['repeats_3_days'] = array();
-				}
+				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', 1);
+				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', 2);
 				ksort($mybb->input['repeats_3_days']);
 				$days = array();
 				foreach($mybb->input['repeats_3_days'] as $weekday => $value)
 				{
-					if($value != 1) continue;
+					if($value != 1)
+					{
+						continue;
+					}
 					$days[] = $weekday;
 				}
 				$repeats['days'] = $days;
 				break;
 			case 4:
 				$repeats['repeats'] = 4;
-				if($mybb->input['repeats_4_type'] == 1)
+				if($mybb->get_input('repeats_4_type', 1) == 1)
 				{
-					$repeats['day'] = $mybb->input['repeats_4_day'];
-					$repeats['months'] = $mybb->input['repeats_4_months'];
+					$repeats['day'] = $mybb->get_input('repeats_4_day', 1);
+					$repeats['months'] = $mybb->get_input('repeats_4_months', 1);
 				}
 				else
 				{
-					$repeats['months'] = $mybb->input['repeats_4_months2'];
-					$repeats['occurance'] = $mybb->input['repeats_4_occurance'];
-					$repeats['weekday'] = $mybb->input['repeats_4_weekday'];
+					$repeats['months'] = $mybb->get_input('repeats_4_months2', 1);
+					$repeats['occurance'] = $mybb->get_input('repeats_4_occurance');
+					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', 1);
 				}
 				break;
 			case 5:
 				$repeats['repeats'] = 5;
-				if($mybb->input['repeats_5_type'] == 1)
+				if($mybb->get_input('repeats_5_type', 1) == 1)
 				{
-					$repeats['day'] = $mybb->input['repeats_5_day'];
-					$repeats['month'] = $mybb->input['repeats_5_month'];
-					$repeats['years'] = $mybb->input['repeats_5_years'];
+					$repeats['day'] = $mybb->get_input('repeats_5_day', 1);
+					$repeats['month'] = $mybb->get_input('repeats_5_month', 1);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
 				}
 				else
 				{
-					$repeats['occurance'] = $mybb->input['repeats_5_occurance'];
-					$repeats['weekday'] = $mybb->input['repeats_5_weekday'];
-					$repeats['month'] = $mybb->input['repeats_5_month2'];
-					$repeats['years'] = $mybb->input['repeats_5_years'];
+					$repeats['occurance'] = $mybb->get_input('repeats_5_occurance');
+					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', 1);
+					$repeats['month'] = $mybb->get_input('repeats_5_month2', 1);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
 				}
 				break;
 			default:
@@ -209,7 +214,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "addevent")
 {
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->input['calendar']."'");
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
@@ -244,69 +249,92 @@ if($mybb->input['action'] == "addevent")
 	$name = $description = '';
 	if(isset($mybb->input['name']))
 	{
-		$name = htmlspecialchars_uni($mybb->input['name']);
+		$name = htmlspecialchars_uni($mybb->get_input('name'));
 	}
 
 	if(isset($mybb->input['description']))
 	{
-		$description = htmlspecialchars_uni($mybb->input['description']);
+		$description = htmlspecialchars_uni($mybb->get_input('description'));
 	}
+
+	$single_month = $start_month = $end_month = $repeats_sel = $repeats_3_days = $repeats_4_occurance = $repeats_4_weekday = $repeats_5_month = $repeats_5_occurance = $repeats_5_weekday = $repeats_5_month2 = array();
+	foreach(range(1, 12) as $number)
+	{
+		$single_month[$number] = $start_month[$number] = $end_month[$number] = $repeats_5_month[$number] = $repeats_5_month2[$number] = '';
+	}
+	foreach(range(1, 5) as $number)
+	{
+		$repeats_sel[$number] = '';
+	}
+	foreach(range(0, 6) as $number)
+	{
+		$repeats_3_days[$number] = $repeats_4_weekday[$number] = $repeats_5_weekday[$number] = '';
+	}
+	foreach(range(1, 4) as $number)
+	{
+		$repeats_4_occurance[$number] = $repeats_5_occurance[$number] = '';
+	}
+	$repeats_4_occurance['last'] = $repeats_5_occurance['last'] = '';
+	$repeats_4_type = array(1 => '', 2 => '');
+	$repeats_5_type = array(1 => '', 2 => '');
 
 	if($mybb->request_method == "post")
 	{
-		$single_day = $mybb->input['single_day'];
-		$single_month[$mybb->input['single_month']] = " selected=\"selected\"";
-		$single_year = $mybb->input['single_year'];
-		$start_day = $mybb->input['start_day'];
-		$start_month[$mybb->input['start_month']] = " selected=\"selected\"";
-		$start_year = $mybb->input['start_year'];
-		$start_time = htmlspecialchars_uni($mybb->input['start_time']);
-		$end_day = $mybb->input['end_day'];
-		$end_month[$mybb->input['end_month']] = " selected=\"selected\"";
-		$end_year = $mybb->input['end_year'];
-		$end_time = htmlspecialchars_uni($mybb->input['end_time']);
-		if($mybb->input['type'] == "single")
+		$single_day = $mybb->get_input('single_day', 1);
+		$single_month[$mybb->get_input('single_month', 1)] = " selected=\"selected\"";
+		$single_year = $mybb->get_input('single_year', 1);
+		$start_day = $mybb->get_input('start_day', 1);
+		$start_month[$mybb->get_input('start_month', 1)] = " selected=\"selected\"";
+		$start_year = $mybb->get_input('start_year', 1);
+		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
+		$end_day = $mybb->get_input('end_day', 1);
+		$end_month[$mybb->get_input('end_month', 1)] = " selected=\"selected\"";
+		$end_year = $mybb->get_input('end_year', 1);
+		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
+		if($mybb->get_input('type') == "single")
 		{
 			$type_single = "checked=\"checked\"";
+			$type_ranged = '';
 			$type = "single";
 		}
 		else
 		{
 			$type_ranged = "checked=\"checked\"";
+			$type_single = '';
 			$type = "ranged";
 		}
-		if($mybb->input['repeats'])
+		if(!empty($mybb->input['repeats']))
 		{
-			$repeats_sel[$mybb->input['repeats']] = " selected=\"selected\"";
+			$repeats_sel[$mybb->get_input('repeats', 1)] = " selected=\"selected\"";
 		}
-		$repeats_1_days = intval($mybb->input['repeats_1_days']);
-		$repeats_3_weeks = intval($mybb->input['repeats_3_weeks']);
-		if(is_array($mybb->input['repeats_3_days']))
+		$repeats_1_days = $mybb->get_input('repeats_1_days', 1);
+		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', 1);
+		foreach($mybb->get_input('repeats_3_days', 2) as $day => $val)
 		{
-			foreach($mybb->input['repeats_3_days'] as $day => $val)
+			if($val != 1)
 			{
-				if($val != 1)
-				{
-					continue;
-				}
-				$day = intval($day);
-				$repeats_3_days[$day] = " checked=\"checked\"";
+				continue;
 			}
+			$day = intval($day);
+			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
-		if($mybb->input['repeats_4_type'] == 1)
+		$repeats_4_type = array();
+		if($mybb->get_input('repeats_4_type', 1) == 1)
 		{
 			$repeats_4_type[1] = "checked=\"checked\"";
+			$repeats_4_type[2] = '';
 		}
 		else
 		{
 			$repeats_4_type[2] = "checked=\"checked\"";
+			$repeats_4_type[1] = '';
 		}
-		$repeats_4_day = intval($mybb->input['repeats_4_day']);
-		$repeats_4_months = intval($mybb->input['repeats_4_months']);
-		$repeats_4_occurance[$mybb->input['repeats_4_occurance']] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->input['repeats_4_weekday']] = "selected=\"selected\"";
-		$repeats_4_months2 = intval($mybb->input['repeats_4_months2']);
-		if($mybb->input['repeats_5_type'] == 1)
+		$repeats_4_day = $mybb->get_input('repeats_4_day', 1);
+		$repeats_4_months = $mybb->get_input('repeats_4_months', 1);
+		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
+		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', 1)] = "selected=\"selected\"";
+		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', 1);
+		if($mybb->get_input('repeats_5_type', 1) == 1)
 		{
 			$repeats_5_type[1] = "checked=\"checked\"";
 		}
@@ -314,38 +342,38 @@ if($mybb->input['action'] == "addevent")
 		{
 			$repeats_5_type[2] = "checked=\"checked\"";
 		}
-		$repeats_5_day = intval($mybb->input['repeats_5_day']);
-		$repeats_5_month[$mybb->input['repeats_5_month']] = "selected=\"selected\"";
-		$repeats_5_years = intval($mybb->input['repeats_5_years']);
-		$repeats_5_occurance[$mybb->input['repeats_5_occurance']] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->input['repeats_5_weekday']] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->input['repeats_5_month2']] = "selected=\"selected\"";
-		$repeats_5_years2 = intval($mybb->input['repeats_5_years2']);
+		$repeats_5_day = $mybb->get_input('repeats_5_day', 1);
+		$repeats_5_month[$mybb->get_input('repeats_5_month', 1)] = "selected=\"selected\"";
+		$repeats_5_years = $mybb->get_input('repeats_5_years', 1);
+		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
+		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', 1)] = "selected=\"selected\"";
+		$repeats_5_month2[$mybb->get_input('repeats_5_month2', 1)] = "selected=\"selected\"";
+		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', 1);
 
-		$timezone = $mybb->input['timezone'];
+		$timezone = $mybb->get_input('timezone', 1);
 	}
 	else
 	{
-		if($mybb->input['day'])
+		if(!empty($mybb->input['day']))
 		{
-			$single_day = $start_day = $end_day = intval($mybb->input['day']);
+			$single_day = $start_day = $end_day = $mybb->get_input('day', 1);
 		}
 		else
 		{
 			$single_day = $start_day = $end_day = my_date("j");
 		}
-		if($mybb->input['month'])
+		if(!empty($mybb->input['month']))
 		{
-			$month = intval($mybb->input['month']);
+			$month = $mybb->get_input('month', 1);
 		}
 		else
 		{
 			$month = my_date("n");
 		}
 		$single_month[$month] = $start_month[$month] = $end_month[$month] = "selected=\"selected\"";
-		if($mybb->input['year'])
+		if(!empty($mybb->input['year']))
 		{
-			$single_year = $start_year = $end_year = intval($mybb->input['year']);
+			$single_year = $start_year = $end_year = $mybb->get_input('year', 1);
 		}
 		else
 		{
@@ -353,6 +381,7 @@ if($mybb->input['action'] == "addevent")
 		}
 		$start_time = $end_time = "";
 		$type_single = "checked=\"checked\"";
+		$type_ranged = '';
 		$type = "single";
 		$repeats_1_days = 1;
 		$repeats_3_weeks = 1;
@@ -372,6 +401,8 @@ if($mybb->input['action'] == "addevent")
 		$repeats_5_years2 = 1;
 		$timezone = $mybb->user['timezone'];
 	}
+
+	$single_years = $start_years = $end_years = '';
 
 	// Construct option list for years
 	for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
@@ -401,6 +432,8 @@ if($mybb->input['action'] == "addevent")
 			$end_years .= "<option value=\"{$i}\">{$i}</option>\n";
 		}
 	}
+
+	$single_days = $start_days = $end_days = '';
 
 	// Construct option list for days
 	for($i = 1; $i <= 31; ++$i)
@@ -433,15 +466,25 @@ if($mybb->input['action'] == "addevent")
 
 	$timezones = build_timezone_select("timezone", $timezone);
 
-	if($mybb->input['ignoretimezone'] == 1)
+	if($mybb->get_input('ignoretimezone', 1) == 1)
 	{
 		$ignore_timezone = "checked=\"checked\"";
 	}
+	else
+	{
+		$ignore_timezone = '';
+	}
 
-	if($mybb->input['private'] == 1)
+	if($mybb->get_input('private', 1) == 1)
 	{
 		$privatecheck = " checked=\"checked\"";
 	}
+	else
+	{
+		$privatecheck = '';
+	}
+	
+	$calendar_select = '';
 
 	// Build calendar select
 	$calendar_permissions = get_calendar_permissions();
@@ -461,6 +504,8 @@ if($mybb->input['action'] == "addevent")
 			}
 		}
 	}
+	
+	$event_errors = '';
 
 	$plugins->run_hooks("calendar_addevent_end");
 
@@ -471,10 +516,10 @@ if($mybb->input['action'] == "addevent")
 // Edit an event
 if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']))
+	if(!$event)
 	{
 		error($lang->error_invalidevent);
 	}
@@ -483,7 +528,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -501,21 +546,15 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	}
 
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Are we going to delete this event or just edit it?
-	if($mybb->input['delete'] == 1)
+	if($mybb->get_input('delete', 1) == 1)
 	{
 		$db->delete_query("events", "eid='{$event['eid']}'");
 
 		// Redirect back to the main calendar view.
 		redirect("calendar.php", $lang->redirect_eventdeleted);
-	}
-
-	// Have we made a private event public?
-	if(!$mybb->input['private'])
-	{
-		$mybb->input['private'] = 0;
 	}
 
 	$plugins->run_hooks("calendar_do_editevent_start");
@@ -524,13 +563,14 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	require_once MYBB_ROOT."inc/datahandler.php";
 	require_once MYBB_ROOT."inc/datahandlers/event.php";
 	$eventhandler = new EventDataHandler("update");
+	$mybb->input['type'] = $mybb->get_input('type');
 
 	// Prepare an array for the eventhandler.
 	$event = array(
 		"eid" => $event['eid'],
-		"name" => $mybb->input['name'],
-		"description" => $mybb->input['description'],
-		"private" => $mybb->input['private'],
+		"name" => $mybb->get_input('name'),
+		"description" => $mybb->get_input('description'),
+		"private" => $mybb->get_input('private', 1),
 		"type" => $mybb->input['type']
 	);
 
@@ -538,45 +578,42 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 	if($mybb->input['type'] == "single")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->input['single_day'],
-			"month" => $mybb->input['single_month'],
-			"year" => $mybb->input['single_year']
+			"day" => $mybb->get_input('single_day', 1),
+			"month" => $mybb->get_input('single_month', 1),
+			"year" => $mybb->get_input('single_year', 1)
 		);
 		$event['repeats'] = '';
 	}
 	else if($mybb->input['type'] == "ranged")
 	{
 		$event['start_date'] = array(
-			"day" => $mybb->input['start_day'],
-			"month" => $mybb->input['start_month'],
-			"year" => $mybb->input['start_year'],
-			"time" => $mybb->input['start_time']
+			"day" => $mybb->get_input('start_day', 1),
+			"month" => $mybb->get_input('start_month', 1),
+			"year" => $mybb->get_input('start_year', 1),
+			"time" => $mybb->get_input('start_time')
 		);
 		$event['end_date'] = array(
-			"day" => $mybb->input['end_day'],
-			"month" => $mybb->input['end_month'],
-			"year" => $mybb->input['end_year'],
-			"time" => $mybb->input['end_time']
+			"day" => $mybb->get_input('end_day', 1),
+			"month" => $mybb->get_input('end_month', 1),
+			"year" => $mybb->get_input('end_year', 1),
+			"time" => $mybb->get_input('end_time')
 		);
-		$event['timezone'] = $mybb->input['timezone'];
-		$event['ignoretimezone'] = intval($mybb->input['ignoretimezone']);
+		$event['timezone'] = $mybb->get_input('timezone');
+		$event['ignoretimezone'] =	$mybb->get_input('ignoretimezone', 1);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
 			case 1:
 				$repeats['repeats'] = 1;
-				$repeats['days'] = $mybb->input['repeats_1_days'];
+				$repeats['days'] = $mybb->get_input('repeats_1_days', 1);
 				break;
 			case 2:
 				$repeats['repeats'] = 2;
 				break;
 			case 3:
 				$repeats['repeats'] = 3;
-				$repeats['weeks'] = $mybb->input['repeats_3_weeks'];
-				if(!is_array($mybb->input['repeats_3_days']))
-				{
-					$mybb->input['repeats_3_days'] = array();
-				}
+				$repeats['weeks'] = $mybb->get_input('repeats_3_weeks', 1);
+				$mybb->input['repeats_3_days'] = $mybb->get_input('repeats_3_days', 2);
 				ksort($mybb->input['repeats_3_days']);
 				$days = array();
 				foreach($mybb->input['repeats_3_days'] as $weekday => $value)
@@ -591,32 +628,32 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 				break;
 			case 4:
 				$repeats['repeats'] = 4;
-				if($mybb->input['repeats_4_type'] == 1)
+				if($mybb->get_input('repeats_4_type', 1) == 1)
 				{
-					$repeats['day'] = $mybb->input['repeats_4_day'];
-					$repeats['months'] = $mybb->input['repeats_4_months'];
+					$repeats['day'] = $mybb->get_input('repeats_4_day', 1);
+					$repeats['months'] = $mybb->get_input('repeats_4_months', 1);
 				}
 				else
 				{
-					$repeats['months'] = $mybb->input['repeats_4_months2'];
-					$repeats['occurance'] = $mybb->input['repeats_4_occurance'];
-					$repeats['weekday'] = $mybb->input['repeats_4_weekday'];
+					$repeats['months'] = $mybb->get_input('repeats_4_months2', 1);
+					$repeats['occurance'] = $mybb->get_input('repeats_4_occurance');
+					$repeats['weekday'] = $mybb->get_input('repeats_4_weekday', 1);
 				}
 				break;
 			case 5:
 				$repeats['repeats'] = 5;
-				if($mybb->input['repeats_5_type'] == 1)
+				if($mybb->get_input('repeats_5_type', 1) == 1)
 				{
-					$repeats['day'] = $mybb->input['repeats_5_day'];
-					$repeats['month'] = $mybb->input['repeats_5_month'];
-					$repeats['years'] = $mybb->input['repeats_5_years'];
+					$repeats['day'] = $mybb->get_input('repeats_5_day', 1);
+					$repeats['month'] = $mybb->get_input('repeats_5_month', 1);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
 				}
 				else
 				{
-					$repeats['occurance'] = $mybb->input['repeats_5_occurance'];
-					$repeats['weekday'] = $mybb->input['repeats_5_weekday'];
-					$repeats['month'] = $mybb->input['repeats_5_month2'];
-					$repeats['years'] = $mybb->input['repeats_5_years'];
+					$repeats['occurance'] = $mybb->get_input('repeats_5_occurance');
+					$repeats['weekday'] = $mybb->get_input('repeats_5_weekday', 1);
+					$repeats['month'] = $mybb->get_input('repeats_5_month2', 1);
+					$repeats['years'] = $mybb->get_input('repeats_5_years', 1);
 				}
 				break;
 			default:
@@ -644,33 +681,37 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "editevent")
 {
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
-	$event = $db->fetch_array($query);
-
-	if(!is_numeric($event['eid']))
+	// Event already fetched in do_editevent?
+	if(!isset($event))
 	{
-		error($lang->error_invalidevent);
-	}
+		$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
+		$event = $db->fetch_array($query);
 
-	$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
-	$calendar = $db->fetch_array($query);
+		if(!$event)
+		{
+			error($lang->error_invalidevent);
+		}
 
-	// Invalid calendar?
-	if(!$calendar['cid'])
-	{
-		error($lang->invalid_calendar);
-	}
+		$query = $db->simple_select("calendars", "*", "cid='{$event['cid']}'");
+		$calendar = $db->fetch_array($query);
 
-	// Do we have permission to view this calendar or post events?
-	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
-	{
-		error_no_permission();
-	}
+		// Invalid calendar?
+		if(!$calendar['cid'])
+		{
+			error($lang->invalid_calendar);
+		}
 
-	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
-	{
-		error_no_permission();
+		// Do we have permission to view this calendar or post events?
+		$calendar_permissions = get_calendar_permissions($calendar['cid']);
+		if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
+		{
+			error_no_permission();
+		}
+
+		if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
+		{
+			error_no_permission();
+		}
 	}
 
 	$event['name'] = htmlspecialchars_uni($event['name']);
@@ -691,61 +732,87 @@ if($mybb->input['action'] == "editevent")
 		}
 	}
 
-	// Previous selections
-	if($event_errors)
+	$single_month = $start_month = $end_month = $repeats_sel = $repeats_3_days = $repeats_4_occurance = $repeats_4_weekday = $repeats_5_month = $repeats_5_occurance = $repeats_5_weekday = $repeats_5_month2 = array();
+	foreach(range(1, 12) as $number)
 	{
-		$name = htmlspecialchars_uni($mybb->input['name']);
-		$description = htmlspecialchars_uni($mybb->input['description']);
-		$single_day = $mybb->input['single_day'];
-		$single_month[$mybb->input['single_month']] = " selected=\"selected\"";
-		$single_year = $mybb->input['single_year'];
-		$start_day = $mybb->input['start_day'];
-		$start_month[$mybb->input['start_month']] = " selected=\"selected\"";
-		$start_year = $mybb->input['start_year'];
-		$start_time = htmlspecialchars_uni($mybb->input['start_time']);
-		$end_day = $mybb->input['end_day'];
-		$end_month[$mybb->input['end_month']] = " selected=\"selected\"";
-		$end_year = $mybb->input['end_year'];
-		$end_time = htmlspecialchars_uni($mybb->input['end_time']);
-		if($mybb->input['type'] == "single")
+		$single_month[$number] = $start_month[$number] = $end_month[$number] = $repeats_5_month[$number] = $repeats_5_month2[$number] = '';
+	}
+	foreach(range(1, 5) as $number)
+	{
+		$repeats_sel[$number] = '';
+	}
+	foreach(range(0, 6) as $number)
+	{
+		$repeats_3_days[$number] = $repeats_4_weekday[$number] = $repeats_5_weekday[$number] = '';
+	}
+	foreach(range(1, 4) as $number)
+	{
+		$repeats_4_occurance[$number] = $repeats_5_occurance[$number] = '';
+	}
+	$repeats_4_occurance['last'] = $repeats_5_occurance['last'] = '';
+	$repeats_4_type = array(1 => '', 2 => '');
+	$repeats_5_type = array(1 => '', 2 => '');
+
+	// Previous selections
+	if(isset($event_errors))
+	{
+		$name = htmlspecialchars_uni($mybb->get_input('name'));
+		$description = htmlspecialchars_uni($mybb->get_input('description'));
+		$single_day = $mybb->get_input('single_day', 1);
+		$single_month[$mybb->get_input('single_month', 1)] = " selected=\"selected\"";
+		$single_year = $mybb->get_input('single_year', 1);
+		$start_day = $mybb->get_input('start_day', 1);
+		$start_month[$mybb->get_input('start_month', 1)] = " selected=\"selected\"";
+		$start_year = $mybb->get_input('start_year', 1);
+		$start_time = htmlspecialchars_uni($mybb->get_input('start_time'));
+		$end_day = $mybb->get_input('end_day', 1);
+		$end_month[$mybb->get_input('end_month', 1)] = " selected=\"selected\"";
+		$end_year = $mybb->get_input('end_year', 1);
+		$end_time = htmlspecialchars_uni($mybb->get_input('end_time'));
+		if($mybb->get_input('type') == "single")
 		{
 			$type_single = "checked=\"checked\"";
+			$type_ranged = '';
 			$type = "single";
 		}
 		else
 		{
 			$type_ranged = "checked=\"checked\"";
+			$type_single = '';
 			$type = "ranged";
 		}
-		if($mybb->input['repeats'])
+		if(!empty($mybb->input['repeats']))
 		{
-			$repeats_sel[$mybb->input['repeats']] = " selected=\"selected\"";
+			$repeats_sel[$mybb->get_input('repeats', 1)] = " selected=\"selected\"";
 		}
-		$repeats_1_days = intval($mybb->input['repeats_1_days']);
-		$repeats_3_weeks = intval($mybb->input['repeats_3_weeks']);
-		if(is_array($mybb->input['repeats_3_days']))
+		$repeats_1_days = $mybb->get_input('repeats_1_days', 1);
+		$repeats_3_weeks = $mybb->get_input('repeats_3_weeks', 1);
+		foreach($mybb->get_input('repeats_3_days', 2) as $day => $val)
 		{
-			foreach($mybb->input['repeats_3_days'] as $day => $val)
+			if($val != 1)
 			{
-				if($val != 1) continue;
-				$day = intval($day);
-				$repeats_3_days[$day] = " checked=\"checked\"";
+				continue;
 			}
+			$day = intval($day);
+			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
-		if($mybb->input['repeats_4_type'] == 1)
+		$repeats_4_type = array();
+		if($mybb->get_input('repeats_4_type', 1) == 1)
 		{
 			$repeats_4_type[1] = "checked=\"checked\"";
+			$repeats_4_type[2] = '';
 		}
 		else
 		{
 			$repeats_4_type[2] = "checked=\"checked\"";
+			$repeats_4_type[1] = '';
 		}
-		$repeats_4_day = intval($mybb->input['repeats_4_day']);
-		$repeats_4_months = intval($mybb->input['repeats_4_months']);
-		$repeats_4_occurance[$mybb->input['repeats_4_occurance']] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->input['repeats_4_weekday']] = "selected=\"selected\"";
-		$repeats_4_months2 = intval($mybb->input['repeats_4_months2']);
-		if($mybb->input['repeats_5_type'] == 1)
+		$repeats_4_day = $mybb->get_input('repeats_4_day', 1);
+		$repeats_4_months = $mybb->get_input('repeats_4_months', 1);
+		$repeats_4_occurance[$mybb->get_input('repeats_4_occurance')] = "selected=\"selected\"";
+		$repeats_4_weekday[$mybb->get_input('repeats_4_weekday', 1)] = "selected=\"selected\"";
+		$repeats_4_months2 = $mybb->get_input('repeats_4_months2', 1);
+		if($mybb->get_input('repeats_5_type', 1) == 1)
 		{
 			$repeats_5_type[1] = "checked=\"checked\"";
 		}
@@ -753,34 +820,47 @@ if($mybb->input['action'] == "editevent")
 		{
 			$repeats_5_type[2] = "checked=\"checked\"";
 		}
-		$repeats_5_day = intval($mybb->input['repeats_5_day']);
-		$repeats_5_month[$mybb->input['repeats_5_month']] = "selected=\"selected\"";
-		$repeats_5_years = intval($mybb->input['repeats_5_years']);
-		$repeats_5_occurance[$mybb->input['repeats_5_occurance']] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->input['repeats_5_weekday']] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->input['repeats_5_month2']] = "selected=\"selected\"";
-		$repeats_5_years2 = intval($mybb->input['repeats_5_years2']);
+		$repeats_5_day = $mybb->get_input('repeats_5_day', 1);
+		$repeats_5_month[$mybb->get_input('repeats_5_month', 1)] = "selected=\"selected\"";
+		$repeats_5_years = $mybb->get_input('repeats_5_years', 1);
+		$repeats_5_occurance[$mybb->get_input('repeats_5_occurance')] = "selected=\"selected\"";
+		$repeats_5_weekday[$mybb->get_input('repeats_5_weekday', 1)] = "selected=\"selected\"";
+		$repeats_5_month2[$mybb->get_input('repeats_5_month2', 1)] = "selected=\"selected\"";
+		$repeats_5_years2 = $mybb->get_input('repeats_5_years2', 1);
 
-		if($mybb->input['private'] == 1)
+		if($mybb->get_input('private', 1) == 1)
 		{
 			$privatecheck = " checked=\"checked\"";
 		}
+		else
+		{
+			$privatecheck = '';
+		}
 
-		if($mybb->input['ignoretimezone'] == 1)
+		if($mybb->get_input('ignoretimezone', 1) == 1)
 		{
 			$ignore_timezone = "checked=\"checked\"";
 		}
+		else
+		{
+			$ignore_timezone = '';
+		}
 
-		$timezone = $mybb->input['timezone'];
+		$timezone = $mybb->get_input('timezone');
 	}
 	else
 	{
+		$event_errors = '';
 		$mybb->input['calendar'] = $event['cid'];
 		$name = htmlspecialchars_uni($event['name']);
 		$description = htmlspecialchars_uni($event['description']);
 		if($event['private'] == 1)
 		{
 			$privatecheck = " checked=\"checked\"";
+		}
+		else
+		{
+			$privatecheck = '';
 		}
 		$start_date = explode("-", gmdate("j-n-Y-g:i A", $event['starttime']+$event['timezone']*3600));
 		$single_day = $start_date[0];
@@ -793,6 +873,10 @@ if($mybb->input['action'] == "editevent")
 		{
 			$start_time = gmdate($mybb->settings['timeformat'], $event['starttime']+$event['timezone']*3600);
 		}
+		else
+		{
+			$start_time = '';
+		}
 		if($event['endtime'])
 		{
 			$end_date = explode("-", gmdate("j-n-Y-g:i A", $event['endtime']+$event['timezone']*3600));
@@ -803,7 +887,12 @@ if($mybb->input['action'] == "editevent")
 			{
 				$end_time = gmdate($mybb->settings['timeformat'], $event['endtime']+$event['timezone']*3600);
 			}
+			else
+			{
+				$end_time = '';
+			}
 			$type_ranged = "checked=\"checked\"";
+			$type_single = '';
 			$type = "ranged";
 			$repeats = unserialize($event['repeats']);
 			if($repeats['repeats'] >= 0)
@@ -894,11 +983,13 @@ if($mybb->input['action'] == "editevent")
 			else
 			{
 				$timezone = $event['timezone'];
+				$ignore_timezone = '';
 			}
 		}
 		else
 		{
 			$type_single = "checked=\"checked\"";
+			$type_ranged = $ignore_timezone = $repeats_1_days = $repeats_3_weeks = $repeats_4_day = $repeats_4_months = $repeats_4_months2 = $repeats_5_day = $repeats_5_years = $timezone = $end_time = '';
 			$type = "single";
 			// set some defaults if the user wants to make a ranged event
 			$end_day = $start_day;
@@ -906,6 +997,8 @@ if($mybb->input['action'] == "editevent")
 			$end_year = $start_year;
 		}
 	}
+
+	$single_years = $start_years = $end_years = '';
 
 	// Construct option list for years
 	for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
@@ -935,6 +1028,8 @@ if($mybb->input['action'] == "editevent")
 			$end_years .= "<option value=\"{$i}\">{$i}</option>\n";
 		}
 	}
+
+	$single_days = $start_days = $end_days = '';
 
 	// Construct option list for days
 	for($i = 1; $i <= 31; ++$i)
@@ -976,10 +1071,10 @@ if($mybb->input['action'] == "editevent")
 // Move an event to another calendar
 if($mybb->input['action'] == "move")
 {
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']))
+	if(!$event)
 	{
 		error($lang->error_invalidevent);
 	}
@@ -988,7 +1083,7 @@ if($mybb->input['action'] == "move")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1012,6 +1107,8 @@ if($mybb->input['action'] == "move")
 	add_breadcrumb($lang->nav_move_event);
 
 	$plugins->run_hooks("calendar_move_start");
+	
+	$calendar_select = '';
 
 	// Build calendar select
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
@@ -1034,12 +1131,12 @@ if($mybb->input['action'] == "move")
 if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']))
+	if(!$event)
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1048,7 +1145,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1066,10 +1163,10 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 	}
 
 
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['new_calendar'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('new_calendar', 1)."'");
 	$new_calendar = $db->fetch_array($query);
 
-	if(!$new_calendar['cid'])
+	if(!$new_calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1095,12 +1192,12 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 if($mybb->input['action'] == "approve")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']))
+	if(!$event)
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1109,7 +1206,7 @@ if($mybb->input['action'] == "approve")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1142,12 +1239,12 @@ if($mybb->input['action'] == "approve")
 if($mybb->input['action'] == "unapprove")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
-	$query = $db->simple_select("events", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("events", "*", "eid='{$mybb->input['eid']}'");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']))
+	if(!$event)
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1156,7 +1253,7 @@ if($mybb->input['action'] == "unapprove")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1192,11 +1289,11 @@ if($mybb->input['action'] == "event")
 		SELECT u.*, e.*
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=e.uid)
-		WHERE e.eid='".intval($mybb->input['eid'])."'
+		WHERE e.eid='{$mybb->input['eid']}'
 	");
 	$event = $db->fetch_array($query);
 
-	if(!is_numeric($event['eid']) || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
+	if(!$event || ($event['private'] == 1 && $event['uid'] != $mybb->user['uid']))
 	{
 		error($lang->error_invalidevent);
 	}
@@ -1205,7 +1302,7 @@ if($mybb->input['action'] == "event")
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1248,22 +1345,14 @@ if($mybb->input['action'] == "event")
 		$user_usergroup = $groupscache[1];
 	}
 
-	if(!is_array($titles_cache))
-	{
-		// Get user titles (i guess we should improve this, maybe in version3.
-		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		while($usertitle = $db->fetch_array($query))
-		{
-			$titles_cache[$usertitle['posts']] = $usertitle;
-		}
-		unset($usertitle);
-	}
+	$titles_cache = $cache->read("usertitles");
 
 	// Event made by registered user
 	if($event['uid'] > 0 && $event['username'])
 	{
 		$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
+		$hascustomtitle = 0;
 		if(trim($event['usertitle']) != "")
 		{
 			$hascustomtitle = 1;
@@ -1296,13 +1385,14 @@ if($mybb->input['action'] == "event")
 			$event['stars'] = $user_usergroup['stars'];
 		}
 
-		if(!$event['starimage'])
+		if(empty($event['starimage']))
 		{
 			$event['starimage'] = $user_usergroup['starimage'];
 		}
 		$event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
 
-		for($i = 0; $i < $post['stars']; ++$i)
+		$event['userstars'] = '';
+		for($i = 0; $i < $event['stars']; ++$i)
 		{
 			$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
 		}
@@ -1331,6 +1421,7 @@ if($mybb->input['action'] == "event")
 		{
 			$event['usertitle'] = $lang->guest;
 		}
+		$event['userstars'] = '';
 	}
 
 	if($event['ignoretimezone'] == 0)
@@ -1388,6 +1479,7 @@ if($mybb->input['action'] == "event")
 		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
 	}
 
+	$event_class = '';
 	if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
 	{
 		eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
@@ -1437,7 +1529,7 @@ if($mybb->input['action'] == "dayview")
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
+		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
@@ -1448,7 +1540,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1461,9 +1553,10 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Incoming year?
+	$mybb->input['year'] = $mybb->get_input('year', 1);
 	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
 	{
-		$year = intval($mybb->input['year']);
+		$year = $mybb->input['year'];
 	}
 	else
 	{
@@ -1471,9 +1564,10 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Then the month
+	$mybb->input['month'] = $mybb->get_input('month', 1);
 	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
 	{
-		$month = intval($mybb->input['month']);
+		$month = $mybb->input['month'];
 	}
 	else
 	{
@@ -1481,9 +1575,10 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// And day?
+	$mybb->input['day'] = $mybb->get_input('day', 1);
 	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", gmmktime(0, 0, 0, $month, 1, $year)))
 	{
-		$day = intval($mybb->input['day']);
+		$day = $mybb->input['day'];
 	}
 	else
 	{
@@ -1496,13 +1591,14 @@ if($mybb->input['action'] == "dayview")
 	$plugins->run_hooks("calendar_dayview_start");
 
 	// Load Birthdays for this day
+	$birthday_list = $birthdays = '';
 	if($calendar['showbirthdays'])
 	{
-		$birthdays = get_birthdays($month, $day);
+		$birthdays2 = get_birthdays($month, $day);
 		$bdayhidden = 0;
-		if(is_array($birthdays))
+		if(is_array($birthdays2))
 		{
-			foreach($birthdays as $birthday)
+			foreach($birthdays2 as $birthday)
 			{
 				if($birthday['birthdayprivacy'] == 'all')
 				{
@@ -1550,7 +1646,8 @@ if($mybb->input['action'] == "dayview")
 
 	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 
-	if(is_array($events_cache["$day-$month-$year"]))
+	$events = '';
+	if(isset($events_cache["$day-$month-$year"]) && is_array($events_cache["$day-$month-$year"]))
 	{
 		foreach($events_cache["$day-$month-$year"] as $event)
 		{
@@ -1580,22 +1677,14 @@ if($mybb->input['action'] == "dayview")
 				$user_usergroup = $groupscache[1];
 			}
 
-			if(!is_array($titles_cache))
-			{
-				// Get user titles (i guess we should improve this, maybe in version3.
-				$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-				while($usertitle = $db->fetch_array($query))
-				{
-					$titles_cache[$usertitle['posts']] = $usertitle;
-				}
-				unset($usertitle);
-			}
+			$titles_cache = $cache->read("usertitles");
 
 			// Event made by registered user
 			if($event['uid'] > 0 && $event['username'])
 			{
 				$event['profilelink'] = build_profile_link(format_name($event['username'], $event['usergroup'], $event['displaygroup']), $event['uid']);
 
+				$hascustomtitle = 0;
 				if(trim($event['usertitle']) != "")
 				{
 					$hascustomtitle = 1;
@@ -1628,12 +1717,13 @@ if($mybb->input['action'] == "dayview")
 					$event['stars'] = $user_usergroup['stars'];
 				}
 
-				if(!$event['starimage'])
+				if(empty($event['starimage']))
 				{
 					$event['starimage'] = $user_usergroup['starimage'];
 				}
 
-				for($i = 0; $i < $post['stars']; ++$i)
+				$event['userstars'] = '';
+				for($i = 0; $i < $event['stars']; ++$i)
 				{
 					$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
 				}
@@ -1662,6 +1752,7 @@ if($mybb->input['action'] == "dayview")
 				{
 					$event['usertitle'] = $lang->guest;
 				}
+				$event['userstars'] = '';
 			}
 
 			if($event['ignoretimezone'] == 0)
@@ -1774,7 +1865,7 @@ if($mybb->input['action'] == "weekview")
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
+		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
@@ -1785,7 +1876,7 @@ if($mybb->input['action'] == "weekview")
 	}
 
 	// Invalid calendar?
-	if(!$calendar['cid'])
+	if(!$calendar)
 	{
 		error($lang->invalid_calendar);
 	}
@@ -1806,7 +1897,7 @@ if($mybb->input['action'] == "weekview")
 	}
 
 	// No incoming week, show THIS week
-	if(!$mybb->input['week'])
+	if(empty($mybb->input['week']))
 	{
 		list($day, $month, $year) = explode("-", my_date("j-n-Y"));
 		$php_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $day, $year));
@@ -1817,7 +1908,7 @@ if($mybb->input['action'] == "weekview")
 	}
 	else
 	{
-		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->input['week']);
+		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->get_input('week'));
 	}
 
 	// This is where we've come from and where we're headed
@@ -1880,6 +1971,8 @@ if($mybb->input['action'] == "weekview")
 		{
 			$day_shaded = ' trow_shaded';
 		}
+		
+		$day_events = '';
 
 		// Any events on this specific day?
 		if(is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache))
@@ -1983,12 +2076,17 @@ if($mybb->input['action'] == "weekview")
 		}
 
 		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
+		if(!isset($day_bits[$weekday_month]))
+		{
+			$day_bits[$weekday_month] = '';
+		}
 		eval("\$day_bits[$weekday_month] .= \"".$templates->get("calendar_weekview_day")."\";");
 		$day_events = $day_birthdays = "";
 		$weekday_date = gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
 	}
 
 	// Now we build our month headers
+	$mini_calendars = $weekday_bits = '';
 	foreach($week_months as $month)
 	{
 		$weekday_month = $monthnames[$month[0]];
@@ -2015,18 +2113,13 @@ if($mybb->input['action'] == "weekview")
 	output_page($weekview);
 }
 
-// View yearly calendar
-if($mybb->input['action'] == "yearview")
-{
-}
-
 // Showing a calendar
 if(!$mybb->input['action'])
 {
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
+		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
@@ -2051,9 +2144,9 @@ if(!$mybb->input['action'])
 	}
 
 	// Incoming month/year?
-	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
+	if(!empty($mybb->input['year']) && $mybb->get_input('year', 1) <= my_date("Y")+5)
 	{
-		$year = intval($mybb->input['year']);
+		$year = $mybb->get_input('year');
 	}
 	else
 	{
@@ -2061,9 +2154,10 @@ if(!$mybb->input['action'])
 	}
 
 	// Then the month
-	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
+	$mybb->input['month'] = $mybb->get_input('month', 1);
+	if($mybb->input['month'] >= 1 && $mybb->input['month'] <= 12)
 	{
-		$month = intval($mybb->input['month']);
+		$month = $mybb->input['month'];
 	}
 	else
 	{
@@ -2140,6 +2234,7 @@ if(!$mybb->input['action'])
 	}
 
 	$today = my_date("dnY");
+	$weekday_headers = '';
 
 	// Build weekday headers
 	foreach($weekdays as $weekday)
@@ -2148,6 +2243,8 @@ if(!$mybb->input['action'])
 		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
 	}
 
+	$in_month = 0;
+	$day_bits = $calendar_rows = '';
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
@@ -2188,6 +2285,8 @@ if(!$mybb->input['action'])
 			{
 				break;
 			}
+
+			$day_events = '';
 
 			// Any events on this specific day?
 			if(is_array($events_cache) && array_key_exists("{$day}-{$calendar_month}-{$calendar_year}", $events_cache))
