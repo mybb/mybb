@@ -86,17 +86,17 @@ function home_action_handler($action)
 
 			// Are we on a mobile device?
 			// Stolen from http://stackoverflow.com/a/10989424
-			$user_type[$mybb->user['uid']] = "desktop";
+			$user_type = "desktop";
 			if(is_mobile($user["useragent"]))
 			{
-				$user_type[$mybb->user['uid']] = "mobile";
+				$user_type = "mobile";
 			}
 
 			$online_admins[$mybb->user['username']] = array(
 				"uid" => $mybb->user['uid'],
 				"username" => $mybb->user['username'],
 				"ip" => $user["ip"],
-				"type" => $user_type[$mybb->user['uid']]
+				"type" => $user_type
 			);
 		}
 		else
@@ -106,17 +106,15 @@ function home_action_handler($action)
 			{
 				$uid_in[] = $user['uid'];
 
-				$user_type[$user['uid']] = "desktop";
+				$user_type = "desktop";
 				if(is_mobile($user['useragent']))
 				{
-					$user_type[$user['uid']] = "mobile";
+					$user_type = "mobile";
 				}
 
 				$online_admins[$user['uid']] = array(
-					"uid" => $user['uid'],
-					"username" => "",
 					"ip" => $user['ip'],
-					"type" => $user_type[$user['uid']]
+					"type" => $user_type
 				);
 			}
 
@@ -127,7 +125,7 @@ function home_action_handler($action)
 					"uid" => $user['uid'],
 					"username" => $user['username'],
 					"ip" => $online_admins[$user['uid']]['ip'],
-					"type" => $user_type[$user['uid']]
+					"type" => $online_admins[$user['uid']]['type']
 				);
 				unset($online_admins[$user['uid']]);
 			}
