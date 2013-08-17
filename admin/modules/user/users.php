@@ -1402,50 +1402,50 @@ function toggleBox(action)
 {
 	if(action == "modpost")
 	{
-		$("suspendposting").checked = false;
-		$("suspost").hide();
+		$("#suspendposting").attr("checked", "checked");
+		$("#suspost").hide();
 
-		if($("moderateposting").checked == true)
+		if($("#moderateposting").is(":checked") == true)
 		{
-			$("modpost").show();
+			$("#modpost").show();
 		}
-		else if($("moderateposting").checked == false)
+		else if($("#moderateposting").is(":checked") == false)
 		{
-			$("modpost").hide();
+			$("#modpost").hide();
 		}
 	}
 	else if(action == "suspost")
 	{
-		$("moderateposting").checked = false;
-		$("modpost").hide();
+		$("#moderateposting").attr("checked", "checked");
+		$("#modpost").hide();
 
-		if($("suspendposting").checked == true)
+		if($("#suspendposting").is(":checked") == true)
 		{
-			$("suspost").show();
+			$("#suspost").show();
 		}
-		else if($("suspendposting").checked == false)
+		else if($("#suspendposting").is(":checked") == false)
 		{
-			$("suspost").hide();
+			$("#suspost").hide();
 		}
 	}
 }
 
-if($("moderateposting").checked == false)
+if($("#moderateposting").is(":checked") == false)
 {
-	$("modpost").hide();
+	$("#modpost").hide();
 }
 else
 {
-	$("modpost").show();
+	$("#modpost").show();
 }
 
-if($("suspendposting").checked == false)
+if($("#suspendposting").is(":checked") == false)
 {
-	$("suspost").hide();
+	$("#suspost").hide();
 }
 else
 {
-	$("suspost").show();
+	$("#suspost").show();
 }
 
 // -->
