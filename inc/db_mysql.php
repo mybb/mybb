@@ -945,11 +945,18 @@ class DB_MySQL
 		{
 			return $this->version;
 		}
-		$query = $this->query("SELECT VERSION() as version");
-		$ver = $this->fetch_array($query);
-		if($ver['version'])
+
+		$version = @mysql_get_server_info();
+		if(!$version)
 		{
-			$version = explode(".", $ver['version'], 3);
+			$query = $this->query("SELECT VERSION() as version");
+			$ver = $this->fetch_array($query);
+			$version = $ver['version'];
+		}
+
+		if($version)
+		{
+			$version = explode(".", $version, 3);
 			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
 		}
 		return $this->version;
