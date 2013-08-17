@@ -164,12 +164,22 @@ var imagepath = '../images';
 
 		$totaltime = format_time_duration($maintimer->stop());
 		$querycount = $db->query_count;
+
+		if(my_strpos(getenv("REQUEST_URI"), "?"))
+		{
+			$debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "&amp;debug=1#footer";
+		}
+		else
+		{
+			$debuglink = htmlspecialchars_uni(getenv("REQUEST_URI")) . "?debug=1#footer";
+		}
+
 		echo "			</div>\n";
 		echo "		</div>\n";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".$lang->sprintf($lang->generated_in, $totaltime, $debuglink, $querycount, $memory_usage)."</p><p class=\"powered\">Powered By <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB</a>, &copy; 2002-".COPY_YEAR." <a href=\"http://www.mybb.com/\" target=\"_blank\">MyBB Group</a>.</p></div>\n";
 		if($mybb->debug_mode)
 		{
 			echo $db->explain;
