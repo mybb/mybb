@@ -599,7 +599,7 @@ if(!$mybb->input['action'])
 	$sync_reputation = intval($reputation['reputation']);
 	$total_reputation = $reputation['total_reputation'];
 
-	if(true)
+	if($sync_reputation != $user['reputation'])
 	{
 		// We're out of sync! Oh noes!
 		$db->update_query("users", array("reputation" => $sync_reputation), "uid = '".$user['uid']."'");
