@@ -414,20 +414,22 @@ if($mybb->input['action'] == "edit_thread_tool")
     {
         var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
+        $('.'+id+'s_check').each(function()
         {
-            if(e.checked == true)
+        	var e = $(this);
+            if(e.is(':checked') == true)
             {
-                checked = e.value;
+                checked = e.val();
             }
         });
-        $$('.'+id+'s').each(function(e)
+        $('.'+id+'s').each(function()
         {
-        	Element.hide(e);
+        	var e = $(this);
+        	e.hide();
         });
-        if($(id+'_'+checked))
+        if($('#'+id+'_'+checked))
         {
-            Element.show(id+'_'+checked);
+            $('#'+id+'_'+checked).show();
         }
     }
 </script>
@@ -803,20 +805,22 @@ if($mybb->input['action'] == "add_thread_tool")
     {
         var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
+        $('.'+id+'s_check').each(function()
         {
-            if(e.checked == true)
+        	var e = $(this);
+            if(e.is(':checked') == true)
             {
-                checked = e.value;
+                checked = e.val();
             }
         });
-        $$('.'+id+'s').each(function(e)
+        $('.'+id+'s').each(function()
         {
-        	Element.hide(e);
+        	var e = $(this);
+        	e.hide();
         });
-        if($(id+'_'+checked))
+        if($('#'+id+'_'+checked))
         {
-            Element.show(id+'_'+checked);
+            $('#'+id+'_'+checked).show();
         }
     }
 </script>
@@ -1277,20 +1281,22 @@ if($mybb->input['action'] == "edit_post_tool")
     {
         var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
+        $('.'+id+'s_check').each(function()
         {
-            if(e.checked == true)
+        	var e = $(this);
+            if(e.is(':checked') == true)
             {
-                checked = e.value;
+                checked = e.val();
             }
         });
-        $$('.'+id+'s').each(function(e)
+        $('.'+id+'s').each(function()
         {
-        	Element.hide(e);
+        	var e = $(this);
+        	e.hide();
         });
-        if($(id+'_'+checked))
+        if($('#'+id+'_'+checked))
         {
-            Element.show(id+'_'+checked);
+            $('#'+id+'_'+checked).show();
         }
     }
 </script>
@@ -1698,20 +1704,22 @@ if($mybb->input['action'] == "add_post_tool")
     {
         var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
+        $('.'+id+'s_check').each(function()
         {
-            if(e.checked == true)
+        	var e = $(this);
+            if(e.is(':checked') == true)
             {
-                checked = e.value;
+                checked = e.val();
             }
         });
-        $$('.'+id+'s').each(function(e)
+        $('.'+id+'s').each(function()
         {
-        	Element.hide(e);
+        	var e = $(this);
+        	e.hide();
         });
-        if($(id+'_'+checked))
+        if($('#'+id+'_'+checked))
         {
-            Element.show(id+'_'+checked);
+            $('#'+id+'_'+checked).show();
         }
     }
 </script>
