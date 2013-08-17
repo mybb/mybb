@@ -89,10 +89,10 @@ function build_mass_mail_query($conditions)
 
 			switch($conditions[$direction_field])
 			{
-				case "and_newer":
+				case "less_than":
 					$direction = ">";
 					break;
-				case "and_older":
+				case "more_than":
 					$direction = "<";
 					break;
 				default:

@@ -561,9 +561,9 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
-	$newer_options = array(
-		"and_older" => $lang->and_older,
-		"and_newer" => $lang->and_newer
+	$more_options = array(
+		"more_than" => $lang->more_than,
+		"less_than" => $lang->less_than
 	);
 
 	$date_options = array(
@@ -573,9 +573,9 @@ if($mybb->input['action'] == "edit")
 		"months" => $lang->months,
 		"years" => $lang->years
 	);
-	$form_container->output_row($lang->user_registered, "", $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago} ".$form->generate_select_box('conditions[regdate_dir]', $newer_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir')), 'regdate');
+	$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-	$form_container->output_row($lang->user_last_active, "", $form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago} ".$form->generate_select_box('conditions[lastactive_dir]', $newer_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir')), 'lastactive');
+	$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 	$form_container->end();
 
@@ -990,9 +990,9 @@ if($mybb->input['action'] == "send")
 		);
 		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
-		$newer_options = array(
-			"and_older" => $lang->and_older,
-			"and_newer" => $lang->and_newer
+		$more_options = array(
+			"more_than" => $lang->more_than,
+			"less_than" => $lang->less_than
 		);
 
 		$date_options = array(
@@ -1002,9 +1002,9 @@ if($mybb->input['action'] == "send")
 			"months" => $lang->months,
 			"years" => $lang->years
 		);
-		$form_container->output_row($lang->user_registered, "", $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago} ".$form->generate_select_box('conditions[regdate_dir]', $newer_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir')), 'regdate');
+		$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-		$form_container->output_row($lang->user_last_active, "", $form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago} ".$form->generate_select_box('conditions[lastactive_dir]', $newer_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir')), 'lastactive');
+		$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_text_box('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 		$form_container->end();
 
