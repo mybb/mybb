@@ -135,35 +135,39 @@ if($mybb->input['action'] == "browse")
 	}
 	echo $search->generate_text_box('keywords', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
-	echo "<script type='text/javascript'>
+	echo "<script type=\"text/javascript\">
 		var form = $(\"#search_form\");
-		form.submit(function() {
+		form.submit(function()
+		{
 			var search = $(\"#search_keywords\");
 			if(search.val() == '' || search.val() == '{$lang->search_for_plugins}')
 			{
 				search.focus();
 				return false;
 			}
-		})
+		});
 
 		var search = $(\"#search_keywords\");
-		search.focus(function() {
+		search.focus(function()
+		{
 			var searched_focus = $(this);
 			if(searched_focus.val() == '{$lang->search_for_plugins}')
 			{
-				searched_focus.removeClass('search_default');
+				searched_focus.removeClass(\"search_default\");
 				searched_focus.val(\"\");
 			}
-		})
+		});
 
-		search.blur(function() {
+		search.blur(function()
+		{
 			var searched_blur = $(this);
-			if(searched_blur.val() == '')
+			if(searched_blur.val() == \"\")
 			{
 				searched_blur.addClass('search_default');
 				searched_blur.val('{$lang->search_for_plugins}');
 			}
-		})
+		});
+
 		// fix the styling used if we have a different default value
         if(search.val() != '{$lang->search_for_plugins}')
         {

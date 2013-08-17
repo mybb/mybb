@@ -223,38 +223,43 @@ if($mybb->input['action'] == "browse")
 	}
 	echo $search->generate_text_box('keywords', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
 	echo "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
-	echo "<script type='text/javascript'>
-		var form = document.getElementById('search_form');
-		form.onsubmit = function() {
-			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '{$lang->search_for_themes}')
+	echo "<script type=\"text/javascript\">
+		var form = $(\"#search_form\");
+		form.submit(function()
+		{
+			var search = $('#search_keywords');
+			if(search.val() == '' || search.val() == '{$lang->search_for_themes}')
 			{
 				search.focus();
 				return false;
 			}
-		}
+		});
 
-		var search = document.getElementById('search_keywords');
-		search.onfocus = function()
+		var search = $('#search_keywords');
+		search.focus(function()
 		{
-			if(this.value == '{$lang->search_for_themes}')
+			var search_focus = $(this);
+			if(search_focus.val() == '{$lang->search_for_themes}')
 			{
-				$(this).removeClassName('search_default');
-				this.value = '';
+				search_focus.removeClass('search_default');
+				search_focus.val('');
 			}
-		}
-		search.onblur = function()
+		});
+
+		search.blur(function()
 		{
-			if(this.value == '')
+			var search_blur = $(this);
+			if(search_blur.val() == '')
 			{
-				$(this).addClassName('search_default');
-				this.value = '{$lang->search_for_themes}';
+				search_blur.addClass('search_default');
+				search_blur.val('{$lang->search_for_themes}');
 			}
-		}
+		});
+
 		// fix the styling used if we have a different default value
-        if(search.value != '{$lang->search_for_themes}')
+        if(search.val() != '{$lang->search_for_themes}')
         {
-            $(search).removeClassName('search_default');
+            search.removeClass('search_default');
         }
 		</script>\n";
 	echo "</div>\n";
@@ -1195,7 +1200,7 @@ if($mybb->input['action'] == "edit")
 			}
 			$inherited .= ")</small>";
 		}
-		
+
 		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = '';
@@ -2477,7 +2482,7 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
-	
+
 	if($mybb->input['attach'] == 1 && is_array($mybb->input['applied_to']) && (!isset($mybb->input['applied_to']['global']) || $mybb->input['applied_to']['global'][0] != "global"))
 	{
 		$check_actions = "";

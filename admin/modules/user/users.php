@@ -2728,7 +2728,7 @@ if(!$mybb->input['action'])
 	echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
-	
+
 	if(isset($mybb->input['search_id']) && $admin_session['data']['user_views'][$mybb->input['search_id']])
 	{
 		$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
@@ -2866,7 +2866,7 @@ function build_users_view($view)
 		}
 		$view['url'] .= "&amp;search_id=".htmlspecialchars_uni($mybb->input['search_id']);
 	}
-	
+
 	if(isset($mybb->input['username']))
 	{
 		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
@@ -3320,7 +3320,7 @@ function build_users_view($view)
 			$table->construct_row();
 		}
 	}
-	
+
 	if(!isset($view['table_id']))
 	{
 		$view['table_id'] = "users_list";
@@ -3382,38 +3382,42 @@ function build_users_view($view)
 	{
 		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>\n";
 	}
-	$built_view .= "<script type='text/javascript'>
-		var form = document.getElementById('search_form');
-		form.onsubmit = function() {
-			var search = document.getElementById('search_keywords');
-			if(search.value == '' || search.value == '".addcslashes($lang->search_for_user, "'")."')
+	$built_view .= "<script type=\"text/javascript\">
+		var form = $(\"#search_form\");
+		form.submit(function() {
+			var search = $('#search_keywords');
+			if(search.val() == '' || search.val() == '".addcslashes($lang->search_for_user, "'")."')
 			{
 				search.focus();
 				return false;
 			}
-		}
+		});
 
-		var search = document.getElementById('search_keywords');
-		search.onfocus = function()
+		var search = $(\"#search_keywords\");
+		search.focus(function()
 		{
-			if(this.value == '".addcslashes($lang->search_for_user, "'")."')
+			var searched_focus = $(this);
+			if(searched_focus.val() == '".addcslashes($lang->search_for_user, "'")."')
 			{
-				$(this).removeClassName('search_default');
-				this.value = '';
+				searched_focus.removeClass(\"search_default\");
+				searched_focus.val(\"\");
 			}
-		}
-		search.onblur = function()
+		});
+
+		search.blur(function()
 		{
-			if(this.value == '')
+			var searched_blur = $(this);
+			if(searched_blur.val() == \"\")
 			{
-				$(this).addClassName('search_default');
-				this.value = '".addcslashes($lang->search_for_user, "'")."';
+				searched_blur.addClass('search_default');
+				searched_blur.val('".addcslashes($lang->search_for_user, "'")."');
 			}
-		}
+		});
+
 		// fix the styling used if we have a different default value
-		if(search.value != '".addcslashes($lang->search_for_user, "'")."')
+		if(search.val() != '".addcslashes($lang->search_for_user, "'")."')
 		{
-			$(search).removeClassName('search_default');
+			$(search).removeClass('search_default');
 		}
 		</script>\n";
 	$built_view .= "</div>\n";
