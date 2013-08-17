@@ -336,6 +336,16 @@ table.general tr:last-child td:last-child {
 #footer .generation {
 	float: right;
 }
+
+#footer a:link, #footer a:visited {
+    color: #666666;
+    font-weight: bold;
+}
+#footer a:hover, #footer a:active {
+    color: #444444;
+    font-weight: bold;
+    text-decoration: underline;
+}
 /* Popup Menus */
 
 .popup_button {
