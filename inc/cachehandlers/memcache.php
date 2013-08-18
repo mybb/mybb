@@ -119,7 +119,7 @@ class memcacheCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		return $this->memcache->set($this->unique_id."_".$name, $contents, MEMCACHE_COMPRESSED);
+		return $this->memcache->set($this->unique_id."_".$name, $contents);
 	}
 
 	/**
