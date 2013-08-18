@@ -38,7 +38,7 @@ if($mybb->input['action'] == "search")
 {
 	$plugins->run_hooks("memberlist_search");
 	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
-	output_page($search_page);	
+	output_page($search_page);
 }
 else
 {
@@ -61,7 +61,7 @@ else
 	{
 		$mybb->input['sort'] = $mybb->settings['default_memberlist_sortby'];
 	}
-	
+
 	switch($mybb->input['sort'])
 	{
 		case "regdate":
@@ -85,7 +85,7 @@ else
 			break;
 	}
 	$sort_selected[$mybb->input['sort']] = " selected=\"selected\"";
-	
+
 	// Incoming sort order?
 	if($mybb->input['order'])
 	{
@@ -95,7 +95,7 @@ else
 	{
 		$mybb->input['order'] = strtolower($mybb->settings['default_memberlist_order']);
 	}
-	
+
 	if($mybb->input['order'] == "ascending" || (!$mybb->input['order'] && $mybb->input['sort'] == 'username'))
 	{
 		$sort_order = "ASC";
@@ -107,7 +107,7 @@ else
 		$mybb->input['order'] = "descending";
 	}
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
-	
+
 	// Incoming results per page?
 	$mybb->input['perpage'] = intval($mybb->input['perpage']);
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
@@ -116,16 +116,16 @@ else
 	}
 	else if($mybb->settings['membersperpage'])
 	{
-		$per_page = $mybb->input['perpage'] = intval($mybb->settings['membersperpage']);	
+		$per_page = $mybb->input['perpage'] = intval($mybb->settings['membersperpage']);
 	}
 	else
 	{
 		$per_page = $mybb->input['perpage'] = 20;
 	}
-	
+
 	$search_query = '1=1';
 	$search_url = "memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}";
-	
+
 	// Limiting results to a certain letter
 	if($mybb->input['letter'])
 	{
@@ -136,7 +136,7 @@ else
 		}
 		else if(strlen($letter) == 1)
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string($letter)."%'";
+			$search_query .= " AND u.username LIKE '".$db->escape_string_like($letter)."%'";
 		}
 		$search_url .= "&letter={$letter}";
 	}
@@ -213,7 +213,7 @@ else
 	}
 	$search_url = htmlspecialchars_uni($search_url);
 	$multipage = multipage($num_users, $per_page, $page, $search_url);
-	
+
 	// Cache a few things
 	$usergroups_cache = $cache->read('usergroups');
 	$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
@@ -236,13 +236,13 @@ else
 		{
 			continue;
 		}
-		
+
 		$alt_bg = alt_trow();
 
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-		
+
 		// Get the display usergroup
 		if(!$user['displaygroup'])
 		{
@@ -255,7 +255,7 @@ else
 		{
 			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
 		}
-		
+
 		// Work out the usergroup/title stuff
 		if(!empty($usergroup['image']))
 		{
@@ -308,7 +308,7 @@ else
 		{
 			$user['starimage'] = $usergroup['starimage'];
 		}
-		
+
 		if($user['starimage'])
 		{
 			// Only display stars if we have an image to use...
@@ -325,13 +325,13 @@ else
 		{
 			$user['userstars'] = "<br />".$user['userstars'];
 		}
-	
+
 		// Show avatar
 		if($user['avatar'] != '')
 		{
 			$user['avatar'] = htmlspecialchars_uni($user['avatar']);
 			$avatar_dimensions = explode("|", $user['avatardimensions']);
-			
+
 			if($avatar_dimensions[0] && $avatar_dimensions[1])
 			{
 				list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['memberlistmaxavatarsize']));
@@ -343,17 +343,17 @@ else
 				}
 				else
 				{
-					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";	
+					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 				}
 			}
-			
+
 			eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 		}
 		else
 		{
 			$user['avatar'] = "";
-		}		
-		
+		}
+
 		$user['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
 		$user['lastvisit'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);

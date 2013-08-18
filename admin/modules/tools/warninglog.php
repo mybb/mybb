@@ -278,7 +278,7 @@ if(!$mybb->input['action'])
 	}
 	if($mybb->input['filter']['reason'])
 	{
-		$search['reason'] = $db->escape_string($mybb->input['filter']['reason']);
+		$search['reason'] = $db->escape_string_like($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
 	}
 	$sortbysel = array();
