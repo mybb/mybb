@@ -147,7 +147,7 @@ else
 		}
 		else if(strlen($letter) == 1)
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string($letter)."%'";
+			$search_query .= " AND u.username LIKE '".$db->escape_string_like($letter)."%'";
 		}
 		$search_url .= "&letter={$letter}";
 	}

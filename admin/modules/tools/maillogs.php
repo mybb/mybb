@@ -176,13 +176,13 @@ if(!$mybb->input['action'])
 
 	$touid = intval($mybb->input['touid']);
 	$toname = $db->escape_string($mybb->input['toname']);
-	$toemail = $db->escape_string($mybb->input['toemail']);
+	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
 	$fromuid = intval($mybb->input['fromuid']);
 	$fromname = $db->escape_string($mybb->input['fromname']);
-	$fromemail = $db->escape_string($mybb->input['fromemail']);
+	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
-	$subject = $db->escape_string($mybb->input['subject']);
+	$subject = $db->escape_string_like($mybb->input['subject']);
 
 	// Begin criteria filtering
 	if($mybb->input['subject'])

@@ -173,28 +173,28 @@ if(!$mybb->input['action'])
 	// Begin criteria filtering
 	if($mybb->input['subject'])
 	{
-		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
+		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string_like($mybb->input['subject'])."%'";
 		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
 		$form->generate_hidden_field("subject", $mybb->input['subject']);
 	}
 
 	if($mybb->input['fromaddress'])
 	{
-		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
+		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string_like($mybb->input['fromaddress'])."%'";
 		$additional_criteria[] = "fromaddress='".urlencode($mybb->input['fromaddress'])."'";
 		$form->generate_hidden_field("fromaddress", $mybb->input['fromaddress']);
 	}
 
 	if($mybb->input['toaddress'])
 	{
-		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
+		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string_like($mybb->input['toaddress'])."%'";
 		$additional_criteria[] = "toaddress='".urlencode($mybb->input['toaddress'])."'";
 		$form->generate_hidden_field("toaddress", $mybb->input['toaddress']);
 	}
 
 	if($mybb->input['error'])
 	{
-		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
+		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string_like($mybb->input['error'])."%'";
 		$additional_criteria[] = "error='".urlencode($mybb->input['error'])."'";
 		$form->generate_hidden_field("error", $mybb->input['error']);
 	}

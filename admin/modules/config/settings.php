@@ -965,7 +965,7 @@ if($mybb->input['action'] == "change")
 		// Search
 
 		// Search for settings
-		$search = $db->escape_string($mybb->input['search']);
+		$search = $db->escape_string_like($mybb->input['search']);
 		$query = $db->query("
 			SELECT s.*
 			FROM ".TABLE_PREFIX."settings s

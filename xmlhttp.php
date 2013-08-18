@@ -138,9 +138,6 @@ if($mybb->input['action'] == "get_users")
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
 
-	// Sanitize the input.
-	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
-
 	// Query for any matching users.
 	$query_options = array(
 		"order_by" => "username",
@@ -149,7 +146,7 @@ if($mybb->input['action'] == "get_users")
 		"limit" => 15
 	);
 
-	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string($mybb->input['query'])."%'", $query_options);
+	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
 	$data = array();
 	while($user = $db->fetch_array($query))
 	{
