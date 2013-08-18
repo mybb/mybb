@@ -286,7 +286,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="gziplevel">
 			<title>GZip Page Compression Level</title>
-			<description><![CDATA[Set the level for GZip Page Compression from 0-9.  (0=no compression, 9=maximum compression).  This will only take effect if GZip Page Compression is enabled above and if your PHP version is newer than 4.2.  If you use an older version of PHP, the default compression level of the zlib library will be used instead.]]></description>
+			<description><![CDATA[Set the level for GZip Page Compression from 0-9.  (0=no compression, 9=maximum compression). A level of 4 is recommended for most installations.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
