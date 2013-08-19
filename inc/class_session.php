@@ -88,9 +88,9 @@ class session
 	 * Load a user via the user credentials.
 	 *
 	 * @param int The user id.
-	 * @param string The user's password.
+	 * @param string The user's loginkey.
 	 */
-	function load_user($uid, $password='')
+	function load_user($uid, $loginkey='')
 	{
 		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
 
@@ -125,7 +125,7 @@ class session
 		}
 
 		// Check the password if we're not using a session
-		if($password != $mybb->user['loginkey'] || !$mybb->user['uid'])
+		if(empty($loginkey) || $loginkey != $mybb->user['loginkey'] || !$mybb->user['uid'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;
