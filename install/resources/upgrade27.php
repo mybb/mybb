@@ -191,10 +191,17 @@ function upgrade27_dbchanges_ip()
 			echo "<p>Adding database indices (3/3)...</p>";
 			flush();
 
-			if($db->type == "mysql" || $db->type == "mysqli")
+			if(!$db->index_exists('users', 'lastip'))
 			{
 				// This may take a while
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
+				if($db->type == "mysql" || $db->type == "mysqli")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX lastip (lastip)");
+				}
+				elseif($db->type == "pgsql")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`lastip`)");
+				}
 			}
 			$next_task = 9;
 			break;
@@ -202,10 +209,17 @@ function upgrade27_dbchanges_ip()
 			echo "<p>Adding database indices (2/3)...</p>";
 			flush();
 
-			if($db->type == "mysql" || $db->type == "mysqli")
+			if(!$db->index_exists('users', 'regip'))
 			{
 				// This may take a while
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
+				if($db->type == "mysql" || $db->type == "mysqli")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX regip (regip)");
+				}
+				elseif($db->type == "pgsql")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX (`regip`)");
+				}
 			}
 			$next_task = 8;
 			break;
@@ -213,10 +227,17 @@ function upgrade27_dbchanges_ip()
 			echo "<p>Adding database indices (1/3)...</p>";
 			flush();
 
-			if($db->type == "mysql" || $db->type == "mysqli")
+			if(!$db->index_exists('posts', 'ipaddress'))
 			{
 				// This may take a while
-				$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
+				if($db->type == "mysql" || $db->type == "mysqli")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ipaddress (ipaddress)");
+				}
+				elseif($db->type == "pgsql")
+				{
+					$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`ipaddress`)");
+				}
 			}
 			$next_task = 7;
 			break;
