@@ -728,7 +728,7 @@ function error($error="", $title="")
 	}
 
 	// AJAX error message?
-	if(isset($mybb->input['ajax']))
+	if($mybb->get_input('ajax', 1))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -773,7 +773,7 @@ function inline_error($errors, $title="")
 	}
 
 	// AJAX error message?
-	if(isset($mybb->input['ajax']))
+	if($mybb->get_input('ajax', 1))
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -811,7 +811,7 @@ function error_no_permission()
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
 
-	if(isset($mybb->input['ajax']))
+	if($mybb->get_input('ajax', 1))
 	{
 		// Send our headers.
 		header("Content-type: application/json; charset={$lang->settings['charset']}");
@@ -870,7 +870,7 @@ function redirect($url, $message="", $title="")
 
 	$plugins->run_hooks("redirect", $redirect_args);
 
-	if(isset($mybb->input['ajax']))
+	if($mybb->get_input('ajax', 1))
 	{
 		// Send our headers.
 		@header("Content-type: text/html; charset={$lang->settings['charset']}");
@@ -1431,7 +1431,7 @@ function check_forum_password($fid, $pid=0)
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
-		if(isset($mybb->input['pwverify']) && $pid == 0)
+		if($mybb->get_input('pwverify') && $pid == 0)
 		{
 			if($password == $mybb->get_input('pwverify'))
 			{
