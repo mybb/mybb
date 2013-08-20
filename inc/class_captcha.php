@@ -330,7 +330,7 @@ class captcha
 				}
 			}
 
-			if(!$lang->$lang_string)
+			if(!isset($lang->$lang_string))
 			{
 				$errors[] = $error['error_code'];
 				continue;

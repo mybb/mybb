@@ -34,7 +34,8 @@ function build_forumbits($pid=0, $depth=1)
 	$parent_counters['unapprovedposts'] = 0;
 	$parent_counters['unapprovedthreads'] = 0;
 	$parent_counters['viewers'] = 0;
-	$forum_list = '';
+	$forum_list = $comma = '';
+	$donecount = 0;
 
 	// Foreach of the forums in this parent
 	foreach($fcache[$pid] as $parent)
@@ -356,7 +357,7 @@ function build_forumbits($pid=0, $depth=1)
 				foreach($parentlistexploded as $mfid)
 				{
 					// This forum has moderators
-					if(is_array($moderatorcache[$mfid]))
+					if(isset($moderatorcache[$mfid]) && is_array($moderatorcache[$mfid]))
 					{
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $modtype)

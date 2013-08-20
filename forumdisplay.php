@@ -25,7 +25,7 @@ require_once MYBB_ROOT."inc/functions_forumlist.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
-$orderarrow = $sortsel = array('rating' => '', 'subject' => '', 'starter' => '', 'started' => '', 'replies' => '', 'views' => '');
+$orderarrow = $sortsel = array('rating' => '', 'subject' => '', 'starter' => '', 'started' => '', 'replies' => '', 'views' => '', 'lastpost' => '');
 $ordersel = array('asc' => '', 'desc' => '');
 $datecutsel = array(1 => '', 5 => '', 10 => '', 20 => '', 50 => '', 75 => '', 100 => '', 365 => '', 9999 => '');
 $rules = '';
@@ -35,7 +35,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = intval($mybb->input['fid']);
+$fid = $mybb->input['fid'];
 if($fid < 0)
 {
 	switch($fid)
@@ -424,7 +424,7 @@ if(empty($mybb->input['datecut']))
 // If there was a manual date cut override, use it.
 else
 {
-	$datecut = intval($mybb->input['datecut']);
+	$datecut = $mybb->get_input('datecut', 1);
 }
 
 $datecut = intval($datecut);
@@ -446,15 +446,12 @@ if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 {
 	$mybb->input['order'] = $foruminfo['defaultsortorder'];
 }
-
-if(!empty($mybb->input['order']))
-{
-	$mybb->input['order'] = htmlspecialchars_uni($mybb->input['order']);
-}
 else
 {
-	$mybb->input['order'] = '';
+	$mybb->input['order'] = $mybb->get_input('order');
 }
+
+$mybb->input['order'] = htmlspecialchars_uni($mybb->get_input('order'));
 
 switch(my_strtolower($mybb->input['order']))
 {
@@ -477,18 +474,15 @@ if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
 {
 	$mybb->input['sortby'] = $foruminfo['defaultsortby'];
 }
+else
+{
+	$mybb->input['sortby'] = $mybb->get_input('sortby');
+}
 
 $t = 't.';
 $sortfield2 = '';
 
-if(!empty($mybb->input['sortby']))
-{
-	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
-}
-else
-{
-	$mybb->input['sortby'] = '';
-}
+$sortby = htmlspecialchars_uni($mybb->input['sortby']);
 
 switch($mybb->input['sortby'])
 {
@@ -533,7 +527,8 @@ else
 }
 
 // Are we viewing a specific page?
-if(isset($mybb->input['page']) && is_numeric($mybb->input['page']))
+$mybb->input['page'] = $mybb->get_input('page', 1);
+if($mybb->input['page'] > 1)
 {
 	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut";
 }
@@ -542,8 +537,6 @@ else
 	$sorturl = get_forum_link($fid).$string."datecut=$datecut";
 }
 
-// Needs to be initialized in order to speed-up things. Fixes #2031
-$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>'');
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 $threadcount = 0;
@@ -589,9 +582,9 @@ if(!$mybb->settings['threadsperpage'])
 
 $perpage = $mybb->settings['threadsperpage'];
 
-if(isset($mybb->input['page']) && intval($mybb->input['page']) > 0)
+if($mybb->input['page'] > 0)
 {
-	$page = intval($mybb->input['page']);
+	$page = $mybb->input['page'];
 	$start = ($page-1) * $perpage;
 	$pages = $threadcount / $perpage;
 	$pages = ceil($pages);
@@ -736,7 +729,7 @@ if($has_announcements == true)
 		}
 
 		// Mmm, eat those announcement cookies if they're older than our last visit
-		if($cookie[$announcement['aid']] < $mybb->user['lastvisit'])
+		if(isset($cookie[$announcement['aid']]) && $cookie[$announcement['aid']] < $mybb->user['lastvisit'])
 		{
 			unset($cookie[$announcement['aid']]);
 		}

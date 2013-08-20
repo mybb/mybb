@@ -30,7 +30,7 @@ if(!$mybb->user['uid'])
 }
 
 // Get post info
-$pid = intval($mybb->input['pid']);
+$pid = $mybb->get_input('pid', 1);
 
 // if we already have the post information...
 if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
@@ -42,7 +42,7 @@ else
 	$post = get_post($pid);
 }
 
-if(!$post['pid'])
+if(!$post)
 {
 	error($lang->error_invalidpost);
 }
@@ -51,7 +51,7 @@ if(!$post['pid'])
 $tid = $post['tid'];
 $thread = get_thread($tid);
 
-if(!$thread['tid'])
+if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
@@ -102,7 +102,8 @@ if($mybb->settings['smilieinserter'] != 0)
 	$smilieinserter = build_clickable_smilies();
 }
 
-if(!$mybb->input['action'] || $mybb->input['previewpost'])
+$mybb->input['action'] = $mybb->get_input('action');
+if(!$mybb->input['action'] || isset($mybb->input['previewpost']))
 {
 	$mybb->input['action'] = "editpost";
 }
@@ -164,15 +165,16 @@ else
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
+if((empty($_POST) && empty($_FILES)) && $mybb->get_input('processed', 1) == '1')
 {
 	error($lang->error_cannot_upload_php_post);
 }
 
-if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->input['updateattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
+$attacherror = '';
+if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_editpost" && isset($mybb->input['submit']) && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", "pid='{$pid}'");
 	$attachcount = $db->fetch_field($query, "numattachs");
@@ -181,46 +183,46 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
 		$update_attachment = false;
-		if($mybb->input['updateattachment'] && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
+		if($mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
 		{
 			$update_attachment = true;
 		}
 		$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
 	}
-	if($attachedfile['error'])
+	if(!empty($attachedfile['error']))
 	{
 		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
 		$mybb->input['action'] = "editpost";
 	}
-	if(!$mybb->input['submit'])
+	if(!isset($mybb->input['submit']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
 }
 
-if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
+if($mybb->get_input('attachmentaid', 1) && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
-	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
+	$mybb->input['attachmentaid'] = $mybb->get_input('attachmentaid', 1);
 	if($mybb->input['attachmentact'] == "remove")
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
 	}
-	elseif($mybb->input['attachmentact'] == "approve" && is_moderator($fid, 'caneditposts'))
+	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'caneditposts'))
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
-	elseif($mybb->input['attachmentact'] == "unapprove" && is_moderator($fid, 'caneditposts'))
+	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'caneditposts'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
-	if(!$mybb->input['submit'])
+	if(!isset($mybb->input['submit']))
 	{
 		$mybb->input['action'] = "editpost";
 	}
@@ -229,11 +231,11 @@ if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $myb
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("editpost_deletepost");
 
-	if($mybb->input['delete'] == 1)
+	if($mybb->get_input('delete',1 ) == 1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
@@ -297,7 +299,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("editpost_do_editpost_start");
 
@@ -309,20 +311,34 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// Set the post data that came from the input to the $post array.
 	$post = array(
 		"pid" => $mybb->input['pid'],
-		"prefix" => $mybb->input['threadprefix'],
-		"subject" => $mybb->input['subject'],
-		"icon" => $mybb->input['icon'],
+		"prefix" => $mybb->get_input('threadprefix', 1),
+		"subject" => $mybb->get_input('subject'),
+		"icon" => $mybb->get_input('icon', 1),
 		"uid" => $mybb->user['uid'],
 		"username" => $mybb->user['username'],
 		"edit_uid" => $mybb->user['uid'],
-		"message" => $mybb->input['message'],
+		"message" => $mybb->get_input('message'),
 	);
+
+	$postoptions = $mybb->get_input('postoptions', 2);
+	if(!isset($postoptions['signature']))
+	{
+		$postoptions['signature'] = 0;
+	}
+	if(!isset($postoptions['subscriptionmethod']))
+	{
+		$postoptions['subscriptionmethod'] = 0;
+	}
+	if(!isset($postoptions['disablesmilies']))
+	{
+		$postoptions['disablesmilies'] = 0;
+	}
 
 	// Set up the post options from the input.
 	$post['options'] = array(
-		"signature" => $mybb->input['postoptions']['signature'],
-		"subscriptionmethod" => $mybb->input['postoptions']['subscriptionmethod'],
-		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+		"signature" => $postoptions['signature'],
+		"subscriptionmethod" => $postoptions['subscriptionmethod'],
+		"disablesmilies" => $postoptions['disablesmilies']
 	);
 
 	$posthandler->set_data($post);
@@ -345,9 +361,9 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		$db->delete_query("attachments", "filename='' OR filesize<1");
 
 		// Did the user choose to post a poll? Redirect them to the poll posting page.
-		if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
+		if($mybb->get_input('postpoll', 1) && $forumpermissions['canpostpolls'])
 		{
-			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
+			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', 1);
 			$lang->redirect_postedited = $lang->redirect_postedited_poll;
 		}
 		else if($visible == 0 && $first_post && !is_moderator($fid, "", $mybb->user['uid']))
@@ -377,7 +393,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 {
 	$plugins->run_hooks("editpost_action_start");
 
-	if(!$mybb->input['previewpost'])
+	if(!isset($mybb->input['previewpost']))
 	{
 		$icon = $post['icon'];
 	}
@@ -451,6 +467,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$noshowattach = 1;
 		}
+		else
+		{
+			$noshowattach = 0;
+		}
 		if($mybb->usergroup['attachquota'] == 0)
 		{
 			$friendlyquota = $lang->unlimited;
@@ -472,18 +492,26 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
 	}
-	if(!$mybb->input['attachmentaid'] && !$mybb->input['newattachment'] && !$mybb->input['updateattachment'] && !$mybb->input['previewpost'] && !$maximageserror)
+	if(!$mybb->get_input('attachmentaid', 1) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
 	}
 	else
 	{
-		$message = $mybb->input['message'];
-		$subject = $mybb->input['subject'];
+		$message = $mybb->get_input('message');
+		$subject = $mybb->get_input('subject');
 	}
+	
+	if(!isset($post_errors))
+	{
+		$post_errors = '';
+	}
+			
+	$postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = $postoptions_subscriptionmethod_dont = '';
+	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
-	if($mybb->input['previewpost'] || $post_errors)
+	if(isset($mybb->input['previewpost']) || $post_errors)
 	{
 		// Set up posthandler.
 		require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -493,25 +521,39 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		// Set the post data that came from the input to the $post array.
 		$post = array(
 			"pid" => $mybb->input['pid'],
-			"prefix" => $mybb->input['threadprefix'],
-			"subject" => $mybb->input['subject'],
-			"icon" => $mybb->input['icon'],
+			"prefix" => $mybb->get_input('threadprefix', 1),
+			"subject" => $mybb->get_input('subject'),
+			"icon" => $mybb->get_input('icon', 1),
 			"uid" => $post['uid'],
 			"edit_uid" => $mybb->user['uid'],
-			"message" => $mybb->input['message'],
+			"message" => $mybb->get_input('message'),
 		);
 
-		if(!$mybb->input['previewpost'])
+		if(!isset($mybb->input['previewpost']))
 		{
 			$post['uid'] = $mybb->user['uid'];
 			$post['username'] = $mybb->user['username'];
 		}
 
+		$postoptions = $mybb->get_input('postoptions', 2);
+		if(!isset($postoptions['signature']))
+		{
+			$postoptions['signature'] = 0;
+		}
+		if(!isset($postoptions['emailnotify']))
+		{
+			$postoptions['emailnotify'] = 0;
+		}
+		if(!isset($postoptions['disablesmilies']))
+		{
+			$postoptions['disablesmilies'] = 0;
+		}
+
 		// Set up the post options from the input.
 		$post['options'] = array(
-			"signature" => $mybb->input['postoptions']['signature'],
-			"emailnotify" => $mybb->input['postoptions']['emailnotify'],
-			"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+			"signature" => $postoptions['signature'],
+			"emailnotify" => $postoptions['emailnotify'],
+			"disablesmilies" => $postoptions['disablesmilies']
 		);
 
 		$posthandler->set_data($post);
@@ -531,18 +573,18 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$message = htmlspecialchars_uni($message);
 			$subject = htmlspecialchars_uni($subject);
 
-			$postoptions = $mybb->input['postoptions'];
+			$postoptions = $mybb->get_input('postoptions', 2);
 
-			if($postoptions['signature'] == 1)
+			if(isset($postoptions['signature']) && $postoptions['signature'] == 1)
 			{
 				$postoptionschecked['signature'] = " checked=\"checked\"";
 			}
 
-			if($postoptions['subscriptionmethod'] == "none")
+			if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "none")
 			{
 				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 			}
-			else if($postoptions['subscriptionmethod'] == "instant")
+			else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "instant")
 			{
 				$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
 			}
@@ -551,14 +593,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 			}
 
-			if($postoptions['disablesmilies'] == 1)
+			if(isset($postoptions['disablesmilies']) && $postoptions['disablesmilies'] == 1)
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
 		}
 	}
 
-	if($mybb->input['previewpost'])
+	if(isset($mybb->input['previewpost']))
 	{
 		// Figure out the poster's other information.
 		$query = $db->query("
@@ -577,6 +619,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$attachcache[0][$attachment['aid']] = $attachment;
 		}
 
+		if(!isset($postoptions['disablesmilies']))
+		{
+			$postoptions['disablesmilies'] = 0;
+		}
+
 		// Set the values of the post info array.
 		$postinfo['userusername'] = $postinfo['username'];
 		$postinfo['message'] = $previewmessage;
@@ -591,6 +638,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
+		
+		$preview = '';
 
 		if($post['includesig'] != 0)
 		{
@@ -625,12 +674,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	// Generate thread prefix selector if this is the first post of the thread
 	if($thread['firstpost'] == $pid)
 	{
-		if(!intval($mybb->input['threadprefix']))
+		if(!$mybb->get_input('threadprefix', 1))
 		{
 			$mybb->input['threadprefix'] = $thread['prefix'];
 		}
 
-		$prefixselect = build_prefix_select($forum['fid'], $mybb->input['threadprefix']);
+		$prefixselect = build_prefix_select($forum['fid'], $mybb->get_input('threadprefix', 1));
 	}
 	else
 	{
@@ -648,7 +697,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";
+		$postpollchecked = '';
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
+	}
+	else
+	{
+		$pollbox = '';
 	}
 
 	// Can we disable smilies or are they disabled already?

@@ -33,24 +33,28 @@ if(!$mybb->user['uid'])
 }
 
 $errors = '';
+	
+$mybb->input['message'] = trim_blank_chrs($mybb->get_input('message'));
+$mybb->input['subject'] = trim_blank_chrs($mybb->get_input('subject'));
+$mybb->input['email'] = trim_blank_chrs($mybb->get_input('email'));
 
-if($mybb->request_method == "post" && isset($mybb->input['submit']))
+if($mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate input
-	if(!isset($mybb->input['message']) || trim_blank_chrs($mybb->input['message']) == '')
+	if(empty($mybb->input['message']))
 	{
 		$errors[] = $lang->contact_no_message;
 	}
 
-	if(!isset($mybb->input['subject']) || trim_blank_chrs($mybb->input['subject']) == '')
+	if(empty($mybb->input['subject']))
 	{
 		$errors[] = $lang->contact_no_subject;
 	}
 
-	if(!isset($mybb->input['email']) || trim_blank_chrs($mybb->input['email']) == '')
+	if(empty($mybb->input['email']))
 	{
 		$errors[] = $lang->contact_no_email;
 	}
@@ -81,7 +85,7 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 	if(empty($errors))
 	{
 		// Email the administrator
-		my_mail($mybb->settings['adminemail'], trim_blank_chrs($mybb->input['subject']), trim_blank_chrs($mybb->input['message']), trim_blank_chrs($mybb->input['email']));
+		my_mail($mybb->settings['adminemail'], $mybb->input['subject'], $mybb->input['message'], $mybb->input['email']);
 
 		// Redirect
 		redirect('contact.php', $lang->contact_success_message);

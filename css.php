@@ -15,7 +15,7 @@ define('THIS_SCRIPT', 'css.php');
 
 require_once "./inc/init.php";
 
-$stylesheet = intval($mybb->input['stylesheet']);
+$stylesheet = $mybb->get_input('stylesheet', 1);
 
 if($stylesheet)
 {

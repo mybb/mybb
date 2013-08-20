@@ -117,7 +117,7 @@ class PostDataHandler extends DataHandler
 			return false;
 		}
 		// If we have a user id but no username then fetch the username.
-		else if($post['uid'] > 0 && $post['username'] == '')
+		else if($post['uid'] > 0 && empty($post['username']))
 		{
 			$user = get_user($post['uid']);
 			$post['username'] = $user['username'];
@@ -150,7 +150,7 @@ class PostDataHandler extends DataHandler
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
 		{
-			if(!$post['tid'])
+			if(empty($post['tid']))
 			{
 				$query = $db->simple_select("posts", "tid", "pid='".intval($post['pid'])."'");
 				$post['tid'] = $db->fetch_field($query, "tid");
@@ -257,6 +257,10 @@ class PostDataHandler extends DataHandler
 		// And if we've got a minimum message length do we meet that requirement too?
 		else
 		{
+			if(!isset($post['fid']))
+			{
+				$post['fid'] = 0;
+			}
 			if(!$mybb->settings['mycodemessagelength'])
 			{
 				// Check to see of the text is full of MyCode
@@ -446,7 +450,7 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 
 		// Check if this post contains more images than the forum allows
-		if($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != 1)
+		if((!isset($post['savedraft']) || $post['savedraft'] != 1) && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != 1)
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
@@ -497,7 +501,7 @@ class PostDataHandler extends DataHandler
 		$permissions = user_permissions($post['uid']);
 
 		// Check if this post contains more videos than the forum allows
-		if($post['savedraft'] != 1 && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
+		if((!isset($post['savedraft']) || $post['savedraft'] != 1) && $mybb->settings['maxpostvideos'] != 0 && $permissions['cancp'] != 1)
 		{
 			// And count the number of video tags in the message.
 			$video_count = substr_count($post['message'], "[video=");

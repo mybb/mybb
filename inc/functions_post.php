@@ -26,7 +26,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
+	foreach(array('pid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
 	{
 		if(empty($post[$post_field]))
 		{
@@ -42,7 +42,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$unapproved_shade = '';
-	if($post['visible'] == 0 && $post_type == 0)
+	if(isset($post['visible']) && $post['visible'] == 0 && $post_type == 0)
 	{
 		$altbg = $unapproved_shade = 'unapproved_post';
 	}
@@ -448,10 +448,10 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
+	$post['editedmsg'] = '';
 	if(!$post_type)
 	{
 		// Figure out if we need to show an "edited by" message
-		$post['editedmsg'] = '';
 		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))
 		{
 			$post['editdate'] = my_date('relative', $post['edittime']);
@@ -537,6 +537,8 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
+	$post['iplogged'] = '';
+
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if(!$post_type || $post_type == 2)
 	{
@@ -550,14 +552,6 @@ function build_postbit($post, $post_type=0)
 			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
 			}
-			else
-			{
-				$post['iplogged'] = "";
-			}
-		}
-		else
-		{
-			$post['iplogged'] = "";
 		}
 	}
 
@@ -578,7 +572,7 @@ function build_postbit($post, $post_type=0)
 	$post['attachments'] = '';
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
+	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -617,7 +611,7 @@ function build_postbit($post, $post_type=0)
 		$post['icon'] = "";
 	}
 
-	$post_visibility = '';
+	$post_visibility = $ignore_bit = '';
 	switch($post_type)
 	{
 		case 1: // Message preview
@@ -633,7 +627,6 @@ function build_postbit($post, $post_type=0)
 			$post = $plugins->run_hooks("postbit", $post);
 
 			// Is this author on the ignore list of the current user? Hide this post
-			$ignore_bit = '';
 			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
 			{
 				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
@@ -669,6 +662,7 @@ function get_post_attachments($id, &$post)
 
 	$validationcount = 0;
 	$tcount = 0;
+	$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = '';
 	if(isset($attachcache[$id]) && is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)
@@ -753,9 +747,17 @@ function get_post_attachments($id, &$post)
 		{
 			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
 		}
+		else
+		{
+			$post['attachedthumbs'] = '';
+		}
 		if($post['imagelist'])
 		{
 			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
+		}
+		else
+		{
+			$post['attachedimages'] = '';
 		}
 		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
 		{

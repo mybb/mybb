@@ -1431,7 +1431,7 @@ function check_forum_password($fid, $pid=0)
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
-		if($mybb->get_input('pwverify') && $pid == 0)
+		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
 			if($password == $mybb->get_input('pwverify'))
 			{
@@ -1973,7 +1973,7 @@ function update_stats($changes=array())
 				$new_stats[$counter] = $changes[$counter];
 			}
 			// Less than 0? That's bad
-			if($new_stats[$counter] < 0)
+			if(isset($new_stats[$counter]) && $new_stats[$counter] < 0)
 			{
 				$new_stats[$counter] = 0;
 			}

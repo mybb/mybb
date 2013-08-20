@@ -358,7 +358,7 @@ function upload_attachment($attachment, $update_attachment=false)
 {
 	global $mybb, $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 
-	$posthash = $db->escape_string($mybb->input['posthash']);
+	$posthash = $db->escape_string($mybb->get_input('posthash'));
 	$pid = intval($pid);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)
@@ -406,6 +406,10 @@ function upload_attachment($attachment, $update_attachment=false)
     {
     	$ret['error'] = $lang->error_attachtype;
 		return $ret;
+	}
+	else
+	{
+		$attachtype = $attachtypes[$ext];
 	}
 
 	// Check the size
@@ -477,7 +481,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	$file = upload_file($attachment, $mybb->settings['uploadspath']."/".$month_dir, $filename);
 
 	// Failed to create the attachment in the monthly directory, just throw it in the main directory
-	if($file['error'] && $month_dir)
+	if(!empty($file['error']) && $month_dir)
 	{
 		$file = upload_file($attachment, $mybb->settings['uploadspath'].'/', $filename);
 	}
@@ -487,7 +491,7 @@ function upload_attachment($attachment, $update_attachment=false)
 		$filename = $month_dir."/".$filename;
 	}
 
-	if($file['error'])
+	if(!empty($file['error']))
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
 		switch($file['error'])
