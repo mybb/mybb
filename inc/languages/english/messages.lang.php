@@ -90,7 +90,7 @@ $l['emailsubject_forumsubscription'] = "New Thread in {1}";
 $l['emailsubject_reportpost'] = "Reported post at {1}";
 $l['emailsubject_reachedpmquota'] = "Private Messaging Quota Reached at {1}";
 $l['emailsubject_changeemail'] = "Change of Email at {1}";
-$l['emailsubject_newpm'] = "New Private Message at {1}";
+$l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
@@ -372,7 +372,13 @@ Thank you,
 
 $l['email_newpm'] = "{1},
 
-You have received a new private message on {3} from {2}. To view this message, you can follow this link:
+You have received a new private message on {3} from {2}:
+
+------------------------------------------
+{5}
+------------------------------------------
+
+To view, reply or forward this message, you can follow this link:
 
 {4}/private.php
 

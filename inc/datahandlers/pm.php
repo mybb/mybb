@@ -302,7 +302,7 @@ class PMDataHandler extends DataHandler
 					$emailmessage = $userlang->email_reachedpmquota;
 				}
 				$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($user['email']),
@@ -604,8 +604,8 @@ class PMDataHandler extends DataHandler
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
 
-				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
+				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($recipient['email']),
