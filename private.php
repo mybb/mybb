@@ -575,7 +575,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		"fromid" => $mybb->user['uid'],
 		"do" => $mybb->input['do'],
 		"pmid" => $mybb->input['pmid'],
-		"ipaddress" => $session->packedip
+		"ipaddress" => escape_binary($session->packedip)
 	);
 
 	// Split up any recipients we have
