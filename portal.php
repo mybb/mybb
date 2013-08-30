@@ -44,6 +44,11 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("portal");
 
+if($mybb->settings['enableportal'] == 0)
+{
+	error($lang->portal_disabled);
+}
+
 // Fetch the current URL
 $portal_url = get_current_location();
 
