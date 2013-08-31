@@ -709,6 +709,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					if($pid == $quoted_post['pid'])
 					{
 						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						// Subject too long? Shorten it to avoid error message
+						if(my_strlen($subject) > 85)
+						{
+							$subject = my_substr($subject, 0, 82).'...';
+						}
 						$subject = "RE: ".$subject;
 					}
 					$message .= parse_quoted_message($quoted_post);
@@ -965,7 +970,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	if(!$pid && !$mybb->input['previewpost'])
 	{
-		$subject = "RE: " . $thread['subject'];
+		$subject = $thread['subject'];
+		// Subject too long? Shorten it to avoid error message
+		if(my_strlen($subject) > 85)
+		{
+			$subject = my_substr($subject, 0, 82).'...';
+		}
+		$subject = "RE: ".$subject;
 	}
 
 	$posthash = htmlspecialchars_uni($mybb->input['posthash']);

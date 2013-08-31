@@ -4382,10 +4382,10 @@ body {
 	}
 // -->
 </script>]]></template>
-		<template name="showthread_quickreply" version="1610"><![CDATA[<br />
+		<template name="showthread_quickreply" version="1611"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-	<input type="hidden" name="subject" value="RE: {$thread['subject']}" />
+	<input type="hidden" name="subject" value="RE: {$reply_subject}" />
 	<input type="hidden" name="action" value="do_newreply" />
 	<input type="hidden" name="posthash" value="{$posthash}" id="posthash" />
 	<input type="hidden" name="quoted_ids" value="" id="quoted_ids" />

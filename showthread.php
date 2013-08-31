@@ -70,7 +70,14 @@ if(substr($thread['closed'], 0, 6) == "moved|")
 	$thread['tid'] = 0;
 }
 
-$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+$reply_subject = $parser->parse_badwords($thread['subject']);
+$thread['subject'] = htmlspecialchars_uni($reply_subject);
+// Subject too long? Shorten it to avoid error message
+if(my_strlen($reply_subject) > 85)
+{
+	$reply_subject = my_substr($reply_subject, 0, 82).'...';
+}
+$reply_subject = htmlspecialchars_uni($reply_subject);
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
