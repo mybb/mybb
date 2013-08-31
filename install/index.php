@@ -1806,7 +1806,7 @@ function configure()
 		}
 
 		// IP addresses and hostnames are not valid
-		if($cookiedomain == 'localhost' || my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
+		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
 		{
 			$cookiedomain = '';
 		}
