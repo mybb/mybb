@@ -1230,13 +1230,46 @@ class postParser
 	* @return string The parsed message.
 	*/
 	function mycode_auto_url($message)
-	{	
+	{
 		$message = " ".$message;
-		$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
+		$message = preg_replace_callback("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<]*)?([\w\/\)]))#i", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<]*)?([\w\/\)]))#i", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 		
 		return $message;
+	}
+
+	/**
+	* Parses URLs automatically.
+	*
+	* @param array Matches
+	* @return string The parsed message.
+	*/
+	function mycode_auto_url_callback($matches)
+	{
+		$external = '';
+		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
+		while(my_substr($matches[3], -1) == ')')
+		{
+			if(substr_count($matches[3], ')') > substr_count($matches[3], '('))
+			{
+				$matches[3] = my_substr($matches[3], 0, -1);
+				$external .= ')';
+			}
+			else
+			{
+				break;
+			}
+		}
+		if($matches[2] == 'www' || $matches[2] == 'ftp')
+		{
+			return "{$matches[1]}[url]{$matches[2]}.{$matches[3]}[/url]{$external}";
+		}
+		else
+		{
+			return "{$matches[1]}[url]{$matches[2]}://{$matches[3]}[/url]{$external}";
+		}
 	}
 
 	/**
