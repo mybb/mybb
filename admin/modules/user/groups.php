@@ -70,7 +70,9 @@ $usergroup_permissions = array(
 	"canoverridepm" => 0,
 	"canusesig" => 0,
 	"canusesigxposts" => 0,
-	"signofollow" => 0
+	"signofollow" => 0,
+	"edittimelimit" => 0,
+	"maxposts" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -821,7 +823,9 @@ if($mybb->input['action'] == "edit")
 				"canoverridepm" => intval($mybb->input['canoverridepm']),
 				"canusesig" => intval($mybb->input['canusesig']),
 				"canusesigxposts" => intval($mybb->input['canusesigxposts']),
-				"signofollow" => intval($mybb->input['signofollow'])
+				"signofollow" => intval($mybb->input['signofollow']),
+				"edittimelimit" => intval($mybb->input['edittimelimit']),
+				"maxposts" => intval($mybb->input['maxposts'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -953,7 +957,8 @@ if($mybb->input['action'] == "edit")
 	$posting_options = array(
 		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
 		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
-		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads']))
+		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
+		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_text_box('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 
@@ -974,7 +979,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),
 		$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
 		$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
-		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments']))
+		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments'])),
+		"{$lang->edit_time_limit}<br /><small class=\"input\">{$lang->edit_time_limit_desc}</small><br />".$form->generate_text_box('edittimelimit', $mybb->input['edittimelimit'], array('id' => 'edittimelimit', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
 
