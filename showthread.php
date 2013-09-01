@@ -21,7 +21,7 @@ $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multip
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."/inc/functions_indicators.php";
+require_once MYBB_ROOT."inc/functions_indicators.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
