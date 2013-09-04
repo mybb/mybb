@@ -48,4 +48,5 @@ $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
 $l['print_this_item'] = "Print this item";
 $l['send_to_friend'] = "Send this item to a friend";
+$l['portal_disabled'] = "You cannot use the portal functionality as it has been disabled by the Administrator.";
 ?>
