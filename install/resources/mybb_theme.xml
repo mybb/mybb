@@ -10480,10 +10480,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="2"><strong>{$lang->change_username}</strong></td>
 </tr>
 <tr>
-<td class="tcat" colspan="2"><strong>{$lang->current_password}</strong></td>
+<td class="tcat" colspan="2"><strong>{$lang->password_confirmation}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25" /></td>
+<td class="trow1" width="40%"><strong>{$lang->current_password}</strong></td>
+<td class="trow1" width="60%"><input type="password" class="textbox" name="password" size="25" /></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->change_username}</strong></td>
@@ -10785,10 +10786,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="2"><strong>{$lang->change_email}</strong></td>
 </tr>
 <tr>
-<td class="tcat" colspan="2"><strong>{$lang->enter_password}</strong></td>
+<td class="tcat" colspan="2"><strong>{$lang->password_confirmation}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="password" size="25" /></td>
+<td class="trow2" width="40%"><strong>{$lang->current_password}</strong></td>
+<td class="trow1" width="60%"><input type="password" class="textbox" name="password" size="25" /></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_email}</strong></td>
@@ -11246,10 +11248,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="2"><strong>{$lang->change_password}</strong></td>
 </tr>
 <tr>
-<td class="tcat" colspan="2"><strong>{$lang->current_password}</strong></td>
+<td class="tcat" colspan="2"><strong>{$lang->password_confirmation}</strong></td>
 </tr>
 <tr>
-<td class="trow1" colspan="2" align="center"><input type="password" class="textbox" name="oldpassword" size="25" /></td>
+<td class="trow1" width="40%"><strong>{$lang->current_password}</strong></td>
+<td class="trow1" width="60%"><input type="password" class="textbox" name="oldpassword" size="25" /></td>
 </tr>
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->please_enter_confirm_new_password}</strong></td>
