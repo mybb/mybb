@@ -222,9 +222,9 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			xmlhttp_error($lang->no_permission_edit_subject);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
+		else if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->usergroup['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
 		$ismod = false;
