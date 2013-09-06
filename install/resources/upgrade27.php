@@ -95,6 +95,11 @@ function upgrade27_dbchanges()
 		$db->drop_column("adminsessions", "useragent");
 	}
 
+	if($db->field_exists('postbit', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "postbit");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -108,6 +113,7 @@ function upgrade27_dbchanges()
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -119,6 +125,7 @@ function upgrade27_dbchanges()
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			break;
 	}
 
