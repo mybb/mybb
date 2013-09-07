@@ -167,6 +167,9 @@ $l['admin_log_style_templates_edit_template'] = "Edited template #{1} ({2}) from
 $l['admin_log_style_templates_edit_template_global'] = "Edited template #{1} ({2}) from the global template set";
 $l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' and replaced with '{2}'";
 $l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
+$l['admin_log_style_templates_add_template_group'] = "Added template group #{1} ({2})";
+$l['admin_log_style_templates_edit_template_group'] = "Edited template group #{1} ({2})";
+$l['admin_log_style_templates_delete_template_group'] = "Deleted template group #{1} ({2})";
 
 $l['admin_log_style_themes_import'] = "Imported theme #{1}";
 $l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
