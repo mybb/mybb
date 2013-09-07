@@ -43,7 +43,8 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip bytea(16) NOT NULL default '',
 	dateline bigint NOT NULL default '0',
 	lastactive bigint NOT NULL default '0',
-	data text NOT NULL default ''
+	data text NOT NULL default '',
+	useragent varchar(100) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_adminviews (
