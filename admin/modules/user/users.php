@@ -937,8 +937,8 @@ if($mybb->input['action'] == "edit")
 	$table->construct_cell("<strong>{$lang->percent_of_total_posts}:</strong> {$percent_posts}");
 	$table->construct_cell("<strong>{$lang->warning_level}:</strong> {$warning_level}");
 	$table->construct_row();
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($user['regip']));
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($user['lastip']));
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['regip'])));
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
 	$table->construct_row();
 
 	$table->output("{$lang->user_overview}: {$user['username']}");
@@ -1593,7 +1593,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($user['lastip']));
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1611,7 +1611,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($user['regip']));
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['regip'])));
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1628,7 +1628,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
 
-		$table->construct_cell(my_inet_ntop($ip['ipaddress']));
+		$table->construct_cell(my_inet_ntop($db->unescape_binary($ip['ipaddress'])));
 		$table->construct_cell($controls, array('class' => "align_center"));
 		$table->construct_row();
 	}
@@ -2986,11 +2986,11 @@ function build_users_view($view)
 			$ip_range = fetch_ip_range($view['conditions'][$search_field]);
 			if(!is_array($ip_range))
 			{
-				$ip_sql = "{$search_field}=X'".escape_binary($ip_range)."'";
+				$ip_sql = "{$search_field}=".$db->escape_binary($ip_range);
 			}
 			else
 			{
-				$ip_sql = "{$search_field} BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
+				$ip_sql = "{$search_field} BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
 			}
 			$search_sql .= " AND {$ip_sql}";
 		}
@@ -3002,11 +3002,11 @@ function build_users_view($view)
 		$ip_range = fetch_ip_range($view['conditions']['postip']);
 		if(!is_array($ip_range))
 		{
-			$ip_sql = "ipaddress=X'".escape_binary($ip_range)."'";
+			$ip_sql = "ipaddress=".$db->escape_binary($ip_range);
 		}
 		else
 		{
-			$ip_sql = "ipaddress BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
+			$ip_sql = "ipaddress BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
 		}
 		$ip_uids = array(0);
 		$query = $db->simple_select("posts", "uid", $ip_sql);

@@ -624,7 +624,7 @@ if($mybb->input['action'] == "modlogs")
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
-		$logitem['ipaddress'] = my_inet_ntop($logitem['ipaddress']);
+		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
@@ -2836,11 +2836,11 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				if(!is_array($ip_range))
 				{
-					$post_ip_sql = "ipaddress=X'".escape_binary($ip_range)."'";
+					$post_ip_sql = "ipaddress=".$db->escape_binary($ip_range);
 				}
 				else
 				{
-					$post_ip_sql = "ipaddress BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."'";
+					$post_ip_sql = "ipaddress BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
 				}
 			}
 
@@ -2865,11 +2865,11 @@ if($mybb->input['action'] == "ipsearch")
 			{
 				if(!is_array($ip_range))
 				{
-					$user_ip_sql = "regip=X'".escape_binary($ip_range)."' OR lastip=X'".escape_binary($ip_range)."'";
+					$user_ip_sql = "regip=".$db->escape_binary($ip_range)." OR lastip=".$db->escape_binary($ip_range);
 				}
 				else
 				{
-					$user_ip_sql = "regip BETWEEN X'".escape_binary($ip_range[0])."' AND X'".escape_binary($ip_range[1])."' OR lastip BETWEEN x'".escape_binary($ip_range[0])."' AND x'".escape_binary($ip_range[1])."'";
+					$user_ip_sql = "regip BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1])." OR lastip BETWEEN ".$db->escape_binary($ip_range[0])." AND ".$db->escape_binary($ip_range[1]);
 				}
 			}
 
@@ -2959,23 +2959,23 @@ if($mybb->input['action'] == "ipsearch")
 					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
 					{
 						$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
-						$ip = my_inet_ntop($ipaddress['regip']);
+						$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 					}
 					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
 					{
 						$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
-						$ip = my_inet_ntop($ipaddress['lastip']);
+						$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 					}
 				}
 				elseif($ipaddress['regip'] == $ip_range)
 				{
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
-					$ip = my_inet_ntop($ipaddress['regip']);
+					$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 				}
 				elseif($ipaddress['lastip'] == $ip_range)
 				{
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
-					$ip = my_inet_ntop($ipaddress['lastip']);
+					$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 				}
 				if($ip)
 				{
@@ -3032,7 +3032,7 @@ if($mybb->input['action'] == "ipsearch")
 
 				foreach($ipaddresses as $ipaddress)
 				{
-					$ip = my_inet_ntop($ipaddress['ipaddress']);
+					$ip = my_inet_ntop($db->unescape_binary($ipaddress['ipaddress']));
 					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
 					$trow = alt_trow();
 					if(!$ipaddress['subject'])
@@ -3705,7 +3705,7 @@ if(!$mybb->input['action'])
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
-		$logitem['ipaddress'] = my_inet_ntop($logitem['ipaddress']);
+		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";

@@ -263,8 +263,8 @@ class LoginDataHandler extends DataHandler
 		my_setcookie('loginattempts', 1);
 		my_setcookie("sid", $session->sid, -1, true);
 
-		$ip_address = escape_binary($session->packedip);
-		$db->delete_query("sessions", "ip = X'{$ip_address}' AND sid != '{$session->sid}'");
+		$ip_address = $db->escape_binary($session->packedip);
+		$db->delete_query("sessions", "ip = {$ip_address} AND sid != '{$session->sid}'");
 
 		$newsession = array(
 			"uid" => $user['uid'],

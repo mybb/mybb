@@ -420,7 +420,7 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			$user_check = "ipaddress=X'".escape_binary($session->packedip)."'";
+			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
 		}
 
 		$query = $db->simple_select("posts", "pid,message,visible", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
@@ -894,7 +894,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => intval($post['dateline']),
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => escape_binary($post['ipaddress']),
+				"ipaddress" => $db->escape_binary($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -918,7 +918,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($post['username']),
 				"dateline" => $post['dateline'],
 				"message" => $db->escape_string($post['message']),
-				"ipaddress" => escape_binary($post['ipaddress']),
+				"ipaddress" => $db->escape_binary($post['ipaddress']),
 				"includesig" => $post['options']['signature'],
 				"smilieoff" => $post['options']['disablesmilies'],
 				"visible" => $visible
@@ -1228,7 +1228,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => escape_binary(my_inet_pton(get_ip())),
+				"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible
@@ -1272,7 +1272,7 @@ class PostDataHandler extends DataHandler
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
 				"message" => $db->escape_string($thread['message']),
-				"ipaddress" => escape_binary(my_inet_pton(get_ip())),
+				"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
 				"includesig" => $thread['options']['signature'],
 				"smilieoff" => $thread['options']['disablesmilies'],
 				"visible" => $visible

@@ -997,7 +997,7 @@ function build_friendly_wol_location($user_activity)
  */
 function build_wol_row($user)
 {
-	global $mybb, $lang, $templates, $theme, $session;
+	global $mybb, $lang, $templates, $theme, $session, $db;
 
 	// We have a registered user
 	if($user['uid'] > 0)
@@ -1038,7 +1038,7 @@ function build_wol_row($user)
 	// Can view IPs, then fetch the IP template
 	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
-		$user['ip'] = my_inet_ntop($user['ip']);
+		$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
 		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
 	}
 	else

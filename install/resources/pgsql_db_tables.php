@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 $tables[] = "CREATE TABLE mybb_adminlog (
   uid int NOT NULL default '0',
-  ipaddress bytea(16) NOT NULL default '',
+  ipaddress bytea NOT NULL default '',
   dateline bigint NOT NULL default '0',
   module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
@@ -40,7 +40,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
 	loginkey varchar(50) NOT NULL default '',
-	ip bytea(16) NOT NULL default '',
+	ip bytea NOT NULL default '',
 	dateline bigint NOT NULL default '0',
 	lastactive bigint NOT NULL default '0',
 	data text NOT NULL default '',
@@ -381,7 +381,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	touid bigint NOT NULL default '0',
 	toemail varchar(200) NOT NULL default '',
 	tid int NOT NULL default '0',
-	ipaddress bytea(16) NOT NULL default '',
+	ipaddress bytea NOT NULL default '',
 	PRIMARY KEY(mid)
 );";
 
@@ -403,7 +403,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   pid int NOT NULL default '0',
   action text NOT NULL default '',
   data text NOT NULL,
-  ipaddress bytea(16) NOT NULL default ''
+  ipaddress bytea NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_moderators (
@@ -479,7 +479,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   username varchar(80) NOT NULL default '',
   dateline bigint NOT NULL default '0',
   message text NOT NULL default '',
-  ipaddress  bytea(16) NOT NULL default '',
+  ipaddress  bytea NOT NULL default '',
   includesig int NOT NULL default '0',
   smilieoff int NOT NULL default '0',
   edituid int NOT NULL default '0',
@@ -507,7 +507,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   smilieoff int NOT NULL default '0',
   receipt int NOT NULL default '0',
   readtime bigint NOT NULL default '0',
-  ipaddress bytea(16) NOT NULL default '',
+  ipaddress bytea NOT NULL default '',
   PRIMARY KEY (pmid)
 );";
 
@@ -593,7 +593,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
   uid int NOT NULL default '0',
   dateline bigint NOT NULL default '0',
-  ipaddress bytea(16) NOT NULL default '',
+  ipaddress bytea NOT NULL default '',
   threads text NOT NULL default '',
   posts text NOT NULL default '',
   resulttype varchar(10) NOT NULL default '',
@@ -605,7 +605,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
 $tables[] = "CREATE TABLE mybb_sessions (
   sid varchar(32) NOT NULL default '',
   uid int NOT NULL default '0',
-  ip bytea(16) NOT NULL default '',
+  ip bytea NOT NULL default '',
   time bigint NOT NULL default '0',
   location varchar(150) NOT NULL default '',
   useragent varchar(100) NOT NULL default '',
@@ -758,7 +758,7 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
   rating smallint NOT NULL default '0',
-  ipaddress bytea(16) NOT NULL default '',
+  ipaddress bytea NOT NULL default '',
   PRIMARY KEY (rid)
 );";
 
@@ -964,8 +964,8 @@ $tables[] = "CREATE TABLE mybb_users (
   referrer int NOT NULL default '0',
   referrals int NOT NULL default '0',
   reputation bigint NOT NULL default '0',
-  regip bytea(16) NOT NULL default '',
-  lastip bytea(16) NOT NULL default '',
+  regip bytea NOT NULL default '',
+  lastip bytea NOT NULL default '',
   language varchar(50) NOT NULL default '',
   timeonline bigint NOT NULL default '0',
   showcodebuttons int NOT NULL default '1',

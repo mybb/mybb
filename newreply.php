@@ -327,7 +327,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$user_check = "p.ipaddress=X'".escape_binary($session->packedip)."'";
+		$user_check = "p.ipaddress=".$db->escape_binary($session->packedip);
 	}
 	if(!$mybb->input['savedraft'])
 	{

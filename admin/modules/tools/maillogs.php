@@ -104,7 +104,7 @@ if($mybb->input['action'] == "view")
 	$table->construct_row();
 
 	$table->construct_cell($lang->ip_address.":");
-	$table->construct_cell(my_inet_ntop($log['ipaddress']));
+	$table->construct_cell(my_inet_ntop($db->unescape_binary($log['ipaddress'])));
 	$table->construct_row();
 
 	$table->construct_cell($lang->subject.":");

@@ -727,7 +727,7 @@ class DB_PgSQL
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$array[$field] = "X'{$value}'";
+				$array[$field] = $value;
 			}
 			else
 			{
@@ -779,7 +779,7 @@ class DB_PgSQL
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
-					$values[$field] = "X'{$value}'";
+					$values[$field] = $value;
 				}
 				else
 				{
@@ -829,7 +829,7 @@ class DB_PgSQL
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$query .= $comma.$field."=X{$quote}{$value}{$quote}";
+				$query .= $comma.$field."={$value}";
 			}
 			else
 			{
@@ -1245,7 +1245,7 @@ class DB_PgSQL
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
-					$search_bit[] = "{$field} = X'".$replacements[$field]."'";
+					$search_bit[] = "{$field} = ".$replacements[$field];
 				}
 				else
 				{
@@ -1462,6 +1462,36 @@ class DB_PgSQL
 		return get_execution_time();
 	}
 
+	/**
+	 * Binary database fields require special attention.
+	 *
+	 * @param string Binary value
+	 * @return string Encoded binary value
+	 */
+	function escape_binary($string)
+	{
+		return "'".pg_escape_bytea($string)."'";
+	}
+
+	/**
+	 * Unescape binary data.
+	 *
+	 * @param string Binary value
+	 * @return string Encoded binary value
+	 */
+	function unescape_binary($string)
+	{
+		// hex format
+		if(substr($string, 0, 2) == '\x')
+		{
+			return hex2bin(substr($string, 2));
+		}
+		// escape format
+		else
+		{
+			return pg_unescape_bytea($string);
+		}
+	}
 }
 
 ?>

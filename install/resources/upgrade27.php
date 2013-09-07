@@ -384,25 +384,25 @@ function upgrade27_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => escape_binary(my_inet_pton($data['regip'])), 'lastip' => escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
+						$db->update_query("users", array('regip' => $db->escape_binary(my_inet_pton($data['regip'])), 'lastip' => $db->escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
 						break;
 					case 3:
-						$db->update_query("moderatorlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
 						break;
 					default:
-						$db->update_query("adminlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 				}
 				$ipaddress = true;

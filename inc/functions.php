@@ -3025,7 +3025,7 @@ function log_moderator_action($data, $action="")
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
-		"ipaddress" => escape_binary($session->packedip)
+		"ipaddress" => $db->escape_binary($session->packedip)
 	);
 	$db->insert_query("moderatorlog", $sql_array);
 }
@@ -6941,19 +6941,6 @@ function gd_version()
 	}
 
 	return $gd_version;
-}
-
-/**
- * Binary database fields require special attention due to a problem with SQLite.
- * Reference: https://bugs.php.net/bug.php?id=63419
- *
- * @param string Binary value
- * @return string Encoded binary value
- */
-function escape_binary($string)
-{
-	global $db;
-	return $db->escape_string(bin2hex($string));
 }
 
 ?>

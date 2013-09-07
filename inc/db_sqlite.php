@@ -621,7 +621,7 @@ class DB_SQLite
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$array[$field] = "X'{$value}'";
+				$array[$field] = $value;
 			}
 			else
 			{
@@ -665,7 +665,7 @@ class DB_SQLite
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
-					$values[$field] = "X'{$value}'";
+					$values[$field] = $value;
 				}
 				else
 				{
@@ -715,7 +715,7 @@ class DB_SQLite
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
-				$query .= $comma.$field."=X{$quote}".$value."{$quote}";
+				$query .= $comma.$field."=".$value;
 			}
 			else
 			{
@@ -984,7 +984,7 @@ class DB_SQLite
 			$columns .= $comma.$column;
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
-				$values .= $comma."X'".$value."'";
+				$values .= $comma.$value;
 			}
 			else
 			{
@@ -1343,6 +1343,29 @@ class DB_SQLite
 	function get_execution_time()
 	{
 		return get_execution_time();
+	}
+
+	/**
+	 * Binary database fields require special attention.
+	 *
+	 * @param string Binary value
+	 * @return string Encoded binary value
+	 */
+	function escape_binary($string)
+	{
+		return "X'".$this->escape_string(bin2hex($string))."'";
+	}
+
+	/**
+	 * Unescape binary data.
+	 *
+	 * @param string Binary value
+	 * @return string Encoded binary value
+	 */
+	function unescape_binary($string)
+	{
+		// Nothing to do
+		return $string;
 	}
 }
 

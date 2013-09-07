@@ -2152,7 +2152,7 @@ function install_done()
 		'dst' => 0,
 		'threadmode' => '',
 		'daysprune' => 0,
-		'regip' => escape_binary(my_inet_pton(get_ip())),
+		'regip' => $db->escape_binary(my_inet_pton(get_ip())),
 		'language' => '',
 		'showcodebuttons' => 1,
 		'tpp' => 0,

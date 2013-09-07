@@ -37,7 +37,7 @@ class session
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=X'".escape_binary($this->packedip)."'", array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=".$db->escape_binary($this->packedip), array('limit' => 1));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
@@ -163,7 +163,7 @@ class session
 
 		if($mybb->user['lastip'] != $this->packedip && array_key_exists('lastip', $mybb->user))
 		{
-			$lastip_add = ", lastip=X'".escape_binary($this->packedip)."'";
+			$lastip_add = ", lastip=".$db->escape_binary($this->packedip);
 		}
 		else
 		{
@@ -487,7 +487,7 @@ class session
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip=X'".escape_binary($this->packedip)."'");
+			$db->delete_query("sessions", "ip=".$db->escape_binary($this->packedip));
 			$onlinedata['uid'] = 0;
 		}
 
@@ -501,7 +501,7 @@ class session
 			$onlinedata['sid'] = md5(uniqid(microtime(true), true));
 		}
 		$onlinedata['time'] = TIME_NOW;
-		$onlinedata['ip'] = escape_binary($this->packedip);
+		$onlinedata['ip'] = $db->escape_binary($this->packedip);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
 		$useragent = $this->useragent;
 		if(my_strlen($useragent) > 100)

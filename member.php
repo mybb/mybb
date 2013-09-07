@@ -68,7 +68,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	{
 		$time = TIME_NOW;
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
-		$query = $db->simple_select("users", "*", "regip=X'".escape_binary($session->packedip)."' AND regdate > '$datecut'");
+		$query = $db->simple_select("users", "*", "regip=".$db->escape_binary($session->packedip)." AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
@@ -2058,7 +2058,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"touid" => $to_user['uid'],
 				"toemail" => $db->escape_string($to_user['email']),
 				"tid" => 0,
-				"ipaddress" => escape_binary($session->packedip)
+				"ipaddress" => $db->escape_binary($session->packedip)
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

@@ -896,7 +896,7 @@ class Moderation
 						'uid' => $post['uid'],
 						'username' => $db->escape_string($post['username']),
 						'dateline' => $post['dateline'],
-						'ipaddress' => escape_binary($post['ipaddress']),
+						'ipaddress' => $db->escape_binary($post['ipaddress']),
 						'includesig' => $post['includesig'],
 						'smilieoff' => $post['smilieoff'],
 						'edituid' => $post['edituid'],

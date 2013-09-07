@@ -1140,7 +1140,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$post['ipaddress'] = my_inet_ntop($post['ipaddress']);
+		$post['ipaddress'] = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 		$hostname = @gethostbyaddr($post['ipaddress']);
 		if(!$hostname || $hostname == $post['ipaddress'])
 		{
