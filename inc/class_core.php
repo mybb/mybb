@@ -149,7 +149,7 @@ class MyBB {
 	public $debug_mode = false;
 
 	/**
-	 * Binary database fields require special attention due to a problem with SQLite: https://bugs.php.net/bug.php?id=63419
+	 * Binary database fields need to be handled differently
 	 */
 	public $binary_fields = array(
 		'adminlog' => array('ipaddress' => true),
