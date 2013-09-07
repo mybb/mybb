@@ -353,7 +353,7 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+				$query = $db->simple_select("threads", 'uid, fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 
 				// Loop threads adding a reply to each one
@@ -430,6 +430,26 @@ class CustomModeration extends Moderation
 				}
 			}
 		}
+		
+		// Do we have a PM subject and PM message?
+		if(isset($thread_options['pm_subject']) && $thread_options['pm_subject'] != '' && isset($thread_options['pm_message']) && $thread_options['pm_message'] != '')
+		{
+			$tid_list = implode(',', $tids);
+			
+			// For each thread, we send a PM to the author
+			$query = $db->simple_select("threads", 'uid', "tid IN ($tid_list)");
+			while($uid = $db->fetch_field($query, 'uid'))
+			{
+				// Let's send our PM
+				$pm = array(
+					'subject' => $thread_options['pm_subject'],
+					'message' => $thread_options['pm_message'],
+					'touid' => $uid
+				);
+				send_pm($pm, $mybb->user['uid'], 1);
+			}
+		}
+		
 		return true;
 	}
 }

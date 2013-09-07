@@ -6943,4 +6943,101 @@ function gd_version()
 	return $gd_version;
 }
 
+/**
+ * Send a Private Message to a user.
+ * 
+ * @param array Array containing: 'subject', 'message', 'touid' and 'receivepms' (the latter should reflect the value found in the users table: receivepms and receivefrombuddy)
+ * @param int Sender UID (0 if you want to use $mybb->user['uid'] or -1 to use MyBB Engine)
+ * @param bool Whether or not do override user defined options for receiving PMs
+ * @return bool True if PM sent
+ */
+function send_pm($pm, $fromid = 0, $admin_override=false)
+{
+	global $lang, $mybb, $db, $session;
+	
+	if($mybb->settings['enablepms'] == 0)
+	{
+		return false;
+	}
+		
+	if (!is_array($pm))
+	{
+		return false;
+	}
+		
+	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	{
+		return false;
+	}
+	
+	$lang->load('messages');
+	
+	require_once MYBB_ROOT."inc/datahandlers/pm.php";
+	
+	$pmhandler = new PMDataHandler();
+	
+	$subject = $pm['subject'];
+	$message = $pm['message'];
+	$toid = $pm['touid'];
+	
+	// Our recipients
+	if (is_array($toid))
+	{
+		$recipients_to = $toid;
+	}
+	else
+	{
+		$recipients_to = array($toid);
+	}
+	
+	$recipients_bcc = array();
+	
+	// Determine user ID
+	if ((int)$fromid == 0)
+	{
+		$fromid = (int)$mybb->user['uid'];
+	}
+	elseif ((int)$fromid < 0)
+	{
+		$fromid = 0;
+	}
+	
+	// Build our final PM array
+	$pm = array(
+		"subject" => $subject,
+		"message" => $message,
+		"icon" => -1,
+		"fromid" => $fromid,
+		"toid" => $recipients_to,
+		"bccid" => $recipients_bcc,
+		"do" => '',
+		"pmid" => '',
+		"ipaddress" => $db->escape_binary($session->packedip)
+	);
+	
+	$pm['options'] = array(
+		"signature" => 0,
+		"disablesmilies" => 0,
+		"savecopy" => 0,
+		"readreceipt" => 0
+	);
+	
+	$pm['saveasdraft'] = 0;
+	
+	// Admin override
+	$pmhandler->admin_override = (int)$admin_override;
+	
+	$pmhandler->set_data($pm);
+	if($pmhandler->validate_pm())
+	{
+		$pmhandler->insert_pm();
+	}
+	else
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 ?>
