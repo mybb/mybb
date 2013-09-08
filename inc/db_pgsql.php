@@ -468,7 +468,8 @@ class DB_PgSQL
 	 */
 	function insert_id()
 	{
-		$this->last_query = str_replace(array("\r", "\n", "\t"), '', $this->last_query);
+		$this->last_query = str_replace(array("\r", "\t"), '', $this->last_query);
+		$this->last_query = str_replace("\n", ' ', $this->last_query);
 		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
 
 		$table = $matches[1];
@@ -482,7 +483,7 @@ class DB_PgSQL
 			return;
 		}
 
-		$id = $this->write_query("SELECT currval('{$table}_{$field}_seq') AS last_value");
+		$id = $this->write_query("SELECT currval(pg_get_serial_sequence('{$table}', '{$field}')) AS last_value");
 		return $this->fetch_field($id, 'last_value');
 	}
 
