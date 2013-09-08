@@ -468,8 +468,22 @@ class DB_PgSQL
 	 */
 	function insert_id()
 	{
-		$query = $this->query('SELECT lastval() as mylastval');
-		return $this->fetch_field($query, 'mylastval');
+		$this->last_query = str_replace(array("\r", "\n", "\t"), '', $this->last_query);
+		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
+
+		$table = $matches[1];
+
+		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
+		$field = $this->fetch_field($query, 'column_name');
+
+		// Do we not have a primary field?
+		if(!$field)
+		{
+			return;
+		}
+
+		$id = $this->write_query("SELECT currval('{$table}_{$field}_seq') AS last_value");
+		return $this->fetch_field($id, 'last_value');
 	}
 
 	/**
