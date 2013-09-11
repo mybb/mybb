@@ -7011,9 +7011,13 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"toid" => $recipients_to,
 		"bccid" => $recipients_bcc,
 		"do" => '',
-		"pmid" => '',
-		"ipaddress" => $db->escape_binary($session->packedip)
+		"pmid" => ''
 	);
+	
+	if(isset($session))
+	{
+		$pm['ipaddress'] = $session->packedip;
+	}
 	
 	$pm['options'] = array(
 		"signature" => 0,

@@ -192,7 +192,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			"subject" => $mybb->input['pm_subject'],
 			"message" => $mybb->input['pm_message'],
 			"fromid" => $mybb->user['uid'],
-			"toid" => array($user['uid'])
+			"toid" => array($user['uid']),
+			"ipaddress" => $session->packedip
 		);
 
 		$pm['options'] = array(

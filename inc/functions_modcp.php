@@ -195,7 +195,8 @@ function send_report($report)
 			"message" => $emailmessage,
 			"icon" => 0,
 			"fromid" => $mybb->user['uid'],
-			"toid" => $pm_recipients
+			"toid" => $pm_recipients,
+			"ipaddress" => $session->packedip
 		);
 
 		$pmhandler->admin_override = true;
