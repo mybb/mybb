@@ -80,6 +80,7 @@ a:hover, a:active {
 	padding-left: 20px;
 	background-image: url(images/headerlinks_sprite.png);
 	background-repeat: no-repeat;
+	display: inline-block;
 }
 
 #logo ul.top_links {
@@ -281,6 +282,7 @@ a:hover, a:active {
 }
 
 fieldset {
+	padding: 12px;
 	border: 1px solid #ddd;
 }
 
@@ -4077,33 +4079,28 @@ a.button {
 </head>
 <body>
 {$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="trow1">
-			<table width="100%" cellspacing="0" cellpadding="0" border="0">
-				<tr>
-					<td width="75%">
-						<span class="largetext"><strong>{$formattedname}</strong></span><br />
-						<span class="smalltext">
-							({$usertitle})<br />
-							{$groupimage}
-							{$userstars}<br />
-							<br />
-							<strong>{$lang->registration_date}</strong> {$memregdate}<br />
-							<strong>{$lang->date_of_birth}</strong> {$membday} {$membdayage}<br />
-							<strong>{$lang->local_time}</strong> {$localtime}<br />
-							<strong>{$lang->postbit_status}</strong> {$online_status}
-						</span>
-					</td>
-					<td width="25%" align="right" valign="middle">{$avatar}</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	{$awaybit}
-</table>
-
+<fieldset>
+	<table width="100%" cellspacing="0" cellpadding="0" border="0">
+		<tr>
+			<td width="75%">
+				<span class="largetext"><strong>{$formattedname}</strong></span><br />
+				<span class="smalltext">
+					({$usertitle})<br />
+					{$groupimage}
+					{$userstars}<br />
+					<br />
+					<strong>{$lang->registration_date}</strong> {$memregdate}<br />
+					<strong>{$lang->date_of_birth}</strong> {$membday} {$membdayage}<br />
+					<strong>{$lang->local_time}</strong> {$localtime}<br />
+					<strong>{$lang->postbit_status}</strong> {$online_status}
+				</span>
+			</td>
+			<td width="25%" align="right" valign="middle">{$avatar}</td>
+		</tr>
+	</table>
+</fieldset>
 <br />
+{$awaybit}
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
 	<tr>
 		<td width="50%" valign="top">
@@ -4195,12 +4192,11 @@ a.button {
 </tr>
 </table>]]></template>
 		<template name="member_profile_away" version="120"><![CDATA[<tr>
-<td class="trow1" align="center">
-<strong>{$lang->away_note}</strong><br />
-<span class="smalltext"><em>{$lang->away_reason} {$awayreason}</em></span><br />
-{$lang->away_since} {$awaydate} &nbsp;&nbsp;&nbsp; {$lang->away_returns} {$returndate}
-</td>
-</tr>]]></template>
+<fieldset>
+<legend><strong>{$lang->away_note}</strong></legend>
+<em>{$lang->away_reason} {$awayreason}</em><br />
+<span class="smalltext">{$lang->away_since} {$awaydate} &mdash; {$lang->away_returns} {$returndate}</span>
+</fieldset>]]></template>
 		<template name="member_profile_customfields" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->users_additional_info}</strong></td>
@@ -7567,7 +7563,7 @@ body {
 		<template name="nav_bit" version="120"><![CDATA[<a href="{$navbit['url']}">{$navbit['name']}</a>{$sep}]]></template>
 		<template name="nav_bit_active" version="120"><![CDATA[<span class="active">{$navbit['name']}</span>]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
-		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.gif" alt="" />]]></template>
+		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
 		<template name="newreply" version="1400"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
@@ -8503,7 +8499,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
-<table border="0" cellspacing="1" cellpadding="4" class="tborder">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="thead" colspan="2"><strong>{$lang->advanced_private_message_search}</strong></td>
 	</tr>
@@ -9502,10 +9498,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr></table>
 </td>
 <td class="trow1">
-<table><tr>
-<td class="trow1"><input type="text" class="textbox" id="author" name="author" size="35" maxlength="{$mybb->settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" /> {$lang->match_username}</span></td>
-<td class="trow1">&nbsp;</td>
-</tr></table>
+<input type="text" class="textbox" id="author" name="author" size="35" maxlength="{$mybb->settings['maxnamelength']}" /><br /><span class="smalltext"><input type="checkbox" class="checkbox" name="matchusername" value="1" checked="checked" /> {$lang->match_username}</span>
 </td>
 </tr>
 <tr>
@@ -12243,8 +12236,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_preview}</strong></td>
 </tr>
+<tr>
+	<td id="posts_container">
+		<div id="posts">
+			{$postbit}
+		</div>
+	</td>
+</tr>
 </table>
-{$postbit}
 <br />
 ]]></template>
 		<template name="sendthread" version="1600"><![CDATA[<html>
