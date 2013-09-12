@@ -792,7 +792,7 @@ class UserDataHandler extends DataHandler
 			$user['away']['away'] = 0;
 			$user['away']['date'] = 0;
 			$user['away']['returndate'] = 0;
-			$user['away']['reason'] = '';
+			$user['away']['awayreason'] = '';
 			return true;
 		}
 		else if($user['away']['returndate'])

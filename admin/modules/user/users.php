@@ -428,7 +428,13 @@ if($mybb->input['action'] == "edit")
 			"dateformat" => intval($mybb->input['dateformat']),
 			"timeformat" => intval($mybb->input['timeformat']),
 			"language" => $mybb->input['language'],
-			"usernotes" => $mybb->input['usernotes']
+			"usernotes" => $mybb->input['usernotes'],
+			"away" => array(
+				"away" => $mybb->input['away'],
+				"date" => TIME_NOW,
+				"returndate" => "{$mybb->input['away_day']}-{$mybb->input['away_month']}-{$mybb->input['away_year']}",
+				"awayreason" => $mybb->input['awayreason']
+			)
 		);
 
 		if($user['usergroup'] == 5 && $mybb->input['usergroup'] != 5)
@@ -766,6 +772,22 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
+	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
+	{
+		$mybb->input['away_year'] = intval($mybb->input['away_year']);
+	}
+	else
+	{
+		$mybb->input['away_day'] = 0;
+		$mybb->input['away_month'] = 0;
+		$mybb->input['away_year'] = '';
+
+		if($user['returndate'])
+		{
+			list($mybb->input['away_day'], $mybb->input['away_month'], $mybb->input['away_year']) = explode('-', $user['returndate']);
+		}
+	}
+
 	// Fetch custom profile fields
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
@@ -1023,6 +1045,29 @@ if($mybb->input['action'] == "edit")
 	output_custom_profile_fields($profile_fields['optional'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
+
+	
+	if($mybb->settings['allowaway'] != 0)
+	{
+		$form_container = new FormContainer($lang->away_information.": {$user['username']}");
+		$awaycheck = array(false, true);
+		if($mybb->input['away'] == 1)
+		{
+			$awaycheck = array(true, false);
+		}
+		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away', "checked" => $awaycheck[1])), 'away');
+		$form_container->output_row($lang->away_reason, $lang->away_reason_desc, $form->generate_text_box('awayreason', $mybb->input['awayreason'], array('id' => 'awayreason')), 'awayreason');
+
+		//Return date (we can use the arrays from birthday)
+		$return_row = $form->generate_select_box('away_day', $birthday_days, $mybb->input['away_day'], array('id' => 'away_day'));
+		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
+		$return_row .= ' '.$form->generate_text_box('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;'));
+
+		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');	
+		
+		$form_container->end();
+	}
+
 	echo "</div>\n";
 
 	//

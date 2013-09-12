@@ -21,7 +21,7 @@ $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modque
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
-$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
+$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -1944,6 +1944,56 @@ if($mybb->input['action'] == "do_editprofile")
 
 	$plugins->run_hooks("modcp_do_editprofile_start");
 
+	if($mybb->input['away'] == 1 && $mybb->settings['allowaway'] != 0)
+	{
+		$awaydate = TIME_NOW;
+		if($mybb->input['awayday'])
+		{
+			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
+			if(!$mybb->input['awaymonth'])
+			{
+				$mybb->input['awaymonth'] = my_date('n', $awaydate);
+			}
+			if(!$mybb->input['awayyear'])
+			{
+				$mybb->input['awayyear'] = my_date('Y', $awaydate);
+			}
+
+			$return_month = intval(substr($mybb->input['awaymonth'], 0, 2));
+			$return_day = intval(substr($mybb->input['awayday'], 0, 2));
+			$return_year = min(intval($mybb->input['awayyear']), 9999);
+
+			// Check if return date is after the away date.
+			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
+			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
+			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
+			{
+				error($lang->error_modcp_return_date_past);
+			}
+
+			$returndate = "{$return_day}-{$return_month}-{$return_year}";
+		}
+		else
+		{
+			$returndate = "";
+		}
+		$away = array(
+			"away" => 1,
+			"date" => $awaydate,
+			"returndate" => $returndate,
+			"awayreason" => $mybb->input['awayreason']
+		);
+	}
+	else
+	{
+		$away = array(
+			"away" => 0,
+			"date" => '',
+			"returndate" => '',
+			"awayreason" => ''
+		);
+	}
+
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler('update');
@@ -1959,7 +2009,8 @@ if($mybb->input['action'] == "do_editprofile")
 		"yahoo" => $mybb->input['yahoo'],
 		"msn" => $mybb->input['msn'],
 		"signature" => $mybb->input['signature'],
-		"usernotes" => $mybb->input['usernotes']
+		"usernotes" => $mybb->input['usernotes'],
+		"away" => $away
 	);
 
 	$updated_user['birthday'] = array(
@@ -2208,6 +2259,57 @@ if($mybb->input['action'] == "editprofile")
 		}
 	}
 	$bdaymonthsel[$mybb->input['birthday_month']] = 'selected="selected"';
+
+	if($mybb->settings['allowaway'] != 0)
+	{
+		if($errors)
+		{
+			if($user['away'] == 1)
+			{
+				$awaycheck[1] = "checked=\"checked\"";
+			}
+			else
+			{
+				$awaycheck[0] = "checked=\"checked\"";
+			}
+			$returndate = array();
+			$returndate[0] = $mybb->input['awayday'];
+			$returndate[1] = $mybb->input['awaymonth'];
+			$returndate[2] = intval($mybb->input['awayyear']);
+			$user['awayreason'] = htmlspecialchars_uni($mybb->input['awayreason']);
+		}
+		else
+		{
+			$user['awayreason'] = htmlspecialchars_uni($user['awayreason']);
+			if($user['away'] == 1)
+			{
+				$awaydate = my_date($mybb->settings['dateformat'], $user['awaydate']);
+				$awaycheck[1] = "checked=\"checked\"";
+				$awaynotice = $lang->sprintf($lang->away_notice_away, $awaydate);
+			}
+			else
+			{
+				$awaynotice = $lang->away_notice;
+				$awaycheck[0] = "checked=\"checked\"";
+			}
+			$returndate = explode("-", $user['returndate']);
+		}
+		$returndatesel = '';
+		for($i = 1; $i <= 31; ++$i)
+		{
+			if($returndate[0] == $i)
+			{
+				$returndatesel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			}
+			else
+			{
+				$returndatesel .= "<option value=\"$i\">$i</option>\n";
+			}
+		}
+		$returndatemonthsel[$returndate[1]] = "selected";
+
+		eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
+	}
 
 	$plugins->run_hooks("modcp_editprofile_start");
 

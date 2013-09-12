@@ -5965,6 +5965,7 @@ body {
 										</tr>
 									</table>
 								</fieldset>
+								{$awaysection}
 							</td>
 						</tr>
 						<tr>
@@ -6055,6 +6056,58 @@ body {
 </script>
 </body>
 </html>]]></template>
+		<template name="modcp_editprofile_away" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong>{$lang->away_information}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->away_status}</span></td>
+</tr>
+<tr>
+<td><span class="smalltext"><input type="radio" class="radio" name="away" value="1" {$awaycheck['1']} /> {$lang->im_away}</span></td>
+<td><span class="smalltext"><input type="radio" class="radio" name="away" value="0" {$awaycheck['0']} /> {$lang->im_here}</span></td>
+</tr>
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->away_reason}</span></td>
+</tr>
+<tr>
+<td colspan="2"><input type="text" class="textbox" name="awayreason" value="{$user['awayreason']}" size="25" /></td>
+</tr>
+</table>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td colspan="3"><span class="smalltext">{$lang->return_date}</span></td>
+</tr>
+<tr>
+<td>
+<select name="awayday">
+<option value="">&nbsp;</option>
+{$returndatesel}
+</select>
+</td>
+<td>
+<select name="awaymonth">
+<option value="">&nbsp;</option>
+<option value="1" {$returndatemonthsel['1']}>{$lang->month_1}</option>
+<option value="2" {$returndatemonthsel['2']}>{$lang->month_2}</option>
+<option value="3" {$returndatemonthsel['3']}>{$lang->month_3}</option>
+<option value="4" {$returndatemonthsel['4']}>{$lang->month_4}</option>
+<option value="5" {$returndatemonthsel['5']}>{$lang->month_5}</option>
+<option value="6" {$returndatemonthsel['6']}>{$lang->month_6}</option>
+<option value="7" {$returndatemonthsel['7']}>{$lang->month_7}</option>
+<option value="8" {$returndatemonthsel['8']}>{$lang->month_8}</option>
+<option value="9" {$returndatemonthsel['9']}>{$lang->month_9}</option>
+<option value="10" {$returndatemonthsel['10']}>{$lang->month_10}</option>
+<option value="11" {$returndatemonthsel['11']}>{$lang->month_11}</option>
+<option value="12" {$returndatemonthsel['12']}>{$lang->month_12}</option>
+</select>
+</td>
+<td>
+<input type="text" class="textbox" size="4" maxlength="4" name="awayyear" value="{$returndate['2']}" />
+</td>
+</tr>
+</table>
+</fieldset>]]></template>
 		<template name="modcp_editprofile_select" version="1600"><![CDATA[<select name="{$select_name}">
 	{$selection_options}
 </select>]]></template>
