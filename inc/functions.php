@@ -4925,7 +4925,7 @@ function get_user($uid)
 	{
 		return $user_cache[$uid];
 	}
-	else if(($uid > 0))
+	elseif(($uid > 0))
 	{
 		$query = $db->simple_select("users", "*", "uid='{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
