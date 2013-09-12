@@ -163,6 +163,16 @@ $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
 $l['msn_messanger_handle'] = "MSN Messenger Handle";
 $l['birthday'] = "Date of Birth";
 
+$l['away_information'] = "Away Information";
+$l['away_status'] = "Away Status:";
+$l['away_status_desc'] = "Allows you to leave an away message if you are going away for a while.";
+$l['im_away'] = "I'm Away";
+$l['im_here'] = "I'm Here";
+$l['away_reason'] = "Away Reason:";
+$l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
+$l['return_date'] = "Return Date:";
+$l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
+
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
 $l['recieve_admin_emails'] = "Receive emails from administrators";
