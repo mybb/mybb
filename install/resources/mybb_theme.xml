@@ -4191,7 +4191,7 @@ a.button {
 </td>
 </tr>
 </table>]]></template>
-		<template name="member_profile_away" version="120"><![CDATA[<tr>
+		<template name="member_profile_away" version="1800"><![CDATA[<tr>
 <fieldset>
 <legend><strong>{$lang->away_note}</strong></legend>
 <em>{$lang->away_reason} {$awayreason}</em><br />
@@ -12232,7 +12232,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
-		<template name="previewpost" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
+		<template name="previewpost" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_preview}</strong></td>
 </tr>
