@@ -752,11 +752,11 @@ if($mybb->input['action'] == "edit_template_group")
 					'isdefault' => 0
 				);
 
-				$gid = $db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
+				$db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
 
 				$plugins->run_hooks('admin_style_templates_edit_template_group_commit');
 
-				log_admin_action($gid, $title);
+				log_admin_action($template_group['gid'], $title);
 				flash_message($lang->success_template_group_saved, 'success');
 				admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
 			}
@@ -1332,7 +1332,7 @@ if($mybb->input['action'] == "delete_template_group")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=style-templates&amp;action=delete_template_group&amp;gid={$group['gid']}&amp;sid={$sid}", $lang->confirm_template_group_delete);
+		$page->output_confirm_action("index.php?module=style-templates&amp;action=delete_template_group&amp;gid={$template_group['gid']}&amp;sid={$sid}", $lang->confirm_template_group_delete);
 	}
 }
 
