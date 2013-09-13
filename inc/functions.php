@@ -75,7 +75,7 @@ function output_page($contents)
 			}
 			// MySQLi is still MySQL, so present it that way to the user
 			$database_server = $db->short_title;
-			
+
 			if($database_server == 'MySQLi')
 			{
 				$database_server = 'MySQL';
@@ -4925,13 +4925,14 @@ function get_user($uid)
 	{
 		return $user_cache[$uid];
 	}
-	else
+	elseif(($uid > 0))
 	{
 		$query = $db->simple_select("users", "*", "uid='{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
 
 		return $user_cache[$uid];
 	}
+	return array();
 }
 
 /**
