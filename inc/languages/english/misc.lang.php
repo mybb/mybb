@@ -29,7 +29,9 @@ $l['download_aol_im'] = "Download AOL Instant Messenger";
 
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
+$l['online_none'] = "<em>You have no online buddies</em>";
 $l['offline'] = "Offline";
+$l['offline_none'] = "<em>You have no offline buddies</em>";
 $l['delete_buddy'] = "X";
 $l['pm_buddy'] = "Send Private Message";
 $l['last_active'] = "<strong>Last Active:</strong> {1}";

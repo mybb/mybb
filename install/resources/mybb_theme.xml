@@ -1411,6 +1411,51 @@ div.jGrowl div.jGrowl-closer {
 	font-size: .9em;
 	font-weight: bold;
 	text-align: center;
+}
+
+.modal {
+	display: none;
+	width: 400px;
+	text-align: left;
+	background: #fff;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-o-border-radius: 8px;
+	-ms-border-radius: 8px;
+	border-radius: 8px;
+	-webkit-box-shadow: 0 0 10px #000;
+	-moz-box-shadow: 0 0 10px #000;
+	-o-box-shadow: 0 0 10px #000;
+	-ms-box-shadow: 0 0 10px #000;
+	box-shadow: 0 0 10px #000;
+}
+
+.modal a.close-modal {
+	position: absolute;
+	top: -12.5px;
+	right: -12.5px;
+	display: block;
+	width: 30px;
+	height: 30px;
+	text-indent: -9999px;
+	background: url(images/close.png) no-repeat 0 0;
+}
+
+.modal-spinner {
+	display: none;
+	width: 64px;
+	height: 64px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-right: -32px;
+	margin-top: -32px;
+	background: url(images/spinner.gif) #111 no-repeat center center;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-o-border-radius: 8px;
+	-ms-border-radius: 8px;
+	border-radius: 8px;
 }]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
@@ -3653,7 +3698,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
@@ -4930,77 +4975,48 @@ a.button {
 </tr>]]></template>
 		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
-		<template name="misc_buddypopup" version="1400"><![CDATA[<html>
-<head>
-<title>{$lang->buddy_list}</title>
-<meta http-equiv="refresh" content="60; URL=misc.php?action=buddypopup" />
-{$headerinclude}
-<style type="text/css">
-body {
-	text-align: left;
-}
-
-.buddy_avatar {
-	height: 50px;
-	width: 50px;
-	background: #fff;
-	border: 1px solid #ccc;
-	float: left;
-	clear: left;
-	margin-right: 5px;
-	text-align: center;
-}
-
-.buddy_details img {
-	vertical-align: middle;
-}
-
-.buddy_action {
-	margin-left: 80px;
-}
-</style>
-</head>
-<body style="margin:0; padding: 4px; top: 0; left: 0;">
-	<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
+		<template name="misc_buddypopup" version="1800"><![CDATA[<div class="modal">
+	<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" class="tborder">
 	<tr>
-		<td class="thead">
-			<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="window.close();">{$lang->close}</a></span></div>
+		<td class="thead"{$colspan}>
 			<div><strong>{$lang->buddy_list}</strong></div>
 		</td>
 	</tr>
-	<tr>
-		<td class="trow2">
-			<div style="overflow: auto; height: 300px;">
-				<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder" style="border: 0;">
-					{$buddys['online']}
-					{$buddys['offline']}
-				</table>
-			</div>
-		</td>
-	</tr>
+	{$buddies}
 	</table>
-</body>
-</html>]]></template>
+	<a href="#close-modal" rel="modal:close" class="close-modal">{$lang->close}</a>
+</div>]]></template>
+		<template name="misc_buddypopup_user" version="1800"><![CDATA[	<tr>
+		<td class="tcat"{$colspan}><strong>{$lang->online}</strong></td>
+		{$buddys['online']}
+	</tr>
+	<tr>
+		<td class="tcat"{$colspan}><strong>{$lang->offline}</strong></td>
+		{$buddys['offline']}
+	</tr>]]></template>
+		<template name="misc_buddypopup_user_none" version="1800"><![CDATA[					<tr>
+						<td class="trow1"{$colspan}>{$error}</td>
+					</tr>]]></template>
 		<template name="misc_buddypopup_user_offline" version="1800"><![CDATA[					<tr>
-						<td class="trow1">
-							<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
-							<div class="buddy_details">
-								<img src="{$theme['imgdir']}/buddy_offline.png" alt="{$lang->offline}" title="{$lang->offline}" /> {$profile_link}
-								<div class="buddy_action">
-									<span class="smalltext">{$last_active}<br />{$send_pm}</span>
-								</div>
+						<td class="{$boffline_alt}" width="1%">
+							<div class="buddy_avatar float_left"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
+						</td>
+						<td class="{$boffline_alt}">
+							{$profile_link}
+							<div class="buddy_action">
+								<span class="smalltext">{$last_active}<br />{$send_pm}</span>
 							</div>
 						</td>
 					</tr>]]></template>
 		<template name="misc_buddypopup_user_online" version="1800"><![CDATA[					<tr>
-						<td class="trow1">
-						<div class="buddy_avatar"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
-						<div class="buddy_details">
-							<img src="{$theme['imgdir']}/buddy_online.png" alt="{$lang->online}" title="{$lang->online}" /> {$profile_link}
+						<td class="{$bonline_alt}" width="1%">
+							<div class="buddy_avatar float_left"><img src="{$buddy['avatar']['image']}" alt="" {$buddy['avatar']['width_height']} style="margin-top: 3px;" /></div>
+						</td>
+						<td class="{$bonline_alt}">
+							{$profile_link}
 							<div class="buddy_action">
 								<span class="smalltext">{$last_active}<br />{$send_pm}</span>
 							</div>
-						</div>
 						</td>
 					</tr>]]></template>
 		<template name="misc_buddypopup_user_sendpm" version="1400"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
@@ -12257,6 +12273,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.plugins.min.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
 {$stylesheets}
@@ -12271,6 +12288,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var saving_changes = '{$lang->saving_changes}';
 	var use_xmlhttprequest = "{$mybb->settings['use_xmlhttprequest']}";
 	var my_post_key = "{$mybb->post_code}";
+	var rootpath = "{$mybb->settings['bburl']}";
 	var imagepath = "{$theme['imgdir']}";
 // -->
 </script>]]></template>

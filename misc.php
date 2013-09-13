@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
-$templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
+$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -301,6 +301,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		error_no_permission();
 	}
+
 	if(isset($mybb->input['removebuddy']) && verify_post_check($mybb->input['my_post_key']))
 	{
 		$buddies = $mybb->user['buddylist'];
@@ -320,12 +321,16 @@ elseif($mybb->input['action'] == "buddypopup")
 			$mybb->user['buddylist'] = $buddylist;
 		}
 	}
-	$buddys = array('online' => '', 'offline' => '');
+
 	// Load Buddies
+	$buddies = '';
 	if($mybb->user['buddylist'] != "")
 	{
+		$buddys = array('online' => '', 'offline' => '');
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
+
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));
+
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
@@ -350,24 +355,44 @@ elseif($mybb->input['action'] == "buddypopup")
 
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
+				$bonline_alt = alt_trow();
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
 			}
 			else
 			{
+				$boffline_alt = alt_trow();
 				eval("\$buddys['offline'] .= \"".$templates->get("misc_buddypopup_user_offline")."\";");
 			}
 		}
+
+		$colspan = ' colspan="2"';
+		if(empty($buddys['online']))
+		{
+			$error = $lang->online_none;
+			eval("\$buddys['online'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
+		}
+
+		if(empty($buddys['offline']))
+		{
+			$error = $lang->offline_none;
+			eval("\$buddys['offline'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
+		}
+
+		eval("\$buddies = \"".$templates->get("misc_buddypopup_user")."\";");
 	}
 	else
 	{
 		// No buddies? :(
-		$buddys['offline'] = $lang->no_buddies;
+		$colspan = '';
+		$error = $lang->no_buddies;
+		eval("\$buddies = \"".$templates->get("misc_buddypopup_user_none")."\";");
 	}
 
 	$plugins->run_hooks("misc_buddypopup_end");
 
-	eval("\$buddylist = \"".$templates->get("misc_buddypopup")."\";");
-	output_page($buddylist);
+	eval("\$buddylist = \"".$templates->get("misc_buddypopup", 1, 0)."\";");
+	echo $buddylist;
+	exit;
 }
 elseif($mybb->input['action'] == "whoposted")
 {
@@ -747,5 +772,4 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	}
 	return $forumlist;
 }
-
 ?>
