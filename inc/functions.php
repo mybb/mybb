@@ -780,7 +780,7 @@ function inline_error($errors, $title="")
 		echo json_encode(array("errors" => $errors));
 		exit;
 	}
-	
+
 	$errorlist = '';
 
 	foreach($errors as $error)
@@ -5105,13 +5105,14 @@ function get_user($uid)
 	{
 		return $user_cache[$uid];
 	}
-	else
+	elseif($uid > 0)
 	{
 		$query = $db->simple_select("users", "*", "uid = '{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
 
 		return $user_cache[$uid];
 	}
+	return array();
 }
 
 /**
@@ -6945,7 +6946,7 @@ function gd_version()
 
 /**
  * Send a Private Message to a user.
- * 
+ *
  * @param array Array containing: 'subject', 'message', 'touid' and 'receivepms' (the latter should reflect the value found in the users table: receivepms and receivefrombuddy)
  * @param int Sender UID (0 if you want to use $mybb->user['uid'] or -1 to use MyBB Engine)
  * @param bool Whether or not do override user defined options for receiving PMs
@@ -6954,32 +6955,32 @@ function gd_version()
 function send_pm($pm, $fromid = 0, $admin_override=false)
 {
 	global $lang, $mybb, $db, $session;
-	
+
 	if($mybb->settings['enablepms'] == 0)
 	{
 		return false;
 	}
-		
+
 	if (!is_array($pm))
 	{
 		return false;
 	}
-		
+
 	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
-	
+
 	$lang->load('messages');
-	
+
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
-	
+
 	$pmhandler = new PMDataHandler();
-	
+
 	$subject = $pm['subject'];
 	$message = $pm['message'];
 	$toid = $pm['touid'];
-	
+
 	// Our recipients
 	if (is_array($toid))
 	{
@@ -6989,9 +6990,9 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	{
 		$recipients_to = array($toid);
 	}
-	
+
 	$recipients_bcc = array();
-	
+
 	// Determine user ID
 	if ((int)$fromid == 0)
 	{
@@ -7001,7 +7002,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	{
 		$fromid = 0;
 	}
-	
+
 	// Build our final PM array
 	$pm = array(
 		"subject" => $subject,
@@ -7013,24 +7014,24 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		"do" => '',
 		"pmid" => ''
 	);
-	
+
 	if(isset($session))
 	{
 		$pm['ipaddress'] = $session->packedip;
 	}
-	
+
 	$pm['options'] = array(
 		"signature" => 0,
 		"disablesmilies" => 0,
 		"savecopy" => 0,
 		"readreceipt" => 0
 	);
-	
+
 	$pm['saveasdraft'] = 0;
-	
+
 	// Admin override
 	$pmhandler->admin_override = (int)$admin_override;
-	
+
 	$pmhandler->set_data($pm);
 	if($pmhandler->validate_pm())
 	{
@@ -7040,7 +7041,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
