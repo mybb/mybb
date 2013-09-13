@@ -59,6 +59,17 @@ $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
+	if($mybb->settings['orderwol'] == 'username')
+	{
+		$order_by = 'u.username ASC';
+		$order_by2 = 's.time DESC';
+	}
+	else
+	{
+		$order_by = 's.time DESC';
+		$order_by2 = 'u.username ASC';
+	}
+
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
 	$comma = '';
 	$query = $db->query("
@@ -66,7 +77,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time > '".$timesearch."'
-		ORDER BY u.username ASC, s.time DESC
+		ORDER BY {$order_by}, {$order_by2}
 	");
 
 	$forum_viewers = $doneusers = array();
