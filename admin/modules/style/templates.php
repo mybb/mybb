@@ -1206,7 +1206,7 @@ if($mybb->input['action'] == "diff_report")
 		);
 	}
 
-	if(!isset($template_sets[$mybb->input['sid2']]))
+	if($mybb->input['sid2'] != -2 && !isset($template_sets[$mybb->input['sid2']]))
 	{
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=style-templates");
