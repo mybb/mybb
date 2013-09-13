@@ -184,31 +184,31 @@ a:hover, a:active {
 	color: #666;
 }
 
-#panel .remember_me input {
-	vertical-align: middle;
-	margin: -3px 0 0 5px;
-}
-
-#panel input {
-	margin: -3px 0;
-}
-
-#panel input.button,
-#panel input.textbox {
-	border-color: #000;
-}
-
-#panel input.button {
-	background: #02426c url(images/thead.png) top left repeat-x;
-	color: #fff;
-}
-
 #search {
 	border: 0;
 	padding: 0;
 	margin: 0;
 	float: right;
 	vertical-align: middle;
+}
+
+#search input.button,
+#search input.textbox {
+	border-color: #000;
+}
+
+#search input.button {
+	background: #02426c url(images/thead.png) top left repeat-x;
+	color: #fff;
+}
+
+#search input {
+	margin: -3px 0;
+}
+
+#quick_login .remember_me input {
+	vertical-align: middle;
+	margin: -3px 0 0 5px;
 }
 
 #footer {
@@ -3672,20 +3672,44 @@ a.button {
 				{$pending_joinrequests}
 				<navigation>
 				<br />]]></template>
-		<template name="header_welcomeblock_guest" version="1800"><![CDATA[<script type="text/javascript">
-<!--
-	lang.username = "{$lang->login_username}";
-	lang.password = "{$lang->login_password}";
-	lang.login = "{$lang->login}";
-	lang.lost_password = "<a href=\"{$mybb->settings['bburl']}/member.php?action=lostpw\" class=\"lost_password\">{$lang->lost_password}<\/a>";
-	lang.register_url = "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\" class=\"register\">{$lang->welcome_register}<\/a>";
-	lang.remember_me = "{$lang->remember_me}";
-// -->
-</script>
-<!-- Continuation of div(class="upper") as opened in the header template -->
-	<span class="welcome" id="quick_login">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
-	</div>
-</div>]]></template>
+		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
+						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('div#quick_login').modal(); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+					</div>
+				</div>
+				<div class="modal" id="quick_login" style="display: none;">
+					<form method="post" action="member.php">
+						<input name="action" type="hidden" value="do_login" />
+						<input name="url" type="hidden" value="" />
+						<input name="quick_login" type="hidden" value="1" />
+						<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" class="tborder">
+							<tr>
+								<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
+							</tr>
+							<tr>
+								<td class="trow1" width="25%"><strong>{$lang->username}</strong></td>
+								<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox" /></td>
+							</tr>
+							<tr>
+								<td class="trow2"><strong>{$lang->password}</strong></td>
+								<td class="trow2">
+									<input name="quick_password" id="quick_login_password" type="password" value="" class="textbox" /> <a href="{$mybb->settings['bburl']}/member.php?action=lostpw" class="lost_password">{$lang->lost_password}</a>
+								</td>
+							</tr>
+							<tr>
+								<td class="trow1">&nbsp;</td>
+								<td class="trow1 remember_me">
+									<input name="quick_remember" id="quick_login_remember" type="checkbox" value="yes" class="checkbox" checked="checked" />
+									<label for="quick_login_remember">{$lang->remember_me}</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="trow2" colspan="2">
+									<div align="center"><input name="submit" type="submit" class="button" value="{$lang->login}" /></div>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>]]></template>
 		<template name="header_welcomeblock_member" version="1800"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
