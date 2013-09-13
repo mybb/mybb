@@ -5435,8 +5435,8 @@ a.button {
 						<td class="thead" colspan="3"><strong>{$lang->forum_announcements}</strong></td>
 					</tr>
 					<tr>
-						<td class="tcat"><strong>{$lang->announcement}</strong></td>
-						<td class="tcat" width="200" colspan="2" align="center"><strong>{$lang->controls}</strong></td>
+						<td class="tcat"><span class="smalltext"><strong>{$lang->announcement}</strong></span></td>
+						<td class="tcat" width="200" colspan="2" align="center"><span class="smalltext"><strong>{$lang->controls}</strong></span></td>
 					</tr>
 					{$announcements_forum}
 				</table>
@@ -5589,8 +5589,8 @@ a.button {
 						<td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
 					</tr>
 					<tr>
-						<td class="tcat"><strong>{$lang->announcement}</strong></td>
-						<td class="tcat" width="200" colspan="2" align="center"><strong>{$lang->controls}</strong></td>
+						<td class="tcat"><span class="smalltext"><strong>{$lang->announcement}</strong></span></td>
+						<td class="tcat" width="200" colspan="2" align="center"><span class="smalltext"><strong>{$lang->controls}</strong></span></td>
 					</tr>
 					{$announcements_global}
 				</table>
@@ -6855,12 +6855,12 @@ body {
 						<td class="thead" colspan="6"><strong>{$lang->warning_logs}</strong></td>
 					</tr>
 					<tr>
-						<td class="tcat" width="15%"><strong>{$lang->warned_user}</strong></td>
-						<td class="tcat" width="25%"><strong>{$lang->warning}</strong></td>
-						<td class="tcat" width="20%" align="center"><strong>{$lang->date_issued}</strong></td>
-						<td class="tcat" width="20%" align="center"><strong>{$lang->expires}</strong></td>
-						<td class="tcat" width="15%"><strong>{$lang->issued_by}</strong></td>
-						<td class="tcat" width="1%" align="center"><strong>{$lang->details}</strong></td>
+						<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->warned_user}</strong></span></td>
+						<td class="tcat" width="25%"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
+						<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->date_issued}</strong></span></td>
+						<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->expires}</strong></span></td>
+						<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
+						<td class="tcat" width="1%" align="center"><span class="smalltext"><strong>{$lang->details}</strong></span></td>
 					</tr>
 					{$warning_list}
 				</table>
