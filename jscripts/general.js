@@ -41,13 +41,22 @@ var MyBB = {
 				element.attr("title", element.attr("title") + lang.click_mark_read);
 			});
 		}
+
+		$(document).on($.modal.OPEN, function(event, modal) {
+			$("body").css("overflow", "hidden");
+		});
+
+		$(document).on($.modal.CLOSE, function(event, modal) {
+			$("body").css("overflow", "auto");
+		});
 	},
 
-	popupWindow: function(url)
+	popupWindow: function(url, options)
 	{
+		if(!options) options = {}
 		$.get(rootpath + url, function(html)
 		{
-			$(html).appendTo('body').modal();
+			$(html).appendTo('body').modal(options);
 		});
 	},
 

@@ -5000,15 +5000,16 @@ a.button {
 		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="misc_buddypopup" version="1800"><![CDATA[<div class="modal">
-	<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" class="tborder">
-	<tr>
-		<td class="thead"{$colspan}>
-			<div><strong>{$lang->buddy_list}</strong></div>
-		</td>
-	</tr>
-	{$buddies}
-	</table>
-	<a href="#close-modal" rel="modal:close" class="close-modal">{$lang->close}</a>
+	<div style="overflow-y: scroll; max-height: 400px;">
+		<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead"{$colspan}>
+				<div><strong>{$lang->buddy_list}</strong></div>
+			</td>
+		</tr>
+		{$buddies}
+		</table>
+	</div>
 </div>]]></template>
 		<template name="misc_buddypopup_user" version="1800"><![CDATA[	<tr>
 		<td class="tcat"{$colspan}><strong>{$lang->online}</strong></td>
