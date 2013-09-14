@@ -107,6 +107,7 @@ $l['redirect_registered_coppa_activate'] = "Thank you for registering on {1}, {2
 $l['coppa_compliance'] = "COPPA Compliance";
 $l['coppa_desc'] = "In order to register on these forums, we require you to verify your age to comply with <a href=\"http://coppa.org/\" title=\"Children's Online Privacy Protection Act\" target=\"_blank\">COPPA</a>. Please enter your date of birth below.<br /><br />If you are under the age of 13, parental permission must be obtained prior to registration. A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\" target=\"_blank\">COPPA Compliance &amp; Permission form</a>.";
 $l['hide_dob'] = "You can choose to hide your date of birth and age by editing your profile after registering.";
+$l['signature'] = "Signature:";
 $l['continue_registration'] = "Continue with Registration";
 $l['birthdayprivacy'] = "Date of Birth Privacy:";
 $l['birthdayprivacyall'] = "Display Age and Date of Birth";

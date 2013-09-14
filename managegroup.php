@@ -20,15 +20,17 @@ require_once "./global.php";
 // Load language files
 $lang->load("managegroup");
 
-$gid = $mybb->input['gid'] = intval($mybb->input['gid']);
-$usergroup = $groupscache[$mybb->input['gid']];
-if(!$usergroup['gid'])
+$gid = $mybb->get_input('gid', 1);
+if(!isset($groupscache[$gid]))
 {
 	error($lang->invalid_group);
 }
+$usergroup = $groupscache[$gid];
 $lang->nav_group_management = $lang->sprintf($lang->nav_group_management, $usergroup['title']);
 add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
 add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
+
+$mybb->input['action'] = $mybb->get_input('action');
 
 if($mybb->input['action'] == "joinrequests")
 {
@@ -46,13 +48,13 @@ if(!$groupleader['uid'] && $mybb->user['cancp'] != 1)
 if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagemembers'] == 0)
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->input['username'])."'", array("limit" => 1));
+	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->get_input('username'))."'", array("limit" => 1));
 	$user = $db->fetch_array($query);
 	if($user['uid'])
 	{
@@ -75,7 +77,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagerequests'] == 0)
 	{
@@ -84,9 +86,9 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
-	if(is_array($mybb->input['request']))
+	if(is_array($mybb->get_input('request', 2)))
 	{
-		foreach($mybb->input['request'] as $uid => $what)
+		foreach($mybb->get_input('request', 2) as $uid => $what)
 		{
 			if($what == "accept")
 			{
@@ -118,7 +120,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		SELECT j.*, u.uid, u.username, u.postnum, u.regdate
 		FROM ".TABLE_PREFIX."joinrequests j
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=j.uid)
-		WHERE j.gid='".$mybb->input['gid']."' AND j.uid != 0
+		WHERE j.gid='{$gid}' AND j.uid != 0
 		ORDER BY u.username ASC
 	");
 	while($user = $db->fetch_array($query))
@@ -143,7 +145,7 @@ elseif($mybb->input['action'] == "joinrequests")
 elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	if($groupleader['canmanagemembers'] == 0)
 	{
@@ -152,11 +154,11 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 
 	$plugins->run_hooks("managegroup_do_manageusers_start");
 
-	if(is_array($mybb->input['removeuser']))
+	if(is_array($mybb->get_input('removeuser', 2)))
 	{
-		foreach($mybb->input['removeuser'] as $uid)
+		foreach($mybb->get_input('removeuser', 2) as $uid)
 		{
-			leave_usergroup($uid, $mybb->input['gid']);
+			leave_usergroup($uid, $gid);
 		}
 	}
 	else
@@ -174,9 +176,10 @@ else
 
 	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
 	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
+	$joinrequests = '';
 	if($usergroup['type'] == 4)
 	{
-		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
+		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
@@ -198,16 +201,19 @@ else
 		$usergrouptype = $lang->group_default;
 	}
 
+	$group_leaders = '';
+
 	// Display group leaders (if there is any)
 	$query = $db->query("
 		SELECT g.*, u.username, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."groupleaders g
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=g.uid)
-		WHERE g.gid = '".$mybb->input['gid']."'
+		WHERE g.gid = '{$gid}'
 	");
 	if($db->num_rows($query))
 	{
 		$loop = 1;
+		$leaders = '';
 		$leader_count = $db->num_rows($query);
 		while($leader = $db->fetch_array($query))
 		{
@@ -235,10 +241,10 @@ else
 	{
 		case "pgsql":
 		case "sqlite":
-			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username'));
 			break;
 		default:
-			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,{$gid},%' OR usergroup='{$gid}'", array('order_by' => 'username'));
 	}
 
 	$numusers = $db->num_rows($query);
@@ -247,6 +253,7 @@ else
 		error($lang->group_no_members);
 	}*/
 	$perpage = $mybb->settings['membersperpage'];
+	$page = $mybb->get_input('page', 1);
 	if($page && $page > 0)
 	{
 		$start = ($page-1) *$perpage;
@@ -256,7 +263,7 @@ else
 		$start = 0;
 		$page = 1;
 	}
-	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$mybb->input['gid']);
+	$multipage = multipage($numusers, $perpage, $page, "managegroup.php?gid=".$gid);
 	$users = "";
 	while($user = $db->fetch_array($query))
 	{

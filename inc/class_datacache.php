@@ -685,6 +685,8 @@ class datacache
 		}
 		ksort($fcache);
 
+		$this->moderators = array();
+
 		// Fetch moderators from the database
 		$query = $db->query("
 			SELECT m.*, u.username, u.usergroup, u.displaygroup
@@ -741,7 +743,7 @@ class datacache
 	 */
 	private function build_moderators($moderators=array(), $pid=0)
 	{
-		if($this->moderators_forum_cache[$pid])
+		if(isset($this->moderators_forum_cache[$pid]))
 		{
 			foreach($this->moderators_forum_cache[$pid] as $main)
 			{
@@ -753,7 +755,7 @@ class datacache
 						$forum_mods = $moderators;
 					}
 					// Append - local settings override that of a parent - array_merge works here
-					if($this->moderators[$forum['fid']])
+					if(isset($this->moderators[$forum['fid']]))
 					{
 						if(is_array($forum_mods) && count($forum_mods))
 						{

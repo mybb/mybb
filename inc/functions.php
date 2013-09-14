@@ -1645,7 +1645,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 			}
 			else
 			{
-				if($modperms[$action] == 1)
+				if(isset($modperms[$action]) && $modperms[$action] == 1)
 				{
 					return true;
 				}
@@ -4017,9 +4017,10 @@ function join_usergroup($uid, $joingroup)
 
 	if(is_array($groups))
 	{
+		$comma = '';
 		foreach($groups as $gid)
 		{
-			if(trim($gid) != "" && $gid != $user['usergroup'] && !$donegroup[$gid])
+			if(trim($gid) != "" && $gid != $user['usergroup'] && !isset($donegroup[$gid]))
 			{
 				$groupslist .= $comma.$gid;
 				$comma = ",";

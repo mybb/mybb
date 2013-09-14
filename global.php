@@ -369,7 +369,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] == 1)
 }
 
 // Prepare the main templates for use
-unset($admincplink);
+$admincplink = $modcplink = '';
 
 // Load appropriate welcome block for the current logged in user
 if($mybb->user['uid'] != 0)

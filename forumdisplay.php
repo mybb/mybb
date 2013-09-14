@@ -35,7 +35,7 @@ $lang->load("forumdisplay");
 
 $plugins->run_hooks("forumdisplay_start");
 
-$fid = $mybb->input['fid'];
+$fid = $mybb->get_input('fid', 1);
 if($fid < 0)
 {
 	switch($fid)

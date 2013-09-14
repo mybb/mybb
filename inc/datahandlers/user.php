@@ -139,7 +139,7 @@ class UserDataHandler extends DataHandler
 		$username = &$this->data['username'];
 
 		$uid_check = "";
-		if($this->data['uid'])
+		if(!empty($this->data['uid']))
 		{
 			$uid_check = " AND uid!='{$this->data['uid']}'";
 		}
@@ -256,7 +256,12 @@ class UserDataHandler extends DataHandler
 		// Ignore the ACP because the Merge System sometimes produces users with duplicate email addresses (Not A Bug)
 		if($mybb->settings['allowmultipleemails'] == 0 && !defined("IN_ADMINCP"))
 		{
-			if(email_already_in_use($user['email'], $user['uid']))
+			$uid = 0;
+			if(isset($user['uid']))
+			{
+				$uid = $user['uid'];
+			}
+			if(email_already_in_use($user['email'], $uid))
 			{
 				$this->set_error('email_already_in_use');
 				return false;
@@ -450,7 +455,7 @@ class UserDataHandler extends DataHandler
 	{
 		$user = &$this->data;
 
-		if($user['postnum'] < 0)
+		if(isset($user['postnum']) && $user['postnum'] < 0)
 		{
 			$this->set_error("invalid_postnum");
 			return false;
@@ -476,7 +481,7 @@ class UserDataHandler extends DataHandler
 		$comma = '';
 		$editable = '';
 
-		if(!$this->data['profile_fields_editable'])
+		if(empty($this->data['profile_fields_editable']))
 		{
 			$editable = "editable=1";
 		}
@@ -494,6 +499,11 @@ class UserDataHandler extends DataHandler
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
 			$field = "fid{$profilefield['fid']}";
+			
+			if(!isset($profile_fields[$field]))
+			{
+				$profile_fields[$field] = '';
+			}
 
 			// If the profile field is required, but not filled in, present error.
 			if($type != "multiselect" && $type != "checkbox")
@@ -582,8 +592,12 @@ class UserDataHandler extends DataHandler
 				$this->set_error('invalid_referrer', array($user['referrer']));
 				return false;
 			}
+			$user['referrer_uid'] = $referrer['uid'];
 		}
-		$user['referrer_uid'] = $referrer['uid'];
+		else
+		{
+			$user['referrer_uid'] = 0;
+		}
 
 		return true;
 	}
@@ -679,6 +693,10 @@ class UserDataHandler extends DataHandler
 		// Verify the "threads per page" option.
 		if($this->method == "insert" || (array_key_exists('tpp', $options) && $mybb->settings['usertppoptions']))
 		{
+			if(!isset($options['tpp']))
+			{
+				$options['tpp'] = 0;
+			}
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))
 			{
@@ -695,6 +713,10 @@ class UserDataHandler extends DataHandler
 		// Verify the "posts per page" option.
 		if($this->method == "insert" || (array_key_exists('ppp', $options) && $mybb->settings['userpppoptions']))
 		{
+			if(!isset($options['ppp']))
+			{
+				$options['ppp'] = 0;
+			}
 			$explodedppp = explode(",", $mybb->settings['userpppoptions']);
 			if(is_array($explodedppp))
 			{
@@ -711,6 +733,10 @@ class UserDataHandler extends DataHandler
 		// Is our selected "days prune" option valid or not?
 		if($this->method == "insert" || array_key_exists('daysprune', $options))
 		{
+			if(!isset($options['daysprune']))
+			{
+				$options['daysprune'] = 0;
+			}
 			$options['daysprune'] = intval($options['daysprune']);
 			if($options['daysprune'] < 0)
 			{
@@ -787,7 +813,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 		// If the board does not allow "away mode" or the user is marking as not away, set defaults.
-		if($mybb->settings['allowaway'] == 0 || $user['away']['away'] != 1)
+		if($mybb->settings['allowaway'] == 0 || !isset($user['away']['away']) || $user['away']['away'] != 1)
 		{
 			$user['away']['away'] = 0;
 			$user['away']['date'] = 0;
@@ -860,7 +886,7 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		// First, grab the old user details if this user exists
-		if($user['uid'])
+		if(!empty($user['uid']))
 		{
 			$old_user = get_user($user['uid']);
 		}
@@ -868,7 +894,7 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('username', $user))
 		{
 			// If the username is the same - no need to verify
-			if(!$old_user['username'] || $user['username'] != $old_user['username'])
+			if(!isset($old_user['username']) || $user['username'] != $old_user['username'])
 			{
 				$this->verify_username();
 				$this->verify_username_exists();
@@ -987,6 +1013,16 @@ class UserDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
+		
+		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
+			'yahoo', 'msn', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		foreach($array as $value)
+		{
+			if(!isset($user[$value]))
+			{
+				$user[$value] = '';
+			}
+		}
 
 		$this->user_insert_data = array(
 			"username" => $db->escape_string($user['username']),
