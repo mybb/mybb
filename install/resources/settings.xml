@@ -1714,7 +1714,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="wolorder">
 			<title>Who's Online Order</title>
-			<description><![CDATA[List the online users by username or last activity. Note: This setting only takes affect on the portal and index pages.]]></description>
+			<description><![CDATA[List the online users by username or last activity. Note: This setting only takes effect on the portal and index pages.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[select
 username=Order By Username (ASC)
