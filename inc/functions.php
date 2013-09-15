@@ -2990,7 +2990,7 @@ function log_moderator_action($data, $action="")
 	global $mybb, $db, $session;
 
 	// If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it.
-	if($data['fid'] == '')
+	if(empty($data['fid']))
 	{
 		$fid = 0;
 	}
@@ -3000,7 +3000,7 @@ function log_moderator_action($data, $action="")
 		unset($data['fid']);
 	}
 
-	if($data['tid'] == '')
+	if(empty($data['tid']))
 	{
 		$tid = 0;
 	}

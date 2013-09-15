@@ -44,7 +44,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	{
 		$forum_cache = cache_forums();
 	}
-	if(!is_array($parent_forums) && $mybb->user['issupermod'] != 1)
+	if(!is_array($parent_forums) && $mybb->usergroup['issupermod'] != 1)
 	{
 		// Get a list of parentforums to show for normal moderators
 		$parent_forums = array();
@@ -99,7 +99,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
 
-				if($announcements[$forum['fid']])
+				if(isset($announcements[$forum['fid']]))
 				{
 					foreach($announcements[$forum['fid']] as $aid => $announcement)
 					{
@@ -122,7 +122,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			}
 
 			// Build the list for any sub forums of this forum
-			if($forums_by_parent[$forum['fid']])
+			if(isset($forums_by_parent[$forum['fid']]))
 			{
 				fetch_forum_announcements($forum['fid'], $depth+1);
 			}

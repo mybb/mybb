@@ -5481,7 +5481,7 @@ a.button {
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
-		<template name="modcp_announcements_delete" version="1400"><![CDATA[<html>
+		<template name="modcp_announcements_delete" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_announcement}</title>
 {$headerinclude}
@@ -5491,7 +5491,6 @@ a.button {
 	<form action="modcp.php" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="action" value="do_delete_announcement" />
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-	<input type="hidden" name="fid" value="{$announcement_fid}" />
 		<table width="100%" border="0" align="center">
 			<tr>
 				{$modcp_nav}
@@ -5532,6 +5531,7 @@ a.button {
 				{$modcp_nav}
 				<td valign="top">
 					{$errors}
+					{$preview}
 					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 						<tr>
 							<td class="thead" colspan="6"><strong>{$lang->edit_announcement}</strong></td>
@@ -12237,7 +12237,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}&amp;fid={$fid}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
+		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
 		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return false;" title="{$lang->announcement_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>

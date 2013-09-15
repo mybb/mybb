@@ -372,7 +372,7 @@ class UserDataHandler extends DataHandler
 
 		// Check if the day actually exists.
 		$months = get_bdays($birthday['year']);
-		if($birthday['day'] > $months[$birthday['month']-1])
+		if($birthday['month'] != 0 && $birthday['day'] > $months[$birthday['month']-1])
 		{
 			$this->set_error("invalid_birthday");
 			return false;
@@ -1285,7 +1285,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['usernotes'] = $db->escape_string($user['usernotes']);
 		}
-		if(is_array($user['options']))
+		if(isset($user['options']) && is_array($user['options']))
 		{
 			foreach($user['options'] as $option => $value)
 			{
@@ -1350,7 +1350,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.
-		if($this->user_update_data['username'] != $old_user['username'] && $this->user_update_data['username'] != '')
+		if(!empty($this->user_update_data['username']) && $this->user_update_data['username'] != $old_user['username'])
 		{
 			$username_update = array(
 				"username" => $this->user_update_data['username']

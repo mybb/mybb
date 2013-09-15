@@ -26,7 +26,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('pid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
+	foreach(array('pid', 'aid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
 	{
 		if(empty($post[$post_field]))
 		{
@@ -89,6 +89,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_videocode'] = 1;
 			$parser_options['me_username'] = $post['username'];
 			$parser_options['filter_badwords'] = 1;
+			$id = $announcementarray['aid'];
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
@@ -555,7 +556,7 @@ function build_postbit($post, $post_type=0)
 		}
 	}
 
-	if($post['smilieoff'] == 1)
+	if(isset($post['smilieoff']) && $post['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
 	}
@@ -598,7 +599,7 @@ function build_postbit($post, $post_type=0)
 
 	$icon_cache = $cache->read("posticons");
 
-	if($post['icon'] > 0 && $icon_cache[$post['icon']])
+	if(isset($post['icon']) && $post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
 		$icon = $icon_cache[$post['icon']];
 

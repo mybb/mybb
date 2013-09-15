@@ -129,6 +129,7 @@ $l['icq_number'] = "ICQ Number:";
 $l['aim_screenname'] = "AIM Screen Name:";
 $l['yahoo_id'] = "Yahoo ID:";
 $l['msn'] = "MSN ID:";
+$l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['custom_usertitle'] = "Custom User Title";
