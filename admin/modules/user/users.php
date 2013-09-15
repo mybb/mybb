@@ -813,6 +813,7 @@ if($mybb->input['action'] == "edit")
 		"avatar" => $lang->avatar,
 		"modoptions" => $lang->mod_options
 	);
+	$tabs = $plugins->run_hooks("admin_user_users_edit_graph_tabs", $tabs);
 	$page->output_tab_control($tabs);
 
 	//
