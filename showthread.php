@@ -497,8 +497,7 @@ if($mybb->input['action'] == "thread")
 				{
 					$percent = number_format($votes / $poll['totvotes'] * 100, 2);
 				}
-				$imagewidth = round(($percent/3) * 5);
-				$imagerowwidth = $imagewidth + 10;
+				$imagewidth = round($percent);
 				eval("\$polloptions .= \"".$templates->get("showthread_poll_resultbit")."\";");
 			}
 			else

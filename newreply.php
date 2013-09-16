@@ -1239,6 +1239,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
+	$modoptions = '';
 	// Show the moderator options.
 	if(is_moderator($fid))
 	{

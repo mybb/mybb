@@ -7890,14 +7890,13 @@ body {
 <td class="trow1"><span class="smalltext">{$this->warnings}</span><br /></td>
 </tr>
 </table><br /><br />]]></template>
-		<template name="polls_editpoll" version="1400"><![CDATA[<html>
+		<template name="polls_editpoll" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_poll}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-{$preview}
 <form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -7966,14 +7965,13 @@ body {
 <td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
-		<template name="polls_newpoll" version="1400"><![CDATA[<html>
+		<template name="polls_newpoll" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->post_new_poll}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-{$preview}
 <form action="polls.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8043,9 +8041,9 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="polls_showresults_resultbit" version="1402"><![CDATA[<tr>
+		<template name="polls_showresults_resultbit" version="1800"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
-<td class="{$optionbg}" width="{$imagerowwidth}"><div class="pollbar" style="width: {$imagewidth}px" title="{$percent}%"><span class="percent">{$percent}%</span></div><br />{$userlist}</td>
+<td class="{$optionbg}" width="50%"><div class="pollbar" style="width: {$imagewidth}%" title="{$percent}%"><span class="percent">{$percent}%</span></div>{$userlist}</td>
 <td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
@@ -10103,9 +10101,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1" width="1%"><input type="checkbox" class="checkbox" name="option[{$number}]" id="option_{$number}" value="1" /></td>
 <td class="trow2" colspan="3">{$option}</td>
 </tr>]]></template>
-		<template name="showthread_poll_resultbit" version="1402"><![CDATA[<tr>
+		<template name="showthread_poll_resultbit" version="1800"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
-<td class="{$optionbg}"><div class="pollbar" style="width: {$imagewidth}px" title="{$percent}%"><span class="percent">{$percent}%</span></div></td>
+<td class="{$optionbg}" width="50%"><div class="pollbar" style="width: {$imagewidth}%" title="{$percent}%"><span class="percent">{$percent}%</span></div></td>
 <td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
