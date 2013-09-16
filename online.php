@@ -29,7 +29,7 @@ if($mybb->usergroup['canviewonline'] == 0)
 // Make navigation
 add_breadcrumb($lang->nav_online, "online.php");
 
-if($mybb->input['action'] == "today")
+if($mybb->get_input('action') == "today")
 {
 	add_breadcrumb($lang->nav_onlinetoday);
 
@@ -45,9 +45,9 @@ if($mybb->input['action'] == "today")
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if(intval($mybb->input['page']) > 0)
+	if($mybb->get_input('page', 1) > 0)
 	{
-		$page = intval($mybb->input['page']);
+		$page = $mybb->get_input('page', 1);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($todaycount / $perpage);
 		if($page > $pages)
@@ -120,12 +120,12 @@ else
 	$plugins->run_hooks("online_start");
 
 	// Custom sorting options
-	if($mybb->input['sortby'] == "username")
+	if($mybb->get_input('sortby') == "username")
 	{
 		$sql = "u.username ASC, s.time DESC";
 		$refresh_string = "?sortby=username";
 	}
-	elseif($mybb->input['sortby'] == "location")
+	elseif($mybb->get_input('sortby') == "location")
 	{
 		$sql = "s.location, s.time DESC";
 		$refresh_string = "?sortby=location";
@@ -171,9 +171,9 @@ else
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
 
-	if(intval($mybb->input['page']) > 0)
+	if($mybb->get_input('page', 1) > 0)
 	{
-		$page = intval($mybb->input['page']);
+		$page = $mybb->get_input('page', 1);
 		$start = ($page-1) * $perpage;
 		$pages = ceil($online_count / $perpage);
 		if($page > $pages)
@@ -216,7 +216,7 @@ else
 		// Have a registered user
 		if($user['uid'] > 0)
 		{
-			if($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
+			if(empty($users[$user['uid']]) || $users[$user['uid']]['time'] < $user['time'])
 			{
 				$users[$user['uid']] = $user;
 			}
@@ -237,7 +237,7 @@ else
 
 	// Now we build the actual online rows - we do this separately because we need to query all of the specific activity and location information
 	$online_rows = '';
-	if(is_array($users))
+	if(isset($users) && is_array($users))
 	{
 		reset($users);
 		foreach($users as $user)
@@ -245,7 +245,7 @@ else
 			$online_rows .= build_wol_row($user);
 		}
 	}
-	if(is_array($guests))
+	if(isset($guests) && is_array($guests))
 	{
 		reset($guests);
 		foreach($guests as $user)

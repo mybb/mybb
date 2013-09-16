@@ -5133,7 +5133,7 @@ function get_forum($fid, $active_override=0)
 		$forum_cache = $cache->read("forums");
 	}
 
-	if(!$forum_cache[$fid])
+	if(empty($forum_cache[$fid]))
 	{
 		return false;
 	}

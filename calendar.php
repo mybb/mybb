@@ -1512,6 +1512,7 @@ if($mybb->input['action'] == "event")
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 
+	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
@@ -1841,6 +1842,7 @@ if($mybb->input['action'] == "dayview")
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 
+	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
@@ -2101,6 +2103,7 @@ if($mybb->input['action'] == "weekview")
 		eval("\$weekday_bits .= \"".$templates->get("calendar_weekview_month")."\";");
 	}
 
+	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
@@ -2380,6 +2383,7 @@ if(!$mybb->input['action'])
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 
+	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");

@@ -26,7 +26,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('pid', 'aid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
+	foreach(array('pid', 'aid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
 	{
 		if(empty($post[$post_field]))
 		{
@@ -314,7 +314,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['useravatar'] = '';
-		if($mybb->user['showavatars'] != 0)
+		if(isset($mybb->user['showavatars']) && $mybb->user['showavatars'] != 0)
 		{
 			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");

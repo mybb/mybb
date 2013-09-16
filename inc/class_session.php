@@ -526,7 +526,7 @@ class session
 	{
 		global $mybb;
 		$array = array('1' => '', '2' => '');
-		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['fid']) > 0)
+		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', 1) > 0)
 		{
 			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
@@ -535,11 +535,11 @@ class session
 		{
 			global $db;
 
-			if($mybb->input['tid'] && intval($mybb->input['tid']) > 0)
+			if($mybb->get_input('tid', 1) > 0)
 			{
 				$array[2] = intval($mybb->input['tid']);
 			}
-			elseif($mybb->input['pid'] && intval($mybb->input['pid']) > 0)
+			elseif($mybb->get_input('pid', 1) > 0)
 			{
 				$array[2] = intval($mybb->input['pid']);
 			}
@@ -550,12 +550,12 @@ class session
 				$options = array(
 					"limit" => 1
 				);
-				$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
+				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
 				$post = $db->fetch_array($query);
 				$mybb->input['tid'] = $post['tid'];
 			}
 
-			$thread = get_thread(intval($mybb->input['tid']));
+			$thread = get_thread(intval($mybb->get_input('tid', 1)));
 			$array[1] = $thread['fid'];
 		}
 		return $array;

@@ -38,7 +38,10 @@ function fetch_wol_activity($location, $nopermission=false)
 		foreach($temp as $param)
 		{
 			$temp2 = explode("=", $param, 2);
-			$parameters[$temp2[0]] = $temp2[1];
+			if(isset($temp2[1]))
+			{
+				$parameters[$temp2[0]] = $temp2[1];
+			}
 		}
 	}
 
@@ -50,15 +53,25 @@ function fetch_wol_activity($location, $nopermission=false)
 	switch($filename)
 	{
 		case "announcements":
-			if(is_numeric($parameters['aid']))
+			if(!isset($parameters['aid']))
 			{
-				$ann_list[] = $parameters['aid'];
+				$parameters['aid'] = 0;
+			}
+			$parameters['aid'] = intval($parameters['aid']);
+			if($parameters['aid'] > 0)
+			{
+				$ann_list[$parameters['aid']] = $parameters['aid'];
 			}
 			$user_activity['activity'] = "announcements";
 			$user_activity['ann'] = $parameters['aid'];
 			break;
 		case "attachment":
-			if(is_numeric($parameters['aid']))
+			if(!isset($parameters['aid']))
+			{
+				$parameters['aid'] = 0;
+			}
+			$parameters['aid'] = intval($parameters['aid']);
+			if($parameters['aid'] > 0)
 			{
 				$aid_list[] = $parameters['aid'];
 			}
@@ -66,11 +79,20 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['aid'] = $parameters['aid'];
 			break;
 		case "calendar":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "event")
 			{
-				if(is_numeric($parameters['eid']))
+				if(!isset($parameters['eid']))
 				{
-					$eid_list[] = $parameters['eid'];
+					$parameters['eid'] = 0;
+				}
+				$parameters['eid'] = intval($parameters['eid']);
+				if($parameters['eid'] > 0)
+				{
+					$eid_list[$parameters['eid']] = $parameters['eid'];
 				}
 				$user_activity['activity'] = "calendar_event";
 				$user_activity['eid'] = $parameters['eid'];
@@ -92,9 +114,14 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "editpost";
 			break;
 		case "forumdisplay":
-			if(is_numeric($parameters['fid']))
+			if(!isset($parameters['fid']))
 			{
-				$fid_list[] = $parameters['fid'];
+				$parameters['fid'] = 0;
+			}
+			$parameters['fid'] = intval($parameters['fid']);
+			if($parameters['fid'] > 0)
+			{
+				$fid_list[$parameters['fid']] = $parameters['fid'];
 			}
 			$user_activity['activity'] = "forumdisplay";
 			$user_activity['fid'] = $parameters['fid'];
@@ -107,6 +134,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "managegroup";
 			break;
 		case "member":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "activate")
 			{
 				$user_activity['activity'] = "member_activate";
@@ -126,9 +157,14 @@ function fetch_wol_activity($location, $nopermission=false)
 			elseif($parameters['action'] == "profile")
 			{
 				$user_activity['activity'] = "member_profile";
-				if(is_numeric($parameters['uid']))
+				if(!isset($parameters['uid']))
 				{
-					$uid_list[] = $parameters['uid'];
+					$parameters['uid'] = 0;
+				}
+				$parameters['uid'] = intval($parameters['uid']);
+				if($parameters['uid'] > 0)
+				{
+					$uid_list[$parameters['uid']] = $parameters['uid'];
 				}
 				$user_activity['uid'] = $parameters['uid'];
 			}
@@ -157,12 +193,21 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "memberlist";
 			break;
 		case "misc":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter", "dstswitch");
 			if($parameters['action'] == "whoposted")
 			{
-				if(is_numeric($parameters['tid']))
+				if(!isset($parameters['tid']))
 				{
-					$tid_list[] = $parameters['tid'];
+					$parameters['tid'] = 0;
+				}
+				$parameters['tid'] = intval($parameters['tid']);
+				if($parameters['tid'] > 0)
+				{
+					$tid_list[$parameters['tid']] = $parameters['tid'];
 				}
 				$user_activity['activity'] = "misc_whoposted";
 				$user_activity['tid'] = $parameters['tid'];
@@ -177,6 +222,11 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			break;
 		case "modcp":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = 0;
+			}
+
 			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
 
 			foreach($accepted_parameters as $action)
@@ -206,7 +256,7 @@ function fetch_wol_activity($location, $nopermission=false)
 				}
 			}
 
-			if(!$user_activity['activity'])
+			if(empty($user_activity['activity']))
 			{
 				$user_activity['activity'] = "modcp";
 			}
@@ -215,31 +265,36 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "moderation";
 			break;
 		case "newreply":
-			if(is_numeric($parameters['pid']))
+			if(!isset($parameters['tid']))
 			{
-				$pid_list[] = $parameters['pid'];
-				$user_activity['activity'] = "newreply";
-				$user_activity['pid'] = $parameters['pid'];
+				$parameters['tid'] = 0;
 			}
-			else
+			$parameters['tid'] = intval($parameters['tid']);
+			if($parameters['tid'] > 0)
 			{
-				if(is_numeric($parameters['tid']))
-				{
-					$tid_list[] = $parameters['tid'];
-				}
-				$user_activity['activity'] = "newreply";
-				$user_activity['tid'] = $parameters['tid'];
+				$tid_list[$parameters['tid']] = $parameters['tid'];
 			}
+			$user_activity['activity'] = "newreply";
+			$user_activity['tid'] = $parameters['tid'];
 			break;
 		case "newthread":
-			if(is_numeric($parameters['fid']))
+			if(!isset($parameters['fid']))
 			{
-				$fid_list[] = $parameters['fid'];
+				$parameters['fid'] = 0;
+			}
+			$parameters['fid'] = intval($parameters['fid']);
+			if($parameters['fid'] > 0)
+			{
+				$fid_list[$parameters['fid']] = $parameters['fid'];
 			}
 			$user_activity['activity'] = "newthread";
 			$user_activity['fid'] = $parameters['fid'];
 			break;
 		case "online":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "today")
 			{
 				$user_activity['activity'] = "woltoday";
@@ -250,6 +305,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			break;
 		case "polls":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			// Make the "do" parts the same as the other one.
 			if($parameters['action'] == "do_newpoll")
 			{
@@ -279,14 +338,23 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			break;
 		case "printthread":
-			if(is_numeric($parameters['tid']))
+			if(!isset($parameters['tid']))
 			{
-				$tid_list[] = $parameters['tid'];
+				$parameters['tid'] = 0;
+			}
+			$parameters['tid'] = intval($parameters['tid']);
+			if($parameters['tid'] > 0)
+			{
+				$tid_list[$parameters['tid']] = $parameters['tid'];
 			}
 			$user_activity['activity'] = "printthread";
 			$user_activity['tid'] = $parameters['tid'];
 			break;
 		case "private":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "send" || $parameters['action'] == "do_send")
 			{
 				$user_activity['activity'] = "private_send";
@@ -311,11 +379,16 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "report";
 			break;
 		case "reputation":
-			if(is_numeric($parameters['uid']))
+			if(!isset($parameters['uid']))
 			{
-				$uid_list[] = $parameters['uid'];
-				$user_activity['uid'] = $parameters['uid'];
+				$parameters['uid'] = 0;
 			}
+			$parameters['uid'] = intval($parameters['uid']);
+			if($parameters['uid'] > 0)
+			{
+				$uid_list[$parameters['uid']] = $parameters['uid'];
+			}
+			$user_activity['uid'] = $parameters['uid'];
 
 			if($parameters['action'] == "add")
 			{
@@ -330,9 +403,14 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "search";
 			break;
 		case "sendthread":
-			if(is_numeric($parameters['tid']))
+			if(!isset($parameters['tid']))
 			{
-				$tid_list[] = $parameters['tid'];
+				$parameters['tid'] = 0;
+			}
+			$parameters['tid'] = intval($parameters['tid']);
+			if($parameters['tid'] > 0)
+			{
+				$tid_list[$parameters['tid']] = $parameters['tid'];
 			}
 			$user_activity['activity'] = "sendthread";
 			$user_activity['tid'] = $parameters['tid'];
@@ -341,21 +419,37 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "showteam";
 			break;
 		case "showthread":
-			if(is_numeric($parameters['pid']) && $parameters['action'] == "showpost")
+			if(!isset($parameters['action']))
 			{
-				$pid_list[] = $parameters['pid'];
+				$parameters['action'] = 0;
+			}
+			if(!isset($parameters['pid']))
+			{
+				$parameters['pid'] = 0;
+			}
+			$parameters['pid'] = intval($parameters['pid']);
+			if($parameters['pid'] > 0 && $parameters['action'] == "showpost")
+			{
+				$pid_list[$parameters['pid']] = $parameters['pid'];
 				$user_activity['activity'] = "showpost";
 				$user_activity['pid'] = $parameters['pid'];
 			}
 			else
 			{
-				if($parameters['page'])
+				if(!isset($parameters['page']))
 				{
-					$user_activity['page'] = $parameters['page'];
+					$parameters['page'] = 0;
 				}
-				if(is_numeric($parameters['tid']))
+				$parameters['page'] = intval($parameters['page']);
+				$user_activity['page'] = $parameters['page'];
+				if(!isset($parameters['tid']))
 				{
-					$tid_list[] = $parameters['tid'];
+					$parameters['tid'] = 0;
+				}
+				$parameters['tid'] = intval($parameters['tid']);
+				if($parameters['tid'] > 0)
+				{
+					$tid_list[$parameters['tid']] = $parameters['tid'];
 				}
 				$user_activity['activity'] = "showthread";
 				$user_activity['tid'] = $parameters['tid'];
@@ -365,6 +459,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "stats";
 			break;
 		case "usercp":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "profile" || $parameters['action'] == "do_profile")
 			{
 				$user_activity['activity'] = "usercp_profile";
@@ -407,6 +505,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			break;
 		case "usercp2":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "addfavorite" || $parameters['action'] == "removefavorite" || $parameters['action'] == "removefavorites")
 			{
 				$user_activity['activity'] = "usercp2_favorites";
@@ -420,6 +522,10 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "portal";
 			break;
 		case "warnings":
+			if(!isset($parameters['action']))
+			{
+				$parameters['action'] = '';
+			}
 			if($parameters['action'] == "warn" || $parameters['action'] == "do_warn")
 			{
 				$user_activity['activity'] = "warnings_warn";
@@ -467,6 +573,7 @@ function build_friendly_wol_location($user_activity)
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
+	$fidnot = '';
 	if($unviewableforums)
 	{
 		$fidnot = " AND fid NOT IN ($unviewableforums)";
@@ -531,7 +638,7 @@ function build_friendly_wol_location($user_activity)
 	{
 		$perms = array();
 		$tid_sql = implode(",", $tid_list);
-		$query = $db->simple_select('threads', 'uid, fid, tid, subject, visible', "tid IN({$tid_sql}) {$fidnot}");
+		$query = $db->simple_select('threads', 'uid, fid, tid, subject, visible, prefix', "tid IN({$tid_sql}) {$fidnot}");
 
 		$threadprefixes = build_prefixes();
 
@@ -542,12 +649,12 @@ function build_friendly_wol_location($user_activity)
 			{
 				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
 			}
-			if(!$perms[$thread['fid']])
+			if(empty($perms[$thread['fid']]))
 			{
 				$perms[$thread['fid']] = forum_permissions($thread['fid']);
 			}
 
-			if($perms[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'] && !is_moderator($thread['fid']))
+			if(isset($perms[$thread['fid']]['canonlyviewownthreads']) && $perms[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'] && !is_moderator($thread['fid']))
 			{
 				continue;
 			}
@@ -602,7 +709,7 @@ function build_friendly_wol_location($user_activity)
 	{
 		// announcement.php functions
 		case "announcements":
-			if($announcements[$user_activity['ann']])
+			if(!empty($announcements[$user_activity['ann']]))
 			{
 				$location_name =  $lang->sprintf($lang->viewing_announcements, get_announcement_link($user_activity['ann']), $announcements[$user_activity['ann']]);
 			}
@@ -615,7 +722,7 @@ function build_friendly_wol_location($user_activity)
 		case "attachment":
 			$pid = $attachments[$user_activity['aid']];
 			$tid = $posts[$pid];
-			if($threads[$tid])
+			if(!empty($threads[$tid]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_attachment2, $user_activity['aid'], $threads[$tid], get_thread_link($tid));
 			}
@@ -629,7 +736,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->viewing_calendar;
 			break;
 		case "calendar_event":
-			if($events[$user_activity['eid']])
+			if(!empty($events[$user_activity['eid']]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_event2, get_event_link($user_activity['eid']), $events[$user_activity['eid']]);
 			}
@@ -650,7 +757,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// forumdisplay.php functions
 		case "forumdisplay":
-			if($forums[$user_activity['fid']])
+			if(!empty($forums[$user_activity['fid']]))
 			{
 				if($forums_linkto[$user_activity['fid']])
 				{
@@ -679,7 +786,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->activating_account;
 			break;
 		case "member_profile":
-			if($usernames[$user_activity['uid']])
+			if(!empty($usernames[$user_activity['uid']]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
 			}
@@ -727,7 +834,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->changing_dst;
 			break;
 		case "misc_whoposted":
-			if($threads[$user_activity['tid']])
+			if(!empty($threads[$user_activity['tid']]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_whoposted2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
 			}
@@ -800,11 +907,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// newreply.php functions
 		case "newreply":
-			if($user_activity['pid'])
-			{
-				$user_activity['tid'] = $posts[$user_activity['pid']];
-			}
-			if($threads[$user_activity['tid']])
+			if(!empty($threads[$user_activity['tid']]))
 			{
 				$location_name = $lang->sprintf($lang->replying_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
 			}
@@ -815,7 +918,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// newthread.php functions
 		case "newthread":
-			if($forums[$user_activity['fid']])
+			if(!empty($forums[$user_activity['fid']]))
 			{
 				$location_name = $lang->sprintf($lang->posting_thread2, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
 			}
@@ -846,7 +949,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// printthread.php functions
 		case "printthread":
-			if($threads[$user_activity['tid']])
+			if(!empty($threads[$user_activity['tid']]))
 			{
 				$location_name = $lang->sprintf($lang->printing_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
 			}
@@ -881,7 +984,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->sprintf($lang->giving_reputation, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
 			break;
 		case "reputation_report":
-			if($usernames[$user_activity['uid']])
+			if(!empty($usernames[$user_activity['uid']]))
 			{
 				$location_name = $lang->sprintf($lang->viewing_reputation_report, "reputation.php?uid={$user_activity['uid']}", $usernames[$user_activity['uid']]);
 			}
@@ -896,7 +999,7 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// showthread.php functions
 		case "showthread":
-			if($threads[$user_activity['tid']])
+			if(!empty($threads[$user_activity['tid']]))
 			{
 				$pagenote = '';
 				$location_name = $lang->sprintf($lang->reading_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']], $pagenote);
@@ -1020,7 +1123,7 @@ function build_wol_row($user)
 		}
 	}
 	// We have a bot
-	elseif($user['bot'])
+	elseif(!empty($user['bot']))
 	{
 		$online_name = format_name($user['bot'], $user['usergroup']);
 	}
@@ -1043,7 +1146,7 @@ function build_wol_row($user)
 	}
 	else
 	{
-		$user['ip'] = '';
+		$user_ip = $user['ip'] = '';
 	}
 
 	// And finally if we have permission to view this user, return the completed online row
