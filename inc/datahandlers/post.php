@@ -349,7 +349,7 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Are we starting a new thread?
-		if(!$post['tid'])
+		if(empty($post['tid']))
 		{
 			return true;
 		}
@@ -739,6 +739,13 @@ class PostDataHandler extends DataHandler
 				$modoptions = $post['modoptions'];
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
+				
+				$newstick = $newclosed = '';
+				
+				if(!isset($modoptions['closethread']))
+				{
+					$modoptions['closethread'] = 0;
+				}
 
 				// Close the thread.
 				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
@@ -752,6 +759,11 @@ class PostDataHandler extends DataHandler
 				{
 					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
+				}
+				
+				if(!isset($modoptions['stickthread']))
+				{
+					$modoptions['stickthread'] = 0;
 				}
 
 				// Stick the thread.
@@ -772,6 +784,10 @@ class PostDataHandler extends DataHandler
 				if($newstick && $newclosed)
 				{
 					$sep = ",";
+				}
+				else
+				{
+					$sep = '';
 				}
 				if($newstick || $newclosed)
 				{
@@ -801,6 +817,11 @@ class PostDataHandler extends DataHandler
 			{
 				$visible = 0;
 			}
+		}
+
+		if(!isset($post['pid']))
+		{
+			$post['pid'] = 0;
 		}
 
 		$post['pid'] = intval($post['pid']);
@@ -1030,7 +1051,7 @@ class PostDataHandler extends DataHandler
 				$queued_email = 1;
 			}
 			// Have one or more emails been queued? Update the queue count
-			if($queued_email == 1)
+			if(isset($queued_email) && $queued_email == 1)
 			{
 				$cache->update_mailqueue();
 			}
@@ -1189,13 +1210,13 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Have a post ID but not a thread ID - fetch thread ID
-		if($thread['pid'] && !$thread['tid'])
+		if(!empty($thread['pid']) && !$thread['tid'])
 		{
 			$query = $db->simple_select("posts", "tid", "pid='{$thread['pid']}");
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
-		if($thread['pid'] > 0)
+		if(isset($thread['pid']) && $thread['pid'] > 0)
 		{
 			$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
 			$draft_check = $db->fetch_field($query, "pid");
@@ -1311,17 +1332,22 @@ class PostDataHandler extends DataHandler
 
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $this->tid;
-				$modlogdata['tid'] = $thread['tid'];
+				if(isset($thread['tid']))
+				{
+					$modlogdata['tid'] = $thread['tid'];
+				}
+
+				$newclosed = $newstick = '';
 
 				// Close the thread.
-				if($modoptions['closethread'] == 1)
+				if(isset($modoptions['closethread']) && $modoptions['closethread'] == 1)
 				{
 					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if($modoptions['stickthread'] == 1)
+				if(isset($modoptions['stickthread']) && $modoptions['stickthread'] == 1)
 				{
 					$newstick = "sticky='1'";
 					log_moderator_action($modlogdata, $lang->thread_stuck);
@@ -1331,6 +1357,10 @@ class PostDataHandler extends DataHandler
 				if($newstick && $newclosed)
 				{
 					$sep = ",";
+				}
+				else
+				{
+					$sep = '';
 				}
 				if($newstick || $newclosed)
 				{
@@ -1367,7 +1397,7 @@ class PostDataHandler extends DataHandler
 					}
 				}
 
-				if(!$forum['lastpost'])
+				if(!isset($forum['lastpost']))
 				{
 					$forum['lastpost'] = 0;
 				}
@@ -1462,7 +1492,7 @@ class PostDataHandler extends DataHandler
 					$queued_email = 1;
 				}
 				// Have one or more emails been queued? Update the queue count
-				if($queued_email == 1)
+				if(isset($queued_email) && $queued_email == 1)
 				{
 					$cache->update_mailqueue();
 				}
