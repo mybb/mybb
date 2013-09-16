@@ -381,6 +381,7 @@ if(is_moderator($fid))
 	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
 	$ismod = true;
 	$inlinecount = "0";
+	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
 	$visibleonly = " AND (visible='1' OR visible='0')";
 	$tvisibleonly = " AND (t.visible='1' OR t.visible='0')";
@@ -816,7 +817,7 @@ if($fpermissions['canviewthreads'] != 0)
 		if(substr($thread['closed'], 0, 5) == "moved")
 		{
 			$tid = substr($thread['closed'], 6);
-			if(!$tids[$tid])
+			if(!isset($tids[$tid]))
 			{
 				$moved_threads[$tid] = $thread['tid'];
 				$tids[$thread['tid']] = $tid;
@@ -985,7 +986,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$prefix = $lang->poll_prefix;
 		}
 
-		if($thread['sticky'] == "1" && !$donestickysep)
+		if($thread['sticky'] == "1" && !isset($donestickysep))
 		{
 			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
 			$shownormalsep = true;
@@ -1285,6 +1286,8 @@ if($mybb->user['uid'])
 		$add_remove_subscription_text = $lang->unsubscribe_forum;
 	}
 }
+
+$inline_edit_js = $clearstoredpass = '';
 
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")

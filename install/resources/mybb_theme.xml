@@ -6980,7 +6980,7 @@ body {
 <td class="{$trow}" align="center"><a href="moderation.php?action=cancel_delayedmoderation&amp;tid={$tid}&amp;fid={$fid}&amp;did={$delayedmod['did']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a></td>
 </tr>
 ]]></template>
-		<template name="moderation_delayedmoderation" version="1600"><![CDATA[<html>
+		<template name="moderation_delayedmoderation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delayed_moderation}</title>
 {$headerinclude}
@@ -7067,13 +7067,13 @@ body {
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
 	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
 	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
-	<dt><input type="radio" name="type" value="move" {$type_selected['movecopythread']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
 	<dd style="margin-top: 4px;" id="type_movecopythread_expanded">
 	{$lang->new_forum}<br />
 	{$forumselect}
 	{$moderation_delayedmoderation_move}
 	</dd>
-	<dt><input type="radio" name="type" value="stick" {$type_selected['stick_unstick_thread']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="stick" {$type_selected['stick']} id="type_stick_unstick_thread" onclick="toggleType();" /> <label for="type_stick_unstick_thread"><strong>{$lang->stick_unstick_thread}</strong></label></dt>
 	{$moderation_delayedmoderation_merge}
 	<dt><input type="radio" name="type" value="removeredirects" {$type_selected['removeredirects']} id="type_removeredirects" onclick="toggleType();" /> <label for="type_removeredirects"><strong>{$lang->remove_redirects}</strong></label></dt>
 	<dt><input type="radio" name="type" value="removesubscriptions" {$type_selected['removesubscriptions']} id="type_removesubscriptions" onclick="toggleType();" /> <label for="type_removesubscriptions"><strong>{$lang->remove_subscriptions}</strong></label></dt>
@@ -7397,7 +7397,7 @@ body {
 </tr>
 </table>
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->split_thread}" /></div>
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->move_posts}" /></div>
 <input type="hidden" name="action" value="do_multimoveposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
@@ -10008,7 +10008,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -10019,6 +10019,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
 	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
 	<option value="multisplitposts">{$lang->inline_split_posts}</option>
+	<option value="multimoveposts">{$lang->inline_move_posts}</option>
 	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
 </optgroup>

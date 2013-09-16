@@ -1288,7 +1288,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 
 	if($fid) // Fetch the permissions for a single forum
 	{
-		if(!$cached_forum_permissions_permissions[$gid][$fid])
+		if(empty($cached_forum_permissions_permissions[$gid][$fid]))
 		{
 			$cached_forum_permissions_permissions[$gid][$fid] = fetch_forum_permissions($fid, $gid, $groupperms);
 		}
@@ -1296,7 +1296,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	}
 	else
 	{
-		if(!$cached_forum_permissions[$gid])
+		if(empty($cached_forum_permissions[$gid]))
 		{
 			foreach($forum_cache as $forum)
 			{
