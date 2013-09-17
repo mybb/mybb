@@ -1492,7 +1492,7 @@ else if($mybb->input['action'] == "thread")
 	{
 		error($lang->error_closedinvalidforum);
 	}
-	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1)
+	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1 || (isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}
