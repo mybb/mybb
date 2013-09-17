@@ -58,20 +58,27 @@ if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
 }
+else
+{
+	$unviewwhere = '';
+}
+
+$welcome = '';
 // If user is known, welcome them
 if($mybb->settings['portal_showwelcome'] != 0)
 {
 	if($mybb->user['uid'] != 0)
 	{
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
 			$newthreads = $db->fetch_field($query, "newthreads");
 
+			$newann = 0;
 			if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
@@ -83,19 +90,9 @@ if($mybb->settings['portal_showwelcome'] != 0)
 					}
 
 					$announcementsfids = implode(',', $fid_array);
-					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids.") $unviewwhere");
+					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids."){$unviewwhere}");
 					$newann = $db->fetch_field($query, "newann");
 				}
-			}
-
-			if(!$newthreads)
-			{
-				$newthreads = 0;
-			}
-
-			if(!$newann)
-			{
-				$newann = 0;
 			}
 		}
 		else
@@ -135,7 +132,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	}
 	else
 	{
-		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
+		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'].'/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		switch($mybb->settings['username_method'])
 		{
@@ -156,11 +153,9 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
 	eval("\$welcome = \"".$templates->get("portal_welcome")."\";");
-	if($mybb->user['uid'] == 0)
-	{
-		$mybb->user['username'] = "";
-	}
 }
+
+$pms = '';
 // Private messages box
 if($mybb->settings['portal_showpms'] != 0)
 {
@@ -173,6 +168,8 @@ if($mybb->settings['portal_showpms'] != 0)
 		eval("\$pms = \"".$templates->get("portal_pms")."\";");
 	}
 }
+
+$stats = '';
 // Get Forum Statistics
 if($mybb->settings['portal_showstats'] != 0)
 {
@@ -191,20 +188,22 @@ if($mybb->settings['portal_showstats'] != 0)
 	eval("\$stats = \"".$templates->get("portal_stats")."\";");
 }
 
+$search = '';
 // Search box
 if($mybb->settings['portal_showsearch'] != 0)
 {
 	eval("\$search = \"".$templates->get("portal_search")."\";");
 }
 
+$whosonline = '';
 // Get the online users
 if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$comma = '';
-	$guestcount = 0;
-	$membercount = 0;
+	$guestcount = $membercount = $botcount = $anoncount = 0;
 	$onlinemembers = '';
+	$doneusers = array();
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, u.username, u.invisible, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
@@ -231,7 +230,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 		}
 		else
 		{
-			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
+			if(empty($doneusers[$user['uid']]) || $doneusers[$user['uid']] < $user['time'])
 			{
 				++$membercount;
 
@@ -272,7 +271,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	}
 
 	// If we can't see invisible users but the user is an invisible user incriment the count by one
-	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
+	if($mybb->usergroup['canviewwolinvis'] != 1 && isset($mybb->user['invisible']) && $mybb->user['invisible'] == 1)
 	{
 		++$onlinecount;
 	}
@@ -301,6 +300,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
 }
 
+$latestthreads = '';
 // Latest forum discussions
 if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'])
 {
@@ -319,7 +319,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
 
 		// Make sure we can view this thread
-		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || (isset($forumpermissions[$thread['fid']]['canonlyviewownthreads']) && $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid']))
 		{
 			continue;
 		}
@@ -441,7 +441,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		while($announcement = $db->fetch_array($query))
 		{
 			// Make sure we can view this announcement
-			if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+			if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || (isset($forumpermissions[$announcement['fid']]['canonlyviewownthreads']) && $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid']))
 			{
 				continue;
 			}
@@ -507,10 +507,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 
 			$message = $parser->parse_message($announcement['message'], $parser_options);
 
-			if(is_array($attachcache[$announcement['pid']]))
+			$post['attachments'] = '';
+			if(isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
 			{ // This post has 1 or more attachments
 				$validationcount = 0;
 				$id = $announcement['pid'];
+				$post['attachmentlist'] = $post['thumblist'] = $post['imagelist'] = $post['attachedthumbs'] = $post['attachedimages'] = '';
 				foreach($attachcache[$id] as $aid => $attachment)
 				{
 					if($attachment['visible'])

@@ -365,7 +365,7 @@ switch($mybb->input['action'])
 			// Inline thread moderation is used
 			if($mybb->get_input('inlinetype') == 'search')
 			{
-				$tids = getids($mybb->get_input('searchid', 1), 'search');
+				$tids = getids($mybb->get_input('searchid'), 'search');
 			}
 			else
 			{
@@ -491,7 +491,7 @@ switch($mybb->input['action'])
 		{
 			if($mybb->get_input('inlinetype') == 'search')
 			{
-				$tids = getids($mybb->get_input('searchid', 1), 'search');
+				$tids = getids($mybb->get_input('searchid'), 'search');
 				$url = htmlspecialchars_uni($mybb->get_input('url'));
 			}
 			else
@@ -1445,7 +1445,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'candeleteposts'))
 			{
 				error_no_permission();
@@ -1517,7 +1517,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
 			{
 				error_no_permission();
@@ -1560,7 +1560,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
@@ -1602,7 +1602,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
@@ -1645,7 +1645,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
@@ -1688,7 +1688,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
 			{
 				error_no_permission();
@@ -1730,7 +1730,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
 			{
 				error_no_permission();
@@ -1770,7 +1770,7 @@ switch($mybb->input['action'])
 		if(!empty($mybb->input['searchid']))
 		{
 			// From search page
-			$threads = getids($mybb->get_input('searchid', 1), 'search');
+			$threads = getids($mybb->get_input('searchid'), 'search');
 			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
@@ -1846,7 +1846,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -1949,7 +1949,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -2068,7 +2068,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -2256,7 +2256,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -2494,7 +2494,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -2538,7 +2538,7 @@ switch($mybb->input['action'])
 
 		if($mybb->get_input('inlinetype') == 'search')
 		{
-			$posts = getids($mybb->get_input('searchid', 1), 'search');
+			$posts = getids($mybb->get_input('searchid'), 'search');
 		}
 		else
 		{
@@ -2586,7 +2586,7 @@ switch($mybb->input['action'])
 			{
 				if($mybb->get_input('inlinetype') == 'search')
 				{
-					$tids = getids($mybb->get_input('searchid', 1), 'search');
+					$tids = getids($mybb->get_input('searchid'), 'search');
 				}
 				else
 				{
@@ -2657,7 +2657,7 @@ switch($mybb->input['action'])
 			{
 				if($mybb->get_input('inlinetype') == 'search')
 				{
-					$pids = getids($mybb->get_input('searchid', 1), 'search');
+					$pids = getids($mybb->get_input('searchid'), 'search');
 				}
 				else
 				{

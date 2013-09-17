@@ -108,7 +108,10 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		// Return if we've already validated
-		if($pm['sender']) return true;
+		if(!empty($pm['sender']))
+		{
+			return true;
+		}
 
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
@@ -117,7 +120,7 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Check if the sender is over their quota or not - if they are, disable draft sending
-		if($pm['options']['savecopy'] != 0 && !$pm['saveasdraft'])
+		if($pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
 		{
 			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
@@ -151,7 +154,7 @@ class PMDataHandler extends DataHandler
 		// We have our recipient usernames but need to fetch user IDs
 		if(array_key_exists("to", $pm))
 		{
-			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
+			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && empty($pm['saveasdraft']))
 			{
 				$this->set_error("no_recipients");
 				return false;
@@ -159,6 +162,10 @@ class PMDataHandler extends DataHandler
 
 			foreach(array("to", "bcc") as $recipient_type)
 			{
+				if(!isset($pm[$recipient_type]))
+				{
+					$pm[$recipient_type] = array();
+				}
 				if(!is_array($pm[$recipient_type]))
 				{
 					$pm[$recipient_type] = array($pm[$recipient_type]);
@@ -265,7 +272,7 @@ class PMDataHandler extends DataHandler
 				}
 
 				// Can the recipient actually receive private messages based on their permissions or user setting?
-				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
+				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && empty($pm['saveasdraft']))
 				{
 					$this->set_error("recipient_pms_disabled", array($user['username']));
 					return false;
@@ -273,7 +280,7 @@ class PMDataHandler extends DataHandler
 			}
 
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && empty($pm['saveasdraft']) && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
@@ -333,7 +340,7 @@ class PMDataHandler extends DataHandler
 			);
 
 			// If this recipient is defined as a BCC recipient, save it
-			if($user['bcc'] == 1)
+			if(isset($user['bcc']) && $user['bcc'] == 1)
 			{
 				$pm['recipients'][$user['uid']]['bcc'] = 1;
 			}
@@ -418,7 +425,7 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 
-		if(!$pm['savedraft'])
+		if(empty($pm['savedraft']))
 		{
 			$this->verify_pm_flooding();
 		}
@@ -437,7 +444,7 @@ class PMDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_pm_validate", $this);
 
 		// Choose the appropriate folder to save in.
-		if($pm['saveasdraft'])
+		if(!empty($pm['saveasdraft']))
 		{
 			$pm['folder'] = 3;
 		}
@@ -498,7 +505,7 @@ class PMDataHandler extends DataHandler
 			// Build recipient list
 			foreach($pm['recipients'] as $recipient)
 			{
-				if($recipient['bcc'])
+				if(!empty($recipient['bcc']))
 				{
 					$recipient_list['bcc'][] = $recipient['uid'];
 				}
@@ -545,7 +552,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Saving this message as a draft
-		if($pm['saveasdraft'])
+		if(!empty($pm['saveasdraft']))
 		{
 			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 

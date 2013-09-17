@@ -57,11 +57,14 @@ if($rand == 5)
 	update_pm_count();
 }
 
+$mybb->input['fid'] = $mybb->get_input('fid', 1);
+
 $foldersearch = "<select multiple=\"multiple\" name=\"folder[]\" id=\"folder\">\n";
 $foldersearch .= "<option selected=\"selected\">{$lang->all_folders}</option>\n";
 $folderjump = "<select name=\"jumpto\">\n";
-$folderoplist = "<input type=\"hidden\" value=\"".intval($mybb->input['fid'])."\" name=\"fromfid\" />\n<select name=\"fid\">\n";
+$folderoplist = "<input type=\"hidden\" value=\"{$mybb->input['fid']}\" name=\"fromfid\" />\n<select name=\"fid\">\n";
 $folderjump2 = "<select name=\"jumpto2\">\n";
+$folderlinks = '';
 
 $foldernames = array();
 $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -95,6 +98,7 @@ usercp_menu();
 // Make navigation
 add_breadcrumb($lang->nav_pms, "private.php");
 
+$mybb->input['action'] = $mybb->get_input('action');
 switch($mybb->input['action'])
 {
 	case "send":
@@ -120,17 +124,17 @@ switch($mybb->input['action'])
 		break;
 }
 
-if($mybb->input['preview'])
+if(!empty($mybb->input['preview']))
 {
 	$mybb->input['action'] = "send";
 }
 
-if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff" && ($mybb->input['quick_search'] || !$mybb->input['hop'] && !$mybb->input['moveto'] && !$mybb->input['delete'])) && $mybb->request_method == "post")
+if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff" && ($mybb->get_input('quick_search') || !$mybb->get_input('hop') && !$mybb->get_input('moveto') && !$mybb->get_input('delete'))) && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_search_start");
 
 	// Simulate coming from our advanced search form with some preset options
-	if($mybb->input['quick_search'])
+	if($mybb->get_input('quick_search'))
 	{
 		$mybb->input['action'] = "do_search";
 		$mybb->input['subject'] = 1;
@@ -163,12 +167,12 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		}
 	}
 
-	if($mybb->input['subject'] != 1 && $mybb->input['message'] != 1)
+	if($mybb->get_input('subject', 1) != 1 && $mybb->get_input('message', 1) != 1)
 	{
 		error($lang->error_nosearchresults);
 	}
 
-	if($mybb->input['message'] == 1)
+	if($mybb->get_input('message', 1) == 1)
 	{
 		$resulttype = "pmmessages";
 	}
@@ -178,12 +182,12 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 	}
 
 	$search_data = array(
-		"keywords" => $mybb->input['keywords'],
-		"subject" => $mybb->input['subject'],
-		"message" => $mybb->input['message'],
-		"sender" => $mybb->input['sender'],
-		"status" => $mybb->input['status'],
-		"folder" => $mybb->input['folder'],
+		"keywords" => $mybb->get_input('keywords'),
+		"subject" => $mybb->get_input('subject', 1),
+		"message" => $mybb->get_input('message', 1),
+		"sender" => $mybb->get_input('sender'),
+		"status" => $mybb->get_input('status', 2),
+		"folder" => $mybb->get_input('folder', 2)
 	);
 
 	if($db->can_search == true)
@@ -206,7 +210,7 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 		"posts" => '',
 		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
-		"keywords" => $db->escape_string($mybb->input['keywords']),
+		"keywords" => $db->escape_string($mybb->get_input('keywords')),
 	);
 	$plugins->run_hooks("private_do_search_process");
 
@@ -215,18 +219,18 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 	// Sender sort won't work yet
 	$sortby = array('subject', 'sender', 'dateline');
 
-	if(in_array($mybb->input['sort'], $sortby))
+	if(in_array($mybb->get_input('sort'), $sortby))
 	{
-		$sortby = $mybb->input['sort'];
+		$sortby = $mybb->get_input('sort');
 	}
 	else
 	{
 		$sortby = "dateline";
 	}
 
-	if(my_strtolower($mybb->input['sortordr']) == "asc" || my_strtolower($mybb->input['sortordr']) == "desc")
+	if(my_strtolower($mybb->get_input('sortordr')) == "asc")
 	{
-		$sortorder = $mybb->input['sortordr'];
+		$sortorder = "asc";
 	}
 	else
 	{
@@ -239,11 +243,11 @@ if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff
 
 if($mybb->input['action'] == "results")
 {
-	$sid = $db->escape_string($mybb->input['sid']);
-	$query = $db->simple_select("searchlog", "*", "sid='{$sid}' AND uid='{$mybb->user['uid']}'");
+	$sid = $mybb->get_input('sid');
+	$query = $db->simple_select("searchlog", "*", "sid='".$db->escape_string($sid)."' AND uid='{$mybb->user['uid']}'");
 	$search = $db->fetch_array($query);
 
-	if(!$search['sid'])
+	if(!$search)
 	{
 		error($lang->error_invalidsearch);
 	}
@@ -251,8 +255,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("private_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower(htmlspecialchars_uni($mybb->input['order']));
-	$sortby = my_strtolower(htmlspecialchars_uni($mybb->input['sortby']));
+	$order = my_strtolower($mybb->get_input('order'));
+	$sortby = my_strtolower($mybb->get_input('sortby'));
 
 	$sortby_accepted = array('subject', 'username', 'dateline');
 
@@ -282,7 +286,7 @@ if($mybb->input['action'] == "results")
 
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = intval($mybb->input['page']);
+	$page = $mybb->get_input('page', 1);
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
@@ -307,11 +311,11 @@ if($mybb->input['action'] == "results")
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "pmid IN(".$db->escape_string($search['querycache']).")");
 	$pmscount = $db->fetch_array($query);
 
-	if($upper > $threadcount)
+	if($upper > $pmscount)
 	{
-		$upper = $threadcount;
+		$upper = $pmscount;
 	}
-	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->input['sid'])."&amp;sortby={$sortby}&amp;order={$order}");
+	$multipage = multipage($pmscount['total'], $perpage, $page, "private.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby={$sortby}&amp;order={$order}");
 	$messagelist = '';
 
 	$icon_cache = $cache->read("posticons");
@@ -328,7 +332,7 @@ if($mybb->input['action'] == "results")
 			$get_users = array_merge($get_users, $recipients['to']);
 		}
 
-		if(is_array($recipients['bcc']) && count($recipients['bcc']))
+		if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 		{
 			$get_users = array_merge($get_users, $recipients['bcc']);
 		}
@@ -383,12 +387,15 @@ if($mybb->input['action'] == "results")
 			$msgalt = $lang->fwd_pm;
 		}
 
+		$folder = $message['folder'];
+
+		$tofromuid = 0;
 		if($folder == 2 || $folder == 3)
 		{
 			// Sent Items or Drafts Folder Check
 			$recipients = unserialize($message['recipients']);
 			$to_users = $bcc_users = '';
-			if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && count($recipients['bcc']) > 0))
+			if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 			{
 				foreach($recipients['to'] as $uid)
 				{
@@ -397,7 +404,7 @@ if($mybb->input['action'] == "results")
 					$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 				}
-				if(is_array($recipients['bcc']) && count($recipients['bcc']))
+				if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 				{
 					eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
 					foreach($recipients['bcc'] as $uid)
@@ -518,14 +525,14 @@ if($mybb->input['action'] == "dismiss_notice")
 	}
 
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$updated_user = array(
 		"pmnotice" => 1
 	);
 	$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
 
-	if($mybb->input['ajax'])
+	if(!empty($mybb->input['ajax']))
 	{
 		echo 1;
 		exit;
@@ -547,7 +554,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_send_do_send");
 
@@ -557,7 +564,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		SELECT pm.pmid
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON(u.uid=pm.toid)
-		WHERE u.username='".$db->escape_string($mybb->input['to'])."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->input['subject'])."' AND pm.message='".$db->escape_string($mybb->input['message'])."' AND pm.folder!='3'
+		WHERE u.username='".$db->escape_string($mybb->get_input('to'))."' AND pm.dateline > {$time_cutoff} AND pm.fromid='{$mybb->user['uid']}' AND pm.subject='".$db->escape_string($mybb->get_input('subject'))."' AND pm.message='".$db->escape_string($mybb->get_input('message'))."' AND pm.folder!='3'
 	");
 	$duplicate_check = $db->fetch_field($query, "pmid");
 	if($duplicate_check)
@@ -569,37 +576,50 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	$pmhandler = new PMDataHandler();
 
 	$pm = array(
-		"subject" => $mybb->input['subject'],
-		"message" => $mybb->input['message'],
-		"icon" => $mybb->input['icon'],
+		"subject" => $mybb->get_input('subject'),
+		"message" => $mybb->get_input('message'),
+		"icon" => $mybb->get_input('icon', 1),
 		"fromid" => $mybb->user['uid'],
-		"do" => $mybb->input['do'],
-		"pmid" => $mybb->input['pmid'],
+		"do" => $mybb->get_input('do'),
+		"pmid" => $mybb->get_input('pmid', 1),
 		"ipaddress" => $session->packedip
 	);
 
 	// Split up any recipients we have
-	$pm['to'] = explode(",", $mybb->input['to']);
+	$pm['to'] = explode(",", $mybb->get_input('to'));
 	$pm['to'] = array_map("trim", $pm['to']);
 	if(!empty($mybb->input['bcc']))
 	{
-		$pm['bcc'] = explode(",", $mybb->input['bcc']);
+		$pm['bcc'] = explode(",", $mybb->get_input('bcc'));
 		$pm['bcc'] = array_map("trim", $pm['bcc']);
 	}
+	
+	$mybb->input['options'] = $mybb->get_input('options', 2);
 
 	if(!$mybb->usergroup['cantrackpms'])
 	{
 		$mybb->input['options']['readreceipt'] = false;
 	}
 
-	$pm['options'] = array(
-		"signature" => $mybb->input['options']['signature'],
-		"disablesmilies" => $mybb->input['options']['disablesmilies'],
-		"savecopy" => $mybb->input['options']['savecopy'],
-		"readreceipt" => $mybb->input['options']['readreceipt']
-	);
+	$pm['options'] = array();
+	if(isset($mybb->input['options']['signature']))
+	{
+		$pm['options']['signature'] = $mybb->input['options']['signature'];
+	}
+	if(isset($mybb->input['options']['disablesmilies']))
+	{
+		$pm['options']['disablesmilies'] = $mybb->input['options']['disablesmilies'];
+	}
+	if(isset($mybb->input['options']['savecopy']))
+	{
+		$pm['options']['savecopy'] = $mybb->input['options']['savecopy'];
+	}
+	if(isset($mybb->input['options']['readreceipt']))
+	{
+		$pm['options']['readreceipt'] = $mybb->input['options']['readreceipt'];
+	}
 
-	if($mybb->input['saveasdraft'])
+	if(!empty($mybb->input['saveasdraft']))
 	{
 		$pm['saveasdraft'] = 1;
 	}
@@ -651,36 +671,40 @@ if($mybb->input['action'] == "send")
 	$lang->post_icon = $lang->message_icon;
 
 	$posticons = get_post_icons();
-	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->input['message']));
-	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->input['subject']));
+	$message = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('message')));
+	$subject = htmlspecialchars_uni($parser->parse_badwords($mybb->get_input('subject')));
 
-	if($mybb->input['preview'] || $send_errors)
+	$optionschecked = array('signature' => '', 'disablesmilies' => '', 'savecopy' => '', 'readreceipt' => '');
+	$to = $bcc = '';
+
+	if(!empty($mybb->input['preview']) || $send_errors)
 	{
-		$options = $mybb->input['options'];
-		if($options['signature'] == 1)
+		$options = $mybb->get_input('options', 2);
+		if(isset($options['signature']) && $options['signature'] == 1)
 		{
 			$optionschecked['signature'] = 'checked="checked"';
 		}
-		if($options['disablesmilies'] == 1)
+		if(isset($options['disablesmilies']) && $options['disablesmilies'] == 1)
 		{
 			$optionschecked['disablesmilies'] = 'checked="checked"';
 		}
-		if($options['savecopy'] != 0)
+		if(isset($options['savecopy']) && $options['savecopy'] != 0)
 		{
 			$optionschecked['savecopy'] = 'checked="checked"';
 		}
-		if($options['readreceipt'] != 0)
+		if(isset($options['readreceipt']) && $options['readreceipt'] != 0)
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
-		$to = htmlspecialchars_uni($mybb->input['to']);
-		$bcc = htmlspecialchars_uni($mybb->input['bcc']);
+		$to = htmlspecialchars_uni($mybb->get_input('to'));
+		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
 	}
 
+	$preview = '';
 	// Preview
-	if($mybb->input['preview'])
+	if(!empty($mybb->input['preview']))
 	{
-		$options = $mybb->input['options'];
+		$options = $mybb->get_input('options', 2);
 		$query = $db->query("
 			SELECT u.username AS userusername, u.*, f.*
 			FROM ".TABLE_PREFIX."users u
@@ -692,13 +716,17 @@ if($mybb->input['action'] == "send")
 
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
-		$post['message'] = $mybb->input['message'];
-		$post['subject'] = htmlspecialchars_uni($mybb->input['subject']);
-		$post['icon'] = $mybb->input['icon'];
+		$post['message'] = $mybb->get_input('message');
+		$post['subject'] = htmlspecialchars_uni($mybb->get_input('subject'));
+		$post['icon'] = $mybb->get_input('icon', 1);
+		if(!isset($options['disablesmilies']))
+		{
+			$options['disablesmilies'] = 0;
+		}
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = TIME_NOW;
 
-		if(!$options['signature'])
+		if(!isset($options['signature']))
 		{
 			$post['includesig'] = 0;
 		}
@@ -741,13 +769,13 @@ if($mybb->input['action'] == "send")
 	}
 
 	// Draft, reply, forward
-	if($mybb->input['pmid'] && !$mybb->input['preview'] && !$send_errors)
+	if($mybb->get_input('pmid') && empty($mybb->input['preview']) && !$send_errors)
 	{
 		$query = $db->query("
 			SELECT pm.*, u.username AS quotename
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-			WHERE pm.pmid='{$mybb->input['pmid']}' AND pm.uid='{$mybb->user['uid']}'
+			WHERE pm.pmid='".$mybb->get_input('pmid', 1)."' AND pm.uid='{$mybb->user['uid']}'
 		");
 
 		$pm = $db->fetch_array($query);
@@ -774,7 +802,7 @@ if($mybb->input['action'] == "send")
 
 			// Get list of recipients
 			$recipients = unserialize($pm['recipients']);
-			$comma = '';
+			$comma = $recipientids = '';
 			if(isset($recipients['to']) && is_array($recipients['to']))
 			{
 				foreach($recipients['to'] as $recipient)
@@ -867,9 +895,9 @@ if($mybb->input['action'] == "send")
 	}
 
 	// New PM with recipient preset
-	if($mybb->input['uid'] && !$mybb->input['preview'])
+	if($mybb->get_input('uid', 1) && empty($mybb->input['preview']))
 	{
-		$query = $db->simple_select('users', 'username', "uid='".$db->escape_string($mybb->input['uid'])."'");
+		$query = $db->simple_select('users', 'username', "uid='".$mybb->get_input('uid', 1)."'");
 		$to = htmlspecialchars_uni($db->fetch_field($query, 'username')).', ';
 	}
 
@@ -881,20 +909,21 @@ if($mybb->input['action'] == "send")
 
 	if($send_errors)
 	{
-		$to = htmlspecialchars_uni($mybb->input['to']);
-		$bcc = htmlspecialchars_uni($mybb->input['bcc']);
+		$to = htmlspecialchars_uni($mybb->get_input('to'));
+		$bcc = htmlspecialchars_uni($mybb->get_input('bcc'));
 	}
 
 	// Load the auto complete javascript if it is enabled.
 	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
 
-	$pmid = $mybb->input['pmid'];
-	$do = $mybb->input['do'];
+	$pmid = $mybb->get_input('pmid', 1);
+	$do = $mybb->get_input('do');
 	if($do != "forward" && $do != "reply" && $do != "replyall")
 	{
 		$do = '';
 	}
 
+	$buddy_select_to = $buddy_select_bcc = '';
 	// See if it's actually worth showing the buddylist icon.
 	if($mybb->user['buddylist'] != '' && $mybb->settings['use_xmlhttprequest'] == 1)
 	{
@@ -923,25 +952,26 @@ if($mybb->input['action'] == "read")
 {
 	$plugins->run_hooks("private_read");
 
-	$pmid = intval($mybb->input['pmid']);
+	$pmid = $mybb->get_input('pmid', 1);
 
 	$query = $db->query("
 		SELECT pm.*, u.*, f.*
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
+		WHERE pm.pmid='{$pmid}' AND pm.uid='".$mybb->user['uid']."'
 	");
 	$pm = $db->fetch_array($query);
+
+	if(!$pm)
+	{
+		error($lang->error_invalidpm);
+	}
+
 	if($pm['folder'] == 3)
 	{
 		header("Location: private.php?action=send&pmid={$pm['pmid']}");
 		exit;
-	}
-
-	if(!$pm['pmid'])
-	{
-		error($lang->error_invalidpm);
 	}
 
 	// If we've gotten a PM, attach the group info
@@ -961,7 +991,7 @@ if($mybb->input['action'] == "read")
 
 	if($pm['receipt'] == 1)
 	{
-		if($mybb->usergroup['candenypmreceipts'] == 1 && $mybb->input['denyreceipt'] == 1)
+		if($mybb->usergroup['candenypmreceipts'] == 1 && $mybb->get_input('denyreceipt', 1) == 1)
 		{
 			$receiptadd = 0;
 		}
@@ -971,6 +1001,7 @@ if($mybb->input['action'] == "read")
 		}
 	}
 
+	$action_time = '';
 	if($pm['status'] == 0)
 	{
 		$time = TIME_NOW;
@@ -1056,7 +1087,7 @@ if($mybb->input['action'] == "read")
 	$show_bcc = 0;
 
 	// If we have any BCC recipients and this user is an Administrator, add them on to the query
-	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
+	if(isset($pm['recipients']['bcc']) && count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
 	{
 		$show_bcc = 1;
 		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
@@ -1079,6 +1110,7 @@ if($mybb->input['action'] == "read")
 		}
 	}
 
+	$bcc = '';
 	if(count($bcc_recipients) > 0)
 	{
 		$bcc_recipients = implode(', ', $bcc_recipients);
@@ -1133,11 +1165,11 @@ if($mybb->input['action'] == "tracking")
 	$query = $db->simple_select("privatemessages", "COUNT(pmid) as readpms", "receipt='2' AND folder!='3'  AND status!='0' AND fromid='".$mybb->user['uid']."'");
 	$postcount = $db->fetch_field($query, "readpms");
 
-	$page = intval($mybb->input['read_page']);
+	$page = $mybb->get_input('read_page', 1);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if($mybb->get_input('read_page') == "last")
 	{
 		$page = $pages;
 	}
@@ -1183,11 +1215,11 @@ if($mybb->input['action'] == "tracking")
 	$query = $db->simple_select("privatemessages", "COUNT(pmid) as unreadpms", "receipt='1' AND folder!='3' AND status='0' AND fromid='".$mybb->user['uid']."'");
 	$postcount = $db->fetch_field($query, "unreadpms");
 
-	$page = intval($mybb->input['unread_page']);
+	$page = $mybb->get_input('unread_page', 1);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
-	if($mybb->input['page'] == "last")
+	if($mybb->get_input('unread_page') == "last")
 	{
 		$page = $pages;
 	}
@@ -1239,13 +1271,14 @@ if($mybb->input['action'] == "tracking")
 if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_do_tracking_start");
 
-	if($mybb->input['stoptracking'])
+	if(!empty($mybb->input['stoptracking']))
 	{
-		if(is_array($mybb->input['readcheck']))
+		$mybb->input['readcheck'] = $mybb->get_input('readcheck', 2);
+		if(!empty($mybb->input['readcheck']))
 		{
 			foreach($mybb->input['readcheck'] as $key => $val)
 			{
@@ -1258,9 +1291,10 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php?action=tracking", $lang->redirect_pmstrackingstopped);
 	}
-	elseif($mybb->input['stoptrackingunread'])
+	elseif(!empty($mybb->input['stoptrackingunread']))
 	{
-		if(is_array($mybb->input['unreadcheck']))
+		$mybb->input['unreadcheck'] = $mybb->get_input('unreadcheck', 2);
+		if(!empty($mybb->input['unreadcheck']))
 		{
 			foreach($mybb->input['unreadcheck'] as $key => $val)
 			{
@@ -1273,9 +1307,10 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php?action=tracking", $lang->redirect_pmstrackingstopped);
 	}
-	elseif($mybb->input['cancel'])
+	elseif(!empty($mybb->input['cancel']))
 	{
-		if(is_array($mybb->input['unreadcheck']))
+		$mybb->input['unreadcheck'] = $mybb->get_input('unreadcheck', 2);
+		if(!empty($mybb->input['unreadcheck']))
 		{
 			foreach($mybb->input['unreadcheck'] as $pmid => $val)
 			{
@@ -1343,16 +1378,17 @@ if($mybb->input['action'] == "folders")
 if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_do_folders_start");
 
 	$highestid = 2;
 	$folders = '';
-	@reset($mybb->input['folder']);
+	$donefolders = array();
+	$mybb->input['folder'] = $mybb->get_input('folder', 2);
 	foreach($mybb->input['folder'] as $key => $val)
 	{
-		if(!$donefolders[$val]) // Probably was a check for duplicate folder names, but doesn't seem to be used now
+		if(empty($donefolders[$val]) )// Probably was a check for duplicate folder names, but doesn't seem to be used now
 		{
 			if(my_substr($key, 0, 3) == "new") // Create a new folder
 			{
@@ -1470,12 +1506,18 @@ if($mybb->input['action'] == "empty")
 if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_do_empty_start");
 
 	$emptyq = '';
-	if(is_array($mybb->input['empty']))
+	$mybb->input['empty'] = $mybb->get_input('empty', 2);
+	$keepunreadq = '';
+	if($mybb->get_input('keepunread', 1) == 1)
+	{
+		$keepunreadq = " AND status!='0'";
+	}
+	if(!empty($mybb->input['empty']))
 	{
 		foreach($mybb->input['empty'] as $key => $val)
 		{
@@ -1492,11 +1534,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 
 		if($emptyq != '')
 		{
-			if($mybb->input['keepunread'] == 1)
-			{
-				$keepunreadq = " AND status!='0'";
-			}
-			$db->delete_query("privatemessages", "($emptyq) AND uid='".$mybb->user['uid']."' $keepunreadq");
+			$db->delete_query("privatemessages", "($emptyq) AND uid='".$mybb->user['uid']."'{$keepunreadq}");
 		}
 	}
 
@@ -1510,22 +1548,23 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_do_stuff");
 
-	if($mybb->input['hop'])
+	if(!empty($mybb->input['hop']))
 	{
-		header("Location: private.php?fid=".intval($mybb->input['jumpto']));
+		header("Location: private.php?fid=".$mybb->get_input('jumpto'));
 	}
-	elseif($mybb->input['moveto'])
+	elseif(!empty($mybb->input['moveto']))
 	{
-		if(is_array($mybb->input['check']))
+		$mybb->input['check'] = $mybb->get_input('check', 2);
+		if(!empty($mybb->input['check']))
 		{
 			foreach($mybb->input['check'] as $key => $val)
 			{
 				$sql_array = array(
-					"folder" => intval($mybb->input['fid'])
+					"folder" => $mybb->input['fid']
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
 			}
@@ -1535,16 +1574,17 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 		if(!empty($mybb->input['fromfid']))
 		{
-			redirect("private.php?fid=".intval($mybb->input['fromfid']), $lang->redirect_pmsmoved);
+			redirect("private.php?fid=".$mybb->get_input('fromfid', 1), $lang->redirect_pmsmoved);
 		}
 		else
 		{
 			redirect("private.php", $lang->redirect_pmsmoved);
 		}
 	}
-	else if($mybb->input['delete'])
+	elseif(!empty($mybb->input['delete']))
 	{
-		if(is_array($mybb->input['check']))
+		$mybb->input['check'] = $mybb->get_input('check', 2);
+		if(!empty($mybb->input['check']))
 		{
 			$pmssql = '';
 			foreach($mybb->input['check'] as $key => $val)
@@ -1556,17 +1596,17 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$pmssql .= "'".intval($key)."'";
 			}
 
+			$deletepms = array();
 			$query = $db->simple_select("privatemessages", "pmid, folder", "pmid IN ($pmssql) AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
 			while($delpm = $db->fetch_array($query))
 			{
 				$deletepms[$delpm['pmid']] = 1;
 			}
 
-			reset($mybb->input['check']);
 			foreach($mybb->input['check'] as $key => $val)
 			{
 				$key = intval($key);
-				if($deletepms[$key])
+				if(!empty($deletepms[$key]))
 				{
 					$db->delete_query("privatemessages", "pmid='$key' AND uid='".$mybb->user['uid']."'");
 				}
@@ -1585,7 +1625,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 		if(!empty($mybb->input['fromfid']))
 		{
-			redirect("private.php?fid=".intval($mybb->input['fromfid']), $lang->redirect_pmsdeleted);
+			redirect("private.php?fid=".$mybb->get_input('fromfid', 1), $lang->redirect_pmsdeleted);
 		}
 		else
 		{
@@ -1597,14 +1637,14 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 if($mybb->input['action'] == "delete")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_delete_start");
 
-	$query = $db->simple_select("privatemessages", "*", "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
+	$query = $db->simple_select("privatemessages", "*", "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."' AND folder='4'", array('order_by' => 'pmid'));
 	if($db->num_rows($query) == 1)
 	{
-		$db->delete_query("privatemessages", "pmid='".intval($mybb->input['pmid'])."'");
+		$db->delete_query("privatemessages", "pmid='".$mybb->get_input('pmid', 1)."'");
 	}
 	else
 	{
@@ -1612,7 +1652,7 @@ if($mybb->input['action'] == "delete")
 			"folder" => 4,
 			"deletetime" => TIME_NOW
 		);
-		$db->update_query("privatemessages", $sql_array, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
+		$db->update_query("privatemessages", $sql_array, "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."'");
 	}
 
 	// Update PM count
@@ -1647,7 +1687,7 @@ if($mybb->input['action'] == "export")
 if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	$plugins->run_hooks("private_do_export_start");
 
@@ -1663,17 +1703,17 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$foldersexploded[$key] = implode("**", $folderinfo);
 	}
 
-	if($mybb->input['pmid'])
+	if($mybb->get_input('pmid', 1))
 	{
-		$wsql = "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'";
+		$wsql = "pmid='".$mybb->get_input('pmid', 1)."' AND uid='".$mybb->user['uid']."'";
 	}
 	else
 	{
-		if($mybb->input['daycut'] && ($mybb->input['dayway'] != "disregard"))
+		if($mybb->get_input('daycut', 1) && ($mybb->get_input('dayway') != "disregard"))
 		{
-			$datecut = TIME_NOW-($mybb->input['daycut'] * 86400);
+			$datecut = TIME_NOW-($mybb->get_input('daycut', 1) * 86400);
 			$wsql = "pm.dateline";
-			if($mybb->input['dayway'] == "older")
+			if($mybb->get_input('dayway') == "older")
 			{
 				$wsql .= "<=";
 			}
@@ -1688,10 +1728,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$wsql = "1=1";
 		}
 
-		if(is_array($mybb->input['exportfolders']))
+		$mybb->input['exportfolders'] = $mybb->get_input('exportfolders', 2);
+		if(!empty($mybb->input['exportfolders']))
 		{
 			$folderlst = '';
-			reset($mybb->input['exportfolders']);
 			foreach($mybb->input['exportfolders'] as $key => $val)
 			{
 				$val = $db->escape_string($val);
@@ -1723,7 +1763,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			error($lang->error_pmnoarchivefolders);
 		}
 
-		if($mybb->input['exportunread'] != 1)
+		if($mybb->get_input('exportunread', 1) != 1)
 		{
 			$wsql .= " AND pm.status!='0'";
 		}
@@ -1742,7 +1782,9 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		error($lang->error_nopmsarchive);
 	}
 
-	$pmsdownload = '';
+	$mybb->input['exporttype'] = $mybb->get_input('exporttype');
+
+	$pmsdownload = $ids = '';
 	while($message = $db->fetch_array($query))
 	{
 		if($message['folder'] == 2 || $message['folder'] == 3)
@@ -1837,7 +1879,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		}
 
 
-		if(!$donefolder[$message['folder']])
+		if(empty($donefolder[$message['folder']]))
 		{
 			reset($foldersexploded);
 			foreach($foldersexploded as $key => $val)
@@ -1877,7 +1919,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_export_end");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
-	if($mybb->input['deletepms'] == 1)
+	if($mybb->get_input('deletepms', 1) == 1)
 	{ // delete the archived pms
 		$db->delete_query("privatemessages", "pmid IN ('0'$ids)");
 		// Update PM count
@@ -1936,8 +1978,8 @@ if(!$mybb->input['action'])
 		$sender = $lang->sender;
 	}
 
-	$mybb->input['order'] = htmlspecialchars_uni($mybb->input['order']);
-
+	$mybb->input['order'] = htmlspecialchars_uni($mybb->get_input('order'));
+	$ordersel = array('asc' => '', 'desc');
 	switch(my_strtolower($mybb->input['order']))
 	{
 		case "asc":
@@ -1955,8 +1997,8 @@ if(!$mybb->input['action'])
 	}
 
 	// Sort by which field?
-	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
-	switch($mybb->input['sortby'])
+	$sortby = htmlspecialchars_uni($mybb->get_input('sortby'));
+	switch($mybb->get_input('sortby'))
 	{
 		case "subject":
 			$sortfield = "subject";
@@ -1970,8 +2012,8 @@ if(!$mybb->input['action'])
 			$mybb->input['sortby'] = "dateline";
 			break;
 	}
-
-	$sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
+	$orderarrow = $sortsel = array('subject' => '', 'username' => '', 'dateline' => '');
+	$sortsel[$sortby] = "selected=\"selected\"";
 
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
 
@@ -1985,9 +2027,9 @@ if(!$mybb->input['action'])
 	}
 
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = intval($mybb->input['page']);
+	$page = $mybb->get_input('page', 1);
 
-	if(intval($mybb->input['page']) > 0)
+	if($page > 0)
 	{
 		$start = ($page-1) *$perpage;
 	}
@@ -2001,14 +2043,14 @@ if(!$mybb->input['action'])
 	$lower = $start+1;
 	$upper = $end;
 
-	if($upper > $threadcount)
+	if($upper > $pmscount)
 	{
-		$upper = $threadcount;
+		$upper = $pmscount;
 	}
 
-	if($mybb->input['order'] || $mybb->input['sortby'] && $sortby != "dateline")
+	if($mybb->input['order'] || ($sortby && $sortby != "dateline"))
 	{
-		$page_url = "private.php?fid={$folder}&sortby={$mybb->input['sortby']}&order={$mybb->input['order']}";
+		$page_url = "private.php?fid={$folder}&sortby={$sortby}&order={$mybb->input['order']}";
 	}
 	else
 	{
@@ -2050,7 +2092,7 @@ if(!$mybb->input['action'])
 				$get_users = array_merge($get_users, $recipients['to']);
 			}
 
-			if(is_array($recipients['bcc']) && count($recipients['bcc']))
+			if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 			{
 				$get_users = array_merge($get_users, $recipients['bcc']);
 			}
@@ -2131,11 +2173,12 @@ if(!$mybb->input['action'])
 				$msgalt = $lang->fwd_pm;
 			}
 
+			$tofromuid = 0;
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
 				$recipients = unserialize($message['recipients']);
 				$to_users = $bcc_users = '';
-				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && count($recipients['bcc']) > 0))
+				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{
 					foreach($recipients['to'] as $uid)
 					{
@@ -2148,7 +2191,7 @@ if(!$mybb->input['action'])
 						}
 						eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
 					}
-					if(is_array($recipients['bcc']) && count($recipients['bcc']))
+					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 					{
 						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
 						foreach($recipients['bcc'] as $uid)
@@ -2235,6 +2278,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
+	$pmspacebar = '';
 	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != 1)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
@@ -2248,6 +2292,7 @@ if(!$mybb->input['action'])
 			$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
 		}
 		$spaceused2 = 100 - $spaceused;
+		$belowhalf = $overhalf = '';
 		if($spaceused <= "50")
 		{
 			$belowhalf = round($spaceused, 0)."%";
@@ -2268,6 +2313,7 @@ if(!$mybb->input['action'])
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}
 
+	$limitwarning = '';
 	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 1)
 	{
 		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");

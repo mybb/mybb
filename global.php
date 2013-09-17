@@ -544,7 +544,7 @@ $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 $pm_notice = '';
 if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->get_input('action') != "read"))
 {
-	if(!$parser)
+	if(!isset($parser))
 	{
 		require_once MYBB_ROOT.'inc/class_parser.php';
 		$parser = new postParser;

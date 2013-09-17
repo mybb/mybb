@@ -465,6 +465,16 @@ function usercp_menu_messenger()
 		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
 	}
 
+	if(!isset($collapsedimg['usercppms']))
+	{
+		$collapsedimg['usercppms'] = '';
+	}
+
+	if(!isset($collapsed['usercppms_e']))
+	{
+		$collapsed['usercppms_e'] = '';
+	}
+
 	eval("\$usercpmenu .= \"".$usercp_nav_messenger."\";");
 }
 
@@ -476,17 +486,29 @@ function usercp_menu_profile()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
+	$changenameop = '';
 	if($mybb->usergroup['canchangename'] != 0)
 	{
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
 
+	$changesigop = '';
 	if($mybb->usergroup['canusesig'] == 1 && ($mybb->usergroup['canusesigxposts'] == 0 || $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] > $mybb->usergroup['canusesigxposts']))
 	{
 		if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
 		{
 			eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
 		}
+	}
+
+	if(!isset($collapsedimg['usercpprofile']))
+	{
+		$collapsedimg['usercpprofile'] = '';
+	}
+
+	if(!isset($collapsed['usercpprofile_e']))
+	{
+		$collapsed['usercpprofile_e'] = '';
 	}
 
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
@@ -509,6 +531,16 @@ function usercp_menu_misc()
 	if($count > 0)
 	{
 		$draftcount = $lang->sprintf($lang->ucp_nav_drafts_active, my_number_format($count));
+	}
+
+	if(!isset($collapsedimg['usercpmisc']))
+	{
+		$collapsedimg['usercpmisc'] = '';
+	}
+
+	if(!isset($collapsed['usercpmisc_e']))
+	{
+		$collapsed['usercpmisc_e'] = '';
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);

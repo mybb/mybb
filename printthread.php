@@ -24,7 +24,12 @@ $lang->load("printthread");
 
 $plugins->run_hooks("printthread_start");
 
-$thread = get_thread(intval($mybb->input['tid']));
+$thread = get_thread($mybb->get_input('tid', 1));
+
+if(!$thread)
+{
+	error($lang->error_invalidthread);
+}
 
 $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
@@ -53,7 +58,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$tid || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
@@ -80,7 +85,7 @@ if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }
@@ -88,7 +93,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-$page = intval($mybb->input['page']);
+$page = $mybb->get_input('page', 1);
 
 // Paginate this thread
 $perpage = $mybb->settings['postsperpage'];
@@ -112,6 +117,10 @@ else
 if($postcount > $perpage)
 {
 	$multipage = printthread_multipage($postcount, $perpage, $page, "printthread.php?tid={$tid}");
+}
+else
+{
+	$multipage = '';
 }
 
 $thread['threadlink'] = get_thread_link($tid);
@@ -169,7 +178,7 @@ output_page($printable);
 
 function makeprintablenav($pid="0", $depth="--")
 {
-	global $db, $pforumcache, $fid, $forum, $lang;
+	global $mybb, $db, $pforumcache, $fid, $forum, $lang;
 	if(!is_array($pforumcache))
 	{
 		$parlist = build_parent_list($fid, "fid", "OR", $forum['parentlist']);
@@ -180,12 +189,13 @@ function makeprintablenav($pid="0", $depth="--")
 		}
 		unset($forumnav);
 	}
+	$forums = '';
 	if(is_array($pforumcache[$pid]))
 	{
 		foreach($pforumcache[$pid] as $key => $forumnav)
 		{
 			$forums .= "+".$depth." $lang->forum {$forumnav['name']} (<i>".$mybb->settings['bburl']."/".get_forum_link($forumnav['fid'])."</i>)<br />\n";
-			if($pforumcache[$forumnav['fid']])
+			if(!empty($pforumcache[$forumnav['fid']]))
 			{
 				$newdepth = $depth."-";
 				$forums .= makeprintablenav($forumnav['fid'], $newdepth);

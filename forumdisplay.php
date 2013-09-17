@@ -1111,7 +1111,7 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 		{
-			if($thread['lastread'])
+			if(!empty($thread['lastread']))
 			{
 				$last_read = $thread['lastread'];
 			}
