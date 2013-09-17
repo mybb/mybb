@@ -856,6 +856,8 @@ if(!$mybb->input['action'])
 	$table->construct_cell($message_themes);
 	$table->construct_row();
 
+	$plugins->run_hooks("admin_tools_system_health_output_chmod_list");
+
 	$table->output($lang->chmod_files_and_dirs);
 
 	$page->output_footer();

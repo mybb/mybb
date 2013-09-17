@@ -52,6 +52,8 @@ $monthnames = array(
 	$lang->alt_month_12
 );
 
+$plugins->run_hooks("calendar_start");
+
 // Make navigation
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
@@ -1924,6 +1926,8 @@ if($mybb->input['action'] == "weekview")
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("{$monthnames[$week_from[1]]} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
 	add_breadcrumb($lang->weekly_overview);
+
+	$plugins->run_hooks("calendar_weekview_start");
 
 	// Establish if we have a month ending in this week
 	if($week_from[1] != $week_to[1])
