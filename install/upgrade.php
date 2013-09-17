@@ -612,6 +612,10 @@ function upgradedone()
 	}
 	ob_end_flush();
 
+	// Attempt to run an update check
+	require_once MYBB_ROOT.'inc/functions_task.php';
+	run_task(12);
+
 	if(is_writable("./"))
 	{
 		$lock = @fopen("./lock", "w");
