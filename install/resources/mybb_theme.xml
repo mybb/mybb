@@ -10855,7 +10855,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_email" version="1603"><![CDATA[<html>
+		<template name="usercp_email" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_email}</title>
 {$headerinclude}
@@ -10869,7 +10869,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$usercpnav}
 <td valign="top">
 {$errors}
-{$banned_email_error}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->change_email}</strong></td>
@@ -11799,8 +11798,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$memberoflist}
 </table>
 <br />]]></template>
-		<template name="usercp_usergroups_memberof_usergroup" version="1400"><![CDATA[<tr>
-<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}{$description}</td>
+		<template name="usercp_usergroups_memberof_usergroup" version="1800"><![CDATA[<tr>
+<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}</td>
 <td class="{$trow}" align="center">{$usergroup['usertitle']}</td>
 <td class="{$trow}">{$leavelink}</td>
 </tr>]]></template>
@@ -12343,7 +12342,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 <br />
 ]]></template>
-		<template name="sendthread" version="1600"><![CDATA[<html>
+		<template name="sendthread" version="1800"><![CDATA[<html>
 <head>
 <title>{$threadprefix['prefix']} {$thread['subject']} - {$lang->send_thread}</title>
 {$headerinclude}
@@ -12361,7 +12360,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td width="40%" class="trow1"><strong>{$lang->recipient}</strong><br /><span class="smalltext">{$lang->recipient_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="email" value="{$email}" /></td>
 </tr>
-{$guestfields}
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->subject}</strong></td>
 <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$subject}" /></td>

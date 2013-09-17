@@ -158,7 +158,7 @@ class FeedGenerator
 					$this->xml .= "\t\t\t<title><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t\t<link>".$item['link']."</link>\n";
 					$this->xml .= "\t\t\t<pubDate>".$item['date']."</pubDate>\n";
-					if($item['author'])
+					if(!empty($item['author']))
 					{
 						$this->xml .= "\t\t\t<dc:creator><![CDATA[".$this->sanitize_content($item['author'])."]]></dc:creator>\n";
 					}

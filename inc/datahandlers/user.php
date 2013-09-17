@@ -932,7 +932,7 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_msn();
 		}
-		if($this->method == "insert" || is_array($user['birthday']))
+		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
 			$this->verify_birthday();
 		}
@@ -1325,7 +1325,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Maybe some userfields need to be updated?
-		if(is_array($user['user_fields']))
+		if(isset($user['user_fields']) && is_array($user['user_fields']))
 		{
 			$query = $db->simple_select("userfields", "*", "ufid='{$user['uid']}'");
 			$fields = $db->fetch_array($query);

@@ -373,4 +373,9 @@ $l['posts_by_you'] = "Contains Posts by You";
 $l['no_new_thread'] = "No New Posts";
 $l['hot_thread'] = "Hot Thread (No New)";
 $l['locked_thread'] = "Locked Thread";
+$l['icon_dot'] = "Contains posts by you. "; // The spaces for the icon labels are strategically placed so that there should be no extra space at the beginning or end of the resulting label and that spaces separate each 'status' ;)
+$l['icon_no_new'] = "No new posts.";
+$l['icon_new'] = "New posts.";
+$l['icon_hot'] = " Hot thread.";
+$l['icon_lock'] = " Locked thread.";
 ?>

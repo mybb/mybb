@@ -124,10 +124,12 @@ $lang->load("xmlhttp");
 
 $plugins->run_hooks("xmlhttp");
 
+$mybb->input['action'] = $mybb->get_input('action');
+
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
 {
-	$mybb->input['query'] = ltrim($mybb->input['query']);
+	$mybb->input['query'] = ltrim($mybb->get_input('query'));
 
 	// If the string is less than 3 characters, quit.
 	if(my_strlen($mybb->input['query']) < 3)
@@ -161,32 +163,40 @@ if($mybb->input['action'] == "get_users")
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
 	// Verify POST request
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
 
 	// Editing a post subject.
-	if($mybb->input['pid'])
+	if($mybb->get_input('pid', 1))
 	{
 		// Fetch the post from the database.
-		$post = get_post($mybb->input['pid']);
+		$post = get_post($mybb->get_input('pid', 1));
 
 		// No result, die.
-		if(!$post['pid'])
+		if(!$post)
 		{
 			xmlhttp_error($lang->post_doesnt_exist);
 		}
 
 		// Fetch the thread associated with this post.
 		$thread = get_thread($post['tid']);
+		if(!$thread)
+		{
+			xmlhttp_error($lang->thread_doesnt_exist);
+		}
 	}
 
 	// We're editing a thread subject.
-	else if($mybb->input['tid'])
+	else if($mybb->get_input('tid', 1))
 	{
 		// Fetch the thread.
-		$thread = get_thread($mybb->input['tid']);
+		$thread = get_thread($mybb->get_input('tid', 1));
+		if(!$thread)
+		{
+			xmlhttp_error($lang->thread_doesnt_exist);
+		}
 
 		// Fetch some of the information from the first post of this thread.
 		$query_options = array(
@@ -196,11 +206,15 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		$query = $db->simple_select("posts", "pid,uid,dateline", "tid='".$thread['tid']."'", $query_options);
 		$post = $db->fetch_array($query);
 	}
+	else
+	{
+		exit;
+	}
 	// Fetch the specific forum this thread/post is in.
 	$forum = get_forum($thread['fid']);
 
 	// Missing thread, invalid forum? Error.
-	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
+	if(!$forum || $forum['type'] != "f")
 	{
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
@@ -233,7 +247,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		$ismod = true;
 	}
-	$subject = $mybb->input['value'];
+	$subject = $mybb->get_input('value');
 	if(my_strtolower($charset) != "utf-8")
 	{
 		if(function_exists("iconv"))
@@ -291,7 +305,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
 
-	$mybb->input['value'] = $parser->parse_badwords($mybb->input['value']);
+	$mybb->input['value'] = $parser->parse_badwords($mybb->get_input('value'));
 
 	// Spit the subject back to the browser.
 	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
@@ -303,10 +317,10 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 else if($mybb->input['action'] == "edit_post")
 {
 	// Fetch the post from the database.
-	$post = get_post($mybb->input['pid']);
+	$post = get_post($mybb->get_input('pid', 1));
 
 	// No result, die.
-	if(!$post['pid'])
+	if(!$post)
 	{
 		xmlhttp_error($lang->post_doesnt_exist);
 	}
@@ -318,7 +332,7 @@ else if($mybb->input['action'] == "edit_post")
 	$forum = get_forum($thread['fid']);
 
 	// Missing thread, invalid forum? Error.
-	if(!$thread['tid'] || !$forum['fid'] || $forum['type'] != "f")
+	if(!$thread || !$forum || $forum['type'] != "f")
 	{
 		xmlhttp_error($lang->thread_doesnt_exist);
 	}
@@ -357,7 +371,7 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 	}
-	if($mybb->input['do'] == "get_post")
+	if($mybb->get_input('do') == "get_post")
 	{
 		// Send our headers.
 		header("Content-type: text/xml; charset={$charset}");
@@ -370,15 +384,15 @@ else if($mybb->input['action'] == "edit_post")
 		echo "<form>".$inline_editor."</form>";
 		exit;
 	}
-	else if($mybb->input['do'] == "update_post")
+	else if($mybb->get_input('do') == "update_post")
 	{
 		// Verify POST request
-		if(!verify_post_check($mybb->input['my_post_key'], true))
+		if(!verify_post_check($mybb->get_input('my_post_key'), true))
 		{
 			xmlhttp_error($lang->invalid_post_code);
 		}
 
-		$message = (string)$mybb->input['value'];
+		$message = $mybb->get_input('value');
 		if(my_strtolower($charset) != "utf-8")
 		{
 			if(function_exists("iconv"))
@@ -402,7 +416,7 @@ else if($mybb->input['action'] == "edit_post")
 
 		// Set the post data that came from the input to the $post array.
 		$updatepost = array(
-			"pid" => $mybb->input['pid'],
+			"pid" => $post['pid'],
 			"message" => $message,
 			"edit_uid" => $mybb->user['uid']
 		);
@@ -515,9 +529,9 @@ else if($mybb->input['action'] == "get_multiquoted")
 	$message = '';
 
 	// Are we loading all quoted posts or only those not in the current thread?
-	if(!$mybb->input['load_all'])
+	if(empty($mybb->input['load_all']))
 	{
-		$from_tid = "p.tid != '".intval($mybb->input['tid'])."' AND ";
+		$from_tid = "p.tid != '".$mybb->get_input('tid', 1)."' AND ";
 	}
 	else
 	{
@@ -559,7 +573,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 }
 else if($mybb->input['action'] == "refresh_captcha")
 {
-	$imagehash = $db->escape_string($mybb->input['imagehash']);
+	$imagehash = $db->escape_string($mybb->get_input('imagehash'));
 	$query = $db->simple_select("captcha", "dateline", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
@@ -581,7 +595,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 else if($mybb->input['action'] == "validate_captcha")
 {
 	header("Content-type: application/json; charset={$charset}");
-	$imagehash = $db->escape_string($mybb->input['imagehash']);
+	$imagehash = $db->escape_string($mybb->get_input('imagehash'));
 	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
@@ -590,7 +604,7 @@ else if($mybb->input['action'] == "validate_captcha")
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
 
-	if(my_strtolower($imagestring) == my_strtolower($mybb->input['value']))
+	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('value')))
 	{
 		echo json_encode(array("success" => $lang->captcha_matches));
 		exit;
@@ -603,7 +617,7 @@ else if($mybb->input['action'] == "validate_captcha")
 }
 else if($mybb->input['action'] == "complex_password")
 {
-	$password = trim($mybb->input['value']);
+	$password = trim($mybb->get_input('value'));
 	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
 	header("Content-type: application/json; charset={$charset}");
@@ -621,13 +635,13 @@ else if($mybb->input['action'] == "complex_password")
 }
 else if($mybb->input['action'] == "username_availability")
 {
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
 
 	require_once MYBB_ROOT."inc/functions_user.php";
-	$username = $mybb->input['value'];
+	$username = $mybb->get_input('value');
 
 	// Fix bad characters
 	$username = trim($username);
@@ -678,13 +692,13 @@ else if($mybb->input['action'] == "username_availability")
 }
 else if($mybb->input['action'] == "username_exists")
 {
-	if(!verify_post_check($mybb->input['my_post_key'], true))
+	if(!verify_post_check($mybb->get_input('my_post_key'), true))
 	{
 		xmlhttp_error($lang->invalid_post_code);
 	}
 
 	require_once MYBB_ROOT."inc/functions_user.php";
-	$username = $mybb->input['value'];
+	$username = $mybb->get_input('value');
 
 	header("Content-type: application/json; charset={$charset}");
 

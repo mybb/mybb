@@ -1629,7 +1629,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 					{
 						return true;
 					}
-					elseif(isset($modusers['usergroups'][$user_perms['gid']]))
+					elseif(isset($user_perms['gid']) && isset($modusers['usergroups'][$user_perms['gid']]))
 					{
 						// Moderating usergroup
 						return true;
@@ -4063,9 +4063,9 @@ function leave_usergroup($uid, $leavegroup)
 		$user = get_user($uid);
 	}
 
-	$groupslist = "";
-	$usergroups = "";
+	$groupslist = $comma = '';
 	$usergroups = $user['additionalgroups'].",";
+	$donegroup = array();
 
 	$groups = explode(",", $user['additionalgroups']);
 
@@ -4073,7 +4073,7 @@ function leave_usergroup($uid, $leavegroup)
 	{
 		foreach($groups as $gid)
 		{
-			if(trim($gid) != "" && $leavegroup != $gid && !$donegroup[$gid])
+			if(trim($gid) != "" && $leavegroup != $gid && empty($donegroup[$gid]))
 			{
 				$groupslist .= $comma.$gid;
 				$comma = ",";

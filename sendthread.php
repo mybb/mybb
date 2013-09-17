@@ -23,11 +23,18 @@ $parser = new postParser;
 $lang->load("sendthread");
 
 // Get thread info
-$tid = intval($mybb->input['tid']);
+$tid = $mybb->get_input('tid', 1);
 $thread = get_thread($tid);
+
+// Invalid thread
+if(!$thread)
+{
+	error($lang->error_invalidthread);
+}
 
 // Get thread prefix
 $breadcrumbprefix = '';
+$threadprefix = array('prefix' => '');
 if($thread['prefix'])
 {
 	$threadprefix = build_prefixes($thread['prefix']);
@@ -38,12 +45,6 @@ if($thread['prefix'])
 }
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-
-// Invalid thread
-if(!$thread['tid'])
-{
-	error($lang->error_invalidthread);
-}
 
 // Guests cannot use this feature
 if(!$mybb->user['uid'])
@@ -69,7 +70,7 @@ if(!$forum['fid'] || $forum['type'] != "f")
 }
 
 // This user can't view this forum or this thread
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error_no_permission();
 }
@@ -94,6 +95,9 @@ if($mybb->usergroup['maxemails'] > 0)
 	}
 }
 
+$errors = array();
+
+$mybb->input['action'] = $mybb->get_input('action');
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request

@@ -132,7 +132,7 @@ class LoginDataHandler extends DataHandler
 	{
 		global $db, $mybb;
 
-		if(!$this->login_data['username'])
+		if(empty($this->login_data['username']))
 		{
 			// Username must be validated to apply a password to
 			$this->invalid_combination();

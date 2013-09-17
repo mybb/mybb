@@ -48,8 +48,8 @@ switch($action)
 			"allow_html" => $announcement['allowhtml'],
 			"allow_mycode" => $announcement['allowmycode'],
 			"allow_smilies" => $announcement['allowsmilies'],
-			"allow_imgcode" => $announcement['allowimgcode'],
-			"allow_videocode" => $announcement['allowvideocode'],
+			"allow_imgcode" => 1,
+			"allow_videocode" => 1,
 			"me_username" => $announcement['username'],
 			"filter_badwords" => 1
 		);
@@ -105,7 +105,7 @@ switch($action)
 			}
 		}
 
-		if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			archive_error_no_permission();
 		}
@@ -200,7 +200,7 @@ switch($action)
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			// Is there an attachment in this post?
-			if(is_array($acache[$post['pid']]))
+			if(isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{
@@ -240,7 +240,7 @@ switch($action)
 		check_forum_password_archive($forum['fid']);
 
 		$useronly = "";
-		if($forumpermissions['canonlyviewownthreads'] == 1)
+		if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1)
 		{
 			$useronly = "AND uid={$mybb->user['uid']}";
 		}
@@ -473,6 +473,8 @@ function build_archive_forumbits($pid=0)
 		$forumpermissions = forum_permissions();
 	}
 
+	$forums = '';
+
 	// Start the process.
 	if(is_array($fcache[$pid]))
 	{
@@ -495,7 +497,7 @@ function build_archive_forumbits($pid=0)
 					{
 						$forums .= "<li><a href=\"{$base_url}forum-{$forum['fid']}.html\">{$forum['name']}</a>";
 					}
-					if($fcache[$forum['fid']])
+					if(!empty($fcache[$forum['fid']]))
 					{
 						$forums .= "\n<ol>\n";
 						$forums .= build_archive_forumbits($forum['fid']);

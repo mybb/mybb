@@ -24,7 +24,7 @@ if($mybb->user['uid'] == 0)
 }
 
 // Verify incoming POST request
-verify_post_check($mybb->input['my_post_key']);
+verify_post_check($mybb->get_input('my_post_key'));
 
 $lang->load("usercp");
 
@@ -34,24 +34,25 @@ $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
 $plugins->run_hooks("usercp2_start");
 
+$mybb->input['action'] = $mybb->get_input('action');
 if($mybb->input['action'] == "do_addsubscription")
 {
-	if($mybb->input['type'] != "forum")
+	if($mybb->get_input('type') != "forum")
 	{
-		$thread = get_thread($mybb->input['tid']);
+		$thread = get_thread($mybb->get_input('tid'));
 		if(!$thread['tid'])
 		{
 			error($lang->error_invalidthread);
 		}
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 		{
 			error_no_permission();
 		}
-		add_subscribed_thread($thread['tid'], $mybb->input['notification']);
-		if($mybb->input['referrer'])
+		add_subscribed_thread($thread['tid'], $mybb->get_input('notification', 1));
+		if($mybb->get_input('referrer'))
 		{
-			$url = htmlspecialchars_uni(addslashes($mybb->input['referrer']));
+			$url = htmlspecialchars_uni($mybb->get_input('referrer'));
 		}
 		else
 		{
@@ -63,10 +64,10 @@ if($mybb->input['action'] == "do_addsubscription")
 
 if($mybb->input['action'] == "addsubscription")
 {
-	if($mybb->input['type'] == "forum")
+	if($mybb->get_input('type') == "forum")
 	{
-		$forum = get_forum($mybb->input['fid']);
-		if(!$forum['fid'])
+		$forum = get_forum($mybb->get_input('fid', 1));
+		if(!$forum)
 		{
 			error($lang->error_invalidforum);
 		}
@@ -88,8 +89,8 @@ if($mybb->input['action'] == "addsubscription")
 	}
 	else
 	{
-		$thread  = get_thread($mybb->input['tid']);
-		if(!$thread['tid'])
+		$thread  = get_thread($mybb->get_input('tid', 1));
+		if(!$thread)
 		{
 			error($lang->error_invalidthread);
 		}
@@ -97,7 +98,7 @@ if($mybb->input['action'] == "addsubscription")
 		add_breadcrumb($lang->nav_addsubscription);
 
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 		{
 			error_no_permission();
 		}
@@ -113,6 +114,7 @@ if($mybb->input['action'] == "addsubscription")
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
 
+		$notification_none_checked = $notification_instant_checked = '';
 		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
 		{
 			$notification_none_checked = "checked=\"checked\"";
@@ -127,10 +129,10 @@ if($mybb->input['action'] == "addsubscription")
 }
 elseif($mybb->input['action'] == "removesubscription")
 {
-	if($mybb->input['type'] == "forum")
+	if($mybb->get_input('type') == "forum")
 	{
-		$forum = get_forum($mybb->input['fid']);
-		if(!$forum['fid'])
+		$forum = get_forum($mybb->get_input('fid', 1));
+		if(!$forum)
 		{
 			error($lang->error_invalidforum);
 		}
@@ -147,8 +149,8 @@ elseif($mybb->input['action'] == "removesubscription")
 	}
 	else
 	{
-		$thread = get_thread($mybb->input['tid']);
-		if(!$thread['tid'])
+		$thread = get_thread($mybb->get_input('tid', 1));
+		if(!$thread)
 		{
 			error($lang->error_invalidthread);
 		}
@@ -166,7 +168,7 @@ elseif($mybb->input['action'] == "removesubscription")
 }
 elseif($mybb->input['action'] == "removesubscriptions")
 {
-	if($mybb->input['type'] == "forum")
+	if($mybb->get_input('type') == "forum")
 	{
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)

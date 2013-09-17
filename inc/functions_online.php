@@ -24,7 +24,7 @@ function fetch_wol_activity($location, $nopermission=false)
 	$user_activity = array();
 
 	$split_loc = explode(".php", $location);
-	if($split_loc[0] == $user['location'])
+	if(isset($user['location']) && $split_loc[0] == $user['location'])
 	{
 		$filename = '';
 	}

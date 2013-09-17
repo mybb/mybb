@@ -120,7 +120,7 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Check if the sender is over their quota or not - if they are, disable draft sending
-		if($pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
+		if(isset($pm['options']['savecopy']) && $pm['options']['savecopy'] != 0 && empty($pm['saveasdraft']))
 		{
 			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
@@ -205,7 +205,7 @@ class PMDataHandler extends DataHandler
 					$this->set_error("no_recipients");
 					return false;
 				}
-				if(is_array($pm[$recipient_type]))
+				if(isset($pm[$recipient_type]) && is_array($pm[$recipient_type]))
 				{
 					foreach($pm[$recipient_type] as $uid)
 					{
@@ -487,9 +487,13 @@ class PMDataHandler extends DataHandler
 		// Assign data to common variable
 		$pm = &$this->data;
 
+		if(empty($pm['pmid']))
+		{
+			$pm['pmid'] = 0;
+		}
 		$pm['pmid'] = intval($pm['pmid']);
 
-		if(!$pm['icon'] || $pm['icon'] < 0)
+		if(empty($pm['icon']) || $pm['icon'] < 0)
 		{
 			$pm['icon'] = 0;
 		}

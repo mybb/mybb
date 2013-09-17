@@ -32,7 +32,7 @@ $lang->load("showthread");
 if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 {
 	// see if we already have the post information
-	if(isset($style) && $style['pid'] == $mybb->input['pid'] && $style['tid'])
+	if(isset($style) && $style['pid'] == $mybb->get_input('pid', 1) && $style['tid'])
 	{
 		$mybb->input['tid'] = $style['tid'];
 		unset($style['tid']); // stop the thread caching code from being tricked
@@ -42,14 +42,19 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
+		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
 		$post = $db->fetch_array($query);
 		$mybb->input['tid'] = $post['tid'];
 	}
 }
 
 // Get the thread details from the database.
-$thread = get_thread($mybb->input['tid']);
+$thread = get_thread($mybb->get_input('tid', 1));
+
+if(!$thread)
+{
+	error($lang->error_invalidthread);
+}
 
 // Get thread prefix if there is one.
 $thread['threadprefix'] = '';
@@ -102,7 +107,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
@@ -133,7 +138,7 @@ if(!$forum || $forum['type'] != "f")
 check_forum_password($forum['fid']);
 
 // If there is no specific action, we must be looking at the thread.
-if(empty($mybb->input['action']))
+if(!$mybb->get_input('action'))
 {
 	$mybb->input['action'] = "thread";
 }
@@ -211,7 +216,7 @@ if($mybb->input['action'] == "newpost")
 	if($newpost['pid'] && $lastread)
 	{
 		$highlight = '';
-		if($mybb->input['highlight'])
+		if($mybb->get_input('highlight'))
 		{
 			$string = "&";
 			if($mybb->seo_support == true)
@@ -219,7 +224,7 @@ if($mybb->input['action'] == "newpost")
 				$string = "?";
 			}
 
-			$highlight = $string."highlight=".$mybb->input['highlight'];
+			$highlight = $string."highlight=".$mybb->get_input('highlight');
 		}
 
 		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid)).$highlight."#pid{$newpost['pid']}");
@@ -322,10 +327,8 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-if(!empty($mybb->input['pid']))
-{
-	$pid = $mybb->input['pid'];
-}
+
+$pid = $mybb->input['pid'] = $mybb->get_input('pid', 1);
 
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
@@ -450,6 +453,7 @@ if($mybb->input['action'] == "thread")
 		$poll['question'] = htmlspecialchars_uni($poll['question']);
 		$polloptions = '';
 		$totalvotes = 0;
+		$poll['totvotes'] = 0;
 
 		for($i = 1; $i <= $poll['numoptions']; ++$i)
 		{
@@ -475,7 +479,7 @@ if($mybb->input['action'] == "thread")
 			$number = $i;
 
 			// Mark the option the user voted for.
-			if($votedfor[$number])
+			if(!empty($votedfor[$number]))
 			{
 				$optionbg = "trow2";
 				$votestar = "*";
@@ -487,7 +491,7 @@ if($mybb->input['action'] == "thread")
 			}
 
 			// If the user already voted or if the results need to be shown, do so; else show voting screen.
-			if($alreadyvoted || $showresults)
+			if(isset($alreadyvoted) || isset($showresults))
 			{
 				if(intval($votes) == "0")
 				{
@@ -534,7 +538,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
-		if($alreadyvoted || $showresults)
+		if(isset($alreadyvoted) || isset($showresults))
 		{
 			if($alreadyvoted)
 			{
@@ -638,7 +642,7 @@ if($mybb->input['action'] == "thread")
 	else
 	{
 		$modoptions = "&nbsp;";
-		$inlinemod = "";
+		$inlinemod = $closeoption = '';
 	}
 
 	// Increment the thread view.
@@ -737,7 +741,7 @@ if($mybb->input['action'] == "thread")
 
 	// Threaded or linear display?
 	$threadexbox = '';
-	if($mybb->input['mode'] == 'threaded')
+	if($mybb->get_input('mode') == 'threaded')
 	{
 		$isfirst = 1;
 
@@ -821,9 +825,9 @@ if($mybb->input['action'] == "thread")
 		// Figure out if we need to display multiple pages.
 		$page = 1;
 		$perpage = $mybb->settings['postsperpage'];
-		if(isset($mybb->input['page']) && $mybb->input['page'] != "last")
+		if($mybb->get_input('page', 1) && $mybb->get_input('page') != "last")
 		{
-			$page = intval($mybb->input['page']);
+			$page = $mybb->get_input('page', 1);
 		}
 
 		if(!empty($mybb->input['pid']))
@@ -869,7 +873,7 @@ if($mybb->input['action'] == "thread")
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
 
-		if(isset($mybb->input['page']) && $mybb->input['page'] == "last")
+		if($mybb->get_input('page') == "last")
 		{
 			$page = $pages;
 		}
@@ -895,14 +899,14 @@ if($mybb->input['action'] == "thread")
         $threadmode = "";
         if($mybb->seo_support == true)
         {
-            if($mybb->input['highlight'])
+            if($mybb->get_input('highlight'))
             {
-                $highlight = "?highlight=".urlencode($mybb->input['highlight']);
+                $highlight = "?highlight=".urlencode($mybb->get_input('highlight'));
             }
 
 			if($defaultmode != "linear")
 			{
-	            if($mybb->input['highlight'])
+	            if($mybb->get_input('highlight'))
 	            {
 	                $threadmode = "&amp;mode=linear";
 	            }
@@ -925,7 +929,7 @@ if($mybb->input['action'] == "thread")
 				}
 				else
 				{
-					$highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
+					$highlight = "&amp;highlight=".urlencode($mybb->get_input('highlight'));
 				}
 			}
 
@@ -1124,6 +1128,8 @@ if($mybb->input['action'] == "thread")
 	    $posthash = md5($mybb->user['uid'].random_str());
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
+
+	$moderationoptions = '';
 
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)

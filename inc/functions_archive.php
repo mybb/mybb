@@ -88,14 +88,15 @@ function archive_navigation()
 	global $navbits, $mybb, $lang;
 
 	$navsep = " &gt; ";
+	$nav = $activesep = '';
 	if(is_array($navbits))
 	{
 		reset($navbits);
 		foreach($navbits as $key => $navbit)
 		{
-			if($navbits[$key+1])
+			if(!empty($navbits[$key+1]))
 			{
-				if($navbits[$key+2])
+				if(!empty($navbits[$key+2]))
 				{
 					$sep = $navsep;
 				}
@@ -109,7 +110,7 @@ function archive_navigation()
 	}
 	$navsize = count($navbits);
 	$navbit = $navbits[$navsize-1];
-	if($nav)
+	if(!empty($nav))
 	{
 		$activesep = $navsep;
 	}

@@ -30,7 +30,7 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Find out the thread limit.
-$thread_limit = intval($mybb->input['limit']);
+$thread_limit = $mybb->get_input('limit', 1);
 if($thread_limit > 50)
 {
 	$thread_limit = 50;
@@ -41,14 +41,9 @@ else if(!$thread_limit || $thread_limit < 0)
 }
 
 // Syndicate a specific forum or all viewable?
-if(isset($mybb->input['fid']))
+if($mybb->get_input('fid'))
 {
-	$forumlist = $mybb->input['fid'];
-	$forumlist = explode(',', $forumlist);
-}
-else
-{
-	$forumlist = "";
+	$forumlist = explode(',', $mybb->get_input('fid'));
 }
 
 // Get the forums the user is not allowed to see.
@@ -98,13 +93,13 @@ while($forum = $db->fetch_array($query))
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
-if($all_forums)
+if(isset($all_forums))
 {
     $title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
 
 // Set the feed type.
-$feedgenerator->set_feed_format($mybb->input['type']);
+$feedgenerator->set_feed_format($mybb->get_input('type'));
 
 // Set the channel header.
 $channel = array(
@@ -122,7 +117,7 @@ $onlyusfids = array();
 $group_permissions = forum_permissions();
 foreach($group_permissions as $fid => $forum_permissions)
 {
-	if($forum_permissions['canonlyviewownthreads'] == 1)
+	if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 	{
 		$onlyusfids[] = $fid;
 	}
