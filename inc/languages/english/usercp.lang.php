@@ -262,6 +262,7 @@ $l['join_requests'] = "Pending Join Requests";
 $l['request_join_usergroup'] = "Request Group Membership";
 $l['join_group_moderate_note'] = "All joins to this group must first be approved by a moderator.";
 $l['user_group'] = "Group:";
+$l['usergroups_usergroup'] = "User Group";
 $l['join_reason'] = "Reason:";
 $l['send_join_request'] = "Send Join Request";
 $l['cannot_join_group'] = "Sorry, but you cannot join this group as it is not a publicly join-able group.";

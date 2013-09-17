@@ -678,6 +678,10 @@ img {
 	margin-top: 3px;
 }
 
+.tcat_menu > .expcolimage {
+	margin-top: 0;
+}
+
 img.attachment {
 	border: 1px solid #E9E5D7;
 	padding: 2px;
@@ -6721,7 +6725,7 @@ body {
 	</tr>
 	<tr><td class="trow1 smalltext"><a href="modcp.php" class="modcp_nav_item modcp_nav_home">{$lang->mcp_nav_home}</a></td></tr>
 	<tr>
-		<td class="tcat">
+		<td class="tcat tcat_menu">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
@@ -6733,7 +6737,7 @@ body {
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>
 	</tbody>
 	<tr>
-		<td class="tcat">
+		<td class="tcat tcat_menu">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
@@ -10610,7 +10614,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="4"><strong>{$lang->drafts_count}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
+<td width="66%" class="tcat"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
 <td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox checkall" /></td>
@@ -11004,7 +11008,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat">
+	<td class="tcat tcat_menu">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
@@ -11024,7 +11028,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat">
+	<td class="tcat tcat_menu">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
 	</td>
@@ -11041,7 +11045,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tbody>]]></template>
 		<template name="usercp_nav_profile" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat">
+	<td class="tcat tcat_menu">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
 	</td>
@@ -11619,8 +11623,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="thead" colspan="7"><strong>{$lang->subscriptions} ({$threadcount})</strong></td>
 	</tr>
 	<tr>
-		<td class="tcat" align="center" colspan="2">&nbsp;</td>
-		<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
+		<td width="66%" colspan="3" class="tcat"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
 		<td class="tcat" align="center" width="200"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
@@ -11712,7 +11715,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="3"><strong>{$lang->usergroups_joinable}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="36%"><strong><span class="smalltext">{$lang->usergroup}</span></strong></td>
+<td class="tcat" width="36%"><strong><span class="smalltext">{$lang->usergroups_usergroup}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->join_conditions}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->join_group}</span></strong></td>
 </tr>
@@ -11789,7 +11792,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="35%"><strong><span class="smalltext">{$lang->usergroup}</span></strong></td>
+<td class="tcat" width="35%"><strong><span class="smalltext">{$lang->usergroups_usergroup}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->usertitle}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->usergroup_leave}</span></strong></td>
 </tr>
