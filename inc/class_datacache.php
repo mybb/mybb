@@ -839,10 +839,10 @@ class datacache
 		$latest = $db->fetch_array($query);
 
 		$reasons = array();
-		$options = $mybb->settings['reportreasons'];
 
-		if($options)
+		if(!empty($mybb->settings['reportreasons']))
 		{
+			$options = $mybb->settings['reportreasons'];
 			$options = explode("\n", $options);
 
 			foreach($options as $option)

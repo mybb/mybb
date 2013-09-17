@@ -16,13 +16,13 @@ $templatelist = 'forumdisplay_password_wrongpass,forumdisplay_password';
 require_once "./global.php";
 
 // Verify incoming POST request
-verify_post_check($mybb->input['my_post_key']);
+verify_post_check($mybb->get_input('my_post_key'));
 
 $lang->load("ratethread");
 
-$tid = intval($mybb->input['tid']);
+$tid = $mybb->get_input('tid');
 $thread = get_thread($tid);
-if(!$thread['tid'])
+if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
@@ -33,7 +33,7 @@ if($thread['uid'] == $mybb->user['uid'])
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0))
 {
 	error_no_permission();
 }
@@ -69,7 +69,7 @@ if($forum['allowtratings'] == 0)
 {
 	error_no_permission();
 }
-$mybb->input['rating'] = intval($mybb->input['rating']);
+$mybb->input['rating'] = $mybb->get_input('rating', 1);
 if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 {
 	error($lang->error_invalidrating);
@@ -87,7 +87,7 @@ else
 $query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
 
-if($ratecheck['rid'] || $mybb->cookies['mybbratethread'][$tid])
+if($ratecheck['rid'] || isset($mybb->cookies['mybbratethread'][$tid]))
 {
 	error($lang->error_alreadyratedthread);
 }
@@ -124,7 +124,7 @@ else
 }
 $plugins->run_hooks("ratethread_end");
 
-if($mybb->input['ajax'])
+if(!empty($mybb->input['ajax']))
 {
 	$json = array("success" => $lang->rating_added);
 	$query = $db->simple_select("threads", "totalratings, numratings", "tid='$tid'", array('limit' => 1));

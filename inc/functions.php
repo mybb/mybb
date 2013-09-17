@@ -1410,8 +1410,11 @@ function check_forum_password($fid, $pid=0)
 	}
 
 	// Loop through each of parent forums to ensure we have a password for them too
-	$parents = explode(',', $forum_cache[$fid]['parentlist']);
-	rsort($parents);
+	if(isset($forum_cache[$fid]['parentlist']))
+	{
+		$parents = explode(',', $forum_cache[$fid]['parentlist']);
+		rsort($parents);
+	}
 	if(!empty($parents))
 	{
 		foreach($parents as $parent_id)
@@ -1428,9 +1431,9 @@ function check_forum_password($fid, $pid=0)
 		}
 	}
 
-	$password = $forum_cache[$fid]['password'];
-	if($password)
+	if(!empty($forum_cache[$fid]['password']))
 	{
+		$password = $forum_cache[$fid]['password'];
 		if(isset($mybb->input['pwverify']) && $pid == 0)
 		{
 			if($password == $mybb->get_input('pwverify'))

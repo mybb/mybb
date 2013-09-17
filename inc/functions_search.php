@@ -70,7 +70,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\">$depth {$forum['name']}</option>\n";
 					}
-					if($pforumcache[$forum['fid']])
+					if(!empty($pforumcache[$forum['fid']]))
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";
 						$forumlistbits .= make_searchable_forums($forum['fid'], $selitem, 0, $newdepth);
@@ -652,6 +652,7 @@ function perform_search_mysql($search)
 		$mybb->settings['minsearchword'] = 3;
 	}
 
+	$subject_lookin = $message_lookin = '';
 	if($keywords)
 	{
 		// Complex search
@@ -783,7 +784,7 @@ function perform_search_mysql($search)
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = '';
+	$datecut = $post_datecut = $thread_datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -823,7 +824,7 @@ function perform_search_mysql($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if($search['forums'][0] != "all")
+	if(!is_array($search['forums']) || $search['forums'][0] != "all")
 	{
 		if(!is_array($search['forums']))
 		{
@@ -842,9 +843,9 @@ function perform_search_mysql($search)
 		foreach($search['forums'] as $forum)
 		{
 			$forum = intval($forum);
-			if(!$searchin[$forum])
+			if(empty($searchin[$forum]))
 			{
-				if(is_array($add_groups))
+				if(isset($add_groups) && is_array($add_groups))
 				{
 					$can_search = 0;
 					foreach($add_groups as $add_group)
@@ -884,7 +885,7 @@ function perform_search_mysql($search)
 		if(count($fidlist) == 1)
 		{
 			$forumin .= " AND t.fid='$forum' ";
-			$searchin[$fid] = 1;
+			$searchin[$forum] = 1;
 		}
 		else
 		{
@@ -903,7 +904,7 @@ function perform_search_mysql($search)
 	{
 		foreach($group_permissions as $fid => $forum_permissions)
 		{
-			if($forum_permissions['canonlyviewownthreads'] == 1)
+			if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 			{
 				$onlyusfids[] = $fid;
 			}
@@ -951,7 +952,8 @@ function perform_search_mysql($search)
 	}
 
 	// Searching a specific thread?
-	if($search['tid'])
+	$tidsql = '';
+	if(!empty($search['tid']))
 	{
 		$tidsql = " AND t.tid='".intval($search['tid'])."'";
 	}
@@ -969,7 +971,7 @@ function perform_search_mysql($search)
 	if($search['postthread'] == 1)
 	{
 		// No need to search subjects when looking for results within a specific thread
-		if(!$search['tid'])
+		if(empty($search['tid']))
 		{
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
@@ -1200,7 +1202,7 @@ function perform_search_mysql_ft($search)
 	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
-	if($search['forums'][0] != "all")
+	if(!is_array($search['forums']) || $search['forums'][0] != "all")
 	{
 		if(!is_array($search['forums']))
 		{
@@ -1215,7 +1217,7 @@ function perform_search_mysql_ft($search)
 		foreach($search['forums'] as $forum)
 		{
 			$forum = intval($forum);
-			if(!$searchin[$forum])
+			if(empty($searchin[$forum]))
 			{
 				switch($db->type)
 				{
@@ -1245,7 +1247,7 @@ function perform_search_mysql_ft($search)
 		if(count($fidlist) == 1)
 		{
 			$forumin .= " AND t.fid='$forum' ";
-			$searchin[$fid] = 1;
+			$searchin[$forum] = 1;
 		}
 		else
 		{

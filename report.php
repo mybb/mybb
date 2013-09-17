@@ -30,7 +30,7 @@ $error = $go_back = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
-	$report_type = $mybb->input['type'];
+	$report_type = $mybb->get_input('type');
 }
 
 $report_title = $lang->report_content;
@@ -41,6 +41,7 @@ if(isset($lang->$report_string))
 	$report_title = $lang->$report_string;
 }
 
+$pid = 0;
 if($report_type == 'post')
 {
 	if($mybb->usergroup['canview'] == 0)
@@ -49,9 +50,9 @@ if($report_type == 'post')
 	}
 
 	// Do we have a valid post?
-	$post = get_post($mybb->input['pid']);
+	$post = get_post($mybb->get_input('pid', 1));
 
-	if(!isset($post['pid']))
+	if(!$post)
 	{
 		$error = $lang->error_invalid_report;
 	}
@@ -80,7 +81,7 @@ if($report_type == 'post')
 }
 else if($report_type == 'profile')
 {
-	$user = get_user($mybb->input['pid']);
+	$user = get_user($mybb->get_input('pid', 1));
 
 	if(!isset($user['uid']))
 	{
@@ -106,7 +107,7 @@ else if($report_type == 'profile')
 else if($report_type == 'reputation')
 {
 	// Any member can report a reputation comment but let's make sure it exists first
-	$query = $db->simple_select("reputation", "*", "rid = '{$mybb->input['pid']}'");
+	$query = $db->simple_select("reputation", "*", "rid = '".$mybb->get_input('pid', 1)."'");
 
 	if(!$db->num_rows($query))
 	{
@@ -145,9 +146,11 @@ if(!empty($report_type_db))
 	}
 }
 
+$mybb->input['action'] = $mybb->get_input('action');
+
 if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
-	verify_post_check($mybb->input['my_post_key']);
+	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Is this an existing report or a new offender?
 	if(!empty($report))
@@ -170,12 +173,12 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 		);
 
 		// Figure out the reason
-		$reason = trim($mybb->input['reason']);
+		$reason = trim($mybb->get_input('reason'));
 
 		if($reason == 'other')
 		{
 			// Replace the reason with the user comment
-			$reason = trim($mybb->input['comment']);
+			$reason = trim($mybb->get_input('comment'));
 		}
 
 		if(my_strlen($reason) < 3)
@@ -197,7 +200,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 if(!empty($error) || $verified == false)
 {
-	unset($mybb->input['action']);
+	$mybb->input['action'] = '';
 
 	if($verified == false && empty($error))
 	{

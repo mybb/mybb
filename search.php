@@ -31,6 +31,7 @@ $lang->load("search");
 
 add_breadcrumb($lang->nav_search, "search.php");
 
+$mybb->input['action'] = $mybb->get_input('action');
 switch($mybb->input['action'])
 {
 	case "results":
@@ -46,7 +47,7 @@ if($mybb->usergroup['cansearch'] == 0)
 }
 
 $now = TIME_NOW;
-$mybb->input['keywords'] = trim($mybb->input['keywords']);
+$mybb->input['keywords'] = trim($mybb->get_input('keywords'));
 
 $limitsql = "";
 if(intval($mybb->settings['searchhardlimit']) > 0)
@@ -56,7 +57,7 @@ if(intval($mybb->settings['searchhardlimit']) > 0)
 
 if($mybb->input['action'] == "results")
 {
-	$sid = $db->escape_string($mybb->input['sid']);
+	$sid = $db->escape_string($mybb->get_input('sid'));
 	$query = $db->simple_select("searchlog", "*", "sid='$sid'");
 	$search = $db->fetch_array($query);
 
@@ -68,8 +69,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower(htmlspecialchars_uni($mybb->input['order']));
-	$sortby = my_strtolower(htmlspecialchars_uni($mybb->input['sortby']));
+	$order = my_strtolower(htmlspecialchars_uni($mybb->get_input('order')));
+	$sortby = my_strtolower(htmlspecialchars_uni($mybb->get_input('sortby')));
 
 	switch($sortby)
 	{
@@ -136,7 +137,7 @@ if($mybb->input['action'] == "results")
 
 	// Work out pagination, which page we're at, as well as the limits.
 	$perpage = $mybb->settings['threadsperpage'];
-	$page = intval($mybb->input['page']);
+	$page = $mybb->get_input('page');
 	if($page > 0)
 	{
 		$start = ($page-1) * $perpage;
@@ -167,6 +168,8 @@ if($mybb->input['action'] == "results")
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
 	$thread_url = "";
 	$post_url = "";
+	
+	$orderarrow = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
 
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("search_orderarrow")."\";");
 
@@ -300,7 +303,7 @@ if($mybb->input['action'] == "results")
 		$group_permissions = forum_permissions();
 		foreach($group_permissions as $fid => $forum_permissions)
 		{
-			if($forum_permissions['canonlyviewownthreads'] == 1)
+			if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 			{
 				$onlyusfids[] = $fid;
 			}
@@ -380,6 +383,8 @@ if($mybb->input['action'] == "results")
 			$mybb->settings['maxmultipagelinks'] = 5;
 		}
 
+		$results = '';
+
 		foreach($thread_cache as $thread)
 		{
 			$bgcolor = alt_trow();
@@ -407,7 +412,7 @@ if($mybb->input['action'] == "results")
 			$thread['subject'] = $parser->parse_badwords($thread['subject']);
 			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
-			if($icon_cache[$thread['icon']])
+			if(isset($icon_cache[$thread['icon']]))
 			{
 				$posticon = $icon_cache[$thread['icon']];
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
@@ -424,7 +429,7 @@ if($mybb->input['action'] == "results")
 			// Determine the folder
 			$folder = '';
 			$folder_label = '';
-			if($thread['dot_icon'])
+			if(isset($thread['dot_icon']))
 			{
 				$folder = "dot_";
 				$folder_label .= $lang->icon_dot;
@@ -602,6 +607,15 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($thread['fid']))
 			{
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$thread['tid']}|"))
+				{
+					$inlinecheck = "checked=\"checked\"";
+					++$inlinecount;
+				}
+				else
+				{
+					$inlinecheck = '';
+				}
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_inlinecheck")."\";");
 			}
 			elseif($is_mod)
@@ -623,7 +637,7 @@ if($mybb->input['action'] == "results")
 				eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 			}
 		}
-		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->input['uid']);
+		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', 1));
 		if($upper > $threadcount)
 		{
 			$upper = $threadcount;
@@ -778,6 +792,8 @@ if($mybb->input['action'] == "results")
 			}
 		}
 
+		$results = '';
+
 		$query = $db->query("
 			SELECT p.*, u.username AS userusername, t.subject AS thread_subject, t.replies AS thread_replies, t.views AS thread_views, t.lastpost AS thread_lastpost, t.closed AS thread_closed, t.uid as thread_uid
 			FROM ".TABLE_PREFIX."posts p
@@ -803,7 +819,7 @@ if($mybb->input['action'] == "results")
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 			$post['thread_subject'] = htmlspecialchars_uni($post['thread_subject']);
 
-			if($icon_cache[$post['icon']])
+			if(isset($icon_cache[$post['icon']]))
 			{
 				$posticon = $icon_cache[$post['icon']];
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
@@ -813,7 +829,7 @@ if($mybb->input['action'] == "results")
 				$icon = "&nbsp;";
 			}
 
-			if($forumcache[$thread['fid']])
+			if(!empty($forumcache[$thread['fid']]))
 			{
 				$post['forumlink'] = "<a href=\"".get_forum_link($post['fid'])."\">".$forumcache[$post['fid']]['name']."</a>";
 			}
@@ -861,7 +877,7 @@ if($mybb->input['action'] == "results")
 				}
 			}
 
-			if($dot_icon[$post['tid']])
+			if(isset($dot_icon[$post['tid']]))
 			{
 				$folder = "dot_";
 				$folder_label .= $lang->icon_dot;
@@ -958,6 +974,15 @@ if($mybb->input['action'] == "results")
 			$inline_mod_checkbox = '';
 			if($is_supermod || is_moderator($post['fid']))
 			{
+				if(isset($mybb->cookies[$inlinecookie]) && my_strpos($mybb->cookies[$inlinecookie], "|{$post['pid']}|"))
+				{
+					$inlinecheck = "checked=\"checked\"";
+					++$inlinecount;
+				}
+				else
+				{
+					$inlinecheck = '';
+				}
 				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
 			}
 			elseif($is_mod)
@@ -972,7 +997,7 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->input['sid'])."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->input['uid']);
+		$multipage = multipage($postcount, $perpage, $page, "search.php?action=results&amp;sid=".htmlspecialchars_uni($mybb->get_input('sid'))."&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', 1));
 		if($upper > $postcount)
 		{
 			$upper = $postcount;
@@ -1039,7 +1064,7 @@ elseif($mybb->input['action'] == "findguest")
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1096,7 +1121,7 @@ elseif($mybb->input['action'] == "findguest")
 }
 elseif($mybb->input['action'] == "finduser")
 {
-	$where_sql = "uid='".intval($mybb->input['uid'])."'";
+	$where_sql = "uid='".$mybb->get_input('uid', 1)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
@@ -1116,7 +1141,7 @@ elseif($mybb->input['action'] == "finduser")
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1173,7 +1198,7 @@ elseif($mybb->input['action'] == "finduser")
 }
 elseif($mybb->input['action'] == "finduserthreads")
 {
-	$where_sql = "t.uid='".intval($mybb->input['uid'])."'";
+	$where_sql = "t.uid='".$mybb->get_input('uid', 1)."'";
 
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
@@ -1193,7 +1218,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1224,13 +1249,13 @@ elseif($mybb->input['action'] == "getnew")
 
 	$where_sql = "t.lastpost >= '".intval($mybb->user['lastvisit'])."'";
 
-	if($mybb->input['fid'])
+	if($mybb->get_input('fid', 1))
 	{
-		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+		$where_sql .= " AND t.fid='".$mybb->get_input('fid', 1)."'";
 	}
-	else if($mybb->input['fids'])
+	else if($mybb->get_input('fids'))
 	{
-		$fids = explode(',', $mybb->input['fids']);
+		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
 			$fids[$key] = intval($fid);
@@ -1260,7 +1285,7 @@ elseif($mybb->input['action'] == "getnew")
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1289,25 +1314,25 @@ elseif($mybb->input['action'] == "getnew")
 }
 elseif($mybb->input['action'] == "getdaily")
 {
-	if($mybb->input['days'] < 1)
+	if($mybb->get_input('days', 1) < 1)
 	{
 		$days = 1;
 	}
 	else
 	{
-		$days = intval($mybb->input['days']);
+		$days = $mybb->get_input('fid', 1);
 	}
 	$datecut = TIME_NOW-(86400*$days);
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
-	if($mybb->input['fid'])
+	if($mybb->get_input('fid', 1))
 	{
-		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+		$where_sql .= " AND t.fid='".$mybb->get_input('fid', 1)."'";
 	}
-	else if($mybb->input['fids'])
+	else if($mybb->get_input('fids'))
 	{
-		$fids = explode(',', $mybb->input['fids']);
+		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
 			$fids[$key] = intval($fid);
@@ -1337,7 +1362,7 @@ elseif($mybb->input['action'] == "getdaily")
 	$group_permissions = forum_permissions();
 	foreach($group_permissions as $fid => $forum_permissions)
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		if(isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] == 1)
 		{
 			$onlyusfids[] = $fid;
 		}
@@ -1398,7 +1423,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			error($lang->error_searchflooding);
 		}
 	}
-	if($mybb->input['showresults'] == "threads")
+	if($mybb->get_input('showresults') == "threads")
 	{
 		$resulttype = "threads";
 	}
@@ -1409,20 +1434,20 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	$search_data = array(
 		"keywords" => $mybb->input['keywords'],
-		"author" => $mybb->input['author'],
-		"postthread" => $mybb->input['postthread'],
-		"matchusername" => $mybb->input['matchusername'],
-		"postdate" => $mybb->input['postdate'],
-		"pddir" => $mybb->input['pddir'],
+		"author" => $mybb->get_input('author'),
+		"postthread" => $mybb->get_input('postthread', 1),
+		"matchusername" => $mybb->get_input('matchusername', 1),
+		"postdate" => $mybb->get_input('postdate', 1),
+		"pddir" => $mybb->get_input('pddir', 1),
 		"forums" => $mybb->input['forums'],
-		"findthreadst" => $mybb->input['findthreadst'],
-		"numreplies" => $mybb->input['numreplies'],
-		"threadprefix" => $mybb->input['threadprefix']
+		"findthreadst" => $mybb->get_input('findthreadst', 1),
+		"numreplies" => $mybb->get_input('numreplies', 1),
+		"threadprefix" => $mybb->get_input('threadprefix', 2)
 	);
 
 	if(is_moderator() && !empty($mybb->input['visible']))
 	{
-		if($mybb->input['visible'] == 1)
+		if($mybb->get_input('visible', 1) == 1)
 		{
 			$search_data['visible'] = 1;
 		}
@@ -1463,23 +1488,23 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	$db->insert_query("searchlog", $searcharray);
 
-	if(my_strtolower($mybb->input['sortordr']) == "asc" || my_strtolower($mybb->input['sortordr'] == "desc"))
+	if(my_strtolower($mybb->get_input('sortordr')) == "asc" || my_strtolower($mybb->get_input('sortordr') == "desc"))
 	{
-		$sortorder = $mybb->input['sortordr'];
+		$sortorder = $mybb->get_input('sortordr');
 	}
 	else
 	{
 		$sortorder = "desc";
 	}
-	$sortby = htmlspecialchars_uni($mybb->input['sortby']);
+	$sortby = htmlspecialchars_uni($mybb->get_input('sortby'));
 	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=".$sid."&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
 }
 else if($mybb->input['action'] == "thread")
 {
 	// Fetch thread info
-	$thread = get_thread($mybb->input['tid']);
-	if(!$thread['tid'] || (($thread['visible'] == 0 && !is_moderator($thread['fid'])) || $thread['visible'] < 0))
+	$thread = get_thread($mybb->get_input('tid', 1));
+	if(!$thread || (($thread['visible'] == 0 && !is_moderator($thread['fid'])) || $thread['visible'] < 0))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1497,7 +1522,7 @@ else if($mybb->input['action'] == "thread")
 	{
 		error($lang->error_closedinvalidforum);
 	}
-	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1)
+	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1 || (isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}
@@ -1540,7 +1565,7 @@ else if($mybb->input['action'] == "thread")
 	$search_data = array(
 		"keywords" => $mybb->input['keywords'],
 		"postthread" => 1,
-		"tid" => $mybb->input['tid']
+		"tid" => $mybb->get_input('tid', 1)
 	);
 
 	if($db->can_search == true)
@@ -1580,7 +1605,7 @@ else if($mybb->input['action'] == "thread")
 else
 {
 	$plugins->run_hooks("search_start");
-	$srchlist = make_searchable_forums("", $fid);
+	$srchlist = make_searchable_forums();
 	$prefixselect = build_prefix_select('all', 'any', 1);
 
 	$rowspan = 5;

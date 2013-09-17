@@ -9224,7 +9224,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
 <input type="hidden" name="pid" value="{$pid}" />
-{$inline_errors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="2"><strong>{$report_title}</strong>
