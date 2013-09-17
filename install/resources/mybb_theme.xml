@@ -4947,7 +4947,7 @@ a.button {
 		</select><br />
 		<span class="smalltext">
 		<input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{$lang->order_asc}</label><br />
-		<input type="radio" class="radio" name="order" id="order_desc" value="desc" /> <label for="order_desc">{$lang->order_desc}</label>
+		<input type="radio" class="radio" name="order" id="order_desc" value="desc" checked="checked" /> <label for="order_desc">{$lang->order_desc}</label>
 		</span>
 	</td>
 </tr>
