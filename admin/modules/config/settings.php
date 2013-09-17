@@ -1527,13 +1527,7 @@ function print_setting_peekers()
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
 
-	$setting_peekers = '';
-	foreach($peekers as $peeker)
-	{
-		$setting_peekers .= $peeker."\n";
-	}
-
-	$setting_peekers = substr($setting_peekers, 0, -2);
+	$setting_peekers = implode("\n			", $peekers);
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
