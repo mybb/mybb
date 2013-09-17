@@ -7137,36 +7137,6 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_deleteposts" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form action="moderation.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$lang->delete_posts}</strong></td>
-</tr>
-{$posts}
-</table>
-<br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->delete_selected_posts}" /></div>
-<input type="hidden" name="action" value="do_deleteposts" />
-<input type="hidden" name="tid" value="{$tid}" />
-</form>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="moderation_deleteposts_post" version="1800"><![CDATA[<tr>
-<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate}</strong></span></td>
-</tr>
-<tr>
-<td class="{$altbg}" valign="top" align="center" style="width:5%"><input type="checkbox" class="checkbox" name="deletepost[{$post['pid']}]" value="1" /></td>
-<td class="{$altbg}">{$message}</td>
-</tr>]]></template>
 		<template name="moderation_deletethread" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_thread}</title>
@@ -7437,37 +7407,6 @@ body {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_threads}" /></div>
 <input type="hidden" name="action" value="do_merge" />
-<input type="hidden" name="tid" value="{$tid}" />
-</form>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="moderation_mergeposts" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form action="moderation.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
-<td class="thead" colspan="2"><strong>{$lang->merge_posts}</strong></td>
-</tr>
-<tr>
-<td class="trow1" colspan="2">{$lang->merge_posts_note}</td>
-</tr>
-<tr>
-<td class="tcat" colspan="2"><strong>{$lang->post_separator}</strong></td>
-</tr>
-<tr>
-<td class="trow2" colspan="2"><label><input type="radio" class="radio" name="sep" value="hr" checked="checked" /> {$lang->horizontal_rule}</label><br /><label><input type="radio" class="radio" name="sep" value="new_line" /> {$lang->new_line}</label></td>
-</tr>
-{$posts}
-</table>
-<br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->merge_posts}" /></div>
-<input type="hidden" name="action" value="do_mergeposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 </form>
 {$footer}
@@ -10053,12 +9992,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<option value="openclosethread">{$lang->open_close_thread}</option>
 			<option value="deletethread">{$lang->delete_thread}</option>
 			{$adminpolloptions}
-			<option value="deleteposts">{$lang->delete_posts}</option>
 			<option value="move">{$lang->move_thread}</option>
 			<option value="stick">{$lang->stick_unstick_thread}</option>
 			<option value="split">{$lang->split_thread}</option>
 			<option value="merge">{$lang->merge_threads}</option>
-			<option value="mergeposts">{$lang->merge_posts}</option>
 			<option value="removeredirects">{$lang->remove_redirects}</option>
 			<option value="removesubscriptions">{$lang->remove_subscriptions}</option>
 			{$approveunapprovethread}
