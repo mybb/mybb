@@ -351,4 +351,6 @@ $l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_i
 /* Error messages */
 $l['development_preview'] = "<div class=\"error\"><h2 class=\"fail\">Warning</h2><p>This version of MyBB is a development preview and is to be used for testing purposes only.</p><p>No official support, other than for plugins and theme development, will be provided for this version. By continuing with this install/upgrade you do so at your own risk.</div>";
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';
+
+$l['task_versioncheck_ran'] = "The version check task successfully ran.";
 ?>

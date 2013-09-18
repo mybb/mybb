@@ -154,10 +154,11 @@ if(file_exists("lock"))
 }
 else
 {
+	$mybb->input['action'] = $mybb->get_input('action');
 	if($mybb->input['action'] == "logout" && $mybb->user['uid'])
 	{
 		// Check session ID if we have one
-		if($mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+		if($mybb->get_input('logoutkey') != $mybb->user['logoutkey'])
 		{
 			$output->print_error("Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.");
 		}
@@ -180,11 +181,11 @@ else
 	{
 		require_once MYBB_ROOT."inc/functions_user.php";
 
-		if(!username_exists($mybb->input['username']))
+		if(!username_exists($mybb->get_input('username')))
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->get_input('username'))."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -192,7 +193,7 @@ else
 		}
 		else
 		{
-			$user = validate_password_from_uid($user['uid'], $mybb->input['password'], $user);
+			$user = validate_password_from_uid($user['uid'], $mybb->get_input('password'), $user);
 			if(!$user['uid'])
 			{
 				$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
@@ -297,6 +298,7 @@ else
 			$next_update_version = intval(end($version_history)+1);
 		}
 
+		$vers = '';
 		foreach($key_order as $k => $key)
 		{
 			$file = $upgradescripts[$key];
@@ -323,28 +325,28 @@ else
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("allow_anonymous_info", intval($mybb->input['allow_anonymous_info']));
-		require_once INSTALL_ROOT."resources/upgrade".intval($mybb->input['from']).".php";
-		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->input['donewarning'] != "true")
+		add_upgrade_store("allow_anonymous_info", $mybb->get_input('allow_anonymous_info', 1));
+		require_once INSTALL_ROOT."resources/upgrade".$mybb->get_input('from', 1).".php";
+		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->get_input('donewarning') != "true")
 		{
 			$plugins = $cache->read('plugins', true);
 			if(!empty($plugins['active']))
 			{
 				$output->print_header();
-				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".intval($mybb->input['from'])."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".$mybb->get_input('from', 1)."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
 			{
-				add_upgrade_store("startscript", $mybb->input['from']);
-				$runfunction = next_function($mybb->input['from']);
+				add_upgrade_store("startscript", $mybb->get_input('from', 1));
+				$runfunction = next_function($mybb->get_input('from', 1));
 			}
 		}
 		else
 		{
-			add_upgrade_store("startscript", $mybb->input['from']);
-			$runfunction = next_function($mybb->input['from']);
+			add_upgrade_store("startscript", $mybb->get_input('from', 1));
+			$runfunction = next_function($mybb->get_input('from', 1));
 		}
 	}
 	$currentscript = get_upgrade_store("currentscript");

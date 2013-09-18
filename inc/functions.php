@@ -187,7 +187,10 @@ function run_shutdown()
 
 
 			$db->connect($config['database']);
-			define("TABLE_PREFIX", $config['database']['table_prefix']);
+			if(!defined("TABLE_PREFIX"))
+			{
+				define("TABLE_PREFIX", $config['database']['table_prefix']);
+			}
 			$db->set_table_prefix(TABLE_PREFIX);
 		}
 	}

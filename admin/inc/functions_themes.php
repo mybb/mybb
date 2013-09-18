@@ -35,7 +35,7 @@ function import_theme_xml($xml, $options=array())
 	// Do we have MyBB 1.2 template's we're importing?
 	$css_120 = "";
 
-	if(is_array($theme['cssbits']))
+	if(isset($theme['cssbits']) && is_array($theme['cssbits']))
 	{
 		$cssbits = kill_tags($theme['cssbits']);
 
@@ -63,7 +63,7 @@ function import_theme_xml($xml, $options=array())
 		}
 	}
 
-	if(is_array($theme['themebits']))
+	if(isset($theme['themebits']) && is_array($theme['themebits']))
 	{
 		$themebits = kill_tags($theme['themebits']);
 
@@ -131,7 +131,7 @@ function import_theme_xml($xml, $options=array())
 
 	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
-	if($options['force_name_check'] && $existingtheme['tid'])
+	if(!empty($options['force_name_check']) && $existingtheme['tid'])
 	{
 		return -3;
 	}
@@ -146,7 +146,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// Do we have any templates to insert?
-	if(!empty($theme['templates']['template']) && !$options['no_templates'])
+	if(!empty($theme['templates']['template']) && empty($options['no_templates']))
 	{
 		if($options['templateset'])
 		{
@@ -208,9 +208,13 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// Not overriding an existing theme
-	if(!$options['tid'])
+	if(empty($options['tid']))
 	{
 		// Insert the theme
+		if(!isset($options['parent']))
+		{
+			$options['parent'] = 0;
+		}
 		$theme_id = build_new_theme($name, $properties, $options['parent']);
 	}
 	// Overriding an existing - delete refs.
@@ -222,7 +226,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// If we have any stylesheets, process them
-	if(!empty($theme['stylesheets']['stylesheet']) && !$options['no_stylesheets'])
+	if(!empty($theme['stylesheets']['stylesheet']) && empty($options['no_stylesheets']))
 	{
 		// Are we dealing with a single stylesheet?
 		if(isset($theme['stylesheets']['stylesheet']['tag']))
@@ -264,14 +268,19 @@ function import_theme_xml($xml, $options=array())
 				continue;
 			}
 
-			if(!$stylesheet['attributes']['lastmodified'])
+			if(empty($stylesheet['attributes']['lastmodified']))
 			{
 				$stylesheet['attributes']['lastmodified'] = TIME_NOW;
 			}
 
-			if(!$stylesheet['attributes']['disporder'])
+			if(empty($stylesheet['attributes']['disporder']))
 			{
 				$stylesheet['attributes']['disporder'] = $loop;
+			}
+
+			if(empty($stylesheet['attributes']['attachedto']))
+			{
+				$stylesheet['attributes']['attachedto'] = '';
 			}
 
 			$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
@@ -415,7 +424,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
 
-	if($mybb->settings['minifycss'])
+	if(!empty($mybb->settings['minifycss']))
 	{
 		$stylesheet_min = minify_stylesheet($stylesheet);
 		$filename_min = str_replace('.css', '.min.css', $filename);
@@ -443,6 +452,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 /**
  * Minify a stylesheet to remove comments, linebreaks, whitespace,
  * unnecessary semicolons, and prefers #rgb over #rrggbb.
+ *
  * @param $stylesheet string The stylesheet in it's untouched form.
  * @return string The minified stylesheet
  */
@@ -536,6 +546,8 @@ function build_new_theme($name, $properties=null, $parent=1)
 	);
 	$tid = $db->insert_query("themes", $new_theme);
 
+	$inherited_properties = false;
+	$stylesheets = array();
 	if($parent > 0)
 	{
 		$query = $db->simple_select("themes", "*", "tid='".intval($parent)."'");
@@ -553,7 +565,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 					}
 
 					$properties[$property] = $value;
-					if($parent_properties['inherited'][$property])
+					if(!empty($parent_properties['inherited'][$property]))
 					{
 						$properties['inherited'][$property] = $parent_properties['inherited'][$property];
 					}
@@ -566,36 +578,32 @@ function build_new_theme($name, $properties=null, $parent=1)
 			}
 		}
 
-		if(count($stylesheets) == 0)
+		$parent_stylesheets = unserialize($parent_theme['stylesheets']);
+		if(!empty($parent_stylesheets))
 		{
-			$parent_stylesheets = unserialize($parent_theme['stylesheets']);
-			if(!empty($parent_stylesheets))
+			foreach($parent_stylesheets as $location => $value)
 			{
-				foreach($parent_stylesheets as $location => $value)
+				if($location == "inherited")
 				{
-					if($location == "inherited")
-					{
-						continue;
-					}
+					continue;
+				}
 
-					foreach($value as $action => $sheets)
+				foreach($value as $action => $sheets)
+				{
+					foreach($sheets as $stylesheet)
 					{
-						foreach($sheets as $stylesheet)
+						$stylesheets[$location][$action][] = $stylesheet;
+						$inherited_check = "{$location}_{$action}";
+						if(!empty($parent_stylesheets['inherited'][$inherited_check][$stylesheet]))
 						{
-							$stylesheets[$location][$action][] = $stylesheet;
-							$inherited_check = "{$location}_{$action}";
-							if($parent_stylesheets['inherited'][$inherited_check][$stylesheet])
-							{
-								$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
-							}
-							else
-							{
-								$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
-							}
+							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
+						}
+						else
+						{
+							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
 						}
 					}
 				}
-				$inherited_stylesheets = true;
 			}
 		}
 	}
@@ -607,7 +615,10 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
-	$updated_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
+	if(!empty($stylesheets))
+	{
+		$updated_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
+	}
 	$updated_theme['properties'] = $db->escape_string(serialize($properties));
 
 	if(count($updated_theme) > 0)
@@ -899,7 +910,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 	$query = $db->simple_select("themestylesheets", "*", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
 	while($stylesheet = $db->fetch_array($query))
 	{
-		if(!$stylesheets[$stylesheet['name']])
+		if(empty($stylesheets[$stylesheet['name']]))
 		{
 			if($stylesheet['tid'] != $tid)
 			{
@@ -950,7 +961,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			{
 				$theme_stylesheets[$attached_file][$action][] = $css_url;
 
-				if($stylesheet['inherited'])
+				if(!empty($stylesheet['inherited']))
 				{
 					$theme_stylesheets['inherited']["{$attached_file}_{$action}"][$css_url] = $stylesheet['inherited'];
 				}
@@ -1084,7 +1095,7 @@ function make_child_theme_list($tid)
 		}
 	}
 
-	if(!is_array($themes_by_child[$tid]))
+	if(!isset($themes_by_child[$tid]) || !is_array($themes_by_child[$tid]))
 	{
 		return;
 	}
@@ -1126,7 +1137,7 @@ function cache_themes()
 	}
 
 	// Do we have no themes assigned as default?
-	if(!$theme_cache['default'])
+	if(empty($theme_cache['default']))
 	{
 		$theme_cache['default'] = 1;
 	}

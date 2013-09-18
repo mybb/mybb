@@ -101,6 +101,14 @@ class FeedParser
 	 */
 	function parse_rss($feed_contents)
 	{
+		foreach(array('title', 'link', 'description', 'pubdate') as $value)
+		{
+			if(!isset($feed_contents['channel'][$value]['value']))
+			{
+				$feed_contents['channel'][$value]['value'] = '';
+			}
+		}
+
 		// Fetch channel information from the parsed feed
 		$this->channel = array(
 			"title" => $feed_contents['channel']['title']['value'],
@@ -221,12 +229,12 @@ class FeedParser
 		$stamp = strtotime($date);
 		if($stamp <= 0)
 		{
-			if(preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $time, $result))
+			if(preg_match("#\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}#", $date, $result))
 			{
-				$time = str_replace(array("T", "+"), array(" ", " +"), $time);
-				$time[23] = "";
+				$date = str_replace(array("T", "+"), array(" ", " +"), $date);
+				$date[23] = "";
 			}
-			$stamp = strtotime($time);
+			$stamp = strtotime($date);
 		}
 		return $stamp;
 	}

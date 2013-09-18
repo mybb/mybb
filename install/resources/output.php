@@ -29,6 +29,7 @@ class installerOutput {
 		@header("Content-type: text/html; charset=utf-8");
 
 		$this->doneheader = 1;
+		$dbconfig_add = '';
 		if($image == "dbconfig")
 		{
 			$dbconfig_add = "<script type=\"text/javascript\">document.write('<style type=\"text/css\">.db_type { display: none; }</style>');</script>";

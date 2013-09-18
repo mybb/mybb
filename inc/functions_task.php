@@ -126,6 +126,7 @@ function fetch_next_run($task)
 	$next_weekday = $current_weekday = date("w", $time);
 	$next_month = $current_month = date("m", $time);
 	$next_year = $current_year = date("Y", $time);
+	$reset_day = $reset_hour = $reset_month = $reset_year = 0;
 
 	if($task['minute'] == "*")
 	{

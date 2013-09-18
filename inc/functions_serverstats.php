@@ -151,6 +151,10 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		foreach($category as $name => $what)
 		{
+			if(!isset($info[$cat_name]))
+			{
+				$info[$cat_name] = 0;
+			}
 			switch($cat_name)
 			{
 				case "classes":
@@ -271,7 +275,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 
 	$return = array();
 	$return['info_sent_success'] = false;
-	if(fetch_remote_file($url) !== false)
+	if(fetch_remote_file($server_stats_url) !== false)
 	{
 		$return['info_sent_success'] = true;
 	}
