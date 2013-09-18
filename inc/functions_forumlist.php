@@ -428,6 +428,16 @@ function build_forumbits($pid=0, $depth=1)
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
 	}
+	
+	if(!isset($parent_lastpost))
+	{
+		$parent_lastpost = 0;
+	}
+	
+	if(!isset($lightbulb))
+	{
+		$lightbulb = '';
+	}
 
 	// Return an array of information to the parent forum including child forums list, counters and lastpost information
 	return array(

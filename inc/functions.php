@@ -1335,12 +1335,10 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	foreach($groups as $gid)
 	{
-		if($groupscache[$gid])
+		if(!empty($groupscache[$gid]))
 		{
-			$level_permissions = $fpermcache[$fid][$gid];
-
 			// If our permissions arn't inherited we need to figure them out
-			if(empty($level_permissions))
+			if(empty($fpermcache[$fid][$gid]))
 			{
 				$parents = explode(',', $forum_cache[$fid]['parentlist']);
 				rsort($parents);
@@ -1354,24 +1352,28 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 							break;
 						}
 					}
-
-					// If we STILL don't have forum permissions we use the usergroup itself
-					if(empty($level_permissions))
-					{
-						$level_permissions = $groupscache[$gid];
-					}
 				}
+			}
+			else
+			{
+				$level_permissions = $fpermcache[$fid][$gid];
+			}
+
+			// If we STILL don't have forum permissions we use the usergroup itself
+			if(empty($level_permissions))
+			{
+				$level_permissions = $groupscache[$gid];
 			}
 
 			foreach($level_permissions as $permission => $access)
 			{
-				if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
+				if(empty($current_permissions[$permission]) || $access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no"))
 				{
 					$current_permissions[$permission] = $access;
 				}
 			}
 
-			if($level_permissions["canview"] && !$level_permissions["canonlyviewownthreads"])
+			if($level_permissions["canview"] && empty($level_permissions["canonlyviewownthreads"]))
 			{
 				$only_view_own_threads = 0;
 			}
