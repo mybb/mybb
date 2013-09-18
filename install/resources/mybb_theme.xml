@@ -11709,7 +11709,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_usergroups_joinable" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="usercp_usergroups_joinable" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_joinable}</strong></td>
 </tr>
@@ -11769,12 +11769,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_usergroups_leader" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="usercp_usergroups_leader" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_leader}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="36%"><strong><span class="smalltext">{$lang->usergroup}</span></strong></td>
+<td class="tcat" width="36%"><strong><span class="smalltext">{$lang->usergroups_usergroup}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->usergroup_members}</span></strong></td>
 <td class="tcat" align="center" width="32%"><strong><span class="smalltext">{$lang->join_requests}</span></strong></td>
 </tr>
@@ -11786,7 +11786,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
-		<template name="usercp_usergroups_memberof" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
 </tr>
