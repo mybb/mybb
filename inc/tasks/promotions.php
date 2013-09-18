@@ -101,8 +101,6 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
-		$sql_where .= "{$and}lastactive >= '{$task['lastrun']}'";
-
 		$uid = array();
 		$log_inserts = array();
 
