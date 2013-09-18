@@ -3364,6 +3364,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
+	$latest_threads = '';
 	if(!empty($threadcache))
 	{
 		$tids = implode(",", array_keys($threadcache));
