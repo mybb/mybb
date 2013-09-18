@@ -40,34 +40,38 @@ else
 $attachment = $db->fetch_array($query);
 if(!$attachment)
 {
-	error($lang->error_invalidthread);
+	error($lang->error_invalidattachment);
 }
 $pid = $attachment['pid'];
 
-$post = get_post($pid);
-$thread = get_thread($post['tid']);
-
-if(!$thread && !isset($mybb->input['thumbnail']))
+// Don't check the permissions on preview
+if($pid || $attachment['uid'] != $mybb->user['uid'])
 {
-	error($lang->error_invalidthread);
-}
-$fid = $thread['fid'];
+	$post = get_post($pid);
+	$thread = get_thread($post['tid']);
 
-// Get forum info
-$forum = get_forum($fid);
+	if(!$thread && !isset($mybb->input['thumbnail']))
+	{
+		error($lang->error_invalidthread);
+	}
+	$fid = $thread['fid'];
 
-// Permissions
-$forumpermissions = forum_permissions($fid);
+	// Get forum info
+	$forum = get_forum($fid);
 
-if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
-{
-	error_no_permission();
-}
+	// Permissions
+	$forumpermissions = forum_permissions($fid);
 
-// Error if attachment is invalid or not visible
-if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
-{
-	error($lang->error_invalidattachment);
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']) || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
+	{
+		error_no_permission();
+	}
+
+	// Error if attachment is invalid or not visible
+	if(!$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
+	{
+		error($lang->error_invalidattachment);
+	}
 }
 
 if(!isset($mybb->input['thumbnail'])) // Only increment the download count if this is not a thumbnail
