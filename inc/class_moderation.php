@@ -1842,12 +1842,12 @@ class Moderation
 				if(isset($counters['num_posts']))
 				{
 					$updated_forum_stats['posts'] = "+{$counters['num_posts']}";
-					$updated_forum_stats['unapprovedposts'] = "+{$counters['num_posts']}";
+					$updated_forum_stats['unapprovedposts'] = "-{$counters['num_posts']}";
 				}
 				if(isset($counters['num_threads']))
 				{
 					$updated_forum_stats['threads'] = "+{$counters['num_threads']}";
-					$updated_forum_stats['unapprovedthreads'] = "+{$counters['num_threads']}";
+					$updated_forum_stats['unapprovedthreads'] = "-{$counters['num_threads']}";
 				}
 				if(!empty($updated_forum_stats))
 				{
