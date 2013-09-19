@@ -460,3 +460,58 @@
     $(this).modal();
   });
 })(jQuery);
+
+/*
+	Conversion of 1.6.x popup_menu.js
+*/
+(function($){
+	var currentPopup = '';
+	var PopupMenu = function(el)
+	{
+		var el = $(el);
+		var popup = this;
+		var popup_menu = $("#" + el.attr('id') + "_popup");
+
+		this.open = function(e)
+		{
+			if(currentPopup != '')
+			{
+				popup.close()
+			}
+
+			var offset = el.offset()
+			offset.top += el.outerHeight()
+
+			popup_menu.css({
+				display: 'block',
+				position: 'absolute',
+				top: offset.top,
+				left: offset.left
+			});
+
+			currentPopup = popup_menu;
+			$(document).mousedown(popup.close);
+		}
+		this.close = function(e)
+		{
+			if(e)
+			{
+				if($(e.target).parents().index(popup_menu) != -1)
+				{
+					return false;
+				}
+			}
+
+			$(currentPopup).css({ display: 'none' });
+			currentPopup = '';
+		}
+	}
+	$.fn.popupMenu = function(el)
+	{
+		return this.each(function()
+		{
+			var popup = new PopupMenu(this);
+			$(this).click(popup.open);
+		});
+	}
+})(jQuery);

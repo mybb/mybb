@@ -97,8 +97,8 @@ class DefaultPage
 		}
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/jquery.plugins.min.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
@@ -929,7 +929,7 @@ class DefaultPopupMenu
 			$popup .= "<a href=\"javascript:;\" id=\"{$this->_id}\" class=\"popup_button\">{$this->_title}</a>\n";
 		}
 		$popup .= "<script type=\"text/javascript\">\n";
-		$popup .= "new PopupMenu('{$this->_id}');\n";
+		$popup .= "$(\"#{$this->_id}\").popupMenu();\n";
 		$popup .= "</script>\n";
 		return $popup;
 	}
