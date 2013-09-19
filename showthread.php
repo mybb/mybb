@@ -107,7 +107,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
