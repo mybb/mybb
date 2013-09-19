@@ -496,7 +496,7 @@
 		{
 			if(e)
 			{
-				if($(e.target).parents().index(popup_menu) != -1)
+				if($(e.target).parents().index(currentPopup) != -1)
 				{
 					return false;
 				}
