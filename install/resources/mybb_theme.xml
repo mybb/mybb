@@ -7636,14 +7636,14 @@ body {
 <span class="pages">{$lang->multipage_pages}</span>
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
 </div>]]></template>
-		<template name="multipage_breadcrumb" version="1600"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
+		<template name="multipage_breadcrumb" version="1800"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
 </div>
 <script type="text/javascript">
 // <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new PopupMenu("breadcrumb_multipage");
+		$("#breadcrumb_multipage").popupMenu();
 	}
 // -->
 </script>]]></template>
@@ -8422,7 +8422,7 @@ body {
 // <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new PopupMenu("edit_post_{$post['pid']}");
+		$("#edit_post_{$post['pid']}").popupMenu();
 	}
 // -->
 </script>]]></template>
@@ -8884,11 +8884,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt=""/></td>
 </tr>
     ]]></template>
-		<template name="private_multiple_recipients" version="1400"><![CDATA[<a href="private.php?action=read&amp;pmid={$message['pmid']}" id="private_message_{$message['pmid']}">{$lang->multiple_recipients}</a>
+		<template name="private_multiple_recipients" version="1800"><![CDATA[<a href="private.php?action=read&amp;pmid={$message['pmid']}" id="private_message_{$message['pmid']}">{$lang->multiple_recipients}</a>
 		<div id="private_message_{$message['pmid']}_popup" class="popup_menu" style="display: none;"><div class="tcat"><strong>{$lang->to}</strong></div>{$to_users}{$bcc_users}</div>
 <script type="text/javascript">
 <!--
-	new PopupMenu("private_message_{$message['pmid']}");
+	$("#private_message_{$message['pmid']}").popupMenu();
 // -->
 </script>]]></template>
 		<template name="private_multiple_recipients_bcc" version="1400"><![CDATA[<div class="tcat"><strong>{$lang->bcc}</strong></div>]]></template>

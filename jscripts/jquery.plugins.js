@@ -23,7 +23,6 @@
 		$('#jGrowl').jGrowl(m,o);
 	};
 
-
 	/** Raise jGrowl Notification on a jGrowl Container **/
 	$.fn.jGrowl = function( m , o ) {
 		if ( $.isFunction(this.each) ) {
@@ -47,7 +46,6 @@
 	};
 
 	$.extend( $.fn.jGrowl.prototype , {
-
 		/** Default JGrowl Settings **/
 		defaults: {
 			pool:				0,
@@ -474,13 +472,15 @@
 
 		this.open = function(e)
 		{
+			event.preventDefault();
+
 			if(currentPopup != '')
 			{
-				popup.close()
+				popup.close();
 			}
 
-			var offset = el.offset()
-			offset.top += el.outerHeight()
+			var offset = el.offset();
+			offset.top += el.outerHeight();
 
 			popup_menu.css({
 				display: 'block',
@@ -510,6 +510,7 @@
 	{
 		return this.each(function()
 		{
+			alert($(this).attr("id"));
 			var popup = new PopupMenu(this);
 			$(this).click(popup.open);
 		});
