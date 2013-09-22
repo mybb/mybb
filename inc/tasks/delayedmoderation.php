@@ -224,6 +224,31 @@ function task_delayedmoderation($task)
 						$moderation->approve_threads($unapproved_tids);
 					}
 					break;
+				case "softdeleterestorethread":
+					$delete_tids = $restore_tids = array();
+					$query2 = $db->simple_select("threads", "tid,visible", "tid IN({$delayedmoderation['tids']})");
+					while($thread = $db->fetch_array($query2))
+					{
+						if($thread['visible'] == -1)
+						{
+							$restore_tids[] = $thread['tid'];
+						}
+						else
+						{
+							$delete_tids[] = $thread['tid'];
+						}
+					}
+
+					if(!empty($restore_tids))
+					{
+						$moderation->restore_threads($restore_tids);
+					}
+
+					if(!empty($delete_tids))
+					{
+						$moderation->soft_delete_threads($delete_tids);
+					}
+					break;
 			}
 		}
 

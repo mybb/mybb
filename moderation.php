@@ -157,7 +157,7 @@ switch($mybb->input['action'])
 		$errors = array();
 		$customthreadtools = "";
 
-		$allowed_types = array('openclosethread', 'deletethread', 'move', 'stick', 'merge', 'removeredirects', 'removesubscriptions', 'approveunapprovethread');
+		$allowed_types = array('openclosethread', 'softdeleterestorethread', 'deletethread', 'move', 'stick', 'merge', 'removeredirects', 'removesubscriptions', 'approveunapprovethread');
 		
 		$mybb->input['type'] = $mybb->get_input('type');
 
@@ -335,6 +335,7 @@ switch($mybb->input['action'])
 
 		$actions = array(
 			'openclosethread' => $lang->open_close_thread,
+			'softdeleterestorethread' => $lang->softdelete_restore_thread,
 			'deletethread' => $lang->delete_thread,
 			'move' => $lang->move_copy_thread,
 			'stick' => $lang->stick_unstick_thread,
@@ -744,6 +745,50 @@ switch($mybb->input['action'])
 		$moderation->unapprove_threads($tid);
 
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadunapproved);
+		break;
+
+	// Restore a thread
+	case "restorethread":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if(!is_moderator($fid, "canrestore"))
+		{
+			error_no_permission();
+		}
+		$thread = get_thread($tid);
+
+		$plugins->run_hooks("moderation_restorethread");
+
+		$lang->thread_restored = $lang->sprintf($lang->thread_restored, $thread['subject']);
+		log_moderator_action($modlogdata, $lang->thread_restored);
+
+		$moderation->restore_threads($tid, $fid);
+
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadrestored);
+		break;
+
+	// Soft delete a thread
+	case "softdeletethread":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if(!is_moderator($fid, "cansoftdelete"))
+		{
+			error_no_permission();
+		}
+		$thread = get_thread($tid);
+
+		$plugins->run_hooks("moderation_softdeletethread");
+
+		$lang->thread_soft_deleted = $lang->sprintf($lang->thread_soft_deleted, $thread['subject']);
+		log_moderator_action($modlogdata, $lang->thread_soft_deleted);
+
+		$moderation->soft_delete_threads($tid);
+
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadsoftdeleted);
 		break;
 
 	// Delete selective posts in a thread
@@ -1679,6 +1724,92 @@ switch($mybb->input['action'])
 		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsunapproved);
 		break;
 
+	// Restore threads - Inline moderation
+	case "multirestorethreads":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if(!empty($mybb->input['searchid']))
+		{
+			// From search page
+			$threads = getids($mybb->get_input('searchid'), 'search');
+			if(!is_moderator_by_tids($threads, 'canrestore'))
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canrestore'))
+			{
+				error_no_permission();
+			}
+		}
+		if(count($threads) < 1)
+		{
+			error($lang->error_inline_nothreadsselected);
+		}
+
+		$moderation->restore_threads($threads, $fid);
+
+		log_moderator_action($modlogdata, $lang->multi_restored_threads);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', 1), 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		$cache->update_stats();
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsrestored);
+		break;
+
+	// Soft delete threads - Inline moderation
+	case "multisoftdeletethreads":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if(!empty($mybb->input['searchid']))
+		{
+			// From search page
+			$threads = getids($mybb->get_input('searchid'), 'search');
+			if(!is_moderator_by_tids($threads, 'cansoftdelete'))
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'cansoftdelete'))
+			{
+				error_no_permission();
+			}
+		}
+		if(count($threads) < 1)
+		{
+			error($lang->error_inline_nothreadsselected);
+		}
+
+		$moderation->soft_delete_threads($threads, $fid);
+
+		log_moderator_action($modlogdata, $lang->multi_soft_deleted_threads);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', 1), 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		$cache->update_stats();
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadssoftdeleted);
+		break;
+
 	// Stick threads - Inline moderation
 	case "multistickthreads":
 
@@ -2572,6 +2703,94 @@ switch($mybb->input['action'])
 			clearinline($tid, 'thread');
 		}
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsunapproved);
+		break;
+
+	// Restore posts - Inline moderation
+	case "multirestoreposts":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
+
+		if(!is_moderator_by_pids($posts, "canrestore"))
+		{
+			error_no_permission();
+		}
+
+		$pids = array();
+		foreach($posts as $pid)
+		{
+			$pids[] = intval($pid);
+		}
+
+		$moderation->restore_posts($pids);
+
+		log_moderator_action($modlogdata, $lang->multi_restore_posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', 1), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsrestored);
+		break;
+
+	// Soft delete posts - Inline moderation
+	case "multisoftdeleteposts":
+
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			$posts = getids($mybb->get_input('searchid'), 'search');
+		}
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
+
+		if(count($posts) < 1)
+		{
+			error($lang->error_inline_nopostsselected);
+		}
+		$pids = array();
+
+		if(!is_moderator_by_pids($posts, "cansoftdelete"))
+		{
+			error_no_permission();
+		}
+		foreach($posts as $pid)
+		{
+			$pids[] = intval($pid);
+		}
+
+		$moderation->soft_delete_posts($pids);
+
+		log_moderator_action($modlogdata, $lang->multi_soft_delete_posts);
+		if($mybb->get_input('inlinetype') == 'search')
+		{
+			clearinline($mybb->get_input('searchid', 1), 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postssoftdeleted);
 		break;
 	default:
 		require_once MYBB_ROOT."inc/class_custommoderation.php";

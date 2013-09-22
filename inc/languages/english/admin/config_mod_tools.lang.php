@@ -63,6 +63,8 @@ $l['unstick'] = "Unstick";
 $l['toggle'] = "Toggle";
 $l['days'] = "Days";
 $l['no_prefix'] = "No Prefix";
+$l['restore'] = "Restore";
+$l['softdelete'] = "Soft delete";
 
 $l['forum_to_move_to'] = "Forum to move to:";
 $l['leave_redirect'] = "Leave redirect?";
@@ -75,7 +77,8 @@ $l['forum_to_copy_to'] = "Forum to copy to:";
 $l['copy_thread'] = "Copy thread?";
 $l['open_close_thread'] = "Open/close thread?";
 $l['stick_unstick_thread'] = "Stick/unstick thread?";
-$l['delete_thread'] = "Delete thread?";
+$l['softdelete_restore_thread'] = "Soft delete/restore thread?";
+$l['delete_thread'] = "Delete thread permanently?";
 $l['merge_thread'] = "Merge thread?";
 $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
@@ -93,10 +96,11 @@ $l['success_mod_tool_created'] = "The moderation tool has been created successfu
 $l['success_mod_tool_updated'] = "The moderation tool has been updated successfully.";
 
 $l['inline_post_moderation'] = "Inline Post Moderation";
-$l['delete_posts'] = "Delete posts?";
+$l['delete_posts'] = "Delete posts permanently?";
 $l['merge_posts'] = "Merge posts?";
 $l['merge_posts_desc'] = "Only if used from inline moderation.";
 $l['approve_unapprove_posts'] = "Approve/unapprove posts?";
+$l['softdelete_restore_posts'] = "Soft delete/restore posts?";
 
 $l['split_posts'] = "Split Posts";
 $l['split_posts2'] = "Split posts?";

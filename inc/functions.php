@@ -1837,7 +1837,14 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	global $mybb;
 
 	$cookie = $mybb->cookies['mybb'];
-	$newcookie = my_unserialize($cookie[$name]);
+	if(isset($cookie[$name]))
+	{
+		$newcookie = my_unserialize($cookie[$name]);
+	}
+	else
+	{
+		$newcookie = array();
+	}
 
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
@@ -2027,7 +2034,7 @@ function update_stats($changes=array())
  * Updates the forum counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The forum ID
- * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts, deletedthreads) and their value (ex, 1, +1, -1)
  */
 function update_forum_counters($fid, $changes=array())
 {
@@ -2035,7 +2042,7 @@ function update_forum_counters($fid, $changes=array())
 
 	$update_query = array();
 
-	$counters = array('threads','unapprovedthreads','posts','unapprovedposts');
+	$counters = array('threads', 'unapprovedthreads', 'posts' ,'unapprovedposts', 'deletedthreads');
 
 	// Fetch above counters for this forum
 	$query = $db->simple_select("forums", implode(",", $counters), "fid='{$fid}'");
@@ -2070,7 +2077,7 @@ function update_forum_counters($fid, $changes=array())
 	}
 
 	// Guess we should update the statistics too?
-	if(isset($update_query['threads']) || isset($update_query['posts']) || isset($update_query['unapprovedthreads']) || isset($update_query['unapprovedposts']))
+	if(isset($update_query['threads']) || isset($update_query['posts']) || isset($update_query['unapprovedthreads']) || isset($update_query['unapprovedposts']) || isset($update_query['deletedthreads']))
 	{
 		$new_stats = array();
 		if(array_key_exists('threads', $update_query))
@@ -2124,6 +2131,19 @@ function update_forum_counters($fid, $changes=array())
 				$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
 			}
 		}
+
+		if(array_key_exists('deletedthreads', $update_query))
+		{
+			$deletedthreads_diff = $update_query['deletedthreads'] - $forum['deletedthreads'];
+			if($unapprovedposts_diff > -1)
+			{
+				$new_stats['deletedthreads'] = "+{$deletedthreads_diff}";
+			}
+			else
+			{
+				$new_stats['deletedthreads'] = "{$deletedthreads_diff}";
+			}
+		}
 		update_stats($new_stats);
 	}
 
@@ -2165,7 +2185,7 @@ function update_forum_lastpost($fid)
  * Updates the thread counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The thread ID
- * @param array Array of items being updated (replies, unapprovedposts, attachmentcount) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (replies, unapprovedposts, deletedposts, attachmentcount) and their value (ex, 1, +1, -1)
  */
 function update_thread_counters($tid, $changes=array())
 {
@@ -2173,7 +2193,7 @@ function update_thread_counters($tid, $changes=array())
 
 	$update_query = array();
 
-	$counters = array('replies','unapprovedposts','attachmentcount', 'attachmentcount');
+	$counters = array('replies', 'unapprovedposts', 'attachmentcount', 'deletedposts', 'attachmentcount');
 
 	// Fetch above counters for this thread
 	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");

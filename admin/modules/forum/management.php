@@ -313,7 +313,9 @@ if($mybb->input['action'] == "editmod")
 				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
 				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
 				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
-				'canusecustomtools' => intval($mybb->input['canusecustomtools'])
+				'canusecustomtools' => intval($mybb->input['canusecustomtools']),
+				'cansoftdelete' => intval($mybb->input['cansoftdelete']),
+				'canrestore' => intval($mybb->input['canrestore'])
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 
@@ -372,7 +374,9 @@ if($mybb->input['action'] == "editmod")
 		$form->generate_check_box('canopenclosethreads', 1, $lang->can_open_close_threads, array('checked' => $mod_data['canopenclosethreads'], 'id' => 'canopenclosethreads')),
 		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
 		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum')),
-		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools'))
+		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools')),
+		$form->generate_check_box('cansoftdelete', 1, $lang->can_soft_delete, array('checked' => $mod_data['cansoftdelete'], 'id' => 'cansoftdelete')),
+		$form->generate_check_box('canrestore', 1, $lang->can_restore, array('checked' => $mod_data['canrestore'], 'id' => 'canrestore'))
 	);
 
 	$form_container->output_row($lang->moderator_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_permissions)."</div>");
@@ -2133,7 +2137,9 @@ if(!$mybb->input['action'])
 						"canopenclosethreads" => 1,
 						"canmanagethreads" => 1,
 						"canmovetononmodforum" => 1,
-						"canusecustomtools" => 1
+						"canusecustomtools" => 1,
+						"cansoftdelete" => 1,
+						"canrestore" => 1
 					);
 
 					$mid = $db->insert_query("moderators", $new_mod);

@@ -253,6 +253,7 @@ $tables[] = "CREATE TABLE mybb_forums (
 	rules TEXT NOT NULL,
 	unapprovedthreads int(10) NOT NULL default '0',
 	unapprovedposts int(10) NOT NULL default '0',
+	deletedthreads int(10) NOT NULL default '0',
 	defaultdatecut smallint(4) NOT NULL default '0',
 	defaultsortby varchar(10) NOT NULL default '',
 	defaultsortorder varchar(4) NOT NULL default ''
@@ -387,7 +388,9 @@ $tables[] = "CREATE TABLE mybb_moderators (
 	canopenclosethreads int(1) NOT NULL default '0',
 	canmanagethreads int(1) NOT NULL default '0',
 	canmovetononmodforum int(1) NOT NULL default '0',
-	canusecustomtools int(1) NOT NULL default '0'
+	canusecustomtools int(1) NOT NULL default '0',
+	cansoftdelete int(1) NOT NULL default '0',
+	canrestore int(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_modtools (
@@ -731,6 +734,7 @@ $tables[] = "CREATE TABLE mybb_threads (
 	notes TEXT NOT NULL,
 	visible int(1) NOT NULL default '0',
 	unapprovedposts int(10) NOT NULL default '0',
+	deletedposts int(10) NOT NULL default '0',
 	attachmentcount int(10) NOT NULL default '0',
 	deletetime int(10) NOT NULL default '0'
 );";

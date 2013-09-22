@@ -165,6 +165,19 @@ class CustomModeration extends Moderation
 				$this->toggle_post_visibility($pids);
 			}
 
+			if($post_options['softdelete'] == 'softdelete') // Soft delete posts
+			{
+				$this->soft_delete_posts($pids);
+			}
+			elseif($post_options['softdelete'] == 'restore') // Restore posts
+			{
+				$this->restore_posts($pids);
+			}
+			elseif($post_options['softdelete'] == 'toggle') // Toggle post visibility
+			{
+				$this->toggle_post_softdelete($pids);
+			}
+
 			if($post_options['splitposts'] > 0 || $post_options['splitposts'] == -2) // Split posts
 			{
 				$query = $db->simple_select("posts", "COUNT(*) AS totalposts", "tid='{$tid}'");
@@ -313,6 +326,19 @@ class CustomModeration extends Moderation
 			elseif($thread_options['approvethread'] == 'toggle') // Toggle thread visibility
 			{
 				$this->toggle_thread_visibility($tids, $thread['fid']);
+			}
+
+			if($thread_options['softdelete'] == 'softdelete') // Soft delete thread
+			{
+				$this->soft_delete_threads($tids, $thread['fid']);
+			}
+			elseif($thread_options['softdelete'] == 'restore') // Restore thread
+			{
+				$this->restore_threads($tids, $thread['fid']);
+			}
+			elseif($thread_options['softdelete'] == 'toggle') // Toggle thread visibility
+			{
+				$this->toggle_thread_softdelete($tids, $thread['fid']);
 			}
 
 			if($thread_options['openthread'] == 'open') // Open thread

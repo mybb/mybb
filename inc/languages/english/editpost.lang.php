@@ -39,7 +39,10 @@ $l['redirect_postdeleted'] = "Thank you, the post has been deleted.<br />You wil
 $l['redirect_threadclosed'] = "You cannot edit existing posts in this thread because it has been closed by a moderator.";
 $l['redirect_post_moderation'] = "The administrator has specified that all editing of posts require moderation. You will now be returned to the thread.";
 $l['redirect_thread_moderation'] = "The administrator has specified that all editing of threads require moderation. You will now be returned to the forum index.";
+$l['error_already_delete'] = "Sorry, but this post is already deleted.";
 
-$l['thread_deleted'] = "Deleted Thread";
-$l['post_deleted'] = "Deleted Post";
+$l['thread_deleted'] = "Deleted Thread Permanently";
+$l['post_deleted'] = "Deleted Post Permanently";
+$l['thread_soft_deleted'] = "Soft Deleted Thread";
+$l['post_soft_deleted'] = "Soft Deleted Post";
 ?>

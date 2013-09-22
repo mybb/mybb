@@ -91,14 +91,11 @@ if(!$thread['username'])
 	$thread['username'] = $lang->guest;
 }
 
-$visibleonly = "AND visible='1'";
-$visibleonly2 = "AND p.visible='1' AND t.visible='1'";
-
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
-	$visibleonly = " AND (visible='1' OR visible='0')";
-	$visibleonly2 = "AND (p.visible='1' OR p.visible='0') AND (t.visible='1' OR t.visible='0')";
+	$visibleonly = " AND visible IN (-1,0,1)";
+	$visibleonly2 = "AND p.visible IN (-1,0,1) AND t.visible IN (-1,0,1)";
 	$ismod = true;
 }
 else
@@ -613,13 +610,22 @@ if($mybb->input['action'] == "thread")
 			$adminpolloptions = "<option value=\"deletepoll\">".$lang->delete_poll."</option>";
 		}
 
-		if($thread['visible'] != 1)
+		if($thread['visible'] == 0)
 		{
 			$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
 		}
 		else
 		{
 			$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
+		}
+
+		if($thread['visible'] == -1)
+		{
+			$softdeletethread = "<option value=\"restorethread\">".$lang->restore_thread."</option>";
+		}
+		else
+		{
+			$softdeletethread = "<option value=\"softdeletethread\">".$lang->soft_delete_thread."</option>";
 		}
 
 		if($thread['closed'] == 1)
@@ -695,7 +701,7 @@ if($mybb->input['action'] == "thread")
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
 	if($ismod)
 	{
-		$visible = "AND (p.visible='0' OR p.visible='1')";
+		$visible = "AND p.visible IN (-1,0,1)";
 	}
 	else
 	{
@@ -857,7 +863,7 @@ if($mybb->input['action'] == "thread")
 		if($ismod)
 		{
 			$query = $db->simple_select("posts p", "COUNT(*) AS replies", "p.tid='$tid' $visible");
-			$cached_replies = $thread['replies']+$thread['unapprovedposts'];
+			$cached_replies = $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts'];
 			$thread['replies'] = $db->fetch_field($query, 'replies')-1;
 
 			// The counters are wrong? Rebuild them

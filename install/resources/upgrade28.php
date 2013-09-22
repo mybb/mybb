@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.6.10
+ * Upgrade Script: 1.6.11
  */
 
 $upgrade_detail = array(
@@ -21,7 +21,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade27_dbchanges()
+function upgrade28_dbchanges()
 {
 	global $cache, $output, $mybb, $db;
 
@@ -95,6 +95,26 @@ function upgrade27_dbchanges()
 		$db->drop_column("adminsessions", "useragent");
 	}
 
+	if($db->field_exists('deletedthreads', 'forums'))
+	{
+		$db->drop_column("forums", "deletedthreads");
+	}
+
+	if($db->field_exists('cansoftdelete', 'moderators'))
+	{
+		$db->drop_column("moderators", "cansoftdelete");
+	}
+
+	if($db->field_exists('canrestore', 'moderators'))
+	{
+		$db->drop_column("moderators", "canrestore");
+	}
+
+	if($db->field_exists('deletedposts', 'threads'))
+	{
+		$db->drop_column("threads", "deletedposts");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -108,6 +128,10 @@ function upgrade27_dbchanges()
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
+			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -119,6 +143,10 @@ function upgrade27_dbchanges()
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
+			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			break;
 	}
 
@@ -174,10 +202,10 @@ function upgrade27_dbchanges()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("27_dbchanges_ip");
+	$output->print_footer("28_dbchanges_ip");
 }
 
-function upgrade27_dbchanges_ip()
+function upgrade28_dbchanges_ip()
 {
 	global $mybb, $db, $output;
 
@@ -562,7 +590,7 @@ function upgrade27_dbchanges_ip()
 	if($next_task == 9)
 	{
 		$contents = "<p>Click next to continue with the upgrade process.</p>";
-		$nextact = "27_updatetheme";
+		$nextact = "28_updatetheme";
 	}
 	else
 	{
@@ -570,7 +598,7 @@ function upgrade27_dbchanges_ip()
 	
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
-		$nextact = "27_dbchanges_ip";
+		$nextact = "28_dbchanges_ip";
 	}
 
 	$output->print_contents($contents);
@@ -578,7 +606,7 @@ function upgrade27_dbchanges_ip()
 	$output->print_footer($nextact);
 }
 
-function upgrade27_updatetheme()
+function upgrade28_updatetheme()
 {
 	global $db, $mybb, $output;
 
@@ -695,6 +723,6 @@ function upgrade27_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("27_done");
+	$output->print_footer("28_done");
 }
 ?>

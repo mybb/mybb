@@ -48,6 +48,7 @@ if($mybb->request_method == "post")
 
 	if(is_array($mybb->input['threads']))
 	{
+		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
 		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads'])))."){$flist}");
 		while($thread = $db->fetch_array($query))
@@ -57,14 +58,22 @@ if($mybb->request_method == "post")
 			{
 				$threads_to_approve[] = $thread['tid'];
 			}
-			else if($action == "delete")
+			else if($action == "delete" && $mybb->settings['soft_delete'] != 1)
 			{
 				$moderation->delete_thread($thread['tid']);
 			}
+			else if($action == "delete")
+			{
+				$threads_to_delete[] = $thread['tid'];
+			}
 		}
-		if(is_array($threads_to_approve))
+		if(!empty($threads_to_approve))
 		{
 			$moderation->approve_threads($threads_to_approve);
+		}
+		if(!empty($threads_to_delete))
+		{
+			$moderation->soft_delete_threads($threads_to_delete);
 		}
 
 		$plugins->run_hooks("admin_forum_moderation_queue_threads_commit");
@@ -77,6 +86,7 @@ if($mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['posts']))
 	{
+		$posts_to_approve = $posts_to_delete = array();
 		// Fetch posts
 		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts'])))."){$flist}");
 		while($post = $db->fetch_array($query))
@@ -86,14 +96,22 @@ if($mybb->request_method == "post")
 			{
 				$posts_to_approve[] = $post['pid'];
 			}
-			else if($action == "delete")
+			else if($action == "delete" && $mybb->settings['soft_delete'] != 1)
 			{
 				$moderation->delete_post($post['pid']);
 			}
+			else if($action == "delete")
+			{
+				$posts_to_delete[] = $post['pid'];
+			}
 		}
-		if(is_array($posts_to_approve))
+		if(!empty($posts_to_approve))
 		{
 			$moderation->approve_posts($posts_to_approve);
+		}
+		if(!empty($posts_to_delete))
+		{
+			$moderation->soft_delete_posts($posts_to_delete);
 		}
 
 		$plugins->run_hooks("admin_forum_moderation_queue_posts_commit");

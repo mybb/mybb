@@ -1288,7 +1288,7 @@ if($mybb->input['action'] == "subscriptions")
 		SELECT COUNT(ts.tid) as threads
 		FROM ".TABLE_PREFIX."threadsubscriptions ts
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
-		WHERE ts.uid = '".$mybb->user['uid']."' {$visible}
+		WHERE ts.uid = '".$mybb->user['uid']."' AND t.visible >= 0 {$visible}
 	");
 	$threadcount = $db->fetch_field($query, "threads");
 
@@ -1332,7 +1332,7 @@ if($mybb->input['action'] == "subscriptions")
 		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE s.uid='".$mybb->user['uid']."' {$visible}
+		WHERE s.uid='".$mybb->user['uid']."' and t.visible >= 0 {$visible}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
@@ -3341,7 +3341,7 @@ if(!$mybb->input['action'])
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible != '-2' {$visible} {$f_perm_sql}
+		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible} {$f_perm_sql}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");

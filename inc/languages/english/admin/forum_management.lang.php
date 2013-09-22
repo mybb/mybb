@@ -75,6 +75,8 @@ $l['can_open_close_threads'] = "Can open/close and stick/unstick threads?";
 $l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
+$l['can_soft_delete'] = "Can soft delete?";
+$l['can_restore'] = "Can restore soft deleted post?";
 $l['save_mod'] = "Save Moderator";
 
 $l['no_forums'] = "There are no forums found.";

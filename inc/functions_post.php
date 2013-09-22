@@ -46,6 +46,10 @@ function build_postbit($post, $post_type=0)
 	{
 		$altbg = $unapproved_shade = 'unapproved_post';
 	}
+	elseif(isset($post['visible']) && $post['visible'] == -1 && $post_type == 0)
+	{
+		$altbg = $unapproved_shade = 'unapproved_post deleted_post';
+	}
 	elseif($altbg == 'trow1')
 	{
 		$altbg = 'trow2';

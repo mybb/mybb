@@ -27,7 +27,7 @@ $tid = $mybb->get_input('tid', 1);
 $thread = get_thread($tid);
 
 // Invalid thread
-if(!$thread)
+if(!$thread || $thread['visible'] != 1)
 {
 	error($lang->error_invalidthread);
 }

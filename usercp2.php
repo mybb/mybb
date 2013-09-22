@@ -40,10 +40,27 @@ if($mybb->input['action'] == "do_addsubscription")
 	if($mybb->get_input('type') != "forum")
 	{
 		$thread = get_thread($mybb->get_input('tid'));
-		if(!$thread['tid'])
+		if(!$thread)
 		{
 			error($lang->error_invalidthread);
 		}
+
+		// Is the currently logged in user a moderator of this forum?
+		if(is_moderator($thread['fid']))
+		{
+			$ismod = true;
+		}
+		else
+		{
+			$ismod = false;
+		}
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
 		$forumpermissions = forum_permissions($thread['fid']);
 		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 		{
@@ -94,6 +111,23 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			error($lang->error_invalidthread);
 		}
+
+		// Is the currently logged in user a moderator of this forum?
+		if(is_moderator($thread['fid']))
+		{
+			$ismod = true;
+		}
+		else
+		{
+			$ismod = false;
+		}
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
 		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
 		add_breadcrumb($lang->nav_addsubscription);
 
@@ -154,6 +188,23 @@ elseif($mybb->input['action'] == "removesubscription")
 		{
 			error($lang->error_invalidthread);
 		}
+
+		// Is the currently logged in user a moderator of this forum?
+		if(is_moderator($thread['fid']))
+		{
+			$ismod = true;
+		}
+		else
+		{
+			$ismod = false;
+		}
+
+		// Make sure we are looking at a real thread here.
+		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+		{
+			error($lang->error_invalidthread);
+		}
+
 		remove_subscribed_thread($thread['tid']);
 		if($server_http_referer)
 		{

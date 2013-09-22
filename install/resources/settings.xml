@@ -252,6 +252,15 @@ email=Sent via Email]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="soft_delete">
+			<title>Enable Soft Delete</title>
+			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
+			<disporder>26</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
 		<setting name="seourls">

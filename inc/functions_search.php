@@ -939,14 +939,24 @@ function perform_search_mysql($search)
 				$plain_post_visiblesql = " AND visible = '1'";
 			}
 		}
-		else
+		elseif($search['visible'] == -1)
 		{
-			$visiblesql = " AND t.visible != '1'";
+			$visiblesql = " AND t.visible = '-1'";
 
 			if($search['postthread'] == 1)
 			{
-				$post_visiblesql = " AND p.visible != '1'";
-				$plain_post_visiblesql = " AND visible != '1'";
+				$post_visiblesql = " AND p.visible = '-1'";
+				$plain_post_visiblesql = " AND visible = '-1'";
+			}
+		}
+		else
+		{
+			$visiblesql = " AND t.visible == '0'";
+
+			if($search['postthread'] == 1)
+			{
+				$post_visiblesql = " AND p.visible == '0'";
+				$plain_post_visiblesql = " AND visible == '0'";
 			}
 		}
 	}
@@ -1297,6 +1307,16 @@ function perform_search_mysql_ft($search)
 			{
 				$post_visiblesql = " AND p.visible = '1'";
 				$plain_post_visiblesql = " AND visible = '1'";
+			}
+		}
+		elseif($search['visible'] == -1)
+		{
+			$visiblesql = " AND t.visible = '-1'";
+
+			if($search['postthread'] == 1)
+			{
+				$post_visiblesql = " AND p.visible = '-1'";
+				$plain_post_visiblesql = " AND visible = '-1'";
 			}
 		}
 		else

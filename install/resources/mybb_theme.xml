@@ -382,6 +382,10 @@ table {
 	border-top-color: #ffb8be;
 }
 
+.trow_deleted, .post.deleted_post {
+	background: #E8DEFF;
+}
+
 .trow_selected {
 	background: #FFFBD9;
 	color: #000;
@@ -3311,6 +3315,8 @@ a.button {
 		<option value="multiopenthreads">{$lang->open_threads}</option>
 		<option value="multistickthreads">{$lang->stick_threads}</option>
 		<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+		<option value="multisoftdeletethreads">{$lang->soft_delete_threads}</option>
+		<option value="multirestorethreads">{$lang->restore_threads}</option>
 		<option value="multideletethreads">{$lang->delete_threads}</option>
 		<option value="multimovethreads">{$lang->move_threads}</option>
 		<option value="multiapprovethreads">{$lang->approve_threads}</option>
@@ -7070,6 +7076,7 @@ body {
 </script>
 <dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
 	<dt><input type="radio" name="type" value="openclosethread" {$type_selected['openclosethread']} id="type_openclosethread" onclick="toggleType();" /> <label for="type_openclosethread"><strong>{$lang->open_close_thread}</strong></label></dt>
+	<dt><input type="radio" name="type" value="softdeleterestorethread" {$type_selected['softdeleterestorethread']} id="type_softdeleterestorethread" onclick="toggleType();" /> <label for="type_softdeleterestorethread"><strong>{$lang->softdelete_restore_thread}</strong></label></dt>
 	<dt><input type="radio" name="type" value="deletethread" {$type_selected['deletethread']} id="type_deletethread" onclick="toggleType();" /> <label for="type_deletethread"><strong>{$lang->delete_thread}</strong></label></dt>
 	<dt><input type="radio" name="type" value="move" {$type_selected['move']} id="type_movecopythread" onclick="toggleType();" /> <label for="type_movecopythread"><strong>{$lang->move_copy_thread}</strong></label></dt>
 	<dd style="margin-top: 4px;" id="type_movecopythread_expanded">
@@ -8463,7 +8470,7 @@ body {
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$lang->postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--
-	$('quick_delete_{$post['pid']}').style.display = '';
+	$('#quick_delete_{$post['pid']}').css('display', '');
 // -->
 </script>]]></template>
 		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
@@ -9666,7 +9673,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>
 ]]></template>
-		<template name="search_moderator_options" version="1600"><![CDATA[<tr>
+		<template name="search_moderator_options" version="1800"><![CDATA[<tr>
 <td class="tcat"><strong>{$lang->mod_options}</strong></td>
 </tr>
 <tr>
@@ -9674,7 +9681,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <select name="visible">
 <option value="">{$lang->find_all}</option>
 <option value="1">{$lang->find_only_approved}</option>
-<option value="-1">{$lang->find_only_unapproved}</option>
+<option value="0">{$lang->find_only_unapproved}</option>
+<option value="-1">{$lang->find_only_softdeleted}</option>
 </select> {$lang->results}
 </td>
 </tr>
@@ -9737,6 +9745,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action">
 <optgroup label="{$lang->standard_mod_tools}">
+	<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>
+	<option value="multirestoreposts">{$lang->inline_restore_posts}</option>
 	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
 	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
@@ -10017,6 +10027,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action">
 <optgroup label="{$lang->standard_mod_tools}">
+	<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>
+	<option value="multirestoreposts">{$lang->inline_restore_posts}</option>
 	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
 	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
 	<option value="multisplitposts">{$lang->inline_split_posts}</option>
@@ -10051,6 +10063,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<optgroup label="{$lang->standard_mod_tools}">
 			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>
 			<option value="openclosethread">{$lang->open_close_thread}</option>
+			{$softdeletethread}
 			<option value="deletethread">{$lang->delete_thread}</option>
 			{$adminpolloptions}
 			<option value="deleteposts">{$lang->delete_posts}</option>

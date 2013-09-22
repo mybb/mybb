@@ -1629,9 +1629,14 @@ class PostDataHandler extends DataHandler
 			$first_post = false;
 		}
 
+		// Keep visibility for unapproved and deleted posts
 		if($existing_post['visible'] == 0)
 		{
 			$visible = 0;
+		}
+		elseif($existing_post['visible'] == -1)
+		{
+			$visible = -1;
 		}
 
 		// Update the thread details that might have been changed first.

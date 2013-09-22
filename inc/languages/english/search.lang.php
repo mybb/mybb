@@ -69,7 +69,9 @@ $l['delete_threads'] = "Delete Threads";
 $l['move_threads'] = "Move Threads";
 $l['approve_threads'] = "Approve Threads";
 $l['unapprove_threads'] = "Unapprove Threads";
-$l['inline_delete_posts'] = "Delete Posts";
+$l['inline_soft_delete_posts'] = "Soft Delete Posts";
+$l['inline_restore_posts'] = "Restore Posts";
+$l['inline_delete_posts'] = "Delete Posts Permanently";
 $l['inline_merge_posts'] = "Merge Posts";
 $l['inline_split_posts'] = "Split Posts";
 $l['inline_approve_posts'] = "Approve Posts";
@@ -95,6 +97,7 @@ $l['mod_options'] = "Moderator Options";
 $l['find_all'] = "Find all";
 $l['find_only_approved'] = "Find only approved";
 $l['find_only_unapproved'] = "Find only unapproved";
+$l['find_only_softdeleted'] = "Find only soft deleted";
 
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 

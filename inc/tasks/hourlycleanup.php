@@ -27,9 +27,16 @@ function task_hourlycleanup($task)
 		);
 		$plugins->run_hooks('task_hourlycleanup', $args);
 	}
+	
+	require_once  MYBB_ROOT."inc/class_moderation.php";
+	$moderation = new Moderation;
 
 	// Delete moved threads with time limits
-	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".(int)$time['threads']."'");
+	$query = $db->simple_select('threads', 'tid', "deletetime != '0' AND deletetime < '".(int)$time['threads']."'");
+	while($tid = $db->fetch_field($query, 'tid'))
+	{
+		$moderation->delete_thread($tid);
+	}
 
 	// Delete old searches
 	$db->delete_query("searchlog", "dateline < '".(int)$time['searchlog']."'");

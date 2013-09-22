@@ -277,6 +277,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   rules text NOT NULL,
   unapprovedthreads int(10) unsigned NOT NULL default '0',
   unapprovedposts int(10) unsigned NOT NULL default '0',
+  deletedthreads int(10) unsigned NOT NULL default '0',
   defaultdatecut smallint(4) unsigned NOT NULL default '0',
   defaultsortby varchar(10) NOT NULL default '',
   defaultsortorder varchar(4) NOT NULL default '',
@@ -428,6 +429,8 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canmanagethreads int(1) NOT NULL default '0',
   canmovetononmodforum int(1) NOT NULL default '0',
   canusecustomtools int(1) NOT NULL default '0',
+  cansoftdelete int(1) NOT NULL default '0',
+  canrestore int(1) NOT NULL default '0',
   KEY uid (id, fid),
   PRIMARY KEY (mid)
 ) ENGINE=MyISAM;";
@@ -823,6 +826,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   notes text NOT NULL,
   visible int(1) NOT NULL default '0',
   unapprovedposts int(10) unsigned NOT NULL default '0',
+  deletedposts int(10) unsigned NOT NULL default '0',
   attachmentcount int(10) unsigned NOT NULL default '0',
   deletetime int(10) unsigned NOT NULL default '0',
   KEY fid (fid, visible, sticky),

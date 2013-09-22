@@ -1645,6 +1645,7 @@ if($mybb->input['action'] == "do_modqueue")
 	if(!empty($mybb->input['threads']))
 	{
 		$mybb->input['threads'] = array_map("intval", array_keys($mybb->input['threads']));
+		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
 		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $mybb->input['threads'])."){$flist}");
 		while($thread = $db->fetch_array($query))
@@ -1670,11 +1671,19 @@ if($mybb->input['action'] == "do_modqueue")
 		}
 		if(!empty($threads_to_delete))
 		{
-			foreach($threads_to_delete as $tid)
+			if($mybb->settings['soft_delete'] == 1)
 			{
-				$moderation->delete_thread($tid);
+				$moderation->self_delete_threads($threads_to_delete);
+				log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_soft_delete_threads);
 			}
-			log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
+			else
+			{
+				foreach($threads_to_delete as $tid)
+				{
+						$moderation->delete_thread($tid);
+				}
+				log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
+			}
 		}
 
 		$plugins->run_hooks("modcp_do_modqueue_end");
@@ -1685,6 +1694,7 @@ if($mybb->input['action'] == "do_modqueue")
 	{
 		$mybb->input['posts'] = array_map("intval", array_keys($mybb->input['posts']));
 		// Fetch posts
+		$posts_to_approve = $posts_to_delete = array();
 		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $mybb->input['posts'])."){$flist}");
 		while($post = $db->fetch_array($query))
 		{
@@ -1697,16 +1707,32 @@ if($mybb->input['action'] == "do_modqueue")
 			{
 				$posts_to_approve[] = $post['pid'];
 			}
-			else if($action == "delete")
+			else if($action == "delete" && $mybb->settings['soft_delete'] != 1)
 			{
 				$moderation->delete_post($post['pid']);
 			}
+			else if($action == "delete")
+			{
+				$posts_to_delete[] = $post['pid'];
+			}
 		}
-		if(is_array($posts_to_approve))
+		if(!empty($posts_to_approve))
 		{
 			$moderation->approve_posts($posts_to_approve);
+			log_moderator_action(array('pids' => $posts_to_approve), $lang->multi_approve_posts);
 		}
-		log_moderator_action(array('pids' => $posts_to_approve), $lang->multi_approve_posts);
+		if(!empty($posts_to_delete))
+		{
+			if($mybb->settings['soft_delete'] == 1)
+			{
+				$moderation->self_delete_posts($posts_to_delete);
+				log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_soft_delete_posts);
+			}
+			else
+			{
+				log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_delete_posts);
+			}
+		}
 
 		$plugins->run_hooks("modcp_do_modqueue_end");
 

@@ -242,7 +242,7 @@ if($mybb->input['action'] == "results")
 		if($mybb->usergroup['issupermod'] == 1)
 		{
 			// Super moderators (and admins)
-			$unapproved_where = "t.visible>-1";
+			$unapproved_where = "t.visible>=-1";
 		}
 		elseif($db->num_rows($query))
 		{
@@ -252,7 +252,7 @@ if($mybb->input['action'] == "results")
 			{
 				$moderated_forums .= ','.$forum['fid'];
 			}
-			$unapproved_where = "(t.visible>0 OR (t.visible=0 AND t.fid IN ({$moderated_forums})))";
+			$unapproved_where = "(t.visible>0 OR (t.visible IN (-1,0) AND t.fid IN ({$moderated_forums})))";
 		}
 		else
 		{
@@ -392,9 +392,13 @@ if($mybb->input['action'] == "results")
 			$prefix = '';
 
 			// Unapproved colour
-			if(!$thread['visible'])
+			if($thread['visible'] == 0)
 			{
 				$bgcolor = 'trow_shaded';
+			}
+			elseif($thread['visible'] == -1)
+			{
+				$bgcolor = 'trow_shaded trow_deleted';
 			}
 
 			if($thread['userusername'])
@@ -694,8 +698,8 @@ if($mybb->input['action'] == "results")
 		if($mybb->usergroup['issupermod'] == 1)
 		{
 			// Super moderators (and admins)
-			$p_unapproved_where = "visible >= 0";
-			$t_unapproved_where = "visible < 0";
+			$p_unapproved_where = "visible >= -1";
+			$t_unapproved_where = "visible < -1";
 		}
 		elseif($db->num_rows($query))
 		{
@@ -706,8 +710,8 @@ if($mybb->input['action'] == "results")
 				$moderated_forums .= ','.$forum['fid'];
 				$test_moderated_forums[$forum['fid']] = $forum['fid'];
 			}
-			$p_unapproved_where = "visible >= 0";
-			$t_unapproved_where = "visible < 0 AND fid NOT IN ({$moderated_forums})";
+			$p_unapproved_where = "(visible>0 OR (visible IN (-1,0) AND fid IN ({$moderated_forums})))";
+			$t_unapproved_where = "(visible<0 AND (visible <1 OR fid NOT IN ({$moderated_forums})))";
 		}
 		else
 		{
@@ -806,9 +810,13 @@ if($mybb->input['action'] == "results")
 		while($post = $db->fetch_array($query))
 		{
 			$bgcolor = alt_trow();
-			if(!$post['visible'])
+			if($post['visible'] == 0)
 			{
 				$bgcolor = 'trow_shaded';
+			}
+			elseif($post['visible'] == -1)
+			{
+				$bgcolor = 'trow_shaded trow_deleted';
 			}
 			if($post['userusername'])
 			{
@@ -1447,14 +1455,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	if(is_moderator() && !empty($mybb->input['visible']))
 	{
-		if($mybb->get_input('visible', 1) == 1)
-		{
-			$search_data['visible'] = 1;
-		}
-		else
-		{
-			$search_data['visible'] = 0;
-		}
+		$search_data['visible'] = $mybb->get_input('visible', 1);
 	}
 
 	if($db->can_search == true)
@@ -1504,7 +1505,15 @@ else if($mybb->input['action'] == "thread")
 {
 	// Fetch thread info
 	$thread = get_thread($mybb->get_input('tid', 1));
-	if(!$thread || (($thread['visible'] == 0 && !is_moderator($thread['fid'])) || $thread['visible'] < 0))
+	if(is_moderator($fid))
+	{
+		$ismod = true;
+	}
+	else
+	{
+		$ismod = false;
+	}
+	if(!$thread || ($thread['visible'] != 1 && $ismod == false && ($thread['visible'] != -1 || $mybb->settings['soft_delete'] != 1 || $mybb->settings['soft_delete_show_own'] != 1 || !$mybb->user['uid'] || $mybb->user['uid'] != $thread['uid'])) || ($thread['visible'] > 1 && $ismod == true))
 	{
 		error($lang->error_invalidthread);
 	}
@@ -1610,6 +1619,7 @@ else
 
 	$rowspan = 5;
 
+	$moderator_options = '';
 	if(is_moderator())
 	{
 		$rowspan += 2;

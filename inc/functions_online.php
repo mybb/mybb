@@ -659,7 +659,7 @@ function build_friendly_wol_location($user_activity)
 				continue;
 			}
 
-			if(is_moderator($thread['fid']) || $thread['visible'] != '0')
+			if(is_moderator($thread['fid']) || $thread['visible'] == 1)
 			{
 				$thread_title = '';
 				if($thread['threadprefix'])

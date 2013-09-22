@@ -198,6 +198,11 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$mybb->input['approvethread'] = '';
 		}
 
+		if($mybb->input['softdeletethread'] != '' && $mybb->input['softdeletethread'] != 'softdelete' && $mybb->input['softdeletethread'] != 'restore' && $mybb->input['softdeletethread'] != 'toggle')
+		{
+			$mybb->input['softdeletethread'] = '';
+		}
+
 		if($mybb->input['openthread'] != '' && $mybb->input['openthread'] != 'open' && $mybb->input['openthread'] != 'close' && $mybb->input['openthread'] != 'toggle')
 		{
 			$mybb->input['openthread'] = '';
@@ -281,6 +286,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
+				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
@@ -363,6 +369,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		}
 
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
+		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
 		$mybb->input['stickthread'] = $thread_options['stickthread'];
 		$mybb->input['move_1_forum'] = $thread_options['movethread'];
@@ -521,6 +528,15 @@ if($mybb->input['action'] == "edit_thread_tool")
 	checkAction('copy');
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
+
+	$softdelete_restore = array(
+		'' => $lang->no_change,
+		'restore' => $lang->restore,
+		'softdelete' => $lang->softdelete,
+		'toggle' => $lang->toggle
+	);
+
+	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
@@ -603,6 +619,11 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['approvethread'] = '';
 		}
 
+		if($mybb->input['softdeletethread'] != '' && $mybb->input['softdeletethread'] != 'restore' && $mybb->input['softdeletethread'] != 'softdelete' && $mybb->input['softdeletethread'] != 'toggle')
+		{
+			$mybb->input['softdeletethread'] = '';
+		}
+
 		if($mybb->input['openthread'] != '' && $mybb->input['openthread'] != 'open' && $mybb->input['openthread'] != 'close' && $mybb->input['openthread'] != 'toggle')
 		{
 			$mybb->input['openthread'] = '';
@@ -681,6 +702,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
+				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
@@ -773,6 +795,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$forum_checked[1] = "checked=\"checked\"";
 		$forum_checked[2] = '';
 		$mybb->input['approvethread'] = '';
+		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
 		$mybb->input['stickthread'] = '';
 		$mybb->input['move_1_forum'] = '';
@@ -912,6 +935,15 @@ if($mybb->input['action'] == "add_thread_tool")
 	checkAction('copy');
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
+
+	$softdelete_restore = array(
+		'' => $lang->no_change,
+		'restore' => $lang->restore,
+		'softdelete' => $lang->softdelete,
+		'toggle' => $lang->toggle
+	);
+
+	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
@@ -994,6 +1026,11 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['approvethread'] = '';
 		}
 
+		if($mybb->input['softdeletethread'] != '' && $mybb->input['softdeletethread'] != 'softdelete' && $mybb->input['softdeletethread'] != 'restore' && $mybb->input['softdeletethread'] != 'toggle')
+		{
+			$mybb->input['softdeletethread'] = '';
+		}
+
 		if($mybb->input['openthread'] != '' && $mybb->input['openthread'] != 'open' && $mybb->input['openthread'] != 'close' && $mybb->input['openthread'] != 'toggle')
 		{
 			$mybb->input['openthread'] = '';
@@ -1052,6 +1089,11 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['approveposts'] = '';
 		}
 
+		if($mybb->input['softdeleteposts'] != '' && $mybb->input['softdeleteposts'] != 'approve' && $mybb->input['softdeleteposts'] != 'unapprove' && $mybb->input['softdeleteposts'] != 'toggle')
+		{
+			$mybb->input['softdeleteposts'] = '';
+		}
+
 		if($mybb->input['splitposts'] < -2)
 		{
 			$mybb->input['splitposts'] = -1;
@@ -1088,6 +1130,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		{
 			$thread_options = array(
 				'deletethread' => $mybb->input['deletethread'],
+				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
@@ -1107,6 +1150,7 @@ if($mybb->input['action'] == "edit_post_tool")
 
 			$post_options = array(
 				'deleteposts' => $mybb->input['deleteposts'],
+				'softdeleteposts' => $mybb->input['softdeleteposts'],
 				'mergeposts' => $mybb->input['mergeposts'],
 				'approveposts' => $mybb->input['approveposts'],
 				'splitposts' => intval($mybb->input['splitposts']),
@@ -1188,6 +1232,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		}
 
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
+		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
 		$mybb->input['stickthread'] = $thread_options['stickthread'];
 		$mybb->input['move_1_forum'] = $thread_options['movethread'];
@@ -1233,6 +1278,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			$split_same_checked = ' selected="selected"';
 		}
 
+		$mybb->input['softdeleteposts'] = $post_options['softdeleteposts'];
 		$mybb->input['deleteposts'] = $post_options['deleteposts'];
 		$mybb->input['mergeposts'] = $post_options['mergeposts'];
 		$mybb->input['approveposts'] = $post_options['approveposts'];
@@ -1326,6 +1372,15 @@ if($mybb->input['action'] == "edit_post_tool")
 	);
 
 	$form_container = new FormContainer($lang->inline_post_moderation);
+
+	$softdelete_restore = array(
+		'' => $lang->no_change,
+		'restore' => $lang->restore,
+		'softdelete' => $lang->softdelete,
+		'toggle' => $lang->toggle
+	);
+
+	$form_container->output_row($lang->softdelete_restore_posts." <em>*</em>", '', $form->generate_select_box('softdeleteposts', $softdelete_restore, $mybb->input['softdeleteposts'], array('id' => 'softdeleteposts')), 'softdeleteposts');
 	$form_container->output_row($lang->delete_posts." <em>*</em>", '', $form->generate_yes_no_radio('deleteposts', $mybb->input['deleteposts']));
 	$form_container->output_row($lang->merge_posts." <em>*</em>", $lang->merge_posts_desc, $form->generate_yes_no_radio('mergeposts', $mybb->input['mergeposts']));
 	$form_container->output_row($lang->approve_unapprove_posts." <em>*</em>", '', $form->generate_select_box('approveposts', $approve_unapprove, $mybb->input['approveposts'], array('id' => 'approveposts')), 'approveposts');
@@ -1407,6 +1462,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	checkAction('copy');
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
@@ -1462,6 +1518,11 @@ if($mybb->input['action'] == "add_post_tool")
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
 			$mybb->input['approvethread'] = '';
+		}
+
+		if($mybb->input['softdeletethread'] != '' && $mybb->input['softdeletethread'] != 'softdelete' && $mybb->input['softdeletethread'] != 'restore' && $mybb->input['softdeletethread'] != 'toggle')
+		{
+			$mybb->input['softdeletethread'] = '';
 		}
 
 		if($mybb->input['openthread'] != '' && $mybb->input['openthread'] != 'open' && $mybb->input['openthread'] != 'close' && $mybb->input['openthread'] != 'toggle')
@@ -1534,6 +1595,11 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['approveposts'] = '';
 		}
 
+		if($mybb->input['softdeleteposts'] != '' && $mybb->input['softdeleteposts'] != 'softdelete' && $mybb->input['softdeleteposts'] != 'restore' && $mybb->input['softdeleteposts'] != 'toggle')
+		{
+			$mybb->input['softdeleteposts'] = '';
+		}
+
 		if($mybb->input['splitposts'] < -2)
 		{
 			$mybb->input['splitposts'] = -1;
@@ -1570,6 +1636,7 @@ if($mybb->input['action'] == "add_post_tool")
 		{
 			$thread_options = array(
 				'deletethread' => $mybb->input['deletethread'],
+				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
@@ -1589,6 +1656,7 @@ if($mybb->input['action'] == "add_post_tool")
 
 			$post_options = array(
 				'deleteposts' => $mybb->input['deleteposts'],
+				'softdeleteposts' => $mybb->input['softdeleteposts'],
 				'mergeposts' => $mybb->input['mergeposts'],
 				'approveposts' => $mybb->input['approveposts'],
 				'splitposts' => intval($mybb->input['splitposts']),
@@ -1666,6 +1734,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$forum_checked[1] = "checked=\"checked\"";
 		$forum_checked[2] = '';
 		$mybb->input['approvethread'] = '';
+		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
 		$mybb->input['stickthread'] = '';
 		$mybb->input['move_1_forum'] = '';
@@ -1685,6 +1754,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$mybb->input['deleteposts'] = '0';
 		$mybb->input['mergeposts'] = '0';
 		$mybb->input['approveposts'] = '';
+		$mybb->input['softdeleteposts'] = '';
 		$mybb->input['splitposts'] = '-1';
 		$mybb->input['splitpostsclose'] = '0';
 		$mybb->input['splitpostsstick'] = '0';
@@ -1749,6 +1819,15 @@ if($mybb->input['action'] == "add_post_tool")
 	);
 
 	$form_container = new FormContainer($lang->inline_post_moderation);
+
+	$softdelete_restore = array(
+		'' => $lang->no_change,
+		'restore' => $lang->restore,
+		'softdelete' => $lang->softdelete,
+		'toggle' => $lang->toggle
+	);
+
+	$form_container->output_row($lang->softdelete_restore_posts." <em>*</em>", '', $form->generate_select_box('softdeleteposts', $softdelete_restore, $mybb->input['softdeleteposts'], array('id' => 'softdeleteposts')), 'softdeleteposts');
 	$form_container->output_row($lang->delete_posts." <em>*</em>", '', $form->generate_yes_no_radio('deleteposts', $mybb->input['deleteposts']));
 	$form_container->output_row($lang->merge_posts." <em>*</em>", $lang->merge_posts_desc, $form->generate_yes_no_radio('mergeposts', $mybb->input['mergeposts']));
 	$form_container->output_row($lang->approve_unapprove_posts." <em>*</em>", '', $form->generate_select_box('approveposts', $approve_unapprove, $mybb->input['approveposts'], array('id' => 'approveposts')), 'approveposts');
@@ -1831,6 +1910,7 @@ if($mybb->input['action'] == "add_post_tool")
 	checkAction('copy');
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->softdelete_restore_thread." <em>*</em>", '', $form->generate_select_box('softdeletethread', $softdelete_restore, $mybb->input['softdeletethread'], array('id' => 'softdeletethread')), 'softdeletethread');
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();

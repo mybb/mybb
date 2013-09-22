@@ -27,6 +27,22 @@ if(!$thread)
 	error($lang->error_invalidthread);
 }
 
+// Is the currently logged in user a moderator of this forum?
+if(is_moderator($thread['fid']))
+{
+	$ismod = true;
+}
+else
+{
+	$ismod = false;
+}
+
+// Make sure we are looking at a real thread here.
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+{
+	error($lang->error_invalidthread);
+}
+
 if($thread['uid'] == $mybb->user['uid'])
 {
 	error($lang->error_cannotrateownthread);

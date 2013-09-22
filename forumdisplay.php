@@ -383,8 +383,8 @@ if(is_moderator($fid))
 	$inlinecount = "0";
 	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
-	$visibleonly = " AND (visible='1' OR visible='0')";
-	$tvisibleonly = " AND (t.visible='1' OR t.visible='0')";
+	$visibleonly = " AND visible IN (-1,0,1)";
+	$tvisibleonly = " AND t.visible IN (-1,0,1)";
 }
 else
 {
@@ -558,12 +558,12 @@ if($fpermissions['canviewthreads'] != 0)
 	}
 	else
 	{
-		$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
+		$query = $db->simple_select("forums", "threads, unapprovedthreads, deletedthreads", "fid = '{$fid}'", array('limit' => 1));
 		$forum_threads = $db->fetch_array($query);
 		$threadcount = $forum_threads['threads'];
 		if($ismod == true)
 		{
-			$threadcount += $forum_threads['unapprovedthreads'];
+			$threadcount += $forum_threads['unapprovedthreads'] + $forum_threads['deletedthreads'];
 		}
 
 		// If we have 0 threads double check there aren't any "moved" threads
@@ -931,6 +931,10 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$bgcolor = "trow_shaded";
 		}
+		elseif($thread['visible'] == -1)
+		{
+			$bgcolor = "trow_shaded trow_deleted";
+		}
 		else
 		{
 			$bgcolor = alt_trow();
@@ -1030,7 +1034,7 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($thread['unapprovedposts'] > 0 && $ismod)
 		{
-			$thread['posts'] += $thread['unapprovedposts'];
+			$thread['posts'] += $thread['unapprovedposts'] + $thread['deletedposts'];
 		}
 
 		if($thread['posts'] > $mybb->settings['postsperpage'])

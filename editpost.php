@@ -62,7 +62,7 @@ $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 $fid = $post['fid'];
 $forum = get_forum($fid);
 
-if(($thread['visible'] == 0 && !is_moderator($fid)) || ($thread['visible'] < 0 && $thread['uid'] != $mybb->user['uid']))
+if((($thread['visible'] == 0 || $thread['visible'] == -1) && !is_moderator($fid)) || ($thread['visible'] < 0 && $thread['uid'] != $mybb->user['uid']))
 {
 	error($lang->error_invalidthread);
 }
@@ -130,6 +130,10 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 	}
+	if($post['visible'] == -1)
+	{
+		error($lang->error_already_deleted);
+	}
 }
 else
 {
@@ -155,7 +159,7 @@ else
 			error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post
-		if($post['visible'] == 0)
+		if($post['visible'] == 0 || $post['visible'] == -1)
 		{
 			error_no_permission();
 		}
@@ -235,7 +239,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("editpost_deletepost");
 
-	if($mybb->get_input('delete',1 ) == 1)
+	if($mybb->get_input('delete', 1) == 1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
@@ -254,9 +258,19 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))
 			{
-				delete_thread($tid);
-				mark_reports($tid, "thread");
-				log_moderator_action($modlogdata, $lang->thread_deleted);
+				if($mybb->settings['soft_delete'] == 1)
+				{
+					require_once MYBB_ROOT."inc/class_moderation.php";
+					$moderation = new Moderation;
+					$moderation->soft_delete_threads(array($tid));
+					log_moderator_action($modlogdata, $lang->thread_soft_deleted);
+				}
+				else
+				{
+					delete_thread($tid);
+					mark_reports($tid, "thread");
+					log_moderator_action($modlogdata, $lang->thread_deleted);
+				}
 				redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
 			}
 			else
@@ -269,9 +283,19 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts"))
 			{
 				// Select the first post before this
-				delete_post($pid, $tid);
-				mark_reports($pid, "post");
-				log_moderator_action($modlogdata, $lang->post_deleted);
+				if($mybb->settings['soft_delete'] == 1)
+				{
+					require_once MYBB_ROOT."inc/class_moderation.php";
+					$moderation = new Moderation;
+					$moderation->soft_delete_posts(array($pid));
+					log_moderator_action($modlogdata, $lang->post_soft_deleted);
+				}
+				else
+				{
+					delete_post($pid, $tid);
+					mark_reports($pid, "post");
+					log_moderator_action($modlogdata, $lang->post_deleted);
+				}
 				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
@@ -405,8 +429,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
+	$deletebox = '';
 	// Can we delete posts?
-	if(is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid'])
+	if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
 	{
 		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
 	}
