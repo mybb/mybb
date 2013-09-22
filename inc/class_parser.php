@@ -650,14 +650,14 @@ class postParser
 		do
 		{
 			// preg_replace has erased the message? Restore it...
+			$previous_message = $message;
+			$message = preg_replace($pattern, $replace, $message, -1, $count);
+			$message = preg_replace_callback($pattern_callback, $replace_callback, $message, -1, $count_callback);
 			if(!$message)
 			{
 				$message = $previous_message;
 				break;
 			}
-			$previous_message = $message;
-			$message = preg_replace($pattern, $replace, $message, -1, $count);
-			$message = preg_replace_callback($pattern_callback, $replace_callback, $message, -1, $count_callback);
 		} while($count || $count_callback);
 
 		if($text_only == false)
