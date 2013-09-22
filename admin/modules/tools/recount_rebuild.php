@@ -166,6 +166,29 @@ function acp_recount_warning()
 	check_proceed($num_users, $end, ++$page, $per_page, "warning", "do_recountwarning", $lang->success_rebuilt_warning);
 }
 
+function acp_recount_private_messages()
+{
+	global $db, $mybb, $lang;
+
+	$query = $db->simple_select("users", "COUNT(uid) as num_users");
+	$num_users = $db->fetch_field($query, 'num_users');
+
+	$page = intval($mybb->input['page']);
+	$per_page = intval($mybb->input['privatemessages']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	require_once MYBB_ROOT."inc/functions_user.php";
+
+	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($user = $db->fetch_array($query))
+	{
+		update_pm_count($user['uid']);
+	}
+
+	check_proceed($num_users, $end, ++$page, $per_page, "privatemessages", "do_recountprivatemessages", $lang->success_rebuilt_private_messages);
+}
+
 function acp_rebuild_attachment_thumbnails()
 {
 	global $db, $mybb, $lang;
@@ -345,6 +368,23 @@ if(!$mybb->input['action'])
 
 			acp_recount_warning();
 		}
+		elseif(isset($mybb->input['do_recountprivatemessages']))
+		{
+			$plugins->run_hooks("admin_tools_recount_recount_private_messages");
+
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("privatemessages");
+			}
+
+			if(!intval($mybb->input['privatemessages']))
+			{
+				$mybb->input['privatemessages'] = 500;
+			}
+
+			acp_recount_private_messages();
+		}
 		else
 		{
 			$cache->update_stats();
@@ -409,6 +449,11 @@ if(!$mybb->input['action'])
 	$form_container->output_cell("<label>{$lang->recount_warning}</label><div class=\"description\">{$lang->recount_warning_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("warning", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountwarning")));
+	$form_container->construct_row();
+
+	$form_container->output_cell("<label>{$lang->recount_private_messages}</label><div class=\"description\">{$lang->recount_private_messages_desc}</div>");
+	$form_container->output_cell($form->generate_text_box("privatemessages", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountprivatemessages")));
 	$form_container->construct_row();
 
 	$plugins->run_hooks("admin_tools_recount_rebuild_output_list");

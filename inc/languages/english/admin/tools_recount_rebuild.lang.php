@@ -16,6 +16,8 @@ $l['recount_reputation'] = "Recount Reputation";
 $l['recount_reputation_desc'] = "This will recount the reputation of each user.";
 $l['recount_warning'] = "Recount Warning Points";
 $l['recount_warning_desc'] = "This will recount the active warning points of each user.";
+$l['recount_private_messages'] = "Recount Private Messages";
+$l['recount_private_messages_desc'] = "This will recount the private message count for each user.";
 $l['rebuild_forum_counters'] = "Rebuild Forum Counters";
 $l['rebuild_forum_counters_desc'] = "When this is run, the post/thread counters and last post of each forum will be updated to reflect the correct values.";
 $l['rebuild_thread_counters'] = "Rebuild Thread Counters";
@@ -32,6 +34,7 @@ $l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have be
 $l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
 $l['success_rebuilt_reputation'] = "The user reputation has been rebuilt successfully.";
 $l['success_rebuilt_warning'] = "The user warning points have been rebuilt successfully.";
+$l['success_rebuilt_private_messages'] = "The user private messages count have been recounted successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
 $l['automatically_redirecting'] = "Automatically Redirecting...";
