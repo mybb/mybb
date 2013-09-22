@@ -647,7 +647,6 @@ class postParser
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback2');
 		}
 
-		$previous_message = '';
 		do
 		{
 			// preg_replace has erased the message? Restore it...
