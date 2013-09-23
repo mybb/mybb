@@ -209,6 +209,8 @@ if($mybb->input['action'] == "edit")
 				$lifted = ban_date2timestamp($mybb->input['bantime'], $ban['dateline']);
 			}
 
+			$reason = my_substr($mybb->input['reason'], 0, 255);
+
 			if(count($banned_groups) == 1)
 			{
 				$group = array_keys($banned_groups);
@@ -220,7 +222,7 @@ if($mybb->input['action'] == "edit")
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->input['bantime']),
 				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($mybb->input['reason'])
+				'reason' => $db->escape_string($reason)
 			);
 
 			$db->update_query('banned', $update_array, "uid='{$ban['uid']}'");
@@ -266,7 +268,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_ban);
 	$form_container->output_row($lang->ban_username, "", $user['username']);
-	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
 		$form_container->output_row($lang->ban_group, $lang->ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
@@ -343,6 +345,8 @@ if(!$mybb->input['action'])
 				$lifted = ban_date2timestamp($mybb->input['bantime']);
 			}
 
+			$reason = my_substr($mybb->input['reason'], 0, 255);
+
 			if(count($banned_groups) == 1)
 			{
 				$group = array_keys($banned_groups);
@@ -359,7 +363,7 @@ if(!$mybb->input['action'])
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->input['bantime']),
 				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($mybb->input['reason'])
+				'reason' => $db->escape_string($reason)
 			);
 			$db->insert_query('banned', $insert_array);
 
@@ -511,7 +515,7 @@ if(!$mybb->input['action'])
 
 	$form_container = new FormContainer($lang->ban_a_user);
 	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+	$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 	if(count($banned_groups) > 1)
 	{
 		$form_container->output_row($lang->ban_group, $lang->add_ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');

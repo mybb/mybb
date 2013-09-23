@@ -188,7 +188,7 @@ class DefaultForm
 	 *
 	 * @param string The name of of the text area.
 	 * @param string The value of the text area field.
-	 * @param array Array of options for text area (class, id, rows, cols, style, disabled)
+	 * @param array Array of options for text area (class, id, rows, cols, style, disabled, maxlength)
 	 * @return string The generated text area field.
 	 */
 	function generate_text_area($name, $value="", $options=array())
@@ -213,6 +213,10 @@ class DefaultForm
 		if(isset($options['disabled']))
 		{
 			$textarea .= " disabled=\"disabled\"";
+		}
+		if(isset($options['maxlength']))
+		{
+			$textarea .= " maxlength=\"{$options['maxlength']}\"";
 		}
 		if(!isset($options['rows']))
 		{
@@ -390,14 +394,14 @@ class DefaultForm
 		{
 			$selectoptions = '';
 		}
-		
+
 		if(!isset($options['depth']))
 		{
 			$options['depth'] = 0;
 		}
 
 		$options['depth'] = intval($options['depth']);
-		
+
 		if(!isset($options['pid']))
 		{
 			$options['pid'] = 0;
@@ -428,7 +432,7 @@ class DefaultForm
 
 			$selectoptions .= "<option value=\"-1\"{$select_add}>{$options['main_option']}</option>\n";
 		}
-		
+
 		if(isset($fselectcache[$pid]))
 		{
 			foreach($fselectcache[$pid] as $main)

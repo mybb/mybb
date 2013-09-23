@@ -817,6 +817,7 @@ form {
 	padding: 5px 20px;
 	margin-bottom: 15px;
 	font-size: 11px;
+	word-wrap: break-word;
 }
 
 .high_warning {
@@ -5748,9 +5749,9 @@ a.button {
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_banning_ban" version="1400"><![CDATA[<tr>
+		<template name="modcp_banning_ban" version="1800"><![CDATA[<tr>
 	<td class="{$trow}">{$profile_link}{$edit_link}</td>
-	<td class="{$trow}" align="center">{$banned['reason']}</td>
+	<td class="{$trow}">{$banned['reason']}</td>
 	<td class="{$trow}" align="center">{$banlength}<br /><span class="smalltext">{$timeremaining}</span></td>
 	<td class="{$trow}" align="center">{$admin_profile}</td>
 </tr>]]></template>
@@ -5783,7 +5784,7 @@ a.button {
 							{$banuser_username}
 							<tr>
 								<td class="trow2" width="25%"><strong>{$lang->ban_reason}</strong></td>
-								<td class="trow2" width="75%"><input type="text" class="textbox" name="banreason" value="{$banreason}" size="25" /></td>
+								<td class="trow2" width="75%"><textarea name="banreason" cols="60" rows="4" maxlength="255">{$banreason}</textarea></td>
 							</tr>
 							<tr>
 								<td class="trow1" width="25%"><strong>{$lang->ban_movegroup}</strong></td>

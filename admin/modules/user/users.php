@@ -1048,7 +1048,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->end();
 
-	
+
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$form_container = new FormContainer($lang->away_information.": {$user['username']}");
@@ -1065,8 +1065,8 @@ if($mybb->input['action'] == "edit")
 		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
 		$return_row .= ' '.$form->generate_text_box('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;'));
 
-		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');	
-		
+		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');
+
 		$form_container->end();
 	}
 
@@ -2275,6 +2275,8 @@ if($mybb->input['action'] == "inline_edit")
 						$lifted = ban_date2timestamp($mybb->input['bantime']);
 					}
 
+					$reason = my_substr($mybb->input['reason'], 0, 255);
+
 					$banned_count = 0;
 					while($user = $db->fetch_array($query))
 					{
@@ -2292,7 +2294,7 @@ if($mybb->input['action'] == "inline_edit")
 								"dateline" => TIME_NOW,
 								"bantime" => $db->escape_string($mybb->input['bantime']),
 								"lifted" => $db->escape_string($lifted),
-								"reason" => $db->escape_string($mybb->input['reason'])
+								"reason" => $db->escape_string($reason)
 							);
 							$db->update_query("banned", $update_array, "uid = '".$user['uid']."'");
 						}
@@ -2309,7 +2311,7 @@ if($mybb->input['action'] == "inline_edit")
 								'dateline' => TIME_NOW,
 								'bantime' => $db->escape_string($mybb->input['bantime']),
 								'lifted' => $db->escape_string($lifted),
-								'reason' => $db->escape_string($mybb->input['reason'])
+								'reason' => $db->escape_string($reason)
 							);
 							$db->insert_query('banned', $insert_array);
 						}
@@ -2359,7 +2361,7 @@ if($mybb->input['action'] == "inline_edit")
 				echo $form->generate_hidden_field('processed', '1');
 
 				$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
-				$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+				$form_container->output_row($lang->ban_reason, "", $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason', 'maxlength' => '255')), 'reason');
 				$ban_times = fetch_ban_times();
 				foreach($ban_times as $time => $period)
 				{

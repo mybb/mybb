@@ -566,7 +566,7 @@ if($mybb->input['action'] == "modlogs")
 	{
 		$where .= " AND t.fid='".$mybb->get_input('fid', 1)."'";
 	}
-	
+
 	$mybb->input['sortby'] = $mybb->get_input('sortby');
 
 	// Order?
@@ -993,7 +993,7 @@ if($mybb->input['action'] == "new_announcement")
 		$startday = $endday = gmdate("j", TIME_NOW);
 		$startmonth = $endmonth = gmdate("m", TIME_NOW);
 		$startdateyear = gmdate("Y", TIME_NOW);
-		
+
 		$announcement = array(
 			'subject' => '',
 			'message' => '',
@@ -1256,7 +1256,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$errors[] = $lang->error_end_before_start;
 		}
 	}
-	
+
 	if($mybb->get_input('allowhtml', 1) == 1)
 	{
 		$allowhtml = 1;
@@ -2455,7 +2455,7 @@ if($mybb->input['action'] == "editprofile")
 		{
 			$returndatemonthsel[$returndate[1]] = " selected=\"selected\"";
 		}
-		
+
 		if(!isset($returndate[2]))
 		{
 			$returndate[2] = '';
@@ -2794,7 +2794,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
-	
+
 	if(!isset($newtitle))
 	{
 		$newtitle = '';
@@ -3531,6 +3531,7 @@ if($mybb->input['action'] == "banning")
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{
@@ -3714,6 +3715,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			$lifted = ban_date2timestamp($mybb->get_input('liftafter'), $user['dateline']);
 		}
 
+		$banreason = my_substr($mybb->get_input('banreason'), 0, 255);
+
 		if($mybb->get_input('uid', 1))
 		{
 			$username_select = $db->simple_select('users', 'username', "uid='".$mybb->get_input('uid', 1)."'");
@@ -3724,7 +3727,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($mybb->get_input('banreason'))
+				'reason' => $db->escape_string($banreason)
 			);
 
 			$db->update_query('banned', $update_array, "uid='{$user['uid']}'");
@@ -3741,7 +3744,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($mybb->get_input('banreason'))
+				'reason' => $db->escape_string($banreason)
 			);
 
 			$db->insert_query('banned', $insert_array);
@@ -4112,6 +4115,7 @@ if(!$mybb->input['action'])
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{
