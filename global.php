@@ -520,7 +520,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 
 		if($ban['lifted'] > 0)
 		{
-			$banlift = my_date('relative', $ban['lifted']);
+			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']) . ", " . my_date($mybb->settings['timeformat'], $ban['lifted']);
 		}
 	}
 
