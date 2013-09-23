@@ -212,7 +212,7 @@ class captcha
 			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND LOWER(imagestring) = '{$imagestring}'");
 			$imgcheck = $db->fetch_array($query);
 
-			if(!$imgcheck['dateline'])
+			if(!$imgcheck)
 			{
 				$this->set_error($lang->invalid_captcha_verify);
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
@@ -286,6 +286,24 @@ class captcha
 		{
 			return true;
 		}
+	}
+
+	function invalidate_captcha()
+	{
+		global $db, $mybb;
+
+		if($this->type == 1)
+		{
+			// We have a normal CAPTCHA to handle
+			$imagehash = $db->escape_string($mybb->input['imagehash']);
+			if($imagehash)
+			{
+				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
+			}
+		}
+		// Not necessary for reCAPTCHA
+
+		// Plugin hook
 	}
 
 	/**

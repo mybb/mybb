@@ -248,6 +248,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'])
+		{
+			$captcha->invalidate_captcha();
+		}
+
 		if($mybb->settings['regtype'] != "randompass" && !$mybb->cookies['coppauser'])
 		{
 			// Log them in
@@ -1163,6 +1169,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	$errors = array();
 
+	$login_captcha = false;
 	if($mybb->settings['failedcaptchalogincount'] > 0 && ($loginattempts > $mybb->settings['failedcaptchalogincount'] || intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount']))
 	{
 		// Show captcha image if enabled
@@ -1240,7 +1247,13 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		{
 			error($lang->error_awaitingcoppa);
 		}
-		
+
+		// Invalidate captcha
+		if($login_captcha !== false)
+		{
+			$login_captcha->invalidate_captcha();
+		}
+
 		my_setcookie('loginattempts', 1);
 		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 		$newsession = array(

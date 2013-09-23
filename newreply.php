@@ -471,6 +471,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		{
+			$post_captcha->invalidate_captcha();
+		}
+
 		// Deciding the fate
 		if($visible == -2)
 		{
