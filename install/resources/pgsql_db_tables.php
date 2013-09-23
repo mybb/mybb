@@ -170,7 +170,8 @@ $tables[] = "CREATE TABLE mybb_calendarpermissions (
 $tables[] = "CREATE TABLE mybb_captcha (
   imagehash varchar(32) NOT NULL default '',
   imagestring varchar(8) NOT NULL default '',
-  dateline bigint NOT NULL default '0'
+  dateline bigint NOT NULL default '0',
+  used int NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_datacache (

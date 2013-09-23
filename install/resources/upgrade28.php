@@ -132,6 +132,7 @@ function upgrade28_dbchanges()
 			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("captcha", "used", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -147,6 +148,7 @@ function upgrade28_dbchanges()
 			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
 			break;
 	}
 

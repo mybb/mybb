@@ -33,8 +33,14 @@ if($mybb->input['imagehash'] == "test")
 }
 elseif($mybb->input['imagehash'])
 {
-	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string(strval($mybb->input['imagehash']))."'", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string(strval($mybb->input['imagehash']))."' AND used=0", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
+	if(!$regimage)
+	{
+		exit;
+	}
+	// Mark captcha as used
+	$db->update_query('captcha', array('used' => 1), "imagehash='".$db->escape_string($regimage['imagehash'])."'");
 	$imagestring = $regimage['imagestring'];
 }
 else
