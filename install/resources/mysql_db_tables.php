@@ -547,6 +547,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   required int(1) NOT NULL default '0',
   editable int(1) NOT NULL default '0',
   hidden int(1) NOT NULL default '0',
+  postbit int(1) NOT NULL default '0',
   postnum bigint(30) NOT NULL default '0',
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM;";
