@@ -386,6 +386,12 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$tid = $thread_info['tid'];
 		$visible = $thread_info['visible'];
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		{
+			$post_captcha->invalidate_captcha();
+		}
+
 		// Mark thread as read
 		require_once MYBB_ROOT."inc/functions_indicators.php";
 		mark_thread_read($tid, $fid);

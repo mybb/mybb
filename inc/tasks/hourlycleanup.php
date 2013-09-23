@@ -16,7 +16,7 @@ function task_hourlycleanup($task)
 	$time = array(
 		'threads' => TIME_NOW,
 		'searchlog' => TIME_NOW-(60*60*24),
-		'captcha' => TIME_NOW-(60*60*24*7)
+		'captcha' => TIME_NOW-(60*60*24)
 	);
 
 	if(is_object($plugins))

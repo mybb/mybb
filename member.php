@@ -281,6 +281,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'])
+		{
+			$captcha->invalidate_captcha();
+		}
+
 		if($mybb->settings['regtype'] != "randompass" && !isset($mybb->cookies['coppauser']))
 		{
 			// Log them in
@@ -1238,6 +1244,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		}
 
 		$loginhandler->complete_login();
+
+		// Invalidate captcha
+		if($login_captcha !== false)
+		{
+			$login_captcha->invalidate_captcha();
+		}
 
 		$plugins->run_hooks("member_do_login_end");
 		
