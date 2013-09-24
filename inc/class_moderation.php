@@ -1569,7 +1569,7 @@ class Moderation
 					$thread_counters[$post['tid']]['replies'] = 0;
 				}
 				--$thread_counters[$post['tid']]['replies'];
-				
+
 				if(!isset($thread_counters[$newtid]['replies']))
 				{
 					$thread_counters[$newtid]['replies'] = 0;
@@ -2498,24 +2498,27 @@ class Moderation
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
+		$stick = array();
+		$unstick = array();
+
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, sticky', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
-			if($thread['sticky'] == 1)
+			if($thread['sticky'] == 0)
 			{
 				$stick[] = $thread['tid'];
 			}
-			elseif($thread['sticky'] == 0)
+			elseif($thread['sticky'] == 1)
 			{
 				$unstick[] = $thread['tid'];
 			}
 		}
-		if(is_array($stick))
+		if(!empty($stick))
 		{
 			$this->stick_threads($stick);
 		}
-		if(is_array($unstick))
+		if(!empty($unstick))
 		{
 			$this->unstick_threads($unstick);
 		}
