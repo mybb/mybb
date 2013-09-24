@@ -212,9 +212,9 @@ function upgrade28_dbchanges_ip()
 	global $mybb, $db, $output;
 
 	$output->print_header("IP Conversion");
-	
+
 	$ipstart = $iptable = '';
-	
+
 	switch($mybb->input['iptask'])
 	{
 		case 8:
@@ -293,7 +293,7 @@ function upgrade28_dbchanges_ip()
 				$upper = $ipp;
 				$lower = 0;
 			}
-	
+
 			$next_task = 5;
 			switch($mybb->input['iptable'])
 			{
@@ -414,25 +414,25 @@ function upgrade28_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => escape_binary(my_inet_pton($data['regip'])), 'lastip' => escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
+						$db->update_query("users", array('regip' => $db->escape_binary(my_inet_pton($data['regip'])), 'lastip' => $db->escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
 						break;
 					case 3:
-						$db->update_query("moderatorlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
 						break;
 					default:
-						$db->update_query("adminlog", array('ipaddress' => escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 				}
 				$ipaddress = true;
@@ -597,7 +597,7 @@ function upgrade28_dbchanges_ip()
 	else
 	{
 		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversation.</p>";
-	
+
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 		$nextact = "28_dbchanges_ip";
