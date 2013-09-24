@@ -7229,12 +7229,40 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_getip_modoptions" version="1600"><![CDATA[<tr>
+		<template name="moderation_getpmip" version="1800"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->get_pm_ip}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->get_pm_ip}</strong></td>
+</tr>
+<tr>
+<td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
+<td class="trow1">{$username}</td>
+</tr>
+<tr>
+<td class="trow2"><strong>{$lang->ip_address}</strong></td>
+<td class="trow2">{$pm['ipaddress']}</td>
+</tr>
+<tr>
+<td class="trow1"><strong>{$lang->hostname}<br /><span class="smalltext">{$lang->if_resolvable}</span></strong></td>
+<td class="trow2">{$hostname}</td>
+</tr>
+{$modoptions}
+</table>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="moderation_getip_modoptions" version="1800"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2">
-	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_users=1">{$lang->search_ip_users}</a><br />
-	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
-	<a href="modcp.php?action=iplookup&ipaddress={$post['ipaddress']}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$post['ipaddress']}', 'iplookup', 500, 250); return false;">{$lang->info_on_ip}</a>
+	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_users=1">{$lang->search_ip_users}</a><br />
+	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
+	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ipaddress}', 'iplookup', 500, 250); return false;">{$lang->info_on_ip}</a>
 </td>
 </tr>]]></template>
 		<template name="moderation_inline_deleteposts" version="1600"><![CDATA[<html>
@@ -8453,7 +8481,7 @@ body {
 	</div>
 </div>]]></template>
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
-		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
+		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
 		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$post['ipaddress']}]]></template>
 		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">

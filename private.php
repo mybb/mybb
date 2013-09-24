@@ -50,7 +50,7 @@ if(!$mybb->user['pmfolders'])
 	$db->update_query("users", $sql_array, "uid = ".$mybb->user['uid']);
 }
 
-// On a random occassion, recount the users pm's just to make sure everything is in sync.
+// On a random occassion, recount the user's pms just to make sure everything is in sync.
 $rand = my_rand(0, 9);
 if($rand == 5)
 {
@@ -593,7 +593,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		$pm['bcc'] = explode(",", $mybb->get_input('bcc'));
 		$pm['bcc'] = array_map("trim", $pm['bcc']);
 	}
-	
+
 	$mybb->input['options'] = $mybb->get_input('options', 2);
 
 	if(!$mybb->usergroup['cantrackpms'])

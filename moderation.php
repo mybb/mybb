@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'moderation.php');
 
 $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move';
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_deleteposts_post,moderation_deleteposts,moderation_mergeposts_post,moderation_mergeposts';
-$templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_merge';
+$templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
 $templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error';
 
@@ -31,18 +31,6 @@ $lang->load("moderation");
 
 $plugins->run_hooks("moderation_start");
 
-// Get some navigation if we need it
-$mybb->input['action'] = $mybb->get_input('action');
-switch($mybb->input['action'])
-{
-	case "reports":
-		add_breadcrumb($lang->reported_posts);
-		break;
-	case "allreports":
-		add_breadcrumb($lang->all_reported_posts);
-		break;
-
-}
 $tid = $mybb->get_input('tid', 1);
 $pid = $mybb->get_input('pid', 1);
 $fid = $mybb->get_input('fid', 1);
@@ -80,20 +68,33 @@ if($fid)
 	$permissions = forum_permissions($fid);
 }
 
-if($pmid)
+if($pmid && $pmid > 0)
 {
 	$query = $db->query("
 		SELECT *
 		FROM ".TABLE_PREFIX."privatemessages
-		WHERE pmid='".intval($mybb->input['pmid'])."'
+		WHERE pmid='{$pmid}'
 	");
 
-	$post = $db->fetch_array($query);
+	$pm = $db->fetch_array($query);
 
-	if(!$post)
+	if(!$pm)
 	{
 		error($lang->error_invalidpm);
 	}
+}
+
+// Get some navigation if we need it
+$mybb->input['action'] = $mybb->get_input('action');
+switch($mybb->input['action'])
+{
+	case "reports":
+		add_breadcrumb($lang->reported_posts);
+		break;
+	case "allreports":
+		add_breadcrumb($lang->all_reported_posts);
+		break;
+
 }
 
 if(isset($thread))
@@ -110,7 +111,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "cancel_delayedmoderation", "delayedmoderation");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
@@ -158,7 +159,7 @@ switch($mybb->input['action'])
 		$customthreadtools = "";
 
 		$allowed_types = array('openclosethread', 'softdeleterestorethread', 'deletethread', 'move', 'stick', 'merge', 'removeredirects', 'removesubscriptions', 'approveunapprovethread');
-		
+
 		$mybb->input['type'] = $mybb->get_input('type');
 
 		switch($db->type)
@@ -207,7 +208,7 @@ switch($mybb->input['action'])
 
 			$mybb->input['tids'] = $tids;
 		}
-		
+
 		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', 2);
 
 		if($mybb->input['action'] == "do_delayedmoderation" && $mybb->request_method == "post")
@@ -835,7 +836,7 @@ switch($mybb->input['action'])
 		output_page($deleteposts);
 		break;
 
-	// Lets delete those selected posts!
+	// Let's delete those selected posts!
 	case "do_deleteposts":
 
 		// Verify incoming POST request
@@ -926,7 +927,7 @@ switch($mybb->input['action'])
 		output_page($mergeposts);
 		break;
 
-	// Lets merge those selected posts!
+	// Let's merge those selected posts!
 	case "do_mergeposts":
 
 		// Verify incoming POST request
@@ -971,7 +972,7 @@ switch($mybb->input['action'])
 		output_page($movethread);
 		break;
 
-	// Lets get this thing moving!
+	// Let's get this thing moving!
 	case "do_move":
 
 		// Verify incoming POST request
@@ -1204,7 +1205,7 @@ switch($mybb->input['action'])
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadnotesupdated);
 		break;
 
-	// Lets look up the ip address of a post
+	// Let's look up the ip address of a post
 	case "getip":
 		add_breadcrumb($lang->nav_getip);
 		if(!is_moderator($fid, "canviewips") || !$mybb->usergroup['issupermod'])
@@ -1219,24 +1220,57 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
-		//do we have a PM
-		if(!isset($post['username']))
-		{
-			$user = get_user($post['uid']);
-			$post['username'] = $user['username'];
-		}
-
 		$username = build_profile_link($post['username'], $post['uid']);
 
 		// Moderator options
 		$modoptions = "";
 		if($mybb->usergroup['canmodcp'] == 1)
 		{
+			$ipaddress = $post['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
 
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
 		output_page($getip);
+		break;
+
+	// Let's look up the ip address of a PM
+	case "getpmip":
+		if($pmid <= 0)
+		{
+			error($lang->error_invalidpm);
+		}
+		add_breadcrumb($lang->nav_pms, "private.php");
+		$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+		add_breadcrumb($pm['subject'], "private.php?action=read&amp;pmid={$pmid}");
+		add_breadcrumb($lang->nav_getpmip);
+		if(!$mybb->usergroup['issupermod'])
+		{
+			error_no_permission();
+		}
+
+		$pm['ipaddress'] = my_inet_ntop($db->unescape_binary($pm['ipaddress']));
+		$hostname = @gethostbyaddr($pm['ipaddress']);
+		if(!$hostname || $hostname == $pm['ipaddress'])
+		{
+			$hostname = $lang->resolve_fail;
+		}
+
+		$user = get_user($pm['uid']);
+		$pm['username'] = $user['username'];
+
+		$username = build_profile_link($pm['username'], $pm['uid']);
+
+		// Moderator options
+		$modoptions = "";
+		if($mybb->usergroup['canmodcp'] == 1)
+		{
+			$ipaddress = $pm['ipaddress'];
+			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
+		}
+
+		eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
+		output_page($getpmip);
 		break;
 
 	// Merge threads
@@ -1253,7 +1287,7 @@ switch($mybb->input['action'])
 		output_page($merge);
 		break;
 
-	// Lets get those threads together baby! (Merge threads)
+	// Let's get those threads together baby! (Merge threads)
 	case "do_merge":
 
 		// Verify incoming POST request
@@ -1401,7 +1435,7 @@ switch($mybb->input['action'])
 		output_page($split);
 		break;
 
-	// Lets break them up buddy! (Do the split)
+	// Let's break them up buddy! (Do the split)
 	case "do_split":
 
 		// Verify incoming POST request
