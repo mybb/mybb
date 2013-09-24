@@ -254,6 +254,10 @@ if($mybb->input['action'] == "add_template")
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -603,6 +607,10 @@ if($mybb->input['action'] == "edit_template")
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -1126,6 +1134,10 @@ if($mybb->input['action'] == "search_replace")
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
