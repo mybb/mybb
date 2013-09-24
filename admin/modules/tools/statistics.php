@@ -171,15 +171,15 @@ function generate_growth_string($number)
 
 	if($number > 0)
 	{
-		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/increase.gif\" alt=\"{$lang->increase}\" title=\"{$lang->increase}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
+		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/increase.png\" alt=\"{$lang->increase}\" title=\"{$lang->increase}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
 	}
 	elseif($number == 0)
 	{
-		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/no_change.gif\" alt=\"{$lang->no_change}\" title=\"{$lang->no_change}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
+		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/no_change.png\" alt=\"{$lang->no_change}\" title=\"{$lang->no_change}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
 	}
 	else
 	{
-		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/decrease.gif\" alt=\"{$lang->decrease}\" title=\"{$lang->decrease}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
+		$growth_string = "(<img src=\"./styles/{$cp_style}/images/icons/decrease.png\" alt=\"{$lang->decrease}\" title=\"{$lang->decrease}\" style=\"vertical-align: middle; margin-top: -2px;\" /> {$friendly_number})";
 	}
 
 	return $growth_string;

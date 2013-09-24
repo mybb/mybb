@@ -153,7 +153,7 @@ p.submit {
 p.submit input {
 	border: 1px solid #999;
 	padding: 4px 7px;
-	background: #e3e3e3 url(images/submit_bg.gif) repeat-x top;
+	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	color: #444;
 	font-weight: bold;
 	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
@@ -183,7 +183,7 @@ p.submit input:hover {
 	padding: 5px 10px;
 	border: #FC6 1px solid;
 	background-color: #ffc;
-	color: #900; 
+	color: #900;
 	font-style: normal;
 	font-weight: bold;
 	padding-left: 10px;

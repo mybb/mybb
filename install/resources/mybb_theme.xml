@@ -510,7 +510,7 @@ input.button {
 	cursor: pointer;
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 	font-size: 13px;
-	background: #eee url(images/buttons_bg.gif) repeat-x;
+	background: #eee url(images/buttons_bg.png) repeat-x;
 	border: 1px solid #bbb;
 	color: #333;
 }
@@ -1122,7 +1122,7 @@ div.error ul {
 	padding: 2px 5px;
 	margin: 2px;
 	font-size: 11px;
-	background: #eee url(images/buttons_bg.gif) repeat-x;
+	background: #eee url(images/buttons_bg.png) repeat-x;
 	border: 1px solid #ccc;
 	color: #555;
 }

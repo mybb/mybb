@@ -316,7 +316,7 @@ input.text_input:focus, select:focus {
 input.submit_button {
 	border: 1px solid #999;
 	padding: 4px 7px;
-	background: #e3e3e3 url(images/submit_bg.gif) repeat-x top;
+	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	color: #444;
 	font-weight: bold;
 	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;

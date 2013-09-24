@@ -353,7 +353,7 @@ table.general tr:last-child td:last-child {
 	text-align: right;
 	border: 1px solid #999;
 	padding: 3px 6px;
-	background: #e3e3e3 url(images/submit_bg.gif) repeat-x top;
+	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	font-weight: bold;
 	margin-top: 3px;
 	margin-bottom: 3px;
@@ -580,7 +580,7 @@ form p.legend em {
 input.submit_button {
 	border: 1px solid #999;
 	padding: 4px 7px;
-	background: #e3e3e3 url(images/submit_bg.gif) repeat-x top;
+	background: #e3e3e3 url(images/submit_bg.png) repeat-x top;
 	color: #444;
 	font-weight: bold;
 	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
