@@ -115,6 +115,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("threads", "deletedposts");
 	}
 
+	if($db->field_exists('used', 'captcha'))
+	{
+		$db->drop_column("captcha", "used");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
