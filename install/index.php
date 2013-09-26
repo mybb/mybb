@@ -1253,6 +1253,7 @@ function database_info()
 		}
 	}
 
+	$db_info = array();
 	foreach($dboptions as $dbfile => $dbtype)
 	{
 		require_once MYBB_ROOT."inc/db_{$dbfile}.php";
@@ -1295,8 +1296,6 @@ function database_info()
 		{
 			$class = "_selected";
 		}
-
-		$db_info = array();
 
 		$db_info[$dbfile] = "
 			<tbody id=\"{$dbfile}_settings\" class=\"db_settings db_type{$class}\">
