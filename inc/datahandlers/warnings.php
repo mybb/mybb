@@ -93,7 +93,7 @@ class WarningsHandler extends DataHandler
 		return $this->write_warning_data;
 	}
 
-	public insert_warning()
+	public function insert_warning()
 	{
 		global $db, $mybb, $plugins;
 
@@ -102,7 +102,7 @@ class WarningsHandler extends DataHandler
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
 			"tid" => (int)$warning['tid'],
-			"pid" => (int)($warning['pid'],
+			"pid" => (int)$warning['pid'],
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
 			"dateline" => TIME_NOW,
