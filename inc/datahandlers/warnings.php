@@ -69,7 +69,7 @@ class WarningsHandler extends DataHandler
 		return $this->read_warning_data;
 	}
 
-	public update_warning()
+	public function update_warning()
 	{
 		global $db, $mybb, $plugins;
 
