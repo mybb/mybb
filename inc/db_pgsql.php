@@ -1499,7 +1499,7 @@ class DB_PgSQL
 		// hex format
 		if(substr($string, 0, 2) == '\x')
 		{
-			return pack('H*', (substr($string, 2)));
+			return pack('H*', substr($string, 2));
 		}
 		// escape format
 		else
