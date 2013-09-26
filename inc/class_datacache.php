@@ -552,6 +552,8 @@ class datacache
 		global $db;
 
 		$query = $db->simple_select("usergroups");
+
+		$gs = array();
 		while($g = $db->fetch_array($query))
 		{
 			$gs[$g['gid']] = $g;

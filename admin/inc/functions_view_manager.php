@@ -300,7 +300,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 				if($mybb->input['isdefault'])
 				{
-					set_default_view($type, $view['vid']);
+					set_default_view($type, $admin_view['vid']);
 				}
 
 				flash_message($lang->success_view_updated, "success");

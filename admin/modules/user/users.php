@@ -303,6 +303,8 @@ if($mybb->input['action'] == "add")
 
 	// Fetch custom profile fields - only need required profile fields here
 	$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
+
+	$profile_fields = array();
 	while($profile_field = $db->fetch_array($query))
 	{
 		$profile_fields['required'][] = $profile_field;
@@ -791,6 +793,8 @@ if($mybb->input['action'] == "edit")
 
 	// Fetch custom profile fields
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
+
+	$profile_fields = array();
 	while($profile_field = $db->fetch_array($query))
 	{
 		if($profile_field['required'] == 1)
@@ -3701,6 +3705,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$user_options = $values[$field_name];
 				}
 
+				$selected_options = array();
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = $val;
@@ -3876,6 +3881,8 @@ function user_search_conditions($input=array(), &$form)
 
 	// Fetch custom profile fields
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
+
+	$profile_fields = array();
 	while($profile_field = $db->fetch_array($query))
 	{
 		if($profile_field['required'] == 1)

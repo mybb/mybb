@@ -339,7 +339,7 @@ function build_calendar_jump($selected=0)
 	{
 		return;
 	}
-	
+
 	$jump_options = '';
 
 	foreach($calendars as $calendar)
@@ -432,7 +432,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 	{
 		$visible_where = " AND e.visible='1'";
 	}
-	
+
 	$events_cache = array();
 	$query = $db->query("
 		SELECT u.*, e.*
@@ -567,7 +567,7 @@ function get_birthdays($months, $day="")
 	}
 
 	$where = implode(" OR ", $where);
-	
+
 	$bdays = array();
 
 	$query = $db->simple_select("users", "uid, username, birthday, birthdayprivacy, usergroup, displaygroup", $where);
@@ -963,14 +963,15 @@ function fetch_friendly_repetition($event)
 		case 3:
 			if($event['repeats']['days'] || count($event['repeats']['days']) == 7)
 			{
+				$weekdays  = null;
 				foreach($event['repeats']['days'] as $id => $weekday)
 				{
 					$weekday_name = fetch_weekday_name($weekday);
-					if($event['repeats']['days'][$id+1] && $weekdays)
+					if($event['repeats']['days'][$id+1] && $weekday)
 					{
 						$weekdays .= $lang->comma;
 					}
-					else if(!$event['repeats']['days'][$id+1] && $weekdays)
+					else if(!$event['repeats']['days'][$id+1] && $weekday)
 					{
 						$weekdays .= " {$lang->and} ";
 					}

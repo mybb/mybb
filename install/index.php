@@ -1046,6 +1046,8 @@ function requirements_check()
 		$phpversion = $lang->sprintf($lang->req_step_span_pass, PHP_VERSION);
 	}
 
+	$mboptions = array();
+
 	if(function_exists('mb_detect_encoding'))
 	{
 		$mboptions[] = $lang->multi_byte;
@@ -1293,6 +1295,8 @@ function database_info()
 		{
 			$class = "_selected";
 		}
+
+		$db_info = array();
 
 		$db_info[$dbfile] = "
 			<tbody id=\"{$dbfile}_settings\" class=\"db_settings db_type{$class}\">

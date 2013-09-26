@@ -286,7 +286,7 @@ function fetch_next_run($task)
 				$next_day += 7;
 			}
 		}
-		if($next_month == $current_month && $next_day == $current_day && $new_hour < $current_hour)
+		if($next_month == $current_month && $next_day == $current_day && $next_hour < $current_hour)
 		{
 			$reset_year = 1;
 		}

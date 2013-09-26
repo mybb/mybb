@@ -127,11 +127,14 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$query = $db->simple_select("icons");
+
+			$aicons = array();
 			while($icon = $db->fetch_array($query))
 			{
 				$aicons[$icon['path']] = 1;
 			}
 
+			$icons = array();
 			if(!$errors)
 			{
 				while($file = readdir($dir))

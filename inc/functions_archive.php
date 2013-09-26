@@ -135,6 +135,7 @@ function archive_multipage($count, $perpage, $page, $url)
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
+		$mppage = null;
 		for($i = 1; $i <= $pages; ++$i)
 		{
 			if($i == $page)

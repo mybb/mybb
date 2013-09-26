@@ -1234,6 +1234,8 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=r.gid)
 		GROUP BY g.gid
 	");
+
+	$joinrequests = array();
 	while($joinrequest = $db->fetch_array($query))
 	{
 		$joinrequests[$joinrequest['gid']] = $joinrequest['users'];

@@ -87,6 +87,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
+		$aids = array();
 		foreach($mybb->input['aids'] as $aid)
 		{
 			$aids .= "&amp;aids[]=$aid";
@@ -620,6 +621,8 @@ if(!$mybb->input['action'])
 				$search_sql .= " AND a.{$search_field} LIKE '%".$db->escape_string_like($mybb->input[$search_field])."%'";
 			}
 		}
+
+		$errors = array();
 
 		// Username matching
 		if($mybb->input['username'])

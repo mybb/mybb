@@ -393,6 +393,7 @@ class PostDataHandler extends DataHandler
 		if(strstr($mybb->settings['postmergefignore'], ','))
 		{
 			$fids = explode(',', $mybb->settings['postmergefignore']);
+			$fid = array();
 			foreach($fids as $key => $forumid)
 			{
 				$fid[] = intval($forumid);
@@ -739,9 +740,9 @@ class PostDataHandler extends DataHandler
 				$modoptions = $post['modoptions'];
 				$modlogdata['fid'] = $thread['fid'];
 				$modlogdata['tid'] = $thread['tid'];
-				
+
 				$newstick = $newclosed = '';
-				
+
 				if(!isset($modoptions['closethread']))
 				{
 					$modoptions['closethread'] = 0;
@@ -760,7 +761,7 @@ class PostDataHandler extends DataHandler
 					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
-				
+
 				if(!isset($modoptions['stickthread']))
 				{
 					$modoptions['stickthread'] = 0;

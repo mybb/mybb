@@ -86,8 +86,10 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 
 	$plugins->run_hooks("managegroup_do_joinrequests_start");
 
+	$uidin = null;
 	if(is_array($mybb->get_input('request', 2)))
 	{
+		$uidin = array();
 		foreach($mybb->get_input('request', 2) as $uid => $what)
 		{
 			if($what == "accept")

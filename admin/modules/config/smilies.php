@@ -300,11 +300,14 @@ if($mybb->input['action'] == "add_multiple")
 				}
 
 				$query = $db->simple_select("smilies");
+
+				$asmilies = array();
 				while($smilie = $db->fetch_array($query))
 				{
 					$asmilies[$smilie['image']] = 1;
 				}
 
+				$smilies = array();
 				while($file = readdir($dir))
 				{
 					if($file != ".." && $file != ".")

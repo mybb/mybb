@@ -60,6 +60,8 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=home-preferences", "post");
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
+
+	$folders = array();
 	while($folder = readdir($dir))
 	{
 		if($folder != "." && $folder != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/main.css"))

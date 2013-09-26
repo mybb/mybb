@@ -610,6 +610,7 @@ class DB_PgSQL
 			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
 		}
 
+		$tables = array();
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['table_name'];

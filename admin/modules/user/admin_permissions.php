@@ -232,6 +232,7 @@ if($mybb->input['action'] == "edit")
 	// Fetch all of the modules we have
 	$modules_dir = MYBB_ADMIN_DIR."modules";
 	$dir = opendir($modules_dir);
+	$modules = array();
 	while(($module = readdir($dir)) !== false)
 	{
 		if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))

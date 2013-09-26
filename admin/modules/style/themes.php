@@ -399,6 +399,8 @@ if($mybb->input['action'] == "import")
 	}
 
 	$query = $db->simple_select("themes", "tid, name");
+
+	$themes = array();
 	while($theme = $db->fetch_array($query))
 	{
 		$themes[$theme['tid']] = $theme['name'];

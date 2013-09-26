@@ -173,7 +173,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		{
 			$current_page = intval($mybb->input['page']);
 			$start = ($current_page-1)*$per_page;
-			$pages = $unaproved_threads / $per_page;
+			$pages = $unapproved_threads / $per_page;
 			$pages = ceil($pages);
 			if($current_page > $pages)
 			{
@@ -187,7 +187,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$current_page = 1;
 		}
 
-		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_threads, "index.php?module=forum-moderation_queue&amp;page={page}");
+		$pagination = draw_admin_pagination($current_page, $per_page, $unapproved_threads, "index.php?module=forum-moderation_queue&amp;page={page}");
 
 		$page->add_breadcrumb_item($lang->threads_awaiting_moderation);
 		$page->output_header($lang->threads_awaiting_moderation);
@@ -270,7 +270,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		{
 			$current_page = intval($mybb->input['page']);
 			$start = ($current_page-1)*$per_page;
-			$pages = $unaproved_posts / $per_page;
+			$pages = $unapproved_posts / $per_page;
 			$pages = ceil($pages);
 			if($current_page > $pages)
 			{
@@ -284,7 +284,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$current_page = 1;
 		}
 
-		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_posts, "index.php?module=forum-moderation_queue&amp;type=posts&amp;page={page}");
+		$pagination = draw_admin_pagination($current_page, $per_page, $unapproved_posts, "index.php?module=forum-moderation_queue&amp;type=posts&amp;page={page}");
 
 
 		$page->add_breadcrumb_item($lang->posts_awaiting_moderation);

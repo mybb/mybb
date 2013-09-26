@@ -92,6 +92,8 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
+
+	$usergroups = array();
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup['title'];

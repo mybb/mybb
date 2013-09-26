@@ -124,6 +124,8 @@ function task_promotions($task)
 		}
 
 		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
+
+		$uids = array();
 		while($user = $db->fetch_array($query2))
 		{
 			// super admin check?

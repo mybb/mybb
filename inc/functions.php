@@ -5460,6 +5460,7 @@ function rebuild_settings()
 	);
 	$query = $db->simple_select("settings", "value, name", "", $options);
 
+	$settings = null;
 	while($setting = $db->fetch_array($query))
 	{
 		$mybb->settings[$setting['name']] = $setting['value'];
@@ -5510,6 +5511,7 @@ function build_highlight_array($terms)
 	{
 		$inquote = false;
 		$terms = explode("\"", $terms);
+		$words = array();
 		foreach($terms as $phrase)
 		{
 			$phrase = htmlspecialchars_uni($phrase);

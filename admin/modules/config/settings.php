@@ -882,7 +882,7 @@ if($mybb->input['action'] == "change")
 				// Whoopsies, you can't do that!
 				$error_message = $lang->sprintf($lang->error_hidden_captcha_conflict, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']));
 
-				flash_message($errormessage, 'error');
+				flash_message($error_message, 'error');
 				admin_redirect("index.php?module=config-settings&action=change&gid=9");
 			}
 		}
@@ -1130,6 +1130,8 @@ if($mybb->input['action'] == "change")
 			else if($type[0] == "cpstyle")
 			{
 				$dir = @opendir(MYBB_ROOT.$config['admin_dir']."/styles");
+
+				$folders = array();
 				while($folder = readdir($dir))
 				{
 					if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))

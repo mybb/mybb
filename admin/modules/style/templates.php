@@ -862,6 +862,7 @@ if($mybb->input['action'] == "search_replace")
 				}
 				else
 				{
+					$template_list = array();
 					while($template = $db->fetch_array($query))
 					{
 						$template_list[$template['sid']][$template['title']] = $template;
@@ -1046,7 +1047,7 @@ if($mybb->input['action'] == "search_replace")
 
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
 
-				if(empty($templatesets))
+				if(empty($templatessets))
 				{
 					$table->construct_cell($lang->sprintf($lang->search_noresults_title, htmlspecialchars_uni($mybb->input['title'])), array("class" => "align_center"));
 
@@ -1660,6 +1661,8 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	}
 	// Fetch Groups
 	$query = $db->simple_select("templategroups", "*");
+
+	$template_groups = array();
 	while($templategroup = $db->fetch_array($query))
 	{
 		$templategroup['title'] = $lang->parse($templategroup['title'])." ".$lang->templates;

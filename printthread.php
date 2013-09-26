@@ -222,18 +222,19 @@ function printthread_multipage($count, $perpage, $page, $url)
 		$pages = $count / $perpage;
 		$pages = ceil($pages);
 
+		$mppage = null;
 		for($i = 1; $i <= $pages; ++$i)
 		{
 			if($i == $page)
 			{
-				$mppage .= "<strong>$i</strong> ";
+				$mppage .= "<strong>{$i}</strong> ";
 			}
 			else
 			{
-				$mppage .= "<a href=\"$url&amp;page=$i\">$i</a> ";
+				$mppage .= "<a href=\"{$url}&amp;page={$i}\">$i</a> ";
 			}
 		}
-		$multipage = "<div class=\"multipage\">{$lang->pages} <strong>".$lang->archive_pages."</strong> $mppage</div>";
+		$multipage = "<div class=\"multipage\">{$lang->pages} <strong>".$lang->archive_pages."</strong> {$mppage}</div>";
 	}
 	return $multipage;
 }

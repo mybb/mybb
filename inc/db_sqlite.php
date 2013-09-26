@@ -482,6 +482,7 @@ class DB_SQLite
 			$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table'");
 		}
 
+		$tables = array();
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['tbl_name'];

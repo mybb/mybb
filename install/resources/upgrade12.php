@@ -112,7 +112,7 @@ function upgrade12_dbchanges()
 				flush();
 				$form_fields['start'] = $perpage+$start;
 
-				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $pimary_key, 'limit_start' => $start, 'limit' => $remaining));
+				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $primary_key, 'limit_start' => $start, 'limit' => $remaining));
 				while($row = $db->fetch_array($query))
 				{
 					$updated_row = array();

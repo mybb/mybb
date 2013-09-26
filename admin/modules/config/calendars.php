@@ -130,6 +130,8 @@ if($mybb->input['action'] == "permissions")
 {
 	$plugins->run_hooks("admin_config_calendars_permissions");
 
+	$usergroups = array();
+
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 

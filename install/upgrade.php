@@ -102,6 +102,8 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 		);
 
 		$query = $db->simple_select("settings", "value, name", "", $options);
+
+		$settings = array();
 		while($setting = $db->fetch_array($query))
 		{
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
@@ -273,6 +275,8 @@ else
 		);");
 
 		$dh = opendir(INSTALL_ROOT."resources");
+
+		$upgradescripts = array();
 		while(($file = readdir($dh)) !== false)
 		{
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))

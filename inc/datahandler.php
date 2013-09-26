@@ -126,6 +126,7 @@ class DataHandler
 			$lang->load($this->language_file, true);
 		}
 		// Prefix all the error codes with the language prefix.
+		$errors = array();
 		foreach($this->errors as $error)
 		{
 			$lang_string = $this->language_prefix.'_'.$error['error_code'];

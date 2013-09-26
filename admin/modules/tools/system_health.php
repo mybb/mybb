@@ -217,7 +217,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table = new Table;
 
 		$table1 = $db->show_create_table($db->escape_string($mybb->input['table']));
-        preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table1, $matches);
+        		preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table1, $matches);
 		$charset = $matches[1];
 
 		$table->construct_cell("<strong>".$lang->sprintf($lang->converting_to_utf8, $mybb->input['table'], $charset)."</strong>");
@@ -477,7 +477,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');
 
-        preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+        		preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
 
 		$form = new Form("index.php?module=tools-system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
@@ -540,7 +540,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		if(substr($tablename, 0, strlen($old_table_prefix)) == $old_table_prefix)
 		{
 			$table = $db->show_create_table($tablename);
-        	preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+        			preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 			if(fetch_iconv_encoding($matches[1]) != 'utf-8')
 			{
 				$not_okey[$key] = $tablename;
@@ -548,7 +548,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			}
 			else
 			{
-				++$okay_count;
+				++$okey_count;
 			}
 
 			$mybb_tables[$key] = $tablename;
@@ -557,7 +557,7 @@ if($mybb->input['action'] == "utf8_conversion")
 
 	$db->set_table_prefix($old_table_prefix);
 
-	if($okay_count == count($mybb_tables))
+	if($okey_count == count($mybb_tables))
 	{
 		flash_message($lang->success_all_tables_already_converted, 'success');
 		admin_redirect("index.php?module=tools-system_health");

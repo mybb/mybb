@@ -397,7 +397,7 @@ if($mybb->input['action'] == "addevent")
 		$repeats_5_years = 1;
 		$repeats_5_occurance[1] = "selected=\"selected\"";
 		$repeats_5_weekday[0] = "selected=\"selected\"";
-		$repeats_5_months2[1] = "selected=\"selected\"";
+		$repeats_5_month2[1] = "selected=\"selected\"";
 		$repeats_5_years2 = 1;
 		$timezone = $mybb->user['timezone'];
 	}
@@ -483,7 +483,7 @@ if($mybb->input['action'] == "addevent")
 	{
 		$privatecheck = '';
 	}
-	
+
 	$calendar_select = '';
 
 	// Build calendar select
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "addevent")
 			}
 		}
 	}
-	
+
 	$event_errors = '';
 
 	$plugins->run_hooks("calendar_addevent_end");
@@ -1107,7 +1107,7 @@ if($mybb->input['action'] == "move")
 	add_breadcrumb($lang->nav_move_event);
 
 	$plugins->run_hooks("calendar_move_start");
-	
+
 	$calendar_select = '';
 
 	// Build calendar select
@@ -1973,7 +1973,7 @@ if($mybb->input['action'] == "weekview")
 		{
 			$day_shaded = ' trow_shaded';
 		}
-		
+
 		$day_events = '';
 
 		// Any events on this specific day?

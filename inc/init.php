@@ -174,6 +174,8 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || empty($settings))
 		);
 
 		$query = $db->simple_select("settings", "value, name", "", $options);
+
+		$settings = array();
 		while($setting = $db->fetch_array($query))
 		{
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);

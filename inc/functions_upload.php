@@ -186,6 +186,8 @@ function upload_avatar($avatar=array(), $uid=0)
 {
 	global $db, $mybb, $lang, $plugins, $cache;
 
+	$ret = array();
+
 	if(!$uid)
 	{
 		$uid = $mybb->user['uid'];

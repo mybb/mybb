@@ -547,6 +547,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->email_addr_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+
+	$options = array();
 	while($usergroup = $db->fetch_array($query))
 	{
 		$options[$usergroup['gid']] = $usergroup['title'];

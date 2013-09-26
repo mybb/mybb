@@ -615,6 +615,7 @@ class DB_MySQL
 			$query = $this->query("SHOW TABLES FROM `$database`");
 		}
 
+		$tables = array();
 		while(list($table) = mysql_fetch_array($query))
 		{
 			$tables[] = $table;

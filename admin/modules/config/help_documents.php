@@ -224,6 +224,8 @@ if($mybb->input['action'] == "add")
 
 		$form_container = new FormContainer($lang->add_new_document);
 		$query = $db->simple_select("helpsections", "sid, name");
+
+		$sections = array();
 		while($section = $db->fetch_array($query))
 		{
 			$sections[$section['sid']] = $section['name'];
@@ -455,6 +457,7 @@ if($mybb->input['action'] == "edit")
 
 		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".intval($mybb->input['hid']).")");
 
+		$sections = array();
 		$query = $db->simple_select("helpsections", "sid, name");
 		while($section = $db->fetch_array($query))
 		{

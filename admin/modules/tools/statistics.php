@@ -82,6 +82,8 @@ if(!$mybb->input['action'])
 	}
 
 	$query = $db->simple_select("stats", "*", "dateline >= '".intval($start_dateline)."' AND dateline <= '".intval($end_dateline)."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
+
+	$stats = array();
 	while($stat = $db->fetch_array($query))
 	{
 		if($last_dateline)

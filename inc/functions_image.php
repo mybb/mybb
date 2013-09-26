@@ -21,6 +21,8 @@
  */
 function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 {
+	$thumb = array();
+
 	if(!function_exists("imagecreate"))
 	{
 		$thumb['code'] = 3;
