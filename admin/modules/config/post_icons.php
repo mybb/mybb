@@ -471,7 +471,7 @@ if(!$mybb->input['action'])
 			$image = "../".$icon['path'];
 		}
 
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("<img src=\"".htmlspecialchars_uni($image)."\" alt=\"\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($icon['name']));
 
 		$table->construct_cell("<a href=\"index.php?module=config-post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));
