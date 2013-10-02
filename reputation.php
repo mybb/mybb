@@ -902,6 +902,9 @@ if(!$mybb->input['action'])
 		{
 			$reputation_vote['comments'] = $lang->no_comment;
 		}
+
+		$plugins->run_hooks("reputation_vote");
+
 		eval("\$reputation_votes .= \"".$templates->get("reputation_vote")."\";");
 	}
 

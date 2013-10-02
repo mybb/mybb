@@ -2222,7 +2222,7 @@ if(!$mybb->input['action'])
 			'permissions' => $lang->forum_permissions,
 			'moderators' => $lang->moderators,
 		);
-
+		$tabs = $plugins->run_hooks("admin_forum_management_start_graph_tabs", $tabs);
 		$page->output_tab_control($tabs);
 
 		echo "<div id=\"tab_subforums\">\n";

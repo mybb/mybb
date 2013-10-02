@@ -253,6 +253,8 @@ elseif(!$mybb->input['action'])
 		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 
+	$plugins->run_hooks("admin_home_index_output_message");
+
 	$adminmessage = $cache->read("adminnotes");
 
 	$table = new Table;

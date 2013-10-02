@@ -32,7 +32,10 @@ if($mybb->settings['enablewarningsystem'] == 0)
 // Expire old warnings
 expire_warnings();
 
+
 $mybb->input['action'] = $mybb->get_input('action');
+
+$plugins->run_hooks("warnings_start");
 
 // Actually warn a user
 if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")

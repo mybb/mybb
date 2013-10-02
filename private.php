@@ -94,6 +94,7 @@ $foldersearch .= "</select>\n";
 
 usercp_menu();
 
+$plugins->run_hooks("private_start");
 
 // Make navigation
 add_breadcrumb($lang->nav_pms, "private.php");
@@ -1958,7 +1959,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("private_start");
+	$plugins->run_hooks("private_inbox");
 
 	if(!$mybb->input['fid'] || !array_key_exists($mybb->input['fid'], $foldernames))
 	{
@@ -2270,6 +2271,9 @@ if(!$mybb->input['action'])
 			{
 				$senddate = $lang->not_sent;
 			}
+
+			$plugins->run_hooks("private_message");
+
 			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 		}
 	}

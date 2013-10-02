@@ -21,6 +21,8 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("polls");
 
+$plugins->run_hooks("polls_start");
+
 if($mybb->user['uid'] != 0)
 {
 	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
