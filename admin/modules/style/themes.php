@@ -399,8 +399,6 @@ if($mybb->input['action'] == "import")
 	}
 
 	$query = $db->simple_select("themes", "tid, name");
-
-	$themes = array();
 	while($theme = $db->fetch_array($query))
 	{
 		$themes[$theme['tid']] = $theme['name'];
@@ -970,7 +968,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_invalid_templateset;
 		}
-		if(!$properties['editortheme'] || !@is_dir(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']))
+		if(!$properties['editortheme'] || !file_exists(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']) || is_dir(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']))
 		{
 			$errors[] = $lang->error_invalid_editortheme;
 		}
@@ -1361,11 +1359,11 @@ if($mybb->input['action'] == "edit")
 	{
 		while($dir = readdir($dh))
 		{
-			if($dir == ".svn" || $dir == "." || $dir == ".." || !is_dir($editor_theme_root.$dir))
+			if($dir == ".svn" || $dir == "." || $dir == ".." || is_dir($editor_theme_root.$dir) || get_extension($editor_theme_root.$dir) != 'css')
 			{
 				continue;
 			}
-			$options[$dir] = ucfirst(str_replace('_', ' ', $dir));
+			$options[$dir] = ucfirst(str_replace(array('_', '.css'), array(' ', ''), $dir));
 		}
 	}
 
@@ -2145,12 +2143,8 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
-<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
-<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -2413,12 +2407,8 @@ if($mybb->input['action'] == "add_stylesheet")
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
-<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
-<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
-<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
