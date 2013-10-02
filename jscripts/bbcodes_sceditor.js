@@ -1,6 +1,6 @@
-window.clickableEditor = {};
+// This was taken from the SCEditor plugin for MyBB
 
-jQuery(document).ready(function($) {
+$(document).ready(function($) {
 	'use strict';
 
 	var $document = $(document);
