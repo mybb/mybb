@@ -602,21 +602,10 @@ none=Hide Errors and Warnings
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="orderwol">
-			<title>Who's Online Order</title>
-			<description><![CDATA[List the online users by username or last activity.]]></description>
-			<disporder>9</disporder>
-			<optionscode><![CDATA[select
-username=Order By Username (ASC)
-activity=Order By Last Activity (DESC)]]></optionscode>
-			<settingvalue><![CDATA[username]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -625,7 +614,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="showforumviewing">
 			<title>Show x viewing forum</title>
 			<description><![CDATA[Displays the currently active users viewing each forum.]]></description>
-			<disporder>11</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1729,6 +1718,17 @@ descending=Descending]]></optionscode>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="wolorder">
+			<title>Who's Online Order</title>
+			<description><![CDATA[List the online users by username or last activity. Note: This setting only takes effect on the portal and index pages.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[select
+username=Order By Username (ASC)
+activity=Order By Last Activity (DESC)]]></optionscode>
+			<settingvalue><![CDATA[username]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
