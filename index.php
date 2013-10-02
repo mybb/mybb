@@ -59,7 +59,7 @@ $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
-	if($mybb->settings['orderwol'] == 'username')
+	if($mybb->settings['wolorder'] == 'username')
 	{
 		$order_by = 'u.username ASC';
 		$order_by2 = 's.time DESC';
