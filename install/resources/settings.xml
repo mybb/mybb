@@ -1249,19 +1249,10 @@ disabled=Disable this feature]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="maxposts">
-			<title>Maximum Posts Per Day</title>
-			<description><![CDATA[This is the total number of posts allowed per user per day.  0 for unlimited.]]></description>
-			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="postfloodcheck">
 			<title>Post Flood Checking</title>
 			<description><![CDATA[Set to on if you want to enable flood checking for posts. Specify the time between posts below.]]></description>
-			<disporder>5</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1270,7 +1261,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="postfloodsecs">
 			<title>Post Flood Time</title>
 			<description><![CDATA[Set the time (in seconds) users have to wait between posting, to be in effect; the option above must be on.]]></description>
-			<disporder>6</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1279,7 +1270,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="postmergemins">
 			<title>Post Merge Time</title>
 			<description><![CDATA[With this enabled, posts posted within x minutes by the same author right after each other, will be merged. Set the time limit (in minutes) to merge posts. Set to 0 or leave blank to disable this feature. Default: 60]]></description>
-			<disporder>7</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1288,7 +1279,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="postmergefignore">
 			<title>Merge Forums to Ignore</title>
 			<description><![CDATA[Forums, separated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
-			<disporder>8</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1297,7 +1288,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
 			<description><![CDATA[Usergroups, separated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
-			<disporder>9</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1306,7 +1297,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="postmergesep">
 			<title>Merge Separator</title>
 			<description><![CDATA[The Separator to be used when merging two message Default: '[hr]']]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[[hr]]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1315,7 +1306,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="logip">
 			<title>Log Posting IP Addresses</title>
 			<description><![CDATA[Do you wish to log ip addresses of users who post, and who you want to show ip addresses to?]]></description>
-			<disporder>11</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[radio
 no=Do not log IP
 hide=Show to Admins & Mods
@@ -1327,7 +1318,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="showeditedby">
 			<title>Show 'edited by' Messages</title>
 			<description><![CDATA[Once a post is edited by a regular user, do you want to show the edited by message?]]></description>
-			<disporder>12</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1336,7 +1327,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="showeditedbyadmin">
 			<title>Show 'edited by' Message for Forum Staff</title>
 			<description><![CDATA[Do you want to show edited by messages for forum staff when they edit their posts?]]></description>
-			<disporder>13</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1345,7 +1336,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="maxpostimages">
 			<title>Maximum Images per Post</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their post. Set to 0 to disable this.]]></description>
-			<disporder>14</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1354,7 +1345,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="maxpostvideos">
 			<title>Maximum Videos per Post</title>
 			<description><![CDATA[Enter the maximum number of videos a user can put in their post. Set to 0 to disable this.]]></description>
-			<disporder>15</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1363,7 +1354,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="subscribeexcerpt">
 			<title>Amount of Characters for Subscription Previews</title>
 			<description><![CDATA[How many characters of the post do you want to send with the email notification of a new reply?]]></description>
-			<disporder>16</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1372,7 +1363,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post.]]></description>
-			<disporder>17</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1381,7 +1372,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="attachthumbnails">
 			<title>Show Attached Thumbnails in Posts</title>
 			<description><![CDATA[How do you want images to be shown in posts?]]></description>
-			<disporder>18</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[radio
 yes=Thumbnail
 no=Full Size Image
@@ -1393,7 +1384,7 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbh">
 			<title>Attached Thumbnail Maximum Height</title>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
-			<disporder>19</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1402,25 +1393,16 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbw">
 			<title>Attached Thumbnail Maximum Width</title>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
-			<disporder>20</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
-		<setting name="edittimelimit">
-			<title>Edit Time Limit</title>
-			<description><![CDATA[The number of minutes until regular users cannot edit their own posts (if they have the permission). Enter 0 (zero) for no limit.]]></description>
-			<disporder>21</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="wordwrap">
 			<title>Number of Characters before Word Wrapping Occurs</title>
 			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
-			<disporder>22</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[80]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1429,7 +1411,7 @@ download=As Download Link]]></optionscode>
 		<setting name="maxquotedepth">
 			<title>Maximum Nested Quote Tags</title>
 			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
-			<disporder>23</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1438,7 +1420,7 @@ download=As Download Link]]></optionscode>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
 			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
-			<disporder>24</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1447,7 +1429,7 @@ download=As Download Link]]></optionscode>
 		<setting name="maxpolloptions">
 			<title>Maximum Number of Poll Options</title>
 			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
-			<disporder>25</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1456,7 +1438,7 @@ download=As Download Link]]></optionscode>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>26</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

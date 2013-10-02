@@ -69,6 +69,8 @@
 		<canusesig><![CDATA[0]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -139,6 +141,8 @@
 		<canusesig><![CDATA[1]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -209,6 +213,8 @@
 		<canusesig><![CDATA[1]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -279,6 +285,8 @@
 		<canusesig><![CDATA[1]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -349,6 +357,8 @@
 		<canusesig><![CDATA[0]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -419,6 +429,8 @@
 		<canusesig><![CDATA[1]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -489,5 +501,7 @@
 		<canusesig><![CDATA[0]]></canusesig>
 		<canusesigxposts><![CDATA[0]]></canusesigxposts>
 		<signofollow><![CDATA[0]]></signofollow>
+		<edittimelimit><![CDATA[0]]></edittimelimit>
+		<maxposts><![CDATA[0]]></maxposts>
 	</usergroup>
 </usergroups>
