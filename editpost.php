@@ -153,9 +153,9 @@ else
 		}
 		// Edit time limit
 		$time = TIME_NOW;
-		if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->settings['edittimelimit']*60)))
+		if($mybb->usergroup['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->usergroup['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->usergroup['edittimelimit']);
 			error($lang->edit_time_limit);
 		}
 		// User can't edit unapproved post

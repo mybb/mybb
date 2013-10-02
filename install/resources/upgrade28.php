@@ -120,6 +120,16 @@ function upgrade28_dbchanges()
 		$db->drop_column("captcha", "used");
 	}
 
+	if($db->field_exists('edittimelimit', 'usergroups')) 
+	{ 
+		$db->drop_column("usergroups", "edittimelimit"); 
+	} 
+
+	if($db->field_exists('maxposts', 'usergroups')) 
+	{ 
+		$db->drop_column("usergroups", "maxposts"); 
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -138,6 +148,8 @@ function upgrade28_dbchanges()
 			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int NOT NULL default '0'");
+			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'"); 
+			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -154,6 +166,8 @@ function upgrade28_dbchanges()
 			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
+			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'"); 
+			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			break;
 	}
 
