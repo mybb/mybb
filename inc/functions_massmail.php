@@ -41,7 +41,7 @@ function build_mass_mail_query($conditions)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if($conditions[$search_field] && $conditions[$direction_field])
+		if(isset($conditions[$search_field]) && $conditions[$direction_field])
 		{
 			switch($conditions[$direction_field])
 			{
@@ -64,7 +64,7 @@ function build_mass_mail_query($conditions)
 	{
 		$time_field = $search_field."_date";
 		$direction_field = $search_field."_dir";
-		if($conditions[$search_field] && $conditions[$time_field] && $conditions[$direction_field])
+		if(isset($conditions[$search_field]) && $conditions[$time_field] && $conditions[$direction_field])
 		{
 			switch($conditions[$time_field])
 			{

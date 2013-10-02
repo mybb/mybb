@@ -559,7 +559,7 @@ if($mybb->input['action'] == "edit")
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
 	$more_options = array(
 		"more_than" => $lang->more_than,
@@ -988,7 +988,7 @@ if($mybb->input['action'] == "send")
 			"is_exactly" => $lang->is_exactly,
 			"less_than" => $lang->less_than
 		);
-		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
 
 		$more_options = array(
 			"more_than" => $lang->more_than,
