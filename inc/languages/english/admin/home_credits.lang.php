@@ -16,5 +16,6 @@ $l['graphics_and_style'] = "Graphics and Style";
 $l['software_quality_assurance'] = "Software Quality Assurance";
 $l['support_representative'] = "Support Representative";
 $l['pr_liaison'] = "PR Liaison";
+$l['resources_team'] = "Resources Team";
 
 ?>
