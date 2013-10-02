@@ -1483,6 +1483,54 @@ new SettingSearch($("settings_search"), $("search"), $("search_results"), $("gro
 
 function print_setting_peekers()
 {
+	global $plugins;
+
+	$peekers = array(
+		'new Peeker($$(".setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true)',
+		'new Peeker($$(".setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true)',
+		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true)',
+		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true)',
+		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true)',
+		'new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false)',
+		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true)',
+		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true)',
+		'new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true)',
+		'new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true)',
+		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true)',
+		'new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false)',
+		'new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false)',
+		'new Peeker($$(".setting_postfloodcheck"), $("row_setting_postfloodsecs"), /1/, true)',
+		'new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false)',
+		'new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false)',
+		'new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false)',
+		'new Peeker($$(".setting_enablememberlist"), $("row_setting_membersperpage"), /1/, true)',
+		'new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /1/, true)',
+		'new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_order"), /1/, true)',
+		'new Peeker($$(".setting_enablereputation"), $("row_setting_repsperpage"), /1/, true)',
+		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /1/, true)',
+		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true)',
+		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true)',
+		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true)',
+		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true)',
+		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true)',
+		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true)',
+		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowvideocode"), /1/, true)',
+		'new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true)',
+		'new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false)',
+		'new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false)',
+		'new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false)',
+		'new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false)',
+	);
+
+	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
+
+	$setting_peekers = implode("\n			", $peekers);
+
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
 		Event.observe(window, "load", function() {
@@ -1490,45 +1538,7 @@ function print_setting_peekers()
 		});
 		function loadPeekers()
 		{
-			new Peeker($$(".setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true);
-			new Peeker($$(".setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true);
-			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true);
-			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true);
-			new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true);
-			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
-			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true);
-			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
-			new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true);
-			new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true);
-			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
-			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
-			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
-			new Peeker($$(".setting_postfloodcheck"), $("row_setting_postfloodsecs"), /1/, true);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
-			new Peeker($$(".setting_enablememberlist"), $("row_setting_membersperpage"), /1/, true);
-			new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /1/, true);
-			new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_order"), /1/, true);
-			new Peeker($$(".setting_enablereputation"), $("row_setting_repsperpage"), /1/, true);
-			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /1/, true);
-			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true);
-			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true);
-			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true);
-			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true);
-			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true);
-			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
-			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowvideocode"), /1/, true);
-			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true);
-			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
-			new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false);
-			new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false);
+			'.$setting_peekers.'
 		}
 	</script>';
 }
