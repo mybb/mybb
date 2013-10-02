@@ -394,13 +394,21 @@ function build_postbit($post, $post_type=0)
 			foreach($profile_fields as $field)
 			{
 				$fieldfid = "fid{$field['fid']}";
-				if(isset($post[$fieldfid]))
+				if(!empty($post[$fieldfid]))
 				{
+					$post['fieldvalue'] = '';
 					$post['fieldname'] = htmlspecialchars_uni($field['name']);
 
 					$thing = explode("\n", $field['type'], "2");
 					$type = trim($thing[0]);
 					$useropts = explode("\n", $post[$fieldfid]);
+
+					// Skip over texa area fields, as they might break layout
+					if($type == "textarea")
+					{
+						continue;
+					}
+
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
 						foreach($useropts as $val)
@@ -417,16 +425,7 @@ function build_postbit($post, $post_type=0)
 					}
 					else
 					{
-						$post[$fieldfid] = $parser->parse_badwords($post[$fieldfid]);
-
-						if($type == "textarea")
-						{
-							$post['fieldvalue'] = nl2br(htmlspecialchars_uni($post[$fieldfid]));
-						}
-						else
-						{
-							$post['fieldvalue'] = htmlspecialchars_uni($post[$fieldfid]);
-						}
+						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
