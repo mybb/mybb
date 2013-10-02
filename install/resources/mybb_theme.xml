@@ -12262,7 +12262,7 @@ $(function() {
 				":at:": "images/smilies/at.gif"
 			}
 		},
-        toolbar: "video,bold,italic,underlinestrike,subscript,superscript,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,table,code,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
+        toolbar: "video,bold,italic,underlinestrike,subscript,superscript,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
 	});
 });
 </script>]]></template>
