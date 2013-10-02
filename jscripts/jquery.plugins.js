@@ -510,7 +510,6 @@
 	{
 		return this.each(function()
 		{
-			alert($(this).attr("id"));
 			var popup = new PopupMenu(this);
 			$(this).click(popup.open);
 		});
