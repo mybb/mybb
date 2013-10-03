@@ -6,7 +6,7 @@
 		<logo><![CDATA[images/logo.png]]></logo>
 		<tablespace><![CDATA[5]]></tablespace>
 		<borderwidth><![CDATA[0]]></borderwidth>
-		<editortheme><![CDATA[default]]></editortheme>
+		<editortheme><![CDATA[default.css]]></editortheme>
 	</properties>
 	<stylesheets>
 		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
