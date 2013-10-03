@@ -968,7 +968,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_invalid_templateset;
 		}
-		if(!$properties['editortheme'] || !file_exists(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']) || is_dir(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']))
+		if(!$properties['editortheme'] || !file_exists(MYBB_ROOT."jscripts/sceditor/editor_themes/".$properties['editortheme']) || is_dir(MYBB_ROOT."jscripts/sceditor/editor_themes/".$properties['editortheme']))
 		{
 			$errors[] = $lang->error_invalid_editortheme;
 		}
@@ -1354,7 +1354,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
 
 	$options = array();
-	$editor_theme_root = MYBB_ROOT."jscripts/editor_themes/";
+	$editor_theme_root = MYBB_ROOT."jscripts/sceditor/editor_themes/";
 	if($dh = @opendir($editor_theme_root))
 	{
 		while($dir = readdir($dh))
