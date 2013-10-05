@@ -130,6 +130,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("usergroups", "maxposts"); 
 	}
 
+	if($db->field_exists('postbit', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "postbit");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -150,6 +155,7 @@ function upgrade28_dbchanges()
 			$db->add_column("captcha", "used", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
+			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -168,6 +174,7 @@ function upgrade28_dbchanges()
 			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
+			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			break;
 	}
 

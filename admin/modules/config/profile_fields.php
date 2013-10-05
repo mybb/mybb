@@ -63,6 +63,7 @@ if($mybb->input['action'] == "add")
 				"required" => $db->escape_string($mybb->input['required']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"postbit" => $db->escape_string($mybb->input['postbit']),
 				"postnum" => intval($mybb->input['postnum'])
 			);
 
@@ -107,6 +108,7 @@ if($mybb->input['action'] == "add")
 		$mybb->input['required'] = 0;
 		$mybb->input['editable'] = 1;
 		$mybb->input['hidden'] = 0;
+		$mybb->input['postbit'] = 0;
 	}
 
 	$form_container = new FormContainer($lang->add_new_profile_field);
@@ -128,6 +130,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
 	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->end();
 
@@ -201,6 +204,7 @@ if($mybb->input['action'] == "edit")
 				"required" => $db->escape_string($mybb->input['required']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"postbit" => $db->escape_string($mybb->input['postbit']),
 				"postnum" => intval($mybb->input['postnum'])
 			);
 
@@ -263,6 +267,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
 	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->end();
 
@@ -353,6 +358,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->required, array("class" => "align_center"));
 	$table->construct_header($lang->editable, array("class" => "align_center"));
 	$table->construct_header($lang->hidden, array("class" => "align_center"));
+	$table->construct_header($lang->postbit, array("class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center"));
 
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
@@ -385,11 +391,21 @@ if(!$mybb->input['action'])
 			$hidden = $lang->no;
 		}
 
+		if($field['postbit'])
+		{
+			$postbit = $lang->yes;
+		}
+		else
+		{
+			$postbit = $lang->no;
+		}
+
 		$table->construct_cell("<strong><a href=\"index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}\">".htmlspecialchars_uni($field['name'])."</a></strong><br /><small>".htmlspecialchars_uni($field['description'])."</small>", array('width' => '45%'));
 		$table->construct_cell($field['fid'], array("class" => "align_center", 'width' => '5%'));
 		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($hidden, array("class" => "align_center", 'width' => '10%'));
+		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%')); 
 
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
 		$popup->add_item($lang->edit_field, "index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}");
@@ -400,7 +416,7 @@ if(!$mybb->input['action'])
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_profile_fields, array('colspan' => 6));
+		$table->construct_cell($lang->no_profile_fields, array('colspan' => 7));
 		$table->construct_row();
 	}
 

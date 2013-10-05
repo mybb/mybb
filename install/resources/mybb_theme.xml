@@ -8342,10 +8342,10 @@ body {
 <br />]]></template>
 		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
-		<template name="postbit_author_user" version="1400"><![CDATA[
+		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
 	{$lang->postbit_joined} {$post['userregdate']}
-	{$post['replink']}{$post['warninglevel']}]]></template>
+	{$post['replink']}{$post['profilefield']}{$post['warninglevel']}]]></template>
 		<template name="postbit_avatar" version="1800"><![CDATA[<div class="author_avatar"><a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a></div>]]></template>
 		<template name="postbit_away" version="1800"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.png" border="0" alt="{$lang->postbit_status_away}" class="buddy_status" /></a>]]></template>
 		<template name="postbit_classic" version="1800"><![CDATA[{$ignore_bit}
@@ -8435,6 +8435,7 @@ body {
 <strong><a href="{$post['postlink']}#pid{$post['pid']}">#{$post_number}</a></strong>
 {$post['inlinecheck']}
 </div>]]></template>
+		<template name="postbit_profilefield" version="1800"><![CDATA[<br />{$post['fieldname']}: {$post['fieldvalue']}]]></template> 
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$lang->postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--

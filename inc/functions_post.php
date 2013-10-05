@@ -18,7 +18,7 @@
  */
 function build_postbit($post, $post_type=0)
 {
-	global $db, $altbg, $theme, $mybb, $postcounter;
+	global $db, $altbg, $theme, $mybb, $postcounter, $profile_fields;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
 	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
@@ -121,16 +121,6 @@ function build_postbit($post, $post_type=0)
 				$parser_options['me_username'] = $post['username'];
 			}
 			break;
-	}
-
-	// Sanatize our custom profile fields for use in templates, if people choose to use them
-	foreach($post as $post_field => $field_value)
-	{
-	    if(substr($post_field, 0, 3) != 'fid')
-	    {
-	        continue;
-	    }
-	    $post[$post_field] = htmlspecialchars_uni($field_value);
 	}
 
 	if(!$postcounter)
@@ -396,6 +386,51 @@ function build_postbit($post, $post_type=0)
 				$warning_link = "usercp.php";
 			}
 			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
+		}
+
+		// Display profile fields on posts - only if field is filled in
+		if(is_array($profile_fields))
+		{
+			foreach($profile_fields as $field)
+			{
+				$fieldfid = "fid{$field['fid']}";
+				if(!empty($post[$fieldfid]))
+				{
+					$post['fieldvalue'] = '';
+					$post['fieldname'] = htmlspecialchars_uni($field['name']);
+
+					$thing = explode("\n", $field['type'], "2");
+					$type = trim($thing[0]);
+					$useropts = explode("\n", $post[$fieldfid]);
+
+					// Skip over texa area fields, as they might break layout
+					if($type == "textarea")
+					{
+						continue;
+					}
+
+					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
+					{
+						foreach($useropts as $val)
+						{
+							if($val != '')
+							{
+								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
+							}
+						}
+						if($post['fieldvalue'] != '')
+						{
+							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
+						}
+					}
+					else
+					{
+						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
+					}
+
+					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
+				}
+			}
 		}
 
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
