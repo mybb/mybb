@@ -41,7 +41,7 @@ function build_mass_mail_query($conditions)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if($conditions[$search_field] && $conditions[$direction_field])
+		if(isset($conditions[$search_field]) && $conditions[$direction_field])
 		{
 			switch($conditions[$direction_field])
 			{
@@ -55,6 +55,50 @@ function build_mass_mail_query($conditions)
 					$direction = "=";
 			}
 			$search_sql .= " AND u.{$search_field}{$direction}'".intval($conditions[$search_field])."'";
+		}
+	}
+
+	// Time-based search fields
+	$time_fields = array("regdate", "lastactive");
+	foreach($time_fields as $search_field)
+	{
+		$time_field = $search_field."_date";
+		$direction_field = $search_field."_dir";
+		if(!empty($conditions[$search_field]) && $conditions[$time_field] && $conditions[$direction_field])
+		{
+			switch($conditions[$time_field])
+			{
+				case "hours":
+					$date = $conditions[$search_field]*60*60;
+					break;
+				case "days":
+					$date = $conditions[$search_field]*60*60*24;
+					break;
+				case "weeks":
+					$date = $conditions[$search_field]*60*60*24*7;
+					break;
+				case "months":
+					$date = $conditions[$search_field]*60*60*24*30;
+					break;
+				case "years":
+					$date = $conditions[$search_field]*60*60*24*365;
+					break;
+				default:
+					$date = $conditions[$search_field]*60*60*24;
+			}
+
+			switch($conditions[$direction_field])
+			{
+				case "less_than":
+					$direction = ">";
+					break;
+				case "more_than":
+					$direction = "<";
+					break;
+				default:
+					$direction = "<";
+			}
+			$search_sql .= " AND u.{$search_field}{$direction}'".(TIME_NOW-$date)."'";
 		}
 	}
 
