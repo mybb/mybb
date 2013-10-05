@@ -472,7 +472,7 @@
 
 		this.open = function(e)
 		{
-			event.preventDefault();
+			e.preventDefault();
 
 			if(currentPopup != '')
 			{
