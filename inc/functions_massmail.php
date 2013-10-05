@@ -41,7 +41,7 @@ function build_mass_mail_query($conditions)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(isset($conditions[$search_field]) && $conditions[$direction_field])
+		if(!empty($conditions[$search_field]) && $conditions[$direction_field])
 		{
 			switch($conditions[$direction_field])
 			{
