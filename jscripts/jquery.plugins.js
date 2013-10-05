@@ -491,6 +491,11 @@
 
 			currentPopup = popup_menu;
 			$(document).mousedown(popup.close);
+			
+			// Bind closing event to our popup menu
+			popup_menu.bind('close_popup',function() {
+				popup.close();
+			});
 		}
 		this.close = function(e)
 		{
