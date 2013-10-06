@@ -102,7 +102,7 @@ var Thread = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-				  $.jGrowl('There was an error posting your reply: '+message);
+					$.jGrowl('There was an error posting your reply: '+message);
 				});
 				return false;
 			}
@@ -186,36 +186,44 @@ var Thread = {
 		$('#post_'+pid).slideToggle("slow");
 	},
 	
-	/*deletePost: function(pid)
+	deletePost: function(pid)
 	{
 		confirmReturn = confirm(quickdelete_confirm);
 		if(confirmReturn == true)
 		{
-			var form = new Element("form", { method: "post", action: "editpost.php?action=deletepost&delete=1", style: "display: none;" });
-
-			if(my_post_key)
+			$.ajax(
 			{
-				form.insert({ bottom: new Element("input",
-					{
-						name: "my_post_key",
-						type: "hidden",
-						value: my_post_key
-					})
-				});
-			}
-
-			form.insert({ bottom: new Element("input",
+				url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
+				type: 'post',
+				complete: function (request, status)
 				{
-					name: "pid",
-					type: "hidden",
-					value: pid
-				})
+					var json = $.parseJSON(request.responseText);
+					if(json.hasOwnProperty("errors"))
+					{
+						$.each(json.errors, function(i, message)
+						{
+							$.jGrowl('There was an error posting your reply: '+message);
+						});
+					}
+					else
+					{
+						// Do we have a "window.location" in our response message?
+						// If so, we were successful
+						if(request.responseText.indexOf("window.location") != -1)
+						{
+							$('#post_'+pid).slideToggle("slow");
+							
+							$.jGrowl('The post was deleted successfully.');
+						}
+						else
+						{
+							$.jGrowl('An unknown error has occurred.');
+						}
+					}
+				}
 			});
-
-			$$("body")[0].insert({ bottom: form });
-			form.submit();
 		}
-	},*/
+	},
 
 	reportPost: function(pid)
 	{
