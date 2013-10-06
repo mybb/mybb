@@ -3261,7 +3261,7 @@ a.button {
 		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1400"><![CDATA[<html>
+		<template name="forumdisplay" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
