@@ -53,7 +53,7 @@ var MyBB = {
 
 	popupWindow: function(url, options)
 	{
-		if(!options) options = {}
+		if(!options) options = { fadeDuration: 250 }
 		$.get(rootpath + url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
