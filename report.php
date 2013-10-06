@@ -226,7 +226,8 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	eval("\$report = \"".$templates->get("report")."\";");
-	output_page($report);
+	eval("\$report = \"".$templates->get("report", 1, 0)."\";");
+	echo $report;
+	exit;
 }
 ?>

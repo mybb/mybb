@@ -9193,12 +9193,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </div>
 </body>
 </html>]]></template>
-		<template name="report" version="1800"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$report_title}</title>
-{$headerinclude}
-</head>
-<body>
+		<template name="report" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <form action="report.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
@@ -9234,9 +9230,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	})
 // -->
 </script>
-
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="report_duplicate" version="1800"><![CDATA[<tr>
 	<td class="trow1">{$lang->error_report_duplicate}</td>
 </tr>

@@ -154,7 +154,6 @@ var Thread = {
 			{*/
 				// Eval javascript
 				$(json.data).filter("script").each(function(e) { 
-					alert($(this).text());
 					eval($(this).text());
 				});
 			//}
@@ -185,7 +184,43 @@ var Thread = {
 	{
 		$('#ignored_post_'+pid).slideToggle("slow");
 		$('#post_'+pid).slideToggle("slow");
-	}
+	},
+	
+	/*deletePost: function(pid)
+	{
+		confirmReturn = confirm(quickdelete_confirm);
+		if(confirmReturn == true)
+		{
+			var form = new Element("form", { method: "post", action: "editpost.php?action=deletepost&delete=1", style: "display: none;" });
+
+			if(my_post_key)
+			{
+				form.insert({ bottom: new Element("input",
+					{
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				});
+			}
+
+			form.insert({ bottom: new Element("input",
+				{
+					name: "pid",
+					type: "hidden",
+					value: pid
+				})
+			});
+
+			$$("body")[0].insert({ bottom: form });
+			form.submit();
+		}
+	},*/
+
+	reportPost: function(pid)
+	{
+		MyBB.popupWindow("/report.php?pid="+pid);
+	},
 };
 
 Thread.init();
