@@ -8410,7 +8410,7 @@ body {
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
 	<div class="ignored_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
 	<div class="ignored_post_message">
-		<div style="float: right; width: auto; vertical-align: top; display: none;" id="show_ignored_link_{$post['pid']}" class="show_ignored_post"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
+		<div style="float: right; width: auto; vertical-align: top;" id="show_ignored_link_{$post['pid']}" class="show_ignored_post"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
 <script type="text/javascript">
 <!--
 	$('show_ignored_link_{$post['pid']}').show();
