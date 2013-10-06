@@ -3,6 +3,7 @@ var Thread = {
 	{
 		$(document).ready(function(){
 			Thread.quickEdit();
+			Thread.initQuickReply();
 		});
 	},
 	
@@ -50,6 +51,141 @@ var Thread = {
 
 		return false;
 	},
+	
+	initQuickReply: function()
+	{
+		if($('#quick_reply_form') && use_xmlhttprequest == 1)
+		{
+			// Bind closing event to our popup menu
+			$('#quick_reply_submit').bind('click', function(e) {
+				return Thread.quickReply(e);
+			});
+		}
+	},
+	
+	quickReply: function(e)
+	{		
+		e.stopPropagation();
+
+		if(this.quick_replying)
+		{
+			return false;
+		}
+
+		this.quick_replying = 1;
+		var post_body = $('#quick_reply_form').serialize();
+		//this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
+		
+		$.ajax(
+		{
+			url: 'newreply.php?ajax=1',
+			type: 'post',
+			data: post_body,
+			dataType: 'html',
+        	complete: function (request, status)
+        	{
+		  		Thread.quickReplyDone(request, status);
+          	}
+		});
+		
+		return false;
+	},
+	
+	quickReplyDone: function(request, status)
+	{
+		this.quick_replying = 0;
+		
+		var json = $.parseJSON(request.responseText);
+		if(typeof response == 'object')
+		{
+			if(json.hasOwnProperty("errors"))
+			{
+				$.each(json.errors, function(i, message)
+				{
+				  $.jGrowl('There was an error posting your reply: '+message);
+				});
+				return false;
+			}
+		}
+		
+		if($('#captcha_trow'))
+		{
+			captcha = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
+			if(captcha)
+			{
+				json.data = json.data.replace(/^<captcha>(.*)<\/captcha>/, '');
+
+				if(captcha[1] == "reload")
+				{
+					Recaptcha.reload();
+				}
+				else if($("#captcha_img"))
+				{
+					if(captcha[1])
+					{
+						imghash = captcha[1];
+						$('#imagehash').value = imghash;
+						if(captcha[3])
+						{
+							$('#imagestring').type = "hidden";
+							$('#imagestring').value = captcha[3];
+							// hide the captcha
+							$('#captcha_trow').style.display = "none";
+						}
+						else
+						{
+							$('#captcha_img').src = "captcha.php?action=regimage&imagehash="+imghash;
+							$('#imagestring').type = "text";
+							$('#imagestring').value = "";
+							$('#captcha_trow').style.display = "";
+						}
+					}
+				}
+			}
+		}
+		
+		if(json.data.match(/id="post_([0-9]+)"/))
+		{
+			var pid = json.data.match(/id="post_([0-9]+)"/)[1];
+			var post = document.createElement("div");
+			$('#posts').append(json.data);
+			
+			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
+			{*/
+				// Eval javascript
+				$(json.data).filter("script").each(function(e) { 
+					alert($(this).text());
+					eval($(this).text());
+				});
+			//}
+			
+			$('#quick_reply_form')[0].reset();
+			
+			if($('#lastpid'))
+			{
+				$('#lastpid').val(pid);
+			}
+		}
+		else
+		{
+			// Eval javascript
+			$(json.data).filter("script").each(function(e) { 
+				eval($(this).text());
+			});
+		}
+		
+		/*if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}*/
+	},
+	
+	showIgnoredPost: function(pid)
+	{
+		$('#ignored_post_'+pid).slideToggle("slow");
+		$('#post_'+pid).slideToggle("slow");
+	}
 };
 
 Thread.init();
