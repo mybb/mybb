@@ -3272,6 +3272,9 @@ a.button {
 	lang.click_mark_read = "{$lang->click_mark_read}";
 // -->
 </script>
+<!-- jeditable (jquery) -->
+<script src="jscripts/jeditable/jeditable.min.js"></script>
+<script type="text/javascript" src="jscripts/inline_edit.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -3435,7 +3438,7 @@ a.button {
 	<td class="{$bgcolor}{$thread_type_class}">
 		{$attachment_count}
 		<div>
-			<span>{$prefix} {$gotounread}{$thread['threadprefix']}<a href="{$thread['threadlink']}" class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+          <span>{$prefix} {$gotounread}{$thread['threadprefix']}<span class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></span>{$thread['multipage']}</span>
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
@@ -3564,15 +3567,6 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="forumdisplay_threadlist_inlineedit_js" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=1400"></script>
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "1")
-	{
-		new inlineEditor("xmlhttp.php?action=edit_subject&my_post_key="+my_post_key, {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
-	}
-// -->
-</script>]]></template>
 		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
