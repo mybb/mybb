@@ -431,20 +431,27 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				$db->insert_query("captcha", $imagearray);
 
-				header("Content-type: text/html; charset={$lang->settings['charset']}");
-				echo "<captcha>$imagehash";
+				//header("Content-type: text/html; charset={$lang->settings['charset']}");
+				$data = '';
+				$data .= "<captcha>$imagehash";
 
 				if($hide_captcha)
 				{
-					echo "|$randomstr";
+					$data .= "|$randomstr";
 				}
 
-				echo "</captcha>";
+				$data .= "</captcha>";
+				
+				header("Content-type: application/json; charset={$lang->settings['charset']}");
+				echo json_encode(array("data" => $data));
 			}
 			else if($post_captcha->type == 2)
 			{
-				header("Content-type: text/html; charset={$lang->settings['charset']}");
-				echo "<captcha>reload</captcha>";
+				//header("Content-type: text/html; charset={$lang->settings['charset']}");
+				$data = "<captcha>reload</captcha>";
+				
+				header("Content-type: application/json; charset={$lang->settings['charset']}");
+				echo json_encode(array("data" => $data));
 			}
 		}
 	}
@@ -615,15 +622,23 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$pid = $post['pid'];
 				$post = build_postbit($post);
 
-				header("Content-type: text/plain; charset={$charset}");
-				echo $post;
+				$data = '';
+				$data .= $post;
 
 				// Build a new posthash incase the user wishes to quick reply again
 			    $new_posthash = md5($mybb->user['uid'].random_str());
-				echo "<script type=\"text/javascript\">\n";
-				echo "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
-				echo "if(typeof(inlineModeration) != 'undefined') { Event.observe($('inlinemod_{$pid}'), 'click', inlineModeration.checkItem); }\n";
-				echo "</script>\n";
+				$data .= "<script type=\"text/javascript\">\n";
+				$data .= "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
+				$data .= "if(typeof(inlineModeration) != 'undefined') {
+					$('#inlinemod_{$pid}').bind(\"click\", function(e) {
+						inlineModeration.checkItem();
+					});
+				}\n";
+				$data .= "</script>\n";
+				
+				header("Content-type: application/json; charset={$lang->settings['charset']}");
+				echo json_encode(array("data" => $data));
+				
 				exit;
 			}
 			// Post is in the moderation queue

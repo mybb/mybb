@@ -876,17 +876,21 @@ function redirect($url, $message="", $title="")
 	if($mybb->get_input('ajax', 1))
 	{
 		// Send our headers.
-		@header("Content-type: text/html; charset={$lang->settings['charset']}");
-		echo "<script type=\"text/javascript\">\n";
+		//@header("Content-type: text/html; charset={$lang->settings['charset']}");
+		$data = "<script type=\"text/javascript\">\n";
 		if($message != "")
 		{
-			echo 'alert("'.addslashes($message).'");';
+			$data .=  'alert("'.addslashes($message).'");';
 		}
 		$url = str_replace("#", "&#", $url);
 		$url = htmlspecialchars_decode($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
-		echo 'window.location = "'.addslashes($url).'";'."\n";
-		echo "</script>\n";
+		$data .=  'window.location = "'.addslashes($url).'";'."\n";
+		$data .= "</script>\n";
+		//exit;
+		
+		@header("Content-type: application/json; charset={$lang->settings['charset']}");
+		echo json_encode(array("data" => $data));
 		exit;
 	}
 
