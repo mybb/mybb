@@ -21,7 +21,7 @@ $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multip
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."/inc/functions_indicators.php";
+require_once MYBB_ROOT."inc/functions_indicators.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -70,7 +70,14 @@ if(substr($thread['closed'], 0, 6) == "moved|")
 	$thread['tid'] = 0;
 }
 
-$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+$reply_subject = $parser->parse_badwords($thread['subject']);
+$thread['subject'] = htmlspecialchars_uni($reply_subject);
+// Subject too long? Shorten it to avoid error message
+if(my_strlen($reply_subject) > 85)
+{
+	$reply_subject = my_substr($reply_subject, 0, 82).'...';
+}
+$reply_subject = htmlspecialchars_uni($reply_subject);
 $tid = $thread['tid'];
 $fid = $thread['fid'];
 
@@ -95,7 +102,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(!$thread || ($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
@@ -761,7 +768,7 @@ if($mybb->input['action'] == "thread")
 		}
 		
 		$attachcache = array();
-		if($thread['attachmentcount'] > 0)
+		if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 		{
 			// Get the attachments for this post.
 			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
@@ -817,20 +824,23 @@ if($mybb->input['action'] == "thread")
 		if(!empty($mybb->input['pid']))
 		{
 			$post = get_post($mybb->input['pid']);
-			$query = $db->query("
-				SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
-				WHERE p.tid = '{$tid}'
-				AND p.dateline <= '{$post['dateline']}'
-				{$visible}
-			");
-			$result = $db->fetch_field($query, "count");
-			if(($result % $perpage) == 0)
+			if($post)
 			{
-				$page = $result / $perpage;
-			}
-			else
-			{
-				$page = intval($result / $perpage) + 1;
+				$query = $db->query("
+					SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
+					WHERE p.tid = '{$tid}'
+					AND p.dateline <= '{$post['dateline']}'
+					{$visible}
+				");
+				$result = $db->fetch_field($query, "count");
+				if(($result % $perpage) == 0)
+				{
+					$page = $result / $perpage;
+				}
+				else
+				{
+					$page = intval($result / $perpage) + 1;
+				}
 			}
 		}
 
@@ -948,7 +958,7 @@ if($mybb->input['action'] == "thread")
 			$pids = "pid IN($pids)";
 			
 			$attachcache = array();
-			if($thread['attachmentcount'] > 0)
+			if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 			{
 				// Now lets fetch all of the attachments for these posts.
 				$query = $db->simple_select("attachments", "*", $pids);

@@ -15,30 +15,14 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
-
 /* Defines the root directory for MyBB.
 
 	Uncomment the below line and set the path manually
-	if you experience problems. Acceptable values are:
+	if you experience problems.
 
 	Always add a trailing slash to the end of the path.
 
 	* Path to your copy of MyBB
-	* "./"
  */
 //define('MYBB_ROOT', "./");
 
@@ -241,7 +225,6 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 	define('CALENDAR_URL_DAY', 'calendar-{calendar}-year-{year}-month-{month}-day-{day}.html');
 	define('CALENDAR_URL_WEEK', 'calendar-{calendar}-week-{week}.html');
 	define('EVENT_URL', "event-{eid}.html");
-	define('INDEX_URL', "index.php");
 }
 else
 {
@@ -260,8 +243,8 @@ else
 	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
 	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
-	define('INDEX_URL', "index.php");
 }
+define('INDEX_URL', "index.php");
 
 // An array of valid date formats (Used for user selections etc)
 $date_formats = array(

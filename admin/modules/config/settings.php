@@ -34,9 +34,9 @@ if($mybb->input['action'] == "delete_duplicates")
 		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid AND g2.gid < g1.gid)
 	");
 	rebuild_settings();
-	
+
 	$plugins->run_hooks("admin_config_settings_delete_duplicates_commit");
-	
+
 	// Log admin action
 	log_admin_action();
 
@@ -49,7 +49,7 @@ if($mybb->input['action'] == "delete_duplicates")
 if($mybb->input['action'] == "addgroup")
 {
 	$plugins->run_hooks("admin_config_settings_addgroup");
-	
+
 	if($mybb->request_method == "post")
 	{
 		// Validate title
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "addgroup")
 		{
 			$errors[] = $lang->error_missing_group_title;
 		}
-		
+
 		// Validate identifier
 		if(!trim($mybb->input['name']))
 		{
@@ -80,7 +80,7 @@ if($mybb->input['action'] == "addgroup")
 				"isdefault" => 0
 			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
-			
+
 			$plugins->run_hooks("admin_config_settings_addgroup_commit");
 
 			// Log admin action
@@ -93,23 +93,23 @@ if($mybb->input['action'] == "addgroup")
 
 	$page->add_breadcrumb_item($lang->add_new_setting_group);
 	$page->output_header($lang->board_settings." - ".$lang->add_new_setting_group);
-	
+
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings"
 	);
-	
+
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
 	);
-	
+
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup",
 		'description' => $lang->add_new_setting_group_desc
 	);
-	
+
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage"
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "addgroup")
 if($mybb->input['action'] == "editgroup")
 {
 	$plugins->run_hooks("admin_config_settings_editgroup");
-	
+
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -158,7 +158,7 @@ if($mybb->input['action'] == "editgroup")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
+
 	// Do edit?
 	if($mybb->request_method == "post")
 	{
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "editgroup")
 		{
 			$errors[] = $lang->error_missing_group_title;
 		}
-		
+
 		// Validate identifier
 		if(!trim($mybb->input['name']))
 		{
@@ -188,9 +188,9 @@ if($mybb->input['action'] == "editgroup")
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 			);
-			
+
 			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
-			
+
 			$plugins->run_hooks("admin_config_settings_editgroup_commit");
 
 			// Log admin action
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "editgroup")
 
 	$page->add_breadcrumb_item($lang->edit_setting_group);
 	$page->output_header($lang->board_settings." - ".$lang->edit_setting_group);
-	
+
 	$sub_tabs['edit_setting_group'] = array(
 		'title' => $lang->edit_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=editgroup&amp;gid={$group['gid']}",
@@ -215,7 +215,7 @@ if($mybb->input['action'] == "editgroup")
 	$form = new Form("index.php?module=config-settings&amp;action=editgroup", "post", "editgroup");
 
 	echo $form->generate_hidden_field("gid", $group['gid']);
-	
+
 	if($errors)
 	{
 		$group_data = $mybb->input;
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "editgroup")
 if($mybb->input['action'] == "deletegroup")
 {
 	$plugins->run_hooks("admin_config_settings_deletegroup");
-	
+
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -260,7 +260,7 @@ if($mybb->input['action'] == "deletegroup")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -272,9 +272,9 @@ if($mybb->input['action'] == "deletegroup")
 		// Delete the setting group and its settings
 		$db->delete_query("settinggroups", "gid='{$group['gid']}'");
 		$db->delete_query("settings", "gid='{$group['gid']}'");
-		
+
 		rebuild_settings();
-		
+
 		$plugins->run_hooks("admin_config_settings_deletegroup_commit");
 
 		// Log admin action
@@ -293,7 +293,7 @@ if($mybb->input['action'] == "deletegroup")
 if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_config_settings_add");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -345,7 +345,7 @@ if($mybb->input['action'] == "add")
 			{
 				$options_code = $mybb->input['type'];
 			}
-			
+
 			$new_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
@@ -355,10 +355,10 @@ if($mybb->input['action'] == "add")
 				"disporder" => intval($mybb->input['disporder']),
 				"gid" => intval($mybb->input['gid'])
 			);
-			
+
 			$sid = $db->insert_query("settings", $new_setting);
 			rebuild_settings();
-			
+
 			$plugins->run_hooks("admin_config_settings_add_commit");
 
 			// Log admin action
@@ -371,23 +371,23 @@ if($mybb->input['action'] == "add")
 
 	$page->add_breadcrumb_item($lang->add_new_setting);
 	$page->output_header($lang->board_settings." - ".$lang->add_new_setting);
-	
+
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings"
 	);
-	
+
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add",
 		'description' => $lang->add_new_setting_desc
 	);
-	
+
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
 	);
-	
+
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage"
@@ -405,7 +405,7 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_new_setting);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	
+
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
@@ -438,7 +438,7 @@ if($mybb->input['action'] == "add")
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -452,7 +452,7 @@ if($mybb->input['action'] == "add")
 if($mybb->input['action'] == "edit")
 {
 	$plugins->run_hooks("admin_config_settings_edit");
-	
+
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -462,7 +462,7 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings");
 	}
-	
+
 	// Prevent editing of default
 	if($setting['isdefault'] == 1)
 	{
@@ -476,7 +476,7 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_cannot_edit_php, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -494,14 +494,14 @@ if($mybb->input['action'] == "edit")
 			$dup_setting_title = $db->fetch_field($query, 'title');
 			$errors[] = $lang->sprintf($lang->error_duplicate_name, $dup_setting_title);
 		}
-		
+
 		// do some type filtering
 		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
 		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
 		{
 			$mybb->input['type'] = "";
 		}
-		
+
 		if(!$mybb->input['type'])
 		{
 			$errors[] = $lang->error_invalid_type;
@@ -532,7 +532,7 @@ if($mybb->input['action'] == "edit")
 			);
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
-			
+
 			$plugins->run_hooks("admin_config_settings_edit_commit");
 
 			// Log admin action
@@ -545,22 +545,22 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item($lang->edit_setting);
 	$page->output_header($lang->board_settings." - ".$lang->edit_setting);
-	
+
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings",
 	);
-	
+
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
 	);
-	
+
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
 	);
-	
+
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "edit")
 	$form = new Form("index.php?module=config-settings&amp;action=edit", "post", "edit");
 
 	echo $form->generate_hidden_field("sid", $setting['sid']);
-	
+
 	if($errors)
 	{
 		$setting_data = $mybb->input;
@@ -589,7 +589,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->modify_setting);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
-	
+
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
@@ -624,7 +624,7 @@ if($mybb->input['action'] == "edit")
 	$buttons[] = $form->generate_submit_button($lang->update_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
@@ -638,7 +638,7 @@ if($mybb->input['action'] == "edit")
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_config_settings_delete");
-	
+
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -648,15 +648,15 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
-	
+
+
 	// Prevent editing of default
 	if($setting['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
+
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -667,9 +667,9 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the setting
 		$db->delete_query("settings", "sid='{$setting['sid']}'");
-		
+
 		rebuild_settings();
-		
+
 		$plugins->run_hooks("admin_config_settings_delete_commit");
 
 		// Log admin action
@@ -688,7 +688,7 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "manage")
 {
 	$plugins->run_hooks("admin_config_settings_manage");
-	
+
 	// Update orders
 	if($mybb->request_method == "post")
 	{
@@ -701,7 +701,7 @@ if($mybb->input['action'] == "manage")
 				$db->update_query("settinggroups", $update_group, "gid={$gid}");
 			}
 		}
-		
+
 		if(is_array($mybb->input['setting_disporder']))
 		{
 			foreach($mybb->input['setting_disporder'] as $sid => $new_order)
@@ -711,34 +711,34 @@ if($mybb->input['action'] == "manage")
 				$db->update_query("settings", $update_setting, "sid={$sid}");
 			}
 		}
-		
+
 		$plugins->run_hooks("admin_config_settings_manage_commit");
 
 		// Log admin action
 		log_admin_action();
-		
+
 		flash_message($lang->success_display_orders_updated, 'success');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-	
+
 	$page->add_breadcrumb_item($lang->modify_existing_settings);
 	$page->output_header($lang->board_settings." - ".$lang->modify_existing_settings);
-	
+
 	$sub_tabs['change_settings'] = array(
 		'title' => $lang->change_settings,
 		'link' => "index.php?module=config-settings",
 	);
-	
+
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
 	);
-	
+
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
 	);
-	
+
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
@@ -746,7 +746,7 @@ if($mybb->input['action'] == "manage")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'modify_setting');
-	
+
 	// Cache settings
 	$settings_cache = array();
 	$query = $db->simple_select("settings", "sid, name, title, disporder, gid, isdefault", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
@@ -756,13 +756,13 @@ if($mybb->input['action'] == "manage")
 	}
 
 	$form = new Form("index.php?module=config-settings&amp;action=manage", "post", "edit");
-	
+
 	$table = new Table;
 
 	$table->construct_header($lang->setting_group_setting);
 	$table->construct_header($lang->order, array('class' => 'align_center', 'style' => 'width: 5%'));
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'style' => 'width: 200px'));
-	
+
 	// Generate table
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
 	while($group = $db->fetch_array($query))
@@ -793,7 +793,7 @@ if($mybb->input['action'] == "manage")
 			$table->construct_cell('');
 		}
 		$table->construct_row(array('class' => 'alt_row', 'no_alt_row' => 1));
-		
+
 		// Make rows for each setting in the group
 		if(is_array($settings_cache[$group['gid']]))
 		{
@@ -826,15 +826,15 @@ if($mybb->input['action'] == "manage")
 			}
 		}
 	}
-	
+
 	$table->output($lang->modify_existing_settings);
-	
+
 	$buttons[] = $form->generate_submit_button($lang->save_display_orders);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	/*echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", ManageSettings.init);</script>';*/
-	
+
 	$page->output_footer();
 }
 
@@ -842,7 +842,7 @@ if($mybb->input['action'] == "manage")
 if($mybb->input['action'] == "change")
 {
 	$plugins->run_hooks("admin_config_settings_change");
-	
+
 	if($mybb->request_method == "post")
 	{
 		if(!is_writable(MYBB_ROOT.'inc/settings.php'))
@@ -850,7 +850,7 @@ if($mybb->input['action'] == "change")
 			flash_message($lang->error_chmod_settings_file, 'error');
 			admin_redirect("index.php?module=config-settings");
 		}
-		
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
@@ -859,7 +859,7 @@ if($mybb->input['action'] == "change")
 				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
 			}
 		}
-		
+
 		// Check if we need to create our fulltext index after changing the search mode
 		if($mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] && $mybb->input['upsetting']['searchtype'] == "fulltext")
 		{
@@ -890,7 +890,7 @@ if($mybb->input['action'] == "change")
 			}
 			$db->update_query("tasks", $updated_task, "file='threadviews'");
 		}
-		
+
 		// Have we changed our cookie prefix? If so, update our adminsid so we're not logged out
 		if($mybb->input['upsetting']['cookieprefix'] && $mybb->input['upsetting']['cookieprefix'] != $mybb->settings['cookieprefix'])
 		{
@@ -906,26 +906,26 @@ if($mybb->input['action'] == "change")
 		}
 
 		rebuild_settings();
-		
+
 		$plugins->run_hooks("admin_config_settings_change_commit");
-			
+
 		// Log admin action
 		log_admin_action();
 
 		flash_message($lang->success_settings_updated, 'success');
 		admin_redirect("index.php?module=config-settings");
 	}
-	
+
 	// What type of page
 	$cache_groups = $cache_settings = array();
 	if(isset($mybb->input['search']))
 	{
 		// Search
-		
+
 		// Search for settings
-		$search = $db->escape_string($mybb->input['search']);
+		$search = $db->escape_string_like($mybb->input['search']);
 		$query = $db->query("
-			SELECT s.* 
+			SELECT s.*
 			FROM ".TABLE_PREFIX."settings s
 			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
 			WHERE s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%'
@@ -935,7 +935,7 @@ if($mybb->input['action'] == "change")
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
 		}
-		
+
 		if(!$db->num_rows($query))
 		{
 			if(isset($mybb->input['ajax_search']))
@@ -946,10 +946,10 @@ if($mybb->input['action'] == "change")
 			else
 			{
 				flash_message($lang->error_no_settings_found, 'error');
-				admin_redirect("index.php?module=config-settings");	
+				admin_redirect("index.php?module=config-settings");
 			}
 		}
-		
+
 		// Cache groups
 		$groups = array_keys($cache_settings);
 		$groups = implode(',', $groups);
@@ -958,16 +958,16 @@ if($mybb->input['action'] == "change")
 		{
 			$cache_groups[$group['gid']] = $group;
 		}
-		
+
 		// Page header only if not AJAX
 		if(!isset($mybb->input['ajax_search']))
 		{
 			$page->add_breadcrumb_item($lang->settings_search);
 			$page->output_header($lang->board_settings." - {$lang->settings_search}");
 		}
-		
+
 		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
-	
+
 		echo $form->generate_hidden_field("gid", $group['gid']);
 	}
 	elseif($mybb->input['gid'])
@@ -977,37 +977,37 @@ if($mybb->input['action'] == "change")
 		$query = $db->simple_select("settinggroups", "*", "gid = '".intval($mybb->input['gid'])."'");
 		$groupinfo = $db->fetch_array($query);
 		$cache_groups[$groupinfo['gid']] = $groupinfo;
-		
+
 		if(!$db->num_rows($query))
 		{
 			$page->output_error($lang->error_invalid_gid2);
 		}
-		
+
 		// Cache settings
 		$query = $db->simple_select("settings", "*", "gid='".intval($mybb->input['gid'])."'", array('order_by' => 'disporder'));
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
 		}
-		
+
 		if(!$db->num_rows($query))
         {
             flash_message($lang->error_no_settings_found, 'error');
-            admin_redirect("index.php?module=config-settings");    
+            admin_redirect("index.php?module=config-settings");
         }
-		
+
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
 		if(isset($lang->$group_lang_var))
 		{
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
-		
+
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
-		
+
 		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
-	
+
 		echo $form->generate_hidden_field("gid", $groupinfo['gid']);
 	}
 	else
@@ -1019,23 +1019,23 @@ if($mybb->input['action'] == "change")
 		{
 			$cache_groups[$group['gid']] = $group;
 		}
-		
+
 		if(!$db->num_rows($query))
 		{
 			$page->output_error($lang->error_invalid_gid2);
 		}
-		
+
 		// Cache settings
 		$query = $db->simple_select("settings", "*", "", array('order_by' => 'disporder'));
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
 		}
-		
+
 		// Page header
 		$page->add_breadcrumb_item($lang->show_all_settings);
 		$page->output_header($lang->board_settings." - {$lang->show_all_settings}");
-		
+
 		$form = new Form("index.php?module=config-settings&amp;action=change", "post", "change");
 	}
 
@@ -1048,20 +1048,20 @@ if($mybb->input['action'] == "change")
 		{
 			$groupinfo['title'] = $lang->$group_lang_var;
 		}
-		
+
 		$form_container = new FormContainer($groupinfo['title']);
-		
+
 		if(empty($cache_settings[$groupinfo['gid']]))
         {
             $form_container->output_cell($lang->error_no_settings_found);
             $form_container->construct_row();
-            
+
             $form_container->end();
             echo '<br />';
-			
+
             continue;
         }
-		
+
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{
 			$options = "";
@@ -1099,12 +1099,12 @@ if($mybb->input['action'] == "change")
 				ksort($folders);
 				$setting_code = $form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id));
 			}
-			else if($type[0] == "language") 
+			else if($type[0] == "language")
 			{
 				$languages = $lang->get_languages();
 				$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
 			}
-			else if($type[0] == "adminlanguage") 
+			else if($type[0] == "adminlanguage")
 			{
 				$languages = $lang->get_languages(1);
 				$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
@@ -1132,7 +1132,7 @@ if($mybb->input['action'] == "change")
 					{
 						$optionsexp[1] = $lang->$title_lang;
 					}
-					
+
 					if($type[0] == "select")
 					{
 						$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
@@ -1184,14 +1184,14 @@ if($mybb->input['action'] == "change")
 			$form_container->output_row(htmlspecialchars_uni($setting['title']), $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
 		}
 		$form_container->end();
-		
+
 		$form->output_submit_wrapper($buttons);
 		echo '<br />';
 	}
 	$form->end();
-	
+
 	print_setting_peekers();
-	
+
 	if(!isset($mybb->input['ajax_search']))
 	{
 		$page->output_footer();
@@ -1201,7 +1201,7 @@ if($mybb->input['action'] == "change")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_settings_start");
-	
+
 	$page->output_header($lang->board_settings);
 	if(isset($message))
 	{
@@ -1213,24 +1213,24 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=config-settings",
 		'description' => $lang->change_settings_desc
 	);
-	
+
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?module=config-settings&amp;action=add"
 	);
-	
+
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?module=config-settings&amp;action=addgroup"
 	);
-	
+
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?module=config-settings&amp;action=manage",
-	);	
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
-	
+
 	// Search form
 	echo "<div style=\"text-align: right; margin-bottom: 3px;\">";
 	$search = new Form("index.php", 'get', 'settings_search', 0, 'settings_search');
@@ -1249,18 +1249,18 @@ if(!$mybb->input['action'])
 	{
 		case "pgsql":
 			$query = $db->query("
-				SELECT g.*, COUNT(s.sid) AS settingcount 
-				FROM ".TABLE_PREFIX."settinggroups g 
-				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+				SELECT g.*, COUNT(s.sid) AS settingcount
+				FROM ".TABLE_PREFIX."settinggroups g
+				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 				GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
 				ORDER BY g.disporder
 			");
 			break;
 		default:
 			$query = $db->query("
-				SELECT g.*, COUNT(s.sid) AS settingcount 
-				FROM ".TABLE_PREFIX."settinggroups g 
-				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+				SELECT g.*, COUNT(s.sid) AS settingcount
+				FROM ".TABLE_PREFIX."settinggroups g
+				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid)
 				GROUP BY g.gid
 				ORDER BY g.disporder
 			");
@@ -1276,7 +1276,7 @@ if(!$mybb->input['action'])
 		{
 			$group_title = htmlspecialchars_uni($group['title']);
 		}
-		
+
 		$group_desc_lang_var = "setting_group_{$group['name']}_desc";
 		if(isset($lang->$group_desc_lang_var))
 		{
@@ -1286,12 +1286,12 @@ if(!$mybb->input['action'])
 		{
 			$group_desc = htmlspecialchars_uni($group['description']);
 		}
-				
+
 		$table->construct_cell("<strong><a href=\"index.php?module=config-settings&amp;action=change&amp;gid={$group['gid']}\">{$group_title}</a></strong> ({$group['settingcount']} {$lang->bbsettings})<br /><small>{$group_desc}</small>");
 		$table->construct_row();
 	}
 	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config-settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");
-	
+
 	echo '</div>';
 
 	echo '
@@ -1299,7 +1299,7 @@ if(!$mybb->input['action'])
 //<!--
 var SettingSearch = Class.create();
 SettingSearch.prototype = {
-	
+
 	spinner: null,
 	form: null,
 	result_div: null,
@@ -1331,7 +1331,7 @@ SettingSearch.prototype = {
 			}
 		});
 	},
-	
+
 	onSubmit: function(e)
 	{
 		Event.stop(e);
@@ -1371,7 +1371,7 @@ SettingSearch.prototype = {
 new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
 //-->
 </script>';
-	
+
 	print_setting_peekers();
 	$page->output_footer();
 }
@@ -1381,7 +1381,7 @@ function print_setting_peekers()
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
 		Event.observe(window, "load", function() {
-			loadPeekers();			
+			loadPeekers();
 		});
 		function loadPeekers()
 		{

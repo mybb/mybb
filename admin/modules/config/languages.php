@@ -296,11 +296,11 @@ if($mybb->input['action'] == "quick_phrases")
 			$value = $l[$phrase];
 			if(my_strtolower($langinfo['charset']) == "utf-8")
 			{
-				$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
+				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $value);
 			}
 			else
 			{
-				$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
+				$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $value);
 			}
 			
 			$form_container->output_row($description, $phrase, $form->generate_text_area("edit[$phrase]", $value, array('id' => 'lang_'.$phrase, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), 'lang_'.$phrase, array('width' => '50%'));
@@ -470,13 +470,13 @@ if($mybb->input['action'] == "edit")
 			{
 				if(my_strtolower($langinfo['charset']) == "utf-8")
 				{
-					$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
-					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
+					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $withvars[$key]);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $value);
 				}
 				else
 				{
-					$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
-					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
+					$withvars[$key] = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $withvars[$key]);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $value);
 				}
 				$form_container->output_row($key, "", $form->generate_text_area("", $withvars[$key], array('disabled' => true, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), "", array('width' => '50%', 'skip_construct' => true));
 				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $value, array('id' => 'lang_'.$key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), 'lang_'.$key, array('width' => '50%'));
@@ -492,11 +492,11 @@ if($mybb->input['action'] == "edit")
 			{
 				if(my_strtolower($langinfo['charset']) == "utf-8")
 				{
-					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $value);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return dec_to_utf8(hexdec($matches[1]));'), $value);
 				}
 				else
 				{
-					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
+					$value = preg_replace_callback("#%u([0-9A-F]{1,4})#i", create_function('$matches', 'return "&#".hexdec($matches[1]).";";'), $value);
 				}
 				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $value, array('id' => 'lang_'.$key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), 'lang_'.$key, array('width' => '50%'));
 			}

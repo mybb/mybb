@@ -9,21 +9,6 @@
  * $Id$
  */
 
-if(function_exists("unicode_decode"))
-{
-    // Unicode extension introduced in 6.0
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-}
-elseif(defined("E_DEPRECATED"))
-{
-    // E_DEPRECATED introduced in 5.3
-    error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-}
-else
-{
-    error_reporting(E_ALL & ~E_NOTICE);
-}
-
 @set_time_limit(0);
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
@@ -37,11 +22,11 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
-require_once MYBB_ROOT.'inc/class_core.php';
-$mybb = new MyBB;
-
 require_once MYBB_ROOT.'inc/class_error.php';
 $error_handler = new errorHandler();
+
+require_once MYBB_ROOT.'inc/class_core.php';
+$mybb = new MyBB;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT.'inc/class_timers.php';
@@ -1457,6 +1442,8 @@ function create_tables()
 		$db_encoding = "// \$config['database']['encoding'] = '{$config['encoding']}';";
 	}
 
+	$config['dbpass'] = addslashes($config['dbpass']);
+
 	// Write the configuration file
 	$configdata = "<?php
 /**
@@ -2222,7 +2209,7 @@ function install_done()
 	{
 		echo $lang->done_step_dirdelete;
 	}
-	echo $lang->done_subscribe_mailing;
+	echo $lang->done_whats_next;
 	$output->print_footer('');
 }
 

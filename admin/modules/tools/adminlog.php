@@ -33,7 +33,7 @@ $plugins->run_hooks("admin_tools_adminlog_begin");
 if($mybb->input['action'] == 'prune')
 {
 	$plugins->run_hooks("admin_tools_adminlog_prune");
-	
+
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
@@ -42,24 +42,24 @@ if($mybb->input['action'] == 'prune')
 	if($mybb->request_method == 'post')
 	{
 		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
-		
+
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
 		{
 			$where .= " AND uid='".intval($mybb->input['uid'])."'";
 		}
-		
+
 		// Searching for entries in a specific module
 		if($mybb->input['filter_module'])
 		{
 			$where .= " AND module='".$db->escape_string($mybb->input['filter_module'])."'";
 		}
-		
+
 		$query = $db->delete_query("adminlog", $where);
 		$num_deleted = $db->affected_rows();
-		
+
 		$plugins->run_hooks("admin_tools_adminlog_prune_commit");
-		
+
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['filter_module'], $num_deleted);
 
@@ -69,14 +69,14 @@ if($mybb->input['action'] == 'prune')
 	$page->add_breadcrumb_item($lang->prune_admin_logs, "index.php?module=tools-adminlog&amp;action=prune");
 	$page->output_header($lang->prune_admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'prune_admin_logs');
-	
+
 	// Fetch filter options
 	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
 	$ordersel[$mybb->input['order']] = 'selected="selected"';
-	
+
 	$user_options[''] = $lang->all_administrators;
 	$user_options['0'] = '----------';
-	
+
 	$query = $db->query("
 		SELECT DISTINCT l.uid, u.username
 		FROM ".TABLE_PREFIX."adminlog l
@@ -103,7 +103,7 @@ if($mybb->input['action'] == 'prune')
 
 	$form = new Form("index.php?module=tools-adminlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_administrator_logs);
-	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');	
+	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');
 	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
 	if(!$mybb->input['older_than'])
 	{
@@ -114,17 +114,17 @@ if($mybb->input['action'] == 'prune')
 	$buttons[] = $form->generate_submit_button($lang->prune_administrator_logs);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_adminlog_start");
-	
+
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
-	
+
 	$perpage = intval($mybb->input['perpage']);
 	if(!$perpage)
 	{
@@ -138,7 +138,7 @@ if(!$mybb->input['action'])
 	{
 		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
 	}
-	
+
 	// Searching for entries in a specific module
 	if($mybb->input['filter_module'])
 	{
@@ -167,7 +167,7 @@ if(!$mybb->input['action'])
 		WHERE 1=1 {$where}
 	");
 	$rescount = $db->fetch_field($query, "count");
-	
+
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
@@ -197,7 +197,7 @@ if(!$mybb->input['action'])
 		$start = 0;
 		$pagecnt = 1;
 	}
-	
+
 	$table = new Table;
 	$table->construct_header($lang->username, array('width' => '10%'));
 	$table->construct_header($lang->date, array('class' => 'align_center', 'width' => '15%'));
@@ -220,38 +220,38 @@ if(!$mybb->input['action'])
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		$logitem['data'] = unserialize($logitem['data']);
-		
+
 		// Get detailed information from meta
 		$information = get_admin_log_action($logitem);
-	
+
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array('class' => 'align_center'));
 		$table->construct_cell($information);
 		$table->construct_cell($logitem['ipaddress'], array('class' => 'align_center'));
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_adminlogs, array('colspan' => '4'));
 		$table->construct_row();
 	}
-	
+
 	$table->output($lang->admin_logs);
-	
+
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
 		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools-adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}&amp;filter_module=".htmlspecialchars_uni($mybb->input['filter_module']))."<br />";
 	}
-	
+
 	// Fetch filter options
 	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
 	$ordersel[$mybb->input['order']] = 'selected="selected"';
-	
+
 	$user_options[''] = $lang->all_administrators;
 	$user_options['0'] = '----------';
-	
+
 	$query = $db->query("
 		SELECT DISTINCT l.uid, u.username
 		FROM ".TABLE_PREFIX."adminlog l
@@ -275,12 +275,12 @@ if(!$mybb->input['action'])
 	{
 		$module_options[$module['module']] = str_replace(' ', ' -&gt; ', ucwords(str_replace('/', ' ', $module['module'])));
 	}
-	
+
 	$sort_by = array(
 		'dateline' => $lang->date,
 		'username' => $lang->username
 	);
-	
+
 	$order_array = array(
 		'asc' => $lang->asc,
 		'desc' => $lang->desc
@@ -288,16 +288,16 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools-adminlog", "post");
 	$form_container = new FormContainer($lang->filter_administrator_logs);
-	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');	
-	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');	
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');	
-	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $perpage, array('id' => 'perpage')), 'perpage');	
+	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');
+	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $perpage, array('id' => 'perpage')), 'perpage');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_administrator_logs);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
-	
+
 	$page->output_footer();
 }
 
@@ -309,11 +309,11 @@ if(!$mybb->input['action'])
 function get_admin_log_action($logitem)
 {
 	global $lang, $plugins, $mybb;
-	
+
 	$logitem['module'] = str_replace('/', '-', $logitem['module']);
 	list($module, $action) = explode('-', $logitem['module']);
 	$lang_string = 'admin_log_'.$module.'_'.$action.'_'.$logitem['action'];
-	
+
 	// Specific page overrides
 	switch($lang_string)
 	{
@@ -325,7 +325,7 @@ function get_admin_log_action($logitem)
 				case 1:
 					$lang_string = 'admin_log_config_banning_'.$logitem['action'].'_ip';
 					break;
-				case 2: 
+				case 2:
 					$lang_string = 'admin_log_config_banning_'.$logitem['action'].'_username';
 					break;
 				case 3:
@@ -333,13 +333,13 @@ function get_admin_log_action($logitem)
 					break;
 			}
 			break;
-		
+
 		case 'admin_log_config_help_documents_add': // Help documents and sections
 		case 'admin_log_config_help_documents_edit':
 		case 'admin_log_config_help_documents_delete':
 			$lang_string .= "_{$logitem['data'][2]}"; // adds _section or _document
 			break;
-			
+
 		case 'admin_log_config_languages_edit': // Editing language variables
 			$logitem['data'][1] = basename($logitem['data'][1]);
 			if($logitem['data'][2] == 1)
@@ -347,7 +347,7 @@ function get_admin_log_action($logitem)
 				$lang_string = 'admin_log_config_languages_edit_admin';
 			}
 			break;
-			
+
 		case 'admin_log_config_mycode_toggle_status': // Custom MyCode toggle activation
 			if($logitem['data'][2] == 1)
 			{
@@ -388,7 +388,7 @@ function get_admin_log_action($logitem)
 			$lang_string .= $logitem['data'][0];
 			if($logitem['data'][0] == 'orders' && $logitem['data'][1])
 			{
-				$lang_string .= '_sub'; // updating forum orders in a subforum 
+				$lang_string .= '_sub'; // updating forum orders in a subforum
 			}
 			break;
 		case 'admin_log_forum_moderation_queue_': //moderation queue
@@ -445,6 +445,13 @@ function get_admin_log_action($logitem)
 			{
 				$lang_string = 'admin_log_tools_backupdb_backup_download';
 			}
+			$logitem['data'][1] = '...'.substr($logitem['data'][1], -20);
+			break;
+		case 'admin_log_tools_backupdb_dlbackup': // Download backup
+			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
+			break;
+		case 'admin_log_tools_backupdb_delete': // Delete backup
+			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
 			break;
 		case 'admin_log_tools_optimizedb_': // Optimize DB
 			$logitem['data'][0] = @implode(', ', unserialize($logitem['data'][0]));
@@ -493,10 +500,10 @@ function get_admin_log_action($logitem)
 			}
 			break;
 	}
-	
+
 	$plugin_array = array('logitem' => &$logitem, 'lang_string' => &$lang_string);
 	$plugins->run_hooks("admin_tools_get_admin_log_action", $plugin_array);
-	
+
 	if(isset($lang->$lang_string))
 	{
 		array_unshift($logitem['data'], $lang->$lang_string); // First parameter for sprintf is the format string

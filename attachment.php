@@ -61,7 +61,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0
 }
 
 // Error if attachment is invalid or not visible
-if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && $attachment['visible'] != 1))
+if(!$attachment['aid'] || !$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
 {
 	error($lang->error_invalidattachment);
 }
@@ -107,7 +107,12 @@ if($mybb->input['thumbnail'])
 	header("Content-type: ".$type);
 	$thumb = $mybb->settings['uploadspath']."/".$attachment['thumbnail'];
 	header("Content-length: ".@filesize($thumb));
-	echo file_get_contents($thumb);
+	$handle = fopen($thumb, 'rb');
+	while(!feof($handle))
+	{
+		echo fread($handle, 8192);
+	}
+	fclose($handle);
 }
 else
 {
@@ -153,7 +158,12 @@ else
 	}
 	
 	header("Content-length: {$attachment['filesize']}");
-	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
-	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
+	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']);
+	$handle = fopen($mybb->settings['uploadspath']."/".$attachment['attachname'], 'rb');
+	while(!feof($handle))
+	{
+		echo fread($handle, 8192);
+	}
+	fclose($handle);
 }
 ?>

@@ -22,17 +22,17 @@ $plugins->run_hooks("admin_tools_maillogs_begin");
 if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_tools_maillogs_prune");
-	
+
 	if($mybb->input['delete_all'])
 	{
 		$db->delete_query("maillogs");
 		$num_deleted = $db->affected_rows();
-		
+
 		$plugins->run_hooks("admin_tools_maillogs_prune_delete_all_commit");
-		
+
 		// Log admin action
 		log_admin_action($num_deleted);
-		
+
 		flash_message($lang->all_logs_deleted, 'success');
 		admin_redirect("index.php?module=tools-maillogs");
 	}
@@ -45,12 +45,12 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 			$num_deleted = $db->affected_rows();
 		}
 	}
-	
+
 	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
-	
+
 	// Log admin action
 	log_admin_action($num_deleted);
-	
+
 	flash_message($lang->selected_logs_deleted, 'success');
 	admin_redirect("index.php?module=tools-maillogs");
 }
@@ -58,7 +58,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 if($mybb->input['action'] == "view")
 {
 	$plugins->run_hooks("admin_tools_maillogs_view");
-	
+
 	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "view")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_maillogs_start");
-	
+
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
@@ -176,13 +176,13 @@ if(!$mybb->input['action'])
 
 	$touid = intval($mybb->input['touid']);
 	$toname = $db->escape_string($mybb->input['toname']);
-	$toemail = $db->escape_string($mybb->input['toemail']);
+	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
 	$fromuid = intval($mybb->input['fromuid']);
 	$fromname = $db->escape_string($mybb->input['fromname']);
-	$fromemail = $db->escape_string($mybb->input['fromemail']);
+	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
-	$subject = $db->escape_string($mybb->input['subject']);
+	$subject = $db->escape_string_like($mybb->input['subject']);
 
 	// Begin criteria filtering
 	if($mybb->input['subject'])
@@ -265,7 +265,7 @@ if(!$mybb->input['action'])
 	}
 
 	$page->output_header($lang->user_email_log);
-	
+
 	$sub_tabs['maillogs'] = array(
 		'title' => $lang->user_email_log,
 		'link' => "index.php?module=tools-maillogs",
@@ -273,7 +273,7 @@ if(!$mybb->input['action'])
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'maillogs');
-	
+
 	$form = new Form("index.php?module=tools-maillogs&amp;action=prune", "post");
 
 	$table = new Table;
@@ -337,7 +337,7 @@ if(!$mybb->input['action'])
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
-			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>"; 
+			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['to_username'])
 			{
 				$table->construct_cell("{$find_to}<div>{$lang->deleted_user}</div>");
@@ -350,7 +350,7 @@ if(!$mybb->input['action'])
 		}
 		$table->construct_row();
 	}
-	
+
 	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_logs, array("colspan" => "6"));
@@ -364,21 +364,21 @@ if(!$mybb->input['action'])
 		$buttons[] = $form->generate_submit_button($lang->delete_all, array('name' => 'delete_all', 'onclick' => "return confirm('{$lang->confirm_delete_all_logs}');"));
 		$form->output_submit_wrapper($buttons);
 	}
-	
+
 	$form->end();
-	
+
 	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-maillogs&amp;page={page}{$additional_criteria}");
-	
+
 	$form = new Form("index.php?module=tools-maillogs", "post");
 	$form_container = new FormContainer($lang->filter_user_email_log);
 	$user_email = array(
 		"user" => $lang->username_is,
 		"email" => $lang->email_contains
 	);
-	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
+	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');
 	if($from_username)
 	{
 		$from_type = "user";

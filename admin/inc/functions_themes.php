@@ -9,7 +9,7 @@
 function import_theme_xml($xml, $options=array())
 {
 	global $mybb, $db;
-	
+
 	require_once MYBB_ROOT."inc/class_xml.php";
 
 	$parser = new XMLParser($xml);
@@ -19,16 +19,16 @@ function import_theme_xml($xml, $options=array())
 	{
 		return -1;
 	}
-	
+
 	$theme = $tree['theme'];
-	
+
 	// Do we have MyBB 1.2 template's we're importing?
 	$css_120 = "";
-	
+
 	if(is_array($theme['cssbits']))
 	{
 		$cssbits = kill_tags($theme['cssbits']);
-		
+
 		foreach($cssbits as $name => $values)
 		{
 			$css_120 .= "{$name} {\n";
@@ -37,7 +37,7 @@ function import_theme_xml($xml, $options=array())
 				if(is_array($value))
 				{
 					$property = str_replace('_', ':', $property);
-					
+
 					$css_120 .= "}\n{$name} {$property} {\n";
 					foreach($value as $property2 => $value2)
 					{
@@ -52,13 +52,13 @@ function import_theme_xml($xml, $options=array())
 			$css_120 .= "}\n";
 		}
 	}
-	
+
 	if(is_array($theme['themebits']))
 	{
 		$themebits = kill_tags($theme['themebits']);
-		
+
 		$theme['properties']['tag'] = 'properties';
-		
+
 		foreach($themebits as $name => $value)
 		{
 			if($name == "extracss")
@@ -66,11 +66,11 @@ function import_theme_xml($xml, $options=array())
 				$css_120 .= $value;
 				continue;
 			}
-			
+
 			$theme['properties'][$name] = $value;
 		}
 	}
-	
+
 	if($css_120)
 	{
 		$css_120 = upgrade_css_120_to_140($css_120);
@@ -78,11 +78,11 @@ function import_theme_xml($xml, $options=array())
 		$theme['stylesheets']['stylesheet'][0]['tag'] = 'stylesheet';
 		$theme['stylesheets']['stylesheet'][0]['attributes'] = array('name' => 'global.css', 'version' => $mybb->version_code);
 		$theme['stylesheets']['stylesheet'][0]['value'] = $css_120;
-		
+
 		unset($theme['cssbits']);
 		unset($theme['themebits']);
 	}
-	
+
 	if(is_array($theme['properties']))
 	{
 		foreach($theme['properties'] as $property => $value)
@@ -91,11 +91,11 @@ function import_theme_xml($xml, $options=array())
 			{
 				continue;
 			}
-			
+
 			$properties[$property] = $value['value'];
 		}
 	}
-	
+
 	if(empty($mybb->input['name']))
 	{
 		$name = $theme['attributes']['name'];
@@ -121,19 +121,19 @@ function import_theme_xml($xml, $options=array())
 	{
 		return -2;
 	}
-	
+
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && !$options['no_templates'])
-	{		
-		if($options['templateset']) 
-		{ 
+	{
+		if($options['templateset'])
+		{
 			$sid = $options['templateset'];
-		} 
-		else 
-		{ 
+		}
+		else
+		{
 			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
 		}
-		
+
 		$templates = $theme['templates']['template'];
 		if(is_array($templates))
 		{
@@ -143,7 +143,7 @@ function import_theme_xml($xml, $options=array())
 				$templates = array($templates);
 			}
 		}
-	
+
 		$security_check = false;
 		$templatecache = array();
 		foreach($templates as $template)
@@ -207,7 +207,7 @@ function import_theme_xml($xml, $options=array())
 			// Trick the system into thinking we have a good array =P
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
-		
+
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
 			if(substr($stylesheet['attributes']['name'], -4) != ".css")
@@ -219,7 +219,7 @@ function import_theme_xml($xml, $options=array())
 			{
 				$stylesheet['attributes']['lastmodified'] = TIME_NOW;
 			}
-			
+
 			$new_stylesheet = array(
 				"name" => $db->escape_string($stylesheet['attributes']['name']),
 				"tid" => $theme_id,
@@ -235,13 +235,13 @@ function import_theme_xml($xml, $options=array())
 			{
 				$css_url = $cached;
 			}
-			
+
 			$attachedto = $stylesheet['attributes']['attachedto'];
 			if(!$attachedto)
 			{
 				$attachedto = "global";
 			}
-			
+
 			// private.php?compose,folders|usercp.php,global|global
 			$attachedto = explode("|", $attachedto);
 			foreach($attachedto as $attached_file)
@@ -252,7 +252,7 @@ function import_theme_xml($xml, $options=array())
 				{
 					$attached_actions = array("global");
 				}
-				
+
 				foreach($attached_actions as $action)
 				{
 					$theme_stylesheets[$attached_file][$action][] = $css_url;
@@ -265,7 +265,7 @@ function import_theme_xml($xml, $options=array())
 		);
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
 	}
-	
+
 	update_theme_stylesheet_list($theme_id);
 
 	// And done?
@@ -281,7 +281,7 @@ function import_theme_xml($xml, $options=array())
  */
 function parse_theme_variables($string, $variables=array())
 {
-	foreach(array_keys($variables) as $variable) 
+	foreach(array_keys($variables) as $variable)
 	{
 		$find[] = "{{$variable}}";
 		$replace[] = $variables[$variable];
@@ -323,7 +323,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 			$fp = @fopen(MYBB_ROOT."cache/themes/theme{$tid}/index.html", "w");
 			@fwrite($fp, "");
 			@fclose($fp);
-			
+
 			$theme_directory = "cache/themes/theme{$tid}";
 		}
 	}
@@ -337,14 +337,14 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		"theme" => $theme_directory
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
-	$stylesheet = preg_replace("#url\((\"|'|)(.*)\\1\)#e", "fix_css_urls('$2')", $stylesheet);
-	
+	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
+
 	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
 	{
 		return false;
 	}
-	
+
 	@fwrite($fp, $stylesheet);
 	@fclose($fp);
 	return "{$theme_directory}/{$filename}";
@@ -353,34 +353,34 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 function resync_stylesheet($stylesheet)
 {
 	global $db;
-	
+
 	// Try and fix any missing cache file names
 	if(!$stylesheet['cachefile'] && $stylesheet['name'])
 	{
-		$stylesheet['cachefile'] = $stylesheet['name'];		
+		$stylesheet['cachefile'] = $stylesheet['name'];
 		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
 	}
-	
+
 	// Still don't have the cache file name or is it not a flat file? Return false
 	if(!$stylesheet['cachefile'] || strpos($stylesheet['cachefile'], 'css.php') !== false)
 	{
 		return false;
 	}
-	
+
 	if(!file_exists(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}") && !file_exists(MYBB_ROOT."cache/themes/{$stylesheet['tid']}_{$stylesheet['name']}"))
 	{
 		if(cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']) !== false)
 		{
 			$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
-			
+
 			update_theme_stylesheet_list($stylesheet['tid']);
-			
+
 			if($stylesheet['sid'] != 1)
 			{
 				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 			}
 		}
-	
+
 		return true;
 	}
 	else if($stylesheet['sid'] != 1 && @filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['name']}") > $stylesheet['lastmodified'])
@@ -389,7 +389,7 @@ function resync_stylesheet($stylesheet)
 		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents), 'lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -447,7 +447,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 					{
 						continue;
 					}
-					
+
 					$properties[$property] = $value;
 					if($parent_properties['inherited'][$property])
 					{
@@ -473,7 +473,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 					{
 						continue;
 					}
-					
+
 					foreach($value as $action => $sheets)
 					{
 						foreach($sheets as $stylesheet)
@@ -576,25 +576,25 @@ function css_to_array($css)
 function get_selectors_as_options($css, $selected_item="")
 {
 	$select = "";
-	
+
 	if(!is_array($css))
 	{
 		$css = css_to_array($css);
 	}
-	
+
 	$selected = false;
-	
+
 	if(is_array($css))
 	{
 		uasort($css, "css_selectors_sort_cmp");
-		
+
 		foreach($css as $id => $css_array)
 		{
 			if(!$css_array['name'])
 			{
 				$css_array['name'] = $css_array['class_name'];
 			}
-			
+
 			if($selected_item == $id || (!$selected_item && !$selected))
 			{
 				$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>\n";
@@ -615,7 +615,7 @@ function css_selectors_sort_cmp($a, $b)
 	{
 		$a['name'] = $a['class_name'];
 	}
-	
+
 	if(!$b['name'])
 	{
 		$b['name'] = $b['class_name'];
@@ -629,7 +629,7 @@ function get_css_properties($css, $id)
 	{
 		$css = css_to_array($css);
 	}
-	
+
 	if(!isset($css[$id]))
 	{
 		return false;
@@ -649,7 +649,7 @@ function parse_css_properties($values)
 	{
 		return;
 	}
-	
+
 	$values = explode(";", $values);
 	foreach($values as $value)
 	{
@@ -701,12 +701,12 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	{
 		$parsed_css = css_to_array($css);
 	}
-	
+
 	if(!$class_id)
 	{
 		$class_id = $parsed_css[$selector]['class_name'];
 	}
-	
+
 	// The specified class ID cannot be found, add CSS to end of file
 	if(!$css || !$parsed_css[$selector])
 	{
@@ -717,21 +717,21 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	{
 		$css = str_replace(array("\r\n", "\n", "\r"), "\n", $css);
 		$css = preg_replace('#(?<!\\")\}#', "}\n", $css);
-		$css = preg_replace("#\s*([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(\n*)#isu", "\n$1 {\n", $css);
+		$css = preg_replace("#^(?!@)\s*([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(\n*)#isu", "\n$1 {\n", $css);
 		$css = preg_replace("#\s{1,}\{#", " {", $css);
 		$existing_block = $parsed_css[$selector];
-		
+
 		$break = strrpos($selector, "_");
 		if($break !== false)
 		{
 			$actual_occurance = intval(substr($selector, ($break+1)));
 		}
-		
+
 		if(!$actual_occurance)
 		{
 			$actual_occurance = 1;
 		}
-		
+
 		$occurance = 1;
 		$pos = 0;
 		do
@@ -755,42 +755,42 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	}
 	$css = preg_replace("#{\n*#s", "{\n", $css);
 	$css = preg_replace("#\s*\}\s*#", "\n}\n\n", $css);
-	return $css;	
+	return $css;
 }
 
 function copy_stylesheet_to_theme($stylesheet, $tid)
 {
 	global $db;
-	
+
 	$stylesheet['tid'] = $tid;
 	unset($stylesheet['sid']);
-	
+
 	foreach($stylesheet as $key => $value)
 	{
 		$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
 	}
-	
+
 	$sid = $db->insert_query("themestylesheets", $stylesheet);
-	
+
 	return $sid;
 }
 
 function update_theme_stylesheet_list($tid)
 {
 	global $db;
-	
+
 	$stylesheets = array();
-	
+
 	$child_list = make_child_theme_list($tid);
 	$parent_list = make_parent_theme_list($tid);
-	
+
 	if(!is_array($parent_list))
 	{
 		return false;
 	}
-	
+
 	$tid_list = implode(',', $parent_list);
-	
+
 	// Get our list of stylesheets
 	$query = $db->simple_select("themestylesheets", "sid,cachefile,attachedto,tid,lastmodified,name", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
 	while($stylesheet = $db->fetch_array($query))
@@ -801,16 +801,16 @@ function update_theme_stylesheet_list($tid)
 			{
 				$stylesheet['inherited'] = $stylesheet['tid'];
 			}
-			
+
 			$stylesheets[$stylesheet['name']] = $stylesheet;
 		}
 	}
-	
+
 	foreach($stylesheets as $name => $stylesheet)
 	{
 		$sid = $stylesheet['sid'];
 		$css_url = "css.php?stylesheet={$sid}";
-		
+
 		foreach($parent_list as $theme_id)
 		{
 			if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}") && filemtime(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}") >= $stylesheet['lastmodified'])
@@ -819,7 +819,7 @@ function update_theme_stylesheet_list($tid)
 				break;
 			}
 		}
-		
+
 		$attachedto = $stylesheet['attachedto'];
 		if(!$attachedto)
 		{
@@ -836,16 +836,16 @@ function update_theme_stylesheet_list($tid)
 				$attached_actions = explode(",", $attached_file[1]);
 				$attached_file = $attached_file[0];
 			}
-			
+
 			if(count($attached_actions) == 0)
 			{
 				$attached_actions = array("global");
 			}
-			
+
 			foreach($attached_actions as $action)
 			{
 				$theme_stylesheets[$attached_file][$action][] = $css_url;
-				
+
 				if($stylesheet['inherited'])
 				{
 					$theme_stylesheets['inherited']["{$attached_file}_{$action}"][$css_url] = $stylesheet['inherited'];
@@ -859,7 +859,7 @@ function update_theme_stylesheet_list($tid)
 		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
 	);
 	$db->update_query("themes", $updated_theme, "tid='{$tid}'");
-	
+
 	// Do we have any children themes that need updating too?
 	if(count($child_list) > 0)
 	{
@@ -868,14 +868,14 @@ function update_theme_stylesheet_list($tid)
 			update_theme_stylesheet_list($id);
 		}
 	}
-	
+
 	return true;
 }
 
 function make_parent_theme_list($tid)
 {
 	static $themes_by_parent;
-	
+
 	$themes = array();
 	if(!is_array($themes_by_parent))
 	{
@@ -886,39 +886,39 @@ function make_parent_theme_list($tid)
 			{
 				continue;
 			}
-			
+
 			$themes_by_parent[$theme['tid']][$theme['pid']] = $theme;
 		}
 	}
-	
+
 	if(!isset($themes_by_parent[$tid]))
 	{
 		return false;
 	}
-	
+
 	reset($themes_by_parent);
 	reset($themes_by_parent[$tid]);
-	
+
 	$themes = array();
-	
+
 	foreach($themes_by_parent[$tid] as $key => $theme)
 	{
 		$themes[] = $theme['tid'];
 		$parents = make_parent_theme_list($theme['pid']);
-		
+
 		if(is_array($parents))
 		{
 			$themes = array_merge($themes, $parents);
 		}
 	}
-	
+
 	return $themes;
 }
 
 function make_child_theme_list($tid)
 {
 	static $themes_by_child;
-	
+
 	$themes = array();
 	if(!is_array($themes_by_child))
 	{
@@ -929,29 +929,29 @@ function make_child_theme_list($tid)
 			{
 				continue;
 			}
-			
+
 			$themes_by_child[$theme['pid']][$theme['tid']] = $theme;
 		}
 	}
-	
+
 	if(!is_array($themes_by_child[$tid]))
 	{
 		return;
 	}
-	
+
 	$themes = array();
-	
+
 	foreach($themes_by_child[$tid] as $theme)
 	{
 		$themes[] = $theme['tid'];
 		$children = make_child_theme_list($theme['tid']);
-		
+
 		if(is_array($children))
 		{
 			$themes = array_merge($themes, $children);
 		}
 	}
-	
+
 	return $themes;
 }
 
@@ -967,20 +967,20 @@ function cache_themes()
 			$theme['properties'] = unserialize($theme['properties']);
 			$theme['stylesheets'] = unserialize($theme['stylesheets']);
 			$theme_cache[$theme['tid']] = $theme;
-			
+
 			if($theme['def'] == 1)
 			{
 				$theme_cache['default'] = $theme['tid'];
 			}
 		}
 	}
-	
+
 	// Do we have no themes assigned as default?
 	if(!$theme_cache['default'])
 	{
 		$theme_cache['default'] = 1;
 	}
-	
+
 	return $theme_cache;
 }
 
@@ -992,7 +992,7 @@ function build_theme_list($parent=0, $depth=0)
 	$padding = $depth*20; // Padding
 
 	if(!is_array($theme_cache))
-	{		
+	{
 		$themes = cache_themes();
 		$query = $db->query("
 			SELECT style, COUNT(uid) AS users
@@ -1005,7 +1005,7 @@ function build_theme_list($parent=0, $depth=0)
 			{
 				$user_themes['style'] = $themes['default'];
 			}
-			
+
 			if($themes[$user_themes['style']]['users'] > 0)
 			{
 				$themes[$user_themes['style']]['users'] += intval($user_themes['users']);
@@ -1023,7 +1023,7 @@ function build_theme_list($parent=0, $depth=0)
 			{
 				continue;
 			}
-			
+
 			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
 		}
 		$theme_cache['num_themes'] = count($themes);
@@ -1036,19 +1036,19 @@ function build_theme_list($parent=0, $depth=0)
 	}
 
 	foreach($theme_cache[$parent] as $theme)
-	{		
+	{
 		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}");
 			$theme['name'] = "<a href=\"index.php?module=style-themes&amp;action=edit&amp;tid={$theme['tid']}\">".htmlspecialchars_uni($theme['name'])."</a>";
-			
+
 			// We must have at least the master and 1 other active theme
 			if($theme_cache['num_themes'] > 2)
 			{
 				$popup->add_item($lang->delete_theme, "index.php?module=style-themes&amp;action=delete&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
 			}
-			
+
 			if($theme['def'] != 1)
 			{
 				$popup->add_item($lang->set_as_default, "index.php?module=style-themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}");
@@ -1065,7 +1065,7 @@ function build_theme_list($parent=0, $depth=0)
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
-		
+
 		// Fetch & build any child themes
 		build_theme_list($theme['tid'], ++$depth);
 	}
@@ -1087,7 +1087,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 			{
 				continue;
 			}
-			
+
 			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
 		}
 		unset($theme);
@@ -1104,12 +1104,12 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 		{
 			continue;
 		}
-		
+
 		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
 		// Fetch & build any child themes
 		build_theme_array($ignoretid, $theme['tid'], $depth+1);
 	}
-	
+
 	if(!$parent)
 	{
 		return $list;
@@ -1120,17 +1120,17 @@ function upgrade_css_120_to_140($css)
 {
 	// Update our CSS to the new stuff in 1.4
 	$parsed_css = css_to_array($css);
-	
+
 	if(!is_array($parsed_css))
 	{
 		return "";
 	}
-	
+
 	foreach($parsed_css as $class_id => $array)
 	{
 		$parsed_css[$class_id]['values'] = str_replace('#eea8a1', '#ffdde0', $array['values']);
 		$parsed_css[$class_id]['values'] = str_replace('font-family: Verdana;', 'font-family: Verdana, Arial, Sans-Serif;', $array['values']);
-		
+
 		switch($array['class_name'])
 		{
 			case '.bottommenu':
@@ -1158,9 +1158,9 @@ function upgrade_css_120_to_140($css)
 				unset($parsed_css[$class_id]);
 				break;
 			default:
-		}		
+		}
 	}
-	
+
 	$to_add = array(
 		md5('.trow_selected td') => array("class_name" => '.trow_selected td', "values" => 'background: #FFFBD9;'),
 		md5('blockquote') => array("class_name" => 'blockquote', "values" => "border: 1px solid #ccc;\n\tmargin: 0;\n\tbackground: #fff;\n\tpadding: 4px;"),
@@ -1181,7 +1181,7 @@ function upgrade_css_120_to_140($css)
 		md5('.moderate_warning') => array("class_name" => '.moderate_warning', "values" => "color: #F3611B;"),
 		md5('.low_warning') => array("class_name" => '.low_warning', "values" => "color: #AE5700;"),
 		md5('div.error') => array("class_name" => 'div.error', "values" => "padding: 5px 10px;\n\tborder-top: 2px solid #FFD324;\n\tborder-bottom: 2px solid #FFD324;\n\tbackground: #FFF6BF;\n\tfont-size: 12px;"),
-		md5('div.error p') => array("class_name" => 'div.error p', "values" => "margin: 0;\n\tcolor: #000;\n\tfont-weight: normal;"),		
+		md5('div.error p') => array("class_name" => 'div.error p', "values" => "margin: 0;\n\tcolor: #000;\n\tfont-weight: normal;"),
 		md5('div.error p em') => array("class_name" => 'div.error p em', "values" => "font-style: normal;\n\tfont-weight: bold;\n\tpadding-left: 24px;\n\tdisplay: block;\n\tcolor: #C00;\n\tbackground: url({$mybb->settings['bburl']}/images/error.gif) no-repeat 0;"),
 		md5('div.error.ul') => array("class_name" => 'div.error.ul', "values" => "margin-left: 24px;"),
 		md5('.online') => array("class_name" => '.online', "values" => "color: #15A018;"),
@@ -1209,7 +1209,7 @@ function upgrade_css_120_to_140($css)
 		md5('.validation_success') => array("class_name" => '.validation_success', "values" => "background: url(images/valid.gif) no-repeat center left;\n\tcolor: #00b200;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.gif) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 	);
-	
+
 	foreach($to_add as $class_id => $array)
 	{
 		if($already_parsed[$class_id])
@@ -1221,13 +1221,13 @@ function upgrade_css_120_to_140($css)
 		{
 			$already_parsed[$class_id] = 1;
 		}
-		
+
 		$array['name'] = "";
 		$array['description'] = "";
-		
+
 		$parsed_css[$class_id] = $array;
 	}
-	
+
 	$css = "";
 	foreach($parsed_css as $class_id => $array)
 	{
@@ -1237,24 +1237,24 @@ function upgrade_css_120_to_140($css)
 			if($array['name'])
 			{
 				$array['css'] .= "Name: {$array['name']}";
-				
+
 				if($array['description'])
 				{
 					$array['css'] .= "\n";
 				}
 			}
-			
+
 			if($array['description'])
 			{
 				$array['css'] .= "Description: {$array['description']}";
 			}
-			
+
 			$array['css'] .= " */\n";
 		}
-		
+
 		$css .= "{$array['class_name']} {\n\t{$array['values']}\n}\n";
 	}
-		
+
 	return $css;
 }
 ?>

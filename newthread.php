@@ -263,7 +263,9 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
-		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.dateline>".(TIME_NOW-600));
+		$check_subject = utf8_handle_4byte_string($mybb->input['subject']);
+		$check_message = utf8_handle_4byte_string($mybb->input['message']);
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($check_subject)."' AND p.message='".$db->escape_string($check_message)."' AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -364,6 +366,12 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$thread_info = $posthandler->insert_thread();
 		$tid = $thread_info['tid'];
 		$visible = $thread_info['visible'];
+
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		{
+			$post_captcha->invalidate_captcha();
+		}
 
 		// Mark thread as read
 		require_once MYBB_ROOT."inc/functions_indicators.php";
@@ -564,6 +572,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Editing a draft thread
 	else if($mybb->input['action'] == "editdraft" && $mybb->user['uid'])
 	{
+		$mybb->input['threadprefix'] = $thread['prefix'];
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != 0)
@@ -955,6 +964,5 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	eval("\$newthread = \"".$newthread_template."\";");
 	output_page($newthread);
-
 }
 ?>

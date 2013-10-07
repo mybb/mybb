@@ -27,6 +27,13 @@ class MyLanguage
 	public $language;
 
 	/**
+	 * The fallback language we are using.
+	 *
+	 * @var string
+	 */
+	public $fallback = 'english';
+
+	/**
 	 * Information about the current language.
 	 *
 	 * @var array
@@ -112,6 +119,7 @@ class MyLanguage
 				}
 			}
 			$this->language = $language."/{$area}";
+			$this->fallback = $this->fallback."/{$area}";
 		}
 	}
 
@@ -136,9 +144,9 @@ class MyLanguage
 		{
 			require_once $lfile;
 		}
-		elseif(file_exists($this->path."/english/".$section.".lang.php"))
+		elseif(file_exists($this->path."/".$this->fallback."/".$section.".lang.php"))
 		{
-			require_once $this->path."/english/".$section.".lang.php";
+			require_once $this->path."/".$this->fallback."/".$section.".lang.php";
 		}
 		else
 		{
@@ -210,8 +218,19 @@ class MyLanguage
 	 */
 	function parse($contents)
 	{
-		$contents = preg_replace("#<lang:([a-zA-Z0-9_]+)>#e", "\$this->$1", $contents);
+		$contents = preg_replace_callback("#<lang:([a-zA-Z0-9_]+)>#", array($this, 'parse_replace'), $contents);
 		return $contents;
+	}
+
+	/**
+	 * Replace content with language variable.
+	 *
+	 * @param array Matches.
+	 * @return string Language variable.
+	 */
+	function parse_replace($matches)
+	{
+		return $this->$matches[1];
 	}
 }
 ?>

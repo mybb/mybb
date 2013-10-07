@@ -248,6 +248,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'])
+		{
+			$captcha->invalidate_captcha();
+		}
+
 		if($mybb->settings['regtype'] != "randompass" && !$mybb->cookies['coppauser'])
 		{
 			// Log them in
@@ -382,6 +388,15 @@ if($mybb->input['action'] == "register")
 		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
 		{
 			my_unsetcookie("coppauser");
+			
+			$mybb->input['bday1'] = intval($mybb->input['bday1']);
+			$mybb->input['bday2'] = intval($mybb->input['bday2']);
+			$mybb->input['bday3'] = intval($mybb->input['bday3']);
+			$months = get_bdays($mybb->input['bday3']);
+			if($mybb->input['bday2'] < 1 || $mybb->input['bday2'] > 12 || $mybb->input['bday3'] < (date("Y")-100) || $mybb->input['bday3'] > date("Y") || $mybb->input['bday1'] > $months[$mybb->input['bday2']-1])
+			{
+				error($lang->error_invalid_birthday);
+			}
 			
 			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 			
@@ -1154,6 +1169,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	$errors = array();
 
+	$login_captcha = false;
 	if($mybb->settings['failedcaptchalogincount'] > 0 && ($loginattempts > $mybb->settings['failedcaptchalogincount'] || intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount']))
 	{
 		// Show captcha image if enabled
@@ -1231,7 +1247,13 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		{
 			error($lang->error_awaitingcoppa);
 		}
-		
+
+		// Invalidate captcha
+		if($login_captcha !== false)
+		{
+			$login_captcha->invalidate_captcha();
+		}
+
 		my_setcookie('loginattempts', 1);
 		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 		$newsession = array(
@@ -1645,7 +1667,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 				
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
@@ -1885,14 +1907,14 @@ if($mybb->input['action'] == "profile")
 	}
 
 	// Fetch the reputation for this user
-	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
+	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
 		$vote_link = '';
-		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
+		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
 		}

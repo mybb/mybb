@@ -62,6 +62,7 @@ class EventDataHandler extends DataHandler
 	function verify_name()
 	{
 		$name = &$this->data['name'];
+		$name = utf8_handle_4byte_string($name);
 		$name = trim($name);
 		if(!$name)
 		{
@@ -79,6 +80,7 @@ class EventDataHandler extends DataHandler
 	function verify_description()
 	{
 		$description = &$this->data['description'];
+		$description = utf8_handle_4byte_string($description);
 		$description = trim($description);
 		if(!$description)
 		{
@@ -103,7 +105,7 @@ class EventDataHandler extends DataHandler
 			$this->set_error("invalid_start_date");
 			return false;
 		}
-		
+
 		$event['start_date']['day'] = intval($event['start_date']['day']);
 		$event['start_date']['month'] = intval($event['start_date']['month']);
 		$event['start_date']['year'] = intval($event['start_date']['year']);
@@ -136,7 +138,7 @@ class EventDataHandler extends DataHandler
 				$this->set_error("invalid_end_date");
 				return false;
 			}
-		
+
 			$event['end_date']['day'] = intval($event['end_date']['day']);
 			$event['end_date']['month'] = intval($event['end_date']['month']);
 			$event['end_date']['year'] = intval($event['end_date']['year']);
@@ -268,7 +270,7 @@ class EventDataHandler extends DataHandler
 		{
 			return true;
 		}
-		
+
 		if(!$event['endtime'])
 		{
 			$this->set_error("only_ranged_events_repeat");
@@ -401,7 +403,7 @@ class EventDataHandler extends DataHandler
 		{
 			$this->verify_repeats();
 		}
-		
+
 		$plugins->run_hooks("datahandler_event_validate", $this);
 
 		// We are done validating, return.
@@ -431,7 +433,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		
+
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
@@ -457,7 +459,7 @@ class EventDataHandler extends DataHandler
 		{
 			$visible = 1;
 		}
-			
+
 		// Prepare an array for insertion into the database.
 		$this->event_insert_data = array(
 			'cid' => intval($event['cid']),
@@ -501,7 +503,7 @@ class EventDataHandler extends DataHandler
 		{
 			die("The event needs to be validated before inserting it into the DB.");
 		}
-		
+
 		if(count($this->get_errors()) > 0)
 		{
 			die("The event is not valid.");
@@ -556,11 +558,11 @@ class EventDataHandler extends DataHandler
 		{
 			$this->event_update_data['timezone'] = $db->escape_string(floatval($event['timezone']));
 		}
-		
+
 		if(isset($event['ignoretimezone']))
 		{
 			$this->event_update_data['ignoretimezone'] = intval($event['ignoretimezone']);
-		}		
+		}
 
 		if(isset($event['private']))
 		{

@@ -190,9 +190,9 @@ class FeedGenerator
 	 */
 	function sanitize_content($content)
 	{
-		$content = preg_replace("#&[^\s]([^\#])(?![a-z1-4]{1,10};)#i", "&#x26;$1", $content);
+		$content = preg_replace("#&[^\s]([^\#])(?![a-z1-4]{1,10});#i", "&#x26;$1", $content);
 		$content = str_replace("]]>", "]]]]><![CDATA[>", $content);
-		
+
 		return $content;
 	}
 

@@ -62,11 +62,16 @@ $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 // Get forum info
 $fid = $post['fid'];
 $forum = get_forum($fid);
+
+if(($thread['visible'] == 0 && !is_moderator($fid)) || ($thread['visible'] < 0 && $thread['uid'] != $mybb->user['uid']))
+{
+	error($lang->error_invalidthread);
+}
 if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
+if(($forum['open'] == 0 && !is_moderator($fid, "caneditposts")) || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }
@@ -206,11 +211,13 @@ if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $myb
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
 	elseif($mybb->input['attachmentact'] == "unapprove" && is_moderator($fid, 'caneditposts'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
+		update_thread_counters($post['tid'], array('attachmentcount' => "-1"));
 	}
 	if(!$mybb->input['submit'])
 	{

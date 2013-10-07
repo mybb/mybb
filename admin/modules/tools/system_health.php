@@ -667,64 +667,67 @@ if(!$mybb->input['action'])
 
 	$table->output($lang->next_3_tasks);
 
-	$backups = array();
-	$dir = MYBB_ADMIN_DIR.'backups/';
-	$handle = opendir($dir);
-	while(($file = readdir($handle)) !== false)
+	if(isset($mybb->admin['permissions']['tools']['backupdb']) && $mybb->admin['permissions']['tools']['backupdb'] == 1)
 	{
-		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+		$backups = array();
+		$dir = MYBB_ADMIN_DIR.'backups/';
+		$handle = opendir($dir);
+		while(($file = readdir($handle)) !== false)
 		{
-			$ext = get_extension($file);
-			if($ext == 'gz' || $ext == 'sql')
+			if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 			{
-				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
-					"file" => $file,
-					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
-					"type" => $ext
-				);
+				$ext = get_extension($file);
+				if($ext == 'gz' || $ext == 'sql')
+				{
+					$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
+						"file" => $file,
+						"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+						"type" => $ext
+					);
+				}
 			}
 		}
-	}
 
-	$count = count($backups);
-	krsort($backups);
+		$count = count($backups);
+		krsort($backups);
 
-	$table = new Table;
-	$table->construct_header($lang->name);
-	$table->construct_header($lang->backup_time, array("width" => 200, "class" => "align_center"));
+		$table = new Table;
+		$table->construct_header($lang->name);
+		$table->construct_header($lang->backup_time, array("width" => 200, "class" => "align_center"));
 
-	$backupscnt = 0;
-	foreach($backups as $backup)
-	{
-		++$backupscnt;
-
-		if($backupscnt == 4)
+		$backupscnt = 0;
+		foreach($backups as $backup)
 		{
-			break;
+			++$backupscnt;
+
+			if($backupscnt == 4)
+			{
+				break;
+			}
+
+			if($backup['time'])
+			{
+				$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
+			}
+			else
+			{
+				$time = "-";
+			}
+
+			$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
+			$table->construct_cell($time, array("class" => "align_center"));
+			$table->construct_row();
 		}
 
-		if($backup['time'])
+		if($count == 0)
 		{
-			$time = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $backup['time']);
-		}
-		else
-		{
-			$time = "-";
+			$table->construct_cell($lang->no_backups, array('colspan' => 2));
+			$table->construct_row();
 		}
 
-		$table->construct_cell("<a href=\"index.php?module=tools-backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
-		$table->construct_cell($time, array("class" => "align_center"));
-		$table->construct_row();
+
+		$table->output($lang->existing_db_backups);
 	}
-
-	if($count == 0)
-	{
-		$table->construct_cell($lang->no_backups, array('colspan' => 2));
-		$table->construct_row();
-	}
-
-
-	$table->output($lang->existing_db_backups);
 
 	if(is_writable(MYBB_ROOT.'inc/settings.php'))
 	{

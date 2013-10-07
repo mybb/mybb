@@ -51,7 +51,7 @@ $mybb->input['keywords'] = trim($mybb->input['keywords']);
 $limitsql = "";
 if(intval($mybb->settings['searchhardlimit']) > 0)
 {
-	$limitsql = "ORDER BY t.lastpost DESC LIMIT ".intval($mybb->settings['searchhardlimit']);
+	$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
 }
 
 if($mybb->input['action'] == "results")
@@ -261,7 +261,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -1217,7 +1217,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 elseif($mybb->input['action'] == "getnew")
 {
 	
-	$where_sql = "t.lastpost >= '".$mybb->user['lastvisit']."'";
+	$where_sql = "t.lastpost >= '".intval($mybb->user['lastvisit'])."'";
 
 	if($mybb->input['fid'])
 	{
@@ -1492,7 +1492,7 @@ else if($mybb->input['action'] == "thread")
 	{
 		error($lang->error_closedinvalidforum);
 	}
-	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1)
+	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1 || (isset($forum_permissions['canonlyviewownthreads']) && $forum_permissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
 	{
 		error_no_permission();
 	}

@@ -121,7 +121,7 @@ var Thread = {
 			this.spinner.destroy();
 			this.spinner = '';
 		}
-		$('message').focus();	
+		$('message').focus();
 	},
 
 	clearMultiQuoted: function()
@@ -140,7 +140,7 @@ var Thread = {
 			});
 		}
 		Cookie.unset('multiquote');
-	},	
+	},
 
 	deletePost: function(pid)
 	{
@@ -243,7 +243,7 @@ var Thread = {
 			return false;
 		}
 		this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
-		
+
 		postData = "value="+encodeURIComponent(message).replace(/\+/g, "%2B");
 		new Ajax.Request('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+"&my_post_key="+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
 	},
@@ -291,7 +291,7 @@ var Thread = {
 			$("pid_"+pid).innerHTML = message;
 			Thread.qeCache[pid] = "";
 		}
-		
+
 		if(this.spinner)
 		{
 			this.spinner.destroy();
@@ -382,14 +382,7 @@ var Thread = {
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
-			{
-				var scripts = request.responseText.extractScripts();
-				scripts.each(function(script)
-				{
-					eval(script);
-				});
-			}
+			request.responseText.evalScripts();
 			Form.reset('quick_reply_form');
 			if($('lastpid'))
 			{
@@ -398,9 +391,9 @@ var Thread = {
 		}
 		else
 		{
-			request.responseText.evalScripts(); 
+			request.responseText.evalScripts();
 		}
-		
+
 		if(this.spinner)
 		{
 			this.spinner.destroy();

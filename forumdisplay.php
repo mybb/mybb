@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'forumdisplay.php');
 
-$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
+$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password";
@@ -298,7 +298,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 				{
 					$invisiblemark = '';
 				}
-				
+
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -321,7 +321,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 	{
 		$onlinesep = $lang->comma;
 	}
-	
+
 	$invisonline = '';
 	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 	{
@@ -344,7 +344,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	{
 		$foruminfo['rulestitle'] = $lang->sprintf($lang->forum_rules, $foruminfo['name']);
 	}
-	
+
 	$rules_parser = array(
 		"allow_html" => 1,
 		"allow_mycode" => 1,
@@ -537,7 +537,7 @@ else
 }
 
 // Needs to be initialized in order to speed-up things. Fixes #2031
-$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>''); 
+$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>'');
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 $threadcount = 0;
@@ -550,7 +550,7 @@ if(isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewow
 
 if($fpermissions['canviewthreads'] != 0)
 {
-	
+
 	// How many posts are there?
 	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
@@ -566,7 +566,7 @@ if($fpermissions['canviewthreads'] != 0)
 		{
 			$threadcount += $forum_threads['unapprovedthreads'];
 		}
-		
+
 		// If we have 0 threads double check there aren't any "moved" threads
 		if($threadcount == 0)
 		{
@@ -613,9 +613,9 @@ if($upper > $threadcount)
 
 // Assemble page URL
 if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) // Ugly URL
-{	
+{
 	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-	
+
 	if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && isset($_SERVER['SEO_SUPPORT']) && $_SERVER['SEO_SUPPORT'] == 1))
 	{
 		$q = "?";
@@ -626,21 +626,21 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if((!empty($foruminfo['defaultsortby']) && $sortby != $foruminfo['defaultsortby']) || (empty($foruminfo['defaultsortby']) && $sortby != "lastpost"))
 	{
 		$page_url .= "{$q}{$and}sortby={$sortby}";
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if($sortordernow != "desc")
 	{
 		$page_url .= "{$q}{$and}order={$sortordernow}";
 		$q = '';
 		$and = "&";
 	}
-	
+
 	if($datecut > 0)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
@@ -806,7 +806,7 @@ if($fpermissions['canviewthreads'] != 0)
 	$ratings = false;
 	$moved_threads = array();
 	while($thread = $db->fetch_array($query))
-	{		
+	{
 		$threadcache[$thread['tid']] = $thread;
 
 		if($thread['numratings'] > 0 && $ratings == false)
@@ -832,19 +832,6 @@ if($fpermissions['canviewthreads'] != 0)
 			{
 				unset($moved_threads[$thread['tid']]);
 			}
-		}
-	}
-
-	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($tids) && $ratings == true)
-	{
-		// Check if we've rated threads on this page
-		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
-		$imp = implode(",", $tids);
-		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
-
-		while($rating = $db->fetch_array($query))
-		{
-			$threadcache[$rating['tid']]['rated'] = 1;
 		}
 	}
 }
@@ -884,16 +871,16 @@ if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && !empty($threadcac
 // Read threads
 if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && !empty($threadcache))
 {
-	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
+	$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($readthread = $db->fetch_array($query))
 	{
-		if(!empty($moved_threads[$readthread['tid']])) 
-		{ 
-	 		$readthread['tid'] = $moved_threads[$readthread['tid']]; 
+		if(!empty($moved_threads[$readthread['tid']]))
+		{
+	 		$readthread['tid'] = $moved_threads[$readthread['tid']];
 	 	}
 		if($threadcache[$readthread['tid']])
 		{
-	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline']; 
+	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
 		}
 	}
 }
@@ -926,7 +913,7 @@ if(!empty($threadcache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
 	{
-		$mybb->settings['maxmultipagelinks'] = 5;		
+		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
 	if(!$mybb->settings['postsperpage'])
@@ -948,7 +935,7 @@ if(!empty($threadcache))
 		{
 			$bgcolor = alt_trow();
 		}
-		
+
 		if($thread['sticky'] == 1)
 		{
 			$thread_type_class = " forumdisplay_sticky";
@@ -971,7 +958,7 @@ if(!empty($threadcache))
 		{
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
-		
+
 		// If this thread has a prefix, insert a space between prefix and subject
 		$thread['threadprefix'] = $threadprefix = '';
 		if($thread['prefix'] != 0)
@@ -1269,7 +1256,7 @@ if(!empty($threadcache))
 			{
 				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
 			}
-			
+
 			if($customthreadtools)
 			{
 				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");

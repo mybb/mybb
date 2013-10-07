@@ -29,11 +29,7 @@ class session
 
 		// Find out the user agent.
 		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
-		if(my_strlen($this->useragent) > 100)
-		{
-			$this->useragent = my_substr($this->useragent, 0, 100);
-		}
-		
+
 		// Attempt to find a session id in the cookies.
 		if(isset($mybb->cookies['sid']))
 		{
@@ -82,7 +78,7 @@ class session
 
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if($this->sid && (isset($mybb->cookies['sid'] ) && $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
+		if($this->sid && (!isset($mybb->cookies['sid']) || $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
 		{
 			my_setcookie("sid", $this->sid, -1, true);
 		}
@@ -92,32 +88,32 @@ class session
 	 * Load a user via the user credentials.
 	 *
 	 * @param int The user id.
-	 * @param string The user's password.
+	 * @param string The user's loginkey.
 	 */
-	function load_user($uid, $password='')
+	function load_user($uid, $loginkey='')
 	{
 		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
-		
+
 		// Read the banned cache
-		$bannedcache = $cache->read("banned");	
-		
+		$bannedcache = $cache->read("banned");
+
 		// If the banned cache doesn't exist, update it and re-read it
 		if(!is_array($bannedcache))
 		{
 			$cache->update_banned();
 			$bannedcache = $cache->read("banned");
 		}
-		
+
 		$uid = intval($uid);
 		$query = $db->query("
 			SELECT u.*, f.*
-			FROM ".TABLE_PREFIX."users u 
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
 			WHERE u.uid='$uid'
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
-		
+
 		if(!empty($bannedcache[$uid]))
 		{
 			$banned_user = $bannedcache[$uid];
@@ -129,7 +125,7 @@ class session
 		}
 
 		// Check the password if we're not using a session
-		if($password != $mybb->user['loginkey'] || !$mybb->user['uid'])
+		if(empty($loginkey) || $loginkey != $mybb->user['loginkey'] || !$mybb->user['uid'])
 		{
 			unset($mybb->user);
 			$this->uid = 0;
@@ -222,7 +218,7 @@ class session
 		{
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
-		
+
 		// Does this user prefer posts in classic mode?
 		if($mybb->user['classicpostbit'])
 		{
@@ -276,7 +272,7 @@ class session
 		{
 			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 		}
-		
+
 		if(!$mybb->user['usertitle'])
 		{
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
@@ -349,7 +345,7 @@ class session
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-		
+
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.
@@ -451,7 +447,12 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$onlinedata['useragent'] = $db->escape_string($this->useragent);
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
@@ -500,7 +501,12 @@ class session
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_string($this->ipaddress);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
-		$onlinedata['useragent'] = $db->escape_string($this->useragent);
+		$useragent = $this->useragent;
+		if(my_strlen($useragent) > 100)
+		{
+			$useragent = my_substr($useragent, 0, 100);
+		}
+		$onlinedata['useragent'] = $db->escape_string($useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
@@ -523,11 +529,31 @@ class session
 			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
 		}
-		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']) && intval($mybb->input['tid']) > 0)
+		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
 		{
 			global $db;
-			$array[2] = intval($mybb->input['tid']);
-			$thread = get_thread(intval($array[2]));
+
+			if($mybb->input['tid'] && intval($mybb->input['tid']) > 0)
+			{
+				$array[2] = intval($mybb->input['tid']);
+			}
+			elseif($mybb->input['pid'] && intval($mybb->input['pid']) > 0)
+			{
+				$array[2] = intval($mybb->input['pid']);
+			}
+
+			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
+			if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
+			{
+				$options = array(
+					"limit" => 1
+				);
+				$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
+				$post = $db->fetch_array($query);
+				$mybb->input['tid'] = $post['tid'];
+			}
+
+			$thread = get_thread(intval($mybb->input['tid']));
 			$array[1] = $thread['fid'];
 		}
 		return $array;

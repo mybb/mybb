@@ -423,7 +423,7 @@ elseif($mybb->input['action'] == "whoposted")
 	}
 	
 	// Make sure we are looking at a real thread here.
-	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	if(!$thread || ($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 	{
 		error($lang->error_invalidthread);
 	}

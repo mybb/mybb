@@ -40,7 +40,7 @@ foreach($options as $option)
 }
 
 // Get the pid and tid and replyto from the input.
-$tid = $mybb->input['tid'];
+$tid = intval($mybb->input['tid']);
 
 $replyto = 0;
 if($mybb->input['replyto'])
@@ -57,7 +57,7 @@ if($mybb->input['ajax'])
 // Edit a draft post.
 $pid = 0;
 $editdraftpid = '';
-if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+if(($mybb->input['action'] == "editdraft" || $mybb->input['action'] == "do_newreply") && $mybb->input['pid'])
 {
 	$options = array(
 		"limit" => 1
@@ -106,7 +106,7 @@ add_breadcrumb($lang->nav_newreply);
 $forumpermissions = forum_permissions($fid);
 
 // See if everything is valid up to here.
-if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid)) || $post['visible'] == 0))
+if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid)) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
 {
 	error($lang->error_invalidpost);
 }
@@ -220,7 +220,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
+	if($pid)
 	{
 		$attachwhere = "pid='{$pid}'";
 	}
@@ -471,6 +471,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
 
+		// Invalidate solved captcha
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
+		{
+			$post_captcha->invalidate_captcha();
+		}
+
 		// Deciding the fate
 		if($visible == -2)
 		{
@@ -709,6 +715,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					if($pid == $quoted_post['pid'])
 					{
 						$subject = preg_replace('#RE:\s?#i', '', $quoted_post['subject']);
+						// Subject too long? Shorten it to avoid error message
+						if(my_strlen($subject) > 85)
+						{
+							$subject = my_substr($subject, 0, 82).'...';
+						}
 						$subject = "RE: ".$subject;
 					}
 					$message .= parse_quoted_message($quoted_post);
@@ -965,7 +976,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	if(!$pid && !$mybb->input['previewpost'])
 	{
-		$subject = "RE: " . $thread['subject'];
+		$subject = $thread['subject'];
+		// Subject too long? Shorten it to avoid error message
+		if(my_strlen($subject) > 85)
+		{
+			$subject = my_substr($subject, 0, 82).'...';
+		}
+		$subject = "RE: ".$subject;
 	}
 
 	$posthash = htmlspecialchars_uni($mybb->input['posthash']);
@@ -980,7 +997,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	if($forumpermissions['canpostattachments'] != 0)
 	{
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft" && $mybb->input['pid'])
+		if($pid)
 		{
 			$attachwhere = "pid='$pid'";
 		}
