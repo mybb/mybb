@@ -437,8 +437,8 @@ switch($mybb->input['action'])
 			$info = '';
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$thread = get_thread($delayedmod['tids']);
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($thread['subject'])."</a><br />";
+				$delayed_thread = get_thread($delayedmod['tids']);
+				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($delayed_thread['subject'])."</a><br />";
 			}
 			else
 			{
@@ -941,7 +941,6 @@ switch($mybb->input['action'])
 
 		$forum_cache = $cache->read("forums");
 
-		$thread = get_thread($tid);
 		$trow = alt_trow(1);
 		switch($db->type)
 		{
@@ -977,7 +976,7 @@ switch($mybb->input['action'])
 			$info = '';
 			if(strpos($delayedmod['tids'], ',') === false)
 			{
-				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">".htmlspecialchars_uni($thread['subject'])."</a><br />";
+				$info .= "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($delayedmod['tids'])."\">{$thread['subject']}</a><br />";
 			}
 			else
 			{

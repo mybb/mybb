@@ -546,7 +546,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
  */
 function generate_post_check()
 {
-	global $mybb;
+	global $mybb, $session;
 	if($mybb->user['uid'])
 	{
 		return md5($mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate']);
@@ -554,7 +554,7 @@ function generate_post_check()
 	// Guests get a special string
 	else
 	{
-		return md5($mybb->settings['bburl'].$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
+		return md5($session->useragent.$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
 	}
 }
 
@@ -1073,7 +1073,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 function fetch_page_url($url, $page)
 {
 	if($page <= 1)
- 	{
+	{
 		$find = array(
 			"-page-{page}",
 			"&amp;page={page}",
@@ -1983,7 +1983,7 @@ function update_stats($changes=array())
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
 				if(intval($changes[$counter]) != 0)
-                {
+				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
 				}
 			}
@@ -3138,22 +3138,22 @@ function get_colored_warning_level($level)
  */
 function get_ip()
 {
-    global $mybb, $plugins;
+	global $mybb, $plugins;
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 
-    if($mybb->settings['ip_forwarded_check'])
-    {
+	if($mybb->settings['ip_forwarded_check'])
+	{
 		$addresses = array();
 
-        if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-        {
-            $addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        }
-        elseif(isset($_SERVER['HTTP_X_REAL_IP']))
-        {
-            $addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
-        }
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+		{
+			$addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+		}
+		elseif(isset($_SERVER['HTTP_X_REAL_IP']))
+		{
+			$addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
+		}
 
 		if(is_array($addresses))
 		{
@@ -3168,23 +3168,23 @@ function get_ip()
 				}
 			}
 		}
-    }
+	}
 
-    if(!$ip)
-    {
-        if(isset($_SERVER['HTTP_CLIENT_IP']))
-        {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        }
-    }
+	if(!$ip)
+	{
+		if(isset($_SERVER['HTTP_CLIENT_IP']))
+		{
+			$ip = $_SERVER['HTTP_CLIENT_IP'];
+		}
+	}
 
-    if($plugins)
-    {
-    	$ip_array = array("ip" => &$ip); // Used for backwards compatibility on this hook with the updated run_hooks() function.
-        $plugins->run_hooks("get_ip", $ip_array);
-    }
+	if($plugins)
+	{
+		$ip_array = array("ip" => &$ip); // Used for backwards compatibility on this hook with the updated run_hooks() function.
+		$plugins->run_hooks("get_ip", $ip_array);
+	}
 
-    return $ip;
+	return $ip;
 }
 
 /**
@@ -4680,31 +4680,31 @@ function update_first_post($tid)
  */
 function my_strlen($string)
 {
-    global $lang;
+	global $lang;
 
-    $string = preg_replace("#&\#([0-9]+);#", "-", $string);
+	$string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
-    if(strtolower($lang->settings['charset']) == "utf-8")
-    {
-        // Get rid of any excess RTL and LTR override for they are the workings of the devil
-        $string = str_replace(dec_to_utf8(8238), "", $string);
-        $string = str_replace(dec_to_utf8(8237), "", $string);
+	if(strtolower($lang->settings['charset']) == "utf-8")
+	{
+		// Get rid of any excess RTL and LTR override for they are the workings of the devil
+		$string = str_replace(dec_to_utf8(8238), "", $string);
+		$string = str_replace(dec_to_utf8(8237), "", $string);
 
-        // Remove dodgy whitespaces
-        $string = str_replace(chr(0xCA), "", $string);
-    }
+		// Remove dodgy whitespaces
+		$string = str_replace(chr(0xCA), "", $string);
+	}
 	$string = trim($string);
 
-    if(function_exists("mb_strlen"))
-    {
-        $string_length = mb_strlen($string);
-    }
-    else
-    {
-        $string_length = strlen($string);
-    }
+	if(function_exists("mb_strlen"))
+	{
+		$string_length = mb_strlen($string);
+	}
+	else
+	{
+		$string_length = strlen($string);
+	}
 
-    return $string_length;
+	return $string_length;
 }
 
 /**
@@ -4846,29 +4846,29 @@ function unhtmlentities($string)
  */
 function unichr($c)
 {
-    if($c <= 0x7F)
+	if($c <= 0x7F)
 	{
-        return chr($c);
-    }
+		return chr($c);
+	}
 	else if($c <= 0x7FF)
 	{
-        return chr(0xC0 | $c >> 6) . chr(0x80 | $c & 0x3F);
-    }
+		return chr(0xC0 | $c >> 6) . chr(0x80 | $c & 0x3F);
+	}
 	else if($c <= 0xFFFF)
 	{
-        return chr(0xE0 | $c >> 12) . chr(0x80 | $c >> 6 & 0x3F)
-                                    . chr(0x80 | $c & 0x3F);
-    }
+		return chr(0xE0 | $c >> 12) . chr(0x80 | $c >> 6 & 0x3F)
+									. chr(0x80 | $c & 0x3F);
+	}
 	else if($c <= 0x10FFFF)
 	{
-        return chr(0xF0 | $c >> 18) . chr(0x80 | $c >> 12 & 0x3F)
-                                    . chr(0x80 | $c >> 6 & 0x3F)
-                                    . chr(0x80 | $c & 0x3F);
-    }
+		return chr(0xF0 | $c >> 18) . chr(0x80 | $c >> 12 & 0x3F)
+									. chr(0x80 | $c >> 6 & 0x3F)
+									. chr(0x80 | $c & 0x3F);
+	}
 	else
 	{
-        return false;
-    }
+		return false;
+	}
 }
 
 /**
@@ -5606,8 +5606,8 @@ function dec_to_utf8($src)
 
 	if($src < 0)
 	{
-  		return false;
- 	}
+		return false;
+	}
 	elseif($src <= 0x007f)
 	{
 		$dest .= chr($src);
@@ -5882,7 +5882,7 @@ function fetch_remote_file($url, $post_data=array())
 		curl_close($ch);
 		return $data;
 	}
- 	else if(function_exists("fsockopen"))
+	else if(function_exists("fsockopen"))
 	{
 		$url = @parse_url($url);
 		if(!$url['host'])
@@ -6274,19 +6274,19 @@ function my_rmdir_recursive($path, $ignore=array())
 		$orig_dir = $path;
 	}
 
-    if(@is_dir($path) && !@is_link($path))
-    {
-        if($dh = @opendir($path))
-        {
-            while(($file = @readdir($dh)) !== false)
-            {
-                if($file == '.' || $file == '..' || $file == '.svn' || in_array($path.'/'.$file, $ignore) || !my_rmdir_recursive($path.'/'.$file))
-                {
-                    continue;
-                }
-            }
-           @closedir($dh);
-        }
+	if(@is_dir($path) && !@is_link($path))
+	{
+		if($dh = @opendir($path))
+		{
+			while(($file = @readdir($dh)) !== false)
+			{
+				if($file == '.' || $file == '..' || $file == '.svn' || in_array($path.'/'.$file, $ignore) || !my_rmdir_recursive($path.'/'.$file))
+				{
+					continue;
+				}
+			}
+		   @closedir($dh);
+		}
 
 		// Are we done? Don't delete the main folder too and return true
 		if($path == $orig_dir)
@@ -6294,10 +6294,10 @@ function my_rmdir_recursive($path, $ignore=array())
 			return true;
 		}
 
-        return @rmdir($path);
-    }
+		return @rmdir($path);
+	}
 
-    return @unlink($path);
+	return @unlink($path);
 }
 
 /**
@@ -6622,13 +6622,13 @@ function verify_files($path=MYBB_ROOT, $count=0)
 	}
 
 	// Make sure that we're in a directory and it's not a symbolic link
-    if(@is_dir($path) && !@is_link($path))
-    {
-        if($dh = @opendir($path))
-        {
+	if(@is_dir($path) && !@is_link($path))
+	{
+		if($dh = @opendir($path))
+		{
 			// Loop through all the files/directories in this directory
-            while(($file = @readdir($dh)) !== false)
-            {
+			while(($file = @readdir($dh)) !== false)
+			{
 				if(in_array($file, $ignore) || in_array(get_extension($file), $ignore_ext))
 				{
 					continue;
@@ -6665,10 +6665,10 @@ function verify_files($path=MYBB_ROOT, $count=0)
 					}
 				}
 				unset($checksums[$file_path]);
-            }
-           @closedir($dh);
-        }
-    }
+			}
+		   @closedir($dh);
+		}
+	}
 
 	if($count == 0)
 	{
@@ -6962,8 +6962,8 @@ function gd_version()
 	if(function_exists("gd_info"))
 	{
 		$gd_info = gd_info();
-   		preg_match('/\d/', $gd_info['GD Version'], $gd);
-   		$gd_version = $gd[0];
+		preg_match('/\d/', $gd_info['GD Version'], $gd);
+		$gd_version = $gd[0];
 	}
 	else
 	{
@@ -7080,4 +7080,81 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	return true;
 }
 
+ * Handles 4 byte UTF-8 characters.
+ *
+ * This can be used to either reject strings which contain 4 byte UTF-8
+ * characters, or replace them with question marks. This is limited to UTF-8
+ * collated databases using MySQL.
+ *
+ * Original: http://www.avidheap.org/2013/a-quick-way-to-normalize-a-utf8-string-when-your-mysql-database-is-not-utf8mb4
+ *
+ * @param string The string to be checked.
+ * @param bool If false don't return the string, only the boolean result.
+ * @return mixed Return a string if the second parameter is true, boolean otherwise.
+ */
+function utf8_handle_4byte_string($input, $return=true)
+{
+	global $config;
+
+	if($config['database']['type'] != 'mysql' && $config['database']['type'] != 'mysqli')
+	{
+		if($return == true)
+		{
+			return $input;
+		}
+		return true;
+	}
+
+	$contains_4bytes = false;
+	if(!empty($input))
+	{
+		$utf8_2byte = 0xC0 /*1100 0000*/;
+		$utf8_2byte_bmask = 0xE0 /*1110 0000*/;
+
+		$utf8_3byte = 0xE0 /*1110 0000*/;
+		$utf8_3byte_bmask = 0XF0 /*1111 0000*/;
+
+		$utf8_4byte = 0xF0 /*1111 0000*/;
+		$utf8_4byte_bmask = 0xF8 /*1111 1000*/;
+
+		$sanitized = "";
+		$len = strlen($input);
+		for($i = 0; $i < $len; ++$i)
+		{
+			$mb_char = $input[$i]; // Potentially a multibyte sequence
+			$byte = ord($mb_char);
+			if(($byte & $utf8_2byte_bmask) == $utf8_2byte)
+			{
+				$mb_char .= $input[++$i];
+			}
+			elseif(($byte & $utf8_3byte_bmask) == $utf8_3byte)
+			{
+				$mb_char .= $input[++$i];
+				$mb_char .= $input[++$i];
+			}
+			elseif(($byte & $utf8_4byte_bmask) == $utf8_4byte)
+			{
+				$contains_4bytes = true;
+				// Replace with ? to avoid MySQL exception
+				$mb_char = '?';
+				$i += 3;
+			}
+
+			$sanitized .=  $mb_char;
+
+			if($contains_4bytes == true && $return == false)
+			{
+				return false;
+			}
+		}
+
+		$input = $sanitized;
+	}
+
+	if($contains_4bytes == false && $return == false)
+	{
+		return true;
+	}
+	return $input;
+}
 ?>

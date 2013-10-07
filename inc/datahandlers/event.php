@@ -62,6 +62,7 @@ class EventDataHandler extends DataHandler
 	function verify_name()
 	{
 		$name = &$this->data['name'];
+		$name = utf8_handle_4byte_string($name);
 		$name = trim($name);
 		if(!$name)
 		{
@@ -79,6 +80,7 @@ class EventDataHandler extends DataHandler
 	function verify_description()
 	{
 		$description = &$this->data['description'];
+		$description = utf8_handle_4byte_string($description);
 		$description = trim($description);
 		if(!$description)
 		{

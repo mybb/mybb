@@ -462,6 +462,13 @@ function get_admin_log_action($logitem)
 			{
 				$lang_string = 'admin_log_tools_backupdb_backup_download';
 			}
+			$logitem['data'][1] = '...'.substr($logitem['data'][1], -20);
+			break;
+		case 'admin_log_tools_backupdb_dlbackup': // Download backup
+			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
+			break;
+		case 'admin_log_tools_backupdb_delete': // Delete backup
+			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
 			break;
 		case 'admin_log_tools_optimizedb_': // Optimize DB
 			$logitem['data'][0] = @implode(', ', unserialize($logitem['data'][0]));
