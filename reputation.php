@@ -76,13 +76,13 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		output_page($error);
 		exit;
 	}
-	
+
 	// If a post has been given but post ratings have been disabled, set the post to 0. This will mean all subsequent code will think no post was given.
 	if($mybb->input['pid'] != 0 && $mybb->settings['postrep'] != 1)
 	{
 		$mybb->input['pid'] = 0;
 	}
-	
+
 	// Check if this user has reached their "maximum reputations per day" quota
 	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
@@ -99,7 +99,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			exit;
 		}
 	}
-	
+
 	// Is the user giving too much reputation to another?
 	if($mybb->usergroup['maxreputationsperuser'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
@@ -115,7 +115,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			exit;
 		}
 	}
-	
+
 	if($mybb->input['pid'])
 	{
 		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
@@ -150,7 +150,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 			{
 				$timesearch = TIME_NOW - (60 * 60 * 24);
-				$query = $db->query("				
+				$query = $db->query("
 					SELECT COUNT(p.pid) AS posts
 					FROM ".TABLE_PREFIX."reputation r
 					LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
-		
+
 		if($mybb->input['pid'] != 0)
 		{
 			$db->delete_query("reputation", "uid='{$uid}' AND adduid='".$mybb->user['uid']."' AND pid = '".intval($mybb->input['pid'])."'");
@@ -228,7 +228,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		output_page($error);
 		exit;
 	}
-	
+
 	if($mybb->input['pid'] == 0)
 	{
 		$mybb->input['comments'] = trim($mybb->input['comments']); // Trim whitespace to check for length
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		output_page($error);
 		exit;
 	}
-	
+
 	// The user is trying to give a negative reputation, but negative reps have been disabled.
 	if($mybb->input['reputation'] < 0 && $mybb->settings['negrep'] != 1)
 	{
@@ -291,6 +291,8 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		output_page($error);
 		exit;
 	}
+
+	$mybb->input['comments'] = utf8_handle_4byte_string($mybb->input['comments']);
 
 	// Build array of reputation data.
 	$reputation = array(
@@ -372,7 +374,7 @@ if($mybb->input['action'] == "add")
 		$delete_button = '';
 	}
 	$lang->user_comments = $lang->sprintf($lang->user_comments, $user['username']);
-	
+
 	if($mybb->input['pid'])
 	{
 		$post_rep_info = $lang->sprintf($lang->add_reputation_to_post, $user['username']);
@@ -798,7 +800,7 @@ if(!$mybb->input['action'])
 		$last_updated_date = my_date($mybb->settings['dateformat'], $reputation_vote['dateline']);
 		$last_updated_time = my_date($mybb->settings['timeformat'], $reputation_vote['dateline']);
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
-		
+
 		// Is this rating specific to a post?
 		if($reputation_vote['pid'] && $reputation_vote['post_link'])
 		{
@@ -842,7 +844,7 @@ if(!$mybb->input['action'])
 	{
 		eval("\$reputation_votes = \"".$templates->get("reputation_no_votes")."\";");
 	}
-	
+
 	$plugins->run_hooks("reputation_end");
 	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	output_page($reputation);
