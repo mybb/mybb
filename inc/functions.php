@@ -7080,7 +7080,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	return true;
 }
 
- * Handles 4 byte UTF-8 characters.
+/* Handles 4 byte UTF-8 characters.
  *
  * This can be used to either reject strings which contain 4 byte UTF-8
  * characters, or replace them with question marks. This is limited to UTF-8
