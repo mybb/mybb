@@ -374,14 +374,16 @@ else if($mybb->input['action'] == "edit_post")
 	if($mybb->get_input('do') == "get_post")
 	{
 		// Send our headers.
-		header("Content-type: text/xml; charset={$charset}");
+		//header("Content-type: text/xml; charset={$charset}");
+		header("Content-type: text/html; charset={$charset}");
 
 		$post['message'] = htmlspecialchars_uni($post['message']);
 
 		// Send the contents of the post.
-		eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
+		/*eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
 		echo "<?xml version=\"1.0\" encoding=\"{$charset}\"?".">";
-		echo "<form>".$inline_editor."</form>";
+		echo "<form>".$inline_editor."</form>";*/
+		echo $post['message'];
 		exit;
 	}
 	else if($mybb->get_input('do') == "update_post")
@@ -567,8 +569,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}
 
 	// Send our headers.
-	header("Content-type: text/plain; charset={$charset}");
-	echo $message;
+	header("Content-type: application/json; charset={$charset}");
+	echo json_encode(array("message" => $message));
 	exit;
 }
 else if($mybb->input['action'] == "refresh_captcha")

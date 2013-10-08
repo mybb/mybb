@@ -4,7 +4,157 @@ var Thread = {
 		$(document).ready(function(){
 			Thread.quickEdit();
 			Thread.initQuickReply();
+			Thread.initMultiQuote();
 		});
+	},
+	
+	initMultiQuote: function()
+	{
+		var quoted = $.cookie('multiquote');
+		if(quoted)
+		{
+			var post_ids = quoted.split("|");
+			
+			$.each(post_ids, function(key, value) {
+				if($("#multiquote_"+value))
+				{
+					$("#multiquote_"+value).parents("a:first").attr('class', 'postbit_multiquote_on');
+				}
+			});
+			
+			if($('#quickreply_multiquote'))
+			{
+				$('#quickreply_multiquote').show();
+			}
+		}
+		return true;
+	},
+	
+	multiQuote: function(pid)
+	{
+		var new_post_ids = new Array();
+		var quoted = $.cookie("multiquote");
+		var is_new = true;
+		if(quoted)
+		{
+			var post_ids = quoted.split("|");
+			
+			$.each(post_ids, function(key, post_id) {
+				if(post_id != pid && post_id != '')
+				{
+					new_post_ids[new_post_ids.length] = post_id;
+				}
+				else if(post_id == pid)
+				{
+					is_new = false;
+				}
+			});
+		}
+
+		if(is_new == true)
+		{
+			new_post_ids[new_post_ids.length] = pid;
+			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote');
+			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote_on');
+		}
+		else
+		{
+			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote_on');
+			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote');
+		}
+		if($('#quickreply_multiquote'))
+		{
+			if(new_post_ids.length > 0)
+			{
+				$('#quickreply_multiquote').show();
+			}
+			else
+			{
+				$('#quickreply_multiquote').hide();
+			}
+		}
+		$.cookie("multiquote", new_post_ids.join("|"));
+	},
+	
+	loadMultiQuoted: function()
+	{
+		if(use_xmlhttprequest == 1)
+		{
+			$.ajax(
+			{
+				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
+				type: 'get',
+				beforeSend: function( xhr ) {
+					$.jGrowl("Loading posts...", { openDuration: 'fast' });
+				},
+				complete: function (request, status)
+				{
+					Thread.multiQuotedLoaded(request, status);
+				}
+			});
+			
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	},
+
+	multiQuotedLoaded: function(request)
+	{
+		var json = $.parseJSON(request.responseText);
+		if(typeof response == 'object')
+		{
+			if(json.hasOwnProperty("errors"))
+			{
+				$("div.jGrowl").jGrowl("close");
+			
+				$.each(json.errors, function(i, message)
+				{
+					$.jGrowl('There was an error fetching the posts. '+message);
+				});
+				return false;
+			}
+		}
+	
+		var id = 'message';
+		/*if(typeof clickableEditor != 'undefined')
+		{
+			id = clickableEditor.textarea;
+		}*/
+		if($('#' + id).value)
+		{
+			$('#' + id).value += "\n";
+		}
+		$('#' + id).val($('#' + id).val() + json.message);
+
+		Thread.clearMultiQuoted();
+		$('#quickreply_multiquote').hide();
+		$('#quoted_ids').val('all');
+		
+		$('#message').focus();
+	},
+	
+	clearMultiQuoted: function()
+	{
+		$('#quickreply_multiquote').hide();
+		var quoted = $.cookie("multiquote");
+		if(quoted)
+		{
+			var post_ids = quoted.split("|");
+			
+			$.each(post_ids, function(key, post_id) {
+				if($("#multiquote_"+post_id).parents("a:first"))
+				{
+					$("#multiquote_"+post_id).parents("a:first").removeClass('postbit_multiquote_on');
+					$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote');
+				}
+			});
+		}
+		$.removeCookie('multiquote');
+		
+		$("div.jGrowl").jGrowl("close");
 	},
 	
 	quickEdit: function()
@@ -74,7 +224,8 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
-		//this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
+		
+		$.jGrowl("Posting...");
 		
 		$.ajax(
 		{
@@ -100,6 +251,8 @@ var Thread = {
 		{
 			if(json.hasOwnProperty("errors"))
 			{
+				$("div.jGrowl").jGrowl("close");
+				
 				$.each(json.errors, function(i, message)
 				{
 					$.jGrowl('There was an error posting your reply: '+message);
@@ -173,11 +326,7 @@ var Thread = {
 			});
 		}
 		
-		/*if(this.spinner)
-		{
-			this.spinner.destroy();
-			this.spinner = '';
-		}*/
+		$("div.jGrowl").jGrowl("close");
 	},
 	
 	showIgnoredPost: function(pid)
