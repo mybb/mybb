@@ -84,9 +84,6 @@ var Thread = {
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
 				type: 'get',
-				beforeSend: function( xhr ) {
-					$.jGrowl("Loading posts...", { openDuration: 'fast' });
-				},
 				complete: function (request, status)
 				{
 					Thread.multiQuotedLoaded(request, status);
@@ -108,8 +105,6 @@ var Thread = {
 		{
 			if(json.hasOwnProperty("errors"))
 			{
-				$("div.jGrowl").jGrowl("close");
-			
 				$.each(json.errors, function(i, message)
 				{
 					$.jGrowl('There was an error fetching the posts. '+message);
@@ -119,15 +114,18 @@ var Thread = {
 		}
 	
 		var id = 'message';
-		/*if(typeof clickableEditor != 'undefined')
+		if(typeof $('textarea').sceditor != 'undefined')
 		{
-			id = clickableEditor.textarea;
-		}*/
-		if($('#' + id).value)
-		{
-			$('#' + id).value += "\n";
+			$('textarea').sceditor('instance').insert(json.message);
 		}
-		$('#' + id).val($('#' + id).val() + json.message);
+		else
+		{
+			if($('#' + id).value)
+			{
+				$('#' + id).value += "\n";
+			}
+			$('#' + id).val($('#' + id).val() + json.message);
+		}
 
 		Thread.clearMultiQuoted();
 		$('#quickreply_multiquote').hide();
@@ -153,8 +151,6 @@ var Thread = {
 			});
 		}
 		$.removeCookie('multiquote');
-		
-		$("div.jGrowl").jGrowl("close");
 	},
 	
 	quickEdit: function()
@@ -225,7 +221,7 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
 		
-		$.jGrowl("Posting...");
+		$.jGrowl("Posting...", { openDuration: 'fast' });
 		
 		$.ajax(
 		{
