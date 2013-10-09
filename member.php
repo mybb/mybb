@@ -1202,7 +1202,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	// Is a fatal call if user has had too many tries
 	$errors = array();
-	$do_captcha = false;
 	$logins = login_attempt_check();
 
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
@@ -1244,12 +1243,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		}
 
 		$loginhandler->complete_login();
-
-		// Invalidate captcha
-		if($login_captcha !== false)
-		{
-			$login_captcha->invalidate_captcha();
-		}
 
 		$plugins->run_hooks("member_do_login_end");
 		
@@ -1311,19 +1304,48 @@ if($mybb->input['action'] == "login")
 		$redirect_url = '';
 	}
 
-	$captcha = "";
-	// Show captcha image for guests if enabled
-	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
+	$captcha = '';
+	// Show captcha image for guests if enabled and only if we have to do
+	if($mybb->settings['captchaimage'] && $do_captcha == true)
 	{
-		$randomstr = random_str(5);
-		$imagehash = md5(random_str(12));
-		$imagearray = array(
-			"imagehash" => $imagehash,
-			"imagestring" => $randomstr,
-			"dateline" => TIME_NOW
-		);
-		$db->insert_query("captcha", $imagearray);
-		eval("\$captcha = \"".$templates->get("post_captcha")."\";");
+		$correct = false;
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$login_captcha = new captcha(false, "post_captcha");
+
+		if($do_captcha == false && $login_captcha->type == 1)
+		{
+			if($login_captcha->validate_captcha() == true)
+			{
+				$correct = true;
+				$captcha = $login_captcha->build_hidden_captcha();
+			}
+		}
+
+		if(!$correct)
+		{
+			if($login_captcha->type == 1)
+			{
+				$login_captcha->build_captcha();
+			}
+			elseif($login_captcha->type == 2)
+			{
+				$login_captcha->build_recaptcha();
+			}
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
+		}
+		elseif($correct && $login_captcha->type == 2)
+		{
+			$login_captcha->build_recaptcha();
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
+		}
 	}
 
 	$username = "";

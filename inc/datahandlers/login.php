@@ -43,6 +43,8 @@ class LoginDataHandler extends DataHandler
 	public $login_data = array();
 
 	public $captcha_verified = true;
+	
+	private $captcha = false;
 
 	function verify_attempts($check_captcha = 0)
 	{
@@ -51,9 +53,8 @@ class LoginDataHandler extends DataHandler
 		$user = &$this->data;
 
 		$username = $db->escape_string(my_strtolower($user['username']));
-		$password = $db->escape_string(my_strtolower($user['password']));
 
-		$query = $db->simple_select("users", "loginattempts", "LOWER(username) = '{$password}' OR LOWER(email) = '{$username}'", array('limit' => 1));
+		$query = $db->simple_select("users", "loginattempts", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
 		$user['loginattempts'] = $db->fetch_field($query, "loginattempts");
 
 		if($check_captcha)
@@ -78,23 +79,26 @@ class LoginDataHandler extends DataHandler
 
 		if($user['imagestring'])
 		{
-			$imagehash = $db->escape_string($mybb->input['imagehash']);
-			$imagestring = $db->escape_string($mybb->input['imagestring']);
+			// Check their current captcha input - if correct, hide the captcha input area
+			require_once MYBB_ROOT.'inc/class_captcha.php';
+			$this->captcha = new captcha;
 
-			$query = $db->simple_select("captcha", "*", "imagehash = '{$imagehash}' AND imagestring = '{$imagestring}'");
-			$imgcheck = $db->fetch_array($query);
-
-			if($imgcheck['dateline'] > 0)
+			if($this->captcha->validate_captcha() == false)
 			{
-				$this->captcha_verified = true;
-				return true;
+				$correct = true;
+				$do_captcha = true;
+				
+				// CAPTCHA validation failed
+				foreach($this->captcha->get_errors() as $error)
+				{
+					$this->set_error($error);
+				}
+				return false;
 			}
 			else
 			{
-				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
-
-				$this->set_error('regimageinvalid');
-				return false;
+				$this->captcha_verified = true;
+				return true;
 			}
 		}
 		else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
@@ -284,6 +288,11 @@ class LoginDataHandler extends DataHandler
 		}
 
 		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true);
+		
+		if($this->captcha !== false)
+		{
+			$this->captcha->invalidate_captcha();
+		}
 		return true;
 	}
 }
