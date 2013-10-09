@@ -1038,7 +1038,7 @@ class postParser
 	 */
 	function mycode_parse_img_callback1($matches)
 	{
-		return $this->mycode_parse_img($matches[2])."\n";
+		return $this->mycode_parse_img($matches[2]);
 	}
 
 	/**
@@ -1272,7 +1272,7 @@ class postParser
 	*/
 	function mycode_parse_list_callback($matches)
 	{
-		return $this->mycode_parse_list($matches[1])."\n";
+		return $this->mycode_parse_list($matches[1]);
 	}
 
 	/**
@@ -1283,7 +1283,7 @@ class postParser
 	*/
 	function mycode_parse_list_callback_type($matches)
 	{
-		return $this->mycode_parse_list($matches[2], $matches[1])."\n";
+		return $this->mycode_parse_list($matches[2], $matches[1]);
 	}
 
 	/**
