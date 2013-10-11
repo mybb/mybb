@@ -940,6 +940,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   signofollow int(1) NOT NULL default '0',
   edittimelimit int(4) NOT NULL default '0',
   maxposts int(4) NOT NULL default '0',
+  showmemberlist int(4) NOT NULL default '1',
   PRIMARY KEY (gid)
 ) ENGINE=MyISAM;";
 

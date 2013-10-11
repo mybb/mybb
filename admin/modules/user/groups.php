@@ -72,7 +72,8 @@ $usergroup_permissions = array(
 	"canusesigxposts" => 0,
 	"signofollow" => 0,
 	"edittimelimit" => 0,
-	"maxposts" => 0
+	"maxposts" => 0,
+	"showmemberlist" => 1
 );
 
 // Disallow direct access to this file for security reasons
@@ -825,7 +826,8 @@ if($mybb->input['action'] == "edit")
 				"canusesigxposts" => intval($mybb->input['canusesigxposts']),
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
-				"maxposts" => intval($mybb->input['maxposts'])
+				"maxposts" => intval($mybb->input['maxposts']),
+				"showmemberlist" => intval($mybb->input['showmemberlist'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -911,6 +913,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
+	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->input['showmemberlist']));
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
 		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->input['showforumteam']));

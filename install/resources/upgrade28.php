@@ -135,6 +135,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("profilefields", "postbit");
 	}
 
+	if($db->field_exists('showmemberlist', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "showmemberlist");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -156,6 +161,7 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
+			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -175,6 +181,7 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'"); 
 			break;
 	}
 
