@@ -51,11 +51,6 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 // Get the thread details from the database.
 $thread = get_thread($mybb->get_input('tid', 1));
 
-if(!$thread)
-{
-	error($lang->error_invalidthread);
-}
-
 if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
 {
 	error($lang->error_invalidthread);
