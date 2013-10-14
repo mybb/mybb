@@ -155,12 +155,6 @@ class PMDataHandler extends DataHandler
 		// We have our recipient usernames but need to fetch user IDs
 		if(array_key_exists("to", $pm))
 		{
-			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
-			{
-				$this->set_error("no_recipients");
-				return false;
-			}
-
 			foreach(array("to", "bcc") as $recipient_type)
 			{
 				if(!is_array($pm[$recipient_type]))
@@ -168,17 +162,31 @@ class PMDataHandler extends DataHandler
 					$pm[$recipient_type] = array($pm[$recipient_type]);
 				}
 
-				$recipientUsernames = array_map('trim', $pm[$recipient_type]);
-				$recipientUsernames = array_filter($recipientUsernames);
-				$recipientUsernames = array_map(array($db, 'escape_string'), $recipientUsernames);
+				$pm[$recipient_type] = array_map('trim', $pm[$recipient_type]);
+				$pm[$recipient_type] = array_filter($pm[$recipient_type]);
+
+				// No recipients? Skip query
+				if(empty($pm[$recipient_type]))
+				{
+					if($recipient_type == 'to' && !$pm['saveasdraft'])
+					{
+						$this->set_error("no_recipients");
+						return false;
+					}
+					continue;
+				}
+
+				$recipientUsernames = array_map(array($db, 'escape_string'), $pm[$recipient_type]);
 				$recipientUsernames = "'".implode("','", $recipientUsernames)."'";
 
 				$query = $db->simple_select('users', '*', 'username IN('.$recipientUsernames.')');
 
 				$validUsernames = array();
 
-				while ($user = $db->fetch_array($query)) {
-					if ($recipient_type == "bcc") {
+				while($user = $db->fetch_array($query))
+				{
+					if($recipient_type == "bcc")
+					{
 						$user['bcc'] = 1;
 					}
 
@@ -186,8 +194,10 @@ class PMDataHandler extends DataHandler
 					$validUsernames[] = $user['username'];
 				}
 
-				foreach ($pm[$recipient_type] as $username) {
-					if (!in_array($username, $validUsernames) AND trim($username)) {
+				foreach($pm[$recipient_type] as $username)
+				{
+					if(!in_array($username, $validUsernames))
+					{
 						$invalid_recipients[] = $username;
 					}
 				}
@@ -198,34 +208,46 @@ class PMDataHandler extends DataHandler
 		{
 			foreach(array("toid", "bccid") as $recipient_type)
 			{
-				if(count($pm['toid']) <= 0)
+				if(!is_array($pm[$recipient_type]))
 				{
-					$this->set_error("no_recipients");
-					return false;
+					$pm[$recipient_type] = array($pm[$recipient_type]);
 				}
-				if(is_array($pm[$recipient_type]))
+				$pm[$recipient_type] = array_map('intval', $pm[$recipient_type]);
+				$pm[$recipient_type] = array_filter($pm[$recipient_type]);
+
+				// No recipients? Skip query
+				if(empty($pm[$recipient_type]))
 				{
-					$recipientUids = array_map('intval', $pm[$recipient_type]);
-					$recipientUids = array_filter($recipientUids);
-					$recipientUids = "'".implode("','", $recipientUids)."'";
+					if($recipient_type == 'toid' && !$pm['saveasdraft'])
+					{
+						$this->set_error("no_recipients");
+						return false;
+					}
+					continue;
+				}
 
-					$query = $db->simple_select('users', '*', 'uid IN('.$recipientUids.')');
+				$recipientUids = "'".implode("','", $pm[$recipient_type])."'";
 
-					$validUids = array();
+				$query = $db->simple_select('users', '*', 'uid IN('.$recipientUids.')');
 
-					while ($user = $db->fetch_array($query)) {
-						if ($recipient_type == "bcc") {
-							$user['bcc'] = 1;
-						}
+				$validUids = array();
 
-						$recipients[] = $user;
-						$validUids[] = $user['uid'];
+				while($user = $db->fetch_array($query))
+				{
+					if($recipient_type == "bcc")
+					{
+						$user['bcc'] = 1;
 					}
 
-					foreach ($pm[$recipient_type] as $uid) {
-						if (!in_array($uid, $validUids) AND trim($uid)) {
-							$invalid_recipients[] = $uid;
-						}
+					$recipients[] = $user;
+					$validUids[] = $user['uid'];
+				}
+
+				foreach($pm[$recipient_type] as $uid)
+				{
+					if(!in_array($uid, $validUids))
+					{
+						$invalid_recipients[] = $uid;
 					}
 				}
 			}
