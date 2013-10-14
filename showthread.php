@@ -51,6 +51,11 @@ if(!empty($mybb->input['pid']) && !$mybb->input['tid'])
 // Get the thread details from the database.
 $thread = get_thread($mybb->input['tid']);
 
+if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
+{
+	error($lang->error_invalidthread);
+}
+
 // Get thread prefix if there is one.
 $thread['threadprefix'] = '';
 $thread['displayprefix'] = '';
@@ -63,11 +68,6 @@ if($thread['prefix'] != 0)
 		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
 		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 	}
-}
-
-if(substr($thread['closed'], 0, 6) == "moved|")
-{
-	$thread['tid'] = 0;
 }
 
 $reply_subject = $parser->parse_badwords($thread['subject']);
@@ -102,7 +102,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(!$thread || ($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
 	error($lang->error_invalidthread);
 }
