@@ -56,6 +56,11 @@ if(!$thread)
 	error($lang->error_invalidthread);
 }
 
+if(!$thread || substr($thread['closed'], 0, 6) == "moved|")
+{
+	error($lang->error_invalidthread);
+}
+
 // Get thread prefix if there is one.
 $thread['threadprefix'] = '';
 $thread['displayprefix'] = '';
@@ -68,11 +73,6 @@ if($thread['prefix'] != 0)
 		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
 		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 	}
-}
-
-if(substr($thread['closed'], 0, 6) == "moved|")
-{
-	$thread['tid'] = 0;
 }
 
 $reply_subject = $parser->parse_badwords($thread['subject']);
