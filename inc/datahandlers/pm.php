@@ -157,6 +157,10 @@ class PMDataHandler extends DataHandler
 		{
 			foreach(array("to", "bcc") as $recipient_type)
 			{
+				if(!isset($pm[$recipient_type]))
+				{
+					$pm[$recipient_type] = array();
+				}
 				if(!is_array($pm[$recipient_type]))
 				{
 					$pm[$recipient_type] = array($pm[$recipient_type]);
@@ -208,6 +212,10 @@ class PMDataHandler extends DataHandler
 		{
 			foreach(array("toid", "bccid") as $recipient_type)
 			{
+				if(!isset($pm[$recipient_type]))
+				{
+					$pm[$recipient_type] = array();
+				}
 				if(!is_array($pm[$recipient_type]))
 				{
 					$pm[$recipient_type] = array($pm[$recipient_type]);
@@ -234,7 +242,7 @@ class PMDataHandler extends DataHandler
 
 				while($user = $db->fetch_array($query))
 				{
-					if($recipient_type == "bcc")
+					if($recipient_type == "bccid")
 					{
 						$user['bcc'] = 1;
 					}
