@@ -198,14 +198,12 @@ class MyLanguage
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
 		{
-			$ext = my_strtolower(get_extension($lang));
-			if($lang != "." && $lang != ".." && $ext == "php")
+			if($lang != "." && $lang != "..")
 			{
-				$lname = str_replace(".".$ext, "", $lang);
-				require $this->path."/".$lname."/".$lang;
+				require $this->path."/".$lang."/".$lang.".php";
 				if(!$admin || ($admin && $langinfo['admin']))
 				{
-					$languages[$lname] = $langinfo['name'];
+					$languages[$lang] = $langinfo['name'];
 				}
 			}
 		}
