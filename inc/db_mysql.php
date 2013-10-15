@@ -998,7 +998,11 @@ class DB_MySQL
 		{
 			$table_type = my_strtoupper($status['Type']);
 		}
-		if($version >= '3.23.23' && $table_type == 'MYISAM')
+		if($version >= '3.23.23' && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
+		{
+			return true;
+		}
+		elseif($version >= '5.6' && $table_type == 'INNODB')
 		{
 			return true;
 		}
