@@ -198,7 +198,7 @@ class MyLanguage
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
 		{
-			if($lang != "." && $lang != "..")
+			if($lang != "." && $lang != ".." && $this->language_exists($lang))
 			{
 				require $this->path."/".$lang."/".$lang.".php";
 				if(!$admin || ($admin && $langinfo['admin']))
