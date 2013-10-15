@@ -1945,11 +1945,8 @@ if($mybb->input['action'] == "merge")
 
 			// Merging Reputation
 			// First, let's change all the details over to our new user...
-			$rep_update = array(
-				"adduid" => $destination_user['uid'],
-				"uid" => $destination_user['uid']
-			);
-			$db->update_query("reputation", $rep_update, "adduid = '".$source_user['uid']."' OR uid = '".$source_user['uid']."'");
+			$db->update_query("reputation", array("adduid" => $destination_user['uid']), "adduid = '".$source_user['uid']."'");
+			$db->update_query("reputation", array("uid" => $destination_user['uid']), "uid = '".$source_user['uid']."'");
 
 			// Now that all the repuation is merged, figure out what to do with this user's comments...
 			$options = array(
