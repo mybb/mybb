@@ -240,7 +240,7 @@ switch($action)
 		check_forum_password_archive($forum['fid']);
 		
 		$useronly = "";
-		if($forumpermissions['canonlyviewownthreads'] == 1)
+		if($forumpermissions['canonlyviewownthreads'] == 1 || !$mybb->user['uid'])
 		{
 			$useronly = "AND uid={$mybb->user['uid']}";
 		}
