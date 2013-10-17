@@ -63,8 +63,6 @@ class PMDataHandler extends DataHandler
 	{
 		$subject = &$this->data['subject'];
 
-		$subject = utf8_handle_4byte_string($subject);
-
 		// Subject is over 85 characters, too long.
 		if(my_strlen($subject) > 85)
 		{
@@ -88,8 +86,6 @@ class PMDataHandler extends DataHandler
 	function verify_message()
 	{
 		$message = &$this->data['message'];
-
-		$message = utf8_handle_4byte_string($message);
 
 		// No message, return an error.
 		if(trim_blank_chrs($message) == '')

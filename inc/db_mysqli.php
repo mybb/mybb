@@ -860,6 +860,17 @@ class DB_MySQLi
 	 */
 	function escape_string($string)
 	{
+		if($this->db_encoding == 'utf8')
+		{
+			// Remove characters with more than 3 bytes because MySQL can't handle them
+			$string = preg_replace("#.[\\x80-\\xBF]{3,}#", "?", $string);
+		}
+		elseif($this->db_encoding == 'utf8mb4')
+		{
+			// Remove characters with more than 4 bytes because MySQL can't handle them
+			$string = preg_replace("#.[\\x80-\\xBF]{4,}#", "?", $string);
+		}
+
 		if(function_exists("mysqli_real_escape_string") && $this->read_link)
 		{
 			$string = mysqli_real_escape_string($this->read_link, $string);
@@ -1005,11 +1016,11 @@ class DB_MySQLi
 		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		$table_type = my_strtoupper($status['Engine']);
-		if($version >= '3.23.23' && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
+		if(version_compare($version, '3.23.23', '>=') && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
 		{
 			return true;
 		}
-		elseif($version >= '5.6' && $table_type == 'INNODB')
+		elseif(version_compare($version, '5.6', '>=') && $table_type == 'INNODB')
 		{
 			return true;
 		}
@@ -1026,7 +1037,7 @@ class DB_MySQLi
 	{
 		$version = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if($version >= '4.0.1' && $supports_fulltext == true)
+		if(version_compare($version, '4.0.1', '>=') && $supports_fulltext == true)
 		{
 			return true;
 		}
@@ -1251,6 +1262,7 @@ class DB_MySQLi
 			'latin5' => 'ISO 8859-9 Turkish',
 			'armscii8' => 'ARMSCII-8 Armenian',
 			'utf8' => 'UTF-8 Unicode',
+			'utf8mb4' => '4-Byte UTF-8 Unicode (requires MySQL 5.5.3 or above)',
 			'ucs2' => 'UCS-2 Unicode',
 			'cp866' => 'DOS Russian',
 			'keybcs2' => 'DOS Kamenicky Czech-Slovak',
@@ -1299,6 +1311,7 @@ class DB_MySQLi
 			'latin5' => 'latin5_turkish_ci',
 			'armscii8' => 'armscii8_general_ci',
 			'utf8' => 'utf8_general_ci',
+			'utf8mb4' => 'utf8mb4_general_ci',
 			'ucs2' => 'ucs2_general_ci',
 			'cp866' => 'cp866_general_ci',
 			'keybcs2' => 'keybcs2_general_ci',

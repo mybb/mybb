@@ -292,8 +292,6 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		exit;
 	}
 
-	$mybb->input['comments'] = utf8_handle_4byte_string($mybb->input['comments']);
-
 	// Build array of reputation data.
 	$reputation = array(
 		"uid" => $uid,

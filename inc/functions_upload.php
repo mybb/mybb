@@ -628,7 +628,6 @@ function upload_file($file, $path, $filename="")
 	}
 
 	$upload['original_filename'] = preg_replace("#/$#", "", $file['name']); // Make the filename safe
-	$upload['original_filename'] = utf8_handle_4byte_string($upload['original_filename']);
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 

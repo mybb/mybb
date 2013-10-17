@@ -659,7 +659,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	header("Content-type: text/xml; charset={$charset}");
 
-	if(empty($username) || utf8_handle_4byte_string($username, false) == false)
+	if(empty($username))
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;

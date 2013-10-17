@@ -155,8 +155,6 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	}
 	else
 	{
-		$mybb->input['reason'] = utf8_handle_4byte_string($mybb->input['reason']);
-
 		$reportedpost = array(
 			"pid" => intval($mybb->input['pid']),
 			"tid" => $thread['tid'],
