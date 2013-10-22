@@ -2613,33 +2613,33 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  */
 function build_mycode_inserter($bind="message")
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $smiliecount,$cache;
+	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $smiliecount, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(
-			"Bold" => "editor_Bold",
-			"Italic" => "editor_Italic",
-			"Underline" => "editor_Underline",
-			"Strikethrough" => "editor_Strikethrough",
-			"Subscript" => "editor_Subscript",
-			"Superscript" => "editor_Superscript",
-			"Align left" => "editor_Alignleft",
-			"Center" => "editor_Center",
-			"Align right" => "editor_Alignright",
-			"Justify" => "editor_Justify",
-			"Font Name" => "editor_FontName",
-			"Font Size" => "editor_FontSize",
-			"Font Color" => "editor_FontColor",
-			"Remove Formatting" => "editor_RemoveFormatting",
-			"Cut" => "editor_Cut",
+			"Bold" => "editor_bold",
+			"Italic" => "editor_italic",
+			"Underline" => "editor_underline",
+			"Strikethrough" => "editor_strikethrough",
+			"Subscript" => "editor_subscript",
+			"Superscript" => "editor_superscript",
+			"Align left" => "editor_alignleft",
+			"Center" => "editor_center",
+			"Align right" => "editor_alignright",
+			"Justify" => "editor_justify",
+			"Font Name" => "editor_fontname",
+			"Font Size" => "editor_fontsize",
+			"Font Color" => "editor_fontcolor",
+			"Remove Formatting" => "editor_removeformatting",
+			"Cut" => "editor_cut",
 			"Your browser does not allow the cut command. Please use the keyboard shortcut Ctrl/Cmd-X" => "editor_cutnosupport",
-			"Copy" => "editor_Copy",
+			"Copy" => "editor_copy",
 			"Your browser does not allow the copy command. Please use the keyboard shortcut Ctrl/Cmd-C" => "editor_copynosupport",
-			"Paste" => "editor_Paste",
+			"Paste" => "editor_paste",
 			"Your browser does not allow the paste command. Please use the keyboard shortcut Ctrl/Cmd-V" => "editor_pastenosupport",
 			"Paste your text inside the following box:" => "editor_pasteentertext",
-			"PasteText" => "editor_PasteText",
+			"PasteText" => "editor_pastetext",
 			"Numbered list" => "editor_numlist",
 			"Bullet list" => "editor_bullist",
 			"Undo" => "editor_undo",
@@ -2687,7 +2687,7 @@ function build_mycode_inserter($bind="message")
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
 			$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
 
-			if($i <count($editor_lang_strings))
+			if($i < count($editor_lang_strings))
 			{
 				$editor_language .= ",";
 			}
