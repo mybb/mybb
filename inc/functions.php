@@ -2067,7 +2067,7 @@ function update_forum_counters($fid, $changes=array())
 			}
 
 			// Less than 0? That's bad
-			if(!$update_query[$counter])
+			if($update_query[$counter] < 0)
 			{
 				$update_query[$counter] = 0;
 			}
@@ -2081,73 +2081,74 @@ function update_forum_counters($fid, $changes=array())
 	}
 
 	// Guess we should update the statistics too?
-	if(isset($update_query['threads']) || isset($update_query['posts']) || isset($update_query['unapprovedthreads']) || isset($update_query['unapprovedposts']) || isset($update_query['deletedthreads']))
+	$new_stats = array();
+	if(array_key_exists('threads', $update_query))
 	{
-		$new_stats = array();
-		if(array_key_exists('threads', $update_query))
+		$threads_diff = $update_query['threads'] - $forum['threads'];
+		if($threads_diff > -1)
 		{
-			$threads_diff = $update_query['threads'] - $forum['threads'];
-			if($threads_diff > -1)
-			{
-				$new_stats['numthreads'] = "+{$threads_diff}";
-			}
-			else
-			{
-				$new_stats['numthreads'] = "{$threads_diff}";
-			}
+			$new_stats['numthreads'] = "+{$threads_diff}";
 		}
+		else
+		{
+			$new_stats['numthreads'] = "{$threads_diff}";
+		}
+	}
 
-		if(array_key_exists('unapprovedthreads', $update_query))
+	if(array_key_exists('unapprovedthreads', $update_query))
+	{
+		$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
+		if($unapprovedthreads_diff > -1)
 		{
-			$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
-			if($unapprovedthreads_diff > -1)
-			{
-				$new_stats['numunapprovedthreads'] = "+{$unapprovedthreads_diff}";
-			}
-			else
-			{
-				$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
-			}
+			$new_stats['numunapprovedthreads'] = "+{$unapprovedthreads_diff}";
 		}
+		else
+		{
+			$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
+		}
+	}
 
-		if(array_key_exists('posts', $update_query))
+	if(array_key_exists('posts', $update_query))
+	{
+		$posts_diff = $update_query['posts'] - $forum['posts'];
+		if($posts_diff > -1)
 		{
-			$posts_diff = $update_query['posts'] - $forum['posts'];
-			if($posts_diff > -1)
-			{
-				$new_stats['numposts'] = "+{$posts_diff}";
-			}
-			else
-			{
-				$new_stats['numposts'] = "{$posts_diff}";
-			}
+			$new_stats['numposts'] = "+{$posts_diff}";
 		}
+		else
+		{
+			$new_stats['numposts'] = "{$posts_diff}";
+		}
+	}
 
-		if(array_key_exists('unapprovedposts', $update_query))
+	if(array_key_exists('unapprovedposts', $update_query))
+	{
+		$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
+		if($unapprovedposts_diff > -1)
 		{
-			$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
-			if($unapprovedposts_diff > -1)
-			{
-				$new_stats['numunapprovedposts'] = "+{$unapprovedposts_diff}";
-			}
-			else
-			{
-				$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
-			}
+			$new_stats['numunapprovedposts'] = "+{$unapprovedposts_diff}";
 		}
+		else
+		{
+			$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
+		}
+	}
 
-		if(array_key_exists('deletedthreads', $update_query))
+	if(array_key_exists('deletedthreads', $update_query))
+	{
+		$deletedthreads_diff = $update_query['deletedthreads'] - $forum['deletedthreads'];
+		if($unapprovedposts_diff > -1)
 		{
-			$deletedthreads_diff = $update_query['deletedthreads'] - $forum['deletedthreads'];
-			if($unapprovedposts_diff > -1)
-			{
-				$new_stats['deletedthreads'] = "+{$deletedthreads_diff}";
-			}
-			else
-			{
-				$new_stats['deletedthreads'] = "{$deletedthreads_diff}";
-			}
+			$new_stats['deletedthreads'] = "+{$deletedthreads_diff}";
 		}
+		else
+		{
+			$new_stats['deletedthreads'] = "{$deletedthreads_diff}";
+		}
+	}
+
+	if(!empty($new_stats))
+	{
 		update_stats($new_stats);
 	}
 
