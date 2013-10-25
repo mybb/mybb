@@ -57,6 +57,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
@@ -85,6 +90,11 @@ class Moderation
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
+		}
+
+		if(empty($tids))
+		{
+			return false;
 		}
 
 		// Make sure we only have valid values
@@ -117,6 +127,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
@@ -146,6 +161,11 @@ class Moderation
 
 		// Delete the redirects
 		$tid = intval($tid);
+		if(empty($tid))
+		{
+			return false;
+		}
+
 		$query = $db->simple_select('threads', 'tid', "closed='moved|$tid'");
 		while($redirect_tid = $db->fetch_field($query, 'tid'))
 		{
@@ -166,42 +186,42 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		$tid = intval($tid);
+
 		$plugins->run_hooks("class_moderation_delete_thread_start", $tid);
 
 		$thread = get_thread($tid);
+		if(!$thread)
+		{
+			return false;
+		}
+		$forum = get_forum($thread['fid']);
 
 		$userposts = array();
 
 		// Find the pid, uid, visibility, and forum post count status
-		$query = $db->query("
-			SELECT p.pid, p.uid, p.visible, f.usepostcounts
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
-			WHERE p.tid='{$tid}'
-		");
+		$query = $db->simple_select('posts', 'pid, uid, visible', "tid='{$tid}'");
 		$pids = array();
-		$num_unapproved_posts = $num_approved_posts = $usepostcounts = 0;
+		$num_unapproved_posts = $num_approved_posts = $num_deleted_posts = 0;
 		while($post = $db->fetch_array($query))
 		{
 			$pids[] = $post['pid'];
-			$usepostcounts = $post['usepostcounts'];
 
 			if(!function_exists("remove_attachments"))
 			{
-				require MYBB_ROOT."inc/functions_upload.php";
+				require_once MYBB_ROOT."inc/functions_upload.php";
 			}
 
 			// Remove attachments
 			remove_attachments($post['pid']);
 
 			// If the post is unapproved, count it!
-			if($post['visible'] == 0 || $thread['visible'] == 0)
+			if(($post['visible'] == 0 && $thread['visible'] != -1) || $thread['visible'] == 0)
 			{
 				$num_unapproved_posts++;
 			}
-			elseif($post['visible'] == -1)
+			elseif($post['visible'] == -1 || $thread['visible'] == -1)
 			{
-				// Do not count soft deleted posts
+				$num_deleted_posts++;
 			}
 			else
 			{
@@ -217,13 +237,13 @@ class Moderation
 		}
 
 		// Remove post count from users
-		if($usepostcounts != 0)
+		if($forum['usepostcounts'] != 0 && $thread['visible'] == 1)
 		{
 			if(!empty($userposts))
 			{
 				foreach($userposts as $uid => $subtract)
 				{
-					$db->update_query("users", array('postnum' => "postnum-{$subtract}"), "uid='".intval($uid)."'", 1, true);
+					update_user_counters($uid, array('postnum' => "-{$subtract}"));
 				}
 			}
 		}
@@ -251,7 +271,8 @@ class Moderation
 
 		$updated_counters = array(
 			"posts" => "-{$num_approved_posts}",
-			"unapprovedposts" => "-{$num_unapproved_posts}"
+			"unapprovedposts" => "-{$num_unapproved_posts}",
+			"deletedposts" => "-{$num_deleted_posts}"
 		);
 
 		if($thread['visible'] == 1)
@@ -266,9 +287,27 @@ class Moderation
 		{
 			$updated_counters['unapprovedthreads'] = -1;
 		}
+		
+		if(strpos($thread['closed'], 'moved|') !== false)
+		{
+			// Redirect
+			if($thread['visible'] == 1)
+			{
+				$updated_counters['posts'] = -1;
+			}
+			elseif($thread['visible'] == -1)
+			{
+				$updated_counters['deletedposts'] = -1;
+			}
+			else
+			{
+				$updated_counters['unapprovedposts'] = -1;
+			}
+		}
 
 		// Update forum count
 		update_forum_counters($thread['fid'], $updated_counters);
+		update_forum_lastpost($thread['fid']);
 
 		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
@@ -286,6 +325,11 @@ class Moderation
 		global $db, $plugins;
 
 		$pid = intval($pid);
+
+		if(empty($pid))
+		{
+			return false;
+		}
 
 		$plugins->run_hooks("class_moderation_delete_poll", $pid);
 
@@ -314,10 +358,15 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
-		$tid_list = $forum_counters = $posts_to_approve = array();
+		$tid_list = $forum_counters = $user_counters = $posts_to_approve = array();
 
 		foreach($tids as $tid)
 		{
@@ -330,18 +379,20 @@ class Moderation
 
 			$forum = get_forum($thread['fid']);
 
-			if(!isset($forum_counters[$forum['fid']]['num_threads']))
+			if(!isset($forum_counters[$forum['fid']]))
 			{
-				$forum_counters[$forum['fid']]['num_threads'] = 0;
-			}
-
-			if(!isset($forum_counters[$forum['fid']]['num_posts']))
-			{
-				$forum_counters[$forum['fid']]['num_posts'] = 0;
+				$forum_counters[$forum['fid']] = array(
+					'num_posts' => 0,
+					'num_threads' => 0,
+					'num_deleted_posts' => 0,
+					'num_unapproved_posts' => 0
+				);
 			}
 
 			++$forum_counters[$forum['fid']]['num_threads'];
 			$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
+			$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['deletedposts'];
+			$forum_counters[$forum['fid']]['num_unapproved_posts'] += $thread['deletedposts']+$thread['replies']+1;
 
 			if($forum['usepostcounts'] != 0)
 			{
@@ -349,7 +400,11 @@ class Moderation
 				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
-					$db->update_query("users", array('postnum' => "postnum+{$counter['posts']}"), "uid='".$counter['uid']."'", 1, true);
+					if(!isset($user_counters[$counter['uid']]))
+					{
+						$user_counters[$counter['uid']] = 0;
+					}
+					$user_counters[$counter['uid']] += $counter['posts'];
 				}
 			}
 			$posts_to_approve[] = $thread['firstpost'];
@@ -380,7 +435,10 @@ class Moderation
 			{
 				$this->approve_threads($redirect_tids);
 			}
-			$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_approve).")");
+			if(!empty($posts_to_approve))
+			{
+				$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_approve).")");
+			}
 
 			$plugins->run_hooks("class_moderation_approve_threads", $tids);
 
@@ -393,9 +451,19 @@ class Moderation
 						"threads" => "+{$counters['num_threads']}",
 						"unapprovedthreads" => "-{$counters['num_threads']}",
 						"posts" => "+{$counters['num_posts']}",
-						"unapprovedposts" => "-{$counters['num_posts']}"
+						"unapprovedposts" => "-{$counters['num_unapproved_posts']}",
+						"deletedposts" => "+{$counters['num_deleted_posts']}"
 					);
 					update_forum_counters($fid, $update_array);
+					update_forum_lastpost($fid);
+				}
+			}
+			
+			if(!empty($user_counters))
+			{
+				foreach($user_counters as $uid => $counter)
+				{
+					update_user_counters($uid, array('postnum' => "+{$counter}"));
 				}
 			}
 		}
@@ -417,6 +485,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
@@ -429,7 +502,7 @@ class Moderation
 			$comma = ",";
 		}
 
-		$forum_counters = $posts_to_unapprove = array();
+		$forum_counters = $user_counters = $posts_to_unapprove = array();
 
 		foreach($tids as $tid)
 		{
@@ -438,29 +511,32 @@ class Moderation
 
 			if($thread['visible'] == 1 || $thread['visible'] == -1)
 			{
-				if(!isset($forum_counters[$forum['fid']]['num_threads']))
+				if(!isset($forum_counters[$forum['fid']]))
 				{
-					$forum_counters[$forum['fid']]['num_threads'] = 0;
+					$forum_counters[$forum['fid']] = array(
+						'num_threads' => 0,
+						'num_posts' => 0,
+						'num_unapprovedthreads' => 0,
+						'num_unapprovedposts' => 0,
+						'num_deletedthreads' => 0,
+						'num_deletedposts' => 0
+					);
 				}
 
-				if(!isset($forum_counters[$forum['fid']]['num_posts']))
-				{
-					$forum_counters[$forum['fid']]['num_posts'] = 0;
-				}
-
-				if(!isset($forum_counters[$forum['fid']]['deletedthreads']))
-				{
-					$forum_counters[$forum['fid']]['deletedthreads'] = 0;
-				}
+				++$forum_counters[$forum['fid']]['num_unapprovedthreads'];
+				$forum_counters[$forum['fid']]['num_unapprovedposts'] += $thread['replies']+$thread['deletedposts']+1;
 
 				if($thread['visible'] == 1)
 				{
 					++$forum_counters[$forum['fid']]['num_threads'];
 					$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Add implied invisible to count
+					$forum_counters[$forum['fid']]['num_deletedposts'] += $thread['deletedposts'];
 				}
 				else
 				{
-					++$forum_counters[$forum['fid']]['deletedthreads'];
+					++$forum_counters[$forum['fid']]['num_deletedthreads'];
+					$forum_counters[$forum['fid']]['num_deletedposts'] += $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1; // Add implied invisible to count
+					$forum_counters[$forum['fid']]['num_unapprovedposts'] += $thread['unapprovedposts'];
 				}
 
 				// On unapproving thread update user post counts
@@ -469,7 +545,11 @@ class Moderation
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
-						$db->update_query("users", array('postnum' => "postnum-{$counter['posts']}"), "uid='".$counter['uid']."'", 1, true);
+						if(!isset($user_counters[$counter['uid']]))
+						{
+							$user_counters[$counter['uid']] = 0;
+						}
+						$user_counters[$counter['uid']] -= $counter['posts'];
 					}
 				}
 			}
@@ -489,9 +569,12 @@ class Moderation
 		}
 		if(!empty($redirect_tids))
 		{
-			$this->upapprove_threads($redirect_tids);
+			$this->unapprove_threads($redirect_tids);
 		}
-		$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_unapprove).")");
+		if(!empty($posts_to_unapprove))
+		{
+			$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_unapprove).")");
+		}
 
 		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);
 
@@ -502,12 +585,22 @@ class Moderation
 				// Update stats
 				$update_array = array(
 					"threads" => "-{$counters['num_threads']}",
-					"unapprovedthreads" => "+{$counters['num_threads']}",
+					"unapprovedthreads" => "+{$counters['num_unapprovedthreads']}",
 					"posts" => "-{$counters['num_posts']}",
-					"unapprovedposts" => "+{$counters['num_posts']}",
-					"deletedthreads" => "-{$counters['deletedthreads']}"
+					"unapprovedposts" => "+{$counters['num_unapprovedposts']}",
+					"deletedthreads" => "-{$counters['num_deletedthreads']}",
+					"deletedposts" => "-{$counters['num_deletedposts']}"
 				);
 				update_forum_counters($fid, $update_array);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
 
@@ -528,17 +621,22 @@ class Moderation
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
 		$pid = intval($pid);
 		$query = $db->query("
-			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts, t.visible as threadvisible
+			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, t.visible as threadvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
 			WHERE p.pid='$pid'
 		");
 		$post = $db->fetch_array($query);
-		// If post counts enabled in this forum and it hasn't already been unapproved, remove 1
-		if($post['usepostcounts'] != 0 && $post['visible'] != -1 && $post['visible'] != 0 && $post['threadvisible'] != 0)
+		if(!$post)
 		{
-			$db->update_query("users", array("postnum" => "postnum-1"), "uid='{$post['uid']}'", 1, true);
+			return false;
+		}
+
+		$forum = get_forum($post['fid']);
+		// If post counts enabled in this forum and it hasn't already been unapproved, remove 1
+		if($forum['usepostcounts'] != 0 && $post['visible'] != -1 && $post['visible'] != 0 && $post['threadvisible'] != 0 && $post['threadvisible'] != -1)
+		{
+			update_user_counters($post['uid'], array('postnum' => "-1"));
 		}
 
 		if(!function_exists("remove_attachments"))
@@ -578,26 +676,30 @@ class Moderation
 		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
 
 		update_thread_counters($post['tid'], $update_array);
+		update_last_post($post['tid']);
 
 		// Update unapproved post count
-		if($post['visible'] == 0 || $thread['visible'] == 0)
+		if(($post['visible'] == 0 && $post['threadvisible'] != -1) || $post['threadvisible'] == 0)
 		{
 			$update_array = array(
 				"unapprovedposts" => "-1"
 			);
 		}
-		elseif($post['visible'] == -1 || $thread['deleted'] == 0)
+		elseif($post['visible'] == -1 || $post['threadvisible'] == 0)
 		{
-			$update_array = array();
+			$update_array = array(
+				"deletedposts" => "-1"
+			);
 		}
 		else
 		{
 			$update_array = array(
-				"replies" => "-1"
+				"posts" => "-1"
 			);
 		}
 
 		update_forum_counters($post['fid'], $update_array);
+		update_forum_lastpost($post['fid']);
 
 		return true;
 	}
@@ -616,7 +718,11 @@ class Moderation
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
-		$tid = intval($tid);
+
+		if(empty($pids) || count($pids) < 2)
+		{
+			return false;
+		}
 
 		$pidin = implode(',', $pids);
 		$attachment_count = 0;
@@ -624,18 +730,28 @@ class Moderation
 		$first = 1;
 		// Get the messages to be merged
 		$query = $db->query("
-			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, p.message, f.usepostcounts, t.visible AS threadvisible, t.replies AS threadreplies, t.firstpost AS threadfirstpost, t.unapprovedposts AS threadunapprovedposts
+			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, p.message, t.visible AS threadvisible, t.replies AS threadreplies, t.firstpost AS threadfirstpost, t.unapprovedposts AS threadunapprovedposts, COUNT(a.aid) AS attachmentcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
 			WHERE p.pid IN($pidin)
+			GROUP BY p.pid
 			ORDER BY p.dateline ASC
 		");
 		$message = '';
-		$threads = $forum_counters = $thread_counters = array();
+		$threads = $forum_counters = $thread_counters = $user_counters = array();
 		while($post = $db->fetch_array($query))
 		{
 			$threads[$post['tid']] = $post['tid'];
+			if(!isset($thread_counters[$post['tid']]))
+			{
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0,
+					'unapprovedposts' => 0,
+					'deletedposts' => 0,
+					'attachmentcount' => 0
+				);
+			}
 			if($first == 1)
 			{ // all posts will be merged into this one
 				$masterpid = $post['pid'];
@@ -656,64 +772,54 @@ class Moderation
 					$message .= "[hr]{$post['message']}";
 				}
 
+				if(!isset($forum_counters[$post['fid']]))
+				{
+					$forum_counters[$post['fid']] = array(
+						'num_posts' => 0,
+						'unapprovedposts' => 0,
+						'deletedposts' => 0
+					);
+				}
+
 				if($post['visible'] == 1)
 				{
-					// Subtract 1 approved post from post's thread
-					if(!isset($thread_counters[$post['tid']]['replies']))
-					{
-						$thread_counters[$post['tid']]['replies'] = 0;
-					}
 					--$thread_counters[$post['tid']]['replies'];
-					// Subtract 1 approved post from post's forum
-					if($post['threadvisible'] == 1)
-					{
-						if(!isset($forum_counters[$post['fid']]['num_posts']))
-						{
-							$forum_counters[$post['fid']]['num_posts'] = 0;
-						}
-						--$forum_counters[$post['fid']]['num_posts'];
-					}
-					elseif($post['threadvisible'] == 0)
-					{
-						if(!isset($forum_counters[$post['fid']]['unapprovedposts']))
-						{
-							$forum_counters[$post['fid']]['unapprovedposts'] = 0;
-						}
-						--$forum_counters[$post['fid']]['unapprovedposts'];
-					}
+					$forum = get_forum($post['fid']);
 					// Subtract 1 from user's post count
-					if($post['usepostcounts'] != 0)
+					if($forum['usepostcounts'] != 0 && $post['threadvisible'] == 1)
 					{
+						if(!isset($user_counters[$post['uid']]))
+						{
+							$user_counters[$post['uid']] = 0;
+						}
 						// Update post count of the user of the merged posts
-						$db->update_query("users", array("postnum" => "postnum-1"), "uid='{$post['uid']}'", 1, true);
+						--$user_counters[$post['uid']];
 					}
 				}
 				elseif($post['visible'] == 0)
 				{
 					// Subtract 1 unapproved post from post's thread
-					if(!isset($thread_counters[$post['tid']]['unapprovedposts']))
-					{
-						$thread_counters[$post['tid']]['unapprovedposts'] = 0;
-					}
 					--$thread_counters[$post['tid']]['unapprovedposts'];
-					if($post['threadvisible'] != -1)
-					{
-						// Subtract 1 unapproved post from post's forum
-						if(!isset($forum_counters[$post['fid']]['unapprovedposts']))
-						{
-							$forum_counters[$post['fid']]['unapprovedposts'] = 0;
-						}
-						--$forum_counters[$post['fid']]['unapprovedposts'];
-					}
 				}
 				elseif($post['visible'] == -1)
 				{
 					// Subtract 1 deleted post from post's thread
-					if(!isset($thread_counters[$post['tid']]['deletedposts']))
-					{
-						$thread_counters[$post['tid']]['deletedposts'] = 0;
-					}
 					--$thread_counters[$post['tid']]['deletedposts'];
+				}
+				$thread_counters[$post['tid']]['attachmentcount'] -= $post['attachmentcount'];
+
+				// Subtract 1 post from post's forum
+				if($post['threadvisible'] == 1 && $post['visible'] == 1)
+				{
+					--$forum_counters[$post['fid']]['num_posts'];
+				}
+				elseif($post['threadvisible'] == 0 || ($post['visible'] == 0 && $post['threadvisible'] != -1))
+				{
+					--$forum_counters[$post['fid']]['unapprovedposts'];
+				}
+				else
+				{
+					--$forum_counters[$post['fid']]['deletedposts'];
 				}
 			}
 		}
@@ -726,41 +832,68 @@ class Moderation
 
 		// Delete the extra posts
 		$db->delete_query("posts", "pid IN({$pidin}) AND pid != '{$masterpid}'");
-		// Update pid for attachments
 
+		// Update pid for attachments
 		$mergepost2 = array(
 			"pid" => $masterpid,
 		);
 		$db->update_query("attachments", $mergepost2, "pid IN({$pidin})");
 
-		// If the first post of a thread is merged out, the thread should be deleted
+		// If the first post of a thread is merged out, the first should be updated
 		$query = $db->simple_select("threads", "tid, fid, visible", "firstpost IN({$pidin}) AND firstpost != '{$masterpid}'");
 		while($thread = $db->fetch_array($query))
 		{
-			$this->delete_thread($thread['tid']);
+			// In some cases the first post of a thread changes
+			// Therefore resync the visible field to make sure they're the same if they're not
+			$query = $db->simple_select("posts", "pid, visible", "tid='{$thread['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+			$new_firstpost = $db->fetch_array($query);
+			if($thread['visible'] != $new_firstpost['visible'])
+			{
+				$db->update_query("posts", array('visible' => $thread['visible']), "pid='{$new_firstpost['pid']}'");
+				// Correct counters
+				if($new_firstpost['visible'] == 1)
+				{
+					--$thread_counters[$thread['tid']]['replies'];
+				}
+				elseif($new_firstpost['visible'] == -1)
+				{
+					--$thread_counters[$thread['tid']]['deletedposts'];
+				}
+				else
+				{
+					--$thread_counters[$thread['tid']]['unapprovedposts'];
+				}
+				if($thread['visible'] == 1)
+				{
+					++$thread_counters[$thread['tid']]['replies'];
+				}
+				elseif($thread['visible'] == -1)
+				{
+					++$thread_counters[$thread['tid']]['deletedposts'];
+				}
+				else
+				{
+					++$thread_counters[$thread['tid']]['unapprovedposts'];
+				}
+			}
+			update_first_post($thread['tid']);
 		}
 
 		$arguments = array("pids" => $pids, "tid" => $tid);
 		$plugins->run_hooks("class_moderation_merge_posts", $arguments);
 
-		foreach($threads as $tid)
-		{
-			$count = array();
-			// Attachment count
-			$query = $db->query("
-					SELECT COUNT(aid) AS attachment_count
-					FROM ".TABLE_PREFIX."attachments a
-					LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-					WHERE p.tid='$tid'
-			");
-			$thread_counters[$tid]['attachmentcount'] = $db->fetch_field($query, "attachment_count");
-		}
-
 		if(!empty($thread_counters))
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
+				$counters = array(
+					'replies' => signed($counters['replies']),
+					'unapprovedposts' => signed($counters['unapprovedposts']),
+					'deletedposts' => signed($counters['deletedposts']),
+					'attachmentcount' => signed($counters['attachmentcount'])
+				);
 				update_thread_counters($tid, $counters);
+				update_last_post($tid);
 			}
 		}
 
@@ -768,27 +901,21 @@ class Moderation
 		{
 			foreach($forum_counters as $fid => $counters)
 			{
-				$updated_forum_stats = array();
-				if(isset($counters['num_posts']))
-				{
-					$updated_forum_stats['num_posts'] = signed($counters['num_posts']);
-				}
-				if(isset($counters['unapprovedposts']))
-				{
-					$updated_forum_stats['unapprovedposts'] = signed($counters['unapprovedposts']);
-				}
-				if(isset($counters['threads']))
-				{
-					$updated_forum_stats['threads'] = signed($counters['threads']);
-				}
-				if(isset($counters['deletedthreads']))
-				{
-					$updated_forum_stats['deletedthreads'] = signed($counters['deletedthreads']);
-				}
-				if(!empty($updated_forum_stats))
-				{
-					update_forum_counters($fid, $updated_forum_stats);
-				}
+				$updated_forum_stats = array(
+					'posts' => signed($counters['num_posts']),
+					'unapprovedposts' => signed($counters['unapprovedposts']),
+					'deletedposts' => signed($counters['deletedposts'])
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
 
@@ -814,29 +941,36 @@ class Moderation
 		$redirect_expire = intval($redirect_expire);
 
 		$thread = get_thread($tid, true);
+
 		$newforum = get_forum($new_fid);
+		if(!$thread || !$newforum)
+		{
+			return false;
+		}
 		$fid = $thread['fid'];
 		$forum = get_forum($fid);
 
-		$num_threads = $num_unapproved_threads = $num_posts = $num_unapproved_posts = $num_deleted_threads = 0;
+		$num_threads = $num_unapproved_threads = $num_posts = $num_unapproved_posts = $num_deleted_posts = $num_deleted_threads = 0;
 
 		if($thread['visible'] == 1)
 		{
 			$num_threads++;
 			$num_posts = $thread['replies']+1;
+			$num_unapproved_posts = $thread['unapprovedposts'];
+			$num_deleted_posts = $thread['deletedposts'];
 		}
 		elseif($thread['visible'] == -1)
 		{
 			$num_deleted_threads++;
+			// Implied forum deleted count for deleted threads
+			$num_deleted_posts = $thread['replies']+$thread['deletedposts']+$thread['unapprovedposts']+1;
 		}
 		else
 		{
 			$num_unapproved_threads++;
 			// Implied forum unapproved count for unapproved threads
-			$num_unapproved_posts = $thread['replies']+1;
+			$num_unapproved_posts = $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1;
 		}
-
-		$num_unapproved_posts += $thread['unapprovedposts'];
 
 		switch($method)
 		{
@@ -917,6 +1051,7 @@ class Moderation
 					"sticky" => $thread['sticky'],
 					"visible" => intval($thread['visible']),
 					"unapprovedposts" => $thread['unapprovedposts'],
+					"deletedposts" => $thread['deletedposts'],
 					"attachmentcount" => $thread['attachmentcount'],
 					"prefix" => $thread['prefix'],
 					"notes" => ''
@@ -1073,19 +1208,23 @@ class Moderation
 		");
 		while($posters = $db->fetch_array($query))
 		{
-			$pcount = "";
-			if($forum['usepostcounts'] == 1 && $newforum['usepostcounts'] == 0 && $posters['visible'] == 1)
+			$pcount = 0;
+			if($forum['usepostcounts'] == 1 && $newforum['usepostcounts'] == 0 && $posters['visible'] == 1 && $thread['visible'] == 1)
 			{
-				$pcount = "-{$posters['posts']}";
+				$pcount -= $posters['posts'];
 			}
-			else if(($forum['usepostcounts'] == 0 || $method == 'copy') && $newforum['userpostcounts'] == 1 && $posters['visible'] == 1)
+			if(($forum['usepostcounts'] == 0 || $method == 'copy') && $newforum['usepostcounts'] == 1 && $posters['visible'] == 1 && $thread['visible'] == 1)
 			{
-				$pcount = "+{$posters['posts']}";
+				$pcount += $posters['posts'];
 			}
 
-			if(!empty($pcount))
+			if($pcount > 0)
 			{
-				$db->update_query("users", array("postnum" => "postnum{$pcount}"), "uid='{$posters['uid']}'", 1, true);
+				update_user_counters($posters['uid'], array('postnum' => "+$pcount"));
+			}
+			elseif($pcount < 0)
+			{
+				update_user_counters($posters['uid'], array('postnum' => $pcount));
 			}
 		}
 
@@ -1095,25 +1234,43 @@ class Moderation
 			"unapprovedthreads" => "+{$num_unapproved_threads}",
 			"posts" => "+{$num_posts}",
 			"unapprovedposts" => "+{$num_unapproved_posts}",
-			"deletedthreads" => "+{$num_deleted_threads}"
+			"deletedthreads" => "+{$num_deleted_threads}",
+			"deletedposts" => "+{$num_deleted_posts}"
 		);
 		update_forum_counters($new_fid, $update_array);
+		update_forum_lastpost($new_fid);
 
 		if($method != "copy")
 		{
 			// The redirect needs to be counted, too
 			if($method == "redirect")
 			{
-				--$num_threads;
+				if($thread['visible'] == -1)
+				{
+					--$num_deleted_threads;
+					--$num_deleted_posts;
+				}
+				elseif($thread['visible'] == 0)
+				{
+					--$num_unapproved_threads;
+					--$num_unapproved_posts;
+				}
+				else
+				{
+					--$num_threads;
+					--$num_posts;
+				}
 			}
 			$update_array = array(
 				"threads" => "-{$num_threads}",
 				"unapprovedthreads" => "-{$num_unapproved_threads}",
 				"posts" => "-{$num_posts}",
 				"unapprovedposts" => "-{$num_unapproved_posts}",
-				"deletedthreads" => "-{$num_deleted_threads}"
+				"deletedthreads" => "-{$num_deleted_threads}",
+				"deletedposts" => "-{$num_deleted_posts}"
 			);
 			update_forum_counters($fid, $update_array);
+			update_forum_lastpost($fid);
 		}
 
 		if(isset($newtid))
@@ -1152,28 +1309,42 @@ class Moderation
 		{
 			$thread = get_thread($tid);
 		}
-
-		$pollsql = '';
-		if($mergethread['poll'])
+		
+		if(!$mergethread || !$thread)
 		{
-			$pollsql['poll'] = $mergethread['poll'];
+			return false;
+		}
+
+		$threadarray = array();
+		if(!$thread['poll'] && $mergethread['poll'])
+		{
+			$threadarray['poll'] = $mergethread['poll'];
 			$sqlarray = array(
 				"tid" => $tid,
 			);
 			$db->update_query("polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
 		}
-		else
+		// Both the old and the new thread have polls? Remove one
+		elseif($mergethread['poll'])
 		{
-			$query = $db->simple_select("threads", "*", "poll='{$mergethread['poll']}' AND tid != '{$mergetid}'");
-			$pollcheck = $db->fetch_array($query);
-			if(!$pollcheck['poll'])
-			{
-				$db->delete_query("polls", "pid='{$mergethread['poll']}'");
-				$db->delete_query("pollvotes", "pid='{$mergethread['poll']}'");
-			}
+			$db->delete_query("polls", "pid='{$mergethread['poll']}'");
+			$db->delete_query("pollvotes", "pid='{$mergethread['poll']}'");
 		}
 
 		$subject = $db->escape_string($subject);
+		$threadarray['subject'] = $subject;
+
+		$user_posts = array();
+		$query = $db->query("
+				SELECT uid, COUNT(pid) AS postnum
+				FROM ".TABLE_PREFIX."posts
+				WHERE tid='{$mergetid}' AND visible=1
+				GROUP BY uid
+		");
+		while($post = $db->fetch_array($query))
+		{
+			$user_posts[$post['uid']] = $post['postnum'];
+		}
 
 		$sqlarray = array(
 			"tid" => $tid,
@@ -1182,8 +1353,6 @@ class Moderation
 		);
 		$db->update_query("posts", $sqlarray, "tid='{$mergetid}'");
 
-		$pollsql['subject'] = $subject;
-		$db->update_query("threads", $pollsql, "tid='{$tid}'");
 		$sqlarray = array(
 			"closed" => "moved|{$tid}",
 		);
@@ -1196,12 +1365,9 @@ class Moderation
 		$new_numrating = $thread['numratings'] + $mergethread['numratings'];
 		$new_threadrating = $thread['totalratings'] + $mergethread['totalratings'];
 
-		$sqlarray = array(
-			"numratings" => $new_numrating,
-			"totalratings" => $new_threadrating
-		);
-
-		$db->update_query("threads", $sqlarray, "tid = '{$tid}'");
+		$threadarray["numratings"] = $new_numrating;
+		$threadarray["totalratings"] = $new_threadrating;
+		$db->update_query("threads", $threadarray, "tid = '{$tid}'");
 
 		// Check if we have a thread subscription already for our new thread
 		$subscriptions = array();
@@ -1243,148 +1409,10 @@ class Moderation
 		// Remove source thread subscriptions
 		$db->delete_query("threadsubscriptions", "tid = '{$mergetid}'");
 
-		update_first_post($tid);
-
 		$arguments = array("mergetid" => $mergetid, "tid" => $tid, "subject" => $subject);
 		$plugins->run_hooks("class_moderation_merge_threads", $arguments);
 
 		$this->delete_thread($mergetid);
-
-		// In some cases the thread we may be merging with may cause us to have a new firstpost if it is an older thread
-		// Therefore resync the visible field to make sure they're the same if they're not
-		$query = $db->simple_select("posts", "pid, visible", "tid='{$tid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
-		$new_firstpost = $db->fetch_array($query);
-		if($thread['visible'] != $new_firstpost['visible'])
-		{
-			$db->update_query("posts", array('visible' => $thread['visible']), "pid='{$new_firstpost['pid']}'");
-			$mergethread['visible'] = $thread['visible'];
-			// Correct counters
-			if($thread['visible'] == 1)
-			{
-				++$mergethread['replies'];
-			}
-			elseif($thread['visible'] == -1)
-			{
-				++$mergethread['deletedposts'];
-			}
-			else
-			{
-				++$mergethread['unapprovedposts'];
-			}
-			if($new_firstpost['visible'] == 1)
-			{
-				--$mergethread['replies'];
-			}
-			elseif($new_firstpost['visible'] == -1)
-			{
-				--$mergethread['deletedposts'];
-			}
-			else
-			{
-				--$mergethread['unapprovedposts'];
-			}
-		}
-
-		// Thread is not in current forum
-		if($mergethread['fid'] != $thread['fid'])
-		{
-			// If new thread is unapproved, implied counter comes in to effect
-			if($thread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedposts" => '+'.($mergethread['replies']+1+$mergethread['unapprovedposts'])
-				);
-			}
-			elseif($thread['visible'] == -1)
-			{
-				$updated_stats = array();
-			}
-			else
-			{
-				$updated_stats = array(
-					"posts" => '+'.($mergethread['replies']+1),
-					"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($thread['fid'], $updated_stats);
-
-			// If old thread is unapproved, implied counter comes in to effect
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedposts" => '-'.($mergethread['replies']+1+$mergethread['unapprovedposts'])
-				);
-			}
-			elseif($mergethread['visible'] == -1)
-			{
-				$updated_stats = array();
-			}
-			else
-			{
-				$updated_stats = array(
-					"posts" => '-'.($mergethread['replies']+1),
-					"unapprovedposts" => "-{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($mergethread['fid'], $updated_stats);
-		}
-		// Visibility changed
-		elseif($mergethread['visible'] != $thread['visible'])
-		{
-			$updated_stats = array(
-				"posts" => 0,
-				"unapprovedposts" => 0
-			);
-			// If new thread is unapproved, implied counter comes in to effect
-			if($thread['visible'] == 0)
-			{
-				$updated_stats["unapprovedposts"] = $mergethread['replies']+1+$mergethread['unapprovedposts'];
-			}
-			elseif($thread['visible'] == 1)
-			{
-				$updated_stats["posts"] = $mergethread['replies']+1;
-				$updated_stats["unapprovedposts"] = $mergethread['unapprovedposts'];
-			}
-
-			// If old thread is unapproved, implied counter comes in to effect
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats["unapprovedposts"] -= $mergethread['replies']+1+$mergethread['unapprovedposts'];
-			}
-			elseif($mergethread['visible'] == 1)
-			{
-				$updated_stats["posts"] -= $mergethread['replies']+1;
-				$updated_stats["unapprovedposts"] -= $mergethread['unapprovedposts'];
-			}
-
-			$new_stats = array();
-			if($updated_stats['posts'] < 0)
-			{
-				$new_stats['posts'] = $updated_stats['posts'];
-			}
-			elseif($updated_stats['posts'] > 0)
-			{
-				$new_stats['posts'] = "+{$updated_stats['posts']}";
-			}
-			if($updated_stats['unapprovedposts'] < 0)
-			{
-				$new_stats['unapprovedposts'] = $updated_stats['unapprovedposts'];
-			}
-			elseif($updated_stats['posts'] > 0)
-			{
-				$new_stats['unapprovedposts'] = "+{$updated_stats['unapprovedposts']}";
-			}
-
-			if(!empty($new_stats))
-			{
-				update_forum_counters($mergethread['fid'], $new_stats);
-			}
-		}
-		// If we're in the same forum we need to at least update the last post information
-		else
-		{
-			update_forum_lastpost($thread['fid']);
-		}
 
 		// Add the former first post
 		if($mergethread['visible'] == 1)
@@ -1400,13 +1428,208 @@ class Moderation
 			++$mergethread['unapprovedposts'];
 		}
 
+		// In some cases the thread we may be merging with may cause us to have a new firstpost if it is an older thread
+		// Therefore resync the visible field to make sure they're the same if they're not
+		$query = $db->simple_select("posts", "pid, uid, visible", "tid='{$tid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+		$new_firstpost = $db->fetch_array($query);
+		if($thread['visible'] != $new_firstpost['visible'])
+		{
+			$db->update_query("posts", array('visible' => $thread['visible']), "pid='{$new_firstpost['pid']}'");
+			if($new_firstpost['visible'] == 1)
+			{
+				--$user_posts[$post['uid']];
+			}
+			elseif($thread['visible'] == 1)
+			{
+				++$user_posts[$post['uid']];
+			}
+		}
+
+		// Thread is not in current forum
+		if($mergethread['fid'] != $thread['fid'])
+		{
+			// If new thread is unapproved, implied counter comes in to effect
+			if($thread['visible'] == 0)
+			{
+				$updated_stats = array(
+					"unapprovedposts" => '+'.($mergethread['replies']+$mergethread['unapprovedposts']+$mergethread['deletedposts'])
+				);
+			}
+			elseif($thread['visible'] == -1)
+			{
+				$updated_stats = array(
+					"deletedposts" => '+'.($mergethread['replies']+$mergethread['deletedposts']+$mergethread['unapprovedposts'])
+				);
+			}
+			else
+			{
+				$updated_stats = array(
+					"posts" => "+{$mergethread['replies']}",
+					"unapprovedposts" => "+{$mergethread['unapprovedposts']}",
+					"deletedposts" => "+{$mergethread['deletedposts']}"
+				);
+			}
+			update_forum_counters($thread['fid'], $updated_stats);
+			update_forum_lastpost($thread['fid']);
+
+			// If old thread is unapproved, implied counter comes in to effect
+			if($mergethread['visible'] == 0)
+			{
+				$updated_stats = array(
+					"unapprovedposts" => '-'.($mergethread['replies']+$mergethread['unapprovedposts']+$mergethread['deletedposts'])
+				);
+			}
+			elseif($mergethread['visible'] == -1)
+			{
+				$updated_stats = array(
+					"deletedposts" => '-'.($mergethread['replies']+$mergethread['deletedposts']+$mergethread['unapprovedposts'])
+				);
+			}
+			else
+			{
+				$updated_stats = array(
+					"posts" => "-{$mergethread['replies']}",
+					"unapprovedposts" => "-{$mergethread['unapprovedposts']}",
+					"deletedposts" => "-{$mergethread['deletedposts']}"
+				);
+			}
+			update_forum_counters($mergethread['fid'], $updated_stats);
+			update_forum_lastpost($mergethread['fid']);
+		}
+		// Visibility changed
+		elseif($mergethread['visible'] != $thread['visible'])
+		{
+			$updated_stats = array(
+				'posts' => 0,
+				'unapprovedposts' => 0,
+				'deletedposts' => 0
+			);
+
+			// If old thread is unapproved, implied counter comes in to effect
+			if($mergethread['visible'] == 0)
+			{
+				$updated_stats['unapprovedposts'] -= $mergethread['replies']+$mergethread['deletedposts'];
+				$updated_stats['posts'] += $mergethread['replies'];
+				$updated_stats['deletedposts'] += $mergethread['deletedposts'];
+			}
+			elseif($mergethread['visible'] == -1)
+			{
+				$updated_stats['deletedposts'] -= $mergethread['replies']+$mergethread['unapprovedposts'];
+				$updated_stats['posts'] += $mergethread['replies'];
+				$updated_stats['unapprovedposts'] += $mergethread['unapprovedposts'];
+			}
+
+			// If new thread is unapproved, implied counter comes in to effect
+			if($thread['visible'] == 0)
+			{
+				$updated_stats['unapprovedposts'] += $mergethread['replies']+$mergethread['deletedposts'];
+				$updated_stats['posts'] -= $mergethread['replies'];
+				$updated_stats['deletedposts'] -= $mergethread['deletedposts'];
+			}
+			elseif($thread['visible'] == -1)
+			{
+				$updated_stats['deletedposts'] += $mergethread['replies']+$mergethread['unapprovedposts'];
+				$updated_stats['posts'] -= $mergethread['replies'];
+				$updated_stats['unapprovedposts'] -= $mergethread['unapprovedposts'];
+			}
+
+			$new_stats = array();
+			if($updated_stats['posts'] < 0)
+			{
+				$new_stats['posts'] = $updated_stats['posts'];
+			}
+			elseif($updated_stats['posts'] > 0)
+			{
+				$new_stats['posts'] = "+{$updated_stats['posts']}";
+			}
+
+			if($updated_stats['unapprovedposts'] < 0)
+			{
+				$new_stats['unapprovedposts'] = $updated_stats['unapprovedposts'];
+			}
+			elseif($updated_stats['unapprovedposts'] > 0)
+			{
+				$new_stats['unapprovedposts'] = "+{$updated_stats['unapprovedposts']}";
+			}
+
+			if($updated_stats['deletedposts'] < 0)
+			{
+				$new_stats['deletedposts'] = $updated_stats['deletedposts'];
+			}
+			elseif($updated_stats['deletedposts'] > 0)
+			{
+				$new_stats['deletedposts'] = "+{$updated_stats['deletedposts']}";
+			}
+
+			if(!empty($new_stats))
+			{
+				update_forum_counters($mergethread['fid'], $new_stats);
+				update_forum_lastpost($mergethread['fid']);
+			}
+		}
+		// If we're in the same forum we need to at least update the last post information
+		else
+		{
+			update_forum_lastpost($thread['fid']);
+		}
+
+		if($thread['visible'] != $new_firstpost['visible'])
+		{
+			// Correct counters
+			if($new_firstpost['visible'] == 1)
+			{
+				--$mergethread['replies'];
+			}
+			elseif($new_firstpost['visible'] == -1)
+			{
+				--$mergethread['deletedposts'];
+			}
+			else
+			{
+				--$mergethread['unapprovedposts'];
+			}
+			if($thread['visible'] == 1)
+			{
+				++$mergethread['replies'];
+			}
+			elseif($thread['visible'] == -1)
+			{
+				++$mergethread['deletedposts'];
+			}
+			else
+			{
+				++$mergethread['unapprovedposts'];
+			}
+		}
+
+		if($thread['visible'] != $mergethread['visible'])
+		{
+			// Update user counters
+			if($thread['visible'] == 1)
+			{
+				foreach($user_posts as $uid => $user_counter)
+				{
+					update_user_counters($uid, array('postnum' => "+{$user_counter}"));
+				}
+			}
+			elseif($mergethread['visible'] == 1)
+			{
+				foreach($user_posts as $uid => $user_counter)
+				{
+					update_user_counters($uid, array('postnum' => "-{$user_counter}"));
+				}
+			}
+		}
+
 		$updated_stats = array(
 			"replies" => "+{$mergethread['replies']}",
 			"attachmentcount" => "+{$mergethread['attachmentcount']}",
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}",
+			"deletedposts" => "+{$mergethread['unapprovedposts']}",
 			"deletedposts" => "+{$mergethread['deletedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
+		update_last_post($tid);
 		return true;
 	}
 
@@ -1424,7 +1647,7 @@ class Moderation
 	 */
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
-		global $db, $thread, $plugins;
+		global $db, $thread, $plugins, $cache;
 
 		$tid = intval($tid);
 		$moveto = intval($moveto);
@@ -1436,54 +1659,44 @@ class Moderation
 		$pids_list = implode(',', $pids);
 
 		// Get forum infos
-		$query = $db->simple_select("forums", "fid, usepostcounts, posts, threads, unapprovedposts, unapprovedthreads, deletedthreads");
-		while($forum = $db->fetch_array($query))
+		$forum_cache = $cache->read('forums');
+
+		if(empty($pids) || !$forum_cache[$moveto])
 		{
-			$forum_cache[$forum['fid']] = $forum;
+			return false;
 		}
 
-		// Get the icon for the first split post
-		$query = $db->simple_select("posts", "icon, visible", "pid=".intval($pids[0]));
-		$post_info = $db->fetch_array($query);
-
-		$icon = $post_info['icon'];
+		// Get the first split post
+		$post_info = get_post($pids[0]);
 		$visible = $post_info['visible'];
+
+		$forum_counters[$moveto] = array(
+			'threads' => 0,
+			'deletedthreads' => 0,
+			'unapprovedthreads' => 0,
+			'posts' => 0,
+			'unapprovedposts' => 0,
+			'deletedposts' => 0
+		);
 
 		if($destination_tid == 0)
 		{
 			// Splitting into a new thread
-			$thread = get_thread($tid);
 			// Create the new thread
 			$newsubject = $db->escape_string($newsubject);
 			$newthread = array(
 				"fid" => $moveto,
 				"subject" => $newsubject,
-				"icon" => intval($icon),
-				"uid" => intval($thread['uid']),
-				"username" => $db->escape_string($thread['username']),
-				"dateline" => intval($thread['dateline']),
-				"lastpost" => intval($thread['lastpost']),
-				"lastposter" => $db->escape_string($thread['lastposter']),
-				"replies" => count($pids)-1,
+				"icon" => intval($post_info['icon']),
+				"uid" => intval($post_info['uid']),
+				"username" => $db->escape_string($post_info['username']),
+				"dateline" => intval($post_info['dateline']),
+				"lastpost" => 0,
+				"lastposter" => '',
 				"visible" => intval($visible),
 				"notes" => ''
 			);
 			$newtid = $db->insert_query("threads", $newthread);
-
-			if(!isset($forum_counters[$moveto]['threads']))
-			{
-				$forum_counters[$moveto]['threads'] = 0;
-			}
-
-			if(!isset($forum_counters[$moveto]['deletedthreads']))
-			{
-				$forum_counters[$moveto]['deletedthreads'] = 0;
-			}
-
-			if(!isset($forum_counters[$moveto]['unapprovedthreads']))
-			{
-				$forum_counters[$moveto]['unapprovedthreads'] = 0;
-			}
 
 			if($visible == 1)
 			{
@@ -1502,30 +1715,21 @@ class Moderation
 		else
 		{
 			$newthread = get_thread($newtid);
+			if(!$newthread)
+			{
+				return false;
+			}
+			$moveto = $newthread['fid'];
 		}
-
-		// Get attachment counts for each post
-		/*$query = $db->simple_select("attachments", "COUNT(aid) as count, pid", "pid IN ($pids_list)");
-		$query = $db->query("
-			SELECT COUNT(aid) as count, p.pid,
-			");
-		$attachment_sum = 0;
-		while($attachment = $db->fetch_array($query))
-		{
-			$attachments[$attachment['pid']] = $attachment['count'];
-			$attachment_sum += $attachment['count'];
-		}
-		$thread_counters[$newtid]['attachmentcount'] = '+'.$attachment_sum;*/
 
 		// Get selected posts before moving forums to keep old fid
-		//$original_posts_query = $db->simple_select("posts", "fid, visible, pid", "pid IN ($pids_list)");
 		$original_posts_query = $db->query("
-			SELECT p.pid, p.tid, p.fid, p.visible, p.uid, t.visible as threadvisible, COUNT(a.aid) as postattachmentcount
+			SELECT p.pid, p.tid, p.fid, p.visible, p.uid, t.visible as threadvisible, t.firstpost, COUNT(a.aid) as postattachmentcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
-			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid)
+			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
 			WHERE p.pid IN ($pids_list)
-			GROUP BY p.pid, p.tid, p.fid, p.visible, p.uid, t.visible, t.replies, t.unapprovedposts,t.attachmentcount
+			GROUP BY p.pid
 		");
 
 		// Move the selected posts over
@@ -1536,125 +1740,147 @@ class Moderation
 		);
 		$db->update_query("posts", $sqlarray, "pid IN ($pids_list)");
 
-		$user_counters = $forum_counters = array();
+		$user_counters = array();
+		$thread_counters[$newtid] = array(
+			'replies' => 0,
+			'unapprovedposts' => 0,
+			'deletedposts' => 0,
+			'attachmentcount' => 0
+		);
 
 		// Get posts being merged
 		while($post = $db->fetch_array($original_posts_query))
 		{
+			if(!isset($thread_counters[$post['tid']]))
+			{
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0,
+					'unapprovedposts' => 0,
+					'deletedposts' => 0,
+					'attachmentcount' => 0
+				);
+			}
+			if(!isset($forum_counters[$post['fid']]))
+			{
+				$forum_counters[$post['fid']] = array(
+					'posts' => 0,
+					'unapprovedposts' => 0,
+					'deletedposts' => 0
+				);
+			}
 			if($post['visible'] == 1)
 			{
+				if(!isset($user_counters[$post['uid']]))
+				{
+					$user_counters[$post['uid']] = 0;
+				}
 				// Modify users' post counts
-				if($post['threadvisible'] == 1 && $forum_cache[$post['fid']]['usepostcounts'] == 1 && $forum_cache[$moveto]['usepostcounts'] == 0)
+				if($post['threadvisible'] == 1 && $forum_cache[$post['fid']]['usepostcounts'] == 1 && ($forum_cache[$moveto]['usepostcounts'] == 0 || $newthread['visible'] != 1))
 				{
 					// Moving into a forum that doesn't count post counts
-					if(!isset($user_counters[$post['uid']]))
-					{
-						$user_counters[$post['uid']] = 0;
-					}
 					--$user_counters[$post['uid']];
 				}
-				elseif($newthread['visible'] == 1 && $forum_cache[$post['fid']]['usepostcounts'] == 0 && $forum_cache[$moveto]['usepostcounts'] == 1)
+				elseif($newthread['visible'] == 1 && ($forum_cache[$post['fid']]['usepostcounts'] == 0 || $post['threadvisible'] != 1) && $forum_cache[$moveto]['usepostcounts'] == 1)
 				{
 					// Moving into a forum that does count post counts
-					if(!isset($user_counters[$post['uid']]))
-					{
-						$user_counters[$post['uid']] = 0;
-					}
 					++$user_counters[$post['uid']];
 				}
 
 				// Subtract 1 from the old thread's replies
-				if(!isset($thread_counters[$post['tid']]['replies']))
-				{
-					$thread_counters[$post['tid']]['replies'] = 0;
-				}
 				--$thread_counters[$post['tid']]['replies'];
-
-				if(!isset($thread_counters[$newtid]['replies']))
-				{
-					$thread_counters[$newtid]['replies'] = 0;
-				}
 
 				// Add 1 to the new thread's replies
 				++$thread_counters[$newtid]['replies'];
-
-				if($moveto != $post['fid'])
-				{
-					// Only need to change forum info if the old forum is different from new forum
-					// Subtract 1 from the old forum's posts
-					if(!isset($forum_counters[$post['fid']]['posts']))
-					{
-						$forum_counters[$post['fid']]['posts'] = 0;
-					}
-					--$forum_counters[$post['fid']]['posts'];
-					// Add 1 to the new forum's posts
-					if(!isset($forum_counters[$moveto]['posts']))
-					{
-						$forum_counters[$moveto]['posts'] = 0;
-					}
-					++$forum_counters[$moveto]['posts'];
-				}
 
 			}
 			elseif($post['visible'] == 0)
 			{
 				// Unapproved post
 				// Subtract 1 from the old thread's unapproved posts
-				if(!isset($thread_counters[$post['tid']]['unapprovedposts']))
-				{
-					$thread_counters[$post['tid']]['unapprovedposts'] = 0;
-				}
 				--$thread_counters[$post['tid']]['unapprovedposts'];
 
 				// Add 1 to the new thread's unapproved posts
 				++$thread_counters[$newtid]['unapprovedposts'];
-
-				if($moveto != $post['fid'])
-				{
-					// Only need to change forum info if the old forum is different from new forum
-					// Subtract 1 from the old forum's unapproved posts
-					if(!isset($forum_counters[$post['fid']]['unapprovedposts']))
-					{
-						$forum_counters[$post['fid']]['unapprovedposts'] = 0;
-					}
-					--$forum_counters[$post['fid']]['unapprovedposts'];
-					// Add 1 to the new forum's unapproved posts
-					if(!isset($forum_counters[$moveto]['unapprovedposts']))
-					{
-						$forum_counters[$moveto]['unapprovedposts'] = 0;
-					}
-					++$forum_counters[$moveto]['unapprovedposts'];
-				}
 			}
 			elseif($post['visible'] == -1)
 			{
 				// Soft deleted post
 				// Subtract 1 from the old thread's deleted posts
-				if(!isset($thread_counters[$post['tid']]['deletedposts']))
-				{
-					$thread_counters[$post['tid']]['deletedposts'] = 0;
-				}
 				--$thread_counters[$post['tid']]['deletedposts'];
 
 				// Add 1 to the new thread's deleted posts
-				if(!isset($thread_counters[$newtid]['deletedposts']))
-				{
-					$thread_counters[$newtid]['deletedposts'] = 0;
-				}
 				++$thread_counters[$newtid]['deletedposts'];
+			}
+			
+			// Subtract 1 from the old forum's posts
+			if($post['threadvisible'] == 1 && $post['visible'] == 1)
+			{
+				--$forum_counters[$post['fid']]['posts'];
+			}
+			elseif($post['threadvisible'] == 0 || ($post['visible'] == 0 && $post['threadvisible'] == 1))
+			{
+				--$forum_counters[$post['fid']]['unapprovedposts'];
+			}
+			else
+			{
+				--$forum_counters[$post['fid']]['deletedposts'];
+			}
+
+			// Add 1 to the new forum's posts
+			if($newthread['visible'] == 1 && $post['visible'] == 1)
+			{
+				++$forum_counters[$moveto]['posts'];
+			}
+			elseif($newthread['visible'] == 0 || ($post['visible'] == 0 && $newthread['visible'] == 1))
+			{
+				++$forum_counters[$moveto]['unapprovedposts'];
+			}
+			else
+			{
+				++$forum_counters[$moveto]['deletedposts'];
 			}
 
 			// Subtract attachment counts from old thread and add to new thread (which are counted regardless of post or attachment unapproval at time of coding)
-			if(!isset($thread_counters[$post['tid']]['attachmentcount']))
-			{
-				$thread_counters[$post['tid']]['attachmentcount'] = 0;
-			}
 			$thread_counters[$post['tid']]['attachmentcount'] -= $post['postattachmentcount'];
-			if(!isset($thread_counters[$newtid]['attachmentcount']))
-			{
-				$thread_counters[$newtid]['attachmentcount'] = 0;
-			}
 			$thread_counters[$newtid]['attachmentcount'] += $post['postattachmentcount'];
+
+			if($post['firstpost'] == $post['pid'])
+			{
+				// In some cases the first post of a thread changes
+				// Therefore resync the visible field to make sure they're the same if they're not
+				$query = $db->simple_select("posts", "pid, visible", "tid='{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+				$new_firstpost = $db->fetch_array($query);
+				if($post['threadvisible'] != $new_firstpost['visible'])
+				{
+					$db->update_query("posts", array('visible' => $post['threadvisible']), "pid='{$new_firstpost['pid']}'");
+					// Correct counters
+					if($new_firstpost['visible'] == 1)
+					{
+						--$thread_counters[$post['tid']]['replies'];
+					}
+					elseif($new_firstpost['visible'] == -1)
+					{
+						--$thread_counters[$post['tid']]['deletedposts'];
+					}
+					else
+					{
+						--$thread_counters[$post['tid']]['unapprovedposts'];
+					}
+					if($post['threadvisible'] == 1)
+					{
+						++$thread_counters[$post['tid']]['replies'];
+					}
+					elseif($post['threadvisible'] == -1)
+					{
+						++$thread_counters[$post['tid']]['deletedposts'];
+					}
+					else
+					{
+						++$thread_counters[$post['tid']]['unapprovedposts'];
+					}
+				}
+				update_first_post($post['tid']);
+			}
 		}
 		if($destination_tid == 0 && $newthread['visible'] == 1)
 		{
@@ -1684,7 +1910,7 @@ class Moderation
 				{
 					$change = '+'.$change; // add the addition operator for query
 				}
-				$db->update_query("users", array("postnum" => "postnum{$change}"), "uid='{$uid}'", 1, true);
+				update_user_counters($uid, array('postnum' => $change));
 			}
 		}
 
@@ -1723,17 +1949,17 @@ class Moderation
 					$db->update_query("posts", $sqlarray, "pid='{$oldthread['pid']}'");
 				}
 
-				$db->update_query("threads", $counters, "tid='{$tid}'");
-
-				update_thread_data($tid);
-
-				// Update first post columns
-				update_first_post($tid);
+				foreach($counters as $key => $counter)
+				{
+					if($counter >= 0)
+					{
+						$counters[$key] = "+{$counter}";
+					}
+				}
+				update_thread_counters($tid, $counters);
+				update_last_post($post['tid']);
 			}
 		}
-		update_thread_data($newtid);
-
-		update_first_post($newtid);
 
 		// Update forum counters
 		if(!empty($forum_counters))
@@ -1748,6 +1974,7 @@ class Moderation
 					}
 				}
 				update_forum_counters($fid, $counters);
+				update_forum_lastpost($fid);
 			}
 		}
 
@@ -1773,35 +2000,40 @@ class Moderation
 		$moveto = intval($moveto);
 
 		$newforum = get_forum($moveto);
+		
+		if(empty($tids) || !$newforum)
+		{
+			return false;
+		}
 
-		$total_posts = $total_unapproved_posts = $total_threads = $total_unapproved_threads = $total_deleted_threads = 0;
-		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, tid", "tid IN ($tid_list)");
+		$total_posts = $total_unapproved_posts = $total_deleted_posts = $total_threads = $total_unapproved_threads = $total_deleted_threads = 0;
+		$forum_counters = $user_counters = array();
+		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, deletedposts, tid", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			$forum = get_forum($thread['fid']);
 
-
-			if(!isset($forum_counters[$thread['fid']]['posts']))
+			if(!isset($forum_counters[$thread['fid']]))
 			{
-				$forum_counters[$thread['fid']]['posts'] = 0;
-			}
-
-			if(!isset($forum_counters[$thread['fid']]['unapprovedposts']))
-			{
-				$forum_counters[$thread['fid']]['unapprovedposts'] = 0;
+				$forum_counters[$thread['fid']] = array(
+					'posts' => 0,
+					'threads' => 0,
+					'unapprovedposts' => 0,
+					'unapprovedthreads' => 0,
+					'deletedthreads' => 0,
+					'deletedposts' => 0
+				);
 			}
 
 			if($thread['visible'] == 1)
 			{
 				$total_posts += $thread['replies']+1;
 				$total_unapproved_posts += $thread['unapprovedposts'];
+				$total_deleted_posts += $thread['deletedposts'];
 				$forum_counters[$thread['fid']]['posts'] += $thread['replies']+1;
 				$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['unapprovedposts'];
+				$forum_counters[$thread['fid']]['deletedposts'] += $thread['deletedposts'];
 
-				if(!isset($forum_counters[$thread['fid']]['threads']))
-				{
-					$forum_counters[$thread['fid']]['threads'] = 0;
-				}
 				$forum_counters[$thread['fid']]['threads']++;
 				++$total_threads;
 
@@ -1815,56 +2047,45 @@ class Moderation
 				");
 				while($posters = $db->fetch_array($query1))
 				{
-					$pcount = "";
+					if(!isset($user_counters[$posters['uid']]))
+					{
+						$user_counters[$posters['uid']] = 0;
+					}
+
 					if($newforum['usepostcounts'] != 0 && $forum['usepostcounts'] == 0 && $posters['visible'] == 1)
 					{
-						$pcount = "+{$posters['posts']}";
+						$user_counters[$posters['uid']] += $posters['posts'];
 					}
 					else if($newforum['usepostcounts'] == 0 && $forum['usepostcounts'] != 0 && $posters['visible'] == 1)
 					{
-						$pcount = "-{$posters['posts']}";
-					}
-
-					if(!empty($pcount))
-					{
-						$db->update_query("users", array("postnum" => "postnum{$pcount}"), "uid='{$posters['uid']}'", 1, true);
+						$user_counters[$posters['uid']] -= $posters['posts'];
 					}
 				}
 			}
 			elseif($thread['visible'] == -1)
 			{
-				$total_posts += $thread['replies'];
-				$total_unapproved_posts += $thread['unapprovedposts'];
-				$forum_counters[$thread['fid']]['posts'] += $thread['replies'];
-				$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['unapprovedposts'];
+				$total_deleted_posts += $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1;
 
-				if(!isset($forum_counters[$thread['fid']]['deletedthreads']))
-				{
-					$forum_counters[$thread['fid']]['deletedthreads'] = 0;
-				}
+				$forum_counters[$thread['fid']]['deletedposts'] += $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1; // Implied deleted posts counter for deleted threads
+
 				$forum_counters[$thread['fid']]['deletedthreads']++;
 				++$total_deleted_threads;
 			}
 			else
 			{
-				$total_posts += $thread['replies'];
-				$total_unapproved_posts += $thread['unapprovedposts']+1;
-				$forum_counters[$thread['fid']]['posts'] += $thread['replies'];
-				$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['unapprovedposts']+1;
+				$total_unapproved_posts += $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1;
 
-				if(!isset($forum_counters[$thread['fid']]['unapprovedthreads']))
-				{
-					$forum_counters[$thread['fid']]['unapprovedthreads'] = 0;
-				}
-
-				if(!isset($forum_counters[$thread['fid']]['unapprovedposts']))
-				{
-					$forum_counters[$thread['fid']]['unapprovedposts'] = 0;
-				}
+				$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['replies']+$thread['unapprovedposts']+$thread['deletedposts']+1; // Implied unapproved posts counter for unapproved threads
 
 				$forum_counters[$thread['fid']]['unapprovedthreads']++;
-				$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['replies']; // Implied unapproved posts counter for unapproved threads
 				++$total_unapproved_threads;
+			}
+
+			// Remove old redirects
+			$redirects_query = $db->simple_select('threads', 'tid', "closed='moved|{$thread['tid']}' AND fid='$moveto'");
+			while($redirect_tid = $db->fetch_field($redirects_query, 'tid'))
+			{
+				$this->delete_thread($redirect_tid);
 			}
 		}
 
@@ -1890,36 +2111,34 @@ class Moderation
 
 		$arguments = array("tids" => $tids, "moveto" => $moveto);
 		$plugins->run_hooks("class_moderation_move_threads", $arguments);
+		
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				if($counter >= 0)
+				{
+					$counter = "+{$counter}";
+				}
+				update_user_counters($uid, array('postnum' => $counter));
+			}
+		}
 
 		if(is_array($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counter)
 			{
-				$updated_count = array();
-				if(isset($counter['posts']))
-				{
-					$updated_count['posts'] = "-{$counter['posts']}";
-				}
-				if(isset($counter['unapprovedposts']))
-				{
-					$updated_count['unapprovedposts'] = "-{$counter['unapprovedposts']}";
-				}
-				if(isset($counter['threads']))
-				{
-					$updated_count['threads'] = "-{$counter['threads']}";
-				}
-				if(isset($counter['unapprovedthreads']))
-				{
-					$updated_count['unapprovedthreads'] = "-{$counter['unapprovedthreads']}";
-				}
-				if(isset($counter['deletedthreads']))
-				{
-					$updated_count['deletedthreads'] = "-{$counter['deletedthreads']}";
-				}
-				if(!empty($updated_count))
-				{
-					update_forum_counters($fid, $updated_count);
-				}
+				$updated_count = array(
+					'posts' => "-{$counter['posts']}",
+					'threads' => "-{$counter['threads']}",
+					'unapprovedposts' => "-{$counter['unapprovedposts']}",
+					'unapprovedthreads' => "-{$counter['unapprovedthreads']}",
+					'deletedposts' => "-{$counter['deletedposts']}",
+					'deletedthreads' => "-{$counter['deletedthreads']}"
+					
+				);
+				update_forum_counters($fid, $updated_count);
+				update_forum_lastpost($fid);
 			}
 		}
 
@@ -1928,10 +2147,12 @@ class Moderation
 			"unapprovedthreads" => "+{$total_unapproved_threads}",
 			"posts" => "+{$total_posts}",
 			"unapprovedposts" => "+{$total_unapproved_posts}",
+			'deletedposts' => "+{$total_deleted_posts}",
 			"deletedthreads" => "+{$total_deleted_threads}"
 		);
 
 		update_forum_counters($moveto, $updated_count);
+		update_forum_lastpost($moveto);
 
 		// Remove thread subscriptions for the users who no longer have permission to view the thread
 		$this->remove_thread_subscriptions($tid_list, false, $moveto);
@@ -1950,6 +2171,11 @@ class Moderation
 		global $db, $cache;
 
 		$num_posts = 0;
+
+		if(empty($pids))
+		{
+			return false;
+		}
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -1985,45 +2211,50 @@ class Moderation
 			$this->approve_threads($threads_to_update);
 		}
 
+		$thread_counters = $forum_counters = $user_counters = array();
+
 		$query = $db->query("
-			SELECT p.pid, p.tid, f.fid, f.usepostcounts, p.uid, t.visible AS threadvisible
+			SELECT p.pid, p.tid, p.fid, p.uid, t.visible AS threadvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
 			WHERE p.pid IN ($pid_list) AND p.visible = '0' AND t.firstpost != p.pid
 		");
 		while($post = $db->fetch_array($query))
 		{
 			$pids[] = $post['pid'];
 
-			if(!isset($thread_counters[$post['tid']]['unapprovedposts']))
+			if(!isset($thread_counters[$post['tid']]))
 			{
-				$thread_counters[$post['tid']]['unapprovedposts'] = 0;
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0
+				);
 			}
 
-			if(!isset($thread_counters[$post['tid']]['replies']))
-			{
-				$thread_counters[$post['tid']]['replies'] = 0;
-			}
-
-			++$thread_counters[$post['tid']]['unapprovedposts'];
 			++$thread_counters[$post['tid']]['replies'];
 
 			// If the thread of this post is unapproved then we've already taken into account this counter as implied.
 			// Updating it again would cause it to double count
 			if($post['threadvisible'] != 0)
 			{
-				if(!isset($forum_counters[$post['fid']]['num_posts']))
+				if(!isset($forum_counters[$post['fid']]))
 				{
-					$forum_counters[$post['fid']]['num_posts'] = 0;
+					$forum_counters[$post['fid']] = array(
+						'num_posts' => 0
+					);
 				}
 				++$forum_counters[$post['fid']]['num_posts'];
 			}
 
+			$forum = get_forum($post['fid']);
+
 			// If post counts enabled in this forum and the thread is approved, add 1
-			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
+			if($forum['usepostcounts'] != 0 && $post['threadvisible'] == 1)
 			{
-				$db->update_query("users", array("postnum" => "postnum+1"), "uid='{$post['uid']}'", 1, true);
+				if(!isset($user_counters[$post['uid']]))
+				{
+					$user_counters[$post['uid']] = 0;
+				}
+				++$user_counters[$post['uid']];
 			}
 		}
 
@@ -2038,34 +2269,37 @@ class Moderation
 			$db->update_query("posts", $approve, $where);
 		}
 
-		if(is_array($thread_counters))
+		if(!empty($thread_counters))
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
 				$counters_update = array(
-					"unapprovedposts" => "-".$counters['unapprovedposts'],
+					"unapprovedposts" => "-".$counters['replies'],
 					"replies" => "+".$counters['replies']
 				);
 				update_thread_counters($tid, $counters_update);
-
-				update_thread_data($tid);
+				update_last_post($tid);
 			}
 		}
 
-		if(is_array($forum_counters))
+		if(!empty($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counters)
 			{
-				$updated_forum_stats = array();
-				if(isset($counters['num_posts']))
-				{
-					$updated_forum_stats['posts'] = "+{$counters['num_posts']}";
-					$updated_forum_stats['unapprovedposts'] = "-{$counters['num_posts']}";
-				}
-				if(!empty($updated_forum_stats))
-				{
-					update_forum_counters($fid, $updated_forum_stats);
-				}
+				$updated_forum_stats = array(
+					'posts' => "+{$counters['num_posts']}",
+					'unapprovedposts' => "-{$counters['num_posts']}",
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "+{$counter}"));
 			}
 		}
 
@@ -2081,6 +2315,11 @@ class Moderation
 	function unapprove_posts($pids)
 	{
 		global $db, $cache;
+
+		if(empty($pids))
+		{
+			return false;
+		}
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -2117,33 +2356,25 @@ class Moderation
 			$this->unapprove_threads($threads_to_update);
 		}
 
-		$thread_counters = array();
-		$forum_counters = array();
+		$thread_counters = $forum_counters = $user_counters = array();
 
 		$query = $db->query("
-			SELECT p.pid, p.tid, p.visible, f.fid, f.usepostcounts, p.uid, t.visible AS threadvisible
+			SELECT p.pid, p.tid, p.visible, p.fid, p.uid, t.visible AS threadvisible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
 			WHERE p.pid IN ($pid_list) AND p.visible IN (-1,1) AND t.firstpost != p.pid
 		");
 		while($post = $db->fetch_array($query))
 		{
 			$pids[] = $post['pid'];
 
-			if(!isset($thread_counters[$post['tid']]['unapprovedposts']))
+			if(!isset($thread_counters[$post['tid']]))
 			{
-				$thread_counters[$post['tid']]['unapprovedposts'] = 0;
-			}
-
-			if(!isset($thread_counters[$post['tid']]['replies']))
-			{
-				$thread_counters[$post['tid']]['replies'] = 0;
-			}
-
-			if(!isset($thread_counters[$post['tid']]['deletedposts']))
-			{
-				$thread_counters[$post['tid']]['deletedposts'] = 0;
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0,
+					'unapprovedposts' => 0,
+					'deletedposts' => 0
+				);
 			}
 
 			++$thread_counters[$post['tid']]['unapprovedposts'];
@@ -2156,29 +2387,40 @@ class Moderation
 				++$thread_counters[$post['tid']]['deletedposts'];
 			}
 
+			if(!isset($forum_counters[$post['fid']]))
+			{
+				$forum_counters[$post['fid']] = array(
+					'num_posts' => 0,
+					'num_unapproved_posts' => 0,
+					'num_deleted_posts' => 0
+				);
+			}
+
 			// If the thread of this post is unapproved then we've already taken into account this counter as implied.
 			// Updating it again would cause it to double count
-			if($post['threadvisible'] == 0)
+			if($post['threadvisible'] != 0)
 			{
-				if(!isset($forum_counters[$post['fid']]['num_posts']))
-				{
-					$forum_counters[$post['fid']]['num_posts'] = 0;
-				}
-				if(!isset($forum_counters[$post['fid']]['num_unapproved_posts']))
-				{
-					$forum_counters[$post['fid']]['num_unapproved_posts'] = 0;
-				}
 				++$forum_counters[$post['fid']]['num_unapproved_posts'];
 				if($post['visible'] == 1)
 				{
 					++$forum_counters[$post['fid']]['num_posts'];
 				}
+				else
+				{
+					++$forum_counters[$post['fid']]['num_deleted_posts'];
+				}
 			}
 
+			$forum = get_forum($post['fid']);
+
 			// If post counts enabled in this forum and the thread is approved, subtract 1
-			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
+			if($forum['usepostcounts'] != 0 && $post['visible'] == 1 && $post['threadvisible'] == 1)
 			{
-				$db->update_query("users", array("postnum" => "postnum-1"), "uid='{$post['uid']}'", 1, true);
+				if(!isset($user_counters[$post['uid']]))
+				{
+					$user_counters[$post['uid']] = 0;
+				}
+				--$user_counters[$post['uid']];
 			}
 		}
 
@@ -2193,7 +2435,7 @@ class Moderation
 			$db->update_query("posts", $approve, $where);
 		}
 
-		if(is_array($thread_counters))
+		if(!empty($thread_counters))
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
@@ -2204,25 +2446,29 @@ class Moderation
 				);
 
 				update_thread_counters($tid, $counters_update);
-
-				update_thread_data($tid);
+				update_last_post($tid);
 			}
 		}
 
-		if(is_array($forum_counters))
+		if(!empty($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counters)
 			{
-				$updated_forum_stats = array();
-				if(isset($counters['num_posts']))
-				{
-					$updated_forum_stats['posts'] = "-{$counters['num_posts']}";
-					$updated_forum_stats['unapprovedposts'] = "+{$counters['num_unapproved_posts']}";
-				}
-				if(!empty($updated_forum_stats))
-				{
-					update_forum_counters($fid, $updated_forum_stats);
-				}
+				$updated_forum_stats = array(
+					'posts' => "-{$counters['num_posts']}",
+					'unapprovedposts' => "+{$counters['num_unapproved_posts']}",
+					'deletedposts' => "-{$counters['num_deleted_posts']}"
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
 
@@ -2243,12 +2489,16 @@ class Moderation
 		// Get tids into list
 		if(!is_array($tids))
 		{
-			$tids = array(intval($tids));
+			$tids = array($tids);
 		}
-
 
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
+
+		if(empty($tids))
+		{
+			return false;
+		}
 
 		$tid_list = implode(',', $tids);
 
@@ -2284,6 +2534,11 @@ class Moderation
 		global $db, $plugins;
 
 		$tid = intval($tid);
+
+		if(empty($tid))
+		{
+			return false;
+		}
 
 		$update_thread = array(
 			"deletetime" => intval($deletetime)
@@ -2543,6 +2798,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 		$fid = intval($fid);
@@ -2614,6 +2874,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 		$tids_csv = implode(',', $tids);
@@ -2637,6 +2902,11 @@ class Moderation
 	function soft_delete_posts($pids)
 	{
 		global $db, $cache;
+
+		if(empty($pids))
+		{
+			return false;
+		}
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -2673,8 +2943,7 @@ class Moderation
 			$this->soft_delete_threads($threads_to_update);
 		}
 
-		$thread_counters = array();
-		$forum_counters = array();
+		$thread_counters = $forum_counters = $user_counters = array();
 
 		$query = $db->query("
 			SELECT p.pid, p.tid, p.visible, f.fid, f.usepostcounts, p.uid, t.visible AS threadvisible
@@ -2687,19 +2956,13 @@ class Moderation
 		{
 			$pids[] = $post['pid'];
 
-			if(!isset($thread_counters[$post['tid']]['unapprovedposts']))
+			if(!isset($thread_counters[$post['tid']]))
 			{
-				$thread_counters[$post['tid']]['unapprovedposts'] = 0;
-			}
-
-			if(!isset($thread_counters[$post['tid']]['replies']))
-			{
-				$thread_counters[$post['tid']]['replies'] = 0;
-			}
-
-			if(!isset($thread_counters[$post['tid']]['deletedposts']))
-			{
-				$thread_counters[$post['tid']]['deletedposts'] = 0;
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0,
+					'unapprovedposts' => 0,
+					'deletedposts' => 0
+				);
 			}
 
 			++$thread_counters[$post['tid']]['deletedposts'];
@@ -2712,18 +2975,20 @@ class Moderation
 				++$thread_counters[$post['tid']]['unapprovedposts'];
 			}
 
+			if(!isset($forum_counters[$post['fid']]))
+			{
+				$forum_counters[$post['fid']] = array(
+					'num_posts' => 0,
+					'num_unapproved_posts' => 0,
+					'num_deleted_posts' => 0
+				);
+			}
+
 			// If the thread of this post is deleted then we've already taken into account this counter as implied.
 			// Updating it again would cause it to double count
 			if($post['threadvisible'] == 1)
 			{
-				if(!isset($forum_counters[$post['fid']]['num_posts']))
-				{
-					$forum_counters[$post['fid']]['num_posts'] = 0;
-				}
-				if(!isset($forum_counters[$post['fid']]['num_unapproved_posts']))
-				{
-					$forum_counters[$post['fid']]['num_unapproved_posts'] = 0;
-				}
+				++$forum_counters[$post['fid']]['num_deleted_posts'];
 				if($post['visible'] == 1)
 				{
 					++$forum_counters[$post['fid']]['num_posts'];
@@ -2735,9 +3000,13 @@ class Moderation
 			}
 
 			// If post counts enabled in this forum and the thread is approved, subtract 1
-			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
+			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1 && $post['visible'] == 1)
 			{
-				$db->update_query("users", array("postnum" => "postnum-1"), "uid='{$post['uid']}'", 1, true);
+				if(!isset($user_counters[$post['uid']]))
+				{
+					$user_counters[$post['uid']] = 0;
+				}
+				--$user_counters[$post['uid']];
 			}
 		}
 
@@ -2763,8 +3032,7 @@ class Moderation
 				);
 
 				update_thread_counters($tid, $counters_update);
-
-				update_thread_data($tid);
+				update_last_post($tid);
 			}
 		}
 
@@ -2772,16 +3040,21 @@ class Moderation
 		{
 			foreach($forum_counters as $fid => $counters)
 			{
-				$updated_forum_stats = array();
-				if(isset($counters['num_posts']))
-				{
-					$updated_forum_stats['posts'] = "-{$counters['num_posts']}";
-					$updated_forum_stats['unapprovedposts'] = "-{$counters['num_unapproved_posts']}";
-				}
-				if(!empty($updated_forum_stats))
-				{
-					update_forum_counters($fid, $updated_forum_stats);
-				}
+				$updated_forum_stats = array(
+					'posts' => "-{$counters['num_posts']}",
+					'unapprovedposts' => "-{$counters['num_unapproved_posts']}",
+					'deletedposts' => "+{$counters['num_deleted_posts']}"
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
 
@@ -2799,6 +3072,11 @@ class Moderation
 		global $db, $cache;
 
 		$num_posts = 0;
+
+		if(empty($pids))
+		{
+			return false;
+		}
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -2834,6 +3112,8 @@ class Moderation
 			$this->restore_threads($threads_to_update);
 		}
 
+		$thread_counters = $forum_counters = $user_counters = array();
+
 		$query = $db->query("
 			SELECT p.pid, p.tid, f.fid, f.usepostcounts, p.uid, t.visible AS threadvisible
 			FROM ".TABLE_PREFIX."posts p
@@ -2845,26 +3125,24 @@ class Moderation
 		{
 			$pids[] = $post['pid'];
 
-			if(!isset($thread_counters[$post['tid']]['deletedposts']))
+			if(!isset($thread_counters[$post['tid']]))
 			{
-				$thread_counters[$post['tid']]['deletedposts'] = 0;
+				$thread_counters[$post['tid']] = array(
+					'replies' => 0
+				);
 			}
 
-			if(!isset($thread_counters[$post['tid']]['replies']))
-			{
-				$thread_counters[$post['tid']]['replies'] = 0;
-			}
-
-			++$thread_counters[$post['tid']]['deletedposts'];
 			++$thread_counters[$post['tid']]['replies'];
 
 			// If the thread of this post is deleted then we've already taken into account this counter as implied.
 			// Updating it again would cause it to double count
 			if($post['threadvisible'] == 1)
 			{
-				if(!isset($forum_counters[$post['fid']]['num_posts']))
+				if(!isset($forum_counters[$post['fid']]))
 				{
-					$forum_counters[$post['fid']]['num_posts'] = 0;
+					$forum_counters[$post['fid']] = array(
+						'num_posts' => 0
+					);
 				}
 				++$forum_counters[$post['fid']]['num_posts'];
 			}
@@ -2872,7 +3150,12 @@ class Moderation
 			// If post counts enabled in this forum and the thread is approved, add 1
 			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
 			{
-				$db->update_query("users", array("postnum" => "postnum+1"), "uid='{$post['uid']}'", 1, true);
+				if(!isset($user_counters[$post['uid']]))
+				{
+					$user_counters[$post['uid']] = 0;
+				}
+				++$user_counters[$post['uid']];
+
 			}
 		}
 
@@ -2892,12 +3175,11 @@ class Moderation
 			foreach($thread_counters as $tid => $counters)
 			{
 				$counters_update = array(
-					"deletedposts" => "-".$counters['deletedposts'],
+					"deletedposts" => "-".$counters['replies'],
 					"replies" => "+".$counters['replies']
 				);
 				update_thread_counters($tid, $counters_update);
-
-				update_thread_data($tid);
+				update_last_post($tid);
 			}
 		}
 
@@ -2905,15 +3187,20 @@ class Moderation
 		{
 			foreach($forum_counters as $fid => $counters)
 			{
-				$updated_forum_stats = array();
-				if(isset($counters['num_posts']))
-				{
-					$updated_forum_stats['posts'] = "+{$counters['num_posts']}";
-				}
-				if(!empty($updated_forum_stats))
-				{
-					update_forum_counters($fid, $updated_forum_stats);
-				}
+				$updated_forum_stats = array(
+					'posts' => "+{$counters['num_posts']}",
+					'deletedposts' => "-{$counters['num_posts']}"
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "+{$counter}"));
 			}
 		}
 
@@ -2935,8 +3222,15 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
+
+		$tid_list = $forum_counters = $user_counters = $posts_to_restore = array();
 
 		foreach($tids as $tid)
 		{
@@ -2949,18 +3243,20 @@ class Moderation
 
 			$forum = get_forum($thread['fid']);
 
-			if(!isset($forum_counters[$forum['fid']]['num_threads']))
+			if(!isset($forum_counters[$forum['fid']]))
 			{
-				$forum_counters[$forum['fid']]['num_threads'] = 0;
-			}
-
-			if(!isset($forum_counters[$forum['fid']]['num_posts']))
-			{
-				$forum_counters[$forum['fid']]['num_posts'] = 0;
+				$forum_counters[$forum['fid']] = array(
+					'num_posts' => 0,
+					'num_threads' => 0,
+					'num_deleted_posts' => 0,
+					'num_unapproved_posts' => 0
+				);
 			}
 
 			++$forum_counters[$forum['fid']]['num_threads'];
 			$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
+			$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['replies']+$thread['unapprovedposts']+1;
+			$forum_counters[$forum['fid']]['num_unapproved_posts'] += $thread['unapprovedposts'];
 
 			if($forum['usepostcounts'] != 0)
 			{
@@ -2968,13 +3264,17 @@ class Moderation
 				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
-					$db->update_query("users", array('postnum' => "postnum+{$counter['posts']}"), "uid='".$counter['uid']."'", 1, true);
+					if(!isset($user_counters[$counter['uid']]))
+					{
+						$user_counters[$counter['uid']] = 0;
+					}
+					$user_counters[$counter['uid']] += $counter['posts'];
 				}
 			}
-			$posts_to_approve[] = $thread['firstpost'];
+			$posts_to_restore[] = $thread['firstpost'];
 		}
 
-		if(is_array($tid_list))
+		if(!empty($tid_list))
 		{
 			$tid_moved_list = "";
 			$comma = "";
@@ -2999,7 +3299,10 @@ class Moderation
 			{
 				$this->restore_threads($redirect_tids);
 			}
-			$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_approve).")");
+			if(!empty($posts_to_restore))
+			{
+				$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_restore).")");
+			}
 
 			$plugins->run_hooks("class_moderation_approve_threads", $tids);
 
@@ -3011,9 +3314,20 @@ class Moderation
 					$update_array = array(
 						"threads" => "+{$counters['num_threads']}",
 						"posts" => "+{$counters['num_posts']}",
+						"unapprovedposts" => "+{$counters['num_unapproved_posts']}",
+						"deletedposts" => "-{$counters['num_deleted_posts']}",
 						"deletedthreads" => "-{$counters['num_threads']}"
 					);
 					update_forum_counters($fid, $update_array);
+					update_forum_lastpost($fid);
+				}
+			}
+
+			if(!empty($user_counters))
+			{
+				foreach($user_counters as $uid => $counter)
+				{
+					update_user_counters($uid, array('postnum' => "+{$counter}"));
 				}
 			}
 		}
@@ -3035,6 +3349,11 @@ class Moderation
 			$tids = array($tids);
 		}
 
+		if(empty($tids))
+		{
+			return false;
+		}
+
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
 
@@ -3047,6 +3366,8 @@ class Moderation
 			$comma = ",";
 		}
 
+		$forum_counters = $user_counters = $posts_to_delete = array();
+
 		foreach($tids as $tid)
 		{
 			$thread = get_thread($tid);
@@ -3054,41 +3375,32 @@ class Moderation
 
 			if($thread['visible'] == 1 || $thread['visible'] == 0)
 			{
-				if(!isset($forum_counters[$forum['fid']]['num_threads']))
+				if(!isset($forum_counters[$forum['fid']]))
 				{
-					$forum_counters[$forum['fid']]['num_threads'] = 0;
-				}
-
-				if(!isset($forum_counters[$forum['fid']]['num_posts']))
-				{
-					$forum_counters[$forum['fid']]['num_posts'] = 0;
-				}
-
-				if(!isset($forum_counters[$forum['fid']]['num_deleted_threads']))
-				{
-					$forum_counters[$forum['fid']]['num_deleted_threads'] = 0;
-				}
-
-				if(!isset($forum_counters[$forum['fid']]['unapproved_threads']))
-				{
-					$forum_counters[$forum['fid']]['unapproved_threads'] = 0;
-				}
-
-				if(!isset($forum_counters[$forum['fid']]['unapproved_posts']))
-				{
-					$forum_counters[$forum['fid']]['unapproved_posts'] = 0;
+					$forum_counters[$forum['fid']] = array(
+						'num_posts' => 0,
+						'num_threads' => 0,
+						'num_deleted_threads' => 0,
+						'num_deleted_posts' => 0,
+						'unapproved_threads' => 0,
+						'unapproved_posts' => 0
+					);
 				}
 
 				++$forum_counters[$forum['fid']]['num_deleted_threads'];
+				$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['replies']+$thread['unapprovedposts']+1;
+
 				if($thread['visible'] == 1)
 				{
-					$forum_counters[$forum['fid']]['num_threads']++;
+					++$forum_counters[$forum['fid']]['num_threads'];
 					$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Add implied invisible to count
+					$forum_counters[$forum['fid']]['unapproved_posts'] += $thread['unapprovedposts'];
 				}
 				else
 				{
-					$forum_counters[$forum['fid']]['unapproved_threads']++;
-					$forum_counters[$forum['fid']]['unapproved_posts'] += $thread['replies']+1; // Add implied invisible to count
+					++$forum_counters[$forum['fid']]['unapproved_threads'];
+					$forum_counters[$forum['fid']]['unapproved_posts'] += $thread['replies']+$thread['deletedposts']+$thread['unapprovedposts']+1; // Add implied invisible to count
+					$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['deletedposts'];
 				}
 
 				// On unapproving thread update user post counts
@@ -3097,11 +3409,15 @@ class Moderation
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
-						$db->update_query("users", array('postnum' => "postnum-{$counter['posts']}"), "uid='".$counter['uid']."'", 1, true);
+						if(!isset($user_counters[$counter['uid']]))
+						{
+							$user_counters[$counter['uid']] = 0;
+						}
+						$user_counters[$counter['uid']] -= $counter['posts'];
 					}
 				}
 			}
-			$posts_to_unapprove[] = $thread['firstpost'];
+			$posts_to_delete[] = $thread['firstpost'];
 		}
 
 		$update = array(
@@ -3119,7 +3435,10 @@ class Moderation
 		{
 			$this->soft_delete_threads($redirect_tids);
 		}
-		$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_unapprove).")");
+		if(!empty($posts_to_delete))
+		{
+			$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_delete).")");
+		}
 
 		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);
 
@@ -3133,9 +3452,19 @@ class Moderation
 					"unapprovedthreads" => "-{$counters['unapproved_threads']}",
 					"posts" => "-{$counters['num_posts']}",
 					"unapprovedposts" => "-{$counters['unapproved_posts']}",
-					"deletedthreads" => "-{$counters['num_deleted_threads']}"
+					"deletedposts" => "+{$counters['num_deleted_posts']}",
+					"deletedthreads" => "+{$counters['num_deleted_threads']}"
 				);
 				update_forum_counters($fid, $update_array);
+				update_forum_lastpost($fid);
+			}
+		}
+
+		if(!empty($user_counters))
+		{
+			foreach($user_counters as $uid => $counter)
+			{
+				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
 

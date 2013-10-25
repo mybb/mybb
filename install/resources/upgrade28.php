@@ -100,6 +100,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("forums", "deletedthreads");
 	}
 
+	if($db->field_exists('deletedposts', 'forums'))
+	{
+		$db->drop_column("forums", "deletedposts");
+	}
+
 	if($db->field_exists('cansoftdelete', 'moderators'))
 	{
 		$db->drop_column("moderators", "cansoftdelete");
@@ -151,7 +156,8 @@ function upgrade28_dbchanges()
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
-			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("threads", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
 			$db->add_column("captcha", "used", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
@@ -170,7 +176,8 @@ function upgrade28_dbchanges()
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
-			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("threads", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
 			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'"); 
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");

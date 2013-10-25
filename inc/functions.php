@@ -142,8 +142,14 @@ function run_shutdown()
 {
 	global $config, $db, $cache, $plugins, $error_handler, $shutdown_functions, $shutdown_queries, $done_shutdown, $mybb;
 
-	if($done_shutdown == true || !$config || $error_handler->has_errors)
+	if($done_shutdown == true || !$config || (isset($error_handler) && $error_handler->has_errors))
 	{
+		return;
+	}
+	
+	if(empty($shutdown_queries) && empty($shutdown_functions))
+	{
+		// Nothing to do
 		return;
 	}
 
@@ -1965,16 +1971,42 @@ function get_memory_usage()
 /**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
  *
- * @param array Array of items being updated (numthreads,numposts,numusers)
+ * @param array Array of items being updated (numthreads,numposts,numusers,numunapprovedthreads,numunapprovedposts,numdeletedposts,numdeletedthreads)
+ * @param boolean Force stats update?
  */
-function update_stats($changes=array())
+function update_stats($changes=array(), $force=false)
 {
 	global $cache, $db;
+	static $stats_changes;
+	
+	if(empty($stats_changes))
+	{
+		$stats_changes = array(
+			'numthreads' => 0,
+			'numposts' => 0,
+			'numusers' => 0,
+			'numunapprovedthreads' => 0,
+			'numunapprovedposts' => 0,
+			'numdeletedposts' => 0,
+			'numdeletedthreads' => 0
+		);
+		add_shutdown('update_stats', array(array(), true));
+		$stats = $stats_changes;
+	}
 
-	$stats = $cache->read("stats");
+	if($force)
+	{
+		update_stats($changes);
+		$stats = $cache->read("stats");
+		$changes = $stats_changes;
+	}
+	else
+	{
+		$stats = $stats_changes;
+	}
 
-	$counters = array('numthreads','numunapprovedthreads','numposts','numunapprovedposts','numusers');
-	$update = array();
+	$counters = array('numthreads', 'numunapprovedthreads', 'numposts', 'numunapprovedposts', 'numusers', 'numdeletedposts', 'numdeletedthreads');
+	$new_stats = array();
 	foreach($counters as $counter)
 	{
 		if(array_key_exists($counter, $changes))
@@ -1999,6 +2031,12 @@ function update_stats($changes=array())
 		}
 	}
 
+	if(!$force)
+	{
+		$stats_changes = array_merge($stats, $new_stats);
+		return;
+	}
+
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{
@@ -2008,18 +2046,16 @@ function update_stats($changes=array())
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
 
-	if(empty($new_stats))
+	if(!empty($new_stats))
 	{
-		return;
-	}
-
-	if(is_array($stats))
-	{
-		$stats = array_merge($stats, $new_stats);
-	}
-	else
-	{
-		$stats = $new_stats;
+		if(is_array($stats))
+		{
+			$stats = array_merge($stats, $new_stats);
+		}
+		else
+		{
+			$stats = $new_stats;
+		}
 	}
 
 	// Update stats row for today in the database
@@ -2038,15 +2074,15 @@ function update_stats($changes=array())
  * Updates the forum counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The forum ID
- * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts, deletedthreads) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts, deletedposts, deletedthreads) and their value (ex, 1, +1, -1)
  */
 function update_forum_counters($fid, $changes=array())
 {
-	global $db, $cache;
+	global $db;
 
 	$update_query = array();
 
-	$counters = array('threads', 'unapprovedthreads', 'posts' ,'unapprovedposts', 'deletedthreads');
+	$counters = array('threads', 'unapprovedthreads', 'posts', 'unapprovedposts', 'deletedposts', 'deletedthreads');
 
 	// Fetch above counters for this forum
 	$query = $db->simple_select("forums", implode(",", $counters), "fid='{$fid}'");
@@ -2059,7 +2095,10 @@ function update_forum_counters($fid, $changes=array())
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				$update_query[$counter] = $forum[$counter] + $changes[$counter];
+				if(intval($changes[$counter]) != 0)
+				{
+					$update_query[$counter] = $forum[$counter] + $changes[$counter];
+				}
 			}
 			else
 			{
@@ -2067,7 +2106,7 @@ function update_forum_counters($fid, $changes=array())
 			}
 
 			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
+			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
 			{
 				$update_query[$counter] = 0;
 			}
@@ -2134,16 +2173,29 @@ function update_forum_counters($fid, $changes=array())
 		}
 	}
 
-	if(array_key_exists('deletedthreads', $update_query))
+	if(array_key_exists('deletedposts', $update_query))
 	{
-		$deletedthreads_diff = $update_query['deletedthreads'] - $forum['deletedthreads'];
-		if($unapprovedposts_diff > -1)
+		$deletedposts_diff = $update_query['deletedposts'] - $forum['deletedposts'];
+		if($deletedposts_diff > -1)
 		{
-			$new_stats['deletedthreads'] = "+{$deletedthreads_diff}";
+			$new_stats['numdeletedposts'] = "+{$deletedposts_diff}";
 		}
 		else
 		{
-			$new_stats['deletedthreads'] = "{$deletedthreads_diff}";
+			$new_stats['numdeletedposts'] = "{$deletedposts_diff}";
+		}
+	}
+
+	if(array_key_exists('deletedthreads', $update_query))
+	{
+		$deletedthreads_diff = $update_query['deletedthreads'] - $forum['deletedthreads'];
+		if($deletedthreads_diff > -1)
+		{
+			$new_stats['numdeletedthreads'] = "+{$deletedthreads_diff}";
+		}
+		else
+		{
+			$new_stats['numdeletedthreads'] = "{$deletedthreads_diff}";
 		}
 	}
 
@@ -2151,9 +2203,6 @@ function update_forum_counters($fid, $changes=array())
 	{
 		update_stats($new_stats);
 	}
-
-	// Update last post info
-	update_forum_lastpost($fid);
 }
 
 /**
@@ -2197,6 +2246,7 @@ function update_thread_counters($tid, $changes=array())
 	global $db;
 
 	$update_query = array();
+	$tid = intval($tid);
 
 	$counters = array('replies', 'unapprovedposts', 'attachmentcount', 'deletedposts', 'attachmentcount');
 
@@ -2211,7 +2261,10 @@ function update_thread_counters($tid, $changes=array())
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				$update_query[$counter] = $thread[$counter] + $changes[$counter];
+				if(intval($changes[$counter]) != 0)
+				{
+					$update_query[$counter] = $thread[$counter] + $changes[$counter];
+				}
 			}
 			else
 			{
@@ -2219,7 +2272,7 @@ function update_thread_counters($tid, $changes=array())
 			}
 
 			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
+			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
 			{
 				$update_query[$counter] = 0;
 			}
@@ -2231,12 +2284,8 @@ function update_thread_counters($tid, $changes=array())
 	// Only update if we're actually doing something
 	if(count($update_query) > 0)
 	{
-		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
+		$db->update_query("threads", $update_query, "tid='{$tid}'");
 	}
-
-	unset($update_query, $thread);
-
-	update_thread_data($tid);
 }
 
 /**
@@ -2269,7 +2318,7 @@ function update_thread_data($tid)
 	$db->free_result($query);
 
 	$query = $db->query("
-		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE p.tid='$tid'
@@ -2280,17 +2329,17 @@ function update_thread_data($tid)
 
 	$db->free_result($query);
 
-	if(!$firstpost['username'])
+	if(empty($firstpost['username']))
 	{
 		$firstpost['username'] = $firstpost['postusername'];
 	}
 
-	if(!$lastpost['username'])
+	if(empty($lastpost['username']))
 	{
 		$lastpost['username'] = $lastpost['postusername'];
 	}
 
-	if(!$lastpost['dateline'])
+	if(empty($lastpost['dateline']))
 	{
 		$lastpost['username'] = $firstpost['username'];
 		$lastpost['uid'] = $firstpost['uid'];
@@ -2301,6 +2350,7 @@ function update_thread_data($tid)
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
 	$update_array = array(
+		'firstpost' => intval($firstpost['pid']),
 		'username' => $firstpost['username'],
 		'uid' => intval($firstpost['uid']),
 		'dateline' => intval($firstpost['dateline']),
@@ -2309,21 +2359,61 @@ function update_thread_data($tid)
 		'lastposteruid' => intval($lastpost['uid']),
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
-
-	unset($firstpost, $lastpost, $update_array);
 }
 
-function update_forum_count($fid)
+
+
+/**
+ * Updates the user counters with a specific value (or addition/subtraction of the previous value)
+ *
+ * @param int The user ID
+ * @param array Array of items being updated (postnum) and their value (ex, 1, +1, -1)
+ */
+function update_user_counters($uid, $changes=array())
 {
-	die("Deprecated function call: update_forum_count");
-}
-function update_thread_count($tid)
-{
-	die("Deprecated function call: update_thread_count");
-}
-function update_thread_attachment_count($tid)
-{
-	die("Deprecated function call: update_thread_attachment_count");
+	global $db;
+
+	$update_query = array();
+
+	$counters = array('postnum');
+	$uid = intval($uid);
+
+	// Fetch above counters for this user
+	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
+	$user = $db->fetch_array($query);
+
+	foreach($counters as $counter)
+	{
+		if(array_key_exists($counter, $changes))
+		{
+			// Adding or subtracting from previous value?
+			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+			{
+				if(intval($changes[$counter]) != 0)
+				{
+					$update_query[$counter] = $user[$counter] + $changes[$counter];
+				}
+			}
+			else
+			{
+				$update_query[$counter] = $changes[$counter];
+			}
+
+			// Less than 0? That's bad
+			if(isset($update_query[$counter]) && $update_query[$counter] < 0)
+			{
+				$update_query[$counter] = 0;
+			}
+		}
+	}
+
+	$db->free_result($query);
+
+	// Only update if we're actually doing something
+	if(count($update_query) > 0)
+	{
+		$db->update_query("users", $update_query, "uid='{$uid}'");
+	}
 }
 
 /**
@@ -4656,21 +4746,80 @@ function update_first_post($tid)
 {
 	global $db;
 
-	$query = $db->simple_select("posts", "pid,replyto", "tid='{$tid}'", array('order_by' => 'dateline', 'limit' => 1));
-	$post = $db->fetch_array($query);
+	$query = $db->query("
+		SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid'
+		ORDER BY p.dateline ASC
+		LIMIT 1
+	");
+	$firstpost = $db->fetch_array($query);
 
-	if($post['replyto'] != 0)
+	if(empty($firstpost['username']))
 	{
-		$replyto_update = array(
-			"replyto" => 0
-		);
-		$db->update_query("posts", $replyto_update, "pid='{$post['pid']}'");
+		$firstpost['username'] = $firstpost['postusername'];
+	}
+	$firstpost['username'] = $db->escape_string($firstpost['username']);
+
+	$update_array = array(
+		'firstpost' => intval($firstpost['pid']),
+		'username' => $firstpost['username'],
+		'uid' => intval($firstpost['uid']),
+		'dateline' => intval($firstpost['dateline'])
+	);
+	$db->update_query("threads", $update_array, "tid='{$tid}'");
+}
+
+/**
+ * Updates the last posts in a thread.
+ *
+ * @param int The thread id for which to update the last post id.
+ */
+function update_last_post($tid)
+{
+	global $db;
+
+	$query = $db->query("
+		SELECT u.uid, u.username, p.username AS postusername, p.dateline
+		FROM ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+		WHERE p.tid='$tid' AND p.visible='1'
+		ORDER BY p.dateline DESC
+		LIMIT 1"
+	);
+	$lastpost = $db->fetch_array($query);
+
+	if(empty($lastpost['username']))
+	{
+		$lastpost['username'] = $lastpost['postusername'];
 	}
 
-	$firstpostup = array(
-		"firstpost" => $post['pid']
+	if(empty($lastpost['dateline']))
+	{
+		$query = $db->query("
+			SELECT u.uid, u.username, p.pid, p.username AS postusername, p.dateline
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.tid='$tid'
+			ORDER BY p.dateline ASC
+			LIMIT 1
+		");
+		$firstpost = $db->fetch_array($query);
+
+		$lastpost['username'] = $firstpost['username'];
+		$lastpost['uid'] = $firstpost['uid'];
+		$lastpost['dateline'] = $firstpost['dateline'];
+	}
+
+	$lastpost['username'] = $db->escape_string($lastpost['username']);
+	
+	$update_array = array(
+		'lastpost' => intval($lastpost['dateline']),
+		'lastposter' => $lastpost['username'],
+		'lastposteruid' => intval($lastpost['uid'])
 	);
-	$db->update_query("threads", $firstpostup, "tid='$tid'");
+	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
 /**

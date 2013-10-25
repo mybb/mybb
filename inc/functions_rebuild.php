@@ -16,24 +16,13 @@ function rebuild_stats()
 {
 	global $db;
 
-	$stats = array();
-
-	$query = $db->simple_select("forums", "SUM(threads) AS numthreads");
-	$stats['numthreads'] = $db->fetch_field($query, 'numthreads');
-
-	$query = $db->simple_select("forums", "SUM(posts) AS numposts");
-	$stats['numposts'] = $db->fetch_field($query, 'numposts');
-
-	$query = $db->simple_select("forums", "SUM(unapprovedthreads) AS numunapprovedthreads");
-	$stats['numunapprovedthreads'] = $db->fetch_field($query, 'numunapprovedthreads');
-
-	$query = $db->simple_select("forums", "SUM(unapprovedposts) AS numunapprovedposts");
-	$stats['numunapprovedposts'] = $db->fetch_field($query, 'numunapprovedposts');
+	$query = $db->simple_select("forums", "SUM(threads) AS numthreads, SUM(posts) AS numposts, SUM(unapprovedthreads) AS numunapprovedthreads, SUM(unapprovedposts) AS numunapprovedposts, SUM(deletedthreads) AS numdeletedthreads, SUM(deletedposts) AS numdeletedposts");
+	$stats = $db->fetch_array($query);
 
 	$query = $db->simple_select("users", "COUNT(uid) AS users");
 	$stats['numusers'] = $db->fetch_field($query, 'users');
 
-	update_stats($stats);
+	update_stats($stats, true);
 }
 
 /**
@@ -43,32 +32,25 @@ function rebuild_forum_counters($fid)
 {
 	global $db;
 
-	$count = array();
-
 	// Fetch the number of threads and replies in this forum (Approved only)
-	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies) AS replies', "fid='$fid' AND visible='1'");
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies) AS replies, SUM(unapprovedposts) AS unapprovedposts, SUM(deletedposts) AS deletedposts', "fid='$fid' AND visible='1'");
 	$count = $db->fetch_array($query);
 	$count['posts'] = $count['threads'] + $count['replies'];
 
 	// Fetch the number of threads and replies in this forum (Unapproved only)
-	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies) AS impliedunapproved', "fid='$fid' AND visible='0'");
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies)+SUM(unapprovedposts)+SUM(deletedposts) AS impliedunapproved', "fid='$fid' AND visible='0'");
 	$count2 = $db->fetch_array($query);
  	$count['unapprovedthreads'] = $count2['threads'];
-	$count['unapprovedposts'] = $count2['impliedunapproved']+$count2['threads'];
+	$count['unapprovedposts'] += $count2['impliedunapproved']+$count2['threads'];
 
 	// Fetch the number of threads and replies in this forum (Soft deleted only)
-	$query = $db->simple_select('threads', 'COUNT(tid) AS threads', "fid='$fid' AND visible='-1'");
+	$query = $db->simple_select('threads', 'COUNT(tid) AS threads, SUM(replies)+SUM(unapprovedposts)+SUM(deletedposts) AS implieddeleted', "fid='$fid' AND visible='-1'");
 	$count3 = $db->fetch_array($query);
  	$count['deletedthreads'] = $count3['threads'];
-
-	$query = $db->query("
-		SELECT SUM(unapprovedposts) AS posts
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
-	");
-	$count['unapprovedposts'] += $db->fetch_field($query, "posts");
+	$count['deletedposts'] += $count3['implieddeleted']+$count3['threads'];
 
 	update_forum_counters($fid, $count);
+	update_forum_lastpost($fid);
 }
 
 /**
@@ -84,7 +66,7 @@ function rebuild_thread_counters($tid)
  	$thread = get_thread($tid);
 	$count = array();
 
- 	$query = $db->simple_select("posts", "COUNT(*) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'");
+ 	$query = $db->simple_select("posts", "COUNT(pid) AS replies", "tid='{$tid}' AND pid!='{$thread['firstpost']}' AND visible='1'");
  	$count['replies'] = $db->fetch_field($query, "replies");
 
 	// Unapproved posts
@@ -100,10 +82,11 @@ function rebuild_thread_counters($tid)
 			SELECT COUNT(aid) AS attachment_count
 			FROM ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-			WHERE p.tid='$tid'
+			WHERE p.tid='$tid' AND a.visible=1
 	");
 	$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
 
 	update_thread_counters($tid, $count);
+	update_thread_data($tid);
 }
 ?>
