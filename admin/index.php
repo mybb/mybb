@@ -334,7 +334,7 @@ else
 				// Admin CP sessions 2 hours old are expired
 				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
-					$login_message = $lang->error_admin_session_expired;
+					$login_message = $lang->error_admin_session_has_expired;
 					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 					unset($mybb->user);
 				}
@@ -458,7 +458,7 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login($lang->error_invalid_username_password, "error");
+		$page->show_login($lang->error_invalid_username_or_password, "error");
 	}
 	else
 	{
