@@ -1585,6 +1585,11 @@ if($mybb->input['action'] == "profile")
 			"filter_badwords" => 1
 		);
 
+		if($memperms['signofollow'])
+		{
+			$sig_parser['nofollow_on'] = 1;
+		}
+
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
 	}
