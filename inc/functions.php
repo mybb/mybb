@@ -6467,4 +6467,121 @@ function gd_version()
 
 	return $gd_version;
 }
+
+/**
+ * Validates an UTF-8 string.
+ *
+ * @param string The string to be checked
+ * @param boolean Allow 4 byte UTF-8 characters?
+ * @param boolean Return the cleaned string?
+ * @return string/boolean Cleaned string or boolean
+ */
+function validate_utf8_string($input, $allow_mb4=true, $return=true)
+{
+	// Valid UTF-8 sequence?
+	if(!preg_match('##u', $input))
+	{
+		$string = '';
+		$len = strlen($input);
+		for($i = 0; $i < $len; $i++)
+		{
+			$c = ord($input[$i]);
+			if($c > 128)
+			{
+				if($c > 247 || $c <= 191)
+				{
+					if($return)
+					{
+						$string .= '?';
+						continue;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				elseif($c > 239)
+				{
+					$bytes = 4;
+				}
+				elseif($c > 223)
+				{
+					$bytes = 3;
+				}
+				elseif($c > 191)
+				{
+					$bytes = 2;
+				}
+				if(($i + $bytes) > $len)
+				{
+					if($return)
+					{
+						$string .= '?';
+						break;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				$valid = true;
+				$multibytes = $input[$i];
+				while($bytes > 1)
+				{
+					$i++;
+					$b = ord($input[$i]);
+					if($b < 128 || $b > 191)
+					{
+						if($return)
+						{
+							$valid = false;
+							$string .= '?';
+							break;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						$multibytes .= $input[$i];
+					}
+					$bytes--;
+				}
+				if($valid)
+				{
+					$string .= $multibytes;
+				}
+			}
+			else
+			{
+				$string .= $input[$i];
+			}
+		}
+		$input = $string;
+	}
+	if($return)
+	{
+		if($allow_mb4)
+		{
+			return $input;
+		}
+		else
+		{
+			return preg_replace("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", '?', $input);
+		}
+	}
+	else
+	{
+		if($allow_mb4)
+		{
+			return true;
+		}
+		else
+		{
+			return !preg_match("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", $input);
+		}
+	}
+}
 ?>

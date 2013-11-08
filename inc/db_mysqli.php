@@ -860,18 +860,13 @@ class DB_MySQLi
 	 */
 	function escape_string($string)
 	{
-		if(!function_exists('mb_check_encoding') || !mb_check_encoding($string, 'ASCII'))
+		if($this->db_encoding == 'utf8')
 		{
-			if($this->db_encoding == 'utf8')
-			{
-				// Remove characters with more than 3 bytes because MySQL can't handle them
-				$string = preg_replace("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", "?", $string);
-			}
-			elseif($this->db_encoding == 'utf8mb4')
-			{
-				// Remove characters with more than 4 bytes because MySQL can't handle them
-				$string = preg_replace("#[^\\x00-\\x7F][\\x80-\\xBF]{4,}#", "?", $string);
-			}
+			$string = validate_utf8_string($string, false);
+		}
+		elseif($this->db_encoding == 'utf8mb4')
+		{
+			$string = validate_utf8_string($string);
 		}
 
 		if(function_exists("mysqli_real_escape_string") && $this->read_link)
