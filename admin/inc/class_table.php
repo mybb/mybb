@@ -96,7 +96,7 @@ class DefaultTable
 			}
 			if(isset($cell['extra']['id']))
 			{
-				$cells .= $cell['extra']['id'];
+				$cells .= " id=\"".$cell['extra']['id']."\"";
 			}
 			if(isset($cell['extra']['colspan']) && $cell['extra']['colspan'] > 1)
 			{
