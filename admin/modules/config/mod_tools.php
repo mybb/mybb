@@ -1039,7 +1039,8 @@ if($mybb->input['action'] == "edit_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'threadprefix' => '-1'
 			);
 			
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1504,7 +1505,8 @@ if($mybb->input['action'] == "add_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'threadprefix' => '-1'
 			);
 			
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
