@@ -21,5 +21,6 @@ $l['database_backups'] = "Database Backups";
 $l['quick_access'] = "Quick Access";
 $l['online_admins'] = "Online Admins";
 $l['ipaddress'] = "IP Address:";
+$l['mybb_documentation'] = "MyBB Documentation";
 
 ?>

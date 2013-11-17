@@ -64,6 +64,7 @@ function home_action_handler($action)
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates");
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
+		$sub_menu['70'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "http://docs.mybb.com");
 
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
 
