@@ -604,6 +604,10 @@ class PMDataHandler extends DataHandler
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
 
+				require_once MYBB_ROOT.'inc/class_parser.php';
+				$parser = new Postparser;
+				$pm['message'] = $parser->text_parse_message($pm['message'], array('me_username' => $pm['sender']['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
 
