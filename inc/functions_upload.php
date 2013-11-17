@@ -467,8 +467,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	{
 		$file = upload_file($attachment, $mybb->settings['uploadspath'].'/', $filename);
 	}
-
-	if($month_dir)
+	elseif($month_dir)
 	{
 		$filename = $month_dir."/".$filename;
 	}

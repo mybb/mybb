@@ -1005,7 +1005,11 @@ class DB_MySQLi
 		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		$table_type = my_strtoupper($status['Engine']);
-		if($version >= '3.23.23' && $table_type == 'MYISAM')
+		if($version >= '3.23.23' && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
+		{
+			return true;
+		}
+		elseif($version >= '5.6' && $table_type == 'INNODB')
 		{
 			return true;
 		}
