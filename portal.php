@@ -420,7 +420,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	}
 	if(!empty($posts))
 	{
-		if($pids != '')
+		if($pids != '' && $mybb->settings['enableattachments'] == 1)
 		{
 			$pids = "pid IN(0{$pids})";
 			// Now lets fetch all of the attachments for these posts
@@ -519,7 +519,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$message = $parser->parse_message($announcement['message'], $parser_options);
 
 			$post['attachments'] = '';
-			if(isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
+			if($mybb->settings['enableattachments'] == 1 && isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
 			{ // This post has 1 or more attachments
 				$validationcount = 0;
 				$id = $announcement['pid'];

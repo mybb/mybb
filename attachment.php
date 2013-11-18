@@ -14,6 +14,11 @@ define('THIS_SCRIPT', 'attachment.php');
 
 require_once "./global.php";
 
+if($mybb->settings['enableattachments'] != 1)
+{
+	error($lang->attachments_disabled);
+}
+
 // Find the AID we're looking for
 if(isset($mybb->input['thumbnail']))
 {

@@ -184,7 +184,7 @@ if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') |
 	$attachcount = $db->fetch_field($query, "numattachs");
 
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
+	if($_FILES['attachment']['size'] > 0 && $mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
 		$update_attachment = false;
 		if($mybb->get_input('updateattachment') && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
@@ -437,7 +437,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	$bgcolor = "trow1";
-	if($forumpermissions['canpostattachments'] != 0)
+	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");

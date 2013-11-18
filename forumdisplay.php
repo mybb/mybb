@@ -1216,7 +1216,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		}
 
 		// If this thread has 1 or more attachments show the papperclip
-		if($thread['attachmentcount'] > 0)
+		if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
 		{
 			if($thread['attachmentcount'] > 1)
 			{

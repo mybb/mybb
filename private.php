@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow";
+$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";

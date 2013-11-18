@@ -533,6 +533,11 @@ function usercp_menu_misc()
 		$draftcount = $lang->sprintf($lang->ucp_nav_drafts_active, my_number_format($count));
 	}
 
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		eval("\$attachmentop = \"".$templates->get("usercp_nav_attachments")."\";");
+	}
+
 	if(!isset($collapsedimg['usercpmisc']))
 	{
 		$collapsedimg['usercpmisc'] = '';

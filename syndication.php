@@ -145,15 +145,18 @@ if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
 
-	$attachments = array();
-	$query = $db->simple_select("attachments", "*", $firstpostlist);
-	while($attachment = $db->fetch_array($query))
+	if($mybb->settings['enableattachments'] == 1)
 	{
-		if(!isset($attachments[$attachment['pid']]))
+		$attachments = array();
+		$query = $db->simple_select("attachments", "*", $firstpostlist);
+		while($attachment = $db->fetch_array($query))
 		{
-			$attachments[$attachment['pid']] = array();
+			if(!isset($attachments[$attachment['pid']]))
+			{
+				$attachments[$attachment['pid']] = array();
+			}
+			$attachments[$attachment['pid']][] = $attachment;
 		}
-		$attachments[$attachment['pid']][] = $attachment;
 	}
 
 	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
@@ -170,7 +173,7 @@ if(!empty($firstposts))
 
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
 
-		if(isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
+		if($mybb->settings['enableattachments'] == 1 && isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
 		{
 			foreach($attachments[$post['pid']] as $attachment)
 			{

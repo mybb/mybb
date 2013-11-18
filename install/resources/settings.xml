@@ -1349,10 +1349,19 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="enableattachments">
+			<title>Enable Attachment Functionality</title>
+			<description><![CDATA[If you wish to disable attachments on your board, set this option to no.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1361,7 +1370,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="attachthumbnails">
 			<title>Show Attached Thumbnails in Posts</title>
 			<description><![CDATA[How do you want images to be shown in posts?]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[radio
 yes=Thumbnail
 no=Full Size Image
@@ -1373,7 +1382,7 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbh">
 			<title>Attached Thumbnail Maximum Height</title>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1382,7 +1391,7 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbw">
 			<title>Attached Thumbnail Maximum Width</title>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1391,7 +1400,7 @@ download=As Download Link]]></optionscode>
 		<setting name="wordwrap">
 			<title>Number of Characters before Word Wrapping Occurs</title>
 			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[80]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1400,7 +1409,7 @@ download=As Download Link]]></optionscode>
 		<setting name="maxquotedepth">
 			<title>Maximum Nested Quote Tags</title>
 			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1409,7 +1418,7 @@ download=As Download Link]]></optionscode>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
 			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1418,7 +1427,7 @@ download=As Download Link]]></optionscode>
 		<setting name="maxpolloptions">
 			<title>Maximum Number of Poll Options</title>
 			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1427,7 +1436,7 @@ download=As Download Link]]></optionscode>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
