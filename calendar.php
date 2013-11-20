@@ -1568,7 +1568,7 @@ if($mybb->input['action'] == "dayview")
 
 	// Then the month
 	$mybb->input['month'] = $mybb->get_input('month', 1);
-	if($mybb->input['month'] >=1 && $mybb->input['month'] <= 12)
+	if($mybb->input['month'] >= 1 && $mybb->input['month'] <= 12)
 	{
 		$month = $mybb->input['month'];
 	}
@@ -2150,10 +2150,11 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
-	// Incoming month/year?
-	if(!empty($mybb->input['year']) && $mybb->get_input('year', 1) <= my_date("Y")+5)
+	// Incoming year?
+	$mybb->input['year'] = $mybb->get_input('year', 1);
+	if($mybb->input['year'] && $mybb->input['year'] <= my_date("Y")+5)
 	{
-		$year = $mybb->get_input('year');
+		$year = $mybb->input['year'];
 	}
 	else
 	{
