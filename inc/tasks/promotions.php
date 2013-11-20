@@ -74,6 +74,7 @@ function task_promotions($task)
 					break;
 				case "weeks":
 					$regdate = $promotion['registered']*60*60*24*7;
+					break;
 				case "months":
 					$regdate = $promotion['registered']*60*60*24*30;
 					break;
