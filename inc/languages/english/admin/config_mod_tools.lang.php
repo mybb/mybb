@@ -83,6 +83,7 @@ $l['merge_thread'] = "Merge thread?";
 $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
 $l['delete_redirects'] = "Delete redirects?";
+$l['remove_subscriptions'] = "Remove thread subscriptions?";
 $l['apply_thread_prefix'] = "Apply thread prefix?";
 $l['new_subject'] = "New subject?";
 $l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
