@@ -101,7 +101,7 @@ var Thread = {
 	multiQuotedLoaded: function(request)
 	{
 		var json = $.parseJSON(request.responseText);
-		if(typeof response == 'object')
+		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
 			{
@@ -168,7 +168,7 @@ var Thread = {
 				submit : "OK",
 				cancel : "Cancel",
 				tooltip : "Click to edit...",
-				event : "edit" + pid, // Triggered by the event "edit_[pid]"
+				event : "edit" + pid, // Triggered by the event "edit_[pid]",
 				callback : function(values, settings) {
 					values = JSON.parse(values);
 					
@@ -181,7 +181,8 @@ var Thread = {
 		
 		$('.quick_edit_button').each(function() {
 			$(this).bind("click", function(e) {
-				//e.stopPropagation();
+				//alert('clicking');
+				e.stopPropagation();
 				
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
@@ -192,6 +193,7 @@ var Thread = {
 			
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
+
 			});
         });
 
@@ -243,7 +245,7 @@ var Thread = {
 		this.quick_replying = 0;
 		
 		var json = $.parseJSON(request.responseText);
-		if(typeof response == 'object')
+		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
 			{
