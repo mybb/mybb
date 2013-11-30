@@ -9393,14 +9393,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="reputation_add" version="1605"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
-{$headerinclude}
-</head>
-<body>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="reputation_add" version="1800"><![CDATA[<html>
+<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+      <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$vote_title}</strong><br />{$post_rep_info}<br />
@@ -9428,15 +9424,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="reputation_add_error" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
-{$headerinclude}
-</head>
-<body>
-<br />
+  </div>
+</div>]]></template>
+		<template name="reputation_add_error" version="1800"><![CDATA[<html>
+<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
@@ -9458,15 +9450,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="reputation_added" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
-{$headerinclude}
-</head>
-<body onunload="window.opener.location.reload();">
-<br />
+  </div>
+</div>]]></template>
+		<template name="reputation_added" version="1800"><![CDATA[<html>
+<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
@@ -9483,16 +9471,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>
-</body>
-</html>]]></template>
+  </div>
+</div>]]></template>
 		<template name="reputation_addlink" version="1800"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});" class="button rate_user_button"><span>{$lang->rate_user}</span></a></div>]]></template>
-		<template name="reputation_deleted" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
-{$headerinclude}
-</head>
-<body onunload="window.opener.location.reload();">
-<br />
+		<template name="reputation_deleted" version="1800"><![CDATA[<html>
+<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
@@ -9509,8 +9493,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>

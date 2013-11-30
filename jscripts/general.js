@@ -116,6 +116,16 @@ var MyBB = {
 			form.submit();
 		}
 	},
+	
+	reputation: function(uid, pid)
+	{
+		if(!pid)
+		{
+			var pid = 0;
+		}
+
+		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid);
+	},
 
 	deleteReputation: function(uid, rid)
 	{
