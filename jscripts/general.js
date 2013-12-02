@@ -299,7 +299,35 @@ var MyBB = {
 		});
 		pm_notice.remove();
 		return false;
-	}
+	},
+	
+	submitReputation: function(uid, pid, del)
+	{
+		// Get form, serialize it and send it
+		var datastring = $(".reputation_"+uid+"_"+pid).serialize();
+		
+		if(del == 1)
+			datastring = datastring + '&delete=1';
+		
+		$.ajax({
+			type: "POST",
+			url: "reputation.php",
+			data: datastring,
+			dataType: "html",
+			success: function(data) {
+				// Replace modal HTML (we have to access by class because the modals are appended to the end of the body, and when we get by class we get the last element of that class - which is what we want)
+				$(".modal_"+uid+"_"+pid).fadeOut('slow', function() {
+					$(".modal_"+uid+"_"+pid).html(data);
+					$(".modal_"+uid+"_"+pid).fadeIn('slow');
+				});
+			},
+			error: function(){
+				  alert('An unknown error has occurred.');
+			}
+		});
+		
+		return false;
+	},
 }
 
 var expandables = {

@@ -9188,8 +9188,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" id="modal_{$pid}">
-  <form action="report.php" method="post" id="reportPost_{$pid}" onsubmit="javascript: return Thread.submitReport({$pid});">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
+  <form action="report.php" method="post" class="reportPost_{$pid}" onsubmit="javascript: return Thread.submitReport({$pid});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
@@ -9379,19 +9379,19 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="reputation_add" version="1800"><![CDATA[<html>
-<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
+		<template name="reputation_add" version="1800"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;" class="modal_{$user['uid']}_{$mybb->input['pid']}">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$vote_title}</strong><br />{$post_rep_info}<br />
-			<form action="reputation.php" method="post">
+          <form action="reputation.php" method="post" class="reputation_{$user['uid']}_{$mybb->input['pid']}" onsubmit="javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']});">
 				<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 				<input type="hidden" name="action" value="do_add" />
 				<input type="hidden" name="uid" value="{$user['uid']}" />
 				<input type="hidden" name="pid" value="{$mybb->input['pid']}" />
 				<input type="hidden" name="rid" value="{$rid}" />
+				<input type="hidden" name="nomodal" value="1" />
 				<select name="reputation" id="reputation">
 					{$positive_power}
 					{$neutral_power}
@@ -9412,75 +9412,36 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
   </div>
 </div>]]></template>
-		<template name="reputation_add_error" version="1800"><![CDATA[<html>
-<div class="modal">
+		<template name="reputation_add_error" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+      <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$lang->error}</strong><br /><br />
 			   <blockquote>{$message}</blockquote>
-				<br /><br />
-				<div style="text-align: center;">
-					<script type="text/javascript">
-					<!--
-						var showBack = {$show_back};
-						if(showBack == 1)
-						{
-							document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
-						}
-						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
-					// -->
-					</script>
-				</div>
 		</td>
 	</tr>
 </table>
   </div>
 </div>]]></template>
-		<template name="reputation_added" version="1800"><![CDATA[<html>
-<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="reputation_added" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$lang->vote_added}</strong><br /><br />
 			   <blockquote>{$lang->vote_added_message}</blockquote>
-				<br /><br />
-				<div style="text-align: center;">
-					<script type="text/javascript">
-					<!--
-						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
-					// -->
-					</script>
-				</div>
 		</td>
 	</tr>
-</table>
-  </div>
-</div>]]></template>
+</table>]]></template>
 		<template name="reputation_addlink" version="1800"><![CDATA[<div class="float_right" style="padding-bottom: 4px;"><a href="javascript:MyBB.reputation({$user['uid']});" class="button rate_user_button"><span>{$lang->rate_user}</span></a></div>]]></template>
-		<template name="reputation_deleted" version="1800"><![CDATA[<html>
-<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
+		<template name="reputation_deleted" version="1800"><![CDATA[
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
 			<strong>{$lang->vote_deleted}</strong><br /><br />
 			   <blockquote>{$lang->vote_deleted_message}</blockquote>
-				<br /><br />
-				<div style="text-align: center;">
-					<script type="text/javascript">
-					<!--
-						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
-					// -->
-					</script>
-				</div>
 		</td>
 	</tr>
-</table>
-</div>
-</div>]]></template>
+</table>]]></template>
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>

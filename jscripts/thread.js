@@ -380,7 +380,7 @@ var Thread = {
 	submitReport: function(pid)
 	{
 		// Get form, serialize it and send it
-		var datastring = $("#reportPost_"+pid).serialize();
+		var datastring = $(".reportPost_"+pid).serialize();
 		$.ajax({
 			type: "POST",
 			url: "report.php",
@@ -388,9 +388,9 @@ var Thread = {
 			dataType: "html",
 			success: function(data) {
 				// Replace modal HTML
-				$('#modal_'+pid).fadeOut('slow', function() {
-					$('#modal_'+pid).html(data);
-					$('#modal_'+pid).fadeIn('slow');
+				$('.modal_'+pid).fadeOut('slow', function() {
+					$('.modal_'+pid).html(data);
+					$('.modal_'+pid).fadeIn('slow');
 				});
 			},
 			error: function(){
