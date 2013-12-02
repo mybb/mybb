@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'report.php');
 
-$templatelist = "report,report_thanks,report_error,report_noreason,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "report,report_thanks,report_error,report_reasons,report_error_nomodal,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/functions_modcp.php';
 
