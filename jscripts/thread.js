@@ -376,6 +376,30 @@ var Thread = {
 	{
 		MyBB.popupWindow("/report.php?pid="+pid);
 	},
+	
+	submitReport: function(pid)
+	{
+		// Get form, serialize it and send it
+		var datastring = $("#reportPost_"+pid).serialize();
+		$.ajax({
+			type: "POST",
+			url: "report.php",
+			data: datastring,
+			dataType: "html",
+			success: function(data) {
+				// Replace modal HTML
+				$('#modal_'+pid).fadeOut('slow', function() {
+					$('#modal_'+pid).html(data);
+					$('#modal_'+pid).fadeIn('slow');
+				});
+			},
+			error: function(){
+				  alert('An unknown error has occurred.');
+			}
+		});
+		
+		return false;
+	},
 };
 
 Thread.init();

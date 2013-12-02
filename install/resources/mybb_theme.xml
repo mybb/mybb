@@ -9188,12 +9188,13 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
-<div style="overflow-y: auto; max-height: 400px;">
-<form action="report.php" method="post">
+  <div style="overflow-y: auto; max-height: 400px;" id="modal_{$pid}">
+  <form action="report.php" method="post" id="reportPost_{$pid}" onsubmit="javascript: return Thread.submitReport({$pid});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
 <input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="no_modal" value="1" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 	<td class="thead" colspan="2"><strong>{$report_title}</strong>
@@ -9234,16 +9235,18 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>]]></template>
 		<template name="report_error" version="1800"><![CDATA[<tr>
 	<td colspan="2" class="trow1">{$error}</td>
+</tr>]]></template>
+		<template name="report_error_nomodal" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+	<td class="thead" colspan="2"><strong>{$report_title}</strong>
 </tr>
 <tr>
-	<td colspan="2" class="tfoot">
-		<script type="text/javascript">
-		<!--
-			document.write('{$go_back} <input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-		// -->
-		</script>
-	</td>
-</tr>]]></template>
+	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
+</tr>
+<tr>
+	<td colspan="2" class="trow1">{$error}</td>
+</tr>
+</table>]]></template>
 		<template name="report_reasons" version="1800"><![CDATA[<tr>
 	<td class="trow1" align="left" style="width: 25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
 	<td class="trow1" align="left">
@@ -9266,13 +9269,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <tr>
 	<td colspan="2" class="tfoot"><input type="submit" class="button" value="{$report_title}" /></td>
 </tr>]]></template>
-		<template name="report_thanks" version="1800"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$report_title}</title>
-{$headerinclude}
-</head>
-<body>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="report_thanks" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="thead"><strong>{$report_title}</strong></td>
 	</tr>
@@ -9282,18 +9279,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<tr>
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
-	<tr>
-		<td class="tfoot">
-			<script type="text/javascript">
-			<!--
-				document.write('<input type="button" class="button" value="{$lang->close_window}" onclick="javascript:window.close()" />');
-			// -->
-			</script>
-		</td>
-	</tr>
-</table>
-</body>
-</html>]]></template>
+</table>]]></template>
 		<template name="reputation" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
