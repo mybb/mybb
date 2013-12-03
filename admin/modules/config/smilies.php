@@ -482,6 +482,7 @@ if($mybb->input['action'] == "mass_edit")
 	{
 		foreach($mybb->input['name'] as $sid => $name)
 		{
+			$sid = intval($sid);
 			if($mybb->input['delete'][$sid] == 1)
 			{
 				$db->delete_query("smilies", "sid = '{$sid}'", 1);
