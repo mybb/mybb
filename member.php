@@ -1420,12 +1420,8 @@ if($mybb->input['action'] == "logout")
 	if($mybb->user['uid'])
 	{
 		$time = TIME_NOW;
-		$lastvisit = array(
-			"lastactive" => $time,
-			"lastvisit" => $time,
-		);
 		// Run this after the shutdown query from session system
-		$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$lastvisit['lastvisit']}', lastactive='{$lastvisit['lastactive']}' WHERE uid='{$mybb->user['uid']}'");
+		$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$time}', lastactive='{$time}' WHERE uid='{$mybb->user['uid']}'");
 		$db->delete_query("sessions", "sid='".$session->sid."'");
 	}
 	$plugins->run_hooks("member_logout_end");
