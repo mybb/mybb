@@ -1046,7 +1046,7 @@ if($mybb->input['action'] == "add")
 	$form_container->end();
 	echo "</div>";
 
-	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
+	$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
@@ -2268,7 +2268,7 @@ if(!$mybb->input['action'])
 		echo "</div>\n";
 		$form->end();
 
-		$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
+		$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 		while($usergroup = $db->fetch_array($query))
 		{
 			$usergroups[$usergroup['gid']] = $usergroup;
