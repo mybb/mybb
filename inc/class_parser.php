@@ -1172,7 +1172,7 @@ class postParser
 				$domain = explode('.', $parsed_url['host']);
 				if($domain[0] != 'screen')
 				{
-					$local = $domain[0].'.';
+					$local = htmlspecialchars_uni($domain[0]).'.';
 				}
 				else
 				{
