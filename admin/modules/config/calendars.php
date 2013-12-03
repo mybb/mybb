@@ -140,7 +140,7 @@ if($mybb->input['action'] == "permissions")
 		admin_redirect("index.php?module=config-calendars");
 	}
 
-	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
+	$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
