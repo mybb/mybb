@@ -98,7 +98,15 @@ function task_promotions($task)
 		if(!empty($promotion['newusergroup']))
 		{
 			// Skip users that are already in the new group
-			$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}' AND CONCAT(',', additionalgroups, ',') NOT LIKE '%,{$promotion['newusergroup']},%'";
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}' AND ','||additionalgroups||',' NOT LIKE '%,{$promotion['newusergroup']},%'";
+					break;
+				default:
+					$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}' AND CONCAT(',', additionalgroups, ',') NOT LIKE '%,{$promotion['newusergroup']},%'";
+			}
 
 			$and = " AND ";
 		}
