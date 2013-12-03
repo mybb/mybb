@@ -999,6 +999,8 @@ function akismet_admin()
 		
 		foreach($deletepost as $pid => $val)
 		{
+			$pid = intval($pid);
+
 			if(array_key_exists($pid, $threadp))
 			{
 				$db->delete_query("posts", "pid IN ({$posts_in})");
