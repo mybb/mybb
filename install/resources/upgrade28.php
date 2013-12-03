@@ -154,6 +154,7 @@ function upgrade28_dbchanges()
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
 			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
@@ -174,6 +175,7 @@ function upgrade28_dbchanges()
 			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
 			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
