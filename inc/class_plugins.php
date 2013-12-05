@@ -37,9 +37,9 @@ class pluginSystem
 		{
 			foreach($pluginlist['active'] as $plugin)
 			{
-				if($plugin != "" && file_exists(MYBB_ROOT . "inc/plugins/" . $plugin . ".php"))
+				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 				{
-					require_once MYBB_ROOT . "inc/plugins/" . $plugin . ".php";
+					require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 				}
 			}
 		}
@@ -169,12 +169,12 @@ class pluginSystem
 		global $mybb;
 
 		// Ignore potentially missing plugins.
-		if(!file_exists(MYBB_ROOT . "inc/plugins/" . $plugin . ".php"))
+		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 		{
 			return true;
 		}
 
-		require_once MYBB_ROOT . "inc/plugins/" . $plugin . ".php";
+		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
 
 		$info_func = "{$plugin}_info";
 		if(!function_exists($info_func))
@@ -204,5 +204,4 @@ class pluginSystem
 		return false;
 	}
 }
-
 ?>
