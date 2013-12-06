@@ -1294,8 +1294,8 @@ class PostDataHandler extends DataHandler
 				$lang->load($this->language_file, true);
 
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $this->tid;
-				$modlogdata['tid'] = $thread['tid'];
+				$modlogdata['fid'] = $thread['fid'];
+				$modlogdata['tid'] = $this->tid;
 
 				// Close the thread.
 				if($modoptions['closethread'] == 1)
