@@ -50,7 +50,7 @@ class pluginSystem
 	 * Add a hook onto which a plugin can be attached.
 	 *
 	 * @param string $hook     The hook name.
-	 * @param string $function The function of this hook.
+	 * @param mixed $function The function of this hook.
 	 * @param int    $priority The priority this hook has.
 	 * @param string $file     The optional file belonging to this hook.
 	 *
@@ -58,23 +58,66 @@ class pluginSystem
 	 */
 	function add_hook($hook, $function, $priority = 10, $file = "")
 	{
-		// Check to see if we already have this hook running at this priority
-		if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
-		{
-			return true;
-		}
-
 		if($function instanceof Closure)
-		{
-			// The hook is a Closure, we will add it to a special array key as they ae handled differently.
+		{ // Closure support
+			if(in_array($function, $this->hooks[$hook][$priority]['closures']))
+			{
+				return true;
+			}
+
 			$this->hooks[$hook][$priority]['closures'][] = $function;
+		}
+		elseif(is_array($function))
+		{ // Object method support
+			if(!count($function) == 2)
+			{ // must be an array of two items!
+				echo "BAD ARRAY";
+
+				return false;
+			}
+
+			$methodRepresentation = '';
+
+			if(is_string($function[0]))
+			{ // Static class method
+				$methodRepresentation = sprintf('%s::%s', $function[0], $function[1]);
+			}
+			elseif(is_object($function[0]))
+			{ // Instance class method
+				$methodRepresentation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+			}
+			else
+			{ // Unknown array type
+				return false;
+			}
+
+			// Check to see if we already have this hook running at this priority
+			if(!empty($this->hooks[$hook][$priority][$methodRepresentation]) && is_array(
+					$this->hooks[$hook][$priority][$methodRepresentation]
+				)
+			)
+			{
+				return true;
+			}
+
+			// Add the hook
+			$this->hooks[$hook][$priority][$methodRepresentation] = array(
+				'classMethod' => $function,
+				'file'        => $file
+			);
 		}
 		else
 		{
+			// Check to see if we already have this hook running at this priority
+			if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
+			{
+				return true;
+			}
+
 			// Add the hook
 			$this->hooks[$hook][$priority][$function] = array(
-				"function" => $function,
-				"file"     => $file
+				'function' => $function,
+				'file'     => $file
 			);
 		}
 
@@ -114,7 +157,6 @@ class pluginSystem
 								$arguments = $returnargs;
 							}
 						}
-
 					}
 					else
 					{
@@ -123,9 +165,16 @@ class pluginSystem
 							require_once $hook['file'];
 						}
 
-						$func = $hook['function'];
+						if(array_key_exists('classMethod', $hook))
+						{
+							$returnargs = call_user_func($hook['classMethod'], $arguments);
+						}
+						else
+						{
+							$func = $hook['function'];
 
-						$returnargs = $func($arguments);
+							$returnargs = $func($arguments);
+						}
 
 						if($returnargs)
 						{
@@ -143,10 +192,12 @@ class pluginSystem
 	/**
 	 * Remove a specific hook.
 	 *
-	 * @param string The name of the hook.
-	 * @param string The function of the hook.
-	 * @param string The filename of the plugin.
-	 * @param int    The priority of the hook.
+	 * @param string $hook     The name of the hook.
+	 * @param string $function The function of the hook.
+	 * @param string $file     The filename of the plugin.
+	 * @param int    $priority The priority of the hook.
+	 *
+	 * @return bool
 	 */
 	function remove_hook($hook, $function, $file = "", $priority = 10)
 	{
@@ -161,7 +212,7 @@ class pluginSystem
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
-	 * @param string The name of the plugin.
+	 * @param string $plugin The name of the plugin.
 	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
