@@ -73,8 +73,6 @@ class pluginSystem
 				return false;
 			}
 
-			$methodRepresentation = '';
-
 			if(is_string($function[0]))
 			{ // Static class method
 				$methodRepresentation = sprintf('%s::%s', $function[0], $function[1]);
@@ -198,12 +196,50 @@ class pluginSystem
 	 */
 	function remove_hook($hook, $function, $file = "", $priority = 10)
 	{
-		// Check to see if we don't already have this hook running at this priority
-		if(!isset($this->hooks[$hook][$priority][$function]))
+		if($function instanceof Closure)
 		{
-			return true;
+			if(!in_array($function, $this->hooks[$hook][$priority]['closures']))
+			{
+				return true;
+			}
+
+			$key = array_search($function, $this->hooks[$hook][$priority]['closures']);
+			if($key !== false)
+			{
+				unset($this->hooks[$hook][$priority]['closures'][$key]);
+			}
 		}
-		unset($this->hooks[$hook][$priority][$function]);
+		elseif(is_array($function))
+		{
+			if(is_string($function[0]))
+			{ // Static class method
+				$methodRepresentation = sprintf('%s::%s', $function[0], $function[1]);
+			}
+			elseif(is_object($function[0]))
+			{ // Instance class method
+				$methodRepresentation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+			}
+			else
+			{ // Unknown array type
+				return false;
+			}
+
+			if(!isset($this->hooks[$hook][$priority][$methodRepresentation]))
+			{
+				return true;
+			}
+			unset($this->hooks[$hook][$priority][$methodRepresentation]);
+		}
+		else
+		{
+			// Check to see if we don't already have this hook running at this priority
+			if(!isset($this->hooks[$hook][$priority][$function]))
+			{
+				return true;
+			}
+			unset($this->hooks[$hook][$priority][$function]);
+		}
+
 	}
 
 	/**
