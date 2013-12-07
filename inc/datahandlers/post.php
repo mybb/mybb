@@ -146,7 +146,6 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		$subject = &$post['subject'];
 		$subject = trim_blank_chrs($subject);
-		$subject = utf8_handle_4byte_string($subject);
 
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
@@ -240,7 +239,6 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 		$post['message'] = trim_blank_chrs($post['message']);
-		$post['message'] = utf8_handle_4byte_string($post['message']);
 
 		// Do we even have a message at all?
 		if(my_strlen($post['message']) == 0)

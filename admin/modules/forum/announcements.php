@@ -127,8 +127,6 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$insert_announcement = array(
 				"fid" => $mybb->input['fid'],
 				"uid" => $mybb->user['uid'],

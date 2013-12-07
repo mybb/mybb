@@ -659,7 +659,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	header("Content-type: text/xml; charset={$charset}");
 
-	if(empty($username) || utf8_handle_4byte_string($username, false) == false)
+	if(empty($username))
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;
@@ -674,7 +674,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;

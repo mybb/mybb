@@ -188,6 +188,7 @@ $l['db_step_error_missingencoding'] = 'You have not selected an encoding yet. Pl
 $l['db_step_error_sqlite_invalid_dbname'] = 'You may not use relative URLs for SQLite databases. Please use a file system path (ex: /home/user/database.db) for your SQLite database.';
 $l['db_step_error_invalid_tableprefix'] = 'You may only use an underscore (_) and alphanumeric characters in a table prefix. Please use a valid table prefix before continuing.';
 $l['db_step_error_tableprefix_too_long'] = 'You may only use a table prefix with a length of 40 characters or less. Please use a shorter table prefix before continuing.';
+$l['db_step_error_utf8mb4_error'] = '\'4-Byte UTF-8 Unicode\' requires MySQL 5.5.3 or above. Please select an encoding which is compatible with your MySQL version.';
 
 $l['tablecreate_step_connected'] = '<p>Connection to the database server and database you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>

@@ -2641,8 +2641,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		if($mybb->input['do'] == "joingroup" && $usergroup['type'] == 4)
 		{
-			$reason = utf8_handle_4byte_string($mybb->input['reason']);
-			$reason = $db->escape_string($reason);
+			$reason = $db->escape_string($mybb->input['reason']);
 			$now = TIME_NOW;
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
