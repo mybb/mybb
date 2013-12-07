@@ -71,8 +71,6 @@ class pluginSystem
 		{ // Object method support
 			if(!count($function) == 2)
 			{ // must be an array of two items!
-				echo "BAD ARRAY";
-
 				return false;
 			}
 
