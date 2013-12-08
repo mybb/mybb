@@ -136,7 +136,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
-	
+
 	$coppauser = 0;
 	if(isset($mybb->cookies['coppauser']))
 	{
@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email = htmlspecialchars_uni($mybb->get_input('email'));
 		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
 		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
-		
+
 		$allownoticescheck = $hideemailcheck = $no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
 		$receivepmscheck = $pmnoticecheck = $emailpmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 
@@ -464,7 +464,7 @@ if($mybb->input['action'] == "register")
 		}
 	}
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
+	if($mybb->settings['reg_agreement'] && ((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post"))
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
@@ -923,9 +923,9 @@ if($mybb->input['action'] == "activate")
 	else
 	{
 		$plugins->run_hooks("member_activate_form");
-		
+
 		$code = $mybb->get_input('code');
-		
+
 		if(!isset($user['username']))
 		{
 			$user['username'] = '';
@@ -1181,9 +1181,9 @@ if($mybb->input['action'] == "resetpassword")
 				$lang_username = $lang->username;
 				break;
 		}
-		
+
 		$code = $mybb->get_input('code');
-		
+
 		if(!isset($user['username']))
 		{
 			$user['username'] = '';
@@ -1245,7 +1245,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$loginhandler->complete_login();
 
 		$plugins->run_hooks("member_do_login_end");
-		
+
 		$mybb->input['url'] = $mybb->get_input('url');
 
 		if(!empty($mybb->input['url']) && my_strpos(basename($mybb->input['url']), 'member.php') === false)
@@ -2096,7 +2096,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	{
 		error($lang->error_hideemail);
 	}
-	
+
 	$errors = array();
 
 	if(empty($mybb->input['subject']))
