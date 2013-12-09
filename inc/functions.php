@@ -146,7 +146,7 @@ function run_shutdown()
 	{
 		return;
 	}
-	
+
 	if(empty($shutdown_queries) && empty($shutdown_functions))
 	{
 		// Nothing to do
@@ -894,7 +894,7 @@ function redirect($url, $message="", $title="")
 		$data .=  'window.location = "'.addslashes($url).'";'."\n";
 		$data .= "</script>\n";
 		//exit;
-		
+
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
 		echo json_encode(array("data" => $data));
 		exit;
@@ -1978,7 +1978,7 @@ function update_stats($changes=array(), $force=false)
 {
 	global $cache, $db;
 	static $stats_changes;
-	
+
 	if(empty($stats_changes))
 	{
 		$stats_changes = array(
@@ -4813,7 +4813,7 @@ function update_last_post($tid)
 	}
 
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
-	
+
 	$update_array = array(
 		'lastpost' => intval($lastpost['dateline']),
 		'lastposter' => $lastpost['username'],

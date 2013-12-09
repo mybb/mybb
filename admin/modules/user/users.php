@@ -868,7 +868,7 @@ if($mybb->input['action'] == "edit")
 				"height" => 120
 			);
 		}
-		if(!stristr($user['avatar'], 'http://') && !stristr($user['avatar'], 'https://'))
+		if(my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
 		{
 			$user['avatar'] = "../{$user['avatar']}\n";
 		}
@@ -3339,7 +3339,7 @@ function build_users_view($view)
 				$user['view']['warninglevel'] = get_colored_warning_level($warning_level);
 			}
 
-			if($user['avatar'] && !stristr($user['avatar'], 'http://'))
+			if($user['avatar'] && my_substr($user['avatar'], 0, 7) !== 'http://' && my_substr($user['avatar'], 0, 8) !== 'https://')
 			{
 				$user['avatar'] = "../{$user['avatar']}";
 			}
