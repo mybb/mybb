@@ -1399,7 +1399,7 @@ class PostDataHandler extends DataHandler
 				$lang->load($this->language_file, true);
 
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $this->tid;
+				$modlogdata['fid'] = $thread['fid'];
 				if(isset($thread['tid']))
 				{
 					$modlogdata['tid'] = $thread['tid'];
