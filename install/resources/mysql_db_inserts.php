@@ -102,7 +102,7 @@ $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Yandex','Yandex
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Blekko','Blekkobot');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Facebook','facebookexternalhit');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Twitter','Twitterbot');";
-$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Internet Archive','archive_crawler');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Internet Archive','archive.org_bot');";
 
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('1','calendar','<lang:group_calendar>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('2','editpost','<lang:group_editpost>','1');";
