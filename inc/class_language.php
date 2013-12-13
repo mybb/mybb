@@ -148,6 +148,11 @@ class MyLanguage
 		{
 			require_once $this->path."/".$this->fallback."/".$section.".lang.php";
 		}
+		// Deprecated! This fallback will be removed in future versions!
+		elseif(file_exists($this->path."/english/".$section.".lang.php"))
+		{
+			require_once $this->path."/english/".$section.".lang.php";
+		}
 		else
 		{
 			if($supress_error != true)

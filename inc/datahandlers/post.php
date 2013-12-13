@@ -146,7 +146,6 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		$subject = &$post['subject'];
 		$subject = trim_blank_chrs($subject);
-		$subject = utf8_handle_4byte_string($subject);
 
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
@@ -240,7 +239,6 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 		$post['message'] = trim_blank_chrs($post['message']);
-		$post['message'] = utf8_handle_4byte_string($post['message']);
 
 		// Do we even have a message at all?
 		if(my_strlen($post['message']) == 0)
@@ -548,8 +546,10 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 
-		// If we don't assign it as 0.
-		if(!$post['icon'] || $post['icon'] < 0)
+		$posticons_cache = $cache->read("posticons");
+
+		// If we don't have a post icon assign it as 0.
+		if(empty($post['icon']) || !isset($posticons_cache[$post['icon']]))
 		{
 			$post['icon'] = 0;
 		}
@@ -582,9 +582,62 @@ class PostDataHandler extends DataHandler
 		$prefix = &$this->data['prefix'];
 
 		// If a valid prefix isn't supplied, don't assign one.
-		if(!$prefix || $prefix < 1)
+		if(empty($prefix))
 		{
 			$prefix = 0;
+		}
+		else
+		{
+			$verification = build_prefixes($prefix);
+			if(!$verification)
+			{
+				$this->set_error('invalid_prefix');
+				return false;
+			}
+			if($verification['groups'] != "-1")
+			{
+				if(!empty($this->data['edit_uid']))
+				{
+					// Post is being edited
+					$user = get_user($this->data['edit_uid']);
+				}
+				else
+				{
+					$user = get_user($this->data['uid']);
+				}
+				$groups = array($user['usergroup']);
+				if(!empty($user['additionalgroups']))
+				{
+					$groups = array_merge($groups, explode(',', $user['additionalgroups']));
+				}
+				$prefix_groups = explode(",", $verification['groups']);
+
+				$valid_group = false;
+				foreach($groups as $group)
+				{
+					if(in_array($group, $prefix_groups))
+					{
+						$valid_group = true;
+						break;
+					}
+				}
+				if(!$valid_group)
+				{
+					$this->set_error('invalid_prefix');
+					return false;
+				}
+			}
+			if($verification['forums'] != "-1")
+			{
+				// Decide whether this prefix can be used in our forum
+				$forums = explode(",", $verification['forums']);
+
+				if(!in_array($this->data['fid'], $forums))
+				{
+					$this->set_error('invalid_prefix');
+					return false;
+				}
+			}
 		}
 
 		return true;
@@ -1294,8 +1347,8 @@ class PostDataHandler extends DataHandler
 				$lang->load($this->language_file, true);
 
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $this->tid;
-				$modlogdata['tid'] = $thread['tid'];
+				$modlogdata['fid'] = $thread['fid'];
+				$modlogdata['tid'] = $this->tid;
 
 				// Close the thread.
 				if($modoptions['closethread'] == 1)

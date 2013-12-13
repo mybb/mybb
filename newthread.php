@@ -263,9 +263,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->input['savedraft'] && !$pid)
 	{
-		$check_subject = utf8_handle_4byte_string($mybb->input['subject']);
-		$check_message = utf8_handle_4byte_string($mybb->input['message']);
-		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($check_subject)."' AND p.message='".$db->escape_string($check_message)."' AND p.dateline>".(TIME_NOW-600));
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->input['subject'])."' AND p.message='".$db->escape_string($mybb->input['message'])."' AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{

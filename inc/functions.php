@@ -1986,7 +1986,7 @@ function update_forum_counters($fid, $changes=array())
 			}
 
 			// Less than 0? That's bad
-			if(!$update_query[$counter])
+			if($update_query[$counter] < 0)
 			{
 				$update_query[$counter] = 0;
 			}
@@ -2000,60 +2000,61 @@ function update_forum_counters($fid, $changes=array())
 	}
 
 	// Guess we should update the statistics too?
-	if(isset($update_query['threads']) || isset($update_query['posts']) || isset($update_query['unapprovedthreads']) || isset($update_query['unapprovedposts']))
+	$new_stats = array();
+	if(array_key_exists('threads', $update_query))
 	{
-		$new_stats = array();
-		if(array_key_exists('threads', $update_query))
+		$threads_diff = $update_query['threads'] - $forum['threads'];
+		if($threads_diff > -1)
 		{
-			$threads_diff = $update_query['threads'] - $forum['threads'];
-			if($threads_diff > -1)
-			{
-				$new_stats['numthreads'] = "+{$threads_diff}";
-			}
-			else
-			{
-				$new_stats['numthreads'] = "{$threads_diff}";
-			}
+			$new_stats['numthreads'] = "+{$threads_diff}";
 		}
+		else
+		{
+			$new_stats['numthreads'] = "{$threads_diff}";
+		}
+	}
 
-		if(array_key_exists('unapprovedthreads', $update_query))
+	if(array_key_exists('unapprovedthreads', $update_query))
+	{
+		$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
+		if($unapprovedthreads_diff > -1)
 		{
-			$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
-			if($unapprovedthreads_diff > -1)
-			{
-				$new_stats['numunapprovedthreads'] = "+{$unapprovedthreads_diff}";
-			}
-			else
-			{
-				$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
-			}
+			$new_stats['numunapprovedthreads'] = "+{$unapprovedthreads_diff}";
 		}
+		else
+		{
+			$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
+		}
+	}
 
-		if(array_key_exists('posts', $update_query))
+	if(array_key_exists('posts', $update_query))
+	{
+		$posts_diff = $update_query['posts'] - $forum['posts'];
+		if($posts_diff > -1)
 		{
-			$posts_diff = $update_query['posts'] - $forum['posts'];
-			if($posts_diff > -1)
-			{
-				$new_stats['numposts'] = "+{$posts_diff}";
-			}
-			else
-			{
-				$new_stats['numposts'] = "{$posts_diff}";
-			}
+			$new_stats['numposts'] = "+{$posts_diff}";
 		}
+		else
+		{
+			$new_stats['numposts'] = "{$posts_diff}";
+		}
+	}
 
-		if(array_key_exists('unapprovedposts', $update_query))
+	if(array_key_exists('unapprovedposts', $update_query))
+	{
+		$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
+		if($unapprovedposts_diff > -1)
 		{
-			$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
-			if($unapprovedposts_diff > -1)
-			{
-				$new_stats['numunapprovedposts'] = "+{$unapprovedposts_diff}";
-			}
-			else
-			{
-				$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
-			}
+			$new_stats['numunapprovedposts'] = "+{$unapprovedposts_diff}";
 		}
+		else
+		{
+			$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
+		}
+	}
+
+	if(!empty($new_stats))
+	{
 		update_stats($new_stats);
 	}
 
@@ -6469,81 +6470,119 @@ function gd_version()
 }
 
 /**
- * Handles 4 byte UTF-8 characters.
+ * Validates an UTF-8 string.
  *
- * This can be used to either reject strings which contain 4 byte UTF-8
- * characters, or replace them with question marks. This is limited to UTF-8
- * collated databases using MySQL.
- *
- * Original: http://www.avidheap.org/2013/a-quick-way-to-normalize-a-utf8-string-when-your-mysql-database-is-not-utf8mb4
- *
- * @param string The string to be checked.
- * @param bool If false don't return the string, only the boolean result.
- * @return mixed Return a string if the second parameter is true, boolean otherwise.
+ * @param string The string to be checked
+ * @param boolean Allow 4 byte UTF-8 characters?
+ * @param boolean Return the cleaned string?
+ * @return string/boolean Cleaned string or boolean
  */
-function utf8_handle_4byte_string($input, $return=true)
+function validate_utf8_string($input, $allow_mb4=true, $return=true)
 {
-	global $config;
-
-	if($config['database']['type'] != 'mysql' && $config['database']['type'] != 'mysqli')
+	// Valid UTF-8 sequence?
+	if(!preg_match('##u', $input))
 	{
-		if($return == true)
+		$string = '';
+		$len = strlen($input);
+		for($i = 0; $i < $len; $i++)
+		{
+			$c = ord($input[$i]);
+			if($c > 128)
+			{
+				if($c > 247 || $c <= 191)
+				{
+					if($return)
+					{
+						$string .= '?';
+						continue;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				elseif($c > 239)
+				{
+					$bytes = 4;
+				}
+				elseif($c > 223)
+				{
+					$bytes = 3;
+				}
+				elseif($c > 191)
+				{
+					$bytes = 2;
+				}
+				if(($i + $bytes) > $len)
+				{
+					if($return)
+					{
+						$string .= '?';
+						break;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				$valid = true;
+				$multibytes = $input[$i];
+				while($bytes > 1)
+				{
+					$i++;
+					$b = ord($input[$i]);
+					if($b < 128 || $b > 191)
+					{
+						if($return)
+						{
+							$valid = false;
+							$string .= '?';
+							break;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						$multibytes .= $input[$i];
+					}
+					$bytes--;
+				}
+				if($valid)
+				{
+					$string .= $multibytes;
+				}
+			}
+			else
+			{
+				$string .= $input[$i];
+			}
+		}
+		$input = $string;
+	}
+	if($return)
+	{
+		if($allow_mb4)
 		{
 			return $input;
 		}
-		return true;
-	}
-
-	$contains_4bytes = false;
-	if(!empty($input))
-	{
-		$utf8_2byte = 0xC0 /*1100 0000*/;
-		$utf8_2byte_bmask = 0xE0 /*1110 0000*/;
-
-		$utf8_3byte = 0xE0 /*1110 0000*/;
-		$utf8_3byte_bmask = 0XF0 /*1111 0000*/;
-
-		$utf8_4byte = 0xF0 /*1111 0000*/;
-		$utf8_4byte_bmask = 0xF8 /*1111 1000*/;
-
-		$sanitized = "";
-		$len = strlen($input);
-		for($i = 0; $i < $len; ++$i)
+		else
 		{
-			$mb_char = $input[$i]; // Potentially a multibyte sequence
-			$byte = ord($mb_char);
-			if(($byte & $utf8_2byte_bmask) == $utf8_2byte)
-			{
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_3byte_bmask) == $utf8_3byte)
-			{
-				$mb_char .= $input[++$i];
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_4byte_bmask) == $utf8_4byte)
-			{
-				$contains_4bytes = true;
-				// Replace with ? to avoid MySQL exception
-				$mb_char = '?';
-				$i += 3;
-			}
-
-			$sanitized .=  $mb_char;
-
-			if($contains_4bytes == true && $return == false)
-			{
-				return false;
-			}
+			return preg_replace("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", '?', $input);
 		}
-
-		$input = $sanitized;
 	}
-
-	if($contains_4bytes == false && $return == false)
+	else
 	{
-		return true;
+		if($allow_mb4)
+		{
+			return true;
+		}
+		else
+		{
+			return !preg_match("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", $input);
+		}
 	}
-	return $input;
 }
 ?>
