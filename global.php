@@ -195,6 +195,11 @@ if($loadstyle == "def='1'")
 	}
 	$theme = $cache->read('default_theme');
 }
+else
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+}
 
 // No theme was found - we attempt to load the master or any other theme
 if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
