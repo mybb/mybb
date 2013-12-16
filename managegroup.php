@@ -103,7 +103,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 			}
 		}
 	}
-	if(is_array($uidin))
+	if(is_array($uidin) && !empty($uidin))
 	{
 		$uids = implode(",", $uidin);
 		$db->delete_query("joinrequests", "uid IN ({$uids}) AND gid='{$gid}'");
