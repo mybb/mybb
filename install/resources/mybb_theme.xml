@@ -3026,7 +3026,7 @@ a.button {
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -7631,11 +7631,11 @@ body {
 		<template name="nav_bit_active" version="120"><![CDATA[<span class="active">{$navbit['name']}</span>]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
-		<template name="newreply" version="1400"><![CDATA[<html>
+		<template name="newreply" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -7724,11 +7724,11 @@ body {
 {$reviewmessage}
 </td>
 </tr>]]></template>
-		<template name="newthread" version="1600"><![CDATA[<html>
+		<template name="newthread" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -9858,7 +9858,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/thread.js?ver=1400"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
 </head>
 <body>
 	{$header}
