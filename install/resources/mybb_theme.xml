@@ -3797,14 +3797,6 @@ a.button {
 </tbody>
 </table>
 <br />]]></template>
-		<template name="index_loginform" version="1607"><![CDATA[<br /><br />
-<form action="member.php" method="post">
-	<input type="hidden" name="action" value="do_login" />
-	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
-	<input type="text" class="textbox" name="username" title="{$login_username}" value="{$lang->login_username}" onfocus="if(this.value == '{$lang->login_username}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_username}'; }" />
-	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == '{$lang->login_password}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_password}'; }" />
-	{$gobutton}
-</form>]]></template>
 		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
