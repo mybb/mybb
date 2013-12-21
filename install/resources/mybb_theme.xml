@@ -9222,19 +9222,19 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <!--
 	if($("#report_reason option:selected").val() != 'other')
 	{
-		$("#reason").hide()
+		$("#reason").hide();
 	}
 
 	$("#report_reason").change(function()
 	{
 		if($(this).find("option:selected").val() == 'other')
 		{
-			$("#reason").show()
-			return
+			$("#reason").show();
+			return;
 		}
 
-		$("#reason").hide()
-	})
+		$("#reason").hide();
+	});
 // -->
 </script>
 </div>
