@@ -309,6 +309,7 @@ elseif(!$mybb->input['action'])
 
 	// Latest news widget
 	$table = new Table;
+	$table->construct_header($lang->news_description);
 
 	if(!empty($update_check['news']) && is_array($update_check['news']))
 	{
