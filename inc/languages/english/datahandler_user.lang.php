@@ -16,6 +16,7 @@ $l['userdata_username_exists'] = 'The username you entered already exists. Pleas
 $l['userdata_invalid_password_length'] = 'The password you entered is of invalid length. Please enter a password between {1} and {2} characters.';
 $l['userdata_no_complex_characters'] = 'The password you entered is not complex enough. Please enter a password that is at least {1} characters long, and contains an upper case letter, lower case letter and a number.';
 $l['userdata_passwords_dont_match'] = 'The password you entered as confirmation does not match the original one. Please confirm your password correctly.';
+$l['userdata_bad_password_security'] = 'The password you entered is the same as either your username or email address. Please enter a stronger password.';
 
 $l['userdata_missing_email'] = 'You did not enter an email address. Please enter one.';
 $l['userdata_invalid_email_format'] = 'The email address you entered is invalid. Please enter a valid email address.';
