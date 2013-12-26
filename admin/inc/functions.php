@@ -681,7 +681,7 @@ function check_template($template)
  */
 function delete_user_posts($uid, $date)
 {
-	global $db, $cache;
+	global $db;
 	$uid = intval($uid);
 
 	// Build an array of posts to delete

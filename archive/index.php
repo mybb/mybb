@@ -458,7 +458,7 @@ $plugins->run_hooks("archive_end");
 */
 function build_archive_forumbits($pid=0)
 {
-	global $db, $forumpermissions, $mybb, $lang, $archiveurl, $base_url;
+	global $db, $forumpermissions, $mybb, $base_url;
 
 	// Sort out the forum cache first.
 	static $fcache;

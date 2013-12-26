@@ -1235,7 +1235,7 @@ function build_theme_list($parent=0, $depth=0)
 // returns an array which can be sent to generate_select_box()
 function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 {
-	global $mybb, $lang, $list;
+	global $list;
 	static $theme_cache;
 
 	if(!is_array($theme_cache))

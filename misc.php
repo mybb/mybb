@@ -695,7 +695,7 @@ elseif($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang, $unviewable;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable;
 	static $unviewableforums;
 
 	$pid = intval($pid);

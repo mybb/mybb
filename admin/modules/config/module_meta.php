@@ -46,7 +46,7 @@ function config_meta()
 
 function config_action_handler($action)
 {
-	global $page, $lang, $plugins;
+	global $page, $plugins;
 
 	$page->active_module = "config";
 
