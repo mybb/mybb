@@ -12236,6 +12236,9 @@ $(function() {
 		},
         toolbar: "bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,php,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
 	});
+	$(".smilie").click(function(){
+		$("#{$bind}").sceditor('instance').insert($(this).attr('alt'));
+	});
 });
 </script>]]></template>
 		<template name="contact" version="1800"><![CDATA[<html>
