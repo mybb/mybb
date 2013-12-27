@@ -1,6 +1,8 @@
 var Post = {
 	init: function()
 	{
+		$(document).ready(function(){
+		});
 	},
 
 	loadMultiQuoted: function()
@@ -8,8 +10,17 @@ var Post = {
 		if(use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
-			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
-			new Ajax.Request('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+			
+			$.ajax(
+			{
+				url: 'xmlhttp.php?action=get_multiquoted&tid='+tid,
+				type: 'get',
+				complete: function (request, status)
+				{
+					Post.multiQuotedLoaded(request, status);
+				}
+			});
+			
 			return false;
 		}
 		else
@@ -22,8 +33,16 @@ var Post = {
 	{
 		if(use_xmlhttprequest == 1)
 		{
-			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
-			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+			$.ajax(
+			{
+				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
+				type: 'get',
+				complete: function (request, status)
+				{
+					Post.multiQuotedLoaded(request, status);
+				}
+			});
+			
 			return false;
 		}
 		else
@@ -34,47 +53,41 @@ var Post = {
 
 	multiQuotedLoaded: function(request)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		var json = $.parseJSON(request.responseText);
+		if(typeof response == 'object')
 		{
-			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(json.hasOwnProperty("errors"))
+			{
+				$.each(json.errors, function(i, message)
+				{
+					$.jGrowl('There was an error fetching the posts. '+message);
+				});
+				return false;
+			}
+		}
 
-			if(!message[1])
-			{
-				message[1] = "An unknown error occurred.";
-			}
-			if(this.spinner)
-			{
-				this.spinner.destroy();
-				this.spinner = '';
-			}
-			alert('There was an error fetching the posts.\n\n'+message[1]);
-		}
-		else if(request.responseText)
+		var id = 'message';
+		if(typeof $('textarea').sceditor != 'undefined')
 		{
-			var id = 'message';
-			if(typeof clickableEditor != 'undefined')
-			{
-				id = clickableEditor.textarea;
-			}
-			if($(id).value)
-			{
-				$(id).value += "\n";
-			}
-			$(id).value += request.responseText;
+			$('textarea').sceditor('instance').insert(json.message);
 		}
-		$('multiquote_unloaded').hide();
+		else
+		{
+			if($('#' + id).value)
+			{
+				$('#' + id).value += "\n";
+			}
+			$('#' + id).val($('#' + id).val() + json.message);
+		}
+		
+		$('#multiquote_unloaded').hide();
 		document.input.quoted_ids.value = 'all';
-		if(this.spinner)
-		{
-			this.spinner.destroy();
-			this.spinner = '';
-		}
 	},
-
+	
 	clearMultiQuoted: function()
 	{
-		$('multiquote_unloaded').hide();
-		Cookie.unset('multiquote');
+		$('#multiquote_unloaded').hide();
+		$.removeCookie('multiquote');
 	},
 
 	removeAttachment: function(aid)
@@ -98,4 +111,5 @@ var Post = {
 		document.input.attachmentact.value = action;
 	}
 };
-Event.observe(document, 'dom:loaded', Post.init);
+
+Post.init();

@@ -374,8 +374,8 @@ class PostDataHandler extends DataHandler
 			$gids = explode(',', $mybb->settings['postmergeuignore']);
 			$gids = array_map('intval', $gids);
 
-
-			$user_usergroups = explode(',', $mybb->user['usergroup'].",".$mybb->user['additionalgroups']);
+			$user = get_user($post['uid']);
+			$user_usergroups = explode(',', $user['usergroup'].",".$user['additionalgroups']);
 			if(count(array_intersect($user_usergroups, $gids)) > 0)
 			{
 				return true;
@@ -1113,32 +1113,42 @@ class PostDataHandler extends DataHandler
 			{
 				$cache->update_mailqueue();
 			}
-			$thread_update['replies'] = "+1";
+
+			$thread_update = array('replies' => '+1');
 
 			// Update forum count
-			update_thread_counters($post['tid'], $thread_update);
+			update_last_post($post['tid']);
 			update_forum_counters($post['fid'], array("posts" => "+1"));
+			update_forum_lastpost($thread['fid']);
 		}
 		// Post is stuck in moderation queue
 		else if($visible == 0)
 		{
 			// Update the unapproved posts count for the current thread and current forum
+			$thread_update = array('unapprovedposts' => '+1');
 			update_thread_counters($post['tid'], array("unapprovedposts" => "+1"));
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
 		else if($thread['visible'] == 0)
 		{
 			// Update the unapproved posts count for the current forum
-			update_thread_counters($post['tid'], array("replies" => "+1"));
+			$thread_update = array('replies' => '+1');
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
+		}
+		else if($thread['visible'] == -1)
+		{
+			// Update the unapproved posts count for the current forum
+			$thread_update = array('replies' => '+1');
+			update_forum_counters($post['fid'], array("deletedposts" => "+1"));
 		}
 
 		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
 		$attachmentcount = $db->fetch_field($query, "attachmentcount");
 		if($attachmentcount > 0)
 		{
-			update_thread_counters($post['tid'], array("attachmentcount" => "+{$attachmentcount}"));
+			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 		}
+		update_thread_counters($post['tid'], $thread_update);
 
 		// Return the post's pid and whether or not it is visible.
 		return array(
@@ -1389,7 +1399,7 @@ class PostDataHandler extends DataHandler
 				$lang->load($this->language_file, true);
 
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $this->tid;
+				$modlogdata['fid'] = $thread['fid'];
 				if(isset($thread['tid']))
 				{
 					$modlogdata['tid'] = $thread['tid'];
@@ -1570,13 +1580,12 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
-			update_thread_data($this->tid);
 			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1"));
+			update_forum_lastpost($thread['fid']);
+			update_last_post($this->tid);
 		}
 		else if($visible == 0)
 		{
-			update_thread_data($this->tid);
-			update_thread_counters($this->tid, array("replies" => 0));
 			update_forum_counters($thread['fid'], array("unapprovedthreads" => "+1", "unapprovedposts" => "+1"));
 		}
 
@@ -1630,7 +1639,6 @@ class PostDataHandler extends DataHandler
             {
                 if($existing_post['visible'] == 1)
                 {
-                    update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
                     update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
 
@@ -1647,7 +1655,6 @@ class PostDataHandler extends DataHandler
             {
                 if($existing_post['visible'] == 0)
                 {
-                    update_thread_data($existing_post['tid']);
                     update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
                     update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
 
@@ -1790,6 +1797,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		update_forum_lastpost($post['fid']);
+		update_last_post($post['tid']);
 
 		return array(
 			'visible' => $visible,

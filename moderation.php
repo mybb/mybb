@@ -547,7 +547,7 @@ switch($mybb->input['action'])
 		break;
 
 	// Stick or unstick that post to the top bab!
-	case "stick";
+	case "stick":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2905,8 +2905,6 @@ function clearinline($id, $type)
 
 function extendinline($id, $type)
 {
-	global $mybb;
-
 	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
 	my_setcookie("inlinemod_$type$id_removed", '', TIME_NOW+3600);
 }

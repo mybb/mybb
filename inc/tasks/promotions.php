@@ -74,6 +74,7 @@ function task_promotions($task)
 					break;
 				case "weeks":
 					$regdate = $promotion['registered']*60*60*24*7;
+					break;
 				case "months":
 					$regdate = $promotion['registered']*60*60*24*30;
 					break;
@@ -96,7 +97,16 @@ function task_promotions($task)
 
 		if(!empty($promotion['newusergroup']))
 		{
-			$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}'";
+			// Skip users that are already in the new group
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}' AND ','||additionalgroups||',' NOT LIKE '%,{$promotion['newusergroup']},%'";
+					break;
+				default:
+					$sql_where .= "{$and}usergroup != '{$promotion['newusergroup']}' AND CONCAT(',', additionalgroups, ',') NOT LIKE '%,{$promotion['newusergroup']},%'";
+			}
 
 			$and = " AND ";
 		}

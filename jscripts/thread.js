@@ -84,9 +84,6 @@ var Thread = {
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
 				type: 'get',
-				beforeSend: function( xhr ) {
-					$.jGrowl("Loading posts...", { openDuration: 'fast' });
-				},
 				complete: function (request, status)
 				{
 					Thread.multiQuotedLoaded(request, status);
@@ -104,12 +101,10 @@ var Thread = {
 	multiQuotedLoaded: function(request)
 	{
 		var json = $.parseJSON(request.responseText);
-		if(typeof response == 'object')
+		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
 			{
-				$("div.jGrowl").jGrowl("close");
-			
 				$.each(json.errors, function(i, message)
 				{
 					$.jGrowl('There was an error fetching the posts. '+message);
@@ -119,15 +114,18 @@ var Thread = {
 		}
 	
 		var id = 'message';
-		/*if(typeof clickableEditor != 'undefined')
+		if(typeof $('textarea').sceditor != 'undefined')
 		{
-			id = clickableEditor.textarea;
-		}*/
-		if($('#' + id).value)
-		{
-			$('#' + id).value += "\n";
+			$('textarea').sceditor('instance').insert(json.message);
 		}
-		$('#' + id).val($('#' + id).val() + json.message);
+		else
+		{
+			if($('#' + id).value)
+			{
+				$('#' + id).value += "\n";
+			}
+			$('#' + id).val($('#' + id).val() + json.message);
+		}
 
 		Thread.clearMultiQuoted();
 		$('#quickreply_multiquote').hide();
@@ -153,8 +151,6 @@ var Thread = {
 			});
 		}
 		$.removeCookie('multiquote');
-		
-		$("div.jGrowl").jGrowl("close");
 	},
 	
 	quickEdit: function()
@@ -172,7 +168,7 @@ var Thread = {
 				submit : "OK",
 				cancel : "Cancel",
 				tooltip : "Click to edit...",
-				event : "edit" + pid, // Triggered by the event "edit_[pid]"
+				event : "edit" + pid, // Triggered by the event "edit_[pid]",
 				callback : function(values, settings) {
 					values = JSON.parse(values);
 					
@@ -185,7 +181,8 @@ var Thread = {
 		
 		$('.quick_edit_button').each(function() {
 			$(this).bind("click", function(e) {
-				//e.stopPropagation();
+				//alert('clicking');
+				e.stopPropagation();
 				
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
@@ -196,6 +193,7 @@ var Thread = {
 			
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
+
 			});
         });
 
@@ -225,7 +223,7 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
 		
-		$.jGrowl("Posting...");
+		$.jGrowl("Posting...", { openDuration: 'fast' });
 		
 		$.ajax(
 		{
@@ -247,7 +245,7 @@ var Thread = {
 		this.quick_replying = 0;
 		
 		var json = $.parseJSON(request.responseText);
-		if(typeof response == 'object')
+		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
 			{
@@ -377,6 +375,30 @@ var Thread = {
 	reportPost: function(pid)
 	{
 		MyBB.popupWindow("/report.php?pid="+pid);
+	},
+	
+	submitReport: function(pid)
+	{
+		// Get form, serialize it and send it
+		var datastring = $(".reportPost_"+pid).serialize();
+		$.ajax({
+			type: "POST",
+			url: "report.php",
+			data: datastring,
+			dataType: "html",
+			success: function(data) {
+				// Replace modal HTML
+				$('.modal_'+pid).fadeOut('slow', function() {
+					$('.modal_'+pid).html(data);
+					$('.modal_'+pid).fadeIn('slow');
+				});
+			},
+			error: function(){
+				  alert('An unknown error has occurred.');
+			}
+		});
+		
+		return false;
 	},
 };
 

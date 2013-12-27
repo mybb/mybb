@@ -1719,7 +1719,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	if(is_array($properties['colors']))
 	{
 		$specific_colors = "<div id=\"attach_2\" class=\"attachs\">";
-		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> Specific color</label></dt><br />';
+		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt><br />';
 
 		$specific_color = "
 			<small>{$lang->colors_add_edit_desc}</small>
@@ -2573,7 +2573,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	if(is_array($properties['colors']))
 	{
 		$specific_colors = "<br /><div id=\"attach_2\" class=\"attachs\">";
-		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> Specific color</label></dt>';
+		$specific_colors_option = '<dt><label style="display: block;"><input type="radio" name="attach" value="2" '.$global_checked[3].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->colors_specific_color.'</label></dt>';
 
 		$specific_color = "
 			<small>{$lang->colors_add_edit_desc}</small>

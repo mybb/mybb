@@ -195,6 +195,11 @@ if($loadstyle == "def='1'")
 	}
 	$theme = $cache->read('default_theme');
 }
+else
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+}
 
 // No theme was found - we attempt to load the master or any other theme
 if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
@@ -276,7 +281,7 @@ if(!empty($theme_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(substr($theme['imgdir'], 0, 7) == 'http://' || substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
@@ -643,7 +648,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 $auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
-	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { Event.observe(window, 'load', function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
+	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { $([document, window]).bind(\"load\", function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
 }
 eval('$footer = "'.$templates->get('footer').'";');
 

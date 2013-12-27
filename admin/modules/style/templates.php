@@ -73,7 +73,7 @@ else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set
 	{
 		$sub_tabs['edit_set'] = array(
 			'title' => $lang->edit_set,
-			'link' => "index.php?module=style-templates&amp;action=edit_set".$expand_str,
+			'link' => "index.php?module=style-templates&amp;action=edit_set&amp;sid=".$sid.$expand_str,
 			'description' => $lang->edit_set_desc
 		);
 	}

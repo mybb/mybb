@@ -171,7 +171,7 @@ else
 		case 'configuration':
 			configure();
 			break;
-		case 'adminuser';
+		case 'adminuser':
 			create_admin_user();
 			break;
 		case 'final':

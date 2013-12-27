@@ -596,7 +596,6 @@ function get_usertitle($uid="")
 function update_pm_count($uid=0, $count_to_update=7)
 {
 	global $db, $mybb;
-	static $pm_lastvisit_cache;
 
 	// If no user id, assume that we mean the current logged in user.
 	if(intval($uid) == 0)
@@ -652,7 +651,7 @@ function get_pm_folder_name($fid, $name="")
 
 	switch($fid)
 	{
-		case 1;
+		case 1:
 			return $lang->folder_inbox;
 			break;
 		case 2:

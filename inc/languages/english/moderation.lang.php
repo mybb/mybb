@@ -162,7 +162,7 @@ $l['error_delayedmoderation_unsupported_type'] = "Sorry, but you did not select 
 $l['error_delayedmoderation_unsupported_method'] = "Sorry, but you did not select a valid move method for this delayed moderation action.";
 $l['error_delayedmoderation_invalid_delay'] = "Sorry, but you did not select a valid delay time for this delayed moderation action.";
 
-$l['redirect_pollnotdeleted'] = "The poll was not deleted because you did not check the \"Delete\" checkbox.<br />You will now be returned to the thread.";
+$l['redirect_pollnotdeleted'] = "The poll was not deleted because you did not check the \"Delete\" checkbox.";
 $l['redirect_polldeleted'] = "Thank you, the poll has successfully been removed from the thread.<br />You will now be taken back to the thread.";
 $l['redirect_mergeposts'] = "The selected posts have now been merged together. You will now be returned to the thread.";
 $l['redirect_openthread'] = "Thank you, the thread has successfully been opened.<br />You will now be returned to the thread.";

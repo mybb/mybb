@@ -255,6 +255,7 @@ $tables[] = "CREATE TABLE mybb_forums (
 	unapprovedthreads int(10) NOT NULL default '0',
 	unapprovedposts int(10) NOT NULL default '0',
 	deletedthreads int(10) NOT NULL default '0',
+	deletedposts int(10) NOT NULL default '0',
 	defaultdatecut smallint(4) NOT NULL default '0',
 	defaultsortby varchar(10) NOT NULL default '',
 	defaultsortorder varchar(4) NOT NULL default ''

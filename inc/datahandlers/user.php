@@ -177,6 +177,13 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
+		// Has the user tried to use their email address or username as a password?
+		if($user['email'] == $user['password'] || $user['username'] == $user['password'])
+		{
+			$this->set_error('bad_password_security');
+			return false;
+		}
+
 		// See if the board has "require complex passwords" enabled.
 		if($mybb->settings['requirecomplexpasswords'] == 1)
 		{
@@ -500,7 +507,7 @@ class UserDataHandler extends DataHandler
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
 			$field = "fid{$profilefield['fid']}";
-			
+
 			if(!isset($profile_fields[$field]))
 			{
 				$profile_fields[$field] = '';
@@ -1017,7 +1024,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
-		
+
 		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
 			'yahoo', 'msn', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)

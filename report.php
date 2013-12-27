@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'report.php');
 
-$templatelist = "report,report_thanks,report_error,report_noreason,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "report,report_thanks,report_error,report_reasons,report_error_nomodal,forumdisplay_password_wrongpass,forumdisplay_password";
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/functions_modcp.php';
 
@@ -160,7 +160,8 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 		update_report($report);
 
 		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
-		output_page($report_thanks);
+		echo $report_thanks;
+		exit;
 	}
 	else
 	{
@@ -193,7 +194,8 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 			add_report($new_report, $report_type);
 
 			eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
-			output_page($report_thanks);
+			echo $report_thanks;
+			exit;
 		}
 	}
 }
@@ -212,7 +214,14 @@ if(!$mybb->input['action'])
 {
 	if(!empty($error))
 	{
-		eval("\$report_reasons = \"".$templates->get("report_error")."\";");
+		if($mybb->input['no_modal'])
+		{
+			eval("\$report_reasons = \"".$templates->get("report_error_nomodal")."\";");
+		}
+		else
+		{
+			eval("\$report_reasons = \"".$templates->get("report_error")."\";");
+		}
 	}
 	else
 	{
@@ -224,6 +233,12 @@ if(!$mybb->input['action'])
 		{
 			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
 		}
+	}
+	
+	if($mybb->input['no_modal'])
+	{
+		echo $report_reasons;
+		exit;
 	}
 
 	eval("\$report = \"".$templates->get("report", 1, 0)."\";");

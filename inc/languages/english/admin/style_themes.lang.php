@@ -38,6 +38,7 @@ $l['colors_add'] = "Manage Colors";
 $l['colors_add_desc'] = "A list of colors available for this theme. This should be a list of key paired (key=item) colors, for example, <em>blue=Blue</em>. Separate items with a new line.";
 $l['colors_please_select'] = "None";
 $l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You can select more than one color.";
+$l['colors_specific_color'] = "Specific color";
 
 $l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
