@@ -748,3 +748,5 @@ div.sceditor-grip:before {
 	background-repeat:no-repeat;
 	background-position:top left;
 }
+
+.sceditor-container .sceditor-button-video div {background-image:url('../../../images/icons/video.png');}
