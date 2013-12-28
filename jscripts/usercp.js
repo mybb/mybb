@@ -198,8 +198,8 @@ var UserCP = {
 		        type_add_username.removeAttr("disabled");
 		        type_submit.attr("value", old_value);
 		        type_add_username.val("");
-		        type_add_username.typeahead("setQuery", "");
 		        type_add_username.focus();
+				type_add_username.select2('data', null);
 	        }
 		});
 
