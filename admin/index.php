@@ -34,11 +34,16 @@ require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
+// Session class required for customizing ACP language
+require_once MYBB_ROOT.'inc/class_session.php';
+$session = new session;
+$session->init();
+
+if(!$mybb->user['language'])
 {
-	$mybb->settings['cplanguage'] = "english";
+        $mybb->user['language'] = "english";
 }
-$lang->set_language($mybb->settings['cplanguage'], "admin");
+$lang->set_language($mybb->user['language'], "admin");
 
 // Load global language phrases
 $lang->load("global");
