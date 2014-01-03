@@ -377,7 +377,7 @@ else if($mybb->input['action'] == "edit_post")
 		//header("Content-type: text/xml; charset={$charset}");
 		header("Content-type: text/html; charset={$charset}");
 
-		$post['message'] = htmlspecialchars_uni($post['message']);
+		//$post['message'] = htmlspecialchars_uni($post['message']);
 
 		// Send the contents of the post.
 		/*eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
