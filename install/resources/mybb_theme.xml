@@ -8353,7 +8353,7 @@ body {
 </div>]]></template>
 		<template name="postbit_delete_pm" version="1800"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" title="{$lang->delete_title}" class="postbit_delete_pm"><span>{$lang->postbit_button_delete_pm}</span></a>]]></template>
 		<template name="postbit_edit" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
-<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
+<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 // <!--
 	if(use_xmlhttprequest == "1")
@@ -9825,6 +9825,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
+<!-- jeditable (jquery) -->
+<script src="jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
 </head>
 <body>
