@@ -899,7 +899,10 @@ if($mybb->input['action'] == "edit")
 	{
 		$timezone = $user['timezone'];
 	}
-	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
+	$local_date = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
+	$local_time = gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
+
+	$localtime = $lang->sprintf($lang->local_time_format, $local_date, $local_time);
 	$days_registered = (TIME_NOW - $user['regdate']) / (24*3600);
 	$posts_per_day = 0;
 	if($days_registered > 0)
@@ -910,6 +913,8 @@ if($mybb->input['action'] == "edit")
 			$posts_per_day = $user['postnum'];
 		}
 	}
+	$posts_per_day = my_number_format($posts_per_day);
+
 	$stats = $cache->read("stats");
 	$posts = $stats['numposts'];
 	if($posts == 0)
@@ -949,14 +954,16 @@ if($mybb->input['action'] == "edit")
 		$age = get_age($user['birthday']);
 	}
 
+	$postnum = my_number_format($user['postnum']);
+
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
 	$table->construct_cell("<strong>{$lang->email_address}:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
 	$table->construct_cell("<strong>{$lang->last_active}:</strong> {$last_active}");
 	$table->construct_row();
 	$table->construct_cell("<strong>{$lang->registration_date}:</strong> {$reg_date}");
-	$table->construct_cell("<strong>{$lang->local_time}:</strong> {$local_time}");
+	$table->construct_cell("<strong>{$lang->local_time}:</strong> {$localtime}");
 	$table->construct_row();
-	$table->construct_cell("<strong>{$lang->posts}:</strong> {$user['postnum']}");
+	$table->construct_cell("<strong>{$lang->posts}:</strong> {$postnum}");
 	$table->construct_cell("<strong>{$lang->age}:</strong> {$age}");
 	$table->construct_row();
 	$table->construct_cell("<strong>{$lang->posts_per_day}:</strong> {$posts_per_day}");
