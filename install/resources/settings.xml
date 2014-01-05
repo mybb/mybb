@@ -2069,4 +2069,53 @@ smtp=SMTP mail]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
+	<settinggroup name="goodbyespammer" title="Goodbye Spammer" description="This section allows you to change the settings of the goodbyespammer feature" disporder="22" isdefault="1">
+		<setting name="goodbyespammergroups">
+			<title>Allowed Usergroups</title>
+			<description><![CDATA[Enter the ID of the usergroups who are allowed to use Goodbye Spammer.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[3,4,6]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="goodbyespammerpostlimit">
+			<title>Post Limit</title>
+			<description><![CDATA[This setting stops this tool being used on users who have more than a certain amount of posts, to prevent it being used on active members. Setting the value to 0 will disable the post check, however this is not recommended.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="goodbyespammerbandelete">
+			<title>Ban or Delete Spammers</title>
+			<description><![CDATA[Do you want to ban or delete spammers with this tool?? It will still be optional on the Goodbye Spammer page.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[radio
+ban=Ban (Permanent)
+delete=Delete]]></optionscode>
+			<settingvalue><![CDATA[ban]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="goodbyespammerbangroup">
+			<title>Ban Usergroup</title>
+			<description><![CDATA[Enter the ID of the usergroup (not the name) to put users into when they get banned. Defaults to 7, the default Banned usergroup. The above setting must be set to 'Ban' for this to take effect.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[7]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="goodbyespammerapikey">
+			<title>Stop Forum Spam API Key</title>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="http://stopforumspam.com/signup" target="_blank">here</a>. When you have your key, paste it into the box below.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
 </settings>

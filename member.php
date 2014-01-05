@@ -2012,6 +2012,11 @@ if($mybb->input['action'] == "profile")
 			$memprofile['usernotes'] = $lang->no_usernotes;
 		}
 
+        if(goodbyespammer_show($memprofile['postnum'], $memprofile['usergroup']))
+        {
+                eval("\$goodbyespammer = \"".$templates->get('member_profile_modoptions_goodbyespammer')."\";");
+        }
+
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}
 

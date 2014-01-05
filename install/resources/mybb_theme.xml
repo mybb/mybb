@@ -1163,20 +1163,23 @@ div.error ul {
 	background-position: 0 -220px;
 }
 
-.postbit_buttons a.postbit_reply_pm span {
+.postbit_buttons a.postbit_goodbyespammer span {
 	background-position: 0 -240px;
-}
 
-.postbit_buttons a.postbit_reply_all span {
+.postbit_buttons a.postbit_reply_pm span {
 	background-position: 0 -260px;
 }
 
-.postbit_buttons a.postbit_forward_pm span {
+.postbit_buttons a.postbit_reply_all span {
 	background-position: 0 -280px;
 }
 
-.postbit_buttons a.postbit_delete_pm span {
+.postbit_buttons a.postbit_forward_pm span {
 	background-position: 0 -300px;
+}
+
+.postbit_buttons a.postbit_delete_pm span {
+	background-position: 0 -320px;
 }
 
 a.button:link,
@@ -4265,6 +4268,7 @@ a.button {
 <ul>
 <li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_in_mcp}</a></li>
 <li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->ban_in_mcp}</a></li>
+{$goodbyespammer}
 </ul>
 </td>
 </tr>
@@ -4276,6 +4280,7 @@ a.button {
 </tr>
 </table>
 ]]></template>
+		<template name="member_profile_modoptions_goodbyespammer" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/moderation.php?action=goodbyespammer&amp;uid={$uid}">{$lang->goodbyespammer}</a></li>]]></template>
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_referrals" version="1600"><![CDATA[<tr>
@@ -8280,7 +8285,7 @@ body {
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
 	<div class="postbit_buttons post_management_buttons float_right">
-		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_goodbyespammer']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
 	</div>
 </div>
 </div>]]></template>
@@ -8347,7 +8352,7 @@ body {
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
 	<div class="postbit_buttons post_management_buttons float_right">
-		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_goodbyespammer']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
 	</div>
 </div>
 </div>]]></template>
@@ -8366,6 +8371,7 @@ body {
 		<template name="postbit_email" version="1800"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}" title="{$lang->postbit_email}" class="postbit_email"><span>{$lang->postbit_button_email}</span></a>]]></template>
 		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
+		<template name="postbit_goodbyespammer" version="1800"><![CDATA[<a href="moderation.php?action=goodbyespammer&amp;uid={$post['uid']}" title="{$lang->postbit_goodbyespammer}" class="postbit_goodbyespammer"><span>{$lang->postbit_button_goodbyespammer}</span></a>]]></template>
 		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
 		<template name="postbit_groupimage" version="120"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
@@ -12354,5 +12360,39 @@ $(function() {
 	<template name="video_vimeo_embed" version="1610"><![CDATA[<iframe src="http://player.vimeo.com/video/{$id}" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>]]></template>
 	<template name="video_yahoo_embed" version="1610"><![CDATA[<iframe width="624" height="351" scrolling="no" frameborder="0" src="http://{$local}screen.yahoo.com/{$id}?format=embed"></iframe>]]></template>
 	<template name="debug_summary" version="1800"><![CDATA[<div id="debug">{$generated_in} {$debug_weight} <br />{$sql_queries} / {$server_load} / {$memory_usage}<br />[<a href="{$debuglink}" target="_blank">{$lang->debug_advanced_details}</a>]<br /></div>]]></template>
+	<template name="goodbyespammer" version="1800"><![CDATA[<html>
+<head>
+<title>{$lang->goodbyespammer}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form method="post" action="moderation.php">
+<input type="hidden" name="action" value="do_goodbyespammer" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->goodbyespammer_actionstotake}</strong></td>
+</tr>
+<tr>
+<td class="tcat" colspan="2">{$lang->goodbyespammer_desc}</td>
+</tr>
+{$options}
+<tr>
+<td class="tfoot" colspan="2" align="center"><input type="submit" value="{$lang->goodbyespammer_submit}" /></td>
+</tr>
+</table>
+<input type="hidden" name="uid" value="{$mybb->input['uid']}" />
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+</form>
+{$footer}
+</body>
+</html>]]></template>
+	<template name="goodbyespammer_option_checkbox" version="1800"><![CDATA[<tr>
+        <td class="{$altbg}" width="99%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}</td>
+        <td class="{$altbg}" width="1%" align="center"><input type="checkbox" name="actions[{$action}]" id="actions_{$action}" value="1"{$checked}{$disabled} /></td>
+</tr>]]></template>
+	<template name="goodbyespammer_option_textbox" version="1800"><![CDATA[<tr>
+                <td class="{$altbg}" width="100%" colspan="2"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
+</tr>]]></template>
 	</templates>
 </theme>

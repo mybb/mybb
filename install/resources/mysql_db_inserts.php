@@ -143,6 +143,7 @@ $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUE
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('37','stats','<lang:group_stats>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('38','xmlhttp','<lang:group_xmlhttp>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('39','footer','<lang:group_footer>','1');";
+$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('40','goodbyespammer','<lang:group_goodbyespammer>','1');";
 
 
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (1, 0, 'Newbie', 1, '');";

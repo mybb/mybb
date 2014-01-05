@@ -164,6 +164,7 @@ $l['membdayage'] = "({1} years old)";
 $l['mod_options'] = "Moderator Options";
 $l['edit_in_mcp'] = "Edit this user in Mod CP";
 $l['ban_in_mcp'] = "Ban this user in Mod CP";
+$l['goodbyespammer'] = "Use Goodbye Spammer on this user";
 $l['edit_usernotes'] = "Edit user notes in Mod CP";
 $l['no_usernotes'] = "There are currently no notes on this user";
 $l['reputation'] = "Reputation:";
