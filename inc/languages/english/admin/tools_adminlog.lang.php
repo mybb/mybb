@@ -219,6 +219,7 @@ $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user po
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
+$l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
