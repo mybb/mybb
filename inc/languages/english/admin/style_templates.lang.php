@@ -113,6 +113,7 @@ $l['group_smilieinsert'] = "Smilie Inserter";
 $l['group_stats'] = "Statistics";
 $l['group_xmlhttp'] = "XMLHTTP";
 $l['group_footer'] = "Footer";
+$l['group_goodbyespammer'] = "Goodbye Spammer";
 
 $l['expand'] = "Expand";
 $l['collapse'] = "Collapse";

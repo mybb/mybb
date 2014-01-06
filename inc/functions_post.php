@@ -395,7 +395,7 @@ function build_postbit($post, $post_type=0)
 
 		if(goodbyespammer_show($post['postnum'], $post['usergroup']))
         {
-			eval("\$post['button_goodbyespammer = \"".$templates->get('postbit_goodbyespammer')."\";");
+			eval("\$post['button_goodbyespammer'] = \"".$templates->get('postbit_goodbyespammer')."\";");
         }
 		
 		// Display profile fields on posts - only if field is filled in

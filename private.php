@@ -19,7 +19,7 @@ $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients";
 $templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc";
-$templatelist .= ",private_archive,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,usercp_nav_messenger_tracking,multipage_prevpage";
+$templatelist .= ",private_archive,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,usercp_nav_messenger_tracking,multipage_prevpage,postbit_goodbyespammer";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

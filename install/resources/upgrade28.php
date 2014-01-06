@@ -140,6 +140,8 @@ function upgrade28_dbchanges()
 		$db->drop_column("profilefields", "postbit");
 	}
 
+	$db->delete_query("templategroups", "prefix='goodbyespammer'");
+	
 	switch($db->type)
 	{
 		case "pgsql":
@@ -163,6 +165,8 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
+
+			$db->insert_query("templategroups", array("prefix" => "goodbyespammer", "title" => "<lang:group_goodbyespammer>", "isdefault" => 1));
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -184,6 +188,8 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
+
+			$db->insert_query("templategroups", array("prefix" => "goodbyespammer", "title" => "<lang:group_goodbyespammer>", "isdefault" => 1));
 			break;
 	}
 

@@ -144,6 +144,7 @@ $l['cancel'] = "Cancel";
 $l['leave_redirect_for'] = "Leave redirect for:";
 $l['redirect_forever'] = "Forever";
 
+$l['goodbyespammer'] = "Goodbye Spammer";
 $l['goodbyespammer_desc'] = "An option will be pre-selected if there is something for it to delete/remove. If an option will not delete or remove anything (i.e. there is nothing for it to delete/remove), it will be disabled. A number in brackets indicates how many items will be deleted.";
 $l['goodbyespammer_actionstotake'] = "Actions to take on {1}";
 $l['goodbyespammer_deletethreads'] = "Delete Threads";
@@ -178,7 +179,6 @@ $l['goodbyespammer_profile'] = "Use Goodbye Spammer on {1}.";
 $l['goodbyespammer_success'] = "The selected actions have been performed.";
 $l['goodbyespammer_invalid_user'] = "You have specified an invalid user.";
 $l['goodbyespammer_modlog'] = "Used Goodbye Spammer on {1}";
-$l['goodbyespammer_posts_too_high'] = "This tool cannot be used on this user as they have more than {1} posts.";
 
 $l['error_invalidpm'] = "Invalid PM";
 $l['error_nomergeposts'] = "You need to select one or more posts to be able to merge posts together.";

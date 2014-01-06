@@ -1164,22 +1164,23 @@ div.error ul {
 }
 
 .postbit_buttons a.postbit_goodbyespammer span {
-	background-position: 0 -240px;
+	background-position: 0 -520px;
+}
 
 .postbit_buttons a.postbit_reply_pm span {
-	background-position: 0 -260px;
+	background-position: 0 -240px;
 }
 
 .postbit_buttons a.postbit_reply_all span {
-	background-position: 0 -280px;
+	background-position: 0 -260px;
 }
 
 .postbit_buttons a.postbit_forward_pm span {
-	background-position: 0 -300px;
+	background-position: 0 -280px;
 }
 
 .postbit_buttons a.postbit_delete_pm span {
-	background-position: 0 -320px;
+	background-position: 0 -300px;
 }
 
 a.button:link,

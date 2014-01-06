@@ -16,7 +16,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,goodbyespammer_option_checkbox,goodbyespammer_option_textbox,goodbyespammer';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2660,29 +2660,21 @@ switch($mybb->input['action'])
 		}
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postssoftdeleted);
 		break;
+	case "do_goodbyespammer":
 	case "goodbyespammer":
-		if($mybb->input['action'] == "do_goodbyespammer" || $mybb->input['action'] == "goodbyespammer")
+		require_once MYBB_ROOT."inc/functions_user.php";
+
+		$groups = explode(",", $mybb->settings['goodbyespammergroups']);
+		if(!in_array($mybb->user['usergroup'], $groups))
 		{
-			$lang->load("goodbyespammer");
-			$lang->load("member");
+			error_no_permission();
+		}
 
-			$groups = explode(",", $mybb->settings['goodbyespammergroups']);
-			if(!in_array($mybb->user['usergroup'], $groups))
-			{
-				error_no_permission();
-			}
-
-			$uid = intval($mybb->input['uid']);
-			$user = get_user($uid);
-			if(!$user['uid'] || !goodbyespammer_show($user['postnum'], $user['usergroup']))
-			{
-				error($lang->goodbyespammer_invalid_user);
-			}
-			// this is to stop this tool being used on regular members
-			if($user['postnum'] > $mybb->settings['goodbyespammerpostlimit'])
-			{
-				error($lang->sprintf($lang->goodbyespammer_posts_too_high, $mybb->settings['goodbyespammerpostlimit']));
-			}
+		$uid = intval($mybb->input['uid']);
+		$user = get_user($uid);
+		if(!$user['uid'] || !goodbyespammer_show($user['postnum'], $user['usergroup']))
+		{
+			error($lang->goodbyespammer_invalid_user);
 		}
 
 		if($mybb->input['action'] == "do_goodbyespammer")
@@ -2690,9 +2682,6 @@ switch($mybb->input['action'])
 			verify_post_check($mybb->input['my_post_key']);
 
 			$user_deleted = false;
-
-			require_once MYBB_ROOT . "inc/class_moderation.php";
-			$moderation = new Moderation;
 
 			// loop through what was submitted
 			foreach($mybb->input['actions'] as $action => $value)
@@ -2714,31 +2703,23 @@ switch($mybb->input['action'])
 						}
 						break;
 					case "removesig":
-						$update = array(
-							"signature" => ""
-						);
-						$db->update_query("users", $update, "uid = '{$uid}'");
+						$update['signature'] = "";
 						break;
 					case "removeavatar":
-						$update = array(
-							"avatar" => ""
-						);
-						$db->update_query("users", $update, "uid = '{$uid}'");
+						$update['avatar'] = "";
 						break;
 					case "clearprofile":
 						$db->delete_query("userfields", "ufid = '{$uid}'");
-						$update = array(
-							"website" => "",
-							"birthday" => "",
-							"icq" => "",
-							"aim" => "",
-							"yahoo" => "",
-							"msn" => ""
-						);
-						$db->update_query("users", $update, "uid = '{$uid}'");
+						$update['website'] = "";
+						$update['birthday'] = "";
+						$update['icq'] = "";
+						$update['aim'] = "";
+						$update['yahoo'] = "";
+						$update['msn'] = "";
+						$update['usertitle'] = "";
 						break;
 					case "deletepms":
-						$query = $db->simple_select("privatemessages", "pmid, uid, toid", "uid = '{$uid}' OR fromid = '{$uid}'");
+						$query = $db->simple_select("privatemessages", "pmid, uid, toid", "uid='{$uid}' OR fromid='{$uid}'");
 						$pms = array();
 						$users = array();
 						while($pm = $db->fetch_array($query))
@@ -2770,10 +2751,10 @@ switch($mybb->input['action'])
 						{
 							$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid = '" . intval($user_id) . "'");
 							$reputation_count = $db->fetch_field($query, "reputation_count");
-							$update = array(
+							$repupdate = array(
 								"reputation" => intval($reputation_count)
 							);
-							$db->update_query("users", $update, "uid = '" . intval($user_id) . "'");
+							$db->update_query("users", $repupdate, "uid = '" . intval($user_id) . "'");
 						}
 						break;
 					case "deletereportedposts":
@@ -2788,10 +2769,10 @@ switch($mybb->input['action'])
 							$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 							if($db->num_rows($query) > 0)
 							{
-								$update = array(
+								$banupdate = array(
 									"reason" => $db->escape_string($mybb->input['actions']['banreason'])
 								);
-								$db->update_query('banned', $update, "uid = '{$uid}'");
+								$db->update_query('banned', $banupdate, "uid = '{$uid}'");
 							}
 							else
 							{
@@ -2824,12 +2805,9 @@ switch($mybb->input['action'])
 								}
 							}
 
-							$update = array(
-								"usergroup" => intval($mybb->settings['goodbyespammerbangroup']),
-								"additionalgroups" => "",
-								"displaygroup" => 0
-							);
-							$db->update_query("users", $update, "uid = '{$uid}'");
+							$update['usergroup'] = intval($mybb->settings['goodbyespammerbangroup']);
+							$update['additionalgroups'] = "";
+							$update['displaygroup'] = "";
 
 							$cache->update_banned();
 							$cache->update_bannedips();
@@ -2873,10 +2851,12 @@ switch($mybb->input['action'])
 			}
 			else
 			{
+				$db->update_query("users", $update, "uid = '{$uid}'");
+
 				redirect(get_profile_link($uid), $lang->goodbyespammer_success);
 			}
 		}
-		elseif($mybb->input['action'] == "goodbyespammer")
+		else if($mybb->input['action'] == "goodbyespammer")
 		{
 			$options = "";
 			$actions = array(
@@ -2904,8 +2884,8 @@ switch($mybb->input['action'])
 				switch($action)
 				{
 					case "deletethreads":
-						$query = $db->simple_select("threads", "COUNT(*) AS threads", "uid = '{$uid}'");
-						$threads = $db->fetch_field($query, "threads");
+						$query = $db->simple_select("threads", "tid", "uid = '{$uid}'");
+						$threads = $db->num_rows($query);
 						if($threads > 0)
 						{
 							$checked = " checked=\"checked\"";
@@ -2919,8 +2899,8 @@ switch($mybb->input['action'])
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deleteposts":
-						$query = $db->simple_select("posts", "COUNT(*) AS posts", "uid = '{$uid}'");
-						$posts = $db->fetch_field($query, "posts");
+						$query = $db->simple_select("posts", "pid", "uid = '{$uid}'");
+						$posts = $db->num_rows($query);
 						if($threads > 0)
 						{
 							$posts -= $threads;
@@ -2974,7 +2954,7 @@ switch($mybb->input['action'])
 							$query = $db->simple_select("userfields", $profilefields_string, "ufid = '{$uid}'");
 							$userfields = $db->fetch_array($query);
 						}
-						if($userfields)
+						if(isset($userfields))
 						{
 							foreach($userfields as $userfield)
 							{
@@ -2986,7 +2966,7 @@ switch($mybb->input['action'])
 						}
 						if(!$checked)
 						{
-							if(!empty($user['website']) || !empty($user['birthday']))
+							if(!empty($user['website']) || !empty($user['birthday']) || !empty($user['icq']) || !empty($user['aim']) || !empty($user['yahoo']) || !empty($user['msn']) || !empty($user['usertitle']))
 							{
 								$checked = " checked=\"checked\"";
 							}
@@ -2999,8 +2979,8 @@ switch($mybb->input['action'])
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletepms":
-						$query = $db->simple_select("privatemessages", "COUNT(*) AS pms", "uid = '{$uid}' OR fromid = '{$uid}'");
-						$pms = $db->fetch_field($query, "pms");
+						$query = $db->simple_select("privatemessages", "pmid", "uid = '{$uid}' OR fromid = '{$uid}'");
+						$pms = $db->num_rows($query);
 						if($pms > 0)
 						{
 							$checked = " checked=\"checked\"";
@@ -3014,8 +2994,8 @@ switch($mybb->input['action'])
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletereps":
-						$query = $db->simple_select("reputation", "COUNT(*) AS reps", "uid = '{$uid}' OR adduid = '{$uid}'");
-						$reps = $db->fetch_field($query, "reps");
+						$query = $db->simple_select("reputation", "rid", "uid = '{$uid}' OR adduid = '{$uid}'");
+						$reps = $db->num_rows($query);
 						if($reps > 0)
 						{
 							$checked = " checked=\"checked\"";
@@ -3029,8 +3009,8 @@ switch($mybb->input['action'])
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletereportedposts":
-						$query = $db->simple_select("reportedposts", "COUNT(*) AS reportedposts", "uid = '{$uid}'");
-						$reportedposts = $db->fetch_field($query, "reportedposts");
+						$query = $db->simple_select("reportedposts", "rid", "uid = '{$uid}'");
+						$reportedposts = $db->num_rows($query);
 						if($reportedposts > 0)
 						{
 							$checked = " checked=\"checked\"";
@@ -3044,8 +3024,8 @@ switch($mybb->input['action'])
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deleteevents":
-						$query = $db->simple_select("events", "COUNT(*) AS events", "uid = '{$uid}'");
-						$events = $db->fetch_field($query, "events");
+						$query = $db->simple_select("events", "eid", "uid = '{$uid}'");
+						$events = $db->num_rows($query);
 						if($events > 0)
 						{
 							$checked = " checked=\"checked\"";
@@ -3093,7 +3073,6 @@ switch($mybb->input['action'])
 				}
 			}
 
-			add_breadcrumb($lang->sprintf($lang->nav_profile, $user['username']), get_profile_link($uid));
 			add_breadcrumb($lang->goodbyespammer);
 			$lang->goodbyespammer_actionstotake = $lang->sprintf($lang->goodbyespammer_actionstotake, $user['username']);
 			eval("\$goodbyespammer .= \"".$templates->get('goodbyespammer')."\";");
