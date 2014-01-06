@@ -169,6 +169,7 @@ var Thread = {
 				cancel : "Cancel",
 				tooltip : "Click to edit...",
 				event : "edit" + pid, // Triggered by the event "edit_[pid]",
+				onblur : "ignore",
 				callback : function(values, settings) {
 					values = JSON.parse(values);
 					

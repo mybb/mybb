@@ -533,30 +533,6 @@ input.button:hover {
 	background: #f5f5f5;
 }
 
-.twitter-typeahead > input {
-    vertical-align: middle !important;
-}
-
-.tt-dropdown-menu {
-	background: #fff;
-	color: black;
-	border: 1px solid #ccc;
-	padding: 1px;
-    margin-top: 3px;
-    width: 98%;
-}
-
-.tt-suggestion {
-    font-size: 12px;
-    line-height: 0;
-    padding: 1px
-}
-
-.tt-suggestion.tt-is-under-cursor {
-    background-color: #0072BC;
-	color: #fff;
-}
-
 .popup_menu {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -8377,7 +8353,7 @@ body {
 </div>]]></template>
 		<template name="postbit_delete_pm" version="1800"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}" title="{$lang->delete_title}" class="postbit_delete_pm"><span>{$lang->postbit_button_delete_pm}</span></a>]]></template>
 		<template name="postbit_edit" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}" title="{$lang->postbit_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>
-<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
+<div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" class="popup_item quick_edit_button" id="quick_edit_post_{$post['pid']}">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 // <!--
 	if(use_xmlhttprequest == "1")
@@ -9849,6 +9825,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
+<!-- jeditable (jquery) -->
+<script src="jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
 </head>
 <body>
@@ -10565,6 +10543,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		lang.adding_buddy = '{$lang->adding_buddy}';
 		lang.adding_ignored = '{$lang->adding_ignored}';
 	</script>
+  
+  <link rel="stylesheet" href="jscripts/select2/select2.css">
+	<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+  
 </head>
 <body>
 	{$header}
@@ -10588,21 +10570,43 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<span class="smalltext">{$lang->add_buddies_desc}</span><br />
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
-							<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
 							<script type="text/javascript">
                             <!--
                                 if(use_xmlhttprequest == "1")
                                 {
-                                    $("#buddy_add_username").typeahead({
-                                        name: 'username',
-                                        remote: {
-                                          url: 'xmlhttp.php?action=get_users&query=%QUERY',
-                                          filter: function(response){
-                                            return response.users;
-                                          },
-                                        },
-                                        limit: 10
-                                    });
+									$("#buddy_add_username").select2({
+										placeholder: "Search for a movie",
+										minimumInputLength: 3,
+										maximumSelectionSize: 3,
+										multiple: true,
+										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+											url: "xmlhttp.php?action=get_users",
+											dataType: 'json',
+											data: function (term, page) {
+												return {
+													query: term, // search term
+												};
+											},
+											results: function (data, page) { // parse the results into the format expected by Select2.
+												// since we are using custom formatting functions we do not need to alter remote JSON data
+												return {results: data};
+											}
+										},
+										initSelection: function(element, callback) {
+											// the input tag has a value attribute preloaded that points to a preselected movie's id
+											// this function resolves that id attribute to an object that select2 can render
+											// using its formatResult renderer - that way the movie name is shown preselected
+											var query = $(element).val();
+											if (query !== "") {
+												$.ajax("xmlhttp.php?action=get_users", {
+													data: {
+														query: query
+													},
+													dataType: "json"
+												}).done(function(data) { callback(data); });
+											}
+										},
+									});
                                 }
                             // -->
 							</script>
@@ -10637,16 +10641,39 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
                             <!--
                                 if(use_xmlhttprequest == "1")
                                 {
-                                    $("#ignored_add_username").typeahead({
-                                        name: 'username',
-                                        remote: {
-                                          url: 'xmlhttp.php?action=get_users&query=%QUERY',
-                                          filter: function(response){
-                                            return response.users;
-                                          },
-                                        },
-                                        limit: 10
-                                    });
+									$("#ignored_add_username").select2({
+										placeholder: "Search for a movie",
+										minimumInputLength: 3,
+										maximumSelectionSize: 3,
+										multiple: true,
+										ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+											url: "xmlhttp.php?action=get_users",
+											dataType: 'json',
+											data: function (term, page) {
+												return {
+													query: term, // search term
+												};
+											},
+											results: function (data, page) { // parse the results into the format expected by Select2.
+												// since we are using custom formatting functions we do not need to alter remote JSON data
+												return {results: data};
+											}
+										},
+										initSelection: function(element, callback) {
+											// the input tag has a value attribute preloaded that points to a preselected movie's id
+											// this function resolves that id attribute to an object that select2 can render
+											// using its formatResult renderer - that way the movie name is shown preselected
+											var query = $(element).val();
+											if (query !== "") {
+												$.ajax("xmlhttp.php?action=get_users", {
+													data: {
+														query: query
+													},
+													dataType: "json"
+												}).done(function(data) { callback(data); });
+											}
+										},
+									});
                                 }
                             // -->
 							</script>
