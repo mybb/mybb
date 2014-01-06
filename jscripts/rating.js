@@ -87,7 +87,7 @@ var Rating = {
 		{
 			$.each(json.errors, function(i, error)
 			{
-				$.jGrowl('There was an error performing the update. '+error);
+				$.jGrowl(lang.rating_error_performing_update+' '+error);
 			});
 		}
 		else if(json.hasOwnProperty("success"))

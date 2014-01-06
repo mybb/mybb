@@ -23,5 +23,4 @@ $l['thread_closed'] = "Thread Closed";
 $l['thread_opened'] = "Thread Opened";
 $l['thread_stuck'] = "Thread Stuck";
 $l['thread_unstuck'] = "Thread Unstuck";
-
 ?>

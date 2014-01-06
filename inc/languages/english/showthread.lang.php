@@ -95,4 +95,13 @@ $l['enter_keywords'] = "Enter Keywords";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
+
+$l['error_fetching_post'] = "There was an error fetching the posts.";
+$l['error_posting_reply'] = "There was an error posting your reply:";
+$l['error_unknown'] = "An unknown error has occurred.";
+$l['post_deleted_successfully'] = "The post was deleted successfully.";
+$l['posting'] = "Posting...";
+$l['quickedit_submit'] = "OK";
+$l['quickedit_cancel'] = "Cancel";
+$l['quickedit_tooltip'] = "Click to edit...";
 ?>

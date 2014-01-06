@@ -79,6 +79,7 @@ $l['confirm_remove_buddy'] = "Remove this user from your buddy list?";
 $l['confirm_remove_ignored'] = "Remove this user from your ignore list?";
 $l['adding_buddy'] = "Adding Buddy..";
 $l['adding_ignored'] = "Adding to Ignored..";
+$l['error_fetching_buddy'] = "There was an error fetching the buddy list.";
 $l['add_buddies'] = "Add Users to your Buddy List";
 $l['add_buddies_desc'] = "To add one or more users to your buddy list, enter their usernames below. Separate multiple usernames with a comma.";
 $l['username_or_usernames'] = "Username(s):";

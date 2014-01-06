@@ -16,9 +16,9 @@ var inlineEditor = {
 			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key="+my_post_key+"&tid="+tid, {
 				indicator : "<img src='images/spinner.gif'>",
 				type : "text",
-				submit : "OK",
-				cancel : "Cancel",
-				tooltip : "(Click and hold to edit)",
+				submit : lang.inline_edit_submit,
+				cancel : lang.inline_edit_cancel,
+				tooltip : lang.inline_edit_tooltip,
 				width:($('#tid_' + tid).width() + 200) + "px",
 				event : "hold"+tid,
 				callback : function(values, settings) {

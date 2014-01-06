@@ -3003,6 +3003,11 @@ a.button {
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.error_fetching_post = "{$lang->error_fetching_post}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -3246,6 +3251,9 @@ a.button {
 <!--
 	lang.no_new_posts = "{$lang->no_new_posts}";
 	lang.click_mark_read = "{$lang->click_mark_read}";
+	lang.inline_edit_submit = "{$lang->inline_edit_submit}";
+	lang.inline_edit_cancel = "{$lang->inline_edit_cancel}";
+	lang.inline_edit_tooltip = "{$lang->inline_edit_tooltip}";
 // -->
 </script>
 <!-- jeditable (jquery) -->
@@ -3554,6 +3562,7 @@ a.button {
 			lang.stars[3] = "{$lang->three_stars}";
 			lang.stars[4] = "{$lang->four_stars}";
 			lang.stars[5] = "{$lang->five_stars}";
+			lang.rating_error_performing_update = "{$lang->rating_error_performing_update}";
 		// -->
 		</script>
 	</td>
@@ -4305,6 +4314,11 @@ a.button {
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/validator.js"></script>
+<script type="text/javascript">
+<!--
+	lang.validator_checking = "{$lang->js_validator_checking}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -4626,6 +4640,11 @@ a.button {
 		<template name="member_register_regimage" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.captcha_error_fetching_cpatcha = "{$lang->captcha_error_fetching_cpatcha}";
+// -->
+</script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -7603,6 +7622,11 @@ body {
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.error_fetching_post = "{$lang->error_fetching_post}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -7696,6 +7720,11 @@ body {
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
 <script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.error_fetching_post = "{$lang->error_fetching_post}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -8191,6 +8220,11 @@ body {
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
 <script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.captcha_error_fetching_cpatcha = "{$lang->captcha_error_fetching_cpatcha}";
+// -->
+</script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -9828,6 +9862,18 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <!-- jeditable (jquery) -->
 <script src="jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
+<script type="text/javascript">
+<!--
+	lang.error_fetching_post = "{$lang->error_fetching_post}";
+	lang.error_posting_reply = "{$lang->error_posting_reply}";
+	lang.error_unknown = "{$lang->error_unknown}";
+	lang.post_deleted_successfully = "{$lang->post_deleted_successfully}";
+	lang.posting = "{$lang->posting}";
+	lang.quickedit_submit = "{$lang->quickedit_submit}";
+	lang.quickedit_cancel = "{$lang->quickedit_cancel}";
+	lang.quickedit_tooltip = "{$lang->quickedit_tooltip}";
+// -->
+</script>
 </head>
 <body>
 	{$header}
@@ -10068,6 +10114,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </form>]]></template>
 		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
+		<script type="text/javascript">
+		<!--
+			lang.rating_error_performing_update = "{$lang->rating_error_performing_update}";
+		// -->
+		</script>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -10542,6 +10593,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
 		lang.adding_buddy = '{$lang->adding_buddy}';
 		lang.adding_ignored = '{$lang->adding_ignored}';
+		lang.error_fetching_buddy = '{$lang->error_fetching_buddy}';
 	</script>
   
   <link rel="stylesheet" href="jscripts/select2/select2.css">

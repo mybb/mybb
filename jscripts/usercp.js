@@ -41,7 +41,7 @@ var UserCP = {
 				{
 					$.each(json.errors, function(i, message)
 					{
-					  $.jGrowl('There was an error fetching the buddy list. '+message);
+					  $.jGrowl(lang.error_fetching_buddy+' '+message);
 					});
 					return false;
 				}
