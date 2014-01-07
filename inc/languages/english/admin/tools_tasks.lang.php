@@ -51,6 +51,7 @@ $l['next_run'] = "Next Run";
 $l['run_task_now'] = "Run this task now";
 $l['run_task'] = "Run task";
 $l['disable_task'] = "Disable Task";
+$l['run_task'] = "Run Task";
 $l['enable_task'] = "Enable Task";
 $l['delete_task'] = "Delete Task";
 $l['alt_enabled'] = "Enabled";
