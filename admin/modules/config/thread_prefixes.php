@@ -161,26 +161,26 @@ if($mybb->input['action'] == 'add_prefix')
 	$form_container->output_row($lang->display_style.' <em>*</em>', $lang->display_style_desc, $form->generate_text_box('displaystyle', $mybb->input['displaystyle'], array('id' => 'displaystyle')), 'displaystyle');
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$('.'+id+'s').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+'_'+checked))
-        {
-            Element.show(id+'_'+checked);
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -394,26 +394,26 @@ if($mybb->input['action'] == 'edit_prefix')
 	$form_container->output_row($lang->display_style.' <em>*</em>', $lang->display_style_desc, $form->generate_text_box('displaystyle', $mybb->input['displaystyle'], array('id' => 'displaystyle')), 'displaystyle');
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$('.'+id+'s').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+'_'+checked))
-        {
-            Element.show(id+'_'+checked);
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>

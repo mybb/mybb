@@ -437,26 +437,26 @@ if($mybb->input['action'] == "import")
 	$form = new Form("index.php?module=style-themes&amp;action=import", "post", "", 1);
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 35%;">
 	<dt><label style="display: block;"><input type="radio" name="import" value="0" '.$import_checked[1].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->local_file.'</label></dt>
@@ -1733,26 +1733,26 @@ if($mybb->input['action'] == "stylesheet_properties")
 	}
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt><br />
@@ -2586,26 +2586,26 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt>

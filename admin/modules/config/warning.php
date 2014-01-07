@@ -131,23 +131,24 @@ if($mybb->input['action'] == "add_level")
 	);
 
 	$actions = "<script type=\"text/javascript\">
-	function checkAction()
+	function checkAction(id)
 	{
 		var checked = '';
-		$$('.actions_check').each(function(e)
+
+		$('.'+id+'s_check').each(function(e, val)
 		{
-			if(e.checked == true)
+			if($(this).prop('checked') == true)
 			{
-				checked = e.value;
+				checked = $(this).val();
 			}
 		});
-		$$('.actions').each(function(e)
+		$('.'+id+'s').each(function(e)
 		{
-			Element.hide(e);
+			$(this).hide();
 		});
-		if($('action_'+checked))
+		if($('#'+id+'_'+checked))
 		{
-			Element.show('action_'+checked);
+			$('#'+id+'_'+checked).show();
 		}
 	}
 	</script>
@@ -325,23 +326,24 @@ if($mybb->input['action'] == "edit_level")
 	);
 
 	$actions = "<script type=\"text/javascript\">
-	function checkAction()
+	function checkAction(id)
 	{
 		var checked = '';
-		$$('.actions_check').each(function(e)
+
+		$('.'+id+'s_check').each(function(e, val)
 		{
-			if(e.checked == true)
+			if($(this).prop('checked') == true)
 			{
-				checked = e.value;
+				checked = $(this).val();
 			}
 		});
-		$$('.actions').each(function(e)
+		$('.'+id+'s').each(function(e)
 		{
-			Element.hide(e);
+			$(this).hide();
 		});
-		if($('action_'+checked))
+		if($('#'+id+'_'+checked))
 		{
-			Element.show('action_'+checked);
+			$('#'+id+'_'+checked).show();
 		}
 	}
 	</script>
