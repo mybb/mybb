@@ -862,7 +862,7 @@ class DefaultFormContainer
 	 * Output a header row of the form container.
 	 *
 	 * @param string The header row label.
-	 * @param array TODO
+	 * @param array Array of extra information for this header cell (class, style, colspan, width)
 	 */
 	function output_row_header($title, $extra=array())
 	{

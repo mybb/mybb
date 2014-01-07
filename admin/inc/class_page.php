@@ -398,7 +398,6 @@ EOF;
 			$secret_pin = '';
 		}
 
-        // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>
