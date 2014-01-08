@@ -59,7 +59,7 @@ class MyLanguage
 	function language_exists($language)
 	{
 		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
-		if(file_exists($this->path."/".$language.".php"))
+		if(file_exists($this->path."/".$language."/".$language.".php"))
 		{
 			return true;
 		}
@@ -94,7 +94,7 @@ class MyLanguage
 		}
 
 		$this->language = $language;
-		require $this->path."/".$language.".php";
+		require $this->path."/".$language."/".$language.".php";
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
@@ -198,14 +198,12 @@ class MyLanguage
 		$dir = @opendir($this->path);
 		while($lang = readdir($dir))
 		{
-			$ext = my_strtolower(get_extension($lang));
-			if($lang != "." && $lang != ".." && $ext == "php")
+			if($lang != "." && $lang != ".." && $this->language_exists($lang))
 			{
-				$lname = str_replace(".".$ext, "", $lang);
-				require $this->path."/".$lang;
+				require $this->path."/".$lang."/".$lang.".php";
 				if(!$admin || ($admin && $langinfo['admin']))
 				{
-					$languages[$lname] = $langinfo['name'];
+					$languages[$lang] = $langinfo['name'];
 				}
 			}
 		}
