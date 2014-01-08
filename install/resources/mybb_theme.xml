@@ -11914,7 +11914,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow1" colspan="2">{$user_link}</td>
 		</tr>
 ]]></template>
-		<template name="warnings_warn" version="1400"><![CDATA[<html>
+		<template name="warnings_warn" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warn_user}</title>
 {$headerinclude}
@@ -11949,23 +11949,24 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow2">
 				<script type="text/javascript">
 				// <!--
-					function checkType()
+					function checkType(id)
 					{
 						var checked = '';
-						$$('.types_check').each(function(e)
+
+						$('.types_check').each(function(e, val)
 						{
-							if(e.checked == true)
+							if($(this).prop('checked') == true)
 							{
-								checked = e.value;
+								checked = $(this).val();
 							}
 						});
-						$$('.types').each(function(e)
+						$('.types').each(function(e)
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('type_'+checked))
+						if($('#type_'+checked))
 						{
-							Element.show('type_'+checked);
+							$('#type_'+checked).show();
 						}
 					}
 				// -->
