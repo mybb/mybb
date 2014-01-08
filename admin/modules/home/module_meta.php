@@ -22,6 +22,7 @@ function home_meta()
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?module=home-dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
+	$sub_menu['30'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "http://docs.mybb.com");
 	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home-credits");
 	$sub_menu = $plugins->run_hooks("admin_home_menu", $sub_menu);
 
