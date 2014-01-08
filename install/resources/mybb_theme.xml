@@ -7004,33 +7004,33 @@ body {
 <!--
 	function toggleType()
 	{
-		if($('type_merge'))
+		if($('#type_merge'))
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.hide('type_merge_expanded');
-				Element.show('type_movecopythread_expanded');
+				$('#type_merge_expanded').hide();
+				$('#type_movecopythread_expanded').show();
 			}
-			else if($('type_merge').checked == true)
+			else if($('#type_merge').prop('checked') == true)
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.show('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.hide('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').hide();
 			}
 		}
 		else
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.show('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').hide();
 			}
 		}
 	}
@@ -9930,7 +9930,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1600"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
