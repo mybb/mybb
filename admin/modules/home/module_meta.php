@@ -22,6 +22,7 @@ function home_meta()
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?module=home-dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
+	$sub_menu['30'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "http://docs.mybb.com");
 	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home-credits");
 	$sub_menu = $plugins->run_hooks("admin_home_menu", $sub_menu);
 
@@ -64,7 +65,6 @@ function home_action_handler($action)
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style-templates");
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
-		$sub_menu['70'] = array("id" => "docs", "title" => $lang->mybb_documentation, "link" => "http://docs.mybb.com");
 
 		$sub_menu = $plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
 
