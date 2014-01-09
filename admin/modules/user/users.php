@@ -1463,7 +1463,7 @@ function toggleBox(action)
 {
 	if(action == "modpost")
 	{
-		$("#suspendposting").attr("checked", "checked");
+		$("#suspendposting").attr("checked", false);
 		$("#suspost").hide();
 
 		if($("#moderateposting").is(":checked") == true)
@@ -1477,7 +1477,7 @@ function toggleBox(action)
 	}
 	else if(action == "suspost")
 	{
-		$("#moderateposting").attr("checked", "checked");
+		$("#moderateposting").attr("checked", false);
 		$("#modpost").hide();
 
 		if($("#suspendposting").is(":checked") == true)
