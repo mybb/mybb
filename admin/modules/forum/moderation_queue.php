@@ -150,9 +150,9 @@ if($mybb->request_method == "post")
 }
 
 $all_options = "<ul class=\"modqueue_mass\">\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_ignore\">{$lang->mark_as_ignored}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_delete\">{$lang->mark_as_deleted}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_approve\">{$lang->mark_as_approved}</a></li>\n";
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
@@ -243,6 +243,28 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 }
@@ -351,6 +373,28 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 	else if($mybb->input['type'] == "posts")
@@ -453,6 +497,28 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 	else if($mybb->input['type'] == "attachments")
