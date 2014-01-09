@@ -1276,13 +1276,13 @@ if($mybb->input['action'] == "edit")
 
 		function toggleAction()
 		{
-			if($("suspend_action").visible() == true)
+			if($("#suspend_action").is(\':visible\'))
 			{
-				$("suspend_action").hide();
+				$("#suspend_action").hide();
 			}
 			else
 			{
-				$("suspend_action").show();
+				$("#suspend_action").show();
 			}
 		}
 	// -->
@@ -1304,7 +1304,7 @@ if($mybb->input['action'] == "edit")
 	<!--
 		if(sig_checked == 0)
 		{
-			$("suspend_action").hide();
+			$("#suspend_action").hide();
 		}
 	// -->
 	</script>';
