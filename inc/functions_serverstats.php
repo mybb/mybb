@@ -6,7 +6,6 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 function build_server_stats($is_install=1, $prev_version='', $current_version='', $charset='')

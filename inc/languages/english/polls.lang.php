@@ -3,7 +3,6 @@
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_postpoll'] = "Post Poll";

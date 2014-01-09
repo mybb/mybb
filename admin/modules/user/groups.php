@@ -6,7 +6,6 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Array of usergroup permission fields and their default values.

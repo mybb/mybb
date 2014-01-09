@@ -3,7 +3,6 @@
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['userdata_missing_username'] = 'You did not enter a username. Please enter one.';

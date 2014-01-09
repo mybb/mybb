@@ -3,7 +3,6 @@
  * MyBB 1.8 English Language Pack
  * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['no_new_subject'] = "You did not enter a new subject.";

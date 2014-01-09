@@ -6,7 +6,6 @@
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
