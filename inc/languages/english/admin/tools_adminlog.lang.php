@@ -172,6 +172,7 @@ $l['admin_log_style_templates_edit_template_group'] = "Edited template group #{1
 $l['admin_log_style_templates_delete_template_group'] = "Deleted template group #{1} ({2})";
 
 $l['admin_log_style_themes_import'] = "Imported theme #{1}";
+$l['admin_log_style_themes_duplicate'] = "Duplicated theme #{2} to #{1}";
 $l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
 $l['admin_log_style_themes_edit_stylesheet'] = "Edited stylesheet {2} in {1}";
 $l['admin_log_style_themes_delete_stylesheet'] = "Deleted / Reverted stylesheet #{1} ({2}) in theme #{3} ({4})";

@@ -29,6 +29,9 @@ $l['browse_all_themes'] = "Browse All Themes";
 $l['export_theme'] = "Export Theme";
 $l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
 
+$l['duplicate_theme'] = "Duplicate Theme";
+$l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
+
 $l['colors_manage'] = "Manage Colors";
 $l['colors_attached_to'] = "color setting {1}";
 $l['colors_setting'] = "Base Color";
@@ -75,6 +78,12 @@ $l['import_stylesheets_desc'] = "If this theme contains custom stylesheets shoul
 $l['import_templates'] = "Import Templates";
 $l['import_templates_desc'] = "If this theme contains custom templates should they be imported?";
 $l['import_theme'] = "Import Theme";
+
+$l['new_name_duplicate_desc'] = "A new name for the duplicated theme.";
+$l['duplicate_stylesheets'] = "Duplicate Stylesheets";
+$l['duplicate_stylesheets_desc'] = "If this theme contains custom stylesheets should they be duplicated?";
+$l['duplicate_templates'] = "Duplicate Templates";
+$l['duplicate_templates_desc'] = "If this theme contains custom templates should they be duplicated?";
 
 $l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";
@@ -188,6 +197,7 @@ $l['error_no_results_found'] = "No results were found for the specified keyword(
 $l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
 $l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
 
+$l['success_duplicated_theme'] = "The selected theme has been duplicated successfully.";
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";
 $l['success_theme_created'] = "The theme has been created successfully.";
 $l['success_theme_deleted'] = "The selected theme has been deleted successfully.";
