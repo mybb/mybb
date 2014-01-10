@@ -400,7 +400,7 @@ var Thread = {
 		});
 		
 		return false;
-	},
+	}
 };
 
 Thread.init();
