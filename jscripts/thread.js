@@ -153,9 +153,11 @@ var Thread = {
 		$.removeCookie('multiquote');
 	},
 	
-	quickEdit: function()
+	quickEdit: function(el)
 	{
-		$('.post_body').each(function()
+		if(!el) el = '.post_body';
+
+		$(el).each(function()
 		{
 			// Take pid out of the id attribute
 			id = $(this).attr('id');
@@ -300,8 +302,10 @@ var Thread = {
 		{
 			var pid = json.data.match(/id="post_([0-9]+)"/)[1];
 			var post = document.createElement("div");
+
 			$('#posts').append(json.data);
-			
+			Thread.quickEdit("#pid_" + pid);
+
 			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 			{*/
 				// Eval javascript
