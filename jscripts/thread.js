@@ -304,6 +304,7 @@ var Thread = {
 			var post = document.createElement("div");
 
 			$('#posts').append(json.data);
+			$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
 			Thread.quickEdit("#pid_" + pid);
 
 			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
