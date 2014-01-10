@@ -5287,13 +5287,13 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1607"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1613"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
 <td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
+<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
 	<template name="modcp_reports_multipage" version="120"><![CDATA[<tr>
