@@ -504,7 +504,6 @@
 		this.close = function(e)
 		{
 			popup_menu.hide();
-			$('body, .popup_item').unbind('click.close_popup');
 		}
 	}
 	$.fn.popupMenu = function(el)
