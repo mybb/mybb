@@ -1579,9 +1579,9 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
+			update_last_post($this->tid);
 			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
-			update_last_post($this->tid);
 		}
 		else if($visible == 0)
 		{
