@@ -294,7 +294,7 @@ if(!$mybb->input['action'])
 	");
 	while($log = $db->fetch_array($query))
 	{
-		$table->construct_cell($form->generate_check_box("log[{$log['mid']}]", $log['mid'], ''));
+		$table->construct_cell($form->generate_check_box("log[{$log['mid']}]", $log['mid'], ''), array("width" => 1));
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 		if($log['tid'] > 0)
