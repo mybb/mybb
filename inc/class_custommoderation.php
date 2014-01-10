@@ -314,6 +314,11 @@ class CustomModeration extends Moderation
 				}
 			}
 
+			if($thread_options['removesubscriptions'] == 1) // Remove thread subscriptions
+			{
+				$this->remove_thread_subscriptions($tids, true);
+			}
+
 			if($thread_options['approvethread'] == 'approve') // Approve thread
 			{
 				$this->approve_threads($tids, $thread['fid']);

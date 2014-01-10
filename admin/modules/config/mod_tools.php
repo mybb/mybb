@@ -284,6 +284,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
+				'removesubscriptions' => $mybb->input['removesubscriptions'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -402,6 +403,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['mergethreads'] = $thread_options['mergethreads'];
 		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
 		$mybb->input['removeredirects'] = $thread_options['removeredirects'];
+		$mybb->input['removesubscriptions'] = $thread_options['removesubscriptions'];
 		$mybb->input['threadprefix'] = $thread_options['threadprefix'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
@@ -538,6 +540,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -698,6 +701,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
+				'removesubscriptions' => $mybb->input['removesubscriptions'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -807,6 +811,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['mergethreads'] = '0';
 		$mybb->input['deletepoll'] = '0';
 		$mybb->input['removeredirects'] = '0';
+		$mybb->input['removesubscriptions'] = '0';
 		$mybb->input['threadprefix'] = '-1';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
@@ -943,6 +948,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
