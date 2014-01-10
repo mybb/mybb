@@ -308,7 +308,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 	// Spit the subject back to the browser.
 	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
-	echo json_encode(array("subject" => $subject));
+	echo json_encode(array("subject" => htmlspecialchars_uni($subject)));
 
 	// Close the connection.
 	exit;
