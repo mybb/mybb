@@ -15,7 +15,7 @@ $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,sho
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,showthread_threadnoteslink,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,forumdisplay_password_wrongpass,forumdisplay_password";
 
 require_once "./global.php";
@@ -123,6 +123,12 @@ $forum = get_forum($fid);
 if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
+}
+
+$threadnoteslink = '';
+if(is_moderator($fid) && !empty($thread['notes']))
+{
+	eval('$threadnoteslink = "'.$templates->get('showthread_threadnoteslink').'";');
 }
 
 // Check if this forum is password protected and we have a valid password

@@ -13,6 +13,7 @@ $l['author'] = "Author";
 $l['message'] = "Message";
 $l['threaded'] = "Threaded Mode";
 $l['linear'] = "Linear Mode";
+$l['thread_modes'] = "Thread Modes";
 $l['next_oldest'] = "Next Oldest";
 $l['next_newest'] = "Next Newest";
 $l['view_printable'] = "View a Printable Version";
@@ -94,4 +95,5 @@ $l['enter_keywords'] = "Enter Keywords";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
+$l['view_thread_notes'] = "Thread Notes";
 ?>

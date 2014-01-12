@@ -9844,7 +9844,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="2">
 				<div style="float: right;">
-					<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+					<span class="smalltext"><strong><a href="javascript:;" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
 					<strong>{$thread['threadprefix']}{$thread['subject']}</strong>
@@ -9891,6 +9891,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<br style="clear: both;" />
 	{$usersbrowsing}
 	{$footer}
+	<div id="thread_modes_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->linear}</a></div><div class="popup_item_container"><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->threaded}</a></div></div>
+	<script type="text/javascript">
+	// <!--
+		if(use_xmlhttprequest == "1")
+		{
+			$("#thread_modes").popupMenu();
+		}
+	// -->
+	</script>
 </body>
 </html>]]></template>
 		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
@@ -10125,6 +10134,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>
 ]]></template>
+		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
 <br />]]></template>

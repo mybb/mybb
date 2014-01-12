@@ -110,7 +110,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
