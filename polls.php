@@ -274,7 +274,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 				$optionslist .= '||~|~||';
 				$voteslist .= '||~|~||';
 			}
-			$optionslist .= trim(utf8_handle_4byte_string($options[$i]));
+			$optionslist .= trim($options[$i]);
 			$voteslist .= '0';
 		}
 	}
@@ -287,8 +287,6 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-
-	$mybb->input['question'] = utf8_handle_4byte_string($mybb->input['question']);
 
 	$newpoll = array(
 		"tid" => $thread['tid'],
@@ -625,7 +623,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 				$voteslist .= "||~|~||";
 			}
 
-			$optionslist .= trim(utf8_handle_4byte_string($options[$i]));
+			$optionslist .= trim($options[$i]);
 			if(!isset($votes[$i]) || intval($votes[$i]) <= 0)
 			{
 				$votes[$i] = "0";
@@ -643,8 +641,6 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
-
-	$mybb->input['question'] = utf8_handle_4byte_string($mybb->input['question']);
 
 	$updatedpoll = array(
 		"question" => $db->escape_string($mybb->input['question']),

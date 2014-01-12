@@ -1443,8 +1443,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			if($val != '' || ($key >= 1 && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
-				$foldername = utf8_handle_4byte_string($val);
-				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
+				$foldername = $db->escape_string(htmlspecialchars_uni($val));
 
 				if(my_strpos($foldername, "$%%$") === false)
 				{

@@ -920,8 +920,6 @@ if($mybb->input['action'] == "do_new_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$insert_announcement = array(
 				'fid' => $announcement_fid,
 				'uid' => $mybb->user['uid'],
@@ -1297,8 +1295,6 @@ if($mybb->input['action'] == "do_edit_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$update_announcement = array(
 				'uid' => $mybb->user['uid'],
 				'subject' => $db->escape_string($mybb->input['title']),
