@@ -13,7 +13,6 @@ $l['author'] = "Author";
 $l['message'] = "Message";
 $l['threaded'] = "Threaded Mode";
 $l['linear'] = "Linear Mode";
-$l['thread_modes'] = "Thread Modes";
 $l['next_oldest'] = "Next Oldest";
 $l['next_newest'] = "Next Newest";
 $l['view_printable'] = "View a Printable Version";
