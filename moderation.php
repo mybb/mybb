@@ -2873,8 +2873,6 @@ switch($mybb->input['action'])
 			);
 			foreach($actions as $action)
 			{
-				$checked = false;
-				$disabled = false;
 				$title_var = "goodbyespammer_" . $action;
 				$description_var = $title_var . "_desc";
 				$title = $lang->$title_var;
@@ -2887,15 +2885,11 @@ switch($mybb->input['action'])
 						$threads = $db->num_rows($query);
 						if($threads > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $threads . ")";
+
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deleteposts":
 						$query = $db->simple_select("posts", "pid", "uid = '{$uid}'");
@@ -2906,39 +2900,24 @@ switch($mybb->input['action'])
 						}
 						if($posts > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $posts . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "removesig":
 						if(!empty($user['signature']))
 						{
-							$checked = " checked=\"checked\"";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "removeavatar":
 						if(!empty($user['avatar']))
 						{
-							$checked = " checked=\"checked\"";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "clearprofile":
 						$query = $db->simple_select("profilefields", "fid");
@@ -2959,83 +2938,62 @@ switch($mybb->input['action'])
 							{
 								if(!empty($userfield))
 								{
-									$checked = " checked=\"checked\"";
+									$used = true;
 								}
 							}
 						}
-						if(!$checked)
+						if(!$used)
 						{
 							if(!empty($user['website']) || !empty($user['birthday']) || !empty($user['icq']) || !empty($user['aim']) || !empty($user['yahoo']) || !empty($user['msn']) || !empty($user['usertitle']))
 							{
-								$checked = " checked=\"checked\"";
+								$used = true;
 							}
 						}
-						if(!$checked)
+						if(isset($used))
 						{
-							$disabled = " disabled =\"disabled\"";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletepms":
 						$query = $db->simple_select("privatemessages", "pmid", "uid = '{$uid}' OR fromid = '{$uid}'");
 						$pms = $db->num_rows($query);
 						if($pms > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $pms . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletereps":
 						$query = $db->simple_select("reputation", "rid", "uid = '{$uid}' OR adduid = '{$uid}'");
 						$reps = $db->num_rows($query);
 						if($reps > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $reps . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deletereportedposts":
 						$query = $db->simple_select("reportedposts", "rid", "uid = '{$uid}'");
 						$reportedposts = $db->num_rows($query);
 						if($reportedposts > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $reportedposts . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "deleteevents":
 						$query = $db->simple_select("events", "eid", "uid = '{$uid}'");
 						$events = $db->num_rows($query);
 						if($events > 0)
 						{
-							$checked = " checked=\"checked\"";
 							$title .= " (" . $events . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}
-						else
-						{
-							$disabled = " disabled =\"disabled\"";
-						}
-						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						break;
 					case "bandelete":
 						if($mybb->settings['goodbyespammerbandelete'] == "delete")
@@ -3048,7 +3006,6 @@ switch($mybb->input['action'])
 							$title = $lang->goodbyespammer_ban;
 							$description = $lang->goodbyespammer_ban_desc;
 						}
-						$checked = " checked=\"checked\"";
 						$altbg = alt_trow();
 						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						if($mybb->settings['goodbyespammerbandelete'] == "ban")
@@ -3064,7 +3021,6 @@ switch($mybb->input['action'])
 					case "stopforumspam":
 						if(!empty($mybb->settings['goodbyespammerapikey']))
 						{
-							$checked = " checked=\"checked\"";
 							$altbg = alt_trow();
 							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
 						}

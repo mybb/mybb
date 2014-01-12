@@ -12383,17 +12383,17 @@ $(function() {
 <input type="hidden" name="action" value="do_goodbyespammer" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="2">
+<td class="thead">
 <strong>{$lang->goodbyespammer_actionstotake}</strong>
 <input type="submit" value="{$lang->goodbyespammer_submit}" class="float_right" />
 </td>
 </tr>
 <tr>
-<td class="tcat" colspan="2">{$lang->goodbyespammer_desc}</td>
+<td class="tcat">{$lang->goodbyespammer_desc}</td>
 </tr>
 {$options}
 <tr>
-<td class="tfoot" colspan="2" align="center"><input type="submit" value="{$lang->goodbyespammer_submit}" /></td>
+<td class="tfoot" align="center"><input type="submit" value="{$lang->goodbyespammer_submit}" /></td>
 </tr>
 </table>
 <input type="hidden" name="uid" value="{$mybb->input['uid']}" />
@@ -12403,11 +12403,11 @@ $(function() {
 </body>
 </html>]]></template>
 	<template name="goodbyespammer_option_checkbox" version="1800"><![CDATA[<tr>
-        <td class="{$altbg}" width="99%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}</td>
-        <td class="{$altbg}" width="1%" align="center"><input type="checkbox" name="actions[{$action}]" id="actions_{$action}" value="1"{$checked}{$disabled} /></td>
+        <td class="{$altbg}" width="99%"><strong>{$title}</strong></label><br />{$description}</td>
+		<input type="hidden" name="actions[{$action}]" id="actions_{$action}" value="1" />
 </tr>]]></template>
 	<template name="goodbyespammer_option_textbox" version="1800"><![CDATA[<tr>
-                <td class="{$altbg}" width="100%" colspan="2"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
+                <td class="{$altbg}" width="100%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
 </tr>]]></template>
 	</templates>
 </theme>
