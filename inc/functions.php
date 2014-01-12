@@ -1981,13 +1981,13 @@ function update_stats($changes=array(), $force=false)
 	if(empty($stats_changes))
 	{
 		$stats_changes = array(
-			'numthreads' => 0,
-			'numposts' => 0,
-			'numusers' => 0,
-			'numunapprovedthreads' => 0,
-			'numunapprovedposts' => 0,
-			'numdeletedposts' => 0,
-			'numdeletedthreads' => 0
+			'numthreads' => '+0',
+			'numposts' => '+0',
+			'numusers' => '+0',
+			'numunapprovedthreads' => '+0',
+			'numunapprovedposts' => '+0',
+			'numdeletedposts' => '+0',
+			'numdeletedthreads' => '+0'
 		);
 		add_shutdown('update_stats', array(array(), true));
 		$stats = $stats_changes;
@@ -2016,6 +2016,10 @@ function update_stats($changes=array(), $force=false)
 				if(intval($changes[$counter]) != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
+					if(!$force && $new_stats[$counter] > 0)
+					{
+						$new_stats[$counter] = "+{$new_stats[$counter]}";
+					}
 				}
 			}
 			else
