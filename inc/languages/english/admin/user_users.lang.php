@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['users'] = "Users";
@@ -143,6 +142,7 @@ $l['avatar'] = "Avatar";
 $l['mod_options'] = "Moderator Options";
 $l['general_account_stats'] = "General Account Statistics";
 $l['local_time'] = "Local Time";
+$l['local_time_format'] = "{1} at {2}";
 $l['posts'] = "Posts";
 $l['age'] = "Age";
 $l['posts_per_day'] = "Posts per day";

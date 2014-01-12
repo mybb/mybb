@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_usercp'] = "User Control Panel";

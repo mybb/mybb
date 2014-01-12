@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -190,8 +189,8 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
 //<![CDATA[
-Event.observe(window, "load", function() {
-    new MyCodeSandbox("./index.php?module=config-mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+$(function(){
+    new MyCodeSandbox("./index.php?module=config-mycode&action=xmlhttp_test_mycode", $("#test"), $("#regex"), $("#replacement"), $("#test_value"), $("#result_html"), $("#result_actual"));
 });
 //]]>
 </script>';
@@ -313,9 +312,9 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
 
-Event.observe(window, "load", function() {
+$(function(){
 //<![CDATA[
-    new MyCodeSandbox("./index.php?module=config-mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("./index.php?module=config-mycode&action=xmlhttp_test_mycode", $("#test"), $("#regex"), $("#replacement"), $("#test_value"), $("#result_html"), $("#result_actual"));
 });
 //]]>
 </script>';

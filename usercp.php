@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -2638,7 +2637,7 @@ if($mybb->input['action'] == "usergroups")
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
 				"gid" => $mybb->get_input('joingroup', 1),
-				"reason" => $db->escape_string(utf8_handle_4byte_string($mybb->get_input('reason'))),
+				"reason" => $db->escape_string($mybb->get_input('reason')),
 				"dateline" => TIME_NOW
 			);
 

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -899,7 +898,10 @@ if($mybb->input['action'] == "edit")
 	{
 		$timezone = $user['timezone'];
 	}
-	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
+	$local_date = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600));
+	$local_time = gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
+
+	$localtime = $lang->sprintf($lang->local_time_format, $local_date, $local_time);
 	$days_registered = (TIME_NOW - $user['regdate']) / (24*3600);
 	$posts_per_day = 0;
 	if($days_registered > 0)
@@ -910,6 +912,8 @@ if($mybb->input['action'] == "edit")
 			$posts_per_day = $user['postnum'];
 		}
 	}
+	$posts_per_day = my_number_format($posts_per_day);
+
 	$stats = $cache->read("stats");
 	$posts = $stats['numposts'];
 	if($posts == 0)
@@ -949,14 +953,16 @@ if($mybb->input['action'] == "edit")
 		$age = get_age($user['birthday']);
 	}
 
+	$postnum = my_number_format($user['postnum']);
+
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
 	$table->construct_cell("<strong>{$lang->email_address}:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
 	$table->construct_cell("<strong>{$lang->last_active}:</strong> {$last_active}");
 	$table->construct_row();
 	$table->construct_cell("<strong>{$lang->registration_date}:</strong> {$reg_date}");
-	$table->construct_cell("<strong>{$lang->local_time}:</strong> {$local_time}");
+	$table->construct_cell("<strong>{$lang->local_time}:</strong> {$localtime}");
 	$table->construct_row();
-	$table->construct_cell("<strong>{$lang->posts}:</strong> {$user['postnum']}");
+	$table->construct_cell("<strong>{$lang->posts}:</strong> {$postnum}");
 	$table->construct_cell("<strong>{$lang->age}:</strong> {$age}");
 	$table->construct_row();
 	$table->construct_cell("<strong>{$lang->posts_per_day}:</strong> {$posts_per_day}");
@@ -1269,13 +1275,13 @@ if($mybb->input['action'] == "edit")
 
 		function toggleAction()
 		{
-			if($("suspend_action").visible() == true)
+			if($("#suspend_action").is(\':visible\'))
 			{
-				$("suspend_action").hide();
+				$("#suspend_action").hide();
 			}
 			else
 			{
-				$("suspend_action").show();
+				$("#suspend_action").show();
 			}
 		}
 	// -->
@@ -1297,7 +1303,7 @@ if($mybb->input['action'] == "edit")
 	<!--
 		if(sig_checked == 0)
 		{
-			$("suspend_action").hide();
+			$("#suspend_action").hide();
 		}
 	// -->
 	</script>';
@@ -1456,7 +1462,7 @@ function toggleBox(action)
 {
 	if(action == "modpost")
 	{
-		$("#suspendposting").attr("checked", "checked");
+		$("#suspendposting").attr("checked", false);
 		$("#suspost").hide();
 
 		if($("#moderateposting").is(":checked") == true)
@@ -1470,7 +1476,7 @@ function toggleBox(action)
 	}
 	else if(action == "suspost")
 	{
-		$("#moderateposting").attr("checked", "checked");
+		$("#moderateposting").attr("checked", false);
 		$("#modpost").hide();
 
 		if($("#suspendposting").is(":checked") == true)
@@ -2975,11 +2981,11 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
+		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
 		}
-		else if(isset($view['conditions'][$search_field.'_blank']))
+		else if(!empty($view['conditions'][$search_field.'_blank']))
 		{
 			$search_sql .= " AND u.{$search_field} != ''";
 		}
@@ -2989,7 +2995,7 @@ function build_users_view($view)
 	$user_exact_fields = array("referrer");
 	foreach($user_exact_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			$search_sql .= " AND u.{$search_field}='".$db->escape_string($view['conditions'][$search_field])."'";
 		}
@@ -3000,7 +3006,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(!empty($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -3021,7 +3027,7 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
 		{
 			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
 
@@ -3033,7 +3039,7 @@ function build_users_view($view)
 	$ip_fields = array("regip", "lastip");
 	foreach($ip_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			$ip_range = fetch_ip_range($view['conditions'][$search_field]);
 			if(!is_array($ip_range))
@@ -3049,7 +3055,7 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if(isset($view['conditions']['postip']))
+	if(!empty($view['conditions']['postip']))
 	{
 		$ip_range = fetch_ip_range($view['conditions']['postip']);
 		if(!is_array($ip_range))
@@ -3477,22 +3483,7 @@ function build_users_view($view)
 	$built_view .= "</div>\n";
 
 	// Autocompletion for usernames
-	$built_view .= '
-	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
-	<script type="text/javascript">
-	<!--
-        $("#search_keywords").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },
-            limit: 10
-        });
-	// -->
-	</script>';
+	// TODO Select2
 
 	$built_view .= $search->end();
 
@@ -3515,7 +3506,7 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1400"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1800"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />

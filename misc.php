@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -485,7 +484,7 @@ elseif($mybb->input['action'] == "smilies")
 	$smilies = '';
 	if(!empty($mybb->input['popup']) && !empty($mybb->input['editor']))
 	{ // make small popup list of smilies
-		$editor = preg_replace('#([^a-zA-z0-9_-]+)#', '', $mybb->get_input('editor'));
+		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";

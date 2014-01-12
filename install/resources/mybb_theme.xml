@@ -3286,7 +3286,7 @@ a.button {
 </tr>
 ]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -7010,33 +7010,33 @@ body {
 <!--
 	function toggleType()
 	{
-		if($('type_merge'))
+		if($('#type_merge'))
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.hide('type_merge_expanded');
-				Element.show('type_movecopythread_expanded');
+				$('#type_merge_expanded').hide();
+				$('#type_movecopythread_expanded').show();
 			}
-			else if($('type_merge').checked == true)
+			else if($('#type_merge').prop('checked') == true)
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.show('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.hide('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').hide();
 			}
 		}
 		else
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.show('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').hide();
 			}
 		}
 	}
@@ -8381,7 +8381,7 @@ body {
 		<div style="float: right; width: auto; vertical-align: top;" id="show_ignored_link_{$post['pid']}" class="show_ignored_post"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
 <script type="text/javascript">
 <!--
-	$('show_ignored_link_{$post['pid']}').show();
+	$('#show_ignored_link_{$post['pid']}').show();
 // -->
 </script>
 		{$ignored_message}
@@ -9467,7 +9467,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td colspan="2" class="thead"><strong>{$mybb->settings['bbname']} - {$lang->search}</strong></td>
+<td colspan="2" class="thead"><strong>{$lang->search}</strong></td>
 </tr>
 <tr>
 <td class="tcat" width="50%"><strong>{$lang->search_keyword}</strong></td>
@@ -9620,7 +9620,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="search_results_posts_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -9710,7 +9710,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</body>
 		</html>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="search_results_threads_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -9851,7 +9851,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="2">
 				<div style="float: right;">
-					<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+					<span class="smalltext"><strong><a href="javascript:;" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
 					<strong>{$thread['threadprefix']}{$thread['subject']}</strong>
@@ -9898,6 +9898,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<br style="clear: both;" />
 	{$usersbrowsing}
 	{$footer}
+	<div id="thread_modes_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->linear}</a></div><div class="popup_item_container"><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->threaded}</a></div></div>
+	<script type="text/javascript">
+	// <!--
+		if(use_xmlhttprequest == "1")
+		{
+			$("#thread_modes").popupMenu();
+		}
+	// -->
+	</script>
 </body>
 </html>]]></template>
 		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
@@ -9905,7 +9914,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -9937,7 +9946,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1600"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
@@ -10132,6 +10141,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>
 ]]></template>
+		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
 <br />]]></template>
@@ -10550,10 +10560,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		lang.adding_buddy = '{$lang->adding_buddy}';
 		lang.adding_ignored = '{$lang->adding_ignored}';
 	</script>
-  
+
   <link rel="stylesheet" href="jscripts/select2/select2.css">
 	<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
-  
+
 </head>
 <body>
 	{$header}
@@ -11921,7 +11931,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow1" colspan="2">{$user_link}</td>
 		</tr>
 ]]></template>
-		<template name="warnings_warn" version="1400"><![CDATA[<html>
+		<template name="warnings_warn" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warn_user}</title>
 {$headerinclude}
@@ -11956,23 +11966,24 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow2">
 				<script type="text/javascript">
 				// <!--
-					function checkType()
+					function checkType(id)
 					{
 						var checked = '';
-						$$('.types_check').each(function(e)
+
+						$('.types_check').each(function(e, val)
 						{
-							if(e.checked == true)
+							if($(this).prop('checked') == true)
 							{
-								checked = e.value;
+								checked = $(this).val();
 							}
 						});
-						$$('.types').each(function(e)
+						$('.types').each(function(e)
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('type_'+checked))
+						if($('#type_'+checked))
 						{
-							Element.show('type_'+checked);
+							$('#type_'+checked).show();
 						}
 					}
 				// -->

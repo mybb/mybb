@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -1982,13 +1981,13 @@ function update_stats($changes=array(), $force=false)
 	if(empty($stats_changes))
 	{
 		$stats_changes = array(
-			'numthreads' => 0,
-			'numposts' => 0,
-			'numusers' => 0,
-			'numunapprovedthreads' => 0,
-			'numunapprovedposts' => 0,
-			'numdeletedposts' => 0,
-			'numdeletedthreads' => 0
+			'numthreads' => '+0',
+			'numposts' => '+0',
+			'numusers' => '+0',
+			'numunapprovedthreads' => '+0',
+			'numunapprovedposts' => '+0',
+			'numdeletedposts' => '+0',
+			'numdeletedthreads' => '+0'
 		);
 		add_shutdown('update_stats', array(array(), true));
 		$stats = $stats_changes;
@@ -2017,6 +2016,10 @@ function update_stats($changes=array(), $force=false)
 				if(intval($changes[$counter]) != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
+					if(!$force && $new_stats[$counter] > 0)
+					{
+						$new_stats[$counter] = "+{$new_stats[$counter]}";
+					}
 				}
 			}
 			else
@@ -7228,83 +7231,5 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	}
 
 	return true;
-}
-
-/* Handles 4 byte UTF-8 characters.
- *
- * This can be used to either reject strings which contain 4 byte UTF-8
- * characters, or replace them with question marks. This is limited to UTF-8
- * collated databases using MySQL.
- *
- * Original: http://www.avidheap.org/2013/a-quick-way-to-normalize-a-utf8-string-when-your-mysql-database-is-not-utf8mb4
- *
- * @param string The string to be checked.
- * @param bool If false don't return the string, only the boolean result.
- * @return mixed Return a string if the second parameter is true, boolean otherwise.
- */
-function utf8_handle_4byte_string($input, $return=true)
-{
-	global $config;
-
-	if($config['database']['type'] != 'mysql' && $config['database']['type'] != 'mysqli')
-	{
-		if($return == true)
-		{
-			return $input;
-		}
-		return true;
-	}
-
-	$contains_4bytes = false;
-	if(!empty($input))
-	{
-		$utf8_2byte = 0xC0 /*1100 0000*/;
-		$utf8_2byte_bmask = 0xE0 /*1110 0000*/;
-
-		$utf8_3byte = 0xE0 /*1110 0000*/;
-		$utf8_3byte_bmask = 0XF0 /*1111 0000*/;
-
-		$utf8_4byte = 0xF0 /*1111 0000*/;
-		$utf8_4byte_bmask = 0xF8 /*1111 1000*/;
-
-		$sanitized = "";
-		$len = strlen($input);
-		for($i = 0; $i < $len; ++$i)
-		{
-			$mb_char = $input[$i]; // Potentially a multibyte sequence
-			$byte = ord($mb_char);
-			if(($byte & $utf8_2byte_bmask) == $utf8_2byte)
-			{
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_3byte_bmask) == $utf8_3byte)
-			{
-				$mb_char .= $input[++$i];
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_4byte_bmask) == $utf8_4byte)
-			{
-				$contains_4bytes = true;
-				// Replace with ? to avoid MySQL exception
-				$mb_char = '?';
-				$i += 3;
-			}
-
-			$sanitized .=  $mb_char;
-
-			if($contains_4bytes == true && $return == false)
-			{
-				return false;
-			}
-		}
-
-		$input = $sanitized;
-	}
-
-	if($contains_4bytes == false && $return == false)
-	{
-		return true;
-	}
-	return $input;
 }
 ?>

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -18,32 +17,6 @@ if(!defined("IN_MYBB"))
 $page->add_breadcrumb_item($lang->board_settings, "index.php?module=config-settings");
 
 $plugins->run_hooks("admin_config_settings_begin");
-
-/*
-// Delete all duplicate settings and setting groups
-if($mybb->input['action'] == "delete_duplicates")
-{
-	$query = $db->query("
-		DELETE s1
-		FROM ".TABLE_PREFIX."settings s1
-		INNER JOIN ".TABLE_PREFIX."settings s2 ON (s2.name=s1.name AND s2.sid!=s1.sid AND s2.sid < s1.sid)
-	");
-	$query = $db->query("
-		DELETE g1
-		FROM ".TABLE_PREFIX."settinggroups g1
-		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid AND g2.gid < g1.gid)
-	");
-	rebuild_settings();
-
-	$plugins->run_hooks("admin_config_settings_delete_duplicates_commit");
-
-	// Log admin action
-	log_admin_action();
-
-	flash_message($lang->success_duplicate_settings_deleted, 'success');
-	admin_redirect("index.php?module=config-settings&action=manage");
-}*/
-// ^^  Code, Please go away. Forever.
 
 // Creating a new setting group
 if($mybb->input['action'] == "addgroup")

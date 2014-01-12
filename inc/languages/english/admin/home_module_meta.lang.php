@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['home'] = "Home";
@@ -21,5 +20,6 @@ $l['database_backups'] = "Database Backups";
 $l['quick_access'] = "Quick Access";
 $l['online_admins'] = "Online Admins";
 $l['ipaddress'] = "IP Address:";
+$l['mybb_documentation'] = "MyBB Documentation";
 
 ?>

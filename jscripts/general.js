@@ -331,7 +331,7 @@ var MyBB = {
 		});
 
 		return false;
-	},
+	}
 }
 
 var expandables = {

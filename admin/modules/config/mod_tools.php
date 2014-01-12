@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -285,6 +284,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
+				'removesubscriptions' => $mybb->input['removesubscriptions'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -403,6 +403,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['mergethreads'] = $thread_options['mergethreads'];
 		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
 		$mybb->input['removeredirects'] = $thread_options['removeredirects'];
+		$mybb->input['removesubscriptions'] = $thread_options['removesubscriptions'];
 		$mybb->input['threadprefix'] = $thread_options['threadprefix'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
@@ -417,28 +418,26 @@ if($mybb->input['action'] == "edit_thread_tool")
 
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $('.'+id+'s_check').each(function()
-        {
-        	var e = $(this);
-            if(e.is(':checked') == true)
-            {
-                checked = e.val();
-            }
-        });
-        $('.'+id+'s').each(function()
-        {
-        	var e = $(this);
-        	e.hide();
-        });
-        if($('#'+id+'_'+checked))
-        {
-            $('#'+id+'_'+checked).show();
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -541,6 +540,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -701,6 +701,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
+				'removesubscriptions' => $mybb->input['removesubscriptions'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -810,6 +811,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['mergethreads'] = '0';
 		$mybb->input['deletepoll'] = '0';
 		$mybb->input['removeredirects'] = '0';
+		$mybb->input['removesubscriptions'] = '0';
 		$mybb->input['threadprefix'] = '-1';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
@@ -824,28 +826,26 @@ if($mybb->input['action'] == "add_thread_tool")
 
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $('.'+id+'s_check').each(function()
-        {
-        	var e = $(this);
-            if(e.is(':checked') == true)
-            {
-                checked = e.val();
-            }
-        });
-        $('.'+id+'s').each(function()
-        {
-        	var e = $(this);
-        	e.hide();
-        });
-        if($('#'+id+'_'+checked))
-        {
-            $('#'+id+'_'+checked).show();
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -948,6 +948,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -1323,28 +1324,26 @@ if($mybb->input['action'] == "edit_post_tool")
 
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $('.'+id+'s_check').each(function()
-        {
-        	var e = $(this);
-            if(e.is(':checked') == true)
-            {
-                checked = e.val();
-            }
-        });
-        $('.'+id+'s').each(function()
-        {
-        	var e = $(this);
-        	e.hide();
-        });
-        if($('#'+id+'_'+checked))
-        {
-            $('#'+id+'_'+checked).show();
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
@@ -1770,28 +1769,26 @@ if($mybb->input['action'] == "add_post_tool")
 
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $('.'+id+'s_check').each(function()
-        {
-        	var e = $(this);
-            if(e.is(':checked') == true)
-            {
-                checked = e.val();
-            }
-        });
-        $('.'+id+'s').each(function()
-        {
-        	var e = $(this);
-        	e.hide();
-        });
-        if($('#'+id+'_'+checked))
-        {
-            $('#'+id+'_'+checked).show();
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"forum_type\" value=\"1\" {$forum_checked[1]} class=\"forums_check\" onclick=\"checkAction('forum');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>

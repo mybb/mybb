@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /*
@@ -398,7 +397,6 @@ EOF;
 			$secret_pin = '';
 		}
 
-        // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>

@@ -7,7 +7,7 @@ var Thread = {
 			Thread.initMultiQuote();
 		});
 	},
-	
+
 	initMultiQuote: function()
 	{
 		var quoted = $.cookie('multiquote');
@@ -153,45 +153,47 @@ var Thread = {
 		$.removeCookie('multiquote');
 	},
 	
-	quickEdit: function()
+	quickEdit: function(el)
 	{
-		$('.post_body').each(function() {
-		
+		if(!el) el = '.post_body';
+
+		$(el).each(function()
+		{
 			// Take pid out of the id attribute
 			id = $(this).attr('id');
 			pid = id.replace( /[^\d.]/g, '');
 
-			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key, {
-				indicator : "<img src='images/spinner.gif'>",
-				loadurl : "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
-				type : "textarea",
-				submit : "OK",
-				cancel : "Cancel",
-				tooltip : "Click to edit...",
-				event : "edit" + pid, // Triggered by the event "edit_[pid]",
-				onblur : "ignore",
-				callback : function(values, settings) {
+			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key,
+			{
+				indicator: "<img src='images/spinner.gif'>",
+				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
+				type: "textarea",
+				rows: 12,
+				submit: "Save Changes",
+				cancel: "Cancel Edit",
+				event: "edit" + pid, // Triggered by the event "edit_[pid]",
+				onblur: "ignore",
+				callback: function(values, settings)
+				{
 					values = JSON.parse(values);
-					
+
 					// Change html content
 					$('#pid_' + pid).html(values.message);
 					$('#edited_by_' + pid).html(values.editedmsg);
 				}
 			});
         });
-		
-		$('.quick_edit_button').each(function() {
-			$(this).bind("click", function(e) {
-				//alert('clicking');
+
+		$('.quick_edit_button').each(function()
+		{
+			$(this).bind("click", function(e)
+			{
 				e.stopPropagation();
-				
+
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
-				
-				// Force popup menu closure
-				$('#edit_post_' + pid + '_popup').trigger('close_popup');
-			
+
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
 
@@ -300,8 +302,11 @@ var Thread = {
 		{
 			var pid = json.data.match(/id="post_([0-9]+)"/)[1];
 			var post = document.createElement("div");
+
 			$('#posts').append(json.data);
-			
+			$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
+			Thread.quickEdit("#pid_" + pid);
+
 			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 			{*/
 				// Eval javascript
@@ -400,7 +405,7 @@ var Thread = {
 		});
 		
 		return false;
-	},
+	}
 };
 
 Thread.init();

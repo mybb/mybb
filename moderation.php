@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -111,7 +110,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "goodbyespammer");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "goodbyespammer");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {

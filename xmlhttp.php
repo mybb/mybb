@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -309,7 +308,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 	// Spit the subject back to the browser.
 	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
-	echo json_encode(array("subject" => $subject));
+	echo json_encode(array("subject" => htmlspecialchars_uni($subject)));
 
 	// Close the connection.
 	exit;
@@ -654,7 +653,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	header("Content-type: application/json; charset={$charset}");
 
-	if(empty($username) || utf8_handle_4byte_string($username, false) == false)
+	if(empty($username))
 	{
 		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;

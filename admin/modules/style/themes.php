@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -437,26 +436,26 @@ if($mybb->input['action'] == "import")
 	$form = new Form("index.php?module=style-themes&amp;action=import", "post", "", 1);
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 35%;">
 	<dt><label style="display: block;"><input type="radio" name="import" value="0" '.$import_checked[1].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->local_file.'</label></dt>
@@ -679,6 +678,12 @@ if($mybb->input['action'] == "export")
 		'description' => $lang->export_theme_desc
 	);
 
+	$sub_tabs['duplicate_theme'] = array(
+		'title' => $lang->duplicate_theme,
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->duplicate_theme_desc
+	);
+
 	$page->output_nav_tabs($sub_tabs, 'export_theme');
 
 	if($errors)
@@ -696,6 +701,147 @@ if($mybb->input['action'] == "export")
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->export_theme);
+
+	$form->output_submit_wrapper($buttons);
+
+	$form->end();
+
+	$page->output_footer();
+}
+
+if($mybb->input['action'] == "duplicate")
+{
+	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$theme = $db->fetch_array($query);
+
+	// Does the theme not exist?
+	if(!$theme['tid'])
+	{
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style-themes");
+	}
+
+	$plugins->run_hooks("admin_style_themes_duplicate");
+
+	if($mybb->request_method == "post")
+	{
+		if($mybb->input['name'] == "")
+		{
+			$errors[] = $lang->error_missing_name;
+		}
+	
+		if(!$errors)
+		{
+			$properties = my_unserialize($theme['properties']);
+			$sid = $properties['sid'];
+			$nprops = null;
+			if($mybb->input['duplicate_templates'])
+			{
+				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['name'])." Templates"));
+				
+				// Copy all old Templates to our new templateset
+				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
+				while($template = $db->fetch_array($query))
+				{
+					$insert = array(
+						"title" => $db->escape_string($template['title']),
+						"template" => $db->escape_string($template['template']),
+						"sid" => $nsid,
+						"version" => $db->escape_string($template['version']),
+						"dateline" => TIME_NOW
+					);
+					
+					if($db->engine == "pgsql")
+					{
+						echo " ";
+						flush();
+					}
+					
+					$db->insert_query("templates", $insert);
+				}
+				
+				// We need to change the templateset so we need to work out the others properties too
+				foreach($properties as $property => $value)
+				{
+					if($property == "inherited")
+					{
+						continue;
+					}
+
+					$nprops[$property] = $value;
+					if($properties['inherited'][$property])
+					{
+						$nprops['inherited'][$property] = $properties['inherited'][$property];
+					}
+					else
+					{
+						$nprops['inherited'][$property] = $theme['tid'];
+					}
+				}
+				$nprops['templateset'] = $nsid;
+			}
+			$tid = build_new_theme($mybb->input['name'], $nprops, $theme['tid']);
+			
+			update_theme_stylesheet_list($tid);
+		
+			$plugins->run_hooks("admin_style_themes_duplicate_commit");
+
+			// Log admin action
+			log_admin_action($tid, $theme['tid']);
+
+			flash_message($lang->success_duplicated_theme, 'success');
+			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
+		}
+	}
+
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+
+	$page->add_breadcrumb_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
+
+	$page->output_header("{$lang->themes} - {$lang->duplicate_theme}");
+
+	$sub_tabs['edit_stylesheets'] = array(
+		'title' => $lang->edit_stylesheets,
+		'link' => "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+	);
+
+	$sub_tabs['add_stylesheet'] = array(
+		'title' => $lang->add_stylesheet,
+		'link' => "index.php?module=style-themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+	);
+
+	$sub_tabs['export_theme'] = array(
+		'title' => $lang->export_theme,
+		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->export_theme_desc
+	);
+
+	$sub_tabs['duplicate_theme'] = array(
+		'title' => $lang->duplicate_theme,
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->duplicate_theme_desc
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'duplicate_theme');
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+	else
+	{
+		$mybb->input['duplicate_templates'] = true;
+	}
+
+	$form = new Form("index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}", "post");
+
+	$form_container = new FormContainer($lang->duplicate_theme);
+	$form_container->output_row($lang->new_name, $lang->new_name_duplicate_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('duplicate_templates', '1', $lang->duplicate_templates, array('checked' => $mybb->input['duplicate_templates'], 'id' => 'duplicate_templates'))."<br /><small>{$lang->duplicate_templates_desc}</small>");
+
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button($lang->duplicate_theme);
 
 	$form->output_submit_wrapper($buttons);
 
@@ -1111,6 +1257,12 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs['export_theme'] = array(
 		'title' => $lang->export_theme,
 		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}"
+	);
+
+	$sub_tabs['duplicate_theme'] = array(
+		'title' => $lang->duplicate_theme,
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->duplicate_theme_desc
 	);
 
 	$properties = unserialize($theme['properties']);
@@ -1733,26 +1885,26 @@ if($mybb->input['action'] == "stylesheet_properties")
 	}
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt><br />
@@ -2200,7 +2352,6 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$table->construct_row();
 	$table->output("{$lang->full_stylesheet_for} ".htmlspecialchars_uni($stylesheet['name']));
 
-	$buttons[] = $form->generate_reset_button($lang->reset);
 	$buttons[] = $form->generate_submit_button($lang->save_changes, array('id' => 'save', 'name' => 'save'));
 	$buttons[] = $form->generate_submit_button($lang->save_changes_and_close, array('id' => 'save_close', 'name' => 'save_close'));
 
@@ -2434,6 +2585,12 @@ if($mybb->input['action'] == "add_stylesheet")
 		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}"
 	);
 
+	$sub_tabs['duplicate_theme'] = array(
+		'title' => $lang->duplicate_theme,
+		'link' => "index.php?module=style-themes&amp;action=duplicate&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->duplicate_theme_desc
+	);
+
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
 
 	if($errors)
@@ -2587,26 +2744,26 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 
 	$actions = '<script type="text/javascript">
-    function checkAction(id)
-    {
-        var checked = \'\';
+	function checkAction(id)
+	{
+		var checked = \'\';
 
-        $$(\'.\'+id+\'s_check\').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$(\'.\'+id+\'s\').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+\'_\'+checked))
-        {
-            Element.show(id+\'_\'+checked);
-        }
-    }
+		$(\'.\'+id+\'s_check\').each(function(e, val)
+		{
+			if($(this).prop(\'checked\') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$(\'.\'+id+\'s\').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($(\'#\'+id+\'_\'+checked))
+		{
+			$(\'#\'+id+\'_\'+checked).show();
+		}
+	}
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 		<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt>

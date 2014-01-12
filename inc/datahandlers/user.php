@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -90,7 +89,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check for certain characters in username (<, >, &, commas and slashes)
-		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false || utf8_handle_4byte_string($username, false) == false)
+		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false)
 		{
 			$this->set_error("bad_characters_username");
 			return false;
@@ -116,7 +115,6 @@ class UserDataHandler extends DataHandler
 		global $mybb;
 
 		$usertitle = &$this->data['usertitle'];
-		$usertitle = utf8_handle_4byte_string($usertitle);
 
 		// Check if the usertitle is of the correct length.
 		if($mybb->settings['customtitlemaxlength'] != 0 && my_strlen($usertitle) > $mybb->settings['customtitlemaxlength'])
@@ -295,7 +293,7 @@ class UserDataHandler extends DataHandler
 	{
 		$website = &$this->data['website'];
 
-		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://' || utf8_handle_4byte_string($website, false) == false)
+		if(empty($website) || my_strtolower($website) == 'http://' || my_strtolower($website) == 'https://')
 		{
 			$website = '';
 			return true;
@@ -562,13 +560,10 @@ class UserDataHandler extends DataHandler
 					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 				}
 
-				$profile_fields[$field] = utf8_handle_4byte_string($profile_fields[$field]);
-
 				$options = $db->escape_string($profile_fields[$field]);
 			}
 			else
 			{
-				$profile_fields[$field] = utf8_handle_4byte_string($profile_fields[$field]);
 				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
 				{
 					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
