@@ -89,7 +89,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check for certain characters in username (<, >, &, commas and slashes)
-		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false)
+		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false || !validate_utf8_string($username, false, false))
 		{
 			$this->set_error("bad_characters_username");
 			return false;
