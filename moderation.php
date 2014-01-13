@@ -38,21 +38,21 @@ $pmid = $mybb->get_input('pmid', 1);
 if($pid)
 {
 	$post = get_post($pid);
-	$tid = $post['tid'];
 	if(!$post)
 	{
 		error($lang->error_invalidpost);
 	}
+	$tid = $post['tid'];
 }
 
 if($tid)
 {
 	$thread = get_thread($tid);
-	$fid = $thread['fid'];
 	if(!$thread)
 	{
 		error($lang->error_invalidthread);
 	}
+	$fid = $thread['fid'];
 }
 
 if($fid)
@@ -100,6 +100,7 @@ if(isset($thread))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 	add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
+	$modlogdata['tid'] = $thread['tid'];
 }
 
 if(isset($forum))
