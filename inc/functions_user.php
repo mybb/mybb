@@ -674,15 +674,15 @@ function get_pm_folder_name($fid, $name="")
  * @param int The usergroup of our user
  * @return boolean Whether or not to show the feature
  */
-function goodbyespammer_show($post_count, $usergroup)
+function purgespammer_show($post_count, $usergroup)
 {
         global $mybb, $cache;
         
         // only show this if the current user has permission to use it and the user has less than the post limit for using this tool
-        $groups = explode(",", $mybb->settings['goodbyespammergroups']);
-        $bangroup = $mybb->settings['goodbyespammerbangroup'];
+        $groups = explode(",", $mybb->settings['purgespammergroups']);
+        $bangroup = $mybb->settings['purgespammerbangroup'];
         $usergroups = $cache->read('usergroups');
         
-        return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['goodbyespammerpostlimit'] || $mybb->settings['goodbyespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
+        return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
 }
 ?>

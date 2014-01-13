@@ -231,7 +231,7 @@ $l['postbit_show_ignored_post'] = "Show this Post";
 $l['postbit_currently_ignoring_user'] = "The contents of this message are hidden because {1} is on your <a href=\"usercp.php?action=editlists\">ignore list</a>.";
 $l['postbit_warning_level'] = "Warning Level:";
 $l['postbit_warn'] = "Warn the author for this post";
-$l['postbit_goodbyespammer'] = "Use Goodbye Spammer";
+$l['postbit_purgespammer'] = "Purge Spammer";
 
 $l['postbit_button_reputation_add'] = 'Rate';
 $l['postbit_button_website'] = 'Website';
@@ -249,7 +249,7 @@ $l['postbit_button_reply_pm'] = 'Reply';
 $l['postbit_button_reply_all'] = 'Reply All';
 $l['postbit_button_forward'] = 'Forward';
 $l['postbit_button_delete_pm'] = 'Delete';
-$l['postbit_button_goodbyespammer'] = "Goodbye Spammer";
+$l['postbit_button_purgespammer'] = "Purge Spammer";
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";

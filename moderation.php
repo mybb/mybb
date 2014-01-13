@@ -15,7 +15,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,goodbyespammer_option_checkbox,goodbyespammer_option_textbox,goodbyespammer';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option_checkbox,moderation_purgespammer_option_textbox,moderation_purgespammer';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -110,7 +110,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "goodbyespammer");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
@@ -2659,11 +2659,11 @@ switch($mybb->input['action'])
 		}
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postssoftdeleted);
 		break;
-	case "do_goodbyespammer":
-	case "goodbyespammer":
+	case "do_purgespammer":
+	case "purgespammer":
 		require_once MYBB_ROOT."inc/functions_user.php";
 
-		$groups = explode(",", $mybb->settings['goodbyespammergroups']);
+		$groups = explode(",", $mybb->settings['purgespammergroups']);
 		if(!in_array($mybb->user['usergroup'], $groups))
 		{
 			error_no_permission();
@@ -2671,12 +2671,12 @@ switch($mybb->input['action'])
 
 		$uid = intval($mybb->input['uid']);
 		$user = get_user($uid);
-		if(!$user['uid'] || !goodbyespammer_show($user['postnum'], $user['usergroup']))
+		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup']))
 		{
-			error($lang->goodbyespammer_invalid_user);
+			error($lang->purgespammer_invalid_user);
 		}
 
-		if($mybb->input['action'] == "do_goodbyespammer")
+		if($mybb->input['action'] == "do_purgespammer")
 		{
 			verify_post_check($mybb->input['my_post_key']);
 
@@ -2763,7 +2763,7 @@ switch($mybb->input['action'])
 						$db->delete_query("events", "uid = '{$uid}'");
 						break;
 					case "bandelete":
-						if($mybb->settings['goodbyespammerbandelete'] == "ban")
+						if($mybb->settings['purgespammerbandelete'] == "ban")
 						{
 							$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
 							if($db->num_rows($query) > 0)
@@ -2777,7 +2777,7 @@ switch($mybb->input['action'])
 							{
 								$insert = array(
 									"uid" => $uid,
-									"gid" => intval($mybb->settings['goodbyespammerbangroup']),
+									"gid" => intval($mybb->settings['purgespammerbangroup']),
 									"oldgroup" => 2,
 									"oldadditionalgroups" => "",
 									"olddisplaygroup" => 0,
@@ -2804,14 +2804,14 @@ switch($mybb->input['action'])
 								}
 							}
 
-							$update['usergroup'] = intval($mybb->settings['goodbyespammerbangroup']);
+							$update['usergroup'] = intval($mybb->settings['purgespammerbangroup']);
 							$update['additionalgroups'] = "";
 							$update['displaygroup'] = "";
 
 							$cache->update_banned();
 							$cache->update_bannedips();
 						}
-						elseif($mybb->settings['goodbyespammerbandelete'] == "delete")
+						elseif($mybb->settings['purgespammerbandelete'] == "delete")
 						{
 							$db->delete_query("forumsubscriptions", "uid = '{$uid}'");
 							$db->delete_query("threadsubscriptions", "uid = '{$uid}'");
@@ -2835,27 +2835,27 @@ switch($mybb->input['action'])
 						}
 						break;
 					case "stopforumspam":
-						$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode($user['lastip']) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['goodbyespammerapikey']));
+						$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode($user['lastip']) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
 						break;
 				}
 			}
 
 			$cache->update_reportedposts();
 
-			log_moderator_action(array(), $lang->sprintf($lang->goodbyespammer_modlog, htmlspecialchars_uni($user['username'])));
+			log_moderator_action(array(), $lang->sprintf($lang->purgespammer_modlog, htmlspecialchars_uni($user['username'])));
 
 			if($user_deleted)
 			{
-				redirect($mybb->settings['bburl'], $lang->goodbyespammer_success);
+				redirect($mybb->settings['bburl'], $lang->purgespammer_success);
 			}
 			else
 			{
 				$db->update_query("users", $update, "uid = '{$uid}'");
 
-				redirect(get_profile_link($uid), $lang->goodbyespammer_success);
+				redirect(get_profile_link($uid), $lang->purgespammer_success);
 			}
 		}
-		else if($mybb->input['action'] == "goodbyespammer")
+		else if($mybb->input['action'] == "purgespammer")
 		{
 			$options = "";
 			$actions = array(
@@ -2873,7 +2873,7 @@ switch($mybb->input['action'])
 			);
 			foreach($actions as $action)
 			{
-				$title_var = "goodbyespammer_" . $action;
+				$title_var = "purgespammer_" . $action;
 				$description_var = $title_var . "_desc";
 				$title = $lang->$title_var;
 				$description = $lang->$description_var;
@@ -2888,7 +2888,7 @@ switch($mybb->input['action'])
 							$title .= " (" . $threads . ")";
 
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "deleteposts":
@@ -2902,21 +2902,21 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $posts . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "removesig":
 						if(!empty($user['signature']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "removeavatar":
 						if(!empty($user['avatar']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "clearprofile":
@@ -2952,7 +2952,7 @@ switch($mybb->input['action'])
 						if(isset($used))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "deletepms":
@@ -2962,7 +2962,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $pms . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "deletereps":
@@ -2972,7 +2972,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $reps . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "deletereportedposts":
@@ -2982,7 +2982,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $reportedposts . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "deleteevents":
@@ -2992,46 +2992,46 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $events . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 					case "bandelete":
-						if($mybb->settings['goodbyespammerbandelete'] == "delete")
+						if($mybb->settings['purgespammerbandelete'] == "delete")
 						{
-							$title = $lang->goodbyespammer_delete;
-							$description = $lang->goodbyespammer_delete_desc;
+							$title = $lang->purgespammer_delete;
+							$description = $lang->purgespammer_delete_desc;
 						}
 						else
 						{
-							$title = $lang->goodbyespammer_ban;
-							$description = $lang->goodbyespammer_ban_desc;
+							$title = $lang->purgespammer_ban;
+							$description = $lang->purgespammer_ban_desc;
 						}
 						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
-						if($mybb->settings['goodbyespammerbandelete'] == "ban")
+						eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+						if($mybb->settings['purgespammerbandelete'] == "ban")
 						{
-							$title = $lang->goodbyespammer_ban_reason;
-							$description = $lang->goodbyespammer_ban_reason_desc;
-							$text = $lang->goodbyespammer_ban_reason_reason;
+							$title = $lang->purgespammer_ban_reason;
+							$description = $lang->purgespammer_ban_reason_desc;
+							$text = $lang->purgespammer_ban_reason_reason;
 							$action = "banreason";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_textbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_textbox')."\";");
 						}
 						break;
 					case "stopforumspam":
-						if(!empty($mybb->settings['goodbyespammerapikey']))
+						if(!empty($mybb->settings['purgespammerapikey']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('goodbyespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
 						}
 						break;
 				}
 			}
 
-			add_breadcrumb($lang->goodbyespammer);
-			$lang->goodbyespammer_actionstotake = $lang->sprintf($lang->goodbyespammer_actionstotake, $user['username']);
-			eval("\$goodbyespammer .= \"".$templates->get('goodbyespammer')."\";");
-			output_page($goodbyespammer);
+			add_breadcrumb($lang->purgespammer);
+			$lang->purgespammer_actionstotake = $lang->sprintf($lang->purgespammer_actionstotake, $user['username']);
+			eval("\$purgespammer .= \"".$templates->get('moderation_urgespammer')."\";");
+			output_page($purgespammer);
 		}
 		break;
 	default:
