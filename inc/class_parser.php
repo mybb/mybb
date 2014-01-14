@@ -295,6 +295,12 @@ class postParser
 
         $nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
         $nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
+		
+        $nestable_mycode['rtl']['regex'] = "#\[rtl\](.*?)\[/rtl\]#si";
+        $nestable_mycode['rtl']['replacement'] = "<div style=\"direction:rtl;\">$1</div>";
+		
+        $nestable_mycode['ltr']['regex'] = "#\[ltr\](.*?)\[/ltr\]#si";
+        $nestable_mycode['ltr']['replacement'] = "<div style=\"direction:ltr;\">$1</div>";
 
 		$custom_mycode = $cache->read("mycode");
 

@@ -771,16 +771,13 @@ EOF;
 	function build_codebuttons_editor($bind, $editor_language)
 	{
 		global $lang;
-		if($bind == "signature")
-		{
-			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
-		}
-		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
+		return 	"<link rel=\"stylesheet\" href=\"../jscripts/sceditor/editor_themes/default.css\" type=\"text/css\" media=\"all\" />\n".
+				"<script type=\"text/javascript\" src=\"../jscripts/sceditor/jquery.sceditor.bbcode.min.js\"></script>\n".
+				"<script type=\"text/javascript\" src=\"../jscripts/bbcodes_sceditor.js\"></script>\n".
 				"<script type=\"text/javascript\">\n".
 				"//<![CDATA[\n".
 				"	{$editor_language}".
-				"	{$tabs_js}".
-				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
+				"	\$(function() {\$(\"#{$bind}\").sceditor({plugins: \"bbcode\",rtl: {$lang->settings['rtl']}, style: \"../jscripts/sceditor/editor_themes/default.css\", locale: \"mybblang\", toolbar: \"bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,php,quote,horizontalrule,image,email,link,unlink,video,date,time,ltr,rtl,print,maximize,source\",});});\n".
 				"//]]>".
 				"</script>";
 	}

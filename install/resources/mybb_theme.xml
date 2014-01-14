@@ -12194,46 +12194,31 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
-		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
-<script type="text/javascript" src="jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
-<script type="text/javascript" src="jscripts/bbcodes_sceditor.js"></script>
-<script type="text/javascript" src="jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
+		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->settings['bburl']}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
+{$editor_language}
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
 		style: "jscripts/sceditor/editor_themes/{$theme['editortheme']}",
 		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
+        locale: "mybblang",
 		emoticons: {
 			// Emoticons to be included in the dropdown
 			dropdown: {
-				":s": "images/smilies/confused.gif",
-				":-/": "images/smilies/undecided.gif",
-				":)": "images/smilies/smile.gif",
-				";)": "images/smilies/wink.gif",
-				":D": "images/smilies/biggrin.gif",
-				":P": "images/smilies/tongue.gif",
-				":(": "images/smilies/sad.gif",
-				":@": "images/smilies/angry.gif",
-				":blush:": "images/smilies/blush.gif",
+				{$dropdownsmilies}
 			},
 			// Emoticons to be included in the more section
 			more: {
-				":angel:": "images/smilies/angel.gif",
-				":dodgy:": "images/smilies/dodgy.gif",
-				":exclamation:": "images/smilies/exclamation.gif",
-				":heart:": "images/smilies/heart.gif",
-				":huh:": "images/smilies/huh.gif",
-				":idea:": "images/smilies/lightbulb.gif",
-				":sleepy:": "images/smilies/sleepy.gif",
-				":cool:": "images/smilies/cool.gif",
-				":rolleyes:": "images/smilies/rolleyes.gif",
-				":shy:": "images/smilies/shy.gif",
-				":at:": "images/smilies/at.gif"
+				{$moresmilies}
 			}
 		},
-        toolbar: "bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
+        toolbar: "bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,php,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
+	});
+	$(".smilie").click(function(){
+		$("#{$bind}").sceditor('instance').insert($(this).attr('alt'));
 	});
 });
 </script>]]></template>
