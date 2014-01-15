@@ -8298,16 +8298,16 @@ body {
 {$post['attachedimages']}
 {$post['attachmentlist']}
 </fieldset>]]></template>
-		<template name="postbit_attachments_attachment" version="120"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
+		<template name="postbit_attachments_attachment" version="1800"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank" title="{$attachdate}">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
 		<template name="postbit_attachments_attachment_unapproved" version="1402"><![CDATA[<br /><strong>{$postbit_unapproved_attachments}</strong>]]></template>
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="postbit_attachments_images_image" version="120"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="1800"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_thumbnails" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_thumbnails}</strong></span><br />
 {$post['thumblist']}
 <br />]]></template>
-		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_thumbnails_thumbnail" version="1800"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
@@ -8389,7 +8389,7 @@ body {
 </div>]]></template>
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
-		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$post['ipaddress']}]]></template>
+		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
 		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
@@ -12204,7 +12204,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="jscripts/bbcodes_sceditor.js"></script>
-<script type="text/javascript" src="jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
+<script type="text/javascript" src="jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
 $(function() {
 	$("#{$bind}").sceditor({

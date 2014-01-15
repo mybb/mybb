@@ -1446,7 +1446,7 @@ function create_tables()
 		$errors[] = $lang->db_step_error_tableprefix_too_long;
 	}
 
-	if(($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<')
+	if(($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
 	{
 		$errors[] = $lang->db_step_error_utf8mb4_error;
 	}

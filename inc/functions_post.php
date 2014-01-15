@@ -587,6 +587,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['iplogged'] = '';
+	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if(!$post_type || $post_type == 2)
@@ -735,6 +736,13 @@ function get_post_attachments($id, &$post)
 					$isimage = false;
 				}
 				$attachment['icon'] = get_attachment_icon($ext);
+				$attachment['downloads'] = my_number_format($attachment['downloads']);
+
+				if(!$attachment['dateuploaded'])
+				{
+					$attachment['dateuploaded'] = $attachment['dateline'];
+				}
+				$attachdate = my_date('relative', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

@@ -214,7 +214,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$mybb->input['pid'] = 0;
 		}
 	}
-	
+
 	$rid = 0;
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
@@ -438,7 +438,7 @@ if($mybb->input['action'] == "add")
 		{
 			$comments = htmlspecialchars_uni($existing_post_reputation['comments']);
 		}
-		$delete_button = "<input type=\"button\" name=\"delete\" value=\"{$lang->delete_vote}\" onclick=\"javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);\" />";
+		$delete_button = "<input type=\"button\" class=\"button\" name=\"delete\" value=\"{$lang->delete_vote}\" onclick=\"javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);\" />";
 	}
 	// Otherwise we're adding an entirely new reputation for this user.
 	else
@@ -467,7 +467,7 @@ if($mybb->input['action'] == "add")
 		$positive_power = '';
 		$negative_power = '';
 		$reputationpower = intval($mybb->usergroup['reputationpower']);
-		
+
 		foreach(range(-$mybb->usergroup['reputationpower'], $mybb->usergroup['reputationpower']) as $value)
 		{
 			$vote_check[$value] = '';
@@ -498,7 +498,7 @@ if($mybb->input['action'] == "add")
 				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"\$('#reputation').attr('class', 'reputation_negative')\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 			}
 		}
-		
+
 		$mybb->input['pid'] = $mybb->get_input('pid', 1);
 
 		$plugins->run_hooks("reputation_add_end");

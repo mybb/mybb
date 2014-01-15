@@ -902,13 +902,11 @@ class DB_MySQLi
 	{
 		if($this->db_encoding == 'utf8')
 		{
-			// Remove characters with more than 3 bytes because MySQL can't handle them
-			$string = preg_replace("#.[\\x80-\\xBF]{3,}#", "?", $string);
+			$string = validate_utf8_string($string, false);
 		}
 		elseif($this->db_encoding == 'utf8mb4')
 		{
-			// Remove characters with more than 4 bytes because MySQL can't handle them
-			$string = preg_replace("#.[\\x80-\\xBF]{4,}#", "?", $string);
+			$string = validate_utf8_string($string);
 		}
 
 		if(function_exists("mysqli_real_escape_string") && $this->read_link)
