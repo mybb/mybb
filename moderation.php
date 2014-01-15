@@ -2670,7 +2670,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$uid = intval($mybb->input['uid']);
+		$uid = $mybb->input['uid'];
 		$user = get_user($uid);
 		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup']))
 		{
@@ -2679,12 +2679,12 @@ switch($mybb->input['action'])
 
 		if($mybb->input['action'] == "do_purgespammer")
 		{
-			verify_post_check($mybb->input['my_post_key']);
+			verify_post_check($mybb->get_input('my_post_key'));
 
 			$user_deleted = false;
 
 			// loop through what was submitted
-			foreach($mybb->input['actions'] as $action => $value)
+			foreach($mybb->get_input('actions', 2) as $action => $value)
 			{
 				switch($action)
 				{
