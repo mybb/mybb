@@ -8682,14 +8682,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->folder} {$foldername}</strong></td>
 </tr>]]></template>
-		<template name="private_archive_html_message" version="120"><![CDATA[<tr>
+		<template name="private_archive_html_message" version="1800"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->subject} {$message['subject']}</strong><br /><em>{$lang->to} {$message['tousername']}<br />{$lang->from} {$message['fromusername']}<br />{$lang->sent} {$senddate}</em></td>
 </tr>
 <tr>
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" alt="" /></td>
+<td class="tcat" height="3"><img src="{$theme['imgdir']}/pixel.gif" height="3" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="120"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
