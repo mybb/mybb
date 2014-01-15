@@ -727,6 +727,12 @@ function get_post_attachments($id, &$post)
 				}
 				$attachment['icon'] = get_attachment_icon($ext);
 				$attachment['downloads'] = my_number_format($attachment['downloads']);
+
+				if(!$attachment['dateuploaded'])
+				{
+					$attachment['dateuploaded'] = $attachment['dateline'];
+				}
+				$attachdate = my_date('relative', $attachment['dateuploaded']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{

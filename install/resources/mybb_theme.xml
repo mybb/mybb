@@ -8292,16 +8292,16 @@ body {
 {$post['attachedimages']}
 {$post['attachmentlist']}
 </fieldset>]]></template>
-		<template name="postbit_attachments_attachment" version="120"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
+		<template name="postbit_attachments_attachment" version="1800"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank" title="{$attachdate}">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
 		<template name="postbit_attachments_attachment_unapproved" version="1402"><![CDATA[<br /><strong>{$postbit_unapproved_attachments}</strong>]]></template>
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="postbit_attachments_images_image" version="120"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="1800"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_thumbnails" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_thumbnails}</strong></span><br />
 {$post['thumblist']}
 <br />]]></template>
-		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_thumbnails_thumbnail" version="1800"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
