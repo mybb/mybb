@@ -8382,7 +8382,7 @@ body {
 </div>]]></template>
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
-		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$post['ipaddress']}]]></template>
+		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
 		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--

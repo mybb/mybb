@@ -577,6 +577,7 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['iplogged'] = '';
+	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
 	if(!$post_type || $post_type == 2)

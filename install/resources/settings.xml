@@ -1293,11 +1293,11 @@ disabled=Disable this feature]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="logip">
-			<title>Log Posting IP Addresses</title>
-			<description><![CDATA[Do you wish to log ip addresses of users who post, and who you want to show ip addresses to?]]></description>
+			<title>Show Posting IP Addresses</title>
+			<description><![CDATA[Do you wish to show ip addresses of users who post, and who you want to show ip addresses to?]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[radio
-no=Do not log IP
+no=Do not show IP
 hide=Show to Admins & Mods
 show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
