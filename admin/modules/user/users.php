@@ -396,6 +396,35 @@ if($mybb->input['action'] == "edit")
 			$additionalgroups = '';
 		}
 
+		$returndate = "";
+		if(!empty($mybb->input['away_day']))
+		{
+			$awaydate = TIME_NOW;
+			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
+			if(!$mybb->input['away_month'])
+			{
+				$mybb->input['away_month'] = my_date('n', $awaydate);
+			}
+			if(!$mybb->input['away_year'])
+			{
+				$mybb->input['away_year'] = my_date('Y', $awaydate);
+			}
+
+			$return_month = intval(substr($mybb->input['away_month'], 0, 2));
+			$return_day = intval(substr($mybb->input['away_day'], 0, 2));
+			$return_year = min(intval($mybb->input['away_year']), 9999);
+
+			// Check if return date is after the away date.
+			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
+			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
+			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
+			{
+				$away_in_past = true;
+			}
+
+			$returndate = "{$return_day}-{$return_month}-{$return_year}";
+		}
+
 		// Set up user handler.
 		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler('update');
@@ -434,7 +463,7 @@ if($mybb->input['action'] == "edit")
 			"away" => array(
 				"away" => $mybb->input['away'],
 				"date" => TIME_NOW,
-				"returndate" => "{$mybb->input['away_day']}-{$mybb->input['away_month']}-{$mybb->input['away_year']}",
+				"returndate" => $returndate,
 				"awayreason" => $mybb->input['awayreason']
 			)
 		);
@@ -707,7 +736,12 @@ if($mybb->input['action'] == "edit")
 			{
 				$errors[] = $lang->suspendmoderate_error;
 			}
-
+		
+			if(isset($away_in_past))
+			{
+				$errors[] = $lang->error_acp_return_date_past;
+			}
+		
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();

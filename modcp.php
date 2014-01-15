@@ -2072,21 +2072,21 @@ if($mybb->input['action'] == "do_editprofile")
 	if($mybb->get_input('away', 1) == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$awaydate = TIME_NOW;
-		if(isset($mybb->input['awayday']))
+		if(!empty($mybb->input['awayday']))
 		{
 			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
-			if(!isset($mybb->input['awaymonth']))
+			if(!$mybb->get_input('awaymonth', 1))
 			{
 				$mybb->input['awaymonth'] = my_date('n', $awaydate);
 			}
-			if(!isset($mybb->input['awayyear']))
+			if(!$mybb->get_input('awayyear', 1))
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 
 			$return_month = intval(substr($mybb->get_input('awaymonth'), 0, 2));
 			$return_day = intval(substr($mybb->get_input('awayday'), 0, 2));
-			$return_year = min($mybb->get_input('awayyear', 1), 9999);
+			$return_year = min(intval($mybb->get_input('awayyear')), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -2106,7 +2106,7 @@ if($mybb->input['action'] == "do_editprofile")
 			"away" => 1,
 			"date" => $awaydate,
 			"returndate" => $returndate,
-			"awayreason" => $mybb->get_input('awayreason', 1)
+			"awayreason" => $mybb->get_input('awayreason')
 		);
 	}
 	else

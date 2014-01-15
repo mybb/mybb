@@ -172,6 +172,7 @@ $l['away_reason'] = "Away Reason:";
 $l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
 $l['return_date'] = "Return Date:";
 $l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
+$l['error_acp_return_date_past'] = "You cannot return in the past!";
 
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
