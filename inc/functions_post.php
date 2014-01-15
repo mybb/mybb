@@ -726,6 +726,7 @@ function get_post_attachments($id, &$post)
 					$isimage = false;
 				}
 				$attachment['icon'] = get_attachment_icon($ext);
+				$attachment['downloads'] = my_number_format($attachment['downloads']);
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
