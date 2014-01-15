@@ -15,7 +15,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option_checkbox,moderation_purgespammer_option_textbox,moderation_purgespammer';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option,moderation_purgespammer_option_textbox,moderation_purgespammer';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2889,7 +2889,7 @@ switch($mybb->input['action'])
 							$title .= " (" . $threads . ")";
 
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "deleteposts":
@@ -2903,21 +2903,21 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $posts . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "removesig":
 						if(!empty($user['signature']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "removeavatar":
 						if(!empty($user['avatar']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "clearprofile":
@@ -2953,7 +2953,7 @@ switch($mybb->input['action'])
 						if(isset($used))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "deletepms":
@@ -2963,7 +2963,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $pms . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "deletereps":
@@ -2973,7 +2973,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $reps . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "deletereportedposts":
@@ -2983,7 +2983,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $reportedposts . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "deleteevents":
@@ -2993,7 +2993,7 @@ switch($mybb->input['action'])
 						{
 							$title .= " (" . $events . ")";
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 					case "bandelete":
@@ -3008,7 +3008,7 @@ switch($mybb->input['action'])
 							$description = $lang->purgespammer_ban_desc;
 						}
 						$altbg = alt_trow();
-						eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+						eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						if($mybb->settings['purgespammerbandelete'] == "ban")
 						{
 							$title = $lang->purgespammer_ban_reason;
@@ -3023,7 +3023,7 @@ switch($mybb->input['action'])
 						if(!empty($mybb->settings['purgespammerapikey']))
 						{
 							$altbg = alt_trow();
-							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_checkbox')."\";");
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
 				}
@@ -3031,7 +3031,7 @@ switch($mybb->input['action'])
 
 			add_breadcrumb($lang->purgespammer);
 			$lang->purgespammer_actionstotake = $lang->sprintf($lang->purgespammer_actionstotake, $user['username']);
-			eval("\$purgespammer .= \"".$templates->get('moderation_urgespammer')."\";");
+			eval("\$purgespammer .= \"".$templates->get('moderation_purgespammer')."\";");
 			output_page($purgespammer);
 		}
 		break;

@@ -25,7 +25,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('pid', 'aid', 'pmid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_goodbyespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
+	foreach(array('pid', 'aid', 'pmid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
 	{
 		if(empty($post[$post_field]))
 		{
@@ -40,7 +40,7 @@ function build_postbit($post, $post_type=0)
 		$parser = new postParser;
 	}
 
-	if(!function_exists("goodbyespammer_show"))
+	if(!function_exists("purgespammer_show"))
 	{
 		require_once MYBB_ROOT."inc/functions_user.php";
 	}
@@ -392,9 +392,9 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
 		}
 
-		if(goodbyespammer_show($post['postnum'], $post['usergroup']))
+		if(purgespammer_show($post['postnum'], $post['usergroup']))
         {
-			eval("\$post['button_goodbyespammer'] = \"".$templates->get('postbit_goodbyespammer')."\";");
+			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
         }
 		
 		// Display profile fields on posts - only if field is filled in
