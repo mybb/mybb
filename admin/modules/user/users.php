@@ -1102,7 +1102,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$awaycheck = array(true, false);
 		}
-		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away', "checked" => $awaycheck[1])), 'away');
+		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away2', "checked" => $awaycheck[1])), 'away');
 		$form_container->output_row($lang->away_reason, $lang->away_reason_desc, $form->generate_text_box('awayreason', $mybb->input['awayreason'], array('id' => 'awayreason')), 'awayreason');
 
 		//Return date (we can use the arrays from birthday)
