@@ -7,7 +7,6 @@
 
 $l['report_reason'] = "Report reason:";
 $l['report_to_mod'] = "Report content to a moderator";
-$l['go_back'] = "<input type=\"button\" class=\"button\" value=\"Go Back\" onclick=\"javascript:history.go(-1)\" />";
 $l['close_window'] = "Close Window";
 
 // Content types

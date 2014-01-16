@@ -25,7 +25,7 @@ if(!$mybb->user['uid'])
 $report = array();
 $verified = false;
 $report_type = 'post';
-$error = $go_back = $report_type_db = '';
+$error = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
@@ -184,7 +184,6 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 		if(my_strlen($reason) < 3)
 		{
 			$error = $lang->error_report_length;
-			$go_back = $lang->go_back;
 		}
 
 		if(empty($error))
@@ -233,7 +232,7 @@ if(!$mybb->input['action'])
 			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
 		}
 	}
-	
+
 	if($mybb->input['no_modal'])
 	{
 		echo $report_reasons;

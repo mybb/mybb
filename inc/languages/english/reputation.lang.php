@@ -40,7 +40,6 @@ $l['last_6months'] = "Last 6 months";
 $l['all_time'] = "All Time";
 $l['comments'] = "Comments";
 $l['close_window'] = "Close Window";
-$l['go_back'] = "Back";
 $l['add_reputation_vote'] = "Add a reputation rating for {1}";
 $l['add_reputation_to_post'] = "This reputation is for {1}'s post.<br />";
 $l['neg_rep_disabled'] = "<span class=\"smalltext\">* - <em>Negative reputation is currently disabled</em></span>";
