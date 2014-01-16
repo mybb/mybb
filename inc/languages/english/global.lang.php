@@ -16,7 +16,6 @@ $l['toplinks_help'] = "Help";
 $l['toplinks_portal'] = "Portal";
 $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
-$l['bottomlinks_returncontent'] = "Return to Content";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
 
@@ -36,12 +35,10 @@ $l['welcome_guest'] = "Hello There, Guest!";
 $l['welcome_current_time'] = "<strong>Current time:</strong> {1}";
 
 $l['moved_prefix'] = "Moved:";
-$l['sticky_prefix'] = "<strong>Sticky:</strong>";
 $l['poll_prefix'] = "Poll:";
-$l['announcement_prefix'] = "<strong>Announcement:</strong>";
 
 $l['forumbit_announcements'] = "Announcements";
-$l['forumbit_stickies'] = "Important threads";
+$l['forumbit_stickies'] = "Important Threads";
 $l['forumbit_forum'] = "Forum";
 $l['forumbit_threads'] = "Threads";
 $l['forumbit_posts'] = "Posts";
