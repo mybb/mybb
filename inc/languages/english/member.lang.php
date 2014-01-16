@@ -154,7 +154,7 @@ $l['verification_subnote'] = "(case insensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";
 $l['timeonline_hidden'] = "N/A";
-$l['registrations_disabled'] = "Sorry but you cannot register at this time because the administrator has disabled new account registrations.";
+$l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
 
 $l['none_registered'] = "None Registered";

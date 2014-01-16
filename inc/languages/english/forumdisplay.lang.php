@@ -7,7 +7,7 @@
 
 $l['post_thread'] = "Post Thread";
 $l['moderated_by'] = "Moderated By:";
-$l['nothreads'] = "Sorry but there are currently no threads in this forum with the specified date and time limiting options.";
+$l['nothreads'] = "Sorry, but there are currently no threads in this forum with the specified date and time limiting options.";
 $l['search_forum'] = "Search this Forum:";
 $l['thread'] = "Thread";
 $l['author'] = "Author";
@@ -90,5 +90,5 @@ $l['all_selected'] = "All <strong>{1}</strong> threads in this forum are selecte
 $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 
-$l['error_containsnoforums'] = "Sorry but the forum you are currently viewing does not contain any child forums.";
+$l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
 ?>
