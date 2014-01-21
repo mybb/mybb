@@ -1038,7 +1038,9 @@ ul.tabs li a.active {
 
 
 .quick_perm_fields li {
+	border-radius: 3px;
 	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	padding: 4px;
 	background: #666;
 	color: #fff;
