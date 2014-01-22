@@ -6,12 +6,12 @@
 		<logo><![CDATA[images/logo.png]]></logo>
 		<tablespace><![CDATA[5]]></tablespace>
 		<borderwidth><![CDATA[0]]></borderwidth>
-		<editortheme><![CDATA[default.css]]></editortheme>
+		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
 		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
 	background: #fff;
-	color: #000;
+	color: #333;
 	text-align: center;
 	line-height: 1.4;
 	margin: 0;
@@ -36,7 +36,7 @@ a:hover, a:active {
 }
 
 #container {
-	color: #000;
+	color: #333;
 	text-align: left;
 	line-height: 1.4;
 	margin: 0;
@@ -292,7 +292,7 @@ fieldset.trow2 {
 }
 
 table {
-	color: #000000;
+	color: #333;
 	font-size: 13px;
 }
 
@@ -388,7 +388,7 @@ table {
 
 .trow_selected {
 	background: #FFFBD9;
-	color: #000;
+	color: #333;
 	border-right-color: #F7E86A;
 	border-bottom-color: #F7E86A;
 }
@@ -397,12 +397,12 @@ table {
 .trow_selected a:visited,
 .trow_selected a:hover,
 .trow_selected a:active {
-	color: #000;
+	color: #333;
 }
 
 .trow_sep {
 	background: #ddd;
-	color: #000;
+	color: #333;
 	border-bottom: 1px solid #c5c5c5;
 	padding: 6px;
 	font-size: 12px;
@@ -438,13 +438,13 @@ table {
 
 .bottommenu {
 	background: #efefef;
-	color: #000000;
+	color: #333;
 	border: 1px solid #4874a3;
 	padding: 10px;
 }
 
 .navigation {
-	color: #000000;
+	color: #333;
 	font-size: 12px;
 }
 
@@ -461,7 +461,7 @@ table {
 }
 
 .navigation .active {
-	color: #000000;
+	color: #333;
 	font-size: small;
 	font-weight: bold;
 }
@@ -477,7 +477,7 @@ table {
 
 input.textbox {
 	background: #ffffff;
-	color: #000000;
+	color: #333;
 	border: 1px solid #ccc;
 	padding: 3px;
 	outline: 0;
@@ -487,7 +487,7 @@ input.textbox {
 
 textarea {
 	background: #ffffff;
-	color: #000000;
+	color: #333;
 	border: 1px solid #ccc;
 	padding: 2px;
 	line-height: 1.4;
@@ -540,7 +540,7 @@ input.button:hover {
 
 .popup_menu .popup_item {
 	background: #efefef;
-	color: #000;
+	color: #333;
 }
 
 .popup_menu .popup_item:hover {
@@ -639,7 +639,7 @@ img {
 .selectall {
 	background: #FFFBD9;
 	border-bottom: 1px solid #F7E86A;
-	color: #000;
+	color: #333;
 	text-align: center;
 }
 
@@ -818,7 +818,7 @@ div.error {
 
 div.error p {
 	margin: 0;
-	color: #000;
+	color: #333;
 	font-weight: normal;
 }
 
@@ -869,7 +869,7 @@ div.error ul {
 
 .pagination .pagination_current {
 	background: none;
-	color: #000;
+	color: #333;
 	border: none;
 	font-weight: bold;
 }
@@ -12233,7 +12233,7 @@ $(function() {
 				":at:": "images/smilies/at.gif"
 			}
 		},
-        toolbar: "bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|pastetext,horizontalrule,maximize,source",
 	});
 });
 </script>]]></template>
