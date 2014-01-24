@@ -213,10 +213,16 @@ if($mybb->input['action'] == "check")
 			}
 			$plugininfo = $infofunc();
 			$plugininfo['guid'] = trim($plugininfo['guid']);
+			$plugininfo['codename'] = trim($plugininfo['codename']);
 
-			if($plugininfo['guid'] != "")
+			if($plugininfo['codename'] != "")
 			{
-				$info[] = $plugininfo['guid'];
+				$info[]	= $plugininfo['codename'];
+				$names[$plugininfo['codename']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
+			}
+			elseif($plugininfo['guid'] != "")
+			{
+				$info[] =  $plugininfo['guid'];
 				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
 			}
 		}
@@ -228,14 +234,9 @@ if($mybb->input['action'] == "check")
 		flash_message($lang->error_vcheck_no_supported_plugins, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
-
-	$url = "http://mods.mybb.com/version_check.php?";
-	foreach($info as $guid)
-	{
-		$url .= "info[]=".urlencode($guid)."&";
-	}
-	$url = substr($url, 0, -1);
-
+	
+	$url = "http://community.mybb.com/version_check.php?";
+	$url .= http_build_query(array("info" => $info))."&";
 	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file($url);
 
@@ -268,7 +269,6 @@ if($mybb->input['action'] == "check")
 			default:
 				$error_msg = "";
 		}
-
 		flash_message($lang->error_communication_problem.$error_msg, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
@@ -294,12 +294,32 @@ if($mybb->input['action'] == "check")
 
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
-		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version']['value'], "<"))
+		$compare_by = array_key_exists("codename", $plugin['attributes']) ? "codename" : "guid";
+		$is_vulnerable = array_key_exists("vulnerable", $plugin) ? true : false;
+
+		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
-			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
-			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
+										{$lang->error_vcheck_vulnerable} {$names[$plugin['attributes'][$compare_by]]['name']}
+										</div>
+										<p>	<b>{$lang->error_vcheck_vulnerable_notes}</b> <br /><br /> {$plugin['vulnerable']['value']}</p>");
+			}
+			else
+			{
+				$table->construct_cell("<strong>{$names[$plugin['attributes'][$compare_by]]['name']}</strong>");
+			}
+			$table->construct_cell("{$names[$plugin['attributes'][$compare_by]]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><b>{$lang->deactivate}</b></a>", array("class" => "align_center", "width" => 150));
+			}
+			else
+			{	
+				$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			}
 			$table->construct_row();
 		}
 	}
