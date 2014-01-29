@@ -67,7 +67,7 @@ if($mybb->input['action'] == "browse")
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
 	
-	$contents = fetch_remote_file("http://community.mybb.com/mybb-feature/xmlbrowse.php?type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
