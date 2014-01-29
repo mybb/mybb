@@ -161,7 +161,7 @@ if($mybb->input['action'] == "browse")
 		$major_version_code = round($mybb->version_code/10, 0)*100;
 	}
 
-	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=theme&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=themes&version={$major_version_code}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -195,9 +195,9 @@ if($mybb->input['action'] == "browse")
 
 		foreach($tree['results']['result'] as $result)
 		{
-			$table->construct_cell("<img src=\"http://mods.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
+			$table->construct_cell("<img src=\"http://community.mtbb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}

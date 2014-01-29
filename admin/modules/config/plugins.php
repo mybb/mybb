@@ -63,16 +63,11 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
-	{
-		$major_version_code = round($mybb->version_code/100, 0)*100;
-	}
-	else
-	{
-		$major_version_code = round($mybb->version_code/10, 0)*100;
-	}
-
-	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=mod&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$major_version_code = round($mybb->version_code/100, 0)*100;
+	// Convert to mods site version codes
+	$search_version = ($major_version_code/100).'x';
+	
+	$contents = fetch_remote_file("http://community.mybb.com/mybb-feature/xmlbrowse.php?type=plugins&version={$major_version_code}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -109,7 +104,7 @@ if($mybb->input['action'] == "browse")
 		{
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -179,11 +174,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended plugins = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
 	}
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
@@ -250,10 +245,9 @@ if($mybb->input['action'] == "check")
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['plugins']))
-	{
-		$page->output_inline_error($lang->error_communication_problem);
-		$page->output_footer();
-		exit;
+	{	
+		flash_message($lang->error_communication_problem, 'error');
+		admin_redirect("index.php?module=config-plugins");
 	}
 
 	if(array_key_exists('error', $tree['plugins']))
