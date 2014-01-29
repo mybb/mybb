@@ -152,16 +152,11 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
-	{
-		$major_version_code = round($mybb->version_code/100, 0)*100;
-	}
-	else
-	{
-		$major_version_code = round($mybb->version_code/10, 0)*100;
-	}
+	$major_version_code = round($mybb->version_code/100, 0)*100;
+	// Convert to mods site version codes
+	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=themes&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
