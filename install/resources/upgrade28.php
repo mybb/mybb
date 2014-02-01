@@ -114,6 +114,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("moderators", "canrestore");
 	}
 
+	if($db->field_exists('deletedthreads', 'threads'))
+	{
+		$db->drop_column("threads", "deletedthreads");
+	}
+
 	if($db->field_exists('deletedposts', 'threads'))
 	{
 		$db->drop_column("threads", "deletedposts");
