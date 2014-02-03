@@ -11500,9 +11500,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>
 </fieldset>]]></template>
-		<template name="usercp_profile_customfield" version="1605"><![CDATA[<tr>
+		<template name="usercp_profile_customfield" version="1800"><![CDATA[<tr>
 <td>
-<a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:
+<span>{$profilefield['name']}</span>:
 <br />
 <span class="smalltext">{$profilefield['description']}</span>
 </td>
