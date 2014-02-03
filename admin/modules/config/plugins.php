@@ -66,7 +66,7 @@ if($mybb->input['action'] == "browse")
 	$major_version_code = round($mybb->version_code/100, 0)*100;
 	// Convert to mods site version codes
 	$search_version = ($major_version_code/100).'x';
-	
+
 	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "check")
 		flash_message($lang->error_vcheck_no_supported_plugins, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
-	
+
 	$url = "http://community.mybb.com/version_check.php?";
 	$url .= http_build_query(array("info" => $info))."&";
 	require_once MYBB_ROOT."inc/class_xml.php";
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "check")
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !isset($tree['plugins']))
-	{	
+	{
 		flash_message($lang->error_communication_problem, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "check")
 				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><b>{$lang->deactivate}</b></a>", array("class" => "align_center", "width" => 150));
 			}
 			else
-			{	
+			{
 				$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			}
 			$table->construct_row();
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		// Plugin is compatible with this version?
 		if($plugins->is_compatible($codename) == false)
 		{
-			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
+			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
 			admin_redirect("index.php?module=config-plugins");
 		}
 
