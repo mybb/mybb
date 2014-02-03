@@ -130,6 +130,13 @@ class DB_MySQLi
 	public $query_time = 0;
 
 	/**
+	 * Stores previous run query type: 1 => write; 0 => read
+	 *
+	 * @var int
+	 */
+	protected $last_query_type = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -297,7 +304,7 @@ class DB_MySQLi
 	 *
 	 * @param string The query SQL.
 	 * @param boolean 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param integer 1 if executes on master database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
@@ -306,8 +313,8 @@ class DB_MySQLi
 
 		get_execution_time();
 
-		// Only execute write queries on slave server
-		if($write_query && $this->write_link)
+		// Only execute write queries on master server
+		if(($write_query || $this->last_query_type) && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;
 			$query = @mysqli_query($this->write_link, $string);
@@ -324,6 +331,15 @@ class DB_MySQLi
 			exit;
 		}
 
+		if($write_query)
+		{
+			$this->last_query_type = 1;
+		}
+		else
+		{
+			$this->last_query_type = 0;
+		}
+
 		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
@@ -336,7 +352,7 @@ class DB_MySQLi
 	}
 
 	/**
-	 * Execute a write query on the slave database
+	 * Execute a write query on the master database
 	 *
 	 * @param string The query SQL.
 	 * @param boolean 1 if hide errors, 0 if not.
