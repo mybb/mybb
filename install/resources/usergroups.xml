@@ -509,6 +509,6 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
-		<showmemberlist><![CDATA[0]]></showmemberlist>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 </usergroups>
