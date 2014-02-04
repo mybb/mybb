@@ -18,7 +18,7 @@ $l['tpp_option'] = "Show {1} threads per page";
 $l['ppp_option'] = "Show {1} posts per page";
 $l['account_activation'] = "Account Activation";
 $l['activate_account'] = "Activate Account";
-$l['activation_code'] = "Activation Code";
+$l['activation_code'] = "Activation Code:";
 
 $l['email_user'] = "Send {1} an Email";
 $l['email_subject'] = "Email Subject";

@@ -8,7 +8,7 @@
  *
  */
 
-// Set to 1 if recieving a blank page (template failure).
+// Set to 1 if receiving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
 
 // Define Custom MyBB error handler constants with a value not used by php's error handler.
@@ -248,7 +248,7 @@ class errorHandler {
 			return false;
 		}
 
-		// Incase a template fails and we're recieving a blank page.
+		// Incase a template fails and we're receiving a blank page.
 		if(MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";

@@ -92,6 +92,7 @@ $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
+$l['emailsubject_changepassword'] = "Change of Password at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
 $l['email_lostpw'] = "{1},
@@ -368,6 +369,19 @@ This change has been automatically processed. If you did not request this change
 Thank you,
 {2} Staff
 {5}";
+
+$l['email_changepassword'] = "{1},
+
+You are receiving this email because you, or someone with access to your password, recently changed your account password.
+
+Username: {1}
+Email address: {2}
+
+If you did not request this change, please get it touch with an Administrator.
+
+Thank you,
+{3} Staff
+{4}";
 
 $l['email_newpm'] = "{1},
 

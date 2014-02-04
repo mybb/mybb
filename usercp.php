@@ -1149,6 +1149,12 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		{
 			$userhandler->update_user();
 			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+
+			// Notify the user by email that their password has been changed
+			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+			$lang->emailsubject_changepassword = $lang->sprintf($lang->emailsubject_changepassword, $mybb->settings['bbname']);
+			my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
+
 			$plugins->run_hooks("usercp_do_password_end");
 			redirect("usercp.php", $lang->redirect_passwordupdated);
 		}
@@ -1786,7 +1792,7 @@ if($mybb->input['action'] == "editsig")
 		$sig = $mybb->get_input('signature');
 		$template = false;
 	}
-	
+
 	if(!isset($error))
 	{
 		$error = '';
@@ -2083,7 +2089,7 @@ if($mybb->input['action'] == "avatar")
 	}
 
 	$plugins->run_hooks("usercp_avatar_end");
-	
+
 	if(!isset($avatar_error))
 	{
 		$avatar_error = '';
