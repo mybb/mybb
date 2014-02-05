@@ -908,6 +908,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   signofollow int NOT NULL default '0',
   edittimelimit int NOT NULL default '0',
   maxposts int NOT NULL default '0',
+  showmemberlist int NOT NULL default '1',
   PRIMARY KEY (gid)
 );";
 

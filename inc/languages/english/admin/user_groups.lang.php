@@ -73,6 +73,7 @@ $l['user_stars_desc'] = "If you enter a number of stars and the location of a st
 $l['group_image'] = "Group Image";
 $l['group_image_desc'] = "Here you can set a group image which will show on each post made by users in this group. Please use <strong>{lang}</strong> to represent the user's chosen language if translated group images are available";
 $l['general_options'] = "General Options";
+$l['member_list'] = "Yes, show users of this group on the member list";
 $l['forum_team'] = "Yes, show this group on the 'forum team' page";
 $l['is_banned_group'] = "Yes, this is a banned group<br /><small>If this group is a 'banned' user group, users will be able to be 'banned' in to this user group.</small>";
 $l['publicly_joinable_options'] = "Publicly Joinable Options";

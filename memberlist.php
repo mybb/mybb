@@ -213,6 +213,24 @@ else
 		$search_url .= "&yahoo=".urlencode($mybb->input['yahoo']);
 	}
 
+	$usergroups_cache = $cache->read('usergroups');
+
+	$group = array();
+	foreach($usergroups_cache as $gid => $groupcache)
+	{
+		if($groupcache['showmemberlist'] == 0)
+		{
+			$group[] = $gid;
+		}
+	}
+
+	if(is_array($group) && !empty($group))
+	{
+		$hiddengroup = implode(',', $group);
+
+		$search_query .= " AND u.usergroup NOT IN ($hiddengroup)";
+	}
+
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
 
@@ -230,7 +248,6 @@ else
 	$multipage = multipage($num_users, $per_page, $page, $search_url);
 
 	// Cache a few things
-	$usergroups_cache = $cache->read('usergroups');
 	$usertitles = $cache->read('usertitles');
 	$usertitles_cache = array();
 	foreach($usertitles as $usertitle)
