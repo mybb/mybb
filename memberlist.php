@@ -225,7 +225,7 @@ else
 		}
 	}
 
-	if(is_array($group))
+	if(is_array($group) && !empty($group))
 	{
 		$hiddengroup = implode(',', $group);
 
