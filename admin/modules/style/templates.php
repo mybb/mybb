@@ -425,7 +425,7 @@ if($mybb->input['action'] == "edit_template")
 
 				if(($existing_sid == -2 && $existing_rows == 1) || $existing_rows == 0)
 				{
-					$tid = $db->insert_query("templates", $template_array);
+					$template['tid'] = $db->insert_query("templates", $template_array);
 				}
 				else
 				{
@@ -455,7 +455,7 @@ if($mybb->input['action'] == "edit_template")
 			}
 
 			// Log admin action
-			log_admin_action($tid, $mybb->input['title'], $mybb->input['sid'], $set['title']);
+			log_admin_action($template['tid'], $mybb->input['title'], $mybb->input['sid'], $set['title']);
 
 			flash_message($lang->success_template_saved, 'success');
 
@@ -1325,7 +1325,7 @@ if($mybb->input['action'] == "revert")
 		$plugins->run_hooks("admin_style_templates_revert_commit");
 
 		// Log admin action
-		log_admin_action($template['tid'], $template['sid'], $template['sid'], $template['set_title']);
+		log_admin_action($template['tid'], $template['title'], $template['sid'], $template['set_title']);
 
 		flash_message($lang->success_template_reverted, 'success');
 
