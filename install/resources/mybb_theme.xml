@@ -9946,7 +9946,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span>
-	<select name="action" onchange="$('moderator_options').submit();">
+	<select name="action" id="moderator_options_selector">
 		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		<optgroup label="{$lang->standard_mod_tools}">
 			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>
@@ -9966,7 +9966,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</select>
 	{$gobutton}
 </form>
-<br />]]></template>
+<br />
+<script type="text/javascript">
+<!--
+	$("#moderator_options_selector").change(function() {
+		$("#moderator_options").submit();
+	})
+//-->
+</script>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_multipage" version="126"><![CDATA[<tr>
