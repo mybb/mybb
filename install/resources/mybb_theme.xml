@@ -8386,7 +8386,7 @@ body {
 		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
-	$('#multiquote_link_{$post['pid']}').css("display", "none");
+	$('#multiquote_link_{$post['pid']}').css("display", "");
 // -->
 </script>]]></template>
 		<template name="postbit_offline" version="1800"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.png" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" class="buddy_status" />]]></template>
