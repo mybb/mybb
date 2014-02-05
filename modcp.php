@@ -1149,7 +1149,7 @@ if($mybb->input['action'] == "new_announcement")
 		}
 
 		require_once MYBB_ROOT."inc/functions_post.php";
-		$postbit = build_postbit($announcementarray, 3);
+		$postbit = build_postbit($announcementarray, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else
