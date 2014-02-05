@@ -42,17 +42,20 @@ var MyBB = {
 			});
 		}
 
-		$(document).on($.modal.OPEN, function(event, modal) {
-			$("body").css("overflow", "hidden");
-			if(initialfocus.length > 0)
-			{
-				initialfocus.focus();
-			}
-		});
+		if(typeof $.modal !== "undefined")
+		{
+			$(document).on($.modal.OPEN, function(event, modal) {
+				$("body").css("overflow", "hidden");
+				if(initialfocus.length > 0)
+				{
+					initialfocus.focus();
+				}
+			});
 
-		$(document).on($.modal.CLOSE, function(event, modal) {
-			$("body").css("overflow", "auto");
-		});
+			$(document).on($.modal.CLOSE, function(event, modal) {
+				$("body").css("overflow", "auto");
+			});
+		}
 	},
 
 	popupWindow: function(url, options)
