@@ -3324,7 +3324,7 @@ function build_users_view($view)
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
-			$popup->add_item($lang->profile, $mybb->settings['bburl'].'/'.get_profile_link($user['uid']));
+			$popup->add_item($lang->view_profile, $mybb->settings['bburl'].'/'.get_profile_link($user['uid']));
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}");
 
 			// Banning options... is this user banned?

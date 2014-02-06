@@ -317,6 +317,7 @@ $l['manage_views'] = "Manage Views";
 $l['none'] = "None";
 $l['search'] = "Search";
 
+$l['view_profile'] = "View Profile";
 $l['edit_profile_and_settings'] = "Edit Profile &amp; Settings";
 $l['ban_user'] = "Ban User";
 $l['approve_coppa_user'] = "Activate COPPA User";
