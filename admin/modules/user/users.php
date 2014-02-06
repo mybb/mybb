@@ -736,12 +736,12 @@ if($mybb->input['action'] == "edit")
 			{
 				$errors[] = $lang->suspendmoderate_error;
 			}
-		
+
 			if(isset($away_in_past))
 			{
 				$errors[] = $lang->error_acp_return_date_past;
 			}
-		
+
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
@@ -3239,7 +3239,6 @@ function build_users_view($view)
 		$view['perpage'] = intval($view['perpage']);
 
 		// Establish which page we're viewing and the starting index for querying
-		// Establish which page we're viewing and the starting index for querying
 		if(!isset($mybb->input['page']))
 		{
 			$mybb->input['page'] = 1;
@@ -3672,6 +3671,11 @@ function build_user_view_table($user, $view, &$table)
 		else
 		{
 			$value = $user[$field];
+		}
+
+		if($field == "postnum")
+		{
+			$value = my_number_format($user[$field]);
 		}
 		$table->construct_cell($value, $field_options);
 	}
