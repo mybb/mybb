@@ -558,7 +558,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	$page->output_nav_tabs($sub_tabs, 'group_leaders');
 
-	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}'", "post");
+	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&amp;lid={$leader['lid']}", "post");
 
 	$form_container = new FormContainer($lang->edit_group_leader);
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
