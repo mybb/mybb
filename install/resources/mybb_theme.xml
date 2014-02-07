@@ -9076,7 +9076,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
 		<template name="private_send_tracking" version="1610"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
-		<template name="private_tracking" version="1600"><![CDATA[<html>
+		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
 {$headerinclude}
