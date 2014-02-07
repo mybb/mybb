@@ -4330,22 +4330,32 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The ID of the parent theme to select from
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
+ * @param boolean Whether or not theme select is in the footer (true if it is)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
 
 	if($tid == 0)
 	{
-		if(!isset($lang->use_default))
+		if($footer == true)
 		{
-			$lang->use_default = $lang->lang_select_default;
+			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
+			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
+			$tid = 1;
 		}
-		$themeselect = "<select name=\"$name\">";
-		$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-		$themeselect .= "<option value=\"0\">-----------</option>\n";
-		$tid = 1;
+		else
+		{
+			if(!isset($lang->use_default))
+			{
+				$lang->use_default = $lang->lang_select_default;
+			}
+			$themeselect = "<select name=\"$name\">";
+			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
+			$themeselect .= "<option value=\"0\">-----------</option>\n";
+			$tid = 1;
+		}
 	}
 
 	if(!is_array($tcache))
@@ -4396,13 +4406,13 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
 					$depthit = $depth."--";
 				}
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
 				}
 			}
 		}
@@ -4410,6 +4420,10 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if($tid == 1)
 	{
+		if($footer == true)
+		{
+			$themeselect .= "</optgroup>\n";
+		}
 		$themeselect .= "</select>";
 	}
 

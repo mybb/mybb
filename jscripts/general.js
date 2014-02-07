@@ -245,6 +245,16 @@ var MyBB = {
 		form.submit();
 	},
 
+	changeTheme: function()
+	{
+		form = $("#theme_select");
+		if(!form)
+		{
+			return false;
+		}
+		form.submit();
+	},
+
 	detectDSTChange: function(timezone_with_dst)
 	{
 		var date = new Date();
