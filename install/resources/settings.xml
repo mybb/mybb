@@ -1745,7 +1745,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="dayspruneregistered">
 			<title>Days registered before pruning by post count</title>
-			<description><![CDATA[Set to prune users whom have been registered for atleast the given amount of days.]]></description>
+			<description><![CDATA[Set to prune users whom have been registered for at least the given amount of days.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>
@@ -1763,7 +1763,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="dayspruneunactivated">
 			<title>Days registered before pruning unactivated users</title>
-			<description><![CDATA[Set to prune users whom have been unactived for atleast the given amount of days.]]></description>
+			<description><![CDATA[Set to prune users whom have been unactived for at least the given amount of days.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>

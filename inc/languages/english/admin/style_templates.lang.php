@@ -29,7 +29,7 @@ $l['edit_set_desc'] = "Here you can edit the properties for this template set.";
 $l['manage_templates'] = "Manage Templates";
 $l['manage_templates_desc'] = "Here you can manage the templates for this template set. To edit a template click on it's link or select \"Full Edit\" to edit all properties on a separate page.";
 $l['diff_report'] = "Diff Report";
-$l['diff_report_desc'] = "Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
+$l['diff_report_desc'] = "Performs a difference analysis between the templates and shows you exactly what changes have been made between your customized copy and the latest master copy.";
 
 $l['title'] = "Title";
 $l['save'] = "Save";
@@ -141,7 +141,7 @@ $l['search_names_header'] = "Searching template names containing \"{1}\"";
 
 $l['updated_template_welcome1'] = "Edit - Allows you to edit the current template for this template set to incorporate updates made between the versions.";
 $l['updated_template_welcome2'] = "Revert - Will revert the customized template back to the master revision, however you'll lose any custom changes you have made.";
-$l['updated_template_welcome3'] = "Diff - Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
+$l['updated_template_welcome3'] = "Diff - Performs a difference analysis between the templates and shows you exactly what changes have been made between your customized copy and the latest master copy.";
 
 $l['no_global_templates'] = "There are currently no global templates.";
 $l['no_updated_templates'] = "There are currently no templates which have been updated since you last upgraded.";

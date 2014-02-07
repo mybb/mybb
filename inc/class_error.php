@@ -211,7 +211,7 @@ class errorHandler {
 			{
 				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>";
+					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 				}
 				else
 				{
@@ -256,7 +256,7 @@ class errorHandler {
 
 		if(!$lang->warnings)
 		{
-			$lang->warnings = "The following warnings occured:";
+			$lang->warnings = "The following warnings occurred:";
 		}
 
 		if(defined("IN_ADMINCP"))

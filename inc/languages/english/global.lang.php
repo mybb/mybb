@@ -370,7 +370,7 @@ $l['select_language'] = "Quick Language Select";
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_captcha'] = "Please fill out the image verification code to continue. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
-$l['invalid_captcha_transmit'] = "An error occured with the image verification. Please try again.";
+$l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Enitwetok, Kwajalien";
 $l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island, Samoa";
@@ -419,7 +419,7 @@ $l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
 $l['task_massmail_ran'] = "The mass mail task successfully ran.";
 $l['task_userpruning_ran'] = "The user pruning task successfully ran.";
 $l['task_delayedmoderation_ran'] = "The delayed moderation task successfully ran.";
-$l['task_massmail_ran_errors'] = "One or more problems occured sending to \"{1}\":
+$l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}\":
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";

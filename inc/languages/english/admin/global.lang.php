@@ -264,7 +264,7 @@ $l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
 $l['task_massmail_ran'] = "The mass mail task successfully ran.";
 $l['task_userpruning_ran'] = "The user pruning task successfully ran.";
 $l['task_delayedmoderation_ran'] = "The delayed moderation task successfully ran.";
-$l['task_massmail_ran_errors'] = "One or more problems occured sending to \"{1}\":
+$l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}\":
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";

@@ -525,7 +525,7 @@ function upgrade17_dbchanges6()
 	else
 	{
 		$nextact = "17_dbchanges7";
-		$contents = "<p>Done</p><p>All post ips have been succesfully repaired. Click next to continue.</p>";
+		$contents = "<p>Done</p><p>All post ips have been successfully repaired. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 
