@@ -163,31 +163,18 @@ var Thread = {
 			id = $(this).attr('id');
 			pid = id.replace( /[^\d.]/g, '');
 
-<<<<<<< HEAD
-			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key, {
-				indicator : "<img src='images/spinner.gif'>",
-				loadurl : "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
-				type : "textarea",
-				submit : lang.quickedit_submit,
-				cancel : lang.quickedit_cancel,
-				tooltip : lang.quickedit_tooltip,
-				event : "edit" + pid, // Triggered by the event "edit_[pid]",
-				onblur : "ignore",
-				callback : function(values, settings) {
-=======
 			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key,
 			{
 				indicator: "<img src='images/spinner.gif'>",
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
-				submit: "Save Changes",
-				cancel: "Cancel Edit",
+				submit: lang.quickedit_submit,
+				cancel: lang.quickedit_cancel,
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
 				callback: function(values, settings)
 				{
->>>>>>> upstream/feature
 					values = JSON.parse(values);
 
 					// Change html content
@@ -238,15 +225,9 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
-<<<<<<< HEAD
-		
+
 		$.jGrowl(lang.posting, { openDuration: 'fast' });
-		
-=======
 
-		$.jGrowl("Posting...", { openDuration: 'fast' });
-
->>>>>>> upstream/feature
 		$.ajax(
 		{
 			url: 'newreply.php?ajax=1',
@@ -384,13 +365,8 @@ var Thread = {
 						if(request.responseText.indexOf("window.location") != -1)
 						{
 							$('#post_'+pid).slideToggle("slow");
-<<<<<<< HEAD
-							
-							$.jGrowl(lang.post_deleted_successfully);
-=======
 
-							$.jGrowl('The post was deleted successfully.');
->>>>>>> upstream/feature
+							$.jGrowl(lang.post_deleted_successfully);
 						}
 						else
 						{

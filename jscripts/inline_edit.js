@@ -14,31 +14,17 @@ var inlineEditor = {
 			// Take tid out of the id attribute
 			id = $(this).attr('id');
 			tid = id.replace( /[^\d.]/g, '');
-<<<<<<< HEAD
-			
-			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key="+my_post_key+"&tid="+tid, {
-				indicator : "<img src='images/spinner.gif'>",
-				type : "text",
-				submit : lang.inline_edit_submit,
-				cancel : lang.inline_edit_cancel,
-				tooltip : lang.inline_edit_tooltip,
-				width:($('#tid_' + tid).width() + 200) + "px",
-				event : "hold"+tid,
-				callback : function(values, settings) {
-=======
-
 			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key=" + my_post_key + "&tid=" + tid,
 			{
 				indicator: "<img src='images/spinner.gif'>",
 				type: "text",
 				submit: '',
 				cancel: '',
-				tooltip: "(Click and hold to edit)",
+				tooltip : lang.inline_edit_tooltip,
 				onblur: "submit",
 				event: "hold"+tid,
 				callback: function(values, settings)
 				{
->>>>>>> upstream/feature
 					values = JSON.parse(values);
 
 					// Change subject
