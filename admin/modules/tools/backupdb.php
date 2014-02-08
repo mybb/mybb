@@ -214,7 +214,15 @@ if($mybb->input['action'] == "backup")
 
 			if($mybb->input['contents'] != 'structure')
 			{
-				$query = $db->simple_select($table);
+				if($db->engine == 'mysqli')
+				{
+					$query = mysqli_query($db->read_link, "SELECT * FROM {$db->table_prefix}{$table}", MYSQLI_USE_RESULT);
+				}
+				else
+				{
+					$query = $db->simple_select($table);
+				}
+
 				while($row = $db->fetch_array($query))
 				{
 					$insert = "INSERT INTO {$table} ($fields) VALUES (";
@@ -224,6 +232,10 @@ if($mybb->input['action'] == "backup")
 						if(!isset($row[$field]) || is_null($row[$field]))
 						{
 							$insert .= $comma."NULL";
+						}
+						else if($db->engine == 'mysqli')
+						{
+							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
 						}
 						else
 						{
@@ -235,6 +247,7 @@ if($mybb->input['action'] == "backup")
 					$contents .= $insert;
 					clear_overflow($fp, $contents);
 				}
+				$db->free_result($query);
 			}
 		}
 
