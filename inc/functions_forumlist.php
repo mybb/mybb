@@ -412,11 +412,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
+				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
+				$expthead = "";
 				$expaltext = "[-]";
 			}
 
@@ -427,12 +429,12 @@ function build_forumbits($pid=0, $depth=1)
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
 	}
-	
+
 	if(!isset($parent_lastpost))
 	{
 		$parent_lastpost = 0;
 	}
-	
+
 	if(!isset($lightbulb))
 	{
 		$lightbulb = '';

@@ -785,6 +785,7 @@ if($colcookie)
 		$collapsed[$co] = "display: show;";
 		$collapsed[$ex] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
+		$collapsedthead[$val] = " thead_collapsed";
 	}
 }
 

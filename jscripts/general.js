@@ -383,12 +383,14 @@ var expandables = {
 
 		if(expandedItem.length && collapsedItem.length)
 		{
+			// Expanding
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
 				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls);
 			}
+			// Collapsing
 			else
 			{
 				expandedItem.toggle("fast");
@@ -398,20 +400,24 @@ var expandables = {
 		}
 		else if(expandedItem.length && !collapsedItem.length)
 		{
+			// Expanding
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
+				element.parent().parent('.thead').removeClass('thead_collapsed');
 				this.saveCollapsed(controls);
 			}
+			// Collapsing
 			else
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
+				element.parent().parent('.thead').addClass('thead_collapsed');
 				this.saveCollapsed(controls, 1);
 			}
 		}
