@@ -3544,15 +3544,15 @@ function build_users_view($view)
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />
 <div class="float_right"><span class="smalltext"><strong>'.$lang->inline_edit.'</strong></span>
-<select name="inline_action" class="inline_select">
+<select name="inline_action">
 	<option value="multiactivate">'.$lang->inline_activate.'</option>
 	<option value="multiban">'.$lang->inline_ban.'</option>
 	<option value="multiusergroup">'.$lang->inline_usergroup.'</option>
 	<option value="multidelete">'.$lang->inline_delete.'</option>
 	<option value="multiprune">'.$lang->inline_prune.'</option>
 </select>
-<input type="submit" class="button" name="go" value="'.$lang->go.' (0)" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="'.$lang->clear.'" class="button" />
+<input type="submit" class="submit_button inline_element" name="go" value="'.$lang->go.' (0)" id="inline_go" />&nbsp;
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="'.$lang->clear.'" class="submit_button inline_element" />
 </div>
 </form>
 <br style="clear: both;" />

@@ -1119,8 +1119,8 @@ input.search_button {
 	font-size: 11px;
 }
 
-.inline_select {
-	padding-bottom: 1px;
+.inline_element {
+	font-weight: normal !important;
 }
 
 .inline_selected {
