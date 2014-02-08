@@ -6790,7 +6790,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_reports_multipage" version="1613"><![CDATA[{$multipage}]]></template>
+		<template name="modcp_reports_multipage" version="1800"><![CDATA[{$multipage}]]></template>
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
