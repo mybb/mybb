@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -115,6 +114,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("moderators", "canrestore");
 	}
 
+	if($db->field_exists('deletedthreads', 'threads'))
+	{
+		$db->drop_column("threads", "deletedthreads");
+	}
+
 	if($db->field_exists('deletedposts', 'threads'))
 	{
 		$db->drop_column("threads", "deletedposts");
@@ -140,6 +144,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("profilefields", "postbit");
 	}
 
+	if($db->field_exists('showmemberlist', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "showmemberlist");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -163,6 +172,7 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
+			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -184,6 +194,7 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'"); 
 			break;
 	}
 
@@ -634,7 +645,7 @@ function upgrade28_dbchanges_ip()
 		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversation.</p>";
 
 		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 		$nextact = "28_dbchanges_ip";
 	}
 

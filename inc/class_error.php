@@ -1,15 +1,14 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
-// Set to 1 if recieving a blank page (template failure).
+// Set to 1 if receiving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
 
 // Define Custom MyBB error handler constants with a value not used by php's error handler.
@@ -212,7 +211,7 @@ class errorHandler {
 			{
 				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>";
+					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 				}
 				else
 				{
@@ -249,7 +248,7 @@ class errorHandler {
 			return false;
 		}
 
-		// Incase a template fails and we're recieving a blank page.
+		// Incase a template fails and we're receiving a blank page.
 		if(MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";
@@ -257,7 +256,7 @@ class errorHandler {
 
 		if(!$lang->warnings)
 		{
-			$lang->warnings = "The following warnings occured:";
+			$lang->warnings = "The following warnings occurred:";
 		}
 
 		if(defined("IN_ADMINCP"))

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -651,7 +650,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><small>{$author}</small>");
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
 
-		$popup = new PopupMenu("laguage_{$key}", $lang->options);
+		$popup = new PopupMenu("language_{$key}", $lang->options);
 		$popup->add_item($lang->edit_language_variables, "index.php?module=config-languages&amp;action=edit&amp;lang={$key}");
 		foreach($langselectlangs as $key1 => $langname1)
 		{

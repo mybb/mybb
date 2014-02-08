@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -313,6 +312,11 @@ class CustomModeration extends Moderation
 				{
 					$this->remove_redirects($tid);
 				}
+			}
+
+			if($thread_options['removesubscriptions'] == 1) // Remove thread subscriptions
+			{
+				$this->remove_thread_subscriptions($tids, true);
 			}
 
 			if($thread_options['approvethread'] == 'approve') // Approve thread

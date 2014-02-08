@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -397,6 +396,35 @@ if($mybb->input['action'] == "edit")
 			$additionalgroups = '';
 		}
 
+		$returndate = "";
+		if(!empty($mybb->input['away_day']))
+		{
+			$awaydate = TIME_NOW;
+			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
+			if(!$mybb->input['away_month'])
+			{
+				$mybb->input['away_month'] = my_date('n', $awaydate);
+			}
+			if(!$mybb->input['away_year'])
+			{
+				$mybb->input['away_year'] = my_date('Y', $awaydate);
+			}
+
+			$return_month = intval(substr($mybb->input['away_month'], 0, 2));
+			$return_day = intval(substr($mybb->input['away_day'], 0, 2));
+			$return_year = min(intval($mybb->input['away_year']), 9999);
+
+			// Check if return date is after the away date.
+			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
+			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
+			if($return_year < my_date('Y', $awaydate) || ($returntimestamp < $awaytimestamp && $return_year == my_date('Y', $awaydate)))
+			{
+				$away_in_past = true;
+			}
+
+			$returndate = "{$return_day}-{$return_month}-{$return_year}";
+		}
+
 		// Set up user handler.
 		require_once MYBB_ROOT."inc/datahandlers/user.php";
 		$userhandler = new UserDataHandler('update');
@@ -435,7 +463,7 @@ if($mybb->input['action'] == "edit")
 			"away" => array(
 				"away" => $mybb->input['away'],
 				"date" => TIME_NOW,
-				"returndate" => "{$mybb->input['away_day']}-{$mybb->input['away_month']}-{$mybb->input['away_year']}",
+				"returndate" => $returndate,
 				"awayreason" => $mybb->input['awayreason']
 			)
 		);
@@ -707,6 +735,11 @@ if($mybb->input['action'] == "edit")
 			if($extra_user_updates['moderateposts'] && $extra_user_updates['suspendposting'])
 			{
 				$errors[] = $lang->suspendmoderate_error;
+			}
+
+			if(isset($away_in_past))
+			{
+				$errors[] = $lang->error_acp_return_date_past;
 			}
 
 			if(!$errors)
@@ -1069,7 +1102,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$awaycheck = array(true, false);
 		}
-		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away', "checked" => $awaycheck[1])), 'away');
+		$form_container->output_row($lang->away_status, $lang->away_status_desc, $form->generate_radio_button('away', 1, $lang->im_away, array('id' => 'away', "checked" => $awaycheck[0]))." ".$form->generate_radio_button('away', 0, $lang->im_here, array('id' => 'away2', "checked" => $awaycheck[1])), 'away');
 		$form_container->output_row($lang->away_reason, $lang->away_reason_desc, $form->generate_text_box('awayreason', $mybb->input['awayreason'], array('id' => 'awayreason')), 'awayreason');
 
 		//Return date (we can use the arrays from birthday)
@@ -1276,13 +1309,13 @@ if($mybb->input['action'] == "edit")
 
 		function toggleAction()
 		{
-			if($("suspend_action").visible() == true)
+			if($("#suspend_action").is(\':visible\'))
 			{
-				$("suspend_action").hide();
+				$("#suspend_action").hide();
 			}
 			else
 			{
-				$("suspend_action").show();
+				$("#suspend_action").show();
 			}
 		}
 	// -->
@@ -1304,7 +1337,7 @@ if($mybb->input['action'] == "edit")
 	<!--
 		if(sig_checked == 0)
 		{
-			$("suspend_action").hide();
+			$("#suspend_action").hide();
 		}
 	// -->
 	</script>';
@@ -1463,7 +1496,7 @@ function toggleBox(action)
 {
 	if(action == "modpost")
 	{
-		$("#suspendposting").attr("checked", "checked");
+		$("#suspendposting").attr("checked", false);
 		$("#suspost").hide();
 
 		if($("#moderateposting").is(":checked") == true)
@@ -1477,7 +1510,7 @@ function toggleBox(action)
 	}
 	else if(action == "suspost")
 	{
-		$("#moderateposting").attr("checked", "checked");
+		$("#moderateposting").attr("checked", false);
 		$("#modpost").hide();
 
 		if($("#suspendposting").is(":checked") == true)
@@ -2982,11 +3015,11 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
+		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
 		}
-		else if(isset($view['conditions'][$search_field.'_blank']))
+		else if(!empty($view['conditions'][$search_field.'_blank']))
 		{
 			$search_sql .= " AND u.{$search_field} != ''";
 		}
@@ -2996,7 +3029,7 @@ function build_users_view($view)
 	$user_exact_fields = array("referrer");
 	foreach($user_exact_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			$search_sql .= " AND u.{$search_field}='".$db->escape_string($view['conditions'][$search_field])."'";
 		}
@@ -3007,7 +3040,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(!empty($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -3028,7 +3061,7 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
 		{
 			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
 
@@ -3040,7 +3073,7 @@ function build_users_view($view)
 	$ip_fields = array("regip", "lastip");
 	foreach($ip_fields as $search_field)
 	{
-		if(isset($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]))
 		{
 			$ip_range = fetch_ip_range($view['conditions'][$search_field]);
 			if(!is_array($ip_range))
@@ -3056,7 +3089,7 @@ function build_users_view($view)
 	}
 
 	// Post IP searching
-	if(isset($view['conditions']['postip']))
+	if(!empty($view['conditions']['postip']))
 	{
 		$ip_range = fetch_ip_range($view['conditions']['postip']);
 		if(!is_array($ip_range))
@@ -3206,7 +3239,6 @@ function build_users_view($view)
 		$view['perpage'] = intval($view['perpage']);
 
 		// Establish which page we're viewing and the starting index for querying
-		// Establish which page we're viewing and the starting index for querying
 		if(!isset($mybb->input['page']))
 		{
 			$mybb->input['page'] = 1;
@@ -3292,7 +3324,7 @@ function build_users_view($view)
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
-			$popup->add_item($lang->profile, $mybb->settings['bburl'].'/'.get_profile_link($user['uid']));
+			$popup->add_item($lang->view_profile, $mybb->settings['bburl'].'/'.get_profile_link($user['uid']));
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}");
 
 			// Banning options... is this user banned?
@@ -3484,22 +3516,7 @@ function build_users_view($view)
 	$built_view .= "</div>\n";
 
 	// Autocompletion for usernames
-	$built_view .= '
-	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
-	<script type="text/javascript">
-	<!--
-        $("#search_keywords").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },
-            limit: 10
-        });
-	// -->
-	</script>';
+	// TODO Select2
 
 	$built_view .= $search->end();
 
@@ -3522,20 +3539,20 @@ function build_users_view($view)
 	}
 
 	$built_view .= '
-<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1400"></script>
+<script type="text/javascript" src="'.$mybb->settings['bburl'].'/jscripts/inline_moderation.js?ver=1800"></script>
 <form action="index.php?module=user-users" method="post">
 <input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />
 <input type="hidden" name="action" value="inline_edit" />
 <div class="float_right"><span class="smalltext"><strong>'.$lang->inline_edit.'</strong></span>
-<select name="inline_action" class="inline_select">
+<select name="inline_action">
 	<option value="multiactivate">'.$lang->inline_activate.'</option>
 	<option value="multiban">'.$lang->inline_ban.'</option>
 	<option value="multiusergroup">'.$lang->inline_usergroup.'</option>
 	<option value="multidelete">'.$lang->inline_delete.'</option>
 	<option value="multiprune">'.$lang->inline_prune.'</option>
 </select>
-<input type="submit" class="button" name="go" value="'.$lang->go.' (0)" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="'.$lang->clear.'" class="button" />
+<input type="submit" class="submit_button inline_element" name="go" value="'.$lang->go.' (0)" id="inline_go" />&nbsp;
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="'.$lang->clear.'" class="submit_button inline_element" />
 </div>
 </form>
 <br style="clear: both;" />
@@ -3654,6 +3671,11 @@ function build_user_view_table($user, $view, &$table)
 		else
 		{
 			$value = $user[$field];
+		}
+
+		if($field == "postnum")
+		{
+			$value = my_number_format($user[$field]);
 		}
 		$table->construct_cell($value, $field_options);
 	}

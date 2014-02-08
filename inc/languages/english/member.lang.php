@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_register'] = "Register";
@@ -19,7 +18,7 @@ $l['tpp_option'] = "Show {1} threads per page";
 $l['ppp_option'] = "Show {1} posts per page";
 $l['account_activation'] = "Account Activation";
 $l['activate_account'] = "Activate Account";
-$l['activation_code'] = "Activation Code";
+$l['activation_code'] = "Activation Code:";
 
 $l['email_user'] = "Send {1} an Email";
 $l['email_subject'] = "Email Subject";
@@ -155,7 +154,7 @@ $l['verification_subnote'] = "(case insensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";
 $l['timeonline_hidden'] = "N/A";
-$l['registrations_disabled'] = "Sorry but you cannot register at this time because the administrator has disabled new account registrations.";
+$l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
 
 $l['none_registered'] = "None Registered";

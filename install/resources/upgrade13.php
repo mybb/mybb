@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -147,7 +146,7 @@ function upgrade13_dbchanges1()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }
@@ -231,7 +230,7 @@ function upgrade13_dbchanges2()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
 
 	$output->print_footer($nextact);
 }

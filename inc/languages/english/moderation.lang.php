@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_deletethread'] = "Delete Thread Permanently";
@@ -203,5 +202,5 @@ $l['redirect_customtool_search'] = "\"{1}\" moderation tool executed successfull
 $l['redirect_delayed_moderation_thread'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the thread.";
 $l['redirect_delayed_moderation_forum'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the forum.";
 $l['redirect_delayed_moderation_search'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the search.";
-$l['redirect_delayed_moderation_cancelled'] = "The selected delayed moderation action has been cancelled.<br />You will now be returned to the delayed moderation page.";
+$l['redirect_delayed_moderation_cancelled'] = "The selected delayed moderation action has been canceled.<br />You will now be returned to the delayed moderation page.";
 ?>

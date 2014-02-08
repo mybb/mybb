@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -270,9 +269,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->get_input('savedraft') && !$pid)
 	{
-		$check_subject = utf8_handle_4byte_string($mybb->get_input('subject'));
-		$check_message = utf8_handle_4byte_string($mybb->get_input('message'));
-		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($check_subject)."' AND p.message='".$db->escape_string($check_message)."' AND p.dateline>".(TIME_NOW-600));
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{

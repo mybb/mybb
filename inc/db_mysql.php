@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 class DB_MySQL
@@ -129,6 +128,14 @@ class DB_MySQL
 	 * @var float
 	 */
 	public $query_time = 0;
+
+	/**
+	 * Stores previous run query type: 1 => write; 0 => read
+	 *
+	 * @var int
+	 */
+
+	protected $last_query_type = 0;
 
 	/**
 	 * Connect to the database server.
@@ -297,7 +304,7 @@ class DB_MySQL
 	 *
 	 * @param string The query SQL.
 	 * @param integer 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param integer 1 if executes on master database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
@@ -306,8 +313,8 @@ class DB_MySQL
 
 		get_execution_time();
 
-		// Only execute write queries on slave database
-		if($write_query && $this->write_link)
+		// Only execute write queries on master database
+		if(($write_query || $this->last_query_type) && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;
 			$query = @mysql_query($string, $this->write_link);
@@ -324,6 +331,15 @@ class DB_MySQL
 			 exit;
 		}
 
+		if($write_query)
+		{
+			$this->last_query_type = 1;
+		}
+		else
+		{
+			$this->last_query_type = 0;
+		}
+
 		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
@@ -337,7 +353,7 @@ class DB_MySQL
 	}
 
 	/**
-	 * Execute a write query on the slave database
+	 * Execute a write query on the master database
 	 *
 	 * @param string The query SQL.
 	 * @param boolean 1 if hide errors, 0 if not.
@@ -901,6 +917,15 @@ class DB_MySQL
 	 */
 	function escape_string($string)
 	{
+		if($this->db_encoding == 'utf8')
+		{
+			$string = validate_utf8_string($string, false);
+		}
+		elseif($this->db_encoding == 'utf8mb4')
+		{
+			$string = validate_utf8_string($string);
+		}
+
 		if(function_exists("mysql_real_escape_string") && $this->read_link)
 		{
 			$string = mysql_real_escape_string($string, $this->read_link);
@@ -1059,11 +1084,11 @@ class DB_MySQL
 		{
 			$table_type = my_strtoupper($status['Type']);
 		}
-		if($version >= '3.23.23' && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
+		if(version_compare($version, '3.23.23', '>=') && ($table_type == 'MYISAM' || $table_type == 'ARIA'))
 		{
 			return true;
 		}
-		elseif($version >= '5.6' && $table_type == 'INNODB')
+		elseif(version_compare($version, '5.6', '>=') && $table_type == 'INNODB')
 		{
 			return true;
 		}
@@ -1107,7 +1132,7 @@ class DB_MySQL
 	{
 		$version = $this->get_version();
 		$supports_fulltext = $this->supports_fulltext($table);
-		if($version >= '4.0.1' && $supports_fulltext == true)
+		if(version_compare($version, '4.0.1', '>=') && $supports_fulltext == true)
 		{
 			return true;
 		}
@@ -1320,6 +1345,7 @@ class DB_MySQL
 			'latin5' => 'ISO 8859-9 Turkish',
 			'armscii8' => 'ARMSCII-8 Armenian',
 			'utf8' => 'UTF-8 Unicode',
+			'utf8mb4' => '4-Byte UTF-8 Unicode (requires MySQL 5.5.3 or above)',
 			'ucs2' => 'UCS-2 Unicode',
 			'cp866' => 'DOS Russian',
 			'keybcs2' => 'DOS Kamenicky Czech-Slovak',
@@ -1368,6 +1394,7 @@ class DB_MySQL
 			'latin5' => 'latin5_turkish_ci',
 			'armscii8' => 'armscii8_general_ci',
 			'utf8' => 'utf8_general_ci',
+			'utf8mb4' => 'utf8mb4_general_ci',
 			'ucs2' => 'ucs2_general_ci',
 			'cp866' => 'cp866_general_ci',
 			'keybcs2' => 'keybcs2_general_ci',

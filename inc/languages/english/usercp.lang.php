@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_usercp'] = "User Control Panel";
@@ -95,7 +94,7 @@ $l['remove_from_list'] = "Remove from list";
 $l['edit_sig'] = "Edit Signature";
 $l['edit_sig_note'] = "Here you can enter a short message which will automatically be appended to the bottom of your posts.";
 $l['edit_sig_note2'] = "Smilies are {1}.<br />MyCode is {2}.<br />[img] tags are {3}.<br />HTML is {4}.<br />Max. length is {5} characters.";
-$l['edit_sig_error_title'] = "An error has occured:";
+$l['edit_sig_error_title'] = "An error has occurred:";
 $l['edit_sig_no_permission'] = "You do not have permission to edit your signature.";
 $l['characters_remaining'] = "characters remaining";
 $l['enable_sig_posts'] = "Enable my signature in all of my existing posts.";
@@ -141,7 +140,7 @@ $l['email_notify'] = "Automatically subscribe to threads you post in.";
 $l['email_notify_desc'] = "Selecting yes will automatically subscribe you to threads when you make a post in them.";
 $l['receive_pms'] = "Receive private messages from other users.";
 $l['receive_pms_desc'] = "Enables you to send and receive Private Messages.";
-$l['receive_from_buddy'] = "Only receive private messages from users on my <a href=\"misc.php?action=buddypopup\" onclick=\"MyBB.popupWindow('misc.php?action=buddypopup', 'buddyList', 350, 350); return false;\" target=\"_blank\">Buddy List</a>.";
+$l['receive_from_buddy'] = "Only receive private messages from users on my <a href=\"#\" onclick=\"MyBB.popupWindow('/misc.php?action=buddypopup'); return false;\" target=\"_blank\">Buddy List</a>.";
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['pm_notify'] = "Notify me by email when I receive a new Private Message.";
 $l['show_codebuttons'] = "Show the MyCode formatting options on the posting pages.";
@@ -296,7 +295,7 @@ $l['attachstats_spaceused'] = "Space Used";
 $l['attachstats_quota'] = "Attachment Quota";
 $l['attachstats_totaldl'] = "Total Downloads";
 $l['attachstats_bandwidth'] = "Approximate Bandwidth Usage";
-$l['error_avatartoobig'] = "Sorry but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
+$l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
 $l['custom_usertitle'] = "Custom User Title";
 $l['new_custom_usertitle'] = "New Custom User Title: (leave blank to use existing)";

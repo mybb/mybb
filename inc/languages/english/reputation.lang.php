@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_reputation'] = "Reputation Report";
@@ -41,7 +40,6 @@ $l['last_6months'] = "Last 6 months";
 $l['all_time'] = "All Time";
 $l['comments'] = "Comments";
 $l['close_window'] = "Close Window";
-$l['go_back'] = "Back";
 $l['add_reputation_vote'] = "Add a reputation rating for {1}";
 $l['add_reputation_to_post'] = "This reputation is for {1}'s post.<br />";
 $l['neg_rep_disabled'] = "<span class=\"smalltext\">* - <em>Negative reputation is currently disabled</em></span>";

@@ -1,14 +1,12 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['report_reason'] = "Report reason:";
 $l['report_to_mod'] = "Report content to a moderator";
-$l['go_back'] = "<input type=\"button\" class=\"button\" value=\"Go Back\" onclick=\"javascript:history.go(-1)\" />";
 $l['close_window'] = "Close Window";
 
 // Content types

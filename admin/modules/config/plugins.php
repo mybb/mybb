@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -64,16 +63,11 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
-	{
-		$major_version_code = round($mybb->version_code/100, 0)*100;
-	}
-	else
-	{
-		$major_version_code = round($mybb->version_code/10, 0)*100;
-	}
+	$major_version_code = round($mybb->version_code/100, 0)*100;
+	// Convert to mods site version codes
+	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=mod&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=plugins&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -110,7 +104,7 @@ if($mybb->input['action'] == "browse")
 		{
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -180,11 +174,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended plugins = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/mods\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php\" target=\"_blank\">{$lang->browse_all_plugins}</a></small></span>".$lang->sprintf($lang->recommended_plugins_for_mybb, $mybb->version));
 	}
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=config-plugins&amp;action=browse{$keywords}&amp;page={page}");
@@ -214,10 +208,16 @@ if($mybb->input['action'] == "check")
 			}
 			$plugininfo = $infofunc();
 			$plugininfo['guid'] = trim($plugininfo['guid']);
+			$plugininfo['codename'] = trim($plugininfo['codename']);
 
-			if($plugininfo['guid'] != "")
+			if($plugininfo['codename'] != "")
 			{
-				$info[] = $plugininfo['guid'];
+				$info[]	= $plugininfo['codename'];
+				$names[$plugininfo['codename']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
+			}
+			elseif($plugininfo['guid'] != "")
+			{
+				$info[] =  $plugininfo['guid'];
 				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
 			}
 		}
@@ -230,13 +230,8 @@ if($mybb->input['action'] == "check")
 		admin_redirect("index.php?module=config-plugins");
 	}
 
-	$url = "http://mods.mybb.com/version_check.php?";
-	foreach($info as $guid)
-	{
-		$url .= "info[]=".urlencode($guid)."&";
-	}
-	$url = substr($url, 0, -1);
-
+	$url = "http://community.mybb.com/version_check.php?";
+	$url .= http_build_query(array("info" => $info))."&";
 	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = fetch_remote_file($url);
 
@@ -251,9 +246,8 @@ if($mybb->input['action'] == "check")
 
 	if(!is_array($tree) || !isset($tree['plugins']))
 	{
-		$page->output_inline_error($lang->error_communication_problem);
-		$page->output_footer();
-		exit;
+		flash_message($lang->error_communication_problem, 'error');
+		admin_redirect("index.php?module=config-plugins");
 	}
 
 	if(array_key_exists('error', $tree['plugins']))
@@ -269,7 +263,6 @@ if($mybb->input['action'] == "check")
 			default:
 				$error_msg = "";
 		}
-
 		flash_message($lang->error_communication_problem.$error_msg, 'error');
 		admin_redirect("index.php?module=config-plugins");
 	}
@@ -295,12 +288,32 @@ if($mybb->input['action'] == "check")
 
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
-		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version']['value'], "<"))
+		$compare_by = array_key_exists("codename", $plugin['attributes']) ? "codename" : "guid";
+		$is_vulnerable = array_key_exists("vulnerable", $plugin) ? true : false;
+
+		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
-			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
-			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
+										{$lang->error_vcheck_vulnerable} {$names[$plugin['attributes'][$compare_by]]['name']}
+										</div>
+										<p>	<b>{$lang->error_vcheck_vulnerable_notes}</b> <br /><br /> {$plugin['vulnerable']['value']}</p>");
+			}
+			else
+			{
+				$table->construct_cell("<strong>{$names[$plugin['attributes'][$compare_by]]['name']}</strong>");
+			}
+			$table->construct_cell("{$names[$plugin['attributes'][$compare_by]]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			if($is_vulnerable)
+			{
+				$table->construct_cell("<a href=\"index.php?module=config-plugins\"><b>{$lang->deactivate}</b></a>", array("class" => "align_center", "width" => 150));
+			}
+			else
+			{
+				$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			}
 			$table->construct_row();
 		}
 	}
@@ -389,7 +402,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		// Plugin is compatible with this version?
 		if($plugins->is_compatible($codename) == false)
 		{
-			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
+			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version), 'error');
 			admin_redirect("index.php?module=config-plugins");
 		}
 

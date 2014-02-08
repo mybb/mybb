@@ -6,12 +6,12 @@
 		<logo><![CDATA[images/logo.png]]></logo>
 		<tablespace><![CDATA[5]]></tablespace>
 		<borderwidth><![CDATA[0]]></borderwidth>
-		<editortheme><![CDATA[default.css]]></editortheme>
+		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
 		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
 	background: #fff;
-	color: #000;
+	color: #333;
 	text-align: center;
 	line-height: 1.4;
 	margin: 0;
@@ -36,7 +36,7 @@ a:hover, a:active {
 }
 
 #container {
-	color: #000;
+	color: #333;
 	text-align: left;
 	line-height: 1.4;
 	margin: 0;
@@ -292,7 +292,7 @@ fieldset.trow2 {
 }
 
 table {
-	color: #000000;
+	color: #333;
 	font-size: 13px;
 }
 
@@ -388,7 +388,7 @@ table {
 
 .trow_selected {
 	background: #FFFBD9;
-	color: #000;
+	color: #333;
 	border-right-color: #F7E86A;
 	border-bottom-color: #F7E86A;
 }
@@ -397,12 +397,12 @@ table {
 .trow_selected a:visited,
 .trow_selected a:hover,
 .trow_selected a:active {
-	color: #000;
+	color: #333;
 }
 
 .trow_sep {
 	background: #ddd;
-	color: #000;
+	color: #333;
 	border-bottom: 1px solid #c5c5c5;
 	padding: 6px;
 	font-size: 12px;
@@ -438,13 +438,13 @@ table {
 
 .bottommenu {
 	background: #efefef;
-	color: #000000;
+	color: #333;
 	border: 1px solid #4874a3;
 	padding: 10px;
 }
 
 .navigation {
-	color: #000000;
+	color: #333;
 	font-size: 12px;
 }
 
@@ -461,7 +461,7 @@ table {
 }
 
 .navigation .active {
-	color: #000000;
+	color: #333;
 	font-size: small;
 	font-weight: bold;
 }
@@ -477,7 +477,7 @@ table {
 
 input.textbox {
 	background: #ffffff;
-	color: #000000;
+	color: #333;
 	border: 1px solid #ccc;
 	padding: 3px;
 	outline: 0;
@@ -487,7 +487,7 @@ input.textbox {
 
 textarea {
 	background: #ffffff;
-	color: #000000;
+	color: #333;
 	border: 1px solid #ccc;
 	padding: 2px;
 	line-height: 1.4;
@@ -540,7 +540,7 @@ input.button:hover {
 
 .popup_menu .popup_item {
 	background: #efefef;
-	color: #000;
+	color: #333;
 }
 
 .popup_menu .popup_item:hover {
@@ -639,7 +639,7 @@ img {
 .selectall {
 	background: #FFFBD9;
 	border-bottom: 1px solid #F7E86A;
-	color: #000;
+	color: #333;
 	text-align: center;
 }
 
@@ -818,7 +818,7 @@ div.error {
 
 div.error p {
 	margin: 0;
-	color: #000;
+	color: #333;
 	font-weight: normal;
 }
 
@@ -869,7 +869,7 @@ div.error ul {
 
 .pagination .pagination_current {
 	background: none;
-	color: #000;
+	color: #333;
 	border: none;
 	font-weight: bold;
 }
@@ -3290,7 +3290,7 @@ a.button {
 </tr>
 ]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -3676,7 +3676,7 @@ a.button {
 								<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
 							</tr>
 							<tr>
-								<td class="trow1" width="25%"><strong>{$lang->username}</strong></td>
+								<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
 								<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
 							</tr>
 							<tr>
@@ -5401,39 +5401,6 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_allreports" version="120"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->all_reported_posts}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table width="100%" border="0" align="center">
-<tr>
-{$modcp_nav}
-<td valign="top">
-<p>{$lang->unread_reports_key}</p>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->all_reported_posts}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
-</tr>
-{$allreports}
-{$allreportspages}
-</table>
-</td>
-</tr>
-</table>
-{$footer}
-</body>
-</html>]]></template>
 		<template name="modcp_announcements" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
@@ -6769,11 +6736,11 @@ body {
 			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
 		</tr>
 		{$reports}
-		{$reportspages}
 		<tr>
 			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reports}</a></strong></span></td>
 		</tr>
 		</table>
+		{$reportspages}
 		<br />
 		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
 	</td>
@@ -6834,17 +6801,15 @@ body {
 					<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
 				</tr>
 				{$allreports}
-				{$allreportspages}
 			</table>
+			{$allreportspages}
 		</td>
 	</tr>
 </table>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_reports_multipage" version="120"><![CDATA[<tr>
-<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
-</tr>]]></template>
+		<template name="modcp_reports_multipage" version="1800"><![CDATA[{$multipage}]]></template>
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
@@ -7023,33 +6988,33 @@ body {
 <!--
 	function toggleType()
 	{
-		if($('type_merge'))
+		if($('#type_merge'))
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.hide('type_merge_expanded');
-				Element.show('type_movecopythread_expanded');
+				$('#type_merge_expanded').hide();
+				$('#type_movecopythread_expanded').show();
 			}
-			else if($('type_merge').checked == true)
+			else if($('#type_merge').prop('checked') == true)
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.show('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
-				Element.hide('type_merge_expanded');
+				$('#type_movecopythread_expanded').hide();
+				$('#type_merge_expanded').hide();
 			}
 		}
 		else
 		{
-			if($('type_movecopythread').checked == true)
+			if($('#type_movecopythread').prop('checked') == true)
 			{
-				Element.show('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').show();
 			}
 			else
 			{
-				Element.hide('type_movecopythread_expanded');
+				$('#type_movecopythread_expanded').hide();
 			}
 		}
 	}
@@ -8326,16 +8291,16 @@ body {
 {$post['attachedimages']}
 {$post['attachmentlist']}
 </fieldset>]]></template>
-		<template name="postbit_attachments_attachment" version="120"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
+		<template name="postbit_attachments_attachment" version="1800"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank" title="{$attachdate}">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
 		<template name="postbit_attachments_attachment_unapproved" version="1402"><![CDATA[<br /><strong>{$postbit_unapproved_attachments}</strong>]]></template>
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
-		<template name="postbit_attachments_images_image" version="120"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_images_image" version="1800"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_thumbnails" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_thumbnails}</strong></span><br />
 {$post['thumblist']}
 <br />]]></template>
-		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
+		<template name="postbit_attachments_thumbnails_thumbnail" version="1800"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" title="{$attachdate}" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
@@ -8408,7 +8373,7 @@ body {
 		<div style="float: right; width: auto; vertical-align: top;" id="show_ignored_link_{$post['pid']}" class="show_ignored_post"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;" class="button small_button"><span>{$lang->postbit_show_ignored_post}</span></a></div>
 <script type="text/javascript">
 <!--
-	$('show_ignored_link_{$post['pid']}').show();
+	$('#show_ignored_link_{$post['pid']}').show();
 // -->
 </script>
 		{$ignored_message}
@@ -8416,11 +8381,11 @@ body {
 </div>]]></template>
 		<template name="postbit_inlinecheck" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle; margin: -2px 0 0 5px;" {$inlinecheck}  />]]></template>
 		<template name="postbit_iplogged_hiden" version="1800"><![CDATA[{$lang->postbit_ipaddress} <a href="moderation.php?action={$action}&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a>]]></template>
-		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$post['ipaddress']}]]></template>
+		<template name="postbit_iplogged_show" version="1800"><![CDATA[{$lang->postbit_ipaddress} {$ipaddress}]]></template>
 		<template name="postbit_multiquote" version="1800"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}" title="{$lang->postbit_multiquote}" class="postbit_multiquote"><span id="multiquote_{$post['pid']}">{$lang->postbit_button_multiquote}</span></a>
 <script type="text/javascript">
 //<!--
-	$('#multiquote_link_{$post['pid']}').css("display", "none");
+	$('#multiquote_link_{$post['pid']}').css("display", "");
 // -->
 </script>]]></template>
 		<template name="postbit_offline" version="1800"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.png" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" class="buddy_status" />]]></template>
@@ -8716,14 +8681,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->folder} {$foldername}</strong></td>
 </tr>]]></template>
-		<template name="private_archive_html_message" version="120"><![CDATA[<tr>
+		<template name="private_archive_html_message" version="1800"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->subject} {$message['subject']}</strong><br /><em>{$lang->to} {$message['tousername']}<br />{$lang->from} {$message['fromusername']}<br />{$lang->sent} {$senddate}</em></td>
 </tr>
 <tr>
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" alt="" /></td>
+<td class="tcat" height="3"><img src="{$theme['imgdir']}/pixel.gif" height="3" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="120"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
@@ -9110,7 +9075,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
 		<template name="private_send_tracking" version="1610"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
-		<template name="private_tracking" version="1600"><![CDATA[<html>
+		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
 {$headerinclude}
@@ -9158,7 +9123,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 {$unreadmessages}
 <tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->cancel}" /> {$lang->selected_messages}</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
 </form>
@@ -9494,7 +9459,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="action" value="do_search" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td colspan="2" class="thead"><strong>{$mybb->settings['bbname']} - {$lang->search}</strong></td>
+<td colspan="2" class="thead"><strong>{$lang->search}</strong></td>
 </tr>
 <tr>
 <td class="tcat" width="50%"><strong>{$lang->search_keyword}</strong></td>
@@ -9647,7 +9612,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="search_results_posts_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -9737,7 +9702,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</body>
 		</html>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="search_results_threads_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -9890,7 +9855,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="2">
 				<div style="float: right;">
-					<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+					<span class="smalltext"><strong><a href="javascript:;" id="thread_modes">{$lang->thread_modes}</a>{$threadnoteslink}</strong></span>
 				</div>
 				<div>
 					<strong>{$thread['threadprefix']}{$thread['subject']}</strong>
@@ -9937,6 +9902,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<br style="clear: both;" />
 	{$usersbrowsing}
 	{$footer}
+	<div id="thread_modes_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->linear}</a></div><div class="popup_item_container"><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}" class="popup_item">{$lang->threaded}</a></div></div>
+	<script type="text/javascript">
+	// <!--
+		if(use_xmlhttprequest == "1")
+		{
+			$("#thread_modes").popupMenu();
+		}
+	// -->
+	</script>
 </body>
 </html>]]></template>
 		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
@@ -9944,7 +9918,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -9976,14 +9950,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script><br />]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_moderationoptions" version="1600"><![CDATA[{$inlinemod}
+		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span>
-	<select name="action" onchange="$('moderator_options').submit();">
+	<select name="action" id="moderator_options_selector">
 		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		<optgroup label="{$lang->standard_mod_tools}">
 			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>
@@ -10003,7 +9977,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</select>
 	{$gobutton}
 </form>
-<br />]]></template>
+<br />
+<script type="text/javascript">
+<!--
+	$("#moderator_options_selector").change(function() {
+		$("#moderator_options").submit();
+	})
+//-->
+</script>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_multipage" version="126"><![CDATA[<tr>
@@ -10176,6 +10157,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>
 ]]></template>
+		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
 <br />]]></template>
@@ -10595,10 +10577,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		lang.adding_ignored = '{$lang->adding_ignored}';
 		lang.error_fetching_buddy = '{$lang->error_fetching_buddy}';
 	</script>
-  
+
   <link rel="stylesheet" href="jscripts/select2/select2.css">
 	<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
-  
+
 </head>
 <body>
 	{$header}
@@ -11542,9 +11524,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>
 </fieldset>]]></template>
-		<template name="usercp_profile_customfield" version="1605"><![CDATA[<tr>
+		<template name="usercp_profile_customfield" version="1800"><![CDATA[<tr>
 <td>
-<a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:
+<span>{$profilefield['name']}</span>:
 <br />
 <span class="smalltext">{$profilefield['description']}</span>
 </td>
@@ -11966,7 +11948,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow1" colspan="2">{$user_link}</td>
 		</tr>
 ]]></template>
-		<template name="warnings_warn" version="1400"><![CDATA[<html>
+		<template name="warnings_warn" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warn_user}</title>
 {$headerinclude}
@@ -12001,23 +11983,24 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow2">
 				<script type="text/javascript">
 				// <!--
-					function checkType()
+					function checkType(id)
 					{
 						var checked = '';
-						$$('.types_check').each(function(e)
+
+						$('.types_check').each(function(e, val)
 						{
-							if(e.checked == true)
+							if($(this).prop('checked') == true)
 							{
-								checked = e.value;
+								checked = $(this).val();
 							}
 						});
-						$$('.types').each(function(e)
+						$('.types').each(function(e)
 						{
-							Element.hide(e);
+							$(this).hide();
 						});
-						if($('type_'+checked))
+						if($('#type_'+checked))
 						{
-							Element.show('type_'+checked);
+							$('#type_'+checked).show();
 						}
 					}
 				// -->
@@ -12238,7 +12221,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="jscripts/bbcodes_sceditor.js"></script>
-<script type="text/javascript" src="jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
+<script type="text/javascript" src="jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
 $(function() {
 	$("#{$bind}").sceditor({
@@ -12274,7 +12257,7 @@ $(function() {
 				":at:": "images/smilies/at.gif"
 			}
 		},
-        toolbar: "bold,italic,underline,strike,left,center,right,justify,font,size,color,removeformat,pastetext,bulletlist,orderedlist,code,quote,horizontalrule,image,email,link,unlink,emoticon,video,date,time,ltr,rtl,print,maximize,source",
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|pastetext,horizontalrule,maximize,source",
 	});
 });
 </script>]]></template>
