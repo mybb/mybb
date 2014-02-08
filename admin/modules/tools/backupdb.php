@@ -140,7 +140,7 @@ if($mybb->input['action'] == "backup")
 
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
 
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -150,11 +150,11 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?module=tools-backupdb&action=backup");
 				}
 
-				$fp = gzopen($file.'.sql.gz', 'w9');
+				$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
 			}
 			else
 			{
-				$fp = fopen($file.'.sql', 'w');
+				$fp = fopen($file.'.incomplete.sql', 'w');
 			}
 		}
 		else
@@ -246,11 +246,13 @@ if($mybb->input['action'] == "backup")
 			{
 				gzwrite($fp, $contents);
 				gzclose($fp);
+				rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 			}
 			else
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
+				rename($file.'.incomplete.sql', $file.'.sql');
 			}
 
 			if($mybb->input['filetype'] == 'gzip')

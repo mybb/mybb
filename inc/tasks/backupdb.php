@@ -34,15 +34,15 @@ function task_backupdb($task)
 	{
 		$db->set_table_prefix('');
 
-		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
+		$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
 
 		if(function_exists('gzopen'))
 		{
-			$fp = gzopen($file.'.sql.gz', 'w9');
+			$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
 		}
 		else
 		{
-			$fp = fopen($file.'.sql', 'w');
+			$fp = fopen($file.'.incomplete.sql', 'w');
 		}
 
 		$tables = $db->list_tables($config['database']['database'], $config['database']['table_prefix']);
@@ -103,11 +103,13 @@ function task_backupdb($task)
 		{
 			gzwrite($fp, $contents);
 			gzclose($fp);
+			rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 		}
 		else
 		{
 			fwrite($fp, $contents);
 			fclose($fp);
+			rename($file.'.incomplete.sql', $file.'.sql');
 		}
 
 		add_task_log($task, $lang->task_backup_ran);
