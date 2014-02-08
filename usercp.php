@@ -708,7 +708,6 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"daysprune" => $mybb->get_input('daysprune', 1),
 		"showcodebuttons" => $mybb->get_input('showcodebuttons', 1),
 		"pmnotify" => $mybb->get_input('pmnotify', 1),
-		"showredirect" => $mybb->get_input('showredirect', 1),
 		"classicpostbit" => $mybb->get_input('classicpostbit', 1)
 	);
 
@@ -720,6 +719,11 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	if($mybb->settings['userpppoptions'])
 	{
 		$user['options']['ppp'] = $mybb->get_input('ppp', 1);
+	}
+
+	if($mybb->settings['redirects'] == 1)
+	{
+		$user['options']['showredirect'] = $mybb->get_input('showredirect', 1);
 	}
 
 	$userhandler->set_data($user);
@@ -884,13 +888,19 @@ if($mybb->input['action'] == "options")
 		$showcodebuttonscheck = "";
 	}
 
-	if(isset($user['showredirect']) && $user['showredirect'] != 0)
+	// Show option for show redirects only if it will take effect
+	if($mybb->settings['redirects'] == 1)
 	{
-		$showredirectcheck = "checked=\"checked\"";
-	}
-	else
-	{
-		$showredirectcheck = "";
+		if(isset($user['showredirect']) && $user['showredirect'] != 0)
+		{
+			$showredirectcheck = "checked=\"checked\"";
+		}
+		else
+		{
+			$showredirectcheck = "";
+		}
+
+		eval("\$showredirects = \"".$templates->get("usercp_options_showredirects")."\";");
 	}
 
 	if(isset($user['pmnotify']) && $user['pmnotify'] != 0)
