@@ -3667,7 +3667,7 @@ a.button {
 								<td class="thead" colspan="2"><strong>{$lang->login}</strong></td>
 							</tr>
 							<tr>
-								<td class="trow1" width="25%"><strong>{$lang->username}</strong></td>
+								<td class="trow1" width="25%"><strong>{$login_username}</strong></td>
 								<td class="trow1"><input name="quick_username" id="quick_login_username" type="text" value="" class="textbox initial_focus" /></td>
 							</tr>
 							<tr>
