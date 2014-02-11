@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
@@ -7,10 +8,8 @@
  * License: http://www.mybb.com/about/license
  *
  */
-
 class pluginSystem
 {
-
 	/**
 	 * The hooks to which plugins can be attached.
 	 *
@@ -32,10 +31,10 @@ class pluginSystem
 	{
 		global $cache, $plugins;
 
-		$pluginlist = $cache->read("plugins");
-		if(!empty($pluginlist['active']) && is_array($pluginlist['active']))
+		$plugin_list = $cache->read("plugins");
+		if(!empty($plugin_list['active']) && is_array($plugin_list['active']))
 		{
-			foreach($pluginlist['active'] as $plugin)
+			foreach($plugin_list['active'] as $plugin)
 			{
 				if($plugin != "" && file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
 				{
@@ -48,26 +47,17 @@ class pluginSystem
 	/**
 	 * Add a hook onto which a plugin can be attached.
 	 *
-	 * @param string $hook     The hook name.
-	 * @param mixed $function The function of this hook.
-	 * @param int    $priority The priority this hook has.
-	 * @param string $file     The optional file belonging to this hook.
+	 * @param string       $hook     The hook name.
+	 * @param array|string $function The function of this hook.
+	 * @param int          $priority The priority this hook has.
+	 * @param string       $file     The optional file belonging to this hook.
 	 *
-	 * @return boolean Always true.
+	 * @return boolean Whether the hook was added.
 	 */
 	function add_hook($hook, $function, $priority = 10, $file = "")
 	{
-		if($function instanceof Closure)
-		{ // Closure support
-			if(in_array($function, $this->hooks[$hook][$priority]['closures']))
-			{
-				return true;
-			}
-
-			$this->hooks[$hook][$priority]['closures'][] = $function;
-		}
-		elseif(is_array($function))
-		{ // Object method support
+		if(is_array($function))
+		{
 			if(!count($function) == 2)
 			{ // must be an array of two items!
 				return false;
@@ -75,11 +65,11 @@ class pluginSystem
 
 			if(is_string($function[0]))
 			{ // Static class method
-				$methodRepresentation = sprintf('%s::%s', $function[0], $function[1]);
+				$method_representation = sprintf('%s::%s', $function[0], $function[1]);
 			}
 			elseif(is_object($function[0]))
 			{ // Instance class method
-				$methodRepresentation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+				$method_representation = sprintf('%s->%s', get_class($function[0]), $function[1]);
 			}
 			else
 			{ // Unknown array type
@@ -87,8 +77,8 @@ class pluginSystem
 			}
 
 			// Check to see if we already have this hook running at this priority
-			if(!empty($this->hooks[$hook][$priority][$methodRepresentation]) && is_array(
-					$this->hooks[$hook][$priority][$methodRepresentation]
+			if(!empty($this->hooks[$hook][$priority][$method_representation]) && is_array(
+					$this->hooks[$hook][$priority][$method_representation]
 				)
 			)
 			{
@@ -96,9 +86,9 @@ class pluginSystem
 			}
 
 			// Add the hook
-			$this->hooks[$hook][$priority][$methodRepresentation] = array(
-				'classMethod' => $function,
-				'file'        => $file
+			$this->hooks[$hook][$priority][$method_representation] = array(
+				'class_method' => $function,
+				'file'         => $file
 			);
 		}
 		else
@@ -141,40 +131,25 @@ class pluginSystem
 			{
 				foreach($hooks as $key => $hook)
 				{
-					if($key == 'closures')
+					if($hook['file'])
 					{
-						foreach($hook as $callable)
-						{
-							$returnargs = call_user_func($callable, $arguments);
+						require_once $hook['file'];
+					}
 
-							if($returnargs)
-							{
-								$arguments = $returnargs;
-							}
-						}
+					if(array_key_exists('class_method', $hook))
+					{
+						$return_args = call_user_func($hook['class_method'], $arguments);
 					}
 					else
 					{
-						if($hook['file'])
-						{
-							require_once $hook['file'];
-						}
+						$func = $hook['function'];
 
-						if(array_key_exists('classMethod', $hook))
-						{
-							$returnargs = call_user_func($hook['classMethod'], $arguments);
-						}
-						else
-						{
-							$func = $hook['function'];
+						$return_args = $func($arguments);
+					}
 
-							$returnargs = $func($arguments);
-						}
-
-						if($returnargs)
-						{
-							$arguments = $returnargs;
-						}
+					if($return_args)
+					{
+						$arguments = $return_args;
 					}
 				}
 			}
@@ -187,48 +162,35 @@ class pluginSystem
 	/**
 	 * Remove a specific hook.
 	 *
-	 * @param string $hook     The name of the hook.
-	 * @param string $function The function of the hook.
-	 * @param string $file     The filename of the plugin.
-	 * @param int    $priority The priority of the hook.
+	 * @param string       $hook     The name of the hook.
+	 * @param array|string $function The function of the hook.
+	 * @param string       $file     The filename of the plugin.
+	 * @param int          $priority The priority of the hook.
 	 *
-	 * @return bool
+	 * @return bool Whether the hook was removed successfully.
 	 */
 	function remove_hook($hook, $function, $file = "", $priority = 10)
 	{
-		if($function instanceof Closure)
-		{
-			if(!in_array($function, $this->hooks[$hook][$priority]['closures']))
-			{
-				return true;
-			}
-
-			$key = array_search($function, $this->hooks[$hook][$priority]['closures']);
-			if($key !== false)
-			{
-				unset($this->hooks[$hook][$priority]['closures'][$key]);
-			}
-		}
-		elseif(is_array($function))
+		if(is_array($function))
 		{
 			if(is_string($function[0]))
 			{ // Static class method
-				$methodRepresentation = sprintf('%s::%s', $function[0], $function[1]);
+				$method_representation = sprintf('%s::%s', $function[0], $function[1]);
 			}
 			elseif(is_object($function[0]))
 			{ // Instance class method
-				$methodRepresentation = sprintf('%s->%s', get_class($function[0]), $function[1]);
+				$method_representation = sprintf('%s->%s', get_class($function[0]), $function[1]);
 			}
 			else
 			{ // Unknown array type
 				return false;
 			}
 
-			if(!isset($this->hooks[$hook][$priority][$methodRepresentation]))
+			if(!isset($this->hooks[$hook][$priority][$method_representation]))
 			{
 				return true;
 			}
-			unset($this->hooks[$hook][$priority][$methodRepresentation]);
+			unset($this->hooks[$hook][$priority][$method_representation]);
 		}
 		else
 		{
@@ -289,4 +251,5 @@ class pluginSystem
 		return false;
 	}
 }
+
 ?>
