@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -458,7 +457,7 @@ $plugins->run_hooks("archive_end");
 */
 function build_archive_forumbits($pid=0)
 {
-	global $db, $forumpermissions, $mybb, $lang, $archiveurl, $base_url;
+	global $db, $forumpermissions, $mybb, $base_url;
 
 	// Sort out the forum cache first.
 	static $fcache;

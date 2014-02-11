@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -103,7 +102,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 			}
 		}
 	}
-	if(is_array($uidin))
+	if(is_array($uidin) && !empty($uidin))
 	{
 		$uids = implode(",", $uidin);
 		$db->delete_query("joinrequests", "uid IN ({$uids}) AND gid='{$gid}'");

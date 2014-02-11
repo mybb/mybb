@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -63,8 +62,6 @@ class PMDataHandler extends DataHandler
 	{
 		$subject = &$this->data['subject'];
 
-		$subject = utf8_handle_4byte_string($subject);
-
 		// Subject is over 85 characters, too long.
 		if(my_strlen($subject) > 85)
 		{
@@ -88,8 +85,6 @@ class PMDataHandler extends DataHandler
 	function verify_message()
 	{
 		$message = &$this->data['message'];
-
-		$message = utf8_handle_4byte_string($message);
 
 		// No message, return an error.
 		if(trim_blank_chrs($message) == '')
@@ -345,7 +340,7 @@ class PMDataHandler extends DataHandler
 					$emailmessage = $userlang->email_reachedpmquota;
 				}
 				$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($user['email']),
@@ -651,8 +646,12 @@ class PMDataHandler extends DataHandler
 					$pm['sender']['username'] = $lang->mybb_engine;
 				}
 
-				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
+				require_once MYBB_ROOT.'inc/class_parser.php';
+				$parser = new Postparser;
+				$pm['message'] = $parser->text_parse_message($pm['message'], array('me_username' => $pm['sender']['username'], 'filter_badwords' => 1, 'safe_html' => 1));
+
+				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $pm['message']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname'], $pm['subject']);
 
 				$new_email = array(
 					"mailto" => $db->escape_string($recipient['email']),

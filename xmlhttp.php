@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -153,10 +152,10 @@ if($mybb->input['action'] == "get_users")
 	while($user = $db->fetch_array($query))
 	{
 		$user['username'] = htmlspecialchars_uni($user['username']);
-		$data[] = $user['username'];
+		$data[] = array('id' => $user['username'], 'text' => $user['username']);
 	}
 
-	echo json_encode(array("users" => $data));
+	echo json_encode($data);
 	exit;
 }
 // This action provides editing of thread/post subjects from within their respective list pages.
@@ -309,7 +308,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 	// Spit the subject back to the browser.
 	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
-	echo json_encode(array("subject" => $subject));
+	echo json_encode(array("subject" => htmlspecialchars_uni($subject)));
 
 	// Close the connection.
 	exit;
@@ -377,7 +376,7 @@ else if($mybb->input['action'] == "edit_post")
 		//header("Content-type: text/xml; charset={$charset}");
 		header("Content-type: text/html; charset={$charset}");
 
-		$post['message'] = htmlspecialchars_uni($post['message']);
+		//$post['message'] = htmlspecialchars_uni($post['message']);
 
 		// Send the contents of the post.
 		/*eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
@@ -654,7 +653,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	header("Content-type: application/json; charset={$charset}");
 
-	if(empty($username) || utf8_handle_4byte_string($username, false) == false)
+	if(empty($username))
 	{
 		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;
@@ -669,7 +668,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
 		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;

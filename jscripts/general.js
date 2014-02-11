@@ -42,13 +42,20 @@ var MyBB = {
 			});
 		}
 
-		$(document).on($.modal.OPEN, function(event, modal) {
-			$("body").css("overflow", "hidden");
-		});
+		if(typeof $.modal !== "undefined")
+		{
+			$(document).on($.modal.OPEN, function(event, modal) {
+				$("body").css("overflow", "hidden");
+				if(initialfocus.length > 0)
+				{
+					initialfocus.focus();
+				}
+			});
 
-		$(document).on($.modal.CLOSE, function(event, modal) {
-			$("body").css("overflow", "auto");
-		});
+			$(document).on($.modal.CLOSE, function(event, modal) {
+				$("body").css("overflow", "auto");
+			});
+		}
 	},
 
 	popupWindow: function(url, options)
@@ -116,7 +123,7 @@ var MyBB = {
 			form.submit();
 		}
 	},
-	
+
 	reputation: function(uid, pid)
 	{
 		if(!pid)
@@ -300,15 +307,15 @@ var MyBB = {
 		pm_notice.remove();
 		return false;
 	},
-	
+
 	submitReputation: function(uid, pid, del)
 	{
 		// Get form, serialize it and send it
 		var datastring = $(".reputation_"+uid+"_"+pid).serialize();
-		
+
 		if(del == 1)
 			datastring = datastring + '&delete=1';
-		
+
 		$.ajax({
 			type: "POST",
 			url: "reputation.php",
@@ -325,9 +332,9 @@ var MyBB = {
 				  alert('An unknown error has occurred.');
 			}
 		});
-		
+
 		return false;
-	},
+	}
 }
 
 var expandables = {

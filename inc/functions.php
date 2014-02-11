@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -146,7 +145,7 @@ function run_shutdown()
 	{
 		return;
 	}
-	
+
 	if(empty($shutdown_queries) && empty($shutdown_functions))
 	{
 		// Nothing to do
@@ -894,7 +893,7 @@ function redirect($url, $message="", $title="")
 		$data .=  'window.location = "'.addslashes($url).'";'."\n";
 		$data .= "</script>\n";
 		//exit;
-		
+
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
 		echo json_encode(array("data" => $data));
 		exit;
@@ -914,7 +913,7 @@ function redirect($url, $message="", $title="")
 	}
 
 	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
-	if($mybb->settings['redirects'] == 1 && (isset($mybb->user['showredirect']) || !$mybb->user['uid']))
+	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -1978,17 +1977,17 @@ function update_stats($changes=array(), $force=false)
 {
 	global $cache, $db;
 	static $stats_changes;
-	
+
 	if(empty($stats_changes))
 	{
 		$stats_changes = array(
-			'numthreads' => 0,
-			'numposts' => 0,
-			'numusers' => 0,
-			'numunapprovedthreads' => 0,
-			'numunapprovedposts' => 0,
-			'numdeletedposts' => 0,
-			'numdeletedthreads' => 0
+			'numthreads' => '+0',
+			'numposts' => '+0',
+			'numusers' => '+0',
+			'numunapprovedthreads' => '+0',
+			'numunapprovedposts' => '+0',
+			'numdeletedposts' => '+0',
+			'numdeletedthreads' => '+0'
 		);
 		add_shutdown('update_stats', array(array(), true));
 		$stats = $stats_changes;
@@ -2017,6 +2016,10 @@ function update_stats($changes=array(), $force=false)
 				if(intval($changes[$counter]) != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
+					if(!$force && $new_stats[$counter] > 0)
+					{
+						$new_stats[$counter] = "+{$new_stats[$counter]}";
+					}
 				}
 			}
 			else
@@ -4813,7 +4816,7 @@ function update_last_post($tid)
 	}
 
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
-	
+
 	$update_array = array(
 		'lastpost' => intval($lastpost['dateline']),
 		'lastposter' => $lastpost['username'],
@@ -7129,6 +7132,123 @@ function gd_version()
 	return $gd_version;
 }
 
+/*
+ * Validates an UTF-8 string.
+ *
+ * @param string The string to be checked
+ * @param boolean Allow 4 byte UTF-8 characters?
+ * @param boolean Return the cleaned string?
+ * @return string/boolean Cleaned string or boolean
+ */
+function validate_utf8_string($input, $allow_mb4=true, $return=true)
+{
+	// Valid UTF-8 sequence?
+	if(!preg_match('##u', $input))
+	{
+		$string = '';
+		$len = strlen($input);
+		for($i = 0; $i < $len; $i++)
+		{
+			$c = ord($input[$i]);
+			if($c > 128)
+			{
+				if($c > 247 || $c <= 191)
+				{
+					if($return)
+					{
+						$string .= '?';
+						continue;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				elseif($c > 239)
+				{
+					$bytes = 4;
+				}
+				elseif($c > 223)
+				{
+					$bytes = 3;
+				}
+				elseif($c > 191)
+				{
+					$bytes = 2;
+				}
+				if(($i + $bytes) > $len)
+				{
+					if($return)
+					{
+						$string .= '?';
+						break;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				$valid = true;
+				$multibytes = $input[$i];
+				while($bytes > 1)
+				{
+					$i++;
+					$b = ord($input[$i]);
+					if($b < 128 || $b > 191)
+					{
+						if($return)
+						{
+							$valid = false;
+							$string .= '?';
+							break;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					else
+					{
+						$multibytes .= $input[$i];
+					}
+					$bytes--;
+				}
+				if($valid)
+				{
+					$string .= $multibytes;
+				}
+			}
+			else
+			{
+				$string .= $input[$i];
+			}
+		}
+		$input = $string;
+	}
+	if($return)
+	{
+		if($allow_mb4)
+		{
+			return $input;
+		}
+		else
+		{
+			return preg_replace("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", '?', $input);
+		}
+	}
+	else
+	{
+		if($allow_mb4)
+		{
+			return true;
+		}
+		else
+		{
+			return !preg_match("#[^\\x00-\\x7F][\\x80-\\xBF]{3,}#", $input);
+		}
+	}
+}
+
 /**
  * Send a Private Message to a user.
  *
@@ -7228,83 +7348,5 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	}
 
 	return true;
-}
-
-/* Handles 4 byte UTF-8 characters.
- *
- * This can be used to either reject strings which contain 4 byte UTF-8
- * characters, or replace them with question marks. This is limited to UTF-8
- * collated databases using MySQL.
- *
- * Original: http://www.avidheap.org/2013/a-quick-way-to-normalize-a-utf8-string-when-your-mysql-database-is-not-utf8mb4
- *
- * @param string The string to be checked.
- * @param bool If false don't return the string, only the boolean result.
- * @return mixed Return a string if the second parameter is true, boolean otherwise.
- */
-function utf8_handle_4byte_string($input, $return=true)
-{
-	global $config;
-
-	if($config['database']['type'] != 'mysql' && $config['database']['type'] != 'mysqli')
-	{
-		if($return == true)
-		{
-			return $input;
-		}
-		return true;
-	}
-
-	$contains_4bytes = false;
-	if(!empty($input))
-	{
-		$utf8_2byte = 0xC0 /*1100 0000*/;
-		$utf8_2byte_bmask = 0xE0 /*1110 0000*/;
-
-		$utf8_3byte = 0xE0 /*1110 0000*/;
-		$utf8_3byte_bmask = 0XF0 /*1111 0000*/;
-
-		$utf8_4byte = 0xF0 /*1111 0000*/;
-		$utf8_4byte_bmask = 0xF8 /*1111 1000*/;
-
-		$sanitized = "";
-		$len = strlen($input);
-		for($i = 0; $i < $len; ++$i)
-		{
-			$mb_char = $input[$i]; // Potentially a multibyte sequence
-			$byte = ord($mb_char);
-			if(($byte & $utf8_2byte_bmask) == $utf8_2byte)
-			{
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_3byte_bmask) == $utf8_3byte)
-			{
-				$mb_char .= $input[++$i];
-				$mb_char .= $input[++$i];
-			}
-			elseif(($byte & $utf8_4byte_bmask) == $utf8_4byte)
-			{
-				$contains_4bytes = true;
-				// Replace with ? to avoid MySQL exception
-				$mb_char = '?';
-				$i += 3;
-			}
-
-			$sanitized .=  $mb_char;
-
-			if($contains_4bytes == true && $return == false)
-			{
-				return false;
-			}
-		}
-
-		$input = $sanitized;
-	}
-
-	if($contains_4bytes == false && $return == false)
-	{
-		return true;
-	}
-	return $input;
 }
 ?>

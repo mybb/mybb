@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -681,7 +680,7 @@ function check_template($template)
  */
 function delete_user_posts($uid, $date)
 {
-	global $db, $cache;
+	global $db;
 	$uid = intval($uid);
 
 	// Build an array of posts to delete

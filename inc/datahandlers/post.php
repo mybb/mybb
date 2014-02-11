@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -146,7 +145,6 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		$subject = &$post['subject'];
 		$subject = trim_blank_chrs($subject);
-		$subject = utf8_handle_4byte_string($subject);
 
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
@@ -240,7 +238,6 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 		$post['message'] = trim_blank_chrs($post['message']);
-		$post['message'] = utf8_handle_4byte_string($post['message']);
 
 		// Do we even have a message at all?
 		if(my_strlen($post['message']) == 0)
@@ -1399,7 +1396,7 @@ class PostDataHandler extends DataHandler
 				$lang->load($this->language_file, true);
 
 				$modoptions = $thread['modoptions'];
-				$modlogdata['fid'] = $this->tid;
+				$modlogdata['fid'] = $thread['fid'];
 				if(isset($thread['tid']))
 				{
 					$modlogdata['tid'] = $thread['tid'];
@@ -1580,9 +1577,9 @@ class PostDataHandler extends DataHandler
 
 		if($visible == 1)
 		{
+			update_last_post($this->tid);
 			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1"));
 			update_forum_lastpost($thread['fid']);
-			update_last_post($this->tid);
 		}
 		else if($visible == 0)
 		{

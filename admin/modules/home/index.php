@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -231,6 +230,7 @@ elseif(!$mybb->input['action'])
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
 	$attachs = $db->fetch_array($query);
 	$attachs['spaceused'] = get_friendly_size($attachs['spaceused']);
+	$approved_attachs = my_number_format($attachs['numattachs']);
 
 	// Get the number of unapproved attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs", "visible='0' AND pid > '0'");
@@ -282,7 +282,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->server_load}</strong>", array('width' => '25%'));
 	$table->construct_cell($serverload, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->attachments}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> {$lang->attachments}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=attachments\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
+	$table->construct_cell("<strong>{$approved_attachs}</strong> {$lang->attachments}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=attachments\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
 	$table->construct_row();
 
 	$table->output($lang->dashboard);
@@ -308,6 +308,7 @@ elseif(!$mybb->input['action'])
 
 	// Latest news widget
 	$table = new Table;
+	$table->construct_header($lang->news_description);
 
 	if(!empty($update_check['news']) && is_array($update_check['news']))
 	{

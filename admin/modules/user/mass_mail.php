@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -73,8 +72,8 @@ if($mybb->input['action'] == "edit")
 	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message} ";
 	foreach($replacement_fields as $value => $name)
 	{
-		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'htmlmessage\')); return false;\">{$name}</a>], ";
-		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'message\')); return false;\">{$name}</a>], ";
+		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \'htmlmessage\'); return false;\">{$name}</a>], ";
+		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \'message\'); return false;\">{$name}</a>], ";
 	}
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n// --></script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
@@ -373,20 +372,20 @@ if($mybb->input['action'] == "edit")
 		{
 			var checked = '';
 
-			$$('.'+id+'s_check').each(function(e)
+			$('.'+id+'s_check').each(function(e, val)
 			{
-				if(e.checked == true)
+				if($(this).prop('checked') == true)
 				{
-					checked = e.value;
+					checked = $(this).val();
 				}
 			});
-			$$('.'+id+'s').each(function(e)
+			$('.'+id+'s').each(function(e)
 			{
-				Element.hide(e);
+				$(this).hide();
 			});
-			if($(id+'_'+checked))
+			if($('#'+id+'_'+checked))
 			{
-				Element.show(id+'_'+checked);
+				$('#'+id+'_'+checked).show();
 			}
 		}
 	</script>
@@ -452,92 +451,101 @@ if($mybb->input['action'] == "edit")
 
 	echo "
 	<script type=\"text/javascript\">
-	function ToggleFormat()
-	{
-		var v = $('format').options[$('format').selectedIndex].value;
-		if(v == 2)
+		function ToggleFormat()
 		{
-			$('automatic_display').show();
-			$('message_html').show();
-			if($('automatic_text').checked)
+			var v = $('#format option:selected').val();
+			if(v == 2)
 			{
-				$('message_text').hide();
+				$('#automatic_display').show();
+				$('#message_html').show();
+				if($('#automatic_text').checked)
+				{
+					$('#message_text').hide();
+				}
+				else
+				{
+					$('#message_text').show();
+				}
+			}
+			else if(v == 1)
+			{
+				$('#message_text').hide();
+				$('#message_html').show();
+				$('#automatic_display').hide();
 			}
 			else
 			{
-				$('message_text').show();
+				$('#message_text').show();
+				$('#message_html').hide();
 			}
 		}
-		else if(v == 1)
-		{
-			$('message_text').hide();
-			$('message_html').show();
-			$('automatic_display').hide();
-		}
-		else
-		{
-			$('message_text').show();
-			$('message_html').hide();
-		}
-	}
-	Event.observe($('format'), 'change', ToggleFormat);
-
-	function ToggleType()
-	{
-		var v = $('type_pm').checked;
-		if(v == true)
-		{
-			$('message_html').hide();
-			$('message_text').show();
-			$('format_container').hide();
-		}
-		else
-		{
-			$('message_html').show();
-			$('format_container').show();
+		$(document).on('change', '#format', function() {
 			ToggleFormat();
-		}
-	}
-	Event.observe($('type_pm'), 'click', ToggleType);
-	Event.observe($('type_email'), 'click', ToggleType);
-	ToggleType();
+		});
 
-	function ToggleAutomatic()
-	{
-		var v = $('automatic_text').checked;
-		if(v == true)
+		function ToggleType()
 		{
-			$('message_text').hide();
+			var v = $('#type_pm').prop('checked');
+			if(v == true)
+			{
+				$('#message_html').hide();
+				$('#message_text').show();
+				$('#format_container').hide();
+			}
+			else
+			{
+				$('#message_html').show();
+				$('#format_container').show();
+				ToggleFormat();
+			}
 		}
-		else
-		{
-			$('message_text').show();
-		}
-	}
+		$('#type_pm').on('click', function() {
+			ToggleType();
+		});
+		$('#type_email').on('click', function() {
+			ToggleType();
+		});
+		ToggleType();
 
-	Event.observe($('automatic_text'), 'click', ToggleAutomatic);
+		function ToggleAutomatic()
+		{
+			var v = $('#automatic_text').prop('checked');
+			if(v == true)
+			{
+				$('#message_text').hide();
+			}
+			else
+			{
+				$('#message_text').show();
+			}
+		}
 
-	function insertText(value, textarea)
-	{
-		// Internet Explorer
-		if(document.selection)
+		$('#automatic_text').on('click', function() {
+			ToggleAutomatic();
+		});
+
+		function insertText(value, textarea)
 		{
-			textarea.focus();
-			var selection = document.selection.createRange();
-			selection.text = value;
+			textarea = document.getElementById(textarea);
+			// Internet Explorer
+			if(document.selection)
+			{
+				textarea.focus();
+				var selection = document.selection.createRange();
+				selection.text = value;
+			}
+			// Firefox
+			else if(textarea.selectionStart || textarea.selectionStart == '0')
+			{
+				var start = textarea.selectionStart;
+				var end = textarea.selectionEnd;
+				textarea.value = textarea.value.substring(0, start)	+ value	+ textarea.value.substring(end, textarea.value.length);
+			}
+			else
+			{
+				textarea.value += value;
+			}
 		}
-		// Firefox
-		else if(textarea.selectionStart || textarea.selectionStart == '0')
-		{
-			var start = textarea.selectionStart;
-			var end = textarea.selectionEnd;
-			textarea.value = textarea.value.substring(0, start)	+ value	+ textarea.value.substring(end, textarea.value.length);
-		}
-		else
-		{
-			textarea.value += value;
-		}
-	}
 
 	</script>";
 
@@ -611,11 +619,11 @@ if($mybb->input['action'] == "send")
 		"{bburl}" => $lang->board_url
 	);
 
-	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message}: ";
+	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message} ";
 	foreach($replacement_fields as $value => $name)
 	{
-		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'htmlmessage\')); return false;\">{$name}</a>], ";
-		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'message\')); return false;\">{$name}</a>], ";
+		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \'htmlmessage\'); return false;\">{$name}</a>], ";
+		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \'message\'); return false;\">{$name}</a>], ";
 	}
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n// --></script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
@@ -855,26 +863,26 @@ if($mybb->input['action'] == "send")
 		$form_container = new FormContainer("{$lang->send_mass_mail}: {$lang->step_four} - {$lang->define_delivery_date}");
 
 			$actions = "<script type=\"text/javascript\">
-		    function checkAction(id)
-		    {
-		        var checked = '';
+			function checkAction(id)
+			{
+				var checked = '';
 
-		        $$('.'+id+'s_check').each(function(e)
-		        {
-		            if(e.checked == true)
-		            {
-		                checked = e.value;
-		            }
-		        });
-		        $$('.'+id+'s').each(function(e)
-		        {
-		        	Element.hide(e);
-		        });
-		        if($(id+'_'+checked))
-		        {
-		            Element.show(id+'_'+checked);
-		        }
-		    }
+				$('.'+id+'s_check').each(function(e, val)
+				{
+					if($(this).prop('checked') == true)
+					{
+						checked = $(this).val();
+					}
+				});
+				$('.'+id+'s').each(function(e)
+				{
+					$(this).hide();
+				});
+				if($('#'+id+'_'+checked))
+				{
+					$('#'+id+'_'+checked).show();
+				}
+			}
 		</script>
 			<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 			<dt><label style=\"display: block;\"><input type=\"radio\" name=\"delivery_type\" value=\"now\" {$delivery_type_checked['now']} class=\"delivery_types_check\" onclick=\"checkAction('delivery_type');\" style=\"vertical-align: middle;\" /> <strong>{$lang->deliver_immediately}</strong></label></dt>
@@ -1266,71 +1274,80 @@ if($mybb->input['action'] == "send")
 		<script type=\"text/javascript\">
 		function ToggleFormat()
 		{
-			var v = $('format').options[$('format').selectedIndex].value;
+			var v = $('#format option:selected').val();
 			if(v == 2)
 			{
-				$('automatic_display').show();
-				$('message_html').show();
-				if($('automatic_text').checked)
+				$('#automatic_display').show();
+				$('#message_html').show();
+				if($('#automatic_text').checked)
 				{
-					$('message_text').hide();
+					$('#message_text').hide();
 				}
 				else
 				{
-					$('message_text').show();
+					$('#message_text').show();
 				}
 			}
 			else if(v == 1)
 			{
-				$('message_text').hide();
-				$('message_html').show();
-				$('automatic_display').hide();
+				$('#message_text').hide();
+				$('#message_html').show();
+				$('#automatic_display').hide();
 			}
 			else
 			{
-				$('message_text').show();
-				$('message_html').hide();
+				$('#message_text').show();
+				$('#message_html').hide();
 			}
 		}
-		Event.observe($('format'), 'change', ToggleFormat);
+		$(document).on('change', '#format', function() {
+			ToggleFormat();
+		});
 
 		function ToggleType()
 		{
-			var v = $('type_pm').checked;
+			var v = $('#type_pm').prop('checked');
 			if(v == true)
 			{
-				$('message_html').hide();
-				$('message_text').show();
-				$('format_container').hide();
+				$('#message_html').hide();
+				$('#message_text').show();
+				$('#format_container').hide();
 			}
 			else
 			{
-				$('message_html').show();
-				$('format_container').show();
+				$('#message_html').show();
+				$('#format_container').show();
 				ToggleFormat();
 			}
 		}
-		Event.observe($('type_pm'), 'click', ToggleType);
-		Event.observe($('type_email'), 'click', ToggleType);
+		$('#type_pm').on('click', function() {
+			ToggleType();
+		});
+		$('#type_email').on('click', function() {
+			ToggleType();
+		});
 		ToggleType();
 
 		function ToggleAutomatic()
 		{
-			var v = $('automatic_text').checked;
+			var v = $('#automatic_text').prop('checked');
 			if(v == true)
 			{
-				$('message_text').hide();
+				$('#message_text').hide();
 			}
 			else
 			{
-				$('message_text').show();
+				$('#message_text').show();
 			}
 		}
 
-		Event.observe($('automatic_text'), 'click', ToggleAutomatic);
+		$('#automatic_text').on('click', function() {
+			ToggleAutomatic();
+		});
 
 		function insertText(value, textarea)
 		{
+			textarea = document.getElementById(textarea);
 			// Internet Explorer
 			if(document.selection)
 			{

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -921,8 +920,6 @@ if($mybb->input['action'] == "do_new_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$insert_announcement = array(
 				'fid' => $announcement_fid,
 				'uid' => $mybb->user['uid'],
@@ -1152,7 +1149,7 @@ if($mybb->input['action'] == "new_announcement")
 		}
 
 		require_once MYBB_ROOT."inc/functions_post.php";
-		$postbit = build_postbit($announcementarray, 3);
+		$postbit = build_postbit($announcementarray, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else
@@ -1298,8 +1295,6 @@ if($mybb->input['action'] == "do_edit_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$update_announcement = array(
 				'uid' => $mybb->user['uid'],
 				'subject' => $db->escape_string($mybb->input['title']),
@@ -2077,21 +2072,21 @@ if($mybb->input['action'] == "do_editprofile")
 	if($mybb->get_input('away', 1) == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$awaydate = TIME_NOW;
-		if(isset($mybb->input['awayday']))
+		if(!empty($mybb->input['awayday']))
 		{
 			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
-			if(!isset($mybb->input['awaymonth']))
+			if(!$mybb->get_input('awaymonth', 1))
 			{
 				$mybb->input['awaymonth'] = my_date('n', $awaydate);
 			}
-			if(!isset($mybb->input['awayyear']))
+			if(!$mybb->get_input('awayyear', 1))
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 
 			$return_month = intval(substr($mybb->get_input('awaymonth'), 0, 2));
 			$return_day = intval(substr($mybb->get_input('awayday'), 0, 2));
-			$return_year = min($mybb->get_input('awayyear', 1), 9999);
+			$return_year = min(intval($mybb->get_input('awayyear')), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -2111,7 +2106,7 @@ if($mybb->input['action'] == "do_editprofile")
 			"away" => 1,
 			"date" => $awaydate,
 			"returndate" => $returndate,
-			"awayreason" => $mybb->get_input('awayreason', 1)
+			"awayreason" => $mybb->get_input('awayreason')
 		);
 	}
 	else

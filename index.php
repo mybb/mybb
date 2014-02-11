@@ -1,19 +1,18 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
 $templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators,forumbit_subforums";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
+$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
 
 require_once './global.php';
 
@@ -26,35 +25,12 @@ $plugins->run_hooks('index_start');
 // Load global language phrases
 $lang->load('index');
 
-$logoutlink = $loginform = '';
+$logoutlink = '';
 if($mybb->user['uid'] != 0)
 {
 	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
 }
-else
-{
-	//Checks to make sure the user can login; they haven't had too many tries at logging in.
-	//Function call is not fatal
-	if(login_attempt_check(false) !== false)
-	{
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$login_username = $lang->login_username;
-				break;
-			case 1:
-				$login_username = $lang->login_username1;
-				break;
-			case 2:
-				$login_username = $lang->login_username2;
-				break;
-			default:
-				$login_username = $lang->login_username;
-				break;
-		}
-		eval('$loginform = "'.$templates->get('index_loginform').'";');
-	}
-}
+
 $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {

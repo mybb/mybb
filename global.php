@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 $working_dir = dirname(__FILE__);
@@ -195,6 +194,11 @@ if($loadstyle == "def='1'")
 	}
 	$theme = $cache->read('default_theme');
 }
+else
+{
+	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', $loadstyle, array('limit' => 1));
+	$theme = $db->fetch_array($query);
+}
 
 // No theme was found - we attempt to load the master or any other theme
 if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
@@ -276,7 +280,7 @@ if(!empty($theme_stylesheets))
 }
 
 // Are we linking to a remote theme server?
-if(substr($theme['imgdir'], 0, 7) == 'http://' || substr($theme['imgdir'], 0, 8) == 'https://')
+if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'], 0, 8) == 'https://')
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))

@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['dashboard'] = "Dashboard";
@@ -43,6 +42,8 @@ $l['success_up_to_date'] = "Congratulations, you are running the latest version 
 $l['error_out_of_date'] = "Your copy of MyBB is out of date.";
 $l['error_communication'] = "There was a problem communicating with the version server. Please try again in a few minutes.";
 $l['error_fetch_news'] = "MyBB was unable to successfully fetch the latest announcements from the MyBB website.";
+
+$l['news_description'] = "The latest news from the <a href=\"http://blog.mybb.com/\" target=\"_blank\">MyBB Blog</a>.";
 
 $l['admin_notes_public'] = "These notes are public to all administrators.";
 $l['admin_notes'] = "Administrator Notes";

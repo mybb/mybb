@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['task_manager'] = "Task Manager";
@@ -49,8 +48,8 @@ $l['data'] = "Data";
 $l['no_task_logs'] = "There are currently no log entries for any of the scheduled tasks.";
 $l['next_run'] = "Next Run";
 $l['run_task_now'] = "Run this task now";
-$l['run_task'] = "Run task";
 $l['disable_task'] = "Disable Task";
+$l['run_task'] = "Run Task";
 $l['enable_task'] = "Enable Task";
 $l['delete_task'] = "Delete Task";
 $l['alt_enabled'] = "Enabled";
@@ -74,6 +73,6 @@ $l['success_task_disabled'] = "The selected task has been disabled successfully.
 $l['success_task_run'] = "The selected task has been run successfully.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
-$l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via a cron (Please see the <a href=\"http://docs.mybb.com/Help-Task_System.html\" target=\"_blank\">MyBB Docs</a> for more information). Continue?";
+$l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via cron (Please see the <a href=\"http://docs.mybb.com/Help-Task_System.html\" target=\"_blank\">MyBB Docs</a> for more information). Continue?";
 
 ?>

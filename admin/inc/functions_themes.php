@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -1222,6 +1221,7 @@ function build_theme_list($parent=0, $depth=0)
 			$popup->add_item($lang->force_on_users, "index.php?module=style-themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style-themes&amp;action=export&amp;tid={$theme['tid']}");
+		$popup->add_item($lang->duplicate_theme, "index.php?module=style-themes&amp;action=duplicate&amp;tid={$theme['tid']}");
 		$table->construct_cell("<div class=\"float_right\">{$set_default}</div><div style=\"margin-left: {$padding}px;\"><strong>{$theme['name']}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -1235,7 +1235,7 @@ function build_theme_list($parent=0, $depth=0)
 // returns an array which can be sent to generate_select_box()
 function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 {
-	global $mybb, $lang, $list;
+	global $list;
 	static $theme_cache;
 
 	if(!is_array($theme_cache))

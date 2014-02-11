@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 @set_time_limit(0);
@@ -171,7 +170,7 @@ else
 		case 'configuration':
 			configure();
 			break;
-		case 'adminuser';
+		case 'adminuser':
 			create_admin_user();
 			break;
 		case 'final':
@@ -1445,6 +1444,11 @@ function create_tables()
 	if(strlen($config['tableprefix']) > 40)
 	{
 		$errors[] = $lang->db_step_error_tableprefix_too_long;
+	}
+
+	if(($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
+	{
+		$errors[] = $lang->db_step_error_utf8mb4_error;
 	}
 
 	if(is_array($errors))

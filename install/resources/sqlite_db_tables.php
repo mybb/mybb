@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 $tables[] = "CREATE TABLE mybb_adminlog (
@@ -836,7 +835,8 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	canusesigxposts bigint(30) NOT NULL default '0',
 	signofollow int(1) NOT NULL default '0',
 	edittimelimit int(4) NOT NULL default '0',
-	maxposts int(4) NOT NULL default '0'
+	maxposts int(4) NOT NULL default '0',
+	showmemberlist int(1) NOT NULL default '1'
 );";
 
 

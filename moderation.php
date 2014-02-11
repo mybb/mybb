@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -39,21 +38,21 @@ $pmid = $mybb->get_input('pmid', 1);
 if($pid)
 {
 	$post = get_post($pid);
-	$tid = $post['tid'];
 	if(!$post)
 	{
 		error($lang->error_invalidpost);
 	}
+	$tid = $post['tid'];
 }
 
 if($tid)
 {
 	$thread = get_thread($tid);
-	$fid = $thread['fid'];
 	if(!$thread)
 	{
 		error($lang->error_invalidthread);
 	}
+	$fid = $thread['fid'];
 }
 
 if($fid)
@@ -101,6 +100,7 @@ if(isset($thread))
 {
 	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 	add_breadcrumb($thread['subject'], get_thread_link($thread['tid']));
+	$modlogdata['tid'] = $thread['tid'];
 }
 
 if(isset($forum))
@@ -111,7 +111,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
@@ -547,7 +547,7 @@ switch($mybb->input['action'])
 		break;
 
 	// Stick or unstick that post to the top bab!
-	case "stick";
+	case "stick":
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
@@ -2905,8 +2905,6 @@ function clearinline($id, $type)
 
 function extendinline($id, $type)
 {
-	global $mybb;
-
 	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
 	my_setcookie("inlinemod_$type$id_removed", '', TIME_NOW+3600);
 }
