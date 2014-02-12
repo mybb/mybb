@@ -1637,7 +1637,7 @@ function populate_tables()
 
 function insert_templates()
 {
-	global $output, $cache, $db, $lang;
+	global $output, $cache, $db, $lang, $mybb;
 
 	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
