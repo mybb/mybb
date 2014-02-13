@@ -735,7 +735,7 @@ if(!$mybb->input['action'])
 
 			switch($mybb->input['sortby'])
 			{
-				case "lastactive":
+				case "filesize":
 					$sort_field = "a.filesize";
 					break;
 				case "downloads":
