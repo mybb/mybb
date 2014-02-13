@@ -6516,9 +6516,6 @@ body {
 	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
 	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
-		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="{$colspan}">{$lang->error_no_results}</td>
-</tr>]]></template>
 		<template name="modcp_modqueue_posts" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
