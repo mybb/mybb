@@ -10113,9 +10113,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<p>{$lang->coppa_agreement_3}</p>
 	</td>
 </tr>]]></template>
-		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="{$colspan}">{$lang->error_no_results}</td>
-</tr>]]></template>
 		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
