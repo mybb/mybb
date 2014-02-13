@@ -2446,6 +2446,7 @@ if($mybb->input['action'] == "inline_edit")
 							{
 								// Run delete queries
 								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 								$db->delete_query("userfields", "ufid='{$user['uid']}'");
 								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 								$db->delete_query("events", "uid='{$user['uid']}'");

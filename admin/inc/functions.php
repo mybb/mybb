@@ -790,6 +790,7 @@ function delete_user($user)
 
 	// Update post data
 	$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+	$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 	$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 	$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 
