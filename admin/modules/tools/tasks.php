@@ -386,7 +386,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_task);
 	echo $form->generate_hidden_field("tid", $task['tid']);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $task_data['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
 
 	$task_list = array();
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
