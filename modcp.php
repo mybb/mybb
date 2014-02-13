@@ -1816,7 +1816,7 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
 		$query = $db->query("
-			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
+			SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
@@ -1833,7 +1833,23 @@ if($mybb->input['action'] == "modqueue")
 			$thread['forumlink'] = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
-			$profile_link = build_profile_link($thread['username'], $thread['uid']);
+
+			if($thread['username'] == "")
+			{
+				if($thread['threadusername'] != "")
+				{
+					$profile_link = $thread['threadusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($thread['username'], $thread['uid']);
+			}
+
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
@@ -1902,7 +1918,7 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
+			SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -1920,7 +1936,23 @@ if($mybb->input['action'] == "modqueue")
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid']);
+
+			if($post['username'] == "")
+			{
+				if($post['postusername'] != "")
+				{
+					$profile_link = $post['postusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($post['username'], $post['uid']);
+			}
+
 			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
