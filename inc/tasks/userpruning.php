@@ -115,6 +115,7 @@ function task_userpruning($task)
 		{
 			// We're just updating the UID
 			$db->update_query("posts", array('uid' => 0), "uid IN({$uid_list})");
+			$db->update_query("threads", array('uid' => 0), "uid IN({$uid_list})");
 		}
 
 		// Update forum stats

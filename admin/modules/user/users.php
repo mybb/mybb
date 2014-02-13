@@ -1699,6 +1699,7 @@ if($mybb->input['action'] == "delete")
 
 		// Update forums & threads if user is the lastposter
 		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+		$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 		$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 
