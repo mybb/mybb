@@ -488,6 +488,16 @@ function get_admin_log_action($logitem)
 				$lang_string = 'admin_log_user_banning_add_temporary';
 			}
 			break;
+		case 'admin_log_user_groups_join_requests':
+			if($logitem['data'][0] == 'approve')
+			{
+				$lang_string = 'admin_log_user_groups_join_requests_approve';
+			}
+			else
+			{
+				$lang_string = 'admin_log_user_groups_join_requests_deny';
+			}
+			break;
 		case 'admin_log_user_users_inline_banned':
 			if($logitem['data'][1] == 0)
 			{
