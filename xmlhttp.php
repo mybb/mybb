@@ -462,15 +462,18 @@ else if($mybb->input['action'] == "edit_post")
 		$post['message'] = $parser->parse_message($message, $parser_options);
 
 		// Now lets fetch all of the attachments for these posts.
-		$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
-		while($attachment = $db->fetch_array($query))
+		if($mybb->settings['enableattachments'] != 0)
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
+
+			require_once MYBB_ROOT."inc/functions_post.php";
+
+			get_post_attachments($post['pid'], $post);
 		}
-
-		require_once MYBB_ROOT."inc/functions_post.php";
-
-		get_post_attachments($post['pid'], $post);
 
 		// Figure out if we need to show an "edited by" message
 		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
