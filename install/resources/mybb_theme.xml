@@ -9757,7 +9757,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <br/>]]></template>
 		<template name="showteam_moderators_forum" version="1400"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
 		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
-<td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /> <a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
 <td width="15%" class="{$bgcolor}"><div class="postbit_buttons">{$user['lastvisit']}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
@@ -9777,7 +9777,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 <br />]]></template>
 		<template name="showteam_usergroup_user" version="1800"><![CDATA[<tr>
-<td width="75%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /> <a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="75%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="15%" class="{$bgcolor}">{$user['lastvisit']}</td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
