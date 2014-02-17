@@ -3615,10 +3615,8 @@ a.button {
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
 	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
 	<div>{$privatemessage_text}</div>
-</div>
-<br />]]></template>
-		<template name="global_unreadreports" version="1600"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>
-<br />]]></template>
+</div>]]></template>
+		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
 		<template name="header" version="1800"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
