@@ -8449,7 +8449,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
-	<strong>{$lang->pms_in_folder}</strong></td>
+	<strong>{$foldername}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="private.php?fid={$folder}&amp;sortby=subject&amp;order=asc">{$lang->message_title}</a> {$orderarrow['subject']}</strong></span></td>
