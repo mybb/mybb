@@ -577,18 +577,23 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['iplogged'] = '';
+	$show_ips = $mybb->settings['logip'];
 	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
+	if($post_type == 2)
+	{
+		$show_ips = $mybb->settings['showpmip'];
+	}
 	if(!$post_type || $post_type == 2)
 	{
-		if($mybb->settings['logip'] != "no")
+		if($show_ips != "no")
 		{
-			if($mybb->settings['logip'] == "show")
+			if($show_ips == "show")
 			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
-			else if($mybb->settings['logip'] == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
+			else if($show_ips == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
 				$action = 'getip';
 				if($post_type == 2)
