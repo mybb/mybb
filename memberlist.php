@@ -365,6 +365,15 @@ else
 		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
+		if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
+		{
+			$status = "online";
+		}
+		else
+		{
+			$status = "offline";
+		}
+
 		$user['regdate'] = my_date('relative', $user['regdate']);
 		$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
