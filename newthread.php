@@ -915,7 +915,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
-			if($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments'])
+			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 			{
 				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
 			}
