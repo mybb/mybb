@@ -587,7 +587,7 @@ function build_postbit($post, $post_type=0)
 	}
 	if(!$post_type || $post_type == 2)
 	{
-		if($show_ips != "no")
+		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
 			if($show_ips == "show")
 			{
