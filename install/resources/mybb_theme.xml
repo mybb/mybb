@@ -796,6 +796,10 @@ form {
 	word-wrap: break-word;
 }
 
+.red_alert a:link, .red_alert a:visited, .red_alert a:hover, .red_alert  a:active  {
+	color: #A5161A;
+}
+
 .high_warning {
 	color: #CC0000;
 }
