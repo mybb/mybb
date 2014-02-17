@@ -3610,7 +3610,7 @@ a.button {
 {$lang->banned_warning3}: {$banlift}<br />
 </div>
 <br />]]></template>
-		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong><span style="color:#FF0000;">{$lang->bbclosed_warning}</span></strong></div>]]></template>
+		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
 	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="[x]" /></a></div>
