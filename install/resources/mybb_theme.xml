@@ -12202,7 +12202,7 @@ $(function() {
 				":at:": "images/smilies/at.gif"
 			}
 		},
-        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|pastetext,horizontalrule,maximize,source",
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
 	});
 });
 </script>]]></template>
