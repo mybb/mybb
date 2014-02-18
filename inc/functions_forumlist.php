@@ -20,7 +20,7 @@ function build_forumbits($pid=0, $depth=1)
 {
 	global $db, $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
 	static $private_forums;
-	
+
 	$forum_listing = '';
 
 	// If no forums exist with this parent, do nothing
@@ -56,7 +56,7 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				continue;
 			}
-			
+
 			$forum = $plugins->run_hooks("build_forumbits_forum", $forum);
 
 			// Build the link to this forum
@@ -70,7 +70,7 @@ function build_forumbits($pid=0, $depth=1)
 			{
 			    $hideinfo = true;
 			}
-			
+
 			if(isset($permissions['canonlyviewownthreads']) && $permissions['canonlyviewownthreads'] == 1)
 			{
 				$hidecounters = true;
@@ -96,7 +96,7 @@ function build_forumbits($pid=0, $depth=1)
 					if(!empty($fids))
 					{
 						$fids = implode(',', $fids);
-						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids})", array("order_by" => "lastpost", "order_dir" => "desc"));
+						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'", array("order_by" => "lastpost", "order_dir" => "desc"));
 
 						while($thread = $db->fetch_array($query))
 						{
@@ -111,7 +111,7 @@ function build_forumbits($pid=0, $depth=1)
 				if($private_forums[$forum['fid']]['lastpost'])
 				{
 					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
-					
+
 					$lastpost_data = array(
 						"lastpost" => $private_forums[$forum['fid']]['lastpost'],
 						"lastpostsubject" => $private_forums[$forum['fid']]['subject'],
@@ -158,7 +158,7 @@ function build_forumbits($pid=0, $depth=1)
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
 				{
 					$lastpost_data = $forum_info['lastpost'];
-					
+
 					/*
 					// If our subforum is unread, then so must be our parents. Force our parents to unread as well
 					if(strstr($forum_info['lightbulb']['folder'], "on") !== false)
@@ -182,7 +182,7 @@ function build_forumbits($pid=0, $depth=1)
 					'lastpost' => 0
 				);
 			}
-			
+
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
 			if(!isset($parent_lastpost) || $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
 			{
@@ -213,13 +213,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				continue;
 			}
-			
+
 			// Get the lightbulb status indicator for this forum based on the lastpost
 			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $showlockicon);
 
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);
-			
+
 			if($hideinfo == true)
 			{
 				unset($unapproved);
@@ -302,10 +302,10 @@ function build_forumbits($pid=0, $depth=1)
 					}
 					$lastpost_subject = htmlspecialchars_uni($lastpost_subject);
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
-					
+
 					// Call lastpost template
 					if($depth != 1)
-					{						
+					{
 						eval("\$lastpost = \"".$templates->get("forumbit_depth{$depth}_forum_lastpost")."\";");
 					}
 				}
@@ -336,7 +336,7 @@ function build_forumbits($pid=0, $depth=1)
 				$posts = my_number_format($forum['posts']);
 				$threads = my_number_format($forum['threads']);
 			}
-			
+
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost to "-"
 			if($forum['linkto'] != '' || $hideinfo == true || $hidelastpostinfo == true)
 			{
@@ -488,9 +488,9 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		//{
 			//$forum_read = $mybb->user['lastvisit'];
 		//}
-		
- 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post 
-		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0) 
+
+ 	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post
+		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0)
 		{
 			$unread_forums++;
 			$folder = "on";
