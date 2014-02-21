@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 function task_userpruning($task)
@@ -125,6 +124,7 @@ function task_userpruning($task)
 		{
 			// We're just updating the UID
 			$db->update_query("posts", array('uid' => 0), "uid IN({$uid_list})");
+			$db->update_query("threads", array('uid' => 0), "uid IN({$uid_list})");
 		}
 
 		// Update forum stats

@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['redirect_width'] = "50%";
@@ -17,7 +16,6 @@ $l['toplinks_help'] = "Help";
 $l['toplinks_portal'] = "Portal";
 $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
-$l['bottomlinks_returncontent'] = "Return to Content";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
 
@@ -37,12 +35,10 @@ $l['welcome_guest'] = "Hello There, Guest!";
 $l['welcome_current_time'] = "<strong>Current time:</strong> {1}";
 
 $l['moved_prefix'] = "Moved:";
-$l['sticky_prefix'] = "<strong>Sticky:</strong>";
 $l['poll_prefix'] = "Poll:";
-$l['announcement_prefix'] = "<strong>Announcement:</strong>";
 
 $l['forumbit_announcements'] = "Announcements";
-$l['forumbit_stickies'] = "Important threads";
+$l['forumbit_stickies'] = "Important Threads";
 $l['forumbit_forum'] = "Forum";
 $l['forumbit_threads'] = "Threads";
 $l['forumbit_posts'] = "Posts";
@@ -60,7 +56,7 @@ $l['more_subforums'] = "and {1} more.";
 
 $l['password_required'] = "Password Required";
 $l['forum_password_note'] = "The administrator has required it so that a password is required for access to this forum.";
-$l['enter_password_below'] = "Please enter the Password Below:";
+$l['enter_password_below'] = "Please enter the password below:";
 $l['verify_forum_password'] = "Verify Forum Password";
 $l['wrong_forum_password'] = "The password you entered is incorrect. Please try again.";
 
@@ -69,10 +65,10 @@ $l['username'] = "Username:";
 $l['username1'] = "Email:";
 $l['username2'] = "Username/Email:";
 $l['password'] = "Password:";
-$l['login_username'] = "Username";
-$l['login_username1'] = "Email";
-$l['login_username2'] = "Username/Email";
-$l['login_password'] = "Password";
+$l['login_username'] = "Username:";
+$l['login_username1'] = "Email:";
+$l['login_username2'] = "Username/Email:";
+$l['login_password'] = "Password:";
 $l['lost_password'] = "Lost Password?";
 $l['remember_me'] = "Remember me";
 $l['remember_me_desc'] = "If ticked, your login details will be remembered on this computer, otherwise, you will be logged out as soon as you close your browser.";
@@ -200,7 +196,7 @@ $l['postbit_posts'] = "Posts:";
 $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
 $l['postbit_status'] = "Status:";
-$l['postbit_attachments'] = "Attached File(s)";
+$l['postbit_attachments'] = "Attached Files";
 $l['postbit_attachment_size'] = "Size:";
 $l['postbit_attachment_downloads'] = "Downloads:";
 $l['postbit_attachments_images'] = "Image(s)";
@@ -374,7 +370,7 @@ $l['select_language'] = "Quick Language Select";
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_captcha'] = "Please fill out the image verification code to continue. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
-$l['invalid_captcha_transmit'] = "An error occured with the image verification. Please try again.";
+$l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Enitwetok, Kwajalien";
 $l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island, Samoa";
@@ -423,7 +419,7 @@ $l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
 $l['task_massmail_ran'] = "The mass mail task successfully ran.";
 $l['task_userpruning_ran'] = "The user pruning task successfully ran.";
 $l['task_delayedmoderation_ran'] = "The delayed moderation task successfully ran.";
-$l['task_massmail_ran_errors'] = "One or more problems occured sending to \"{1}\":
+$l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}\":
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";

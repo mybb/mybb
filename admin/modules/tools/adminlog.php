@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -503,6 +502,16 @@ function get_admin_log_action($logitem)
 			{
 				$logitem['data'][2] = my_date($mybb->settings['dateformat'], $logitem['data'][2]);
 				$lang_string = 'admin_log_user_banning_add_temporary';
+			}
+			break;
+		case 'admin_log_user_groups_join_requests':
+			if($logitem['data'][0] == 'approve')
+			{
+				$lang_string = 'admin_log_user_groups_join_requests_approve';
+			}
+			else
+			{
+				$lang_string = 'admin_log_user_groups_join_requests_deny';
 			}
 			break;
 		case 'admin_log_user_users_inline_banned':

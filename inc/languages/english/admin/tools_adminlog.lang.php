@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 
@@ -60,7 +59,7 @@ $l['admin_log_config_calendars_add'] = "Added calendar #{1} ({2})";
 $l['admin_log_config_calendars_permissions'] = "Modified permissions for calendar #{1} ({2})";
 $l['admin_log_config_calendars_edit'] = "Edited calendar #{1} ({2})";
 $l['admin_log_config_calendars_delete'] = "Deleted calendar #{1} ({2})";
-$l['admin_log_config_calendars_update_orders'] = "Updated calendar display order";
+$l['admin_log_config_calendars_update_order'] = "Updated calendar display order";
 
 $l['admin_log_config_help_documents_add_section'] = "Added help section #{1} ({2})";
 $l['admin_log_config_help_documents_add_document'] = "Added help document #{1} ({2})";
@@ -172,6 +171,7 @@ $l['admin_log_style_templates_edit_template_group'] = "Edited template group #{1
 $l['admin_log_style_templates_delete_template_group'] = "Deleted template group #{1} ({2})";
 
 $l['admin_log_style_themes_import'] = "Imported theme #{1}";
+$l['admin_log_style_themes_duplicate'] = "Duplicated theme #{2} to #{1}";
 $l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
 $l['admin_log_style_themes_edit_stylesheet'] = "Edited stylesheet {2} in {1}";
 $l['admin_log_style_themes_delete_stylesheet'] = "Deleted / Reverted stylesheet #{1} ({2}) in theme #{3} ({4})";
@@ -252,8 +252,8 @@ $l['admin_log_user_groups_add'] = "Added usergroup #{1} ({2})";
 $l['admin_log_user_groups_edit'] = "Edited usergroup #{1} ({2})";
 $l['admin_log_user_groups_delete'] = "Deleted usergroup #{1} ({2})";
 $l['admin_log_user_groups_disporder'] = "Updated usergroup display orders";
-$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{1} ({2})";
-$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{1} ({2})";
+$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{3} ({2})";
+$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{3} ({2})";
 
 $l['admin_log_user_titles_add'] = "Added default user title #{1} ({2}) at {3} posts";
 $l['admin_log_user_titles_edit'] = "Edited default user title #{1} ({2}) at {3} posts";

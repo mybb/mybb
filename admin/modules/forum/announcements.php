@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -155,9 +154,6 @@ if($mybb->input['action'] == "add")
 						$mybb->input['endtime_month'] = 1;
 					}
 				}
-
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 
 				$insert_announcement = array(
 					"fid" => $mybb->input['fid'],
@@ -369,26 +365,26 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$('.'+id+'s').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+'_'+checked))
-        {
-            Element.show(id+'_'+checked);
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"endtime_type\" value=\"1\" {$endtime_checked[1]} class=\"endtimes_check\" onclick=\"checkAction('endtime');\" style=\"vertical-align: middle;\" /> <strong>{$lang->set_time}</strong></label></dt>
@@ -721,26 +717,26 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" class=\"text_input\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
 
 	$actions = "<script type=\"text/javascript\">
-    function checkAction(id)
-    {
-        var checked = '';
+	function checkAction(id)
+	{
+		var checked = '';
 
-        $$('.'+id+'s_check').each(function(e)
-        {
-            if(e.checked == true)
-            {
-                checked = e.value;
-            }
-        });
-        $$('.'+id+'s').each(function(e)
-        {
-        	Element.hide(e);
-        });
-        if($(id+'_'+checked))
-        {
-            Element.show(id+'_'+checked);
-        }
-    }
+		$('.'+id+'s_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+		$('.'+id+'s').each(function(e)
+		{
+			$(this).hide();
+		});
+		if($('#'+id+'_'+checked))
+		{
+			$('#'+id+'_'+checked).show();
+		}
+	}
 </script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"endtime_type\" value=\"1\" {$endtime_checked[1]} class=\"endtimes_check\" onclick=\"checkAction('endtime');\" style=\"vertical-align: middle;\" /> <strong>{$lang->set_time}</strong></label></dt>

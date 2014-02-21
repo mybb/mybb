@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -921,8 +920,6 @@ if($mybb->input['action'] == "do_new_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$insert_announcement = array(
 				'fid' => $announcement_fid,
 				'uid' => $mybb->user['uid'],
@@ -1152,7 +1149,7 @@ if($mybb->input['action'] == "new_announcement")
 		}
 
 		require_once MYBB_ROOT."inc/functions_post.php";
-		$postbit = build_postbit($announcementarray, 3);
+		$postbit = build_postbit($announcementarray, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else
@@ -1298,8 +1295,6 @@ if($mybb->input['action'] == "do_edit_announcement")
 		}
 		else
 		{
-			$mybb->input['title'] = utf8_handle_4byte_string($mybb->input['title']);
-			$mybb->input['message'] = utf8_handle_4byte_string($mybb->input['message']);
 			$update_announcement = array(
 				'uid' => $mybb->user['uid'],
 				'subject' => $db->escape_string($mybb->input['title']),
@@ -1821,7 +1816,7 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
 		$query = $db->query("
-			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
+			SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
@@ -1838,7 +1833,23 @@ if($mybb->input['action'] == "modqueue")
 			$thread['forumlink'] = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
-			$profile_link = build_profile_link($thread['username'], $thread['uid']);
+
+			if($thread['username'] == "")
+			{
+				if($thread['threadusername'] != "")
+				{
+					$profile_link = $thread['threadusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($thread['username'], $thread['uid']);
+			}
+
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
@@ -1907,7 +1918,7 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
+			SELECT p.pid, p.subject, p.message, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -1925,7 +1936,23 @@ if($mybb->input['action'] == "modqueue")
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid']);
+
+			if($post['username'] == "")
+			{
+				if($post['postusername'] != "")
+				{
+					$profile_link = $post['postusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($post['username'], $post['uid']);
+			}
+
 			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
@@ -2077,21 +2104,21 @@ if($mybb->input['action'] == "do_editprofile")
 	if($mybb->get_input('away', 1) == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$awaydate = TIME_NOW;
-		if(isset($mybb->input['awayday']))
+		if(!empty($mybb->input['awayday']))
 		{
 			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
-			if(!isset($mybb->input['awaymonth']))
+			if(!$mybb->get_input('awaymonth', 1))
 			{
 				$mybb->input['awaymonth'] = my_date('n', $awaydate);
 			}
-			if(!isset($mybb->input['awayyear']))
+			if(!$mybb->get_input('awayyear', 1))
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 
 			$return_month = intval(substr($mybb->get_input('awaymonth'), 0, 2));
 			$return_day = intval(substr($mybb->get_input('awayday'), 0, 2));
-			$return_year = min($mybb->get_input('awayyear', 1), 9999);
+			$return_year = min(intval($mybb->get_input('awayyear')), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -2111,7 +2138,7 @@ if($mybb->input['action'] == "do_editprofile")
 			"away" => 1,
 			"date" => $awaydate,
 			"returndate" => $returndate,
-			"awayreason" => $mybb->get_input('awayreason', 1)
+			"awayreason" => $mybb->get_input('awayreason')
 		);
 	}
 	else

@@ -7,21 +7,21 @@ var Thread = {
 			Thread.initMultiQuote();
 		});
 	},
-	
+
 	initMultiQuote: function()
 	{
 		var quoted = $.cookie('multiquote');
 		if(quoted)
 		{
 			var post_ids = quoted.split("|");
-			
+
 			$.each(post_ids, function(key, value) {
 				if($("#multiquote_"+value))
 				{
 					$("#multiquote_"+value).parents("a:first").attr('class', 'postbit_multiquote_on');
 				}
 			});
-			
+
 			if($('#quickreply_multiquote'))
 			{
 				$('#quickreply_multiquote').show();
@@ -29,7 +29,7 @@ var Thread = {
 		}
 		return true;
 	},
-	
+
 	multiQuote: function(pid)
 	{
 		var new_post_ids = new Array();
@@ -38,7 +38,7 @@ var Thread = {
 		if(quoted)
 		{
 			var post_ids = quoted.split("|");
-			
+
 			$.each(post_ids, function(key, post_id) {
 				if(post_id != pid && post_id != '')
 				{
@@ -75,7 +75,7 @@ var Thread = {
 		}
 		$.cookie("multiquote", new_post_ids.join("|"));
 	},
-	
+
 	loadMultiQuoted: function()
 	{
 		if(use_xmlhttprequest == 1)
@@ -89,7 +89,7 @@ var Thread = {
 					Thread.multiQuotedLoaded(request, status);
 				}
 			});
-			
+
 			return false;
 		}
 		else
@@ -112,7 +112,7 @@ var Thread = {
 				return false;
 			}
 		}
-	
+
 		var id = 'message';
 		if(typeof $('textarea').sceditor != 'undefined')
 		{
@@ -130,10 +130,10 @@ var Thread = {
 		Thread.clearMultiQuoted();
 		$('#quickreply_multiquote').hide();
 		$('#quoted_ids').val('all');
-		
+
 		$('#message').focus();
 	},
-	
+
 	clearMultiQuoted: function()
 	{
 		$('#quickreply_multiquote').hide();
@@ -141,57 +141,59 @@ var Thread = {
 		if(quoted)
 		{
 			var post_ids = quoted.split("|");
-			
+
 			$.each(post_ids, function(key, post_id) {
 				if($("#multiquote_"+post_id).parents("a:first"))
 				{
 					$("#multiquote_"+post_id).parents("a:first").removeClass('postbit_multiquote_on');
-					$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote');
+					$("#multiquote_"+post_id).parents("a:first").addClass('postbit_multiquote');
 				}
 			});
 		}
 		$.removeCookie('multiquote');
 	},
-	
-	quickEdit: function()
+
+	quickEdit: function(el)
 	{
-		$('.post_body').each(function() {
-		
+		if(!el) el = '.post_body';
+
+		$(el).each(function()
+		{
 			// Take pid out of the id attribute
 			id = $(this).attr('id');
 			pid = id.replace( /[^\d.]/g, '');
 
-			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key, {
-				indicator : "<img src='images/spinner.gif'>",
-				loadurl : "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
-				type : "textarea",
-				submit : "OK",
-				cancel : "Cancel",
-				tooltip : "Click to edit...",
-				event : "edit" + pid, // Triggered by the event "edit_[pid]",
-				onblur : "ignore",
-				callback : function(values, settings) {
+			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key,
+			{
+				indicator: "<img src='images/spinner.gif'>",
+				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
+				type: "textarea",
+				rows: 12,
+				submit: "Save Changes",
+				cancel: "Cancel Edit",
+				event: "edit" + pid, // Triggered by the event "edit_[pid]",
+				onblur: "ignore",
+				callback: function(values, settings)
+				{
 					values = JSON.parse(values);
-					
+
 					// Change html content
 					$('#pid_' + pid).html(values.message);
 					$('#edited_by_' + pid).html(values.editedmsg);
 				}
 			});
         });
-		
-		$('.quick_edit_button').each(function() {
-			$(this).bind("click", function(e) {
-				//alert('clicking');
+
+		$('.quick_edit_button').each(function()
+		{
+			$(this).bind("click", function(e)
+			{
 				e.stopPropagation();
-				
+
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
-				
-				// Force popup menu closure
-				$('#edit_post_' + pid + '_popup').trigger('close_popup');
-			
+
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
 
@@ -200,7 +202,7 @@ var Thread = {
 
 		return false;
 	},
-	
+
 	initQuickReply: function()
 	{
 		if($('#quick_reply_form') && use_xmlhttprequest == 1)
@@ -211,9 +213,9 @@ var Thread = {
 			});
 		}
 	},
-	
+
 	quickReply: function(e)
-	{		
+	{
 		e.stopPropagation();
 
 		if(this.quick_replying)
@@ -223,9 +225,9 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
-		
+
 		$.jGrowl("Posting...", { openDuration: 'fast' });
-		
+
 		$.ajax(
 		{
 			url: 'newreply.php?ajax=1',
@@ -237,21 +239,21 @@ var Thread = {
 		  		Thread.quickReplyDone(request, status);
           	}
 		});
-		
+
 		return false;
 	},
-	
+
 	quickReplyDone: function(request, status)
 	{
 		this.quick_replying = 0;
-		
+
 		var json = $.parseJSON(request.responseText);
 		if(typeof json == 'object')
 		{
 			if(json.hasOwnProperty("errors"))
 			{
 				$("div.jGrowl").jGrowl("close");
-				
+
 				$.each(json.errors, function(i, message)
 				{
 					$.jGrowl('There was an error posting your reply: '+message);
@@ -259,7 +261,7 @@ var Thread = {
 				return false;
 			}
 		}
-		
+
 		if($('#captcha_trow'))
 		{
 			captcha = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
@@ -295,23 +297,26 @@ var Thread = {
 				}
 			}
 		}
-		
+
 		if(json.data.match(/id="post_([0-9]+)"/))
 		{
 			var pid = json.data.match(/id="post_([0-9]+)"/)[1];
 			var post = document.createElement("div");
+
 			$('#posts').append(json.data);
-			
+			$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
+			Thread.quickEdit("#pid_" + pid);
+
 			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 			{*/
 				// Eval javascript
-				$(json.data).filter("script").each(function(e) { 
+				$(json.data).filter("script").each(function(e) {
 					eval($(this).text());
 				});
 			//}
-			
+
 			$('#quick_reply_form')[0].reset();
-			
+
 			if($('#lastpid'))
 			{
 				$('#lastpid').val(pid);
@@ -320,20 +325,20 @@ var Thread = {
 		else
 		{
 			// Eval javascript
-			$(json.data).filter("script").each(function(e) { 
+			$(json.data).filter("script").each(function(e) {
 				eval($(this).text());
 			});
 		}
-		
+
 		$("div.jGrowl").jGrowl("close");
 	},
-	
+
 	showIgnoredPost: function(pid)
 	{
 		$('#ignored_post_'+pid).slideToggle("slow");
 		$('#post_'+pid).slideToggle("slow");
 	},
-	
+
 	deletePost: function(pid)
 	{
 		confirmReturn = confirm(quickdelete_confirm);
@@ -360,7 +365,7 @@ var Thread = {
 						if(request.responseText.indexOf("window.location") != -1)
 						{
 							$('#post_'+pid).slideToggle("slow");
-							
+
 							$.jGrowl('The post was deleted successfully.');
 						}
 						else
@@ -377,7 +382,7 @@ var Thread = {
 	{
 		MyBB.popupWindow("/report.php?pid="+pid);
 	},
-	
+
 	submitReport: function(pid)
 	{
 		// Get form, serialize it and send it
@@ -398,9 +403,9 @@ var Thread = {
 				  alert('An unknown error has occurred.');
 			}
 		});
-		
+
 		return false;
-	},
+	}
 };
 
 Thread.init();

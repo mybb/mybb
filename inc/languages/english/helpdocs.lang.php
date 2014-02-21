@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 // Help Document 1
@@ -33,7 +32,7 @@ $l['d4_document'] = "When you login, you set a cookie on your machine so that yo
 <br /><br />To login, simply click the login link at the top right hand corner of the forum. To log out, click the log out link in the same place. In the event you cannot log out, clearing cookies on your machine will take the same effect.";
 
 // Help Document 5
-$l['d5_name'] = "Posting a New Thead";
+$l['d5_name'] = "Posting a New Thread";
 $l['d5_desc'] = "Starting a new thread in a forum.";
 $l['d5_document'] = "When you go to a forum you are interested in and you wish to create a new thread (or topic), simply choose the button at the top and bottom of the forums entitled \"New Thread\". Please take note that you may not have permission to post a new thread in every forum as your administrator may have restricted posting in that forum to staff or archived the forum entirely.";
 
@@ -50,7 +49,7 @@ $l['d7_document'] = "You can use MyCode, a simplified version of HTML, in your p
 <p><br />[b]This text is bold[/b]<br />&nbsp;&nbsp;&nbsp;<b>This text is bold</b>
 <p>[i]This text is italicized[/i]<br />&nbsp;&nbsp;&nbsp;<i>This text is italicized</i>
 <p>[u]This text is underlined[/u]<br />&nbsp;&nbsp;&nbsp;<u>This text is underlined</u>
-<p>[s]This text is striked out[/s]<br />&nbsp;&nbsp;&nbsp;<strike>This text is striked out</strike>
+<p>[s]This text is struck out[/s]<br />&nbsp;&nbsp;&nbsp;<strike>This text is struck out</strike>
 <p><br />[url]http://www.example.com/[/url]<br />&nbsp;&nbsp;&nbsp;<a href=\"http://www.example.com/\">http://www.example.com/</a>
 <p>[url=http://www.example.com/]Example.com[/url]<br />&nbsp;&nbsp;&nbsp;<a href=\"http://www.example.com/\">Example.com</a>
 <p>[email]example@example.com[/email]<br />&nbsp;&nbsp;&nbsp;<a href=\"mailto:example@example.com\">example@example.com</a>

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -150,9 +149,9 @@ if($mybb->request_method == "post")
 }
 
 $all_options = "<ul class=\"modqueue_mass\">\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_ignore\">{$lang->mark_as_ignored}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_delete\">{$lang->mark_as_deleted}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_approve\">{$lang->mark_as_approved}</a></li>\n";
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
@@ -201,7 +200,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
-			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
+			SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
@@ -216,7 +215,23 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$thread['forumlink'] = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
-			$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
+
+			if($thread['username'] == "")
+			{
+				if($thread['threadusername'] != "")
+				{
+					$profile_link = $thread['threadusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
+			}
+
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
 			$table->construct_cell("<a href=\"../{$thread['threadlink']}\" target=\"_blank\">{$thread['subject']}</a>");
@@ -243,6 +258,28 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 }
@@ -299,7 +336,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
+			SELECT p.pid, p.subject, p.message, p.dateline, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -323,7 +360,23 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$post['forumlink'] = get_forum_link($post['fid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
+
+			if($post['username'] == "")
+			{
+				if($post['postusername'] != "")
+				{
+					$profile_link = $post['postusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
+			}
+
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
 			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\" target=\"_blank\">{$post['subject']}</a>");
@@ -351,6 +404,28 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 	else if($mybb->input['type'] == "posts")
@@ -453,6 +528,28 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
+
+		echo '<script type="text/javascript">
+			$(".mass_ignore").on("click", function () {
+				$("input.radio_ignore").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_delete").on("click", function () {
+				$("input.radio_delete").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+			$(".mass_approve").on("click", function () {
+				$("input.radio_approve").each(function(e) {
+					$(this).prop("checked", true);
+				});
+				return false;
+			});
+		</script>';
+
 		$page->output_footer();
 	}
 	else if($mybb->input['type'] == "attachments")

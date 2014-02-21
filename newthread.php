@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -270,9 +269,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	if(!$mybb->get_input('savedraft') && !$pid)
 	{
-		$check_subject = utf8_handle_4byte_string($mybb->get_input('subject'));
-		$check_message = utf8_handle_4byte_string($mybb->get_input('message'));
-		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($check_subject)."' AND p.message='".$db->escape_string($check_message)."' AND p.dateline>".(TIME_NOW-600));
+		$query = $db->simple_select("posts p", "p.pid", "$user_check AND p.fid='{$forum['fid']}' AND p.subject='".$db->escape_string($mybb->get_input('subject'))."' AND p.message='".$db->escape_string($mybb->get_input('message'))."' AND p.dateline>".(TIME_NOW-600));
 		$duplicate_check = $db->fetch_field($query, "pid");
 		if($duplicate_check)
 		{
@@ -650,6 +647,12 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$numpolloptions = "2";
 	}
 
+	// Do we have attachment errors?
+	if(count($errors) > 0)
+	{
+		$thread_errors = inline_error($errors);
+	}
+
 	$preview = '';
 
 	// If we're preving a post then generate the preview.
@@ -803,12 +806,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$subject = $message = '';
 	}
 
-	// Do we have attachment errors?
-	if(count($errors) > 0)
-	{
-		$thread_errors = inline_error($errors);
-	}
-
 	// Generate thread prefix selector
 	if(!$mybb->get_input('threadprefix', 1))
 	{
@@ -918,7 +915,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
-			if($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments'])
+			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 			{
 				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
 			}

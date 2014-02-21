@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -862,7 +861,7 @@ class DefaultFormContainer
 	 * Output a header row of the form container.
 	 *
 	 * @param string The header row label.
-	 * @param array TODO
+	 * @param array Array of extra information for this header cell (class, style, colspan, width)
 	 */
 	function output_row_header($title, $extra=array())
 	{

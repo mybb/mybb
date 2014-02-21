@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
@@ -72,7 +71,7 @@ $l['error_too_many_images2'] = "We are sorry, but we cannot process your post be
 $l['error_too_many_images3'] = "<b>Note:</b> The maximum amount of images per post is";
 $l['error_attach_file'] = "Error Attaching File";
 $l['please_correct_errors'] = "Please correct the following errors before continuing:";
-$l['error_reachedattachquota'] = "Sorry but you cannot attach this file because you have reached your attachment quota of {1}";
+$l['error_reachedattachquota'] = "Sorry, but you cannot attach this file because you have reached your attachment quota of {1}";
 $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
@@ -93,6 +92,7 @@ $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
+$l['emailsubject_changepassword'] = "Change of Password at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
 $l['email_lostpw'] = "{1},
@@ -369,6 +369,19 @@ This change has been automatically processed. If you did not request this change
 Thank you,
 {2} Staff
 {5}";
+
+$l['email_changepassword'] = "{1},
+
+You are receiving this email because you, or someone with access to your password, recently changed your account password.
+
+Username: {1}
+Email address: {2}
+
+If you did not request this change, please get it touch with an Administrator.
+
+Thank you,
+{3} Staff
+{4}";
 
 $l['email_newpm'] = "{1},
 

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Array of usergroup permission fields and their default values.
@@ -72,7 +71,8 @@ $usergroup_permissions = array(
 	"canusesigxposts" => 0,
 	"signofollow" => 0,
 	"edittimelimit" => 0,
-	"maxposts" => 0
+	"maxposts" => 0,
+	"showmemberlist" => 1
 );
 
 // Disallow direct access to this file for security reasons
@@ -558,7 +558,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	$page->output_nav_tabs($sub_tabs, 'group_leaders');
 
-	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}'", "post");
+	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&amp;lid={$leader['lid']}", "post");
 
 	$form_container = new FormContainer($lang->edit_group_leader);
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
@@ -825,7 +825,8 @@ if($mybb->input['action'] == "edit")
 				"canusesigxposts" => intval($mybb->input['canusesigxposts']),
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
-				"maxposts" => intval($mybb->input['maxposts'])
+				"maxposts" => intval($mybb->input['maxposts']),
+				"showmemberlist" => intval($mybb->input['showmemberlist'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -911,6 +912,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
+	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->input['showmemberlist']));
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
 		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->input['showforumteam']));

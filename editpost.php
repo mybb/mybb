@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -501,7 +500,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			if($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments'])
+			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 			{
 				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
 			}
@@ -520,12 +519,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$message = $mybb->get_input('message');
 		$subject = $mybb->get_input('subject');
 	}
-	
+
 	if(!isset($post_errors))
 	{
 		$post_errors = '';
 	}
-			
+
 	$postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = $postoptions_subscriptionmethod_dont = '';
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
 
@@ -656,7 +655,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
-		
+
 		$preview = '';
 
 		if($post['includesig'] != 0)

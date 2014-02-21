@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -386,7 +385,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_task);
 	echo $form->generate_hidden_field("tid", $task['tid']);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $task_data['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
 
 	$task_list = array();
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
@@ -739,6 +738,7 @@ if(!$mybb->input['action'])
 		$popup->add_item($lang->edit_task, "index.php?module=tools-tasks&amp;action=edit&amp;tid={$task['tid']}");
 		if($task['enabled'] == 1)
 		{
+			$popup->add_item($lang->run_task, "index.php?module=tools-tasks&amp;action=run&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 			$popup->add_item($lang->disable_task, "index.php?module=tools-tasks&amp;action=disable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 		}
 		else

@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 // Disallow direct access to this file for security reasons
@@ -451,6 +450,7 @@ if($mybb->input['action'] == "permissions")
 			$result = $db->fetch_array($query);
 			$fid = $result['fid'];
 			$gid = $result['gid'];
+			$forum = get_forum($fid);
 		}
 
 		$field_list = array();

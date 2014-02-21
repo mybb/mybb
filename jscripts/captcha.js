@@ -1,7 +1,7 @@
 var captcha = {
 	refresh: function()
 	{
-		var imagehash = $("#imagehash");
+		imagehash = $("#imagehash");
 		var imagehash_value = imagehash.attr("value");
 
 		$.ajax(

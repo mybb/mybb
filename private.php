@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 define("IN_MYBB", 1);
@@ -1444,8 +1443,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			if($val != '' || ($key >= 1 && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
-				$foldername = utf8_handle_4byte_string($val);
-				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
+				$foldername = $db->escape_string(htmlspecialchars_uni($val));
 
 				if(my_strpos($foldername, "$%%$") === false)
 				{
@@ -1969,7 +1967,6 @@ if(!$mybb->input['action'])
 	$folder = $mybb->input['fid'];
 	$foldername = $foldernames[$folder];
 
-	$lang->pms_in_folder = $lang->sprintf($lang->pms_in_folder, $foldername);
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
 		$sender = $lang->sentto;

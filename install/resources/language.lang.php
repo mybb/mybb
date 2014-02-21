@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 /* INSTALL LANGUAGE VARIABLES */
@@ -195,6 +194,7 @@ $l['db_step_error_missingencoding'] = 'You have not selected an encoding yet. Pl
 $l['db_step_error_sqlite_invalid_dbname'] = 'You may not use relative URLs for SQLite databases. Please use a file system path (ex: /home/user/database.db) for your SQLite database.';
 $l['db_step_error_invalid_tableprefix'] = 'You may only use an underscore (_) and alphanumeric characters in a table prefix. Please use a valid table prefix before continuing.';
 $l['db_step_error_tableprefix_too_long'] = 'You may only use a table prefix with a length of 40 characters or less. Please use a shorter table prefix before continuing.';
+$l['db_step_error_utf8mb4_error'] = '\'4-Byte UTF-8 Unicode\' requires MySQL 5.5.3 or above. Please select an encoding which is compatible with your MySQL version.';
 
 $l['tablecreate_step_connected'] = '<p>Connection to the database server and database you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>
@@ -238,7 +238,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://docs.mybb.com/Cookie_Settings.html">(?)</a></th>
+					<th colspan="2" class="first last">Cookie settings <a title="What\'s this?" target="_blank" href="http://docs.mybb.com/Cookie_Settings.html">(?)</a></th>
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
@@ -336,14 +336,14 @@ $l['upgrade'] = "Upgrade Process";
 $l['upgrade_welcome'] = "<p>Welcome to the upgrade wizard for MyBB {1}.</p><p>Before you continue, please make sure you know which version of MyBB you were previously running as you will need to select it below.</p><p><strong>We strongly recommend that you also obtain a complete backup of your database and files before attempting to upgrade</strong> so if something goes wrong you can easily revert back to the previous version.  Also, ensure that your backups are complete before proceeding.</p><p>Make sure you only click Next ONCE on each step of the upgrade process. Pages may take a while to load depending on the size of your forum.</p><p>Once you are ready, please select your old version below and click Next to continue.</p>";
 $l['upgrade_templates_reverted'] = 'Templates Reverted';
 $l['upgrade_templates_reverted_success'] = "<p>All of the templates have successfully been reverted to the new ones contained in this release. Please press next to continue with the upgrade process.</p>";
-$l['upgrade_settings_sync'] = 'Settings Synchronisation';
-$l['upgrade_settings_sync_success'] = "<p>The board settings have been synchronised with the latest in MyBB.</p><p>{1} new settings inserted along with {2} new setting groups.</p><p>To finalise the upgrade, please click next below to continue.</p>";
+$l['upgrade_settings_sync'] = 'Settings Synchronization';
+$l['upgrade_settings_sync_success'] = "<p>The board settings have been synchronized with the latest in MyBB.</p><p>{1} new settings inserted along with {2} new setting groups.</p><p>To finalize the upgrade, please click next below to continue.</p>";
 $l['upgrade_datacache_building'] = 'Data Cache Building';
 $l['upgrade_building_datacache'] = '<p>Building caches...';
 $l['upgrade_continue'] = 'Please press next to continue';
 $l['upgrade_locked'] = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../{1}/index.php\">Admin Control Panel</a>.</p>";
 $l['upgrade_removedir'] = 'Please remove this directory before exploring your upgraded MyBB.';
-$l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customised templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
+$l['upgrade_congrats'] = "<p>Congratulations, your copy of MyBB has successfully been updated to {1}.</p>{2}<p><strong>What's Next?</strong></p><ul><li>Please use the 'Find Updated Templates' tool in the Admin CP to find customized templates updated during this upgrade process. Edit them to contain the changes or revert them to originals.</li><li>Ensure that your board is still fully functional.</li></ul>";
 $l['upgrade_template_reversion'] = "Template Reversion Warning";
 $l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
 $l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/Anonymous_Statistics.html\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";

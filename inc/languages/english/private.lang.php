@@ -1,9 +1,8 @@
 <?php
 /**
  * MyBB 1.8 English Language Pack
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
- * $Id$
  */
 
 $l['nav_pms'] = "Private Messages";
@@ -26,7 +25,6 @@ $l['private_messaging'] = "Private Messaging";
 $l['inbox'] = "Inbox";
 $l['compose_message2'] = "Compose Message";
 $l['manage_folders'] = "Manage Folders";
-$l['pms_in_folder'] = "Private Messages in folder <em>{1}</em>";
 $l['pm_search_results'] = "Private Message Search Results";
 $l['message_title'] = "Message Title";
 $l['sender'] = "Sender";

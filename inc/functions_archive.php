@@ -1,12 +1,11 @@
 <?php
 /**
  * MyBB 1.8
- * Copyright 2013 MyBB Group, All Rights Reserved
+ * Copyright 2014 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
  *
- * $Id$
  */
 
 /**
@@ -171,13 +170,6 @@ function archive_footer()
 ?>
 </div>
 <div class="navigation"><?php echo $nav; ?></div>
-<div id="printinfo">
-<strong><?php echo $lang->archive_reference_urls; ?></strong>
-<ul>
-<li><strong><?php echo $mybb->settings['bbname']; ?>:</strong> <?php echo $mybb->settings['bburl']."/index.php"; ?></li>
-<?php if($fullurl != $mybb->settings['bburl']) { ?><li><strong><?php echo $fulltitle; ?>:</strong> <?php echo $fullurl; ?></li><?php } ?>
-</ul>
-</div>
 </div>
 <div id="footer">
 <?php echo $lang->powered_by; ?> <a href="http://www.mybb.com">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybb.com">MyBB Group</a>
