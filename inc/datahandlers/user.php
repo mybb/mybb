@@ -489,7 +489,7 @@ class UserDataHandler extends DataHandler
 
 		if(empty($this->data['profile_fields_editable']))
 		{
-			$editable = "editable=1";
+			$editable = "editable !='0'";
 		}
 
 		// Fetch all profile fields first.

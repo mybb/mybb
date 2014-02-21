@@ -127,7 +127,12 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
+	$editable_list = array(
+		"0" => $lang->no,
+		"1" => $lang->yes,
+		"2" => $lang->only_at_registration
+	);
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_select_box('editable', $editable_list, $mybb->input['editable'], array('id' => 'editable')), 'editable');
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
 	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
 	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
@@ -264,7 +269,12 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
+	$editable_list = array(
+		"0" => $lang->no,
+		"1" => $lang->yes,
+		"2" => $lang->only_at_registration
+	);
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_select_box('editable', $editable_list, $mybb->input['editable'], array('id' => 'editable')), 'editable');
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
 	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
 	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
@@ -372,9 +382,13 @@ if(!$mybb->input['action'])
 			$required = $lang->no;
 		}
 
-		if($field['editable'])
+		if($field['editable'] == 1)
 		{
 			$editable = $lang->yes;
+		}
+		elseif($field['editable'] == 2)
+		{
+			$editable = $lang->registration;
 		}
 		else
 		{
