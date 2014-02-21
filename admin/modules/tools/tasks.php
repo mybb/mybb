@@ -750,6 +750,13 @@ if(!$mybb->input['action'])
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
+
+	if($table->num_rows() == 0)
+	{
+		$table->construct_cell($lang->no_tasks, array('colspan' => 3));
+		$table->construct_row();
+	}
+
 	$table->output($lang->scheduled_tasks);
 
 	$page->output_footer();
