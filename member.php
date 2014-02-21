@@ -1814,7 +1814,7 @@ if($mybb->input['action'] == "profile")
 	$session = $db->fetch_array($query);
 
 	$online_status = '';
-	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
+	if(!empty($session) && ($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']))
 	{
 		// Lastvisit
 		if($memprofile['lastactive'])
@@ -1830,35 +1830,30 @@ if($mybb->input['action'] == "profile")
 			$timeonline = nice_time($memprofile['timeonline']);
 		}
 
-		// Online?
-		if(!empty($session))
+		// Fetch their current location
+		$lang->load("online");
+		require_once MYBB_ROOT."inc/functions_online.php";
+		$activity = fetch_wol_activity($session['location'], $session['nopermission']);
+		$location = build_friendly_wol_location($activity);
+		$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+
+		eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+	}
+	else
+	{
+		$memlastvisitsep = '';
+		$memlastvisittime = '';
+		$memlastvisitdate = $lang->lastvisit_never;
+
+		if($memprofile['lastactive'])
 		{
-			// Fetch their current location
-			$lang->load("online");
-			require_once MYBB_ROOT."inc/functions_online.php";
-			$activity = fetch_wol_activity($session['location'], $session['nopermission']);
-			$location = build_friendly_wol_location($activity);
-			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
-
-			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+			// We have had at least some active time, hide it instead
+			$memlastvisitdate = $lang->lastvisit_hidden;
 		}
-		// User is offline
-		else
-		{
-			$memlastvisitsep = '';
-			$memlastvisittime = '';
-			$memlastvisitdate = $lang->lastvisit_never;
 
-			if($memprofile['lastactive'])
-			{
-				// We have had at least some active time, hide it instead
-				$memlastvisitdate = $lang->lastvisit_hidden;
-			}
+		$timeonline = $lang->timeonline_hidden;
 
-			$timeonline = $lang->timeonline_hidden;
-
-			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
-		}
+		eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 	}
 
 	// Build Referral
