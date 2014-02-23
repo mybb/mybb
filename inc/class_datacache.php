@@ -1204,5 +1204,21 @@ class datacache
 		$query = $db->simple_select("datacache", "title,cache", "title='version_history'");
 		$this->update("version_history", @unserialize($db->fetch_field($query, "cache")));
 	}
+
+	function reload_modnotes()
+	{
+		global $db;
+
+		$query = $db->simple_select("datacache", "title,cache", "title='modnotes'");
+		$this->update("modnotes", @unserialize($db->fetch_field($query, "cache")));
+	}
+
+	function reload_adminnotes()
+	{
+		global $db;
+
+		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
+		$this->update("adminnotes", @unserialize($db->fetch_field($query, "cache")));
+	}
 }
 ?>
