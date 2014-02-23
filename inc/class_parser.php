@@ -1255,11 +1255,20 @@ class postParser
 			if(substr_count($matches[3], ')') > substr_count($matches[3], '('))
 			{
 				$matches[3] = my_substr($matches[3], 0, -1);
-				$external .= ')';
+				$external = ')'.$external;
 			}
 			else
 			{
 				break;
+			}
+
+			// Example: ([...] http://en.wikipedia.org/Example_(disambiguation).)
+			$last_char = my_substr($matches[3], -1);
+			while($last_char == '.' || $last_char == ',' || $last_char == '?')
+			{
+				$matches[3] = my_substr($matches[3], 0, -1);
+				$external = $last_char.$external;
+				$last_char = my_substr($matches[3], -1);
 			}
 		}
 		if($matches[2] == 'www' || $matches[2] == 'ftp')
