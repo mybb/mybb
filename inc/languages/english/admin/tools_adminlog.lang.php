@@ -201,6 +201,7 @@ $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
 $l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
+$l['admin_log_tools_cache_reload'] = "Reload cache ({1})";
 $l['admin_log_tools_cache_rebuild_all'] = "Rebuilt & reloaded all caches";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
