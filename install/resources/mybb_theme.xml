@@ -8718,7 +8718,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" align="center">{$foldercount}</td>
 <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="1" /></td>
 </tr>]]></template>
-		<template name="private_folders" version="1400"><![CDATA[<html>
+		<template name="private_folders" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
 {$headerinclude}
@@ -8739,6 +8739,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><span class="smalltext">{$lang->edit_folder_note}</span></td>
 </tr>
 {$folderlist}
+</table>
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->new_folders}</strong></td>
 </tr>
