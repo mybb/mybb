@@ -2936,7 +2936,22 @@ if($mybb->input['action'] == "finduser")
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		$regdate = my_date('relative', $user['regdate']);
-		$lastdate = my_date('relative', $user['lastvisit']);
+
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			$lastdate = $lang->lastvisit_never;
+
+			if($user['lastvisit'])
+			{
+				// We have had at least some active time, hide it instead
+				$lastdate = $lang->lastvisit_hidden;
+			}
+		}
+		else
+		{
+			$lastdate = my_date('relative', $user['lastvisit']);
+		}
+
 		$usergroup = $usergroups_cache[$user['usergroup']]['title'];
 		eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
 	}

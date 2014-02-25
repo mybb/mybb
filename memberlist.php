@@ -365,8 +365,22 @@ else
 		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			$user['lastvisit'] = $lang->lastvisit_never;
+
+			if($user['lastvisit'])
+			{
+				// We have had at least some active time, hide it instead
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+		}
+		else
+		{
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+		}
+
 		$user['regdate'] = my_date('relative', $user['regdate']);
-		$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
 	}

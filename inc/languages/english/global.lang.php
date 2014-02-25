@@ -7,6 +7,7 @@
 
 $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Never";
+$l['lastvisit_hidden'] = "(Hidden)";
 
 $l['search_button'] = 'Search';
 $l['toplinks_memberlist'] = "Member List";
