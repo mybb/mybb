@@ -3555,7 +3555,7 @@ if($mybb->input['action'] == "banning")
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
-		ORDER BY lifted ASC
+		ORDER BY dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
 
