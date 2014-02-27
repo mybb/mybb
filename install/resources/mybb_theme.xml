@@ -11796,7 +11796,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="warnings_no_warnings" version="1400"><![CDATA[			<tr>
 				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
 			</tr>]]></template>
-		<template name="warnings_view" version="1400"><![CDATA[<html>
+		<template name="warnings_view" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
 	{$headerinclude}
@@ -11829,7 +11829,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow1">{$expires} {$revoked_date}</td>
 		</tr>
 		<tr>
-			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->warning_note}</strong></span></td>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_warning_note}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow2" colspan="2">{$notes}</td>
@@ -11871,7 +11871,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<br />
 	<div align="center"><input type="submit" class="button" value="{$lang->revoke_warning}" /></div>
 </form>]]></template>
-		<template name="warnings_view_revoked" version="1400"><![CDATA[<br />
+		<template name="warnings_view_revoked" version="1800"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 	<tr>
 		<td class="thead" colspan="2"><strong>{$lang->warning_is_revoked}</strong></td>
@@ -11885,14 +11885,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$date_revoked}</td>
 	</tr>
 	<tr>
-		<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->reason}</strong></span></td>
+		<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_reason}</strong></span></td>
 	</tr>
 	<tr>
 		<td class="trow2" colspan="2">{$revoke_reason}</td>
 	</tr>
 </table>]]></template>
-		<template name="warnings_view_user" version="1400"><![CDATA[		<tr>
-			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+		<template name="warnings_view_user" version="1800"><![CDATA[		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_username}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow1" colspan="2">{$user_link}</td>
