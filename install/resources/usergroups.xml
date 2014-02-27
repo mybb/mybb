@@ -235,6 +235,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
+		<canviewboardclosed><![CDATA[1]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>

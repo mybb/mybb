@@ -90,6 +90,7 @@ $l['can_view_threads'] = "Can view threads?";
 $l['can_search_forums'] = "Can search forums?";
 $l['can_view_profiles'] = "Can view user profiles?";
 $l['can_download_attachments'] = "Can download attachments?";
+$l['can_view_board_closed'] = "Can view board when closed?";
 $l['posting_rating_options'] = "Posting/Rating Options?";
 $l['can_post_threads'] = "Can post new threads?";
 $l['can_post_replies'] = "Can post replies to threads?";

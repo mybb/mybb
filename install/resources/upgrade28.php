@@ -149,6 +149,11 @@ function upgrade28_dbchanges()
 		$db->drop_column("usergroups", "showmemberlist");
 	}
 
+	if($db->field_exists('canviewboardclosed', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canviewboardclosed");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -173,6 +178,7 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
+			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -194,7 +200,8 @@ function upgrade28_dbchanges()
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
-			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'"); 
+			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
+			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
 			break;
 	}
 
@@ -235,6 +242,8 @@ function upgrade28_dbchanges()
 
 	$usergroups = implode(',', $groups);
 	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
+
+	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
 	// Update tasks
 	$added_tasks = sync_tasks();

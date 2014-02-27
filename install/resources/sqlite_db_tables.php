@@ -779,6 +779,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	canviewthreads int(1) NOT NULL default '0',
 	canviewprofiles int(1) NOT NULL default '0',
 	candlattachments int(1) NOT NULL default '0',
+	canviewboardclosed int(1) NOT NULL default '0',
 	canpostthreads int(1) NOT NULL default '0',
 	canpostreplys int(1) NOT NULL default '0',
 	canpostattachments int(1) NOT NULL default '0',
