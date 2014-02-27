@@ -11003,7 +11003,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1600"><![CDATA[<html>
+		<template name="usercp_options" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -11176,10 +11176,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <fieldset class="trow2">
 <legend><strong>{$lang->other_options}</strong></legend>
 <table cellspacing="0" cellpadding="2">
-<tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1" {$showredirectcheck} /></td>
-<td><span class="smalltext"><label for="showredirect">{$lang->show_redirect}</label></span></td>
-</tr>
+{$showredirects}
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" {$showcodebuttonscheck} /></td>
 <td><span class="smalltext"><label for="showcodebuttons">{$lang->show_codebuttons}</label></span></td>
@@ -11239,6 +11236,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$tppoptions}
 </select>
 </td>
+</tr>]]></template>
+		<template name="usercp_options_showredirects" version="1800"><![CDATA[
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showredirect" id="showredirect" value="1" {$showredirectcheck} /></td>
+<td><span class="smalltext"><label for="showredirect">{$lang->show_redirect}</label></span></td>
 </tr>]]></template>
 		<template name="usercp_password" version="1400"><![CDATA[<html>
 <head>

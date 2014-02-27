@@ -315,7 +315,11 @@ no=Disabled]]></optionscode>
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[onoff]]></optionscode>
+			<optionscode><![CDATA[select
+0=No
+1=Yes
+2=Force
+]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>

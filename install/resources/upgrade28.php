@@ -258,6 +258,13 @@ function upgrade28_dbchanges()
 
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
+	// Update settings
+	echo "<p>Updating settings...</p>";
+	$db->update_query('settings', array('optionscode' => $db->escape_string("select
+0=No
+1=Yes
+2=Force")), "name='redirects'");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("28_dbchanges_ip");
 }

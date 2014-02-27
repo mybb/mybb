@@ -912,8 +912,8 @@ function redirect($url, $message="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
-	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))
+	// Show redirects only if ACP is forced, or both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
+	if($mybb->settings['redirects'] == 2 || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
