@@ -554,6 +554,7 @@ select {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	outline: 0;
 }
 
 textarea:focus, input.text_input:focus, select:focus {
@@ -590,6 +591,7 @@ input.submit_button {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	outline: 0;
 }
 
 input.submit_button:hover {
