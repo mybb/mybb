@@ -513,6 +513,7 @@ input.button {
 	background: #eee url(images/buttons_bg.png) repeat-x;
 	border: 1px solid #bbb;
 	color: #333;
+	outline: 0;
 }
 
 input.button:hover {
@@ -1552,6 +1553,35 @@ div.jGrowl div.jGrowl-closer {
 	margin: 5px;
 	padding: 8px;
 	border:1px solid #CCCCCC;
+}
+
+.pmspace {
+	float: right;  
+	margin: -3px 5px;
+}
+
+.pmspace_container {
+	background: #fff;
+	border: 1px solid #ccc;
+	width: 100px;
+	display: inline-block;
+}
+
+.pmspace_used {
+	background: #e73c3c;
+	border: 1px solid #c00;
+	display: inline-block;
+	color: #fff;
+	margin: -1px;
+}
+
+.pmspace_unused {
+	display: inline-block;
+}
+
+.pmspace_text {
+	padding: 1px 5px;
+	display: inline-block;
 }]]></stylesheet>
 		<stylesheet name="modcp.css" attachedto="modcp.php" version="1800" disporder="3"><![CDATA[.modcp_nav_item {
 	display: block;
@@ -8429,17 +8459,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
-<tr>
-<td>{$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+<fieldset>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+</fieldset>
 <br />
 {$limitwarning}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8769,12 +8791,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
-		<template name="private_limitwarning" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1" align="center"><span class="smalltext"><strong><span style="color:#FF0000;">{$lang->reached_warning}</span></strong><br />{$lang->reached_warning2}</span></td>
-</tr>
-</table>
-<br />]]></template>
+		<template name="private_limitwarning" version="1800"><![CDATA[<div class="red_alert">
+	<strong>{$lang->reached_warning}</strong><br />
+	{$lang->reached_warning2}
+</div>]]></template>
 		<template name="private_messagebit" version="1800"><![CDATA[<tr>
 <td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
 <td align="center" class="trow2" width="1%">{$icon}</td>
@@ -8801,13 +8821,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
 		<template name="private_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="private.php?fid={$folder}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
-		<template name="private_pmspace" version="120"><![CDATA[<span style="float:right"><table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
-	<tr>
-		<td width="{$spaceused}" bgcolor="red" align="center"><span class="smalltext"><strong>{$overhalf}</strong></span></td>
-		<td width="{$spaceused2}" bgcolor="green" align="center"><span class="smalltext"><strong>{$belowhalf}</strong></span></td>
-		<td width="130" align="center"><span class="smalltext"><strong>{$lang->pmspaceused}</strong></span></td>
-	</tr>
-</table></span>]]></template>
+		<template name="private_pmspace" version="1800"><![CDATA[<span class="pmspace">
+  <span class="pmspace_container"><span class="pmspace_used" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
+  </span>
+  {$lang->pmspaceused}
+</span>]]></template>
 		<template name="private_read" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
