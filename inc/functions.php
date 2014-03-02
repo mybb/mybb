@@ -5368,7 +5368,7 @@ function get_forum($fid, $active_override=0)
  * @param boolean Whether or not to recache the thread.
  * @return string The database row of the thread.
  */
-function get_thread($tid, $recache = true)
+function get_thread($tid, $recache = false)
 {
 	global $db;
 	static $thread_cache;
