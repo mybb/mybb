@@ -447,6 +447,7 @@ if($mybb->input['action'] == "permissions")
 			$result = $db->fetch_array($query);
 			$fid = $result['fid'];
 			$gid = $result['gid'];
+			$forum = get_forum($fid);
 		}
 
 		$field_list = array();

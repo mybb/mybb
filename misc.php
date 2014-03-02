@@ -486,7 +486,7 @@ elseif($mybb->input['action'] == "smilies")
 	$smilies = '';
 	if($mybb->input['popup'])
 	{ // make small popup list of smilies
-		$editor = preg_replace('#([^a-zA-z0-9_-]+)#', '', $mybb->input['editor']);
+		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->input['editor']);
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";

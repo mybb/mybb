@@ -5287,17 +5287,17 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1607"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1613"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
 <td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
+<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
-	<template name="modcp_reports_multipage" version="120"><![CDATA[<tr>
-<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+	<template name="modcp_reports_multipage" version="1613"><![CDATA[<tr>
+<td class="tcat" colspan="7"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 	<template name="modcp_allreports" version="120"><![CDATA[<html>
 <head>
@@ -10112,9 +10112,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<p>{$lang->coppa_agreement_2}</p>
 		<p>{$lang->coppa_agreement_3}</p>
 	</td>
-</tr>]]></template>
-		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="{$colspan}">{$lang->error_no_results}</td>
 </tr>]]></template>
 		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
 <head>

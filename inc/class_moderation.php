@@ -1335,6 +1335,7 @@ class Moderation
 			"replyto" => 0
 		);
 		$db->update_query("posts", $sqlarray, "pid IN ($pids_list)");
+		$db->update_query("reportedposts", array('tid' => $newtid), "pid IN ($pids_list)");
 
 		// Get posts being merged
 		while($post = $db->fetch_array($original_posts_query))

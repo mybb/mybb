@@ -60,6 +60,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		if ($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			join_usergroup($user['uid'], $gid);
+			$db->delete_query("joinrequests", "uid='{$user['uid']}' AND gid='{$gid}'");
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);
 		}
 		else 

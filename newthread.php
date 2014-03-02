@@ -622,6 +622,12 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$numpolloptions = "2";
 	}
 
+	// Do we have attachment errors?
+	if(count($errors) > 0)
+	{
+		$thread_errors = inline_error($errors);
+	}
+
 	// If we're preving a post then generate the preview.
 	if($mybb->input['previewpost'])
 	{
@@ -728,12 +734,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
-	}
-
-	// Do we have attachment errors?
-	if(count($errors) > 0)
-	{
-		$thread_errors = inline_error($errors);
 	}
 
 	// Generate thread prefix selector

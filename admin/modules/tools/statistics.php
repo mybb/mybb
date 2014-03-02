@@ -218,7 +218,7 @@ function create_graph($type, $range=null)
 		{
 			$stats[] = $stat['num'.$type];
 			$datelines[] = $stat['dateline'];
-			$x_labels[] = date("j/m", $stat['dateline']);
+			$x_labels[] = date("m/j", $stat['dateline']);
 		}
 		$points[$datelines[0]] = 0;
 		$points[$datelines[1]] = $stats[0]-$stats[1];
@@ -231,7 +231,7 @@ function create_graph($type, $range=null)
 		{
 			$stats[] = $stat['num'.$type];
 			$datelines[] = $stat['dateline'];
-			$x_labels[] = date("j/m", $stat['dateline']);
+			$x_labels[] = date("m/j", $stat['dateline']);
 		}
 		$points[$datelines[0]] = 0;
 		$points[$datelines[1]] = $stats[1]-$stats[0];
@@ -244,7 +244,7 @@ function create_graph($type, $range=null)
 		{
 			$points[$stat['dateline']] = $stat['num'.$type];
 			$datelines[] = $stat['dateline'];
-			$x_labels[] = date("j/m", $stat['dateline']);
+			$x_labels[] = date("m/j", $stat['dateline']);
 		}
 	}
 	
