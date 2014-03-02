@@ -462,7 +462,7 @@ function build_postbit($post, $post_type=0)
 	{
 		// Figure out if we need to show an "edited by" message
 		$post['editedmsg'] = '';
-		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))
+		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
