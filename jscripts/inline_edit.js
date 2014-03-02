@@ -14,14 +14,13 @@ var inlineEditor = {
 			// Take tid out of the id attribute
 			id = $(this).attr('id');
 			tid = id.replace( /[^\d.]/g, '');
-
 			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key=" + my_post_key + "&tid=" + tid,
 			{
 				indicator: "<img src='images/spinner.gif'>",
 				type: "text",
 				submit: '',
 				cancel: '',
-				tooltip: "(Click and hold to edit)",
+				tooltip : lang.inline_edit_tooltip,
 				onblur: "submit",
 				event: "hold"+tid,
 				callback: function(values, settings)

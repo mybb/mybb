@@ -107,7 +107,7 @@ var Thread = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error fetching the posts. '+message);
+					$.jGrowl(lang.error_fetching_post+' '+message);
 				});
 				return false;
 			}
@@ -169,8 +169,8 @@ var Thread = {
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
-				submit: "Save Changes",
-				cancel: "Cancel Edit",
+				submit: lang.quickedit_submit,
+				cancel: lang.quickedit_cancel,
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
 				callback: function(values, settings)
@@ -226,7 +226,7 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
 
-		$.jGrowl("Posting...", { openDuration: 'fast' });
+		$.jGrowl(lang.posting, { openDuration: 'fast' });
 
 		$.ajax(
 		{
@@ -256,7 +256,7 @@ var Thread = {
 
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error posting your reply: '+message);
+					$.jGrowl(lang.error_posting_reply+' '+message);
 				});
 				return false;
 			}
@@ -355,7 +355,7 @@ var Thread = {
 					{
 						$.each(json.errors, function(i, message)
 						{
-							$.jGrowl('There was an error posting your reply: '+message);
+							$.jGrowl(lang.error_posting_reply+' '+message);
 						});
 					}
 					else
@@ -366,11 +366,11 @@ var Thread = {
 						{
 							$('#post_'+pid).slideToggle("slow");
 
-							$.jGrowl('The post was deleted successfully.');
+							$.jGrowl(lang.post_deleted_successfully);
 						}
 						else
 						{
-							$.jGrowl('An unknown error has occurred.');
+							$.jGrowl(lang.error_unknown);
 						}
 					}
 				}
@@ -400,7 +400,7 @@ var Thread = {
 				});
 			},
 			error: function(){
-				  alert('An unknown error has occurred.');
+				  alert(lang.error_unknown);
 			}
 		});
 

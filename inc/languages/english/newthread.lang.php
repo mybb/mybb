@@ -45,4 +45,6 @@ $l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options
 $l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing.";
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
+
+$l['error_fetching_post'] = "There was an error fetching the posts.";
 ?>

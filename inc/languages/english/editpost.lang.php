@@ -44,4 +44,6 @@ $l['thread_deleted'] = "Deleted Thread Permanently";
 $l['post_deleted'] = "Deleted Post Permanently";
 $l['thread_soft_deleted'] = "Soft Deleted Thread";
 $l['post_soft_deleted'] = "Soft Deleted Post";
+
+$l['error_fetching_post'] = "There was an error fetching the posts.";
 ?>

@@ -291,7 +291,7 @@ FormValidator.prototype = {
 
 		if(!message)
 		{
-			message = "Checking for validity...";
+			message = lang.validator_checking;
 		}
 
 		$(area).innerHTML = message;
