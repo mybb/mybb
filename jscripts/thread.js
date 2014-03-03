@@ -226,8 +226,6 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
 
-		$.jGrowl("Posting...", { openDuration: 'fast' });
-
 		$.ajax(
 		{
 			url: 'newreply.php?ajax=1',
