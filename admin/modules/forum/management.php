@@ -1419,8 +1419,6 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	$page->add_breadcrumb_item($lang->edit_forum);
 	$page->output_header($lang->edit_forum);
@@ -2193,8 +2191,6 @@ if(!$mybb->input['action'])
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	if($fid)
 	{
