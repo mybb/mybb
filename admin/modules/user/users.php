@@ -849,7 +849,6 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form = new Form("index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}", "post", "", 1);
-	echo "<script type=\"text/javascript\">\n function submitUserForm() { $('tab_overview').up('FORM').submit(); }</script>\n";
 
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
 
