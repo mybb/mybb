@@ -655,7 +655,7 @@ EOF;
 		echo "<script type=\"text/javascript\">\n";
 		if($observe_onload)
 		{
-			echo "Event.observe(window,'load',function(){\n";
+			echo "$(function() {\n";
 		}
 		echo "	\$\$('#{$id}').each(function(tabs)\n";
 		echo "	{\n";

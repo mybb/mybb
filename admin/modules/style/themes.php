@@ -2193,7 +2193,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
-Event.observe(window, "load", function() {
+$(function() {
 //<![CDATA[
     new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
 });
@@ -2825,9 +2825,8 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
-Event.observe(window, "load", function() {
+$(function() {
 //<![CDATA[
-    new ThemeSelector(\''.$count.'\');
 	checkAction(\'add\');
 });
 //]]>

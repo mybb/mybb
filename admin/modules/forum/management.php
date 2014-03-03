@@ -1225,7 +1225,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+		echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -1790,7 +1790,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id."); });\n";
+		echo "$(function() { QuickPermEditor.init(".$id."); });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -2469,7 +2469,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo "<script type=\"text/javascript\">\n<!--\n";
 		foreach($ids as $id)
 		{
-			echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+			echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 		}
 		echo "// -->\n</script>\n";
 
