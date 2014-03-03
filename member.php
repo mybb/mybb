@@ -1432,10 +1432,6 @@ if($mybb->input['action'] == "profile")
 {
 	$plugins->run_hooks("member_profile_start");
 
-	if($mybb->usergroup['canviewprofiles'] == 0)
-	{
-		error_no_permission();
-	}
 	if($mybb->input['uid'] == "lastposter")
 	{
 		if($mybb->input['tid'])
@@ -1483,6 +1479,11 @@ if($mybb->input['action'] == "profile")
 		{
 			$uid = $mybb->user['uid'];
 		}
+	}
+	
+	if($mybb->usergroup['canviewprofiles'] == 0 && $mybb->user['uid'] != $uid)
+	{
+		error_no_permission();
 	}
 	
 	if($mybb->user['uid'] != $uid)
