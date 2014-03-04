@@ -6301,35 +6301,21 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_ipsearch_misc_info" version="1600"><![CDATA[<html>
-<head>
-<title>{$lang->ipaddress_misc_info}</title>
-{$headerinclude}
-<style type="text/css">
-body {
-	text-align: left;
-}
-</style>
-</head>
-<body style="margin:0; padding: 4px; top: 0; left: 0;">
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-		<tr>
-			<td class="thead" align="center" colspan="2">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="window.close();">Close</a></span></div>
-				<div><strong>{$lang->ipaddress_misc_info}</strong></div>
-			</td>
-		</tr>
-		<tr>
-			<td class="trow1" width="25%" align="center">{$lang->ipaddress_host_name}</td>
-			<td class="trow1">{$ipaddress_host_name}</td>
-		</tr>
-		<tr>
-			<td class="trow2" width="25%" align="center">{$lang->ipaddress_location}</td>
-			<td class="trow2">{$ipaddress_location}</td>
-		</tr>
-	</table>
-</body>
-</html>]]></template>
+		<template name="modcp_ipsearch_misc_info" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="thead" align="center" colspan="2">
+			<div><strong>{$lang->ipaddress_misc_info}</strong></div>
+		</td>
+	</tr>
+	<tr>
+		<td class="trow1" width="25%" align="center">{$lang->ipaddress_host_name}</td>
+		<td class="trow1">{$ipaddress_host_name}</td>
+	</tr>
+	<tr>
+		<td class="trow2" width="25%" align="center">{$lang->ipaddress_location}</td>
+		<td class="trow2">{$ipaddress_location}</td>
+	</tr>
+</table>]]></template>
 		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="2">{$lang->error_no_results}</td>
 </tr>]]></template>

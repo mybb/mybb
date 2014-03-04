@@ -736,7 +736,7 @@ if($mybb->input['action'] == "send")
 		$format_preview = '';
 		if($email['format'] == 0 || $email['format'] == 2)
 		{
-			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text', 'preview', 450, 450);\">{$lang->preview}</a>";
+			$format_preview .= "{$lang->text_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('/index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}&amp;format=text');\">{$lang->preview}</a>";
 		}
 		if($email['format'] == 2)
 		{
@@ -744,7 +744,7 @@ if($mybb->input['action'] == "send")
 		}
 		if($email['format'] == 1 || $email['format'] == 2)
 		{
-			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}', 'preview', 450, 450);\">{$lang->preview}</a>";
+			$format_preview.= "{$lang->html_based} - <a href=\"#\" onclick=\"javascript:MyBB.popupWindow('/index.php?module=user-mass_mail&amp;action=preview&amp;mid={$email['mid']}');\">{$lang->preview}</a>";
 		}
 		$table->construct_cell($format_preview);
 		$table->construct_row();
@@ -1439,37 +1439,20 @@ if($mybb->input['action'] == "preview")
 		admin_redirect("index.php?module=user-mass_mail");
 	}
 
-	?>
-	<html xmlns="http://www.w3.org/1999/xhtml">
-	<head profile="http://gmpg.org/xfn/1">
-		<title>Mass Email Preview</title>
-		<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/main.css" type="text/css" />
-		<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/popup.css" type="text/css" />
-	</head>
-	<body id="popup">
-		<div id="popup_container">
-		<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a> Mass Email Preview</div>
-
-		<div id="content">
-	<?php
+	$pupuppage = new Table();
 
 	if($mybb->input['format'] == 'text' || !$mass_email['htmlmessage'])
 	{
 		// Show preview of the text version
-		echo nl2br($mass_email['message']);
+		$pupuppage->construct_cell(nl2br($mass_email['message']));
 	}
 	else
 	{
 		// Preview the HTML version
-		echo $mass_email['htmlmessage'];
+		$pupuppage->construct_cell($mass_email['htmlmessage']);
 	}
-
-		?>
-		</div>
-	</div>
-	</body>
-	</html>
-	<?php
+	$pupuppage->construct_row();
+	$pupuppage->output($lang->mas_mail_preview);
 	exit;
 }
 
