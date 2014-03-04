@@ -79,7 +79,7 @@ if($mybb->input['action'] == "view")
 		$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
 	}
 	
-	$pupuppage = new Table();
+	$popuppage = new Table();
 
 	$table = new Table();
 
@@ -105,9 +105,9 @@ if($mybb->input['action'] == "view")
 
 	$table->construct_cell($log['message'], array("colspan" => 2));
 	$table->construct_row();
-	$pupuppage->construct_cell($table->output($lang->email,1,"general",true));
-	$pupuppage->construct_row();
-	$pupuppage->output($lang->user_email_log_viewer);
+	$popuppage->construct_cell($table->output($lang->email, 1, "general", true));
+	$popuppage->construct_row();
+	$popuppage->output($lang->user_email_log_viewer);
 }
 
 if(!$mybb->input['action'])

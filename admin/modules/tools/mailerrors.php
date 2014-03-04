@@ -73,7 +73,7 @@ if($mybb->input['action'] == "view")
 	$log['smtperror'] = htmlspecialchars_uni($log['smtpcode']);
 	$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 	$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
-	$pupuppage = new Table();
+	$popuppage = new Table();
 
 	$table = new Table();
 
@@ -94,8 +94,8 @@ if($mybb->input['action'] == "view")
 		$table->construct_row();
 	}
 
-	$pupuppage->construct_cell($table->output($lang->error,1,"general",true));
-	$pupuppage->construct_row();
+	$popuppage->construct_cell($table->output($lang->error, 1, "general", true));
+	$popuppage->construct_row();
 	
 	$table = new Table();
 
@@ -117,10 +117,10 @@ if($mybb->input['action'] == "view")
 
 	$table->construct_cell($log['message'], array("colspan" => 2));
 	$table->construct_row();
-	$pupuppage->construct_cell($table->output($lang->email,1,"general",true));
-	$pupuppage->construct_row();
+	$popuppage->construct_cell($table->output($lang->email, 1, "general", true));
+	$popuppage->construct_row();
 	
-	$pupuppage->output($lang->user_email_log_viewer);
+	$popuppage->output($lang->user_email_log_viewer);
 }
 
 if(!$mybb->input['action'])

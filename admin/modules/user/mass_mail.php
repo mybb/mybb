@@ -1439,20 +1439,20 @@ if($mybb->input['action'] == "preview")
 		admin_redirect("index.php?module=user-mass_mail");
 	}
 
-	$pupuppage = new Table();
+	$popuppage = new Table();
 
 	if($mybb->input['format'] == 'text' || !$mass_email['htmlmessage'])
 	{
 		// Show preview of the text version
-		$pupuppage->construct_cell(nl2br($mass_email['message']));
+		$popuppage->construct_cell(nl2br($mass_email['message']));
 	}
 	else
 	{
 		// Preview the HTML version
-		$pupuppage->construct_cell($mass_email['htmlmessage']);
+		$popuppage->construct_cell($mass_email['htmlmessage']);
 	}
-	$pupuppage->construct_row();
-	$pupuppage->output($lang->mas_mail_preview);
+	$popuppage->construct_row();
+	$popuppage->output($lang->mass_mail_preview);
 	exit;
 }
 
