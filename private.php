@@ -1967,7 +1967,6 @@ if(!$mybb->input['action'])
 	$folder = $mybb->input['fid'];
 	$foldername = $foldernames[$folder];
 
-	$lang->pms_in_folder = $lang->sprintf($lang->pms_in_folder, $foldername);
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
 		$sender = $lang->sentto;

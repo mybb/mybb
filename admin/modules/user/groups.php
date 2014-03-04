@@ -15,6 +15,7 @@ $usergroup_permissions = array(
 	"canviewthreads" => 1,
 	"canviewprofiles" => 1,
 	"candlattachments" => 1,
+	"canviewboardclosed" => 1,
 	"canpostthreads" => 1,
 	"canpostreplys" => 1,
 	"canpostattachments" => 1,
@@ -771,6 +772,7 @@ if($mybb->input['action'] == "edit")
 				"canviewthreads" => intval($mybb->input['canviewthreads']),
 				"canviewprofiles" => intval($mybb->input['canviewprofiles']),
 				"candlattachments" => intval($mybb->input['candlattachments']),
+				"canviewboardclosed" => intval($mybb->input['canviewboardclosed']),
 				"canpostthreads" => intval($mybb->input['canpostthreads']),
 				"canpostreplys" => intval($mybb->input['canpostreplys']),
 				"canpostattachments" => intval($mybb->input['canpostattachments']),
@@ -953,6 +955,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("cansearch", 1, $lang->can_search_forums, array("checked" => $mybb->input['cansearch'])),
 		$form->generate_check_box("canviewprofiles", 1, $lang->can_view_profiles, array("checked" => $mybb->input['canviewprofiles'])),
 		$form->generate_check_box("candlattachments", 1, $lang->can_download_attachments, array("checked" => $mybb->input['candlattachments'])),
+		$form->generate_check_box("canviewboardclosed", 1, $lang->can_view_board_closed, array("checked" => $mybb->input['canviewboardclosed']))
 	);
 	$form_container->output_row($lang->viewing_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $viewing_options)."</div>");
 

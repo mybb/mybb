@@ -57,24 +57,25 @@ a:hover {
 #welcome a:visited
 {
 	color: #666;
+	min-height: 16px;
 }
 
 #welcome .logout {
 	margin-left: 4px;
 	padding: 0 18px 2px 0;
-	background: url(images/icons/logout.png) no-repeat right;
+	background: url(images/icons/logout.png) no-repeat top right;
 }
 
 #welcome .forum {
 	margin-left: 4px;
 	padding: 1px 0 2px 20px;
-	background: url(images/icons/world.png) no-repeat left;
+	background: url(images/icons/world.png) no-repeat top left;
 }
 
 #welcome .username {
 	margin-left: 4px;
 	padding: 0 0 2px 18px;
-	background: url(images/icons/user.png) no-repeat left;
+	background: url(images/icons/user.png) no-repeat top left;
 }
 
 /* Menu */
@@ -553,6 +554,7 @@ select {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	outline: 0;
 }
 
 textarea:focus, input.text_input:focus, select:focus {
@@ -589,6 +591,7 @@ input.submit_button {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	outline: 0;
 }
 
 input.submit_button:hover {

@@ -150,8 +150,6 @@ elseif($mybb->input['do'] == "login")
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
 
-	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
-
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
 	{

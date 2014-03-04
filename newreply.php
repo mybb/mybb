@@ -440,7 +440,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				}
 
 				$data .= "</captcha>";
-				
+
 				header("Content-type: application/json; charset={$lang->settings['charset']}");
 				echo json_encode(array("data" => $data));
 			}
@@ -448,7 +448,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				//header("Content-type: text/html; charset={$lang->settings['charset']}");
 				$data = "<captcha>reload</captcha>";
-				
+
 				header("Content-type: application/json; charset={$lang->settings['charset']}");
 				echo json_encode(array("data" => $data));
 			}
@@ -634,10 +634,10 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					});
 				}\n";
 				$data .= "</script>\n";
-				
+
 				header("Content-type: application/json; charset={$lang->settings['charset']}");
 				echo json_encode(array("data" => $data));
-				
+
 				exit;
 			}
 			// Post is in the moderation queue
@@ -1094,7 +1094,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			if($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments'])
+			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 			{
 				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
 			}

@@ -7,6 +7,7 @@
 
 $l['redirect_width'] = "50%";
 $l['lastvisit_never'] = "Never";
+$l['lastvisit_hidden'] = "(Hidden)";
 
 $l['search_button'] = 'Search';
 $l['toplinks_memberlist'] = "Member List";
@@ -196,7 +197,7 @@ $l['postbit_posts'] = "Posts:";
 $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
 $l['postbit_status'] = "Status:";
-$l['postbit_attachments'] = "Attached File(s)";
+$l['postbit_attachments'] = "Attached Files";
 $l['postbit_attachment_size'] = "Size:";
 $l['postbit_attachment_downloads'] = "Downloads:";
 $l['postbit_attachments_images'] = "Image(s)";

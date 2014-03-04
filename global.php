@@ -135,7 +135,7 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(isset($mybb->input['pid']))
+	if(isset($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
 		$fid = $db->fetch_field($query, 'fid');
@@ -150,6 +150,18 @@ if(in_array($current_page, $valid))
 	else if(isset($mybb->input['tid']))
 	{
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
+		$fid = $db->fetch_field($query, 'fid');
+
+		if($fid)
+		{
+			$style = $forum_cache[$fid];
+			$load_from_forum = 1;
+		}
+	}
+	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
+	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
+	{
+		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -365,9 +377,9 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
-// If the board is closed and we have an Administrator, show board closed warning
+// If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
 $bbclosedwarning = '';
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] == 1)
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
 	eval('$bbclosedwarning = "'.$templates->get('global_boardclosed_warning').'";');
 }
@@ -683,7 +695,7 @@ $closed_bypass = array(
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";

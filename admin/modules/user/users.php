@@ -849,7 +849,6 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form = new Form("index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}", "post", "", 1);
-	echo "<script type=\"text/javascript\">\n function submitUserForm() { $('tab_overview').up('FORM').submit(); }</script>\n";
 
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
 
@@ -2446,6 +2445,7 @@ if($mybb->input['action'] == "inline_edit")
 							{
 								// Run delete queries
 								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 								$db->delete_query("userfields", "ufid='{$user['uid']}'");
 								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 								$db->delete_query("events", "uid='{$user['uid']}'");
@@ -3040,7 +3040,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(!empty($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{

@@ -186,7 +186,7 @@ if(is_banned_ip($session->ipaddress))
 // If our board is closed..
 if($mybb->settings['boardclosed'] == 1)
 {
-	if($mybb->usergroup['cancp'] != 1)
+	if($mybb->usergroup['canviewboardclosed'] != 1)
 	{
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);

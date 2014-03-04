@@ -45,7 +45,6 @@ $l['local_time_format'] = "{1} at {2}";
 $l['users_forum_info'] = "{1}'s Forum Info";
 $l['joined'] = "Joined:";
 $l['lastvisit'] = "Last Visit:";
-$l['lastvisit_hidden'] = "N/A";
 $l['total_posts'] = "Total Posts:";
 $l['ppd_percent_total'] = "{1} posts per day | {2} percent of total posts";
 $l['find_posts'] = "Find All Posts";
@@ -153,7 +152,7 @@ $l['verification_note'] = "Please enter the text contained within the image into
 $l['verification_subnote'] = "(case insensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";
-$l['timeonline_hidden'] = "N/A";
+$l['timeonline_hidden'] = "(Hidden)";
 $l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
 

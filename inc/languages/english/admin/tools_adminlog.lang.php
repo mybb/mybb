@@ -59,7 +59,7 @@ $l['admin_log_config_calendars_add'] = "Added calendar #{1} ({2})";
 $l['admin_log_config_calendars_permissions'] = "Modified permissions for calendar #{1} ({2})";
 $l['admin_log_config_calendars_edit'] = "Edited calendar #{1} ({2})";
 $l['admin_log_config_calendars_delete'] = "Deleted calendar #{1} ({2})";
-$l['admin_log_config_calendars_update_orders'] = "Updated calendar display order";
+$l['admin_log_config_calendars_update_order'] = "Updated calendar display order";
 
 $l['admin_log_config_help_documents_add_section'] = "Added help section #{1} ({2})";
 $l['admin_log_config_help_documents_add_document'] = "Added help document #{1} ({2})";
@@ -201,6 +201,7 @@ $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
 $l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
+$l['admin_log_tools_cache_reload'] = "Reload cache ({1})";
 $l['admin_log_tools_cache_rebuild_all'] = "Rebuilt & reloaded all caches";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
@@ -252,8 +253,8 @@ $l['admin_log_user_groups_add'] = "Added usergroup #{1} ({2})";
 $l['admin_log_user_groups_edit'] = "Edited usergroup #{1} ({2})";
 $l['admin_log_user_groups_delete'] = "Deleted usergroup #{1} ({2})";
 $l['admin_log_user_groups_disporder'] = "Updated usergroup display orders";
-$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{1} ({2})";
-$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{1} ({2})";
+$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{3} ({2})";
+$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{3} ({2})";
 
 $l['admin_log_user_titles_add'] = "Added default user title #{1} ({2}) at {3} posts";
 $l['admin_log_user_titles_edit'] = "Edited default user title #{1} ({2}) at {3} posts";

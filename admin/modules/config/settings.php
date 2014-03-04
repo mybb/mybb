@@ -806,8 +806,6 @@ if($mybb->input['action'] == "manage")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
-	/*echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", ManageSettings.init);</script>';*/
-
 	$page->output_footer();
 }
 

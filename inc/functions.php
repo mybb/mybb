@@ -1980,6 +1980,12 @@ function update_stats($changes=array(), $force=false)
 
 	if(empty($stats_changes))
 	{
+		// Update stats after all changes are done
+		add_shutdown('update_stats', array(array(), true));
+	}
+
+	if(empty($stats_changes) || $stats_changes['inserted'])
+	{
 		$stats_changes = array(
 			'numthreads' => '+0',
 			'numposts' => '+0',
@@ -1987,15 +1993,19 @@ function update_stats($changes=array(), $force=false)
 			'numunapprovedthreads' => '+0',
 			'numunapprovedposts' => '+0',
 			'numdeletedposts' => '+0',
-			'numdeletedthreads' => '+0'
+			'numdeletedthreads' => '+0',
+			'inserted' => false // Reset after changes are inserted into cache
 		);
-		add_shutdown('update_stats', array(array(), true));
 		$stats = $stats_changes;
 	}
 
-	if($force)
+	if($force) // Force writing to cache?
 	{
-		update_stats($changes);
+		if(!empty($changes))
+		{
+			// Calculate before writing to cache
+			update_stats($changes);
+		}
 		$stats = $cache->read("stats");
 		$changes = $stats_changes;
 	}
@@ -2004,8 +2014,8 @@ function update_stats($changes=array(), $force=false)
 		$stats = $stats_changes;
 	}
 
-	$counters = array('numthreads', 'numunapprovedthreads', 'numposts', 'numunapprovedposts', 'numusers', 'numdeletedposts', 'numdeletedthreads');
 	$new_stats = array();
+	$counters = array('numthreads', 'numunapprovedthreads', 'numposts', 'numunapprovedposts', 'numusers', 'numdeletedposts', 'numdeletedthreads');
 	foreach($counters as $counter)
 	{
 		if(array_key_exists($counter, $changes))
@@ -2016,27 +2026,36 @@ function update_stats($changes=array(), $force=false)
 				if(intval($changes[$counter]) != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
-					if(!$force && $new_stats[$counter] > 0)
+					if(!$force && (substr($stats[$counter], 0, 1) == "+" || substr($stats[$counter], 0, 1) == "-"))
 					{
-						$new_stats[$counter] = "+{$new_stats[$counter]}";
+						// We had relative values? Then it is still relative
+						if($new_stats[$counter] >= 0)
+						{
+							$new_stats[$counter] = "+{$new_stats[$counter]}";
+						}
+					}
+					// Less than 0? That's bad
+					elseif($new_stats[$counter] < 0)
+					{
+						$new_stats[$counter] = 0;
 					}
 				}
 			}
 			else
 			{
 				$new_stats[$counter] = $changes[$counter];
-			}
-			// Less than 0? That's bad
-			if(isset($new_stats[$counter]) && $new_stats[$counter] < 0)
-			{
-				$new_stats[$counter] = 0;
+				// Less than 0? That's bad
+				if($new_stats[$counter] < 0)
+				{
+					$new_stats[$counter] = 0;
+				}
 			}
 		}
 	}
 
 	if(!$force)
 	{
-		$stats_changes = array_merge($stats, $new_stats);
+		$stats_changes = array_merge($stats, $new_stats); // Overwrite changed values
 		return;
 	}
 
@@ -2053,7 +2072,7 @@ function update_stats($changes=array(), $force=false)
 	{
 		if(is_array($stats))
 		{
-			$stats = array_merge($stats, $new_stats);
+			$stats = array_merge($stats, $new_stats); // Overwrite changed values
 		}
 		else
 		{
@@ -2071,6 +2090,7 @@ function update_stats($changes=array(), $force=false)
 	$db->replace_query("stats", $todays_stats, "dateline");
 
 	$cache->update("stats", $stats, "dateline");
+	$stats_changes['inserted'] = true;
 }
 
 /**

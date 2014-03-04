@@ -450,6 +450,7 @@ if($mybb->input['action'] == "permissions")
 			$result = $db->fetch_array($query);
 			$fid = $result['fid'];
 			$gid = $result['gid'];
+			$forum = get_forum($fid);
 		}
 
 		$field_list = array();
@@ -1224,7 +1225,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+		echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -1418,8 +1419,6 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	$page->add_breadcrumb_item($lang->edit_forum);
 	$page->output_header($lang->edit_forum);
@@ -1789,7 +1788,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id."); });\n";
+		echo "$(function() { QuickPermEditor.init(".$id."); });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -2192,8 +2191,6 @@ if(!$mybb->input['action'])
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	if($fid)
 	{
@@ -2468,7 +2465,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo "<script type=\"text/javascript\">\n<!--\n";
 		foreach($ids as $id)
 		{
-			echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+			echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 		}
 		echo "// -->\n</script>\n";
 

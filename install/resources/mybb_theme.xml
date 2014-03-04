@@ -513,6 +513,7 @@ input.button {
 	background: #eee url(images/buttons_bg.png) repeat-x;
 	border: 1px solid #bbb;
 	color: #333;
+	outline: 0;
 }
 
 input.button:hover {
@@ -794,6 +795,10 @@ form {
 	margin-bottom: 15px;
 	font-size: 11px;
 	word-wrap: break-word;
+}
+
+.red_alert a:link, .red_alert a:visited, .red_alert a:hover, .red_alert  a:active  {
+	color: #A5161A;
 }
 
 .high_warning {
@@ -1548,6 +1553,35 @@ div.jGrowl div.jGrowl-closer {
 	margin: 5px;
 	padding: 8px;
 	border:1px solid #CCCCCC;
+}
+
+.pmspace {
+	float: right;  
+	margin: -3px 5px;
+}
+
+.pmspace_container {
+	background: #fff;
+	border: 1px solid #ccc;
+	width: 100px;
+	display: inline-block;
+}
+
+.pmspace_used {
+	background: #e73c3c;
+	border: 1px solid #c00;
+	display: inline-block;
+	color: #fff;
+	margin: -1px;
+}
+
+.pmspace_unused {
+	display: inline-block;
+}
+
+.pmspace_text {
+	padding: 1px 5px;
+	display: inline-block;
 }]]></stylesheet>
 		<stylesheet name="modcp.css" attachedto="modcp.php" version="1800" disporder="3"><![CDATA[.modcp_nav_item {
 	display: block;
@@ -3606,15 +3640,13 @@ a.button {
 {$lang->banned_warning3}: {$banlift}<br />
 </div>
 <br />]]></template>
-		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong><span style="color:#FF0000;">{$lang->bbclosed_warning}</span></strong></div>]]></template>
+		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
 		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
-	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="[x]" /></a></div>
+	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
 	<div>{$privatemessage_text}</div>
-</div>
-<br />]]></template>
-		<template name="global_unreadreports" version="1600"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>
-<br />]]></template>
+</div>]]></template>
+		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
 		<template name="header" version="1800"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
@@ -6516,9 +6548,6 @@ body {
 	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
 	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
-		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="{$colspan}">{$lang->error_no_results}</td>
-</tr>]]></template>
 		<template name="modcp_modqueue_posts" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
@@ -8430,17 +8459,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
-<tr>
-<td>{$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+<fieldset>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+</fieldset>
 <br />
 {$limitwarning}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8450,7 +8471,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 	<input type="submit" class="button" name="quick_search" value="{$lang->search_pms}" />
 	(<a href="private.php?action=advanced_search">{$lang->advanced_search}</a>)</div>
-	<strong>{$lang->pms_in_folder}</strong></td>
+	<strong>{$foldername}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong><a href="private.php?fid={$folder}&amp;sortby=subject&amp;order=asc">{$lang->message_title}</a> {$orderarrow['subject']}</strong></span></td>
@@ -8719,7 +8740,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" align="center">{$foldercount}</td>
 <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="1" /></td>
 </tr>]]></template>
-		<template name="private_folders" version="1400"><![CDATA[<html>
+		<template name="private_folders" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
 {$headerinclude}
@@ -8740,6 +8761,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><span class="smalltext">{$lang->edit_folder_note}</span></td>
 </tr>
 {$folderlist}
+</table>
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->new_folders}</strong></td>
 </tr>
@@ -8767,12 +8791,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
-		<template name="private_limitwarning" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1" align="center"><span class="smalltext"><strong><span style="color:#FF0000;">{$lang->reached_warning}</span></strong><br />{$lang->reached_warning2}</span></td>
-</tr>
-</table>
-<br />]]></template>
+		<template name="private_limitwarning" version="1800"><![CDATA[<div class="red_alert">
+	<strong>{$lang->reached_warning}</strong><br />
+	{$lang->reached_warning2}
+</div>]]></template>
 		<template name="private_messagebit" version="1800"><![CDATA[<tr>
 <td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
 <td align="center" class="trow2" width="1%">{$icon}</td>
@@ -8799,13 +8821,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
 		<template name="private_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="private.php?fid={$folder}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
-		<template name="private_pmspace" version="120"><![CDATA[<span style="float:right"><table cellspacing="0" cellpadding="0" width="230" style="border: solid 1px #000000;">
-	<tr>
-		<td width="{$spaceused}" bgcolor="red" align="center"><span class="smalltext"><strong>{$overhalf}</strong></span></td>
-		<td width="{$spaceused2}" bgcolor="green" align="center"><span class="smalltext"><strong>{$belowhalf}</strong></span></td>
-		<td width="130" align="center"><span class="smalltext"><strong>{$lang->pmspaceused}</strong></span></td>
-	</tr>
-</table></span>]]></template>
+		<template name="private_pmspace" version="1800"><![CDATA[<span class="pmspace">
+  <span class="pmspace_container"><span class="pmspace_used" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
+  </span>
+  {$lang->pmspaceused}
+</span>]]></template>
 		<template name="private_read" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -11794,7 +11814,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="warnings_no_warnings" version="1400"><![CDATA[			<tr>
 				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
 			</tr>]]></template>
-		<template name="warnings_view" version="1400"><![CDATA[<html>
+		<template name="warnings_view" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
 	{$headerinclude}
@@ -11827,7 +11847,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<td class="trow1">{$expires} {$revoked_date}</td>
 		</tr>
 		<tr>
-			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->warning_note}</strong></span></td>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_warning_note}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow2" colspan="2">{$notes}</td>
@@ -11869,7 +11889,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<br />
 	<div align="center"><input type="submit" class="button" value="{$lang->revoke_warning}" /></div>
 </form>]]></template>
-		<template name="warnings_view_revoked" version="1400"><![CDATA[<br />
+		<template name="warnings_view_revoked" version="1800"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 	<tr>
 		<td class="thead" colspan="2"><strong>{$lang->warning_is_revoked}</strong></td>
@@ -11883,14 +11903,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$date_revoked}</td>
 	</tr>
 	<tr>
-		<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->reason}</strong></span></td>
+		<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_reason}</strong></span></td>
 	</tr>
 	<tr>
 		<td class="trow2" colspan="2">{$revoke_reason}</td>
 	</tr>
 </table>]]></template>
-		<template name="warnings_view_user" version="1400"><![CDATA[		<tr>
-			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+		<template name="warnings_view_user" version="1800"><![CDATA[		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->details_username}</strong></span></td>
 		</tr>
 		<tr>
 			<td class="trow1" colspan="2">{$user_link}</td>
@@ -12205,7 +12225,7 @@ $(function() {
 				":at:": "images/smilies/at.gif"
 			}
 		},
-        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|pastetext,horizontalrule,maximize,source",
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
 	});
 });
 </script>]]></template>

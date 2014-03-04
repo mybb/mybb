@@ -576,7 +576,7 @@ if($mybb->input['action'] == "register")
 		// Custom profile fields baby!
 		$altbg = "trow1";
 		$requiredfields = '';
-		$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
+		$query = $db->simple_select("profilefields", "*", "required='1' AND editable !='0'", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -1845,20 +1845,23 @@ if($mybb->input['action'] == "profile")
 		// User is offline
 		else
 		{
-			$memlastvisitsep = '';
-			$memlastvisittime = '';
-			$memlastvisitdate = $lang->lastvisit_never;
-
-			if($memprofile['lastactive'])
-			{
-				// We have had at least some active time, hide it instead
-				$memlastvisitdate = $lang->lastvisit_hidden;
-			}
-
-			$timeonline = $lang->timeonline_hidden;
-
 			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 		}
+	}
+
+	if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
+	{
+		$memlastvisitsep = '';
+		$memlastvisittime = '';
+		$memlastvisitdate = $lang->lastvisit_never;
+
+		if($memprofile['lastactive'])
+		{
+			// We have had at least some active time, hide it instead
+			$memlastvisitdate = $lang->lastvisit_hidden;
+		}
+
+		$timeonline = $lang->timeonline_hidden;
 	}
 
 	// Build Referral
@@ -1984,14 +1987,6 @@ if($mybb->input['action'] == "profile")
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
 	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
-	if($memprofile['timeonline'] > 0)
-	{
-		$timeonline = nice_time($memprofile['timeonline']);
-	}
-	else
-	{
-		$timeonline = $lang->none_registered;
-	}
 
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)

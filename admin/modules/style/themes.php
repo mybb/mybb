@@ -190,7 +190,7 @@ if($mybb->input['action'] == "browse")
 
 		foreach($tree['results']['result'] as $result)
 		{
-			$table->construct_cell("<img src=\"http://community.mtbb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
+			$table->construct_cell("<img src=\"http://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
@@ -2193,7 +2193,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
-Event.observe(window, "load", function() {
+$(function() {
 //<![CDATA[
     new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
 });
@@ -2290,8 +2290,12 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -2553,8 +2557,12 @@ if($mybb->input['action'] == "add_stylesheet")
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -2817,9 +2825,8 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
-Event.observe(window, "load", function() {
+$(function() {
 //<![CDATA[
-    new ThemeSelector(\''.$count.'\');
 	checkAction(\'add\');
 });
 //]]>

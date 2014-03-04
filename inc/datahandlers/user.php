@@ -406,7 +406,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday_coppa");
 			return false;
 		}
-		elseif($mybb->settings['coppa'] == "deny" && $birthday['year'] > (date("Y")-13))
+		elseif(($mybb->settings['coppa'] == "deny" && $birthday['year'] > (date("Y")-13)) && !is_moderator())
 		{
 			$this->set_error("invalid_birthday_coppa2");
 			return false;
@@ -489,7 +489,7 @@ class UserDataHandler extends DataHandler
 
 		if(empty($this->data['profile_fields_editable']))
 		{
-			$editable = "editable=1";
+			$editable = "editable !='0'";
 		}
 
 		// Fetch all profile fields first.
