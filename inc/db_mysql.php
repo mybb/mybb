@@ -860,7 +860,14 @@ class DB_MySQL
 			}
 			else
 			{
-				$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				if (is_numeric($value))
+				{
+					$query .= $comma."`".$field."`={$value}";
+				}
+				else
+				{
+					$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				}
 			}
 			$comma = ', ';
 		}
