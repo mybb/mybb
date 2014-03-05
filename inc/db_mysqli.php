@@ -865,7 +865,7 @@ class DB_MySQLi
 			}
 			else
 			{
-				if (is_numeric($value))
+				if(is_numeric($value))
 				{
 					$query .= $comma."`".$field."`={$value}";
 				}
