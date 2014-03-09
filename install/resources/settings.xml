@@ -589,7 +589,7 @@ none=Hide Errors and Warnings
 			<description><![CDATA[If you would like to allow users to select how many threads per page are shown in a forum, enter the options they should be able to select separated with commas. If this is left blank they will not be able to choose how many threads are shown per page.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[10,20,25,30,40,50]]></settingvalue>
+			<settingvalue><![CDATA[10,15,20,25,30,40,50]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="dotfolders">
@@ -657,7 +657,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<description><![CDATA[If you would like to allow users to select how many posts are shown per page in a thread, enter the options they should be able to select separated with commas. If this is left blank they will not be able to choose how many posts are shown per page.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[5,10,20,25,30,40,50]]></settingvalue>
+			<settingvalue><![CDATA[5,10,15,20,25,30,40,50]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="postmaxavatarsize">
