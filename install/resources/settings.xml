@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="1400" exported="1178692706">
+<settings version="1800" exported="1178692706">
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
@@ -8,7 +8,6 @@
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="boardclosed_reason">
 			<title>Board Closed Reason</title>
@@ -17,7 +16,6 @@
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[These forums are currently closed for maintenance. Please check back later.]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="general" title="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="1">
@@ -28,7 +26,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[Forums]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="bburl">
 			<title>Board URL</title>
@@ -37,7 +34,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="homename">
 			<title>Homepage Name</title>
@@ -46,7 +42,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="homeurl">
 			<title>Homepage URL</title>
@@ -55,7 +50,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="adminemail">
 			<title>Admin Email</title>
@@ -64,7 +58,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="returnemail">
 			<title>Return Email</title>
@@ -73,7 +66,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="contactlink">
 			<title>Contact Us Link</title>
@@ -82,7 +74,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="bblanguage">
 			<title>Default Language</title>
@@ -91,7 +82,6 @@
 			<optionscode><![CDATA[language]]></optionscode>
 			<settingvalue><![CDATA[english]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="cookiedomain">
 			<title>Cookie Domain</title>
@@ -100,7 +90,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="cookiepath">
 			<title>Cookie Path</title>
@@ -109,7 +98,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="cookieprefix">
 			<title>Cookie Prefix</title>
@@ -118,7 +106,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
@@ -127,7 +114,6 @@
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
 			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
@@ -139,7 +125,6 @@
 2=reCAPTCHA]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="captchapublickey">
 			<title><![CDATA[reCAPTCHA Public Key]]></title>
@@ -148,7 +133,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaprivatekey">
 			<title><![CDATA[reCAPTCHA Private Key]]></title>
@@ -157,7 +141,6 @@
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="reportmethod">
 			<title>Reported Posts Medium</title>
@@ -169,7 +152,6 @@ pms=Sent as Private Messages
 email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="statslimit">
 			<title>Stats Limit</title>
@@ -178,7 +160,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
@@ -187,7 +168,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
@@ -196,7 +176,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
@@ -205,7 +184,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
@@ -214,7 +192,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="mailingaddress">
 			<title>Mailing Address</title>
@@ -223,7 +200,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="faxno">
 			<title>Contact Fax No</title>
@@ -232,7 +208,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
@@ -241,7 +216,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="contact_guests">
 			<title>Disable Contact Page to Guests</title>
@@ -250,7 +224,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
@@ -259,7 +232,6 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
@@ -273,7 +245,6 @@ yes=Enabled
 no=Disabled]]></optionscode>
 			<settingvalue><![CDATA[auto]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="seourls_archive">
 			<title>Enable search engine friendly URLs in Archive?</title>
@@ -282,7 +253,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="gzipoutput">
 			<title>Use GZip Page Compression?</title>
@@ -291,7 +261,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="gziplevel">
 			<title>GZip Page Compression Level</title>
@@ -300,7 +269,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="nocacheheaders">
 			<title>Send No Cache Headers</title>
@@ -309,7 +277,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
@@ -318,7 +285,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
@@ -327,7 +293,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="tplhtmlcomments">
 			<title>Output template start/end comments?</title>
@@ -336,7 +301,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="use_xmlhttprequest">
 			<title>Enable XMLHttp request features?</title>
@@ -345,7 +309,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
@@ -354,7 +317,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
@@ -363,7 +325,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
@@ -372,7 +333,6 @@ no=Disabled]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="errorlogmedium">
 			<title>Error Logging Medium</title>
@@ -386,7 +346,6 @@ both=Log and email errors
 ]]></optionscode>
 			<settingvalue><![CDATA[none]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
@@ -400,7 +359,6 @@ none=Hide Errors and Warnings
 ]]></optionscode>
 			<settingvalue><![CDATA[both]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
@@ -409,7 +367,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
@@ -418,7 +375,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="ip_forwarded_check">
 			<title>Scrutinize User's IP address?</title>
@@ -427,7 +383,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="minifycss">
 			<title>Minify Stylesheets?</title>
@@ -436,7 +391,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="1">
@@ -447,7 +401,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[m-d-Y]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="timeformat">
 			<title>Time Format</title>
@@ -456,7 +409,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[h:i A]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="datetimesep">
 			<title>Date/Time Separator</title>
@@ -465,7 +417,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[, ]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="regdateformat">
 			<title>Registered Date Format</title>
@@ -474,7 +425,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[M Y]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="timezoneoffset">
 			<title>Default Timezone Offset</title>
@@ -517,7 +467,6 @@ none=Hide Errors and Warnings
 </select>]]></optionscode>
 			<settingvalue><![CDATA[+10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="dstcorrection">
 			<title>Day Light Savings Time</title>
@@ -526,7 +475,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="forumhome" title="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="1">
@@ -537,7 +485,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="subforumsindex">
 			<title>Subforums to show on Index listing</title>
@@ -546,7 +493,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="subforumsstatusicons">
 			<title>Show Subforum Status Icons?</title>
@@ -555,7 +501,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="hideprivateforums">
 			<title>Hide Private Forums?</title>
@@ -564,7 +509,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="modlist">
 			<title>Forums' Moderator Listing</title>
@@ -573,7 +517,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdays">
 			<title>Show Today's Birthdays?</title>
@@ -582,7 +525,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdayspostlimit">
 			<title>Only Show Birthdays with x Posts</title>
@@ -591,7 +533,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showwol">
 			<title>Show Who's Online?</title>
@@ -600,7 +541,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
@@ -609,7 +549,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showforumviewing">
 			<title>Show x viewing forum</title>
@@ -618,7 +557,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="forumdisplay" title="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="1">
@@ -629,7 +567,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="hottopic">
 			<title>Replies For Hot Topic</title>
@@ -638,7 +575,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="hottopicviews">
 			<title>Views For Hot Topic</title>
@@ -647,7 +583,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[150]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="usertppoptions">
 			<title>User Selectable Threads Per Page</title>
@@ -656,7 +591,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10,20,25,30,40,50]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="dotfolders">
 			<title>Use 'dot' Icons</title>
@@ -665,7 +599,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="allowthreadratings">
 			<title>Use Thread Ratings?</title>
@@ -674,7 +607,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="browsingthisforum">
 			<title>Users Browsing this Forum</title>
@@ -683,7 +615,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="announcementlimit">
 			<title>Announcements Limit</title>
@@ -692,7 +623,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
@@ -701,7 +631,6 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
@@ -714,7 +643,6 @@ horizontal=Display posts using the horizontal post layout
 classic=Display posts using the classic layout]]></optionscode>
 			<settingvalue><![CDATA[horizontal]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postsperpage">
 			<title>Posts Per Page:</title>
@@ -723,7 +651,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="userpppoptions">
 			<title>User Selectable Posts Per Page</title>
@@ -732,7 +659,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5,10,20,25,30,40,50]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postmaxavatarsize">
 			<title>Maximum Avatar Dimensions in Posts</title>
@@ -741,7 +667,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[55x55]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="threadreadcut">
 			<title>Read Threads in Database (Days)</title>
@@ -750,7 +675,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="threadusenetstyle">
 			<title>Usenet Style Thread View</title>
@@ -759,7 +683,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="quickreply">
 			<title>Show Quick Reply Form</title>
@@ -768,7 +691,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="multiquote">
 			<title>Show Multi-quote Buttons</title>
@@ -777,7 +699,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showsimilarthreads">
 			<title>Show 'Similar Threads' Table</title>
@@ -786,7 +707,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="similarityrating">
 			<title>Similar Threads Relevancy Rating</title>
@@ -795,7 +715,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="similarlimit">
 			<title>Similar Threads Limit</title>
@@ -804,7 +723,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showforumpagesbreadcrumb">
 			<title>Show Forum Multipage Dropdown</title>
@@ -813,7 +731,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="browsingthisthread">
 			<title>Users Browsing this Thread</title>
@@ -822,7 +739,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="delayedthreadviews">
 			<title>Delayed Thread View Updates</title>
@@ -831,7 +747,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="member" title="Login and Registration Options" description="Here you can control various settings with relation to user account registration and login management." disporder="8" isdefault="1">
@@ -842,7 +757,6 @@ classic=Display posts using the classic layout]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="regtype">
 			<title>Registration Method</title>
@@ -855,7 +769,6 @@ randompass=Send Random Password
 admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="minnamelength">
 			<title>Minimum Username Length</title>
@@ -864,7 +777,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxnamelength">
 			<title>Maximum Username Length</title>
@@ -873,7 +785,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="minpasswordlength">
 			<title>Minimum Password Length</title>
@@ -882,7 +793,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[6]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpasswordlength">
 			<title>Maximum Password Length</title>
@@ -891,7 +801,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="requirecomplexpasswords">
 			<title>Require a complex password?</title>
@@ -900,7 +809,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
@@ -909,7 +817,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxregsbetweentime">
 			<title>Maximum Registrations Per IP Address</title>
@@ -918,7 +825,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="allowmultipleemails">
 			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
@@ -927,7 +833,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
@@ -936,7 +841,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="hiddencaptchaimage">
 			<title>Display a hidden CAPTCHA</title>
@@ -945,7 +849,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="hiddencaptchaimagefield">
 			<title>Hidden CAPTCHA field</title>
@@ -954,7 +857,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[email3]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="usereferrals">
 			<title>Use Referrals System</title>
@@ -963,7 +865,6 @@ admin=Administrator Activation]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
@@ -975,7 +876,6 @@ deny=Deny users under the age of 13
 disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[disabled]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
@@ -987,7 +887,6 @@ disabled=Disable this feature]]></optionscode>
 2=Both Username and Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>0</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
@@ -996,7 +895,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
@@ -1005,7 +903,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
@@ -1014,7 +911,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
@@ -1023,7 +919,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="regtime">
 			<title>Minimum Registration Time</title>
@@ -1032,7 +927,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="9" isdefault="1">
@@ -1043,7 +937,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="sigcountmycode">
 			<title>MyCode affects signature length</title>
@@ -1052,7 +945,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="sigsmilies">
 			<title>Allow Smilies in Signatures</title>
@@ -1061,7 +953,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="sightml">
 			<title>Allow HTML in Signatures</title>
@@ -1070,7 +961,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="sigimgcode">
 			<title>Allow [img] Code in Signatures</title>
@@ -1079,7 +969,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxsigimages">
 			<title>Maximum Number of Images per Signature</title>
@@ -1088,7 +977,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="siglength">
 			<title>Length limit in Signatures</title>
@@ -1097,7 +985,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="useravatar">
 			<title>Default User Avatar</title>
@@ -1106,7 +993,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/default_avatar.png]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="useravatardims">
 			<title>Default Avatar Dimensions</title>
@@ -1115,7 +1001,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100|100]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="useravatarrating">
 			<title>Gravatar Rating</title>
@@ -1135,7 +1020,6 @@ r=R
 x=X]]></optionscode>
 			<settingvalue><![CDATA[g]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
@@ -1144,7 +1028,6 @@ x=X]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
@@ -1153,7 +1036,6 @@ x=X]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
@@ -1165,7 +1047,6 @@ user=Give users the choice of resizing large avatars
 disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[auto]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
@@ -1174,7 +1055,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
@@ -1183,7 +1063,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
@@ -1192,7 +1071,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
@@ -1201,7 +1079,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="posting" title="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="10" isdefault="1">
@@ -1212,7 +1089,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxmessagelength">
 			<title>Maximum Message Length</title>
@@ -1227,7 +1103,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="mycodemessagelength">
 			<title>MyCode Affects Minimum Message Length?</title>
@@ -1236,7 +1111,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postfloodcheck">
 			<title>Post Flood Checking</title>
@@ -1245,7 +1119,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postfloodsecs">
 			<title>Post Flood Time</title>
@@ -1254,7 +1127,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergemins">
 			<title>Post Merge Time</title>
@@ -1263,7 +1135,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergefignore">
 			<title>Merge Forums to Ignore</title>
@@ -1272,7 +1143,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
@@ -1281,7 +1151,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergesep">
 			<title>Merge Separator</title>
@@ -1290,7 +1159,6 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[[hr]]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="logip">
 			<title>Show Posting IP Addresses</title>
@@ -1302,7 +1170,6 @@ hide=Show to Admins & Mods
 show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedby">
 			<title>Show 'edited by' Messages</title>
@@ -1311,7 +1178,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedbyadmin">
 			<title>Show 'edited by' Message for Administrators</title>
@@ -1320,7 +1186,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpostimages">
 			<title>Maximum Images per Post</title>
@@ -1329,7 +1194,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpostvideos">
 			<title>Maximum Videos per Post</title>
@@ -1338,7 +1202,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="subscribeexcerpt">
 			<title>Amount of Characters for Subscription Previews</title>
@@ -1347,7 +1210,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
@@ -1356,7 +1218,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbnails">
 			<title>Show Attached Thumbnails in Posts</title>
@@ -1368,7 +1229,6 @@ no=Full Size Image
 download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbh">
 			<title>Attached Thumbnail Maximum Height</title>
@@ -1377,7 +1237,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbw">
 			<title>Attached Thumbnail Maximum Width</title>
@@ -1386,7 +1245,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="wordwrap">
 			<title>Number of Characters before Word Wrapping Occurs</title>
@@ -1395,7 +1253,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[80]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxquotedepth">
 			<title>Maximum Nested Quote Tags</title>
@@ -1404,7 +1261,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="polloptionlimit">
 			<title>Maximum Poll Option Length</title>
@@ -1413,7 +1269,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpolloptions">
 			<title>Maximum Number of Poll Options</title>
@@ -1422,7 +1277,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
@@ -1431,7 +1285,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="11" isdefault="1">
@@ -1442,7 +1295,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="membersperpage">
 			<title>Members Per Page</title>
@@ -1451,7 +1303,6 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="default_memberlist_sortby">
 			<title>Default Sort Field</title>
@@ -1464,7 +1315,6 @@ username=Username
 lastvisit=Last Visit]]></optionscode>
 			<settingvalue><![CDATA[regdate]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="default_memberlist_order">
 			<title>Default Sort Order</title>
@@ -1475,7 +1325,6 @@ ascending=Ascending
 descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[ascending]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="memberlistmaxavatarsize">
 			<title>Maximum Display Avatar Dimensions</title>
@@ -1484,7 +1333,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="12" isdefault="1">
@@ -1495,7 +1343,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="posrep">
 			<title>Allow Positive Reputation</title>
@@ -1504,7 +1351,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="negrep">
 			<title>Allow Negative Reputation</title>
@@ -1513,7 +1359,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="neurep">
 			<title>Allow Neutral Reputation</title>
@@ -1522,7 +1367,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="multirep">
 			<title>Allow Multiple Reputation</title>
@@ -1531,7 +1375,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="postrep">
 			<title>Allow Post Reputations</title>
@@ -1540,7 +1383,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="repsperpage">
 			<title>Reputation Comments Per Page</title>
@@ -1549,7 +1391,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxreplength">
 			<title>Maximum Reputation Length</title>
@@ -1558,7 +1399,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[300]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="minreplength">
 			<title>Minimum Reputation Length</title>
@@ -1567,7 +1407,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="13" isdefault="1">
@@ -1578,7 +1417,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="allowcustomwarnings">
 			<title>Allow Custom Warning Types?</title>
@@ -1587,7 +1425,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="canviewownwarning">
 			<title>Can Users View Own Warnings?</title>
@@ -1596,7 +1433,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxwarningpoints">
 			<title>Maximum Warning Points</title>
@@ -1605,7 +1441,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="14" isdefault="1">
@@ -1616,7 +1451,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowhtml">
 			<title>Allow HTML</title>
@@ -1625,7 +1459,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowmycode">
 			<title>Allow MyCode</title>
@@ -1634,7 +1467,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowsmilies">
 			<title>Allow Smilies</title>
@@ -1643,7 +1475,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowimgcode">
 			<title>Allow [img] Code</title>
@@ -1652,7 +1483,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowvideocode">
 			<title>Allow [video] Code</title>
@@ -1661,7 +1491,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pmfloodsecs">
 			<title>Private Message Flood Time</title>
@@ -1670,7 +1499,6 @@ descending=Descending]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="showpmip">
 			<title>Show Private Message IP Addresses</title>
@@ -1682,7 +1510,6 @@ hide=Show to Admins & Mods
 show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="15" isdefault="1">
@@ -1693,7 +1520,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="whosonline" title="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="16" isdefault="1">
@@ -1704,7 +1530,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="refreshwol">
 			<title>Refresh Who's online page Time (mins)</title>
@@ -1713,7 +1538,6 @@ show=Show to all Users]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="wolorder">
 			<title>Who's Online Order</title>
@@ -1724,7 +1548,6 @@ username=Order By Username (ASC)
 activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[username]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="17" isdefault="1">
@@ -1735,7 +1558,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="enableprunebyposts">
 			<title>Prune user by post count?</title>
@@ -1744,7 +1566,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="prunepostcount">
 			<title>Post count to prune by</title>
@@ -1753,7 +1574,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="dayspruneregistered">
 			<title>Days registered before pruning by post count</title>
@@ -1762,7 +1582,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="pruneunactived">
 			<title>Prune unactivated users?</title>
@@ -1771,7 +1590,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="dayspruneunactivated">
 			<title>Days registered before pruning unactivated users</title>
@@ -1780,7 +1598,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="prunethreads">
 			<title>Prune User Posts/Threads</title>
@@ -1789,7 +1606,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="17" isdefault="1">
@@ -1800,7 +1616,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_numannouncements">
 			<title>Number of announcements to show</title>
@@ -1809,7 +1624,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showwelcome">
 			<title>Show the Welcome box</title>
@@ -1818,7 +1632,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showpms">
 			<title>Show the number of PMs to users</title>
@@ -1827,7 +1640,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showstats">
 			<title>Show forum statistics</title>
@@ -1836,7 +1648,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showwol">
 			<title>Show Who's Online</title>
@@ -1845,7 +1656,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showsearch">
 			<title>Show Search Box</title>
@@ -1854,7 +1664,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussions">
 			<title>Show Latest Discussions</title>
@@ -1863,7 +1672,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussionsnum">
 			<title>Number of latest discussions to show</title>
@@ -1872,7 +1680,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB." disporder="18" isdefault="1">
@@ -1884,7 +1691,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 <select name=\"upsetting[{$setting['name']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
 			<settingvalue><![CDATA[standard]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="searchfloodtime">
 			<title>Search Flood Time (seconds)</title>
@@ -1893,7 +1699,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="minsearchword">
 			<title>Minimum Search Word Length</title>
@@ -1902,7 +1707,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="searchhardlimit">
 			<title>Hard Limit for Maximum Search Results</title>
@@ -1911,7 +1715,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="19" isdefault="1">
@@ -1922,7 +1725,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
@@ -1931,7 +1733,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinsertertot">
 			<title>No. of Smilies to show</title>
@@ -1940,7 +1741,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinsertercols">
 			<title>No. of Smilie Cols to Show</title>
@@ -1949,7 +1749,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="20" isdefault="1">
@@ -1960,7 +1759,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[adminlanguage]]></optionscode>
 			<settingvalue><![CDATA[english]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="cpstyle">
 			<title>Control Panel Style</title>
@@ -1969,7 +1767,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[cpstyle]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="maxloginattempts">
 			<title>Max Number of Login Attempts</title>
@@ -1978,7 +1775,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="loginattemptstimeout">
 			<title>Login Attempts Timeout</title>
@@ -1987,7 +1783,6 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="21" isdefault="1">
@@ -2000,7 +1795,6 @@ mail=PHP mail
 smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[mail]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_host">
 			<title>SMTP hostname</title>
@@ -2009,7 +1803,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_port">
 			<title>SMTP port</title>
@@ -2018,7 +1811,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_user">
 			<title>SMTP username</title>
@@ -2027,7 +1819,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_pass">
 			<title>SMTP password</title>
@@ -2036,7 +1827,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[passwordbox]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="secure_smtp">
 			<title>SMTP Encryption Mode</title>
@@ -2048,7 +1838,6 @@ smtp=SMTP mail]]></optionscode>
 2=TLS encryption]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="mail_parameters">
 			<title>Additional Parameters for PHP's mail()</title>
@@ -2057,7 +1846,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="mail_logging">
 			<title>Mail Logging</title>
@@ -2069,7 +1857,6 @@ smtp=SMTP mail]]></optionscode>
 2=Log everything]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 		<setting name="mail_message_id">
 			<title>Add message ID in mail headers</title>
@@ -2078,7 +1865,6 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
-			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 </settings>
