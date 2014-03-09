@@ -270,7 +270,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 		$amp = "&amp;";
 	}
 
-	$server_stats_url = 'http://www.mybb.com/stats.php?'.$string;
+	$server_stats_url = 'http://community.mybb.com/stats.php?'.$string;
 
 	$return = array();
 	$return['info_sent_success'] = false;
@@ -278,7 +278,7 @@ function build_server_stats($is_install=1, $prev_version='', $current_version=''
 	{
 		$return['info_sent_success'] = true;
 	}
-	$return['info_image'] = "<img src='http://www.mybb.com/stats.php?{$string}&amp;img=1' />";
+	$return['info_image'] = "<img src='{$server_stats_url}&amp;img=1' />";
 	$return['info_get_string'] = $string;
 
 	return $return;
