@@ -1151,7 +1151,7 @@ x=X]]></optionscode>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[10]]></settingvalue>
+			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
