@@ -23,7 +23,7 @@
 	<settinggroup name="general" title="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="1">
 		<setting name="bbname">
 			<title>Board Name</title>
-			<description><![CDATA[The name of your message boards. We recommend that it is not over 75 characters.]]></description>
+			<description><![CDATA[The name of your community. We recommend that it is not over 75 characters.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[Forums]]></settingvalue>
@@ -200,7 +200,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
-			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board.]]></description>
+			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -236,7 +236,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
-			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of init.php.]]></description>
+			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
 			<disporder>24</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -322,7 +322,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
-			<description><![CDATA[Limit the maximum server load before MyBB rejects people.  0 for none.  Recommended limit is 5.0.]]></description>
+			<description><![CDATA[Limit the maximum server load before MyBB rejects people. 0 for none. Recommended limit is 5.0.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -349,7 +349,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
-			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
+			<description><![CDATA[Shows Server load, generation time, memory usage, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -358,7 +358,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
-			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on Unix servers).]]></description>
+			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on *nix servers).]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
@@ -367,7 +367,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
-			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
+			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is recommended that it stay on]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -390,7 +390,7 @@ both=Log and email errors
 		</setting>
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
-			<description><![CDATA[The type of errors to show.]]></description>
+			<description><![CDATA[The type of errors to show. It is recommended you hide errors and warnings on a production forum and log them instead.]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
