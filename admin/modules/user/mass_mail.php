@@ -1395,13 +1395,13 @@ if($mybb->input['action'] == "preview")
 	?>
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head profile="http://gmpg.org/xfn/1">
-		<title>Mass Email Preview</title>
+		<title><?php echo $lang->mass_mail_preview; ?></title>
 		<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/main.css" type="text/css" />
 		<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/popup.css" type="text/css" />
 	</head>
 	<body id="popup">
 		<div id="popup_container">
-		<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a> Mass Email Preview</div>
+		<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a> <?php echo $lang->mass_mail_preview; ?></div>
 
 		<div id="content">	
 	<?php
