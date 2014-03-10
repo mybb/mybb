@@ -187,6 +187,7 @@ $l['edited_user_info'] = "<strong>User:</strong> <a href=\"{2}\">{1}</a>";
 $l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
+$l['close_window'] = "Close Window";
 
 $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";
