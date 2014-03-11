@@ -180,7 +180,7 @@ if($mybb->input['action'] == "edit")
 		$query = $db->query("
 			SELECT u.uid, u.username, g.cancp, g.gid
 			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (u.usergroup=g.gid)
+			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
 			WHERE u.uid='$uid'
 			AND g.cancp=1
 			LIMIT 1
