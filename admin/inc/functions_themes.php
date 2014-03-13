@@ -767,7 +767,10 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 
 	foreach($stylesheet as $key => $value)
 	{
-		$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+		if(!is_numeric($key))
+		{
+			$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+		}
 	}
 
 	$sid = $db->insert_query("themestylesheets", $stylesheet);
