@@ -126,7 +126,7 @@ class dbpdoEngine {
 			return;
 		}
 		
-		if (is_numeric(stripos($query->queryString, 'SELECT')))
+		if(is_numeric(stripos($query->queryString, 'SELECT')))
 		{
 			$dbh = $this->db;
 			$query = $dbh->query($query->queryString);
@@ -136,7 +136,7 @@ class dbpdoEngine {
 		}
 		else
 		{
-			return $query->rowCount();	
+			return $query->rowCount();
 		}
 	}
 	
