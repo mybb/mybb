@@ -126,7 +126,18 @@ class dbpdoEngine {
 			return;
 		}
 		
-		return count($query->rowCount());
+		if (is_numeric(stripos($query->queryString, 'SELECT')))
+		{
+			$dbh = $this->db;
+			$query = $dbh->query($query->queryString);
+			$result = $query->fetchAll();
+			unset($dbh, $query);
+			return count($result);
+		}
+		else
+		{
+			return $query->rowCount();	
+		}
 	}
 	
 	/**
