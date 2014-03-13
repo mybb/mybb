@@ -533,27 +533,22 @@ class session
 		{
 			global $db;
 
-			if($mybb->input['tid'] && intval($mybb->input['tid']) > 0)
+			if(isset($mybb->input['tid']) && intval($mybb->input['tid']) > 0)
 			{
 				$array[2] = intval($mybb->input['tid']);
 			}
-			elseif($mybb->input['pid'] && intval($mybb->input['pid']) > 0)
-			{
-				$array[2] = intval($mybb->input['pid']);
-			}
-
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
-			if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
+			elseif(isset($mybb->input['pid']) && !empty($mybb->input['pid']))
 			{
 				$options = array(
 					"limit" => 1
 				);
 				$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
 				$post = $db->fetch_array($query);
-				$mybb->input['tid'] = $post['tid'];
+				$array[2] = $post['tid'];
 			}
 
-			$thread = get_thread(intval($mybb->input['tid']));
+			$thread = get_thread(intval($array[2]));
 			$array[1] = $thread['fid'];
 		}
 		return $array;
