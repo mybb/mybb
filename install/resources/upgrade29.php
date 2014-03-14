@@ -225,6 +225,12 @@ function upgrade28_dbchanges()
 
 	$db->update_query("reportedposts", array('type' => 'post'));
 
+	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("attachtypes", array('atid' => '5', 'name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
+	}
+
 	// Sync usergroups with canbereported; no moderators or banned groups
 	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();
