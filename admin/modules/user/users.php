@@ -2031,6 +2031,24 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("privatemessages", $to_uid, "toid='{$source_user['uid']}'");
 
+			// Buddy/ignore lists
+
+			$destination_buddies = explode(',', $destination_user['buddylist']);
+			$source_buddies = explode(',', $source_user['buddylist']);
+			$buddies = array_unique(array_merge($source_buddies, $destination_buddies));
+			$buddies = implode(',', $buddies);
+
+			$destination_ignored = explode(',', $destination_user['ignorelist']);
+			$source_ignored = explode(',', $destination_user['ignorelist']);
+			$ignored = array_unique(array_merge($source_ignored, $destination_ignored));
+			$ignored = implode(',', $ignored);
+
+			$lists = array(
+				"buddylist" => $buddies,
+				"ignorelist" => $ignored
+			);
+			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
+
 			// Delete the old user
 			$db->delete_query("users", "uid='{$source_user['uid']}'");
 			$db->delete_query("banned", "uid='{$source_user['uid']}'");
