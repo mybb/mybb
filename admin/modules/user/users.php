@@ -2442,6 +2442,7 @@ if($mybb->input['action'] == "inline_edit")
 						if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
 						{
 							// We remove ourselves and Super Admins from the mix
+							--$banned_count;
 							continue;
 						}
 
@@ -2557,6 +2558,7 @@ if($mybb->input['action'] == "inline_edit")
 							if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
 							{
 								// Remove me and super admins
+								--$to_be_deleted;
 								continue;
 							}
 							else
