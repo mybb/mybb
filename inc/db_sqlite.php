@@ -174,7 +174,7 @@ class DB_SQLite
 			else
 			{				
 				// SQLITE 3 supports ADD Alter statements
-				if(strtolower(substr(ltrim($string), 0, 3)) == 'add')
+				if(strtolower(substr(ltrim($alterdefs), 0, 3)) == 'add')
 				{
 					$query = $this->db->query($string);
 				}
