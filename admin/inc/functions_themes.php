@@ -765,15 +765,16 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	$stylesheet['tid'] = $tid;
 	unset($stylesheet['sid']);
 
+	$new_stylesheet = array();
 	foreach($stylesheet as $key => $value)
 	{
 		if(!is_numeric($key))
 		{
-			$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+			$new_stylesheet[$db->escape_string($key)] = $db->escape_string($value);
 		}
 	}
 
-	$sid = $db->insert_query("themestylesheets", $stylesheet);
+	$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 
 	return $sid;
 }
