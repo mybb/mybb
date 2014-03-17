@@ -19,7 +19,7 @@ $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp,modcp_modqueue_posts,
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults";
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
-$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread";
+$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
 $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
 
@@ -3538,7 +3538,7 @@ if(!$mybb->input['action'])
 
 	if(!$bannedusers)
 	{
-		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+		eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
 	}
 
 	$modnotes = $cache->read("modnotes");
