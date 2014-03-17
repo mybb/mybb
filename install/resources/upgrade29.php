@@ -20,7 +20,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade28_dbchanges()
+function upgrade29_dbchanges()
 {
 	global $cache, $output, $mybb, $db;
 
@@ -268,7 +268,7 @@ function upgrade28_dbchanges()
 	$output->print_footer("28_dbchanges_ip");
 }
 
-function upgrade28_dbchanges_ip()
+function upgrade29_dbchanges_ip()
 {
 	global $mybb, $db, $output;
 
@@ -669,7 +669,7 @@ function upgrade28_dbchanges_ip()
 	$output->print_footer($nextact);
 }
 
-function upgrade28_updatetheme()
+function upgrade29_updatetheme()
 {
 	global $db, $mybb, $output;
 
