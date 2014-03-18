@@ -463,7 +463,7 @@ if($mybb->input['action'] == "register")
 		}
 	}
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
+	if($mybb->settings['reg_agreement'] && ((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post"))
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
