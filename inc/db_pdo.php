@@ -128,10 +128,8 @@ class dbpdoEngine {
 		
 		if(is_numeric(stripos($query->queryString, 'SELECT')))
 		{
-			$dbh = $this->db;
-			$query = $dbh->query($query->queryString);
+			$query = $this->db->query($query->queryString);
 			$result = $query->fetchAll();
-			unset($dbh, $query);
 			return count($result);
 		}
 		else
