@@ -2037,15 +2037,19 @@ if($mybb->input['action'] == "merge")
 			$source_buddies = explode(',', $source_user['buddylist']);
 			$buddies = array_unique(array_merge($source_buddies, $destination_buddies));
 			// Make sure the new buddy list doesn't contain either users
-			$buddies = array_diff($buddies, array($destination_user['uid'], $source_user['uid']));
-			$buddies = trim(implode(',', $buddies), ',');
+			$buddies_array = array_diff($buddies, array($destination_user['uid'], $source_user['uid']));
 
 			$destination_ignored = explode(',', $destination_user['ignorelist']);
 			$source_ignored = explode(',', $destination_user['ignorelist']);
 			$ignored = array_unique(array_merge($source_ignored, $destination_ignored));
 			// ... and the same for the new ignore list
-			$ignored = array_diff($ignored, array($destination_user['uid'], $source_user['uid']));
-			$ignored = trim(implode(',', $ignored), ',');
+			$ignored_array = array_diff($ignored, array($destination_user['uid'], $source_user['uid']));
+
+			// Remove any ignored users from the buddy list
+			$buddies = array_diff($buddies_array, $ignored_array);
+			// implode the arrays so we get a nice neat list for each
+			$buddies = trim(implode(',', $buddies), ',');
+			$ignored = trim(implode(',', $ignored_array), ',');
 
 			$lists = array(
 				"buddylist" => $buddies,
