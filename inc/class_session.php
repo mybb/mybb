@@ -548,7 +548,7 @@ class session
 				$array[2] = $post['tid'];
 			}
 
-			$thread = get_thread(intval($array[2]));
+			$thread = get_thread($array[2]);
 			$array[1] = $thread['fid'];
 		}
 		return $array;
