@@ -296,6 +296,9 @@ $l['show_users_regged_with_ip'] = "Show users who have registered with this IP";
 $l['show_users_posted_with_ip'] = "Show users who have posted with this IP";
 $l['ban_ip'] = "Ban IP";
 $l['ip_address_for'] = "IP Addresses for";
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name:";
+$l['ipaddress_location'] = "GeoIP Location:";
 
 $l['source_account'] = "Source Account";
 $l['source_account_desc'] = "This is the account that will be merged in to the destination account. It will be removed after this process.";

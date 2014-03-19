@@ -116,6 +116,7 @@ var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
+var rootpath = '{$mybb->settings['bburl']}/{$mybb->config['admin_dir']}';
 //]]>
 </script>\n";
 		echo $this->extra_header;

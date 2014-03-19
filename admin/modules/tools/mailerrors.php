@@ -73,20 +73,8 @@ if($mybb->input['action'] == "view")
 	$log['smtperror'] = htmlspecialchars_uni($log['smtpcode']);
 	$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 	$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
+	$popuppage = new Table();
 
-	?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head profile="http://gmpg.org/xfn/1">
-	<title><?php echo $lang->user_email_log_viewer; ?></title>
-	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/main.css" type="text/css" />
-	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/popup.css" type="text/css" />
-</head>
-<body id="popup">
-	<div id="popup_container">
-	<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a><?php echo $lang->user_email_log_viewer; ?></div>
-
-	<div id="content">
-	<?php
 	$table = new Table();
 
 	$table->construct_cell($log['error'], array("colspan" => 2));
@@ -105,8 +93,10 @@ if($mybb->input['action'] == "view")
 		$table->construct_cell($log['smtperror']);
 		$table->construct_row();
 	}
-	$table->output($lang->error);
 
+	$popuppage->construct_cell($table->output($lang->error, 1, "general", true));
+	$popuppage->construct_row();
+	
 	$table = new Table();
 
 	$table->construct_cell($lang->to.":");
@@ -127,15 +117,10 @@ if($mybb->input['action'] == "view")
 
 	$table->construct_cell($log['message'], array("colspan" => 2));
 	$table->construct_row();
-
-	$table->output($lang->email);
-
-	?>
-	</div>
-</div>
-</body>
-</html>
-	<?php
+	$popuppage->construct_cell($table->output($lang->email, 1, "general", true));
+	$popuppage->construct_row();
+	
+	$popuppage->output($lang->user_email_log_viewer);
 }
 
 if(!$mybb->input['action'])
@@ -225,7 +210,7 @@ if(!$mybb->input['action'])
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 
 		$table->construct_cell($form->generate_check_box("log[{$log['eid']}]", $log['eid'], ''));
-		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-mailerrors&amp;action=view&amp;eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('/index.php?module=tools-mailerrors&amp;action=view&amp;eid={$log['eid']}');\">{$log['subject']}</a>");
 		$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-mailerrors&amp;toaddress={$log['toaddress']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->fine_emails_to_addr}\" alt=\"{$lang->find}\" /></a></div>";
 		$table->construct_cell("{$find_from}<div>{$log['toaddress']}</div>");
 		$table->construct_cell($log['error']);

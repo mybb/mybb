@@ -61,7 +61,8 @@ var MyBB = {
 	popupWindow: function(url, options)
 	{
 		if(!options) options = { fadeDuration: 250 }
-		$.get(rootpath + url, function(html)
+		if(url.substr(0,7) != 'http://' && url.substr(0,7) != 'https://') url = rootpath+url;
+		$.get(url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
 		});

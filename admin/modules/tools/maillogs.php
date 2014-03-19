@@ -78,20 +78,9 @@ if($mybb->input['action'] == "view")
 	{
 		$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
 	}
+	
+	$popuppage = new Table();
 
-	?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head profile="http://gmpg.org/xfn/1">
-	<title><?php echo $lang->user_email_log_viewer; ?></title>
-	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/main.css" type="text/css" />
-	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/popup.css" type="text/css" />
-</head>
-<body id="popup">
-	<div id="popup_container">
-	<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a><?php echo $lang->user_email_log_viewer; ?></div>
-
-	<div id="content">
-	<?php
 	$table = new Table();
 
 	$table->construct_cell($lang->to.":");
@@ -116,15 +105,9 @@ if($mybb->input['action'] == "view")
 
 	$table->construct_cell($log['message'], array("colspan" => 2));
 	$table->construct_row();
-
-	$table->output($lang->email);
-
-	?>
-	</div>
-</div>
-</body>
-</html>
-	<?php
+	$popuppage->construct_cell($table->output($lang->email, 1, "general", true));
+	$popuppage->construct_row();
+	$popuppage->output($lang->user_email_log_viewer);
 }
 
 if(!$mybb->input['action'])
@@ -309,7 +292,7 @@ if(!$mybb->input['action'])
 				$thread_link = $lang->deleted;
 			}
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.png\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('/index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}');\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
 			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
@@ -326,7 +309,7 @@ if(!$mybb->input['action'])
 		else
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('/index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}');\">{$log['subject']}</a>");
 			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
