@@ -6,7 +6,7 @@
 body, td {
 	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
 	font-size: 12px;
-	color: #000;
+	color: #333;
 	margin: 0;
 	margin-bottom: 20px;
 }
@@ -163,7 +163,7 @@ a:hover {
 
 #left_menu {
 	width: 200px;
-	color: #000;
+	color: #333;
 	padding: 0;
 	margin: 0;
 	float: left;
@@ -399,7 +399,7 @@ a.popup_button:hover {
 	text-decoration: none;
 	white-space: nowrap;
 	background: #efefef;
-	color: #000;
+	color: #333;
 }
 
 .popup_menu .popup_item_container:first-child .popup_item {
