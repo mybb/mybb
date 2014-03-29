@@ -9024,36 +9024,74 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-		new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-		if($('bcc'))
-		{
-			new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-		}
-	}
-// -->
-</script>
-
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#to").typeahead({
-            name: 'to',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#to").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: true,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+  
+  $("#bbc").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: true,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>
 
@@ -10653,7 +10691,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
                                 if(use_xmlhttprequest == "1")
                                 {
 									$("#ignored_add_username").select2({
-										placeholder: "Search for a movie",
+										placeholder: "Search for a user",
 										minimumInputLength: 3,
 										maximumSelectionSize: 3,
 										multiple: true,
@@ -10671,9 +10709,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 											}
 										},
 										initSelection: function(element, callback) {
-											// the input tag has a value attribute preloaded that points to a preselected movie's id
-											// this function resolves that id attribute to an object that select2 can render
-											// using its formatResult renderer - that way the movie name is shown preselected
 											var query = $(element).val();
 											if (query !== "") {
 												$.ajax("xmlhttp.php?action=get_users", {
