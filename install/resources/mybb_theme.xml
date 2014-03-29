@@ -8959,11 +8959,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
-<td class="trow1" valign="top"><textarea name="to" id="to" rows="2" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="2" cols="38" tabindex="1" style="width: 450px;">{$to}</textarea>{$max_recipients}</td>
 </tr>
 <tr id="bcc_area">
 <td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong>{$buddy_select_bcc}</td>
-<td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1">{$bcc}</textarea></td>
+<td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1" style="width: 450px;">{$bcc}</textarea></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->compose_subject}</strong></td>
