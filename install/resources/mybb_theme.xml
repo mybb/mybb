@@ -9398,6 +9398,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
   </div>
 </div>]]></template>
+		<template name="reputation_add_error_nomodal" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->error}</strong><br /><br />
+			   <blockquote>{$message}</blockquote>
+		</td>
+	</tr>
+</table>]]></template>
 		<template name="reputation_added" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
