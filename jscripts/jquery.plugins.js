@@ -311,6 +311,7 @@
     close: function() {
       this.unblock();
       this.hide();
+	  this.$elm.remove();
       $(document).off('keydown.modal');
     },
 
