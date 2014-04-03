@@ -1052,36 +1052,6 @@ ul.tabs li a.active {
 	margin-right: 10px;
 }
 
-/* Auto Complete */
-.twitter-typeahead > input {
-    vertical-align: middle !important;
-}
-
-.tt-dropdown-menu {
-	background: #fff;
-	color: black;
-	border: 1px solid #ccc;
-	padding: 1px;
-    margin-top: 3px;
-    width: 98%;
-}
-
-.tt-suggestion {
-    font-size: 12px;
-    line-height: 0;
-    padding: 1px;
-}
-
-.tt-suggestion p {
-    line-height: 0 !important;
-    text-align: left;
-}
-
-.tt-suggestion.tt-is-under-cursor {
-    background-color: #0072bc;
-	color: #fff;
-}
-
 input.field50 {
 	width: 50px;
 }
