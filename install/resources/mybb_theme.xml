@@ -4937,6 +4937,14 @@ if(use_xmlhttprequest == "1")
 				}).done(function(data) { callback(data); });
 			}
 		},
+       // Allow the user entered text to be selected as well
+       createSearchChoice:function(term, data) {
+			if ( $(data).filter( function() {
+				return this.text.localeCompare(term)===0;
+			}).length===0) {
+				return {id:term, text:term};
+			}
+		},
 	});
 }
 // -->
@@ -5062,6 +5070,14 @@ if(use_xmlhttprequest == "1")
 					},
 					dataType: "json"
 				}).done(function(data) { callback(data); });
+			}
+		},
+       // Allow the user entered text to be selected as well
+       createSearchChoice:function(term, data) {
+			if ( $(data).filter( function() {
+				return this.text.localeCompare(term)===0;
+			}).length===0) {
+				return {id:term, text:term};
 			}
 		},
 	});
