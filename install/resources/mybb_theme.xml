@@ -7342,7 +7342,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow2">
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_users=1">{$lang->search_ip_users}</a><br />
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
-	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ipaddress}', 'iplookup', 500, 250); return false;">{$lang->info_on_ip}</a>
+	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress}'); return false;">{$lang->info_on_ip}</a>
 </td>
 </tr>]]></template>
 		<template name="moderation_inline_deleteposts" version="1600"><![CDATA[<html>
@@ -9632,7 +9632,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</div>]]>
 		</template>
 		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, 'reportReputation', 400, 300); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
+			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, null, true); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="search" version="1800"><![CDATA[<html>
