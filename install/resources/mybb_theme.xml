@@ -6444,17 +6444,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_ipsearch_misc_info" version="1600"><![CDATA[<html>
-<head>
-<title>{$lang->ipaddress_misc_info}</title>
-{$headerinclude}
-<style type="text/css">
-body {
-	text-align: left;
-}
-</style>
-</head>
-<body style="margin:0; padding: 4px; top: 0; left: 0;">
+		<template name="modcp_ipsearch_misc_info" version="1600"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
 			<td class="thead" align="center" colspan="2">
@@ -6471,8 +6462,8 @@ body {
 			<td class="trow2">{$ipaddress_location}</td>
 		</tr>
 	</table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="2">{$lang->error_no_results}</td>
 </tr>]]></template>

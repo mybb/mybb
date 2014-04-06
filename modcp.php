@@ -3431,7 +3431,7 @@ if($mybb->input['action'] == "ipsearch")
 
 		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/"))
 		{
-			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
+			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."'); return false;\">{$lang->info_on_ip}</a>)</div>";
 		}
 
 		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
@@ -3493,8 +3493,9 @@ if($mybb->input['action'] == "iplookup")
 
 	$plugins->run_hooks("modcp_iplookup_end");
 
-	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info')."\";");
-	output_page($iplookup);
+	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info', 1, 0)."\";");
+	echo($iplookup);
+	exit;
 }
 
 if($mybb->input['action'] == "banning")

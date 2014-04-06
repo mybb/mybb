@@ -58,10 +58,13 @@ var MyBB = {
 		}
 	},
 
-	popupWindow: function(url, options)
+	popupWindow: function(url, options, root)
 	{
 		if(!options) options = { fadeDuration: 250 }
-		$.get(rootpath + url, function(html)
+		if(root != true)
+			url = rootpath + url;
+		
+		$.get(url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
 		});
