@@ -5403,12 +5403,8 @@ if(use_xmlhttprequest == "1")
 </td></tr>
 </table>
 <br />]]></template>
-		<template name="misc_whoposted" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->who_posted}</title>
-{$headerinclude}
-</head>
-<body style="margin:0px;top:0px;left:0px" class="trow2">
+		<template name="misc_whoposted" version="1800"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
@@ -5418,12 +5414,9 @@ if(use_xmlhttprequest == "1")
 <td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=numposts">{$lang->num_posts}</a></strong></span></td>
 </tr>
 {$whoposted}
-<tr>
-<td colspan="2" class="thead" align="center"><span class="smalltext">[<a href="javascript:self.close();">{$lang->close_window}</a>]</span></td>
-</tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_whoposted_poster" version="120"><![CDATA[<tr>
 <td class="{$altbg}">{$profile_link}</a></td>
 <td class="{$altbg}">{$poster['posts']}</td>

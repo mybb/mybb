@@ -476,8 +476,9 @@ elseif($mybb->input['action'] == "whoposted")
 	}
 	$numposts = my_number_format($numposts);
 	$poster['posts'] = my_number_format($poster['posts']);
-	eval("\$whop = \"".$templates->get("misc_whoposted")."\";");
-	output_page($whop);
+	eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
+	echo $whop;
+	exit;
 }
 elseif($mybb->input['action'] == "smilies")
 {
