@@ -129,7 +129,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 	}
-	if($post['visible'] == -1)
+	if($post['visible'] == -1 && $mybb->settings['soft_delete'] == 1)
 	{
 		error($lang->error_already_deleted);
 	}
