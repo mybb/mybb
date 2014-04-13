@@ -307,12 +307,12 @@ var inlineModeration = {
 				}
 				else
 				{
-					selectRow.style.display = "none";
+				 	selectRow.style.display = "none";
 				}
 			}
 		}
-        
-        if(inlineIds.indexOf('ALL') == 1)
+		
+		if(inlineIds.indexOf('ALL') == 1)
 		{
 			inlineModeration.clearChecked();
 			inlineCookie = null;
