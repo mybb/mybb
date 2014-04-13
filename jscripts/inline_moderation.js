@@ -287,7 +287,7 @@ var inlineModeration = {
 				}
 			}
 		});
-
+        
 		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
 
