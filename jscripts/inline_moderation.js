@@ -287,10 +287,10 @@ var inlineModeration = {
 				}
 			}
 		});
-        
+		
 		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
-
+		
 		if(inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
