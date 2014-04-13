@@ -12167,7 +12167,7 @@ if(use_xmlhttprequest == "1")
 					{
 						var checked = '';
 
-						$('.types_check').each(function(e, val)
+                      $('.types_check').each(function(e, val)
 						{
 							if($(this).prop('checked') == true)
 							{
@@ -12251,36 +12251,23 @@ if(use_xmlhttprequest == "1")
 		{$warnings}
 		</tbody>
 	</table><br />]]></template>
-		<template name="warnings_warn_pm" version="1402"><![CDATA[		<tr>
+		<template name="warnings_warn_pm" version="1800"><![CDATA[<tr>
 			<td width="20%" class="trow1" valign="top">
-				<strong>{$lang->send_pm}</strong>
-				<div style="margin:auto" id="pm_smilie_insert">{$smilieinserter}</div>
+              	<strong>{$lang->send_pm}</strong>
 			</td>
 			<td class="trow1">
 				<script type="text/javascript">
 				// <!--
-					var mybb_editor_disabled = true;
-					var clickableEditor = '';
 					function togglePM()
 					{
-						if($('send_pm').checked == true)
+						if($('#send_pm').prop('checked') == true)
 						{
-							$('pm_input').show();
-							$('pm_smilie_insert').show();
-							if(mybb_editor_disabled == true && editor_language)
-							{
-								mybb_editor_disabled = false;
-								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
-								if(clickableEditor)
-								{
-									clickableEditor.bindSmilieInserter("clickable_smilies");
-								}
-							}
+							$('#pm_input').show();
+							$('#pm_smilie_insert').show();
 						}
 						else
 						{
-							$('pm_input').hide();
-							$('pm_smilie_insert').hide();
+							$('#pm_input').hide();
 						}
 					}
 				// -->
