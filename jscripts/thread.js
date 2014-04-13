@@ -356,20 +356,27 @@ var Thread = {
 							$.jGrowl('There was an error posting your reply: '+message);
 						});
 					}
-					else
+					else if(json.hasOwnProperty("data"))
 					{
-						// Do we have a "window.location" in our response message?
-						// If so, we were successful
-						if(request.responseText.indexOf("window.location") != -1)
+						// Soft deleted
+						if(json.data == 1)
 						{
-							$('#post_'+pid).slideToggle("slow");
-
+							// Change CSS class of div 'pid_[pid]'
+							$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
+							
 							$.jGrowl('The post was deleted successfully.');
 						}
-						else
+						else if(json.data == 2)
 						{
-							$.jGrowl('An unknown error has occurred.');
+							// Actually deleted
+							$('#post_'+pid).slideToggle("slow");
+							
+							$.jGrowl('The post was deleted successfully.');
 						}
+					}
+					else
+					{
+						$.jGrowl('An unknown error has occurred.');
 					}
 				}
 			});

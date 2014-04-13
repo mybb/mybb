@@ -270,7 +270,23 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					mark_reports($tid, "thread");
 					log_moderator_action($modlogdata, $lang->thread_deleted);
 				}
-				redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
+				
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					if($mybb->settings['soft_delete'] == 1)
+					{
+						echo json_encode(array("data" => '1'));
+					}
+					else
+					{
+						echo json_encode(array("data" => '2'));
+					}
+				}
+				else
+				{
+					redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
+				}
 			}
 			else
 			{
@@ -305,7 +321,23 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				{
 					$redirect = get_thread_link($tid);
 				}
-				redirect($redirect, $lang->redirect_postdeleted);
+				
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					if($mybb->settings['soft_delete'] == 1)
+					{
+						echo json_encode(array("data" => '1'));
+					}
+					else
+					{
+						echo json_encode(array("data" => '2'));
+					}
+				}
+				else
+				{
+					redirect($redirect, $lang->redirect_postdeleted);
+				}
 			}
 			else
 			{
