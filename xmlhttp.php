@@ -642,7 +642,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	require_once MYBB_ROOT."inc/functions_user.php";
-	$username = $mybb->get_input('value');
+	$username = $mybb->get_input('username');
 
 	// Fix bad characters
 	$username = trim($username);
@@ -655,7 +655,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	if(empty($username))
 	{
-		echo json_encode(array("fail" => $lang->banned_characters_username));
+		echo $lang->banned_characters_username;
 		exit;
 	}
 
@@ -663,14 +663,14 @@ else if($mybb->input['action'] == "username_availability")
 	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
-		echo json_encode(array("fail" => $lang->banned_username));
+		echo $lang->banned_username;
 		exit;
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
 	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
-		echo json_encode(array("fail" => $lang->banned_characters_username));
+		echo $lang->banned_characters_username;
 		exit;
 	}
 
@@ -681,13 +681,13 @@ else if($mybb->input['action'] == "username_availability")
 	if($user['uid'])
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
-		echo json_encode(array("fail" => $lang->username_taken));
+		echo $lang->username_taken;
 		exit;
 	}
 	else
 	{
 		$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo json_encode(array("success" => $lang->username_available));
+		echo "success";
 		exit;
 	}
 }

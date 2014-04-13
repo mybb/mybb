@@ -574,7 +574,7 @@ input.button:hover {
 	color: red;
 }
 
-.invalid_field {
+form input.error {
 	border: 1px solid #f30;
 	color: #f30;
 	background: #ffffff;
@@ -584,7 +584,7 @@ input.button:hover {
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-.valid_field {
+form input.valid {
 	border: 1px solid #0c0;
 	background: #ffffff;
 	padding: 3px;
@@ -593,29 +593,8 @@ input.button:hover {
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-.validation_error {
-	background: url(images/invalid.png) no-repeat center left;
+form label.error {
 	color: #f30;
-	margin: 5px 0;
-	padding: 5px;
-	font-weight: bold;
-	font-size: 11px;
-	padding-left: 22px;
-}
-
-.validation_success {
-	background: url(images/valid.png) no-repeat center left;
-	color: #00b200;
-	margin: 5px 0;
-	padding: 5px;
-	font-weight: bold;
-	font-size: 11px;
-	padding-left: 22px;
-}
-
-.validation_loading {
-	background: url(images/spinner.gif) no-repeat center left;
-	color: #555;
 	margin: 5px 0;
 	padding: 5px;
 	font-weight: bold;
@@ -4358,7 +4337,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/validator.js"></script>
+<script src="jscripts/validate/jquery.validate.min.js"></script>
 </head>
 <body>
 {$header}
@@ -4490,12 +4469,61 @@ if(use_xmlhttprequest == "1")
 </form>
 <script type="text/javascript">
 <!--
-	regValidator = new FormValidator('registration_form');
-	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
-    regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\\.\\+\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
-	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
-{$validator_extra}
-	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last
+$.validator.setDefaults({
+	submitHandler: function() { alert("submitted!"); }
+});
+
+$().ready(function() {
+	// validate registration_form
+	$("#registration_form").validate({
+		rules: {
+          username: {
+            required: true,
+			remote:{
+				url: "xmlhttp.php?action=username_availability",
+				type: "post",
+              	dataType: "json",
+				data:
+				{
+					my_post_key: my_post_key
+				},
+			},
+          },
+          password: {
+				required: true,
+				minlength: 6
+          },
+          password2: {
+				required: true,
+				minlength: 6,
+				equalTo: "#password"
+          },
+          email: {
+				required: true,
+				email: true,
+          },
+          email2: {
+				required: true,
+				email: true,
+				equalTo: "#email"
+          },
+		},
+		messages: {
+          username: "{$lang->js_validator_username_length}",
+			password: {
+				required: "{$lang->js_validator_password_length}",
+              	minlength: "{$lang->js_validator_password_length}",
+			},
+			confirm_password: {
+				required: "{$lang->js_validator_password_length}",
+              	minlength: "{$lang->js_validator_password_length}",
+				equalTo: "{$lang->js_validator_password_matches}"
+			},
+          	email: "{$lang->js_validator_invalid_email}",
+			email2: "{$lang->js_validator_email_match}",          
+		}
+	});
+});
 // -->
 </script>
 {$footer}

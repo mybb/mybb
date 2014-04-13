@@ -563,9 +563,6 @@ if($mybb->input['action'] == "register")
 			{
 				$refbg = "trow2";
 			}
-			// JS validator extra
-			$validator_extra .= "\tregValidator.register('referrer', 'ajax', {url:'xmlhttp.php?action=username_exists', loading_message:'{$lang->js_validator_checking_referrer}'});\n";
-
 			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
 		}
 		else
