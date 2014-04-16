@@ -36,6 +36,58 @@ class datacache
 	 * Build cache data.
 	 *
 	 */
+	 
+	/**
+	 * Inserts value in cache.
+	 *
+	 * @param 	string
+	 * @param 	string
+	 * @return 	void
+	 */
+	public function insert($key, $data)
+	{
+		global $db;
+		
+		$this->cache[$key] = $data;
+
+		$data = $db->escape_string(serialize($data));
+		
+		$array = array(
+			'title' => $key,
+			'cache' => $data
+			);
+		$db->insert_query("datacache", $array);
+		
+		if(is_object)
+		{
+			$this->handler->put($key, $data);
+		}	
+	}
+	
+	/**
+	 * Removes a value from cache
+	 *
+	 * @param 	string
+	 * @param 	string
+	 * @return 	void
+	 */
+	public function delete($key)
+	{
+		global $db;
+		
+		unset($this->cache[$key]);
+		
+		$db->delete_query("datacache", "`title` = '{$key}'");
+
+		if(is_object)
+		{
+			$this->handler->delete($key);
+		}	
+	} 
+	 
+	/************************************************************/ 
+	/*  UNCHANGED */
+	/************************************************************/
 	function cache()
 	{
 		global $db, $mybb;
