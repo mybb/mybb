@@ -58,7 +58,7 @@ class datacache
 			);
 		$db->insert_query("datacache", $array);
 		
-		if(is_object)
+		if(is_object($this->handler))
 		{
 			$this->handler->put($key, $data);
 		}	
@@ -79,7 +79,7 @@ class datacache
 		
 		$db->delete_query("datacache", "`title` = '{$key}'");
 
-		if(is_object)
+		if(is_object($this->handler))
 		{
 			$this->handler->delete($key);
 		}	
