@@ -5378,7 +5378,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="123"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="insertSmilie('{$smilie['insert']}');" /></a></td>
+		<template name="misc_smilies_popup_smilie" version="1613"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="insertSmilie('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
