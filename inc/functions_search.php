@@ -1236,7 +1236,7 @@ function perform_search_mysql_ft($search)
 							SELECT f.fid
 							FROM ".TABLE_PREFIX."forums f
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
+							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!=0 AND ((p.fid) IS NULL OR p.cansearch=1)
 						");
 						break;
 					default:
@@ -1244,7 +1244,7 @@ function perform_search_mysql_ft($search)
 							SELECT f.fid
 							FROM ".TABLE_PREFIX."forums f
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
+							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND ((p.fid) IS NULL OR p.cansearch=1)
 						");
 				}
 				while($sforum = $db->fetch_array($query))
