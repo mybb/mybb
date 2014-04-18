@@ -6985,6 +6985,9 @@ if(use_xmlhttprequest == "1")
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
+		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
+		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
+</tr>]]></template>
 		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
