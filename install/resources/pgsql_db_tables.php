@@ -219,6 +219,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   candlattachments int NOT NULL default '0',
   canpostthreads int NOT NULL default '0',
   canpostreplys int NOT NULL default '0',
+  canonlyreplyownthreads int NOT NULL default '0',
   canpostattachments int NOT NULL default '0',
   canratethreads int NOT NULL default '0',
   caneditposts int NOT NULL default '0',

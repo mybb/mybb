@@ -105,6 +105,11 @@ if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canon
 	error_no_permission();
 }
 
+if(isset($forumpermissions['canonlyreplyownthreads']) && $forumpermissions['canonlyreplyownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+{
+	error_no_permission();
+}
+
 // Coming from quick reply? Set some defaults
 if($mybb->get_input('method') == "quickreply")
 {
