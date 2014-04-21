@@ -377,7 +377,7 @@ You are receiving this email because you, or someone with access to your passwor
 Username: {1}
 Email address: {2}
 
-If you did not request this change, please get it touch with an Administrator.
+If you did not request this change, please get in touch with an Administrator.
 
 Thank you,
 {3} Staff
