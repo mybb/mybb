@@ -656,7 +656,7 @@ function perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
-		if(preg_match("# and|or #", $keywords))
+		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$subject_lookin = " AND (";
 			$message_lookin = " AND (";
