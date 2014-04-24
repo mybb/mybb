@@ -150,8 +150,21 @@ foreach($usergroups as $usergroup)
 			$status = "offline";
 		}
 
-		// For the last active column
-		$user['lastvisit'] = my_date('relative', $user['lastactive']);
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			if($user['lastactive'])
+			{
+				$user['lastactive'] = $lang->lastvisit_hidden;
+			}
+			else
+			{
+				$user['lastactive'] = $lang->lastvisit_never;
+			}
+		}
+		else
+		{
+			$user['lastactive'] = my_date('relative', $user['lastactive']);
+		}
 
 		$bgcolor = alt_trow();
 
