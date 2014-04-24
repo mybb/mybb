@@ -42,6 +42,7 @@ $l['stats'] = "Stats";
 $l['task'] = "Task";
 $l['run_time'] = "Run Time";
 $l['next_3_tasks'] = "Next 3 Tasks";
+$l['no_tasks'] = "There are no tasks running at this time.";
 $l['backup_time'] = "Backup Time";
 $l['no_backups'] = "There are currently no backups made yet.";
 $l['existing_db_backups'] = "Existing Database Backups";

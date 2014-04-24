@@ -386,7 +386,7 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_task);
 	echo $form->generate_hidden_field("tid", $task['tid']);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $task_data['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $task_data['description'], array('id' => 'description')), 'description');
 
 	$task_list = array();
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
@@ -750,6 +750,13 @@ if(!$mybb->input['action'])
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
+
+	if($table->num_rows() == 0)
+	{
+		$table->construct_cell($lang->no_tasks, array('colspan' => 3));
+		$table->construct_row();
+	}
+
 	$table->output($lang->scheduled_tasks);
 
 	$page->output_footer();

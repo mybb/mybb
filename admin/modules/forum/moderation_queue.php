@@ -183,7 +183,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
-			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
+			SELECT t.tid, t.dateline, t.fid, t.subject, t.username AS threadusername, p.message AS postmessage, u.username AS username, t.uid
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
@@ -199,7 +199,23 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
-			$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
+
+			if($thread['username'] == "")
+			{
+				if($thread['threadusername'] != "")
+				{
+					$profile_link = $thread['threadusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
+			}
+
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
 			$table->construct_cell("<a href=\"../{$thread['threadlink']}\" target=\"_blank\">{$thread['subject']}</a>");
@@ -282,7 +298,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
+			SELECT p.pid, p.subject, p.message, p.dateline, p.username AS postusername, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -307,7 +323,23 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
+
+			if($post['username'] == "")
+			{
+				if($post['postusername'] != "")
+				{
+					$profile_link = $post['postusername'];
+				}
+				else
+				{
+					$profile_link = $lang->guest;
+				}
+			}
+			else
+			{
+				$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
+			}
+
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
 			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\" target=\"_blank\">{$post['subject']}</a>");

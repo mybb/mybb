@@ -1254,8 +1254,8 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedbyadmin">
-			<title>Show 'edited by' Message for Forum Staff</title>
-			<description><![CDATA[Do you want to show edited by messages for forum staff when they edit their posts?]]></description>
+			<title>Show 'edited by' Message for Administrators</title>
+			<description><![CDATA[Do you want to show edited by messages for posts created by administrators?]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>

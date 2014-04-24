@@ -434,8 +434,13 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
-
 	$plugins->run_hooks("newthread_start");
+
+	// Do we have attachment errors?
+	if(count($errors) > 0)
+	{
+		$thread_errors = inline_error($errors);
+	}
 
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(!$mybb->input['previewpost'] && !$thread_errors && $mybb->input['action'] != "editdraft")
@@ -728,12 +733,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
-	}
-
-	// Do we have attachment errors?
-	if(count($errors) > 0)
-	{
-		$thread_errors = inline_error($errors);
 	}
 
 	// Generate thread prefix selector

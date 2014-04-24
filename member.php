@@ -530,7 +530,7 @@ if($mybb->input['action'] == "register")
 		}
 		// Custom profile fields baby!
 		$altbg = "trow1";
-		$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
+		$query = $db->simple_select("profilefields", "*", "required='1' AND editable='1'", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -1581,6 +1581,11 @@ if($mybb->input['action'] == "profile")
 			"me_username" => $memprofile['username'],
 			"filter_badwords" => 1
 		);
+
+		if($memperms['signofollow'])
+		{
+			$sig_parser['nofollow_on'] = 1;
+		}
 
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");

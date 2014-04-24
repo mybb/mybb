@@ -35,34 +35,37 @@ var inlineModeration = {
 				inlineCheck = element.id.split("_");
 				id = inlineCheck[1];
 
-				if(inlineIds.indexOf('ALL') != -1)
+				if(inlineCheck[0] == "inlinemod")
 				{
-					inlineModeration.clearChecked();
-					inlineCookie = null;
-				}
-				else if(inlineIds.indexOf(id) != -1)
-				{
-					element.checked = true;
-					var tr = element.up('tr');
-					var fieldset = element.up('fieldset');
-					
-					if(tr)
+					if(inlineIds.indexOf('ALL') != -1)
 					{
-						tr.addClassName('trow_selected');
+						inlineModeration.clearChecked();
+						inlineCookie = null;
 					}
-					
-					if(fieldset)
+					else if(inlineIds.indexOf(id) != -1)
 					{
-						fieldset.addClassName('inline_selected');	
+						element.checked = true;
+						var tr = element.up('tr');
+						var fieldset = element.up('fieldset');
+						
+						if(tr)
+						{
+							tr.addClassName('trow_selected');
+						}
+						
+						if(fieldset)
+						{
+							fieldset.addClassName('inline_selected');	
+						}
 					}
-				}
-				else
-				{
-					element.checked = false;
-					var tr = element.up('tr');
-					if(tr)
+					else
 					{
-						tr.removeClassName('trow_selected');
+						element.checked = false;
+						var tr = element.up('tr');
+						if(tr)
+						{
+							tr.removeClassName('trow_selected');
+						}
 					}
 				}
 			}

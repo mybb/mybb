@@ -425,7 +425,7 @@ if($mybb->input['action'] == "edit_template")
 
 				if(($existing_sid == -2 && $existing_rows == 1) || $existing_rows == 0)
 				{
-					$tid = $db->insert_query("templates", $template_array);
+					$template['tid'] = $db->insert_query("templates", $template_array);
 				}
 				else
 				{
@@ -455,7 +455,7 @@ if($mybb->input['action'] == "edit_template")
 			}
 
 			// Log admin action
-			log_admin_action($tid, $mybb->input['title'], $mybb->input['sid'], $set['title']);
+			log_admin_action($template['tid'], $mybb->input['title'], $mybb->input['sid'], $set['title']);
 
 			flash_message($lang->success_template_saved, 'success');
 
@@ -638,7 +638,7 @@ if($mybb->input['action'] == "search_replace")
 					FROM ".TABLE_PREFIX."templates t
 					LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
 					LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')
-					WHERE t.template LIKE '%".$db->escape_string_like($mybb->input['find'])."%' AND NOT (t.sid = -2 AND NOT ISNULL(t2.tid))
+					WHERE t.template LIKE '%".$db->escape_string_like($mybb->input['find'])."%' AND NOT (t.sid = -2 AND (t2.tid) IS NOT NULL)
 					ORDER BY t.title ASC
 				");
 				if($db->num_rows($query) == 0)
@@ -1325,7 +1325,7 @@ if($mybb->input['action'] == "revert")
 		$plugins->run_hooks("admin_style_templates_revert_commit");
 
 		// Log admin action
-		log_admin_action($template['tid'], $template['sid'], $template['sid'], $template['set_title']);
+		log_admin_action($template['tid'], $template['title'], $template['sid'], $template['set_title']);
 
 		flash_message($lang->success_template_reverted, 'success');
 

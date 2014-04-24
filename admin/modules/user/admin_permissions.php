@@ -177,14 +177,30 @@ if($mybb->input['action'] == "edit")
 	
 	if($uid > 0)
 	{
-		$query = $db->query("
-			SELECT u.uid, u.username, g.cancp, g.gid
-			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (u.usergroup=g.gid)
-			WHERE u.uid='$uid'
-			AND g.cancp=1
-			LIMIT 1
-		");
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite":
+				$query = $db->query("
+					SELECT u.uid, u.username, g.cancp, g.gid
+					FROM ".TABLE_PREFIX."users u
+					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
+					WHERE u.uid='$uid'
+					AND g.cancp=1
+					LIMIT 1
+				");
+				break;
+			default:
+			$query = $db->query("
+				SELECT u.uid, u.username, g.cancp, g.gid
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+				WHERE u.uid='$uid'
+				AND g.cancp=1
+				LIMIT 1
+			");
+		}
+
 		$admin = $db->fetch_array($query);
 		$permission_data = get_admin_permissions($uid, $admin['gid']);
 		$title = $admin['username'];

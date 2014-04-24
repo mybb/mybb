@@ -1699,6 +1699,7 @@ if($mybb->input['action'] == "delete")
 
 		// Update forums & threads if user is the lastposter
 		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+		$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 		$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 
@@ -2029,6 +2030,32 @@ if($mybb->input['action'] == "merge")
 				"toid" => $destination_user['uid']
 			);
 			$db->update_query("privatemessages", $to_uid, "toid='{$source_user['uid']}'");
+
+			// Buddy/ignore lists
+
+			$destination_buddies = explode(',', $destination_user['buddylist']);
+			$source_buddies = explode(',', $source_user['buddylist']);
+			$buddies = array_unique(array_merge($source_buddies, $destination_buddies));
+			// Make sure the new buddy list doesn't contain either users
+			$buddies_array = array_diff($buddies, array($destination_user['uid'], $source_user['uid']));
+
+			$destination_ignored = explode(',', $destination_user['ignorelist']);
+			$source_ignored = explode(',', $destination_user['ignorelist']);
+			$ignored = array_unique(array_merge($source_ignored, $destination_ignored));
+			// ... and the same for the new ignore list
+			$ignored_array = array_diff($ignored, array($destination_user['uid'], $source_user['uid']));
+
+			// Remove any ignored users from the buddy list
+			$buddies = array_diff($buddies_array, $ignored_array);
+			// implode the arrays so we get a nice neat list for each
+			$buddies = trim(implode(',', $buddies), ',');
+			$ignored = trim(implode(',', $ignored_array), ',');
+
+			$lists = array(
+				"buddylist" => $buddies,
+				"ignorelist" => $ignored
+			);
+			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
 			// Delete the old user
 			$db->delete_query("users", "uid='{$source_user['uid']}'");
@@ -2563,6 +2590,7 @@ if($mybb->input['action'] == "inline_edit")
 							{
 								// Run delete queries
 								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
 								$db->delete_query("userfields", "ufid='{$user['uid']}'");
 								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 								$db->delete_query("events", "uid='{$user['uid']}'");
@@ -3156,7 +3184,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if(!empty($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
+		if(isset($view['conditions'][$search_field]) && ($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{

@@ -1,25 +1,22 @@
-[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](http://mybb.com "MyBB")
+[![MyBB](https://raw.github.com/mybb/mybb/feature/images/logo.png "MyBB")](http://www.mybb.com "MyBB")
 
 ## Free never tasted so good.
-MyBB is a free and open source, community-based, forum software project.
+MyBB is a free and open source, community-based, forum software project. Learn more at [MyBB.com](http://www.mybb.com).
 
-### Unreleased Versions
-Stable and Feature branches may contain partially-commited features which are broken, incomplete or may never make it to public release. For these reasons, it is not recommended that you use either of these branches as a live forum. They should be used for development purposes or previews only.
+### MyBB 1.6
 
-MyBB does not support unreleased versions.
+The master branch contains the source code for MyBB 1.6. It contains the latest bug fixes for the 1.6 series and while you're free to use the code on your own forum to fix specific issues, support may not be provided on MyBB.com until it makes a release.
+
+### MyBB 1.8
+
+The feature branch contains the source code for MyBB 1.8. It contains a lot of development code, and is currently considered unstable. It is NOT recommended that you use MyBB 1.8 as a live forum but we encourage you to get involved with testing and contributing to help ease the development. MyBB 1.8 is not supported and won't be until it's stable.
 
 ### Contribute
-Contributing to MyBB is easy:
 
-1. Fork the project
-2. If you want to fix a bug, switch to the stable branch
-3. If you want to work on MyBB 1.8, switch to the feature branch
-4. Make your changes (ensuring you follow the MyBB Development Standards) and push them to your forked repository
-5. Send us a pull request with your changes and make sure you reference the issue ticket number your changes relate to (update the ticket too to tell us you've fixed it)
-6. SQA will provide feedback and, if it passes verification, your pull request will be merged into MyBB
+Please see: http://community.mybb.com/announcement-25.html for information on how to contribute to either MyBB 1.6 or MyBB 1.8.
 
 ### Community
-Visit our community at [MyBB.com](http://mybb.com) for support.
+Visit our community at [MyBB.com](http://www.mybb.com) for support.
 
 ### License
-MyBB is licensed under [GNU Lesser General Public License v3](http://mybb.com/about/license).
+MyBB is licensed under [GNU Lesser General Public License v3](http://www.mybb.com/about/license).

@@ -77,9 +77,9 @@ class Graph {
 	/**
 	 * The bottom label for the graph
 	 *
-	 * @var integer
+	 * @var string
 	 */
-	public $bottom_label = array();
+	public $bottom_label = "";
 
 	/**
 	 * Constructor of class. Initializes the barebore graph.

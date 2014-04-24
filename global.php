@@ -134,7 +134,7 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(!empty($mybb->input['pid']))
+	if(!empty($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '".intval($mybb->input['pid'])."'", array("limit" => 1));
 		$fid = $db->fetch_field($query, "fid");
@@ -157,7 +157,18 @@ if(in_array($current_page, $valid))
 			$load_from_forum = 1;
 		}
 	}
+	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
+	else if(!empty($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
+	{
+		$query = $db->simple_select("threads", "fid", "poll = '".intval($mybb->input['pid'])."'", array("limit" => 1));
+		$fid = $db->fetch_field($query, "fid");
 
+		if($fid)
+		{
+			$style = $forum_cache[$fid];
+			$load_from_forum = 1;
+		}
+	}
 	// We have a forum id - simply load the theme from it
 	else if($mybb->input['fid'])
 	{
