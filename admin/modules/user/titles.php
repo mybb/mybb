@@ -217,6 +217,8 @@ if($mybb->input['action'] == "delete")
 		
 		$plugins->run_hooks("admin_user_titles_delete_commit");
 
+		$cache->update_usertitles();
+		
 		// Log admin action
 		log_admin_action($usertitle['utid'], $usertitle['title'], $usertitle['posts']);
 
