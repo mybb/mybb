@@ -656,7 +656,7 @@ function perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
-		if(preg_match("# and|or #", $keywords))
+		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$subject_lookin = " AND (";
 			$message_lookin = " AND (";
@@ -664,6 +664,7 @@ function perform_search_mysql($search)
 			// Expand the string by double quotes
 			$keywords_exp = explode("\"", $keywords);
 			$inquote = false;
+			$boolean = '';
 
 			foreach($keywords_exp as $phrase)
 			{
@@ -707,6 +708,7 @@ function perform_search_mysql($search)
 							{
 								$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$word}%'";
 							}
+							$boolean = 'AND';
 						}
 					}
 				}
@@ -725,6 +727,7 @@ function perform_search_mysql($search)
 					{
 						$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$phrase}%'";
 					}
+					$boolean = 'AND';
 				}
 
 				if($subject_lookin == " AND (")
