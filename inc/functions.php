@@ -6210,11 +6210,27 @@ function secure_seed_rng($count=8)
 {
 	$output = '';
 
+	// Use OpenSSL when available
+	// PHP <5.3.4 had a bug which makes that function unusable on Windows
+	if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+	{
+		$output = openssl_random_pseudo_bytes($count);
+	}
 	// Try the unix/linux method
-	if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+	elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
 	{
 		$output = @fread($handle, $count);
 		@fclose($handle);
+	}
+	// Try Windows CAPICOM before using our own generator
+	elseif(class_exists('COM'))
+	{
+		try
+		{
+			$CAPI_Util = new COM('CAPICOM.Utilities.1');
+			$output = $CAPI_Util->GetRandom($count, 0);
+		} catch (Exception $ex) {
+		}
 	}
 
 	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
