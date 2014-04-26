@@ -227,6 +227,12 @@ if($mybb->input['action'] == "reports")
 			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
 			$report['threadlink'] = get_thread_link($report['tid']);
 			$report['posterlink'] = get_profile_link($report['postuid']);
+			if(!$report['postuid'])
+			{
+				$report['posterlink'] = $report['postlink'];
+				$report['postusername'] = $lang->guest;
+			}
+
 			$report['reporterlink'] = get_profile_link($report['uid']);
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
