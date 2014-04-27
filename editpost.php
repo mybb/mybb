@@ -570,6 +570,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				LIMIT 1
 			");
 			$postinfo = $db->fetch_array($query);
+			$postinfo['userusername'] = $postinfo['username'];
 		}
 
 		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
@@ -579,7 +580,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 
 		// Set the values of the post info array.
-		$postinfo['userusername'] = $postinfo['username'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $previewsubject;
 		$postinfo['icon'] = $icon;
