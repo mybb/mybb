@@ -1045,35 +1045,27 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1)
+			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != "verify")
 			{
 				$uid = $mybb->user['uid'];
 				$username = $mybb->user['username'];
 
-				if($mybb->settings['regtype'] == "verify")
-				{
-					// Emails require verification
-					$activationcode = random_str();
-					$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+				// Emails require verification
+				$activationcode = random_str();
+				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
 
-					$newactivation = array(
-						"uid" => $mybb->user['uid'],
-						"dateline" => TIME_NOW,
-						"code" => $activationcode,
-						"type" => "e",
-						"oldgroup" => $mybb->user['usergroup'],
-						"misc" => $db->escape_string($mybb->get_input('email'))
-					);
+				$newactivation = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => "e",
+					"oldgroup" => $mybb->user['usergroup'],
+					"misc" => $db->escape_string($mybb->get_input('email'))
+				);
 
-					$db->insert_query("awaitingactivation", $newactivation);
+				$db->insert_query("awaitingactivation", $newactivation);
 
-					$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-				}
-				else
-				{
-					// Email requires no activation
-					$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
-				}
+				$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 
 				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
 				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
@@ -1084,6 +1076,9 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 			else
 			{
 				$userhandler->update_user();
+				// Email requires no activation
+				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
+				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 				$plugins->run_hooks("usercp_do_email_changed");
 				redirect("usercp.php", $lang->redirect_emailupdated);
 			}
