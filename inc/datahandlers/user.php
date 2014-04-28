@@ -485,11 +485,17 @@ class UserDataHandler extends DataHandler
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select('profilefields', 'name, type, fid, required, maxlength', $editable, $options);
+		$query = $db->simple_select('profilefields', 'name, postnum, type, fid, required, maxlength', $editable, $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
 		{
+			// Does this field have a minimum post count?
+			if(!empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+			{
+				continue;
+			}
+
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$thing = explode("\n", $profilefield['type'], "2");
 			$type = trim($thing[0]);
