@@ -491,7 +491,7 @@ class UserDataHandler extends DataHandler
 		while($profilefield = $db->fetch_array($query))
 		{
 			// Does this field have a minimum post count?
-			if(!empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+			if(!$this->data['profile_fields_editable'] && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
 			{
 				continue;
 			}
