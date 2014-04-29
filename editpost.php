@@ -553,16 +553,25 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	if($mybb->input['previewpost'])
 	{
-		// Figure out the poster's other information.
-		$query = $db->query("
-			SELECT u.*, f.*, p.dateline
-			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.uid=u.uid)
-			WHERE u.uid='{$post['uid']}' AND p.pid='{$pid}'
-			LIMIT 1
-		");
-		$postinfo = $db->fetch_array($query);
+		if(!$post['uid'])
+		{
+			$query = $db->simple_select('posts', 'username', "pid='{$pid}'");
+			$postinfo['username'] = $db->fetch_field($query, 'username');
+		}
+		else
+		{
+			// Figure out the poster's other information.
+			$query = $db->query("
+				SELECT u.*, f.*, p.dateline
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.uid=u.uid)
+				WHERE u.uid='{$post['uid']}' AND p.pid='{$pid}'
+				LIMIT 1
+			");
+			$postinfo = $db->fetch_array($query);
+			$postinfo['userusername'] = $postinfo['username'];
+		}
 
 		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 		while($attachment = $db->fetch_array($query))
@@ -571,7 +580,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 
 		// Set the values of the post info array.
-		$postinfo['userusername'] = $postinfo['username'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $previewsubject;
 		$postinfo['icon'] = $icon;
