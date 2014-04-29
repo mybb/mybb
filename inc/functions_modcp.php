@@ -236,7 +236,7 @@ function add_report($report, $type = 'post')
 
 	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
-		return send_report($new_report);
+		return send_report($report);
 	}
 
 	$rid = $db->insert_query("reportedposts", $insert_array);
