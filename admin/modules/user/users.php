@@ -1483,6 +1483,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->end();
 	echo "</div>\n";
 
+	$plugins->run_hooks("admin_user_users_edit_graph");
+
 	$buttons[] = $form->generate_submit_button($lang->save_user);
 	$form->output_submit_wrapper($buttons);
 

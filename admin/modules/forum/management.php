@@ -2596,6 +2596,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form->end();
 
 		echo "</div>\n";
+
+		$plugins->run_hooks("admin_forum_management_start_graph");
 	}
 
 	$page->output_footer();
