@@ -101,21 +101,15 @@ class MyLanguage
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
-				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/{$area}"))
+				if(!is_dir($this->path."/english/{$area}"))
 				{
-					if(!is_dir($this->path."/english/{$area}"))
-					{
-						die("Your forum does not contain an Administration set. Please reupload the english language administration pack.");
-					}
-					else
-					{
-						$language = "english";
-					}
+					die("Your forum does not contain an Administration set. Please reupload the english language administration pack.");
 				}
 				else
 				{
-					$language = $mybb->settings['cplanguage'];
+					$language = "english";
 				}
+
 			}
 			$this->language = $language."/{$area}";
 			$this->fallback = $this->fallback."/{$area}";
