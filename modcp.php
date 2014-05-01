@@ -527,6 +527,11 @@ if($mybb->input['action'] == "allreports")
 			$report_string = "report_reason_{$report['reason']}";
 
 			$report['reporterlink'] = get_profile_link($report['uid']);
+			if(!$report['username'])
+			{
+				$report['username'] = $lang->na_deleted;
+				$report['reporterlink'] = $post;
+			}
 
 			if(isset($lang->$report_string))
 			{
