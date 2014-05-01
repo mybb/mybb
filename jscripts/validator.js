@@ -38,8 +38,10 @@ FormValidator.prototype = {
 	onBlur: function(e)
 	{
 		element = Event.element(e);
-		id = element.id;
-		this.validateField(id);
+		setTimeout(function() {
+			id = element.id;
+			this.validateField(id);
+		}.bind(this), 10);
 	},
 
 	validateField: function(id, twin_call, submit_call)

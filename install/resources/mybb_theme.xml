@@ -8002,11 +8002,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</ul>
 </div>
 <br />]]></template>
-		<template name="member_register" version="1605"><![CDATA[<html>
+		<template name="member_register" version="1614"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/validator.js"></script>
+<script type="text/javascript" src="jscripts/validator.js?ver=1614"></script>
 </head>
 <body>
 {$header}
