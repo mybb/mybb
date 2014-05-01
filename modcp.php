@@ -226,6 +226,7 @@ if($mybb->input['action'] == "reports")
 
 			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
 			$report['threadlink'] = get_thread_link($report['tid']);
+
 			$report['posterlink'] = get_profile_link($report['postuid']);
 			if(!$report['postuid'])
 			{
@@ -234,6 +235,12 @@ if($mybb->input['action'] == "reports")
 			}
 
 			$report['reporterlink'] = get_profile_link($report['uid']);
+			if($report['uid'] > 0 && !$report['username'])
+			{
+				$report['reporterlink'] = $report['postlink'];
+				$report['username'] = $lang->na_deleted;
+			}
+
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
 			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
@@ -341,7 +348,13 @@ if($mybb->input['action'] == "allreports")
 			$report['posterlink'] = get_profile_link($report['postuid']);
 			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
 			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
+
 			$report['reporterlink'] = get_profile_link($report['uid']);
+			if($report['uid'] > 0 && !$report['username'])
+			{
+				$report['reporterlink'] = $report['postlink'];
+				$report['username'] = $lang->na_deleted;
+			}
 
 			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
 			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
