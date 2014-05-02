@@ -254,6 +254,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
+		"postnum" => $mybb->user['postnum'],
 		"website" => $mybb->input['website'],
 		"icq" => intval($mybb->input['icq']),
 		"aim" => $mybb->input['aim'],
@@ -433,7 +434,7 @@ if($mybb->input['action'] == "profile")
 	while($profilefield = $db->fetch_array($query))
 	{
 		// Does this field have a minimum post count?
-		if($profilefield['postnum'] && $profilefield['postnum'] > $user['postnum'])
+		if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
 		{
 			continue;
 		}
