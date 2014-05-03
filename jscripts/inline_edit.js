@@ -27,9 +27,20 @@ var inlineEditor = {
 				callback: function(values, settings)
 				{
 					values = JSON.parse(values);
-
-					// Change subject
-					$('#tid_' + tid).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
+					if(values.errors)
+					{
+						$.each(values.errors, function(i, message)
+						{
+							$.jGrowl('There was an error performing the update. '+message);
+						});
+						$('#tid_' + tid).html($('#tid_' + tid + '_temp').html());
+					}
+					else
+					{
+						// Change subject
+						$('#tid_' + tid).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
+					}
+					$('#tid_' + tid + '_temp').remove();
 				},
 				data: function(value, settings)
 				{
@@ -46,6 +57,7 @@ var inlineEditor = {
 
 				setTimeout(function()
 				{
+					$('#tid_' + tid).clone().attr('id','tid_' + tid + '_temp').css('display','none!important').appendTo("body");
 					$('#tid_' + tid).trigger("hold" + tid);
 					$('#tid_' + tid + ' input').width('98%');
 				}, 700);
