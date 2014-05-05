@@ -265,7 +265,7 @@ function upgrade29_dbchanges()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_dbchanges_ip");
+	$output->print_footer("29_dbchanges_ip");
 }
 
 function upgrade29_dbchanges_ip()
@@ -653,7 +653,7 @@ function upgrade29_dbchanges_ip()
 	if($next_task == 9)
 	{
 		$contents = "<p>Click next to continue with the upgrade process.</p>";
-		$nextact = "28_updatetheme";
+		$nextact = "29_updatetheme";
 	}
 	else
 	{
@@ -661,7 +661,7 @@ function upgrade29_dbchanges_ip()
 
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-		$nextact = "28_dbchanges_ip";
+		$nextact = "29_dbchanges_ip";
 	}
 
 	$output->print_contents($contents);
@@ -786,6 +786,6 @@ function upgrade29_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_done");
+	$output->print_footer("29_done");
 }
 ?>
