@@ -815,9 +815,25 @@ function perform_search_mysql($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';
@@ -1203,9 +1219,25 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';
