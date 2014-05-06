@@ -2761,13 +2761,14 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	}
 
 	$prefixselect = "";
-	$multipleselect = "";
 	if($multiple != 0)
 	{
-		$multipleselect = " multiple=\"multiple\" size=\"5\"";
+		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
 	}
-
-	$prefixselect = "<select name=\"threadprefix\"{$multipleselect}>\n";
+	else
+	{
+		$prefixselect = "<select name=\"threadprefix\">\n";
+	}
 
 	if($multiple == 1)
 	{
