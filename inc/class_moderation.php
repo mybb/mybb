@@ -2031,7 +2031,7 @@ class Moderation
 
 		$total_posts = $total_unapproved_posts = $total_deleted_posts = $total_threads = $total_unapproved_threads = $total_deleted_threads = 0;
 		$forum_counters = $user_counters = array();
-		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, deletedposts, tid", "tid IN ($tid_list)");
+		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, deletedposts, tid", "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 		while($thread = $db->fetch_array($query))
 		{
 			$forum = get_forum($thread['fid']);
