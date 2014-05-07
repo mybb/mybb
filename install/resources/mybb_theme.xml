@@ -2214,19 +2214,19 @@ a.button {
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -2236,15 +2236,15 @@ a.button {
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -2259,19 +2259,19 @@ a.button {
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -2281,7 +2281,7 @@ a.button {
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -2296,7 +2296,7 @@ a.button {
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
