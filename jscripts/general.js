@@ -12,6 +12,18 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
+		
+		/* Create the Check All feature */
+		$('[name="checkall"]').each(function(key, value) {
+			$(this).change(function() {
+				var checkboxes = $(this).closest('form').find(':checkbox');
+				if($(this).is(':checked')) {
+					checkboxes.attr('checked', 'checked');
+				} else {
+					checkboxes.removeAttr('checked');
+				}
+			});
+		});
 
 		// Initialise "initial focus" field if we have one
 		var initialfocus = $("input.initial_focus");
