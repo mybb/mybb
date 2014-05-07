@@ -322,7 +322,7 @@ $l['done_step_cachebuilding'] = '<p>Building data caches...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the <a href="http://community.mybb.com/" target="_blank">Community Forums</a> if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
-$l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
+$l['done_step_dirdelete'] = '<p><strong><span style="color:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
 $l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>MyBB offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to MyBB. If you\'re looking to switch to MyBB, you\'re heading in the right direction! Check out the <a target="_blank" href="http://www.mybb.com/downloads/merge-system">Merge System</a> for more information.</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */

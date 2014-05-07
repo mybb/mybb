@@ -45,6 +45,12 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			$info = str_replace("\\", "\\\\", $info);
 			$info = str_replace('$', '\$', $info);
+			
+			if($key == 'admin' || $key == 'rtl')
+			{
+				$info = (int)$info;
+			}
+			
 			$newlanginfo[$key] = str_replace("\"", '\"', $info);
 		}
 		

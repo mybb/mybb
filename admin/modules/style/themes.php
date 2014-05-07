@@ -1302,7 +1302,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
@@ -2209,7 +2211,9 @@ if($mybb->input['action'] == "add_stylesheet")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
