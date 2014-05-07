@@ -18,7 +18,7 @@ var MyBB = {
 			$(this).change(function() {
 				var checkboxes = $(this).closest('form').find(':checkbox');
 				if($(this).is(':checked')) {
-					checkboxes.attr('checked', 'checked');
+					checkboxes.prop('checked', true);
 				} else {
 					checkboxes.removeAttr('checked');
 				}
