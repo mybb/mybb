@@ -287,10 +287,10 @@ var inlineModeration = {
 				}
 			}
 		});
-
+		
 		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
-
+		
 		if(inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
@@ -307,9 +307,15 @@ var inlineModeration = {
 				}
 				else
 				{
-					selectRow.style.display = "none";
+				 	selectRow.style.display = "none";
 				}
 			}
+		}
+		
+		if(inlineIds.indexOf('ALL') == 1)
+		{
+			inlineModeration.clearChecked();
+			inlineCookie = null;
 		}
 		
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
