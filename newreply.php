@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external";
+$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add";
 $templatelist .= ",smilieinsert,smilieinsert_getmore,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature";
@@ -1054,6 +1054,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
+			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 

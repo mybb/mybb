@@ -3250,9 +3250,9 @@ body {
 {$similarthreadbits}
 </table>]]></template>
 		<template name="nav_sep" version="120"><![CDATA[ / ]]></template>
-		<template name="post_attachments_new" version="1604"><![CDATA[<tr>
+		<template name="post_attachments_new" version="1614"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.gif" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="13" />
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} {$attach_add_options}
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
@@ -5652,6 +5652,7 @@ body {
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
+		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_attachment_postinsert" version="1405"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="clickableEditor.insertAttachment({$attachment['aid']});" />]]></template>
 		<template name="post_attachments_attachment_remove" version="1604"><![CDATA[<input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
