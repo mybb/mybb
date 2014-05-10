@@ -8340,6 +8340,7 @@ if(use_xmlhttprequest == "1")
 {$newattach}
 {$attachments}
 </table>]]></template>
+		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_attachment" version="1604"><![CDATA[<tr>
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow2" width="75%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
@@ -8356,7 +8357,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_new" version="1800"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="13" />
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} {$attach_add_options}
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>

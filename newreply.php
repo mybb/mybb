@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external";
+$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add";
 $templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature";
@@ -205,16 +205,17 @@ if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') |
 	{
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
-	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", $attachwhere);
-	$attachcount = $db->fetch_field($query, "numattachs");
 
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
 	{
+		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
+		$updateattach = $db->fetch_field($query, "aid");
+
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
 		$update_attachment = false;
-		if($mybb->get_input('updateattachment'))
+		if($updateattach > 0 && $mybb->get_input('updateattachment'))
 		{
 			$update_attachment = true;
 		}
@@ -1094,11 +1095,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
-			{
-				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
-			}
+			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
+		}
 
+		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
+		{
+			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
+		}
+
+		if($attach_add_options || $attach_update_options)
+		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 

@@ -72,6 +72,7 @@ $l['error_too_many_images3'] = "<b>Note:</b> The maximum amount of images per po
 $l['error_attach_file'] = "Error Attaching File";
 $l['please_correct_errors'] = "Please correct the following errors before continuing:";
 $l['error_reachedattachquota'] = "Sorry, but you cannot attach this file because you have reached your attachment quota of {1}";
+$l['error_maxattachpost'] = "Sorry but you cannot attach this file because you have reached the maximum number of attachments allowed per post of {1}";
 $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
