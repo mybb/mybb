@@ -2987,7 +2987,7 @@ function get_ip()
 
 	$ip = 0;
 
-	if(!preg_match("#^(10|172\.16|192\.168)\.#", $_SERVER['REMOTE_ADDR']))
+	if(!preg_match("#^(10|172\.(1[6-9]|2[0-9]|3[0-1])|192\.168)\.#", $_SERVER['REMOTE_ADDR']))
 	{
 		$ip = $_SERVER['REMOTE_ADDR'];
 	}
@@ -3007,7 +3007,7 @@ function get_ip()
 		{
 			foreach($addresses[0] as $key => $val)
 			{
-				if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
+				if(!preg_match("#^(10|172\.(1[6-9]|2[0-9]|3[0-1])|192\.168)\.#", $val))
 				{
 					$ip = $val;
 					break;
