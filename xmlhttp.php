@@ -136,7 +136,7 @@ if($mybb->input['action'] == "get_users")
 		exit;
 	}
 
-	if(isset($mybb->input['getone']) && $mybb->input['getone'] == 1)
+	if($mybb->get_input('getone', 1) == 1)
 	{
 		$limit = 1;
 	}
