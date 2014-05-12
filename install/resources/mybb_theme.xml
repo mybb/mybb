@@ -1524,7 +1524,7 @@ ul.thread_tools li.subscription_remove {
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_misc_info" version="1613"><![CDATA[<html>
+		<template name="modcp_ipsearch_misc_info" version="1614"><![CDATA[<html>
 <head>
 <title>{$lang->ipaddress_misc_info}</title>
 {$headerinclude}
