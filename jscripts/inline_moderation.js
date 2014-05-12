@@ -312,10 +312,16 @@ var inlineModeration = {
 			}
 		}
 		
+		if(inlineIds.indexOf('ALL') == 1)
+		{
+			inlineModeration.clearChecked();
+			inlineCookie = null;
+		}
+		
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
 		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 	},
-		
+
 	selectAll: function()
 	{
 		goButton.value = go_text+" ("+all_text+")";
