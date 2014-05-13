@@ -7,125 +7,101 @@ var inlineModeration = {
 			return false;
 		}
 
-		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
-		inputs = document.getElementsByTagName("input");
+		inlineModeration.cookieName = 'inlinemod_'+inlineType+inlineId;
+		var inputs = document.getElementsByTagName('input');
 
 		if(!inputs)
 		{
 			return false;
 		}
 
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split("|");
-		}
-		
 		for(var i=0; i < inputs.length; i++)
 		{
 			var element = inputs[i];
-			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
+			if((element.name != 'allbox') && (element.type == 'checkbox') && (element.id.split('_')[0] == 'inlinemod'))
 			{
-				Event.observe(element, "click", inlineModeration.checkItem);
+				Event.observe(element, 'click', inlineModeration.checkItem);
 			}
 
-			if(inlineCookie)
-			{
-				inlineCheck = element.id.split("_");
-				id = inlineCheck[1];
+			var inlineCheck = element.id.split('_');
+			var id = inlineCheck[1];
 
-				if(inlineCheck[0] == "inlinemod")
+			if(inlineCheck[0] == 'inlinemod')
+			{
+				if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 				{
-					if(inlineIds.indexOf('ALL') != -1)
+					element.checked = true;
+					var tr = element.up('tr');
+					var fieldset = element.up('fieldset');
+
+					if(tr)
 					{
-						inlineModeration.clearChecked();
-						inlineCookie = null;
+						tr.addClassName('trow_selected');
 					}
-					else if(inlineIds.indexOf(id) != -1)
+
+					if(fieldset)
 					{
-						element.checked = true;
-						var tr = element.up('tr');
-						var fieldset = element.up('fieldset');
-						
-						if(tr)
-						{
-							tr.addClassName('trow_selected');
-						}
-						
-						if(fieldset)
-						{
-							fieldset.addClassName('inline_selected');	
-						}
+						fieldset.addClassName('inline_selected');
 					}
-					else
+				}
+				else
+				{
+					element.checked = false;
+					var tr = element.up('tr');
+					if(tr)
 					{
-						element.checked = false;
-						var tr = element.up('tr');
-						if(tr)
-						{
-							tr.removeClassName('trow_selected');
-						}
+						tr.removeClassName('trow_selected');
 					}
 				}
 			}
 		}
-		
-		if(inlineCookie)
+
+		inlineModeration.updateCookies(inlineIds, removedIds);
+
+		if(inlineIds.indexOf('ALL') != -1)
 		{
-			goButton = $("inline_go");
-			if(inlineIds)
+			var allSelectedRow = document.getElementById('allSelectedrow');
+			if(allSelectedRow)
 			{
-				var inlineCount = 0;
-				inlineIds.each(function(item) {
-					if(item != '') inlineCount++;
-				});
-				inlineModeration.inlineCount = inlineCount;
+				allSelectedRow.style.display = 'table-row';
 			}
-			goButton.value = go_text+" ("+(inlineModeration.inlineCount)+")";
 		}
 		return true;
 	},
 
 	checkItem: function(e)
 	{
-		element = Event.element(e);
+		var element = Event.element(e);
 
 		if(!element)
 		{
 			return false;
 		}
 
-		inlineCheck = element.id.split("_");
-		id = inlineCheck[1];
+		var inlineCheck = element.id.split('_');
+		var id = inlineCheck[1];
 
 		if(!id)
 		{
 			return false;
 		}
 
-		var newIds = new Array();
-		var remIds = new Array();
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split("|");
-			inlineIds.each(function(item) {
-				if(item != "" && item != null)
-				{
-					if(item != id)
-					{
-						newIds[newIds.length] = item;
-					}
-				}
-			});
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		if(element.checked == true)
 		{
-			inlineModeration.inlineCount++;
-			newIds[newIds.length] = id;
+			if(inlineIds.indexOf('ALL') == -1)
+			{
+				inlineIds = inlineModeration.addId(inlineIds, id);
+			}
+			else
+			{
+				removedIds = inlineModeration.removeId(removedIds, id);
+			}
 			var tr = element.up('tr');
 			if(tr)
 			{
@@ -134,63 +110,41 @@ var inlineModeration = {
 		}
 		else
 		{
-			inlineModeration.inlineCount--;
+			if(inlineIds.indexOf('ALL') == -1)
+			{
+				inlineIds = inlineModeration.removeId(inlineIds, id);
+			}
+			else
+			{
+				removedIds = inlineModeration.addId(removedIds, id);
+			}
 			var tr = element.up('tr');
 			if(tr)
 			{
 				tr.removeClassName('trow_selected');
 			}
-
-			if(inlineCookie.indexOf("ALL") != -1)
-			{
-				// We've already selected all threads, add this to our "no-go" cookie
-				remIds[remIds.length] = id;
-			}
 		}
 
-		goButton = $("inline_go");
-
-		if(remIds.length)
-		{
-			inlineData = "|"+remIds.join("|")+"|";
-			Cookie.set(inlineModeration.cookieName + '_removed', inlineData, 3600000);
-
-			// Get the right count for us
-			var count = goButton.value.replace(/[^\d]/g, '');
-			inlineModeration.inlineCount = count;
-			inlineModeration.inlineCount--;
-		}
-		else
-		{
-			inlineData = "|"+newIds.join("|")+"|";
-			Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
-		}
-
-		if(inlineModeration.inlineCount < 0)
-		{
-			inlineModeration.inlineCount = 0;
-		}
-
-		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
+		inlineModeration.updateCookies(inlineIds, removedIds);
 
 		return true;
 	},
 
 	clearChecked: function()
 	{
-		var selectRow = document.getElementById("selectAllrow");
+		var selectRow = document.getElementById('selectAllrow');
 		if(selectRow)
 		{
-			selectRow.style.display = "none";
+			selectRow.style.display = 'none';
 		}
-		
-		var allSelectedRow = document.getElementById("allSelectedrow");
+
+		var allSelectedRow = document.getElementById('allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.style.display = "none";
+			allSelectedRow.style.display = 'none';
 		}
-		
-		inputs = document.getElementsByTagName("input");
+
+		var inputs = document.getElementsByTagName('input');
 
 		if(!inputs)
 		{
@@ -200,7 +154,7 @@ var inlineModeration = {
 		$H(inputs).each(function(element) {
 			var element = element.value;
 			if(!element.value) return;
-			if(element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
+			if(element.type == 'checkbox' && (element.id.split('_')[0] == 'inlinemod' || element.name == 'allbox'))
 			{
 				element.checked = false;
 			}
@@ -214,9 +168,8 @@ var inlineModeration = {
 			element.removeClassName('inline_selected');
 		});
 
-		inlineModeration.inlineCount = 0;
-		goButton = $("inline_go");
-		goButton.value = go_text+" (0)";
+		goButton = $('inline_go');
+		goButton.value = go_text+' (0)';
 		Cookie.unset(inlineModeration.cookieName);
 		Cookie.unset(inlineModeration.cookieName + '_removed');
 
@@ -225,28 +178,24 @@ var inlineModeration = {
 
 	checkAll: function(master)
 	{
-		inputs = document.getElementsByTagName("input");
+		var inputs = document.getElementsByTagName('input');
 
 		if(!inputs)
 		{
 			return false;
 		}
 
-		inlineCookie = Cookie.get(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split("|");
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		var newIds = new Array();
 		$H(inputs).each(function(element) {
 			var element = element.value;
 			if(!element.value) return;
-			inlineCheck = element.id.split("_");
-			if((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
+			inlineCheck = element.id.split('_');
+			if((element.name != 'allbox') && (element.type == 'checkbox') && (inlineCheck[0] == 'inlinemod'))
 			{
-				id = inlineCheck[1];
+				var id = inlineCheck[1];
 				var changed = (element.checked != master.checked);
 				element.checked = master.checked;
 
@@ -260,8 +209,8 @@ var inlineModeration = {
 				{
 					tr.removeClassName('trow_selected');
 				}
-				
-				if(typeof(fieldset) != "undefined")
+
+				if(typeof(fieldset) != 'undefined')
 				{
 					if(master.checked == true)
 					{
@@ -272,66 +221,147 @@ var inlineModeration = {
 						fieldset.removeClassName('inline_selected');
 					}
 				}
-				
+
 				if(changed)
 				{
 					if(master.checked == true)
 					{
-						inlineModeration.inlineCount++;
-						newIds[newIds.length] = id;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.addId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.removeId(removedIds, id);
+						}
 					}
 					else
 					{
-						inlineModeration.inlineCount--;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.removeId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.addId(removedIds, id);
+						}
 					}
 				}
 			}
 		});
 
-		inlineData = "|"+newIds.join("|")+"|";
-		goButton = $("inline_go");
+		var count = inlineModeration.updateCookies(inlineIds, removedIds);
 
-		if(inlineModeration.inlineCount < 0)
+		if(count < all_text)
 		{
-			inlineModeration.inlineCount = 0;
-		}
-		
-		if(inlineModeration.inlineCount < all_text)
-		{
-			var selectRow = document.getElementById("selectAllrow");
+			var selectRow = document.getElementById('selectAllrow');
 			if(selectRow)
 			{
 				if(master.checked == true)
 				{
-					selectRow.style.display = "table-row";
+					selectRow.style.display = 'table-row';
 				}
 				else
 				{
-					selectRow.style.display = "none";
+					selectRow.style.display = 'none';
 				}
 			}
 		}
-		
-		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
-		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 	},
-		
+
 	selectAll: function()
 	{
-		goButton.value = go_text+" ("+all_text+")";
-		Cookie.set(inlineModeration.cookieName, "|ALL|", 3600000);
-		
-		var selectRow = document.getElementById("selectAllrow");
+		$('inline_go').value = go_text+' ('+all_text+')';
+		inlineModeration.setCookie(inlineModeration.cookieName, new Array('ALL'));
+
+		var selectRow = document.getElementById('selectAllrow');
 		if(selectRow)
 		{
-			selectRow.style.display = "none";
+			selectRow.style.display = 'none';
 		}
-		
-		var allSelectedRow = document.getElementById("allSelectedrow");
+
+		var allSelectedRow = document.getElementById('allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.style.display = "table-row";
+			allSelectedRow.style.display = 'table-row';
 		}
+	},
+
+	getCookie: function(name)
+	{
+		var inlineCookie = Cookie.get(name);
+
+		var ids = new Array();
+		if(inlineCookie)
+		{
+			var inlineIds = inlineCookie.split('|');
+			inlineIds.each(function(item) {
+				if(item != '' && item != null)
+				{
+					ids.push(item);
+				}
+			});
+		}
+		return ids;
+	},
+
+	setCookie: function(name, array)
+	{
+		if(array.length != 0)
+		{
+			var data = '|'+array.join('|')+'|';
+			Cookie.set(name, data, 3600000);
+		}
+		else
+		{
+			Cookie.unset(name);
+		}
+	},
+
+	updateCookies: function(inlineIds, removedIds)
+	{
+		if(inlineIds.indexOf('ALL') != -1)
+		{
+			var count = all_text - removedIds.length;
+		}
+		else
+		{
+			var count = inlineIds.length;
+		}
+		if(count < 0)
+		{
+			count = 0;
+		}
+		$('inline_go').value = go_text+' ('+count+')';
+		if(count == 0)
+		{
+			inlineModeration.clearChecked();
+		}
+		else
+		{
+			inlineModeration.setCookie(inlineModeration.cookieName, inlineIds);
+			inlineModeration.setCookie(inlineModeration.cookieName+'_removed', removedIds);
+		}
+		return count;
+	},
+
+	addId: function(array, id)
+	{
+		if(array.indexOf(id) == -1)
+		{
+			array.push(id);
+		}
+		return array;
+	},
+
+	removeId: function(array, id)
+	{
+		var position = array.indexOf(id);
+		if(position != -1)
+		{
+			array.splice(position, 1);
+		}
+		return array;
 	}
 };
-Event.observe(document, "dom:loaded", inlineModeration.init);
+Event.observe(document, 'dom:loaded', inlineModeration.init);
