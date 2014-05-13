@@ -1,7 +1,6 @@
 var inlineModeration = {
 	init: function()
 	{
-		inlineModeration.inlineCount = 0;
 		if(!inlineType || !inlineId)
 		{
 			return false;
