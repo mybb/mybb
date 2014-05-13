@@ -1,26 +1,21 @@
 var inlineModeration = {
 	init: function()
 	{
-		inlineModeration.inlineCount = 0;
 		if(!inlineType || !inlineId)
 		{
 			return false;
 		}
 
 		inlineModeration.cookieName = 'inlinemod_'+inlineType+inlineId;
-		inputs = $('input');
+		var inputs = $('input');
 
 		if(!inputs)
 		{
 			return false;
 		}
 
-		inlineCookie = $.cookie(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split('|');
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		$(inputs).each(function() {
 			var element = $(this);
@@ -29,17 +24,12 @@ var inlineModeration = {
 				$(element).click(inlineModeration.checkItem);
 			}
 
-			if(inlineCookie && element.attr('id'))
+			if(element.attr('id'))
 			{
-				inlineCheck = element.attr('id').split('_');
-				id = inlineCheck[1];
+				var inlineCheck = element.attr('id').split('_');
+				var id = inlineCheck[1];
 
-				if(inlineIds.indexOf('ALL') != -1)
-				{
-					inlineModeration.clearChecked();
-					inlineCookie = null;
-				}
-				else if(inlineIds.indexOf(id) != -1)
+				if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 				{
 					element.prop('checked', true);
 					var post = element.parents('div.post_content');
@@ -76,62 +66,49 @@ var inlineModeration = {
 			}
 		});
 
-		if(inlineCookie)
+		inlineModeration.updateCookies(inlineIds, removedIds);
+
+		if(inlineIds.indexOf('ALL') != -1)
 		{
-			goButton = $('#inline_go');
-			if(inlineIds)
+			var allSelectedRow = $('#allSelectedrow');
+			if(allSelectedRow)
 			{
-				var inlineCount = 0;
-				$.each(inlineIds, function(index, item) {
-					if(item != '') inlineCount++;
-				});
-				inlineModeration.inlineCount = inlineCount;
+				allSelectedRow.css('display', 'table-row');
 			}
-			goButton.val(go_text+' ('+(inlineModeration.inlineCount)+')');
 		}
 		return true;
 	},
 
 	checkItem: function()
 	{
-		element = $(this);
+		var element = $(this);
 
 		if(!element || !element.attr('id'))
 		{
 			return false;
 		}
 
-		inlineCheck = element.attr('id').split('_');
-		id = inlineCheck[1];
+		var inlineCheck = element.attr('id').split('_');
+		var id = inlineCheck[1];
 
 		if(!id)
 		{
 			return false;
 		}
 
-		var newIds = new Array();
-		var remIds = new Array();
-		inlineCookie = $.cookie(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split('|');
-			$.each(inlineIds, function(index, item) {
-				if(item != '' && item != null)
-				{
-					if(item != id)
-					{
-						newIds[newIds.length] = item;
-					}
-				}
-			});
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		if(element.prop('checked') == true)
 		{
-			inlineModeration.inlineCount++;
-			newIds[newIds.length] = id;
-
+			if(inlineIds.indexOf('ALL') == -1)
+			{
+				inlineIds = inlineModeration.addId(inlineIds, id);
+			}
+			else
+			{
+				removedIds = inlineModeration.removeId(removedIds, id);
+			}
 			var post = element.parents('div.post_content');
 			var thread = element.parents('tr');
 			if(post.length > 0)
@@ -145,7 +122,14 @@ var inlineModeration = {
 		}
 		else
 		{
-			inlineModeration.inlineCount--;
+			if(inlineIds.indexOf('ALL') == -1)
+			{
+				inlineIds = inlineModeration.removeId(inlineIds, id);
+			}
+			else
+			{
+				removedIds = inlineModeration.addId(removedIds, id);
+			}
 			var post = element.parents('div.post_content');
 			var thread = element.parents('tr');
 			if(post.length > 0)
@@ -156,41 +140,9 @@ var inlineModeration = {
 			{
 				thread.children('td').removeClass('trow_selected');
 			}
-
-			if(inlineCookie && inlineCookie.indexOf('ALL') != -1)
-			{
-				// We've already selected all threads, add this to our 'no-go' cookie
-				remIds[remIds.length] = id;
-			}
 		}
 
-		goButton = $('#inline_go');
-
-		var date = new Date();
-		date.setTime(date.getTime() + (60 * 60 * 1000));
-
-		if(remIds.length)
-		{
-			inlineData = '|'+remIds.join('|')+'|';
-			$.cookie(inlineModeration.cookieName + '_removed', inlineData, { expires: date });
-
-			// Get the right count for us
-			var count = goButton.val().replace(/[^\d]/g, '');
-			inlineModeration.inlineCount = count;
-			inlineModeration.inlineCount--;
-		}
-		else
-		{
-			inlineData = '|'+newIds.join('|')+'|';
-			$.cookie(inlineModeration.cookieName, inlineData, { expires: date });
-		}
-
-		if(inlineModeration.inlineCount < 0)
-		{
-			inlineModeration.inlineCount = 0;
-		}
-
-		goButton.val(go_text+' ('+inlineModeration.inlineCount+')');
+		inlineModeration.updateCookies(inlineIds, removedIds);
 
 		return true;
 	},
@@ -209,7 +161,7 @@ var inlineModeration = {
 			allSelectedRow.css('display', 'none');
 		}
 
-		inputs = $('input');
+		var inputs = $('input');
 
 		if(!inputs)
 		{
@@ -237,9 +189,7 @@ var inlineModeration = {
 			$(this).removeClass('inline_selected');
 		});
 
-		inlineModeration.inlineCount = 0;
-		goButton = $('#inline_go');
-		goButton.val(go_text+' (0)');
+		$('#inline_go').val(go_text+' (0)');
 		$.removeCookie(inlineModeration.cookieName);
 		$.removeCookie(inlineModeration.cookieName + '_removed');
 
@@ -256,12 +206,8 @@ var inlineModeration = {
 			return false;
 		}
 
-		inlineCookie = $.cookie(inlineModeration.cookieName);
-
-		if(inlineCookie)
-		{
-			inlineIds = inlineCookie.split('|');
-		}
+		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
+		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
 
 		var newIds = new Array();
 		$(inputs).each(function() {
@@ -270,7 +216,7 @@ var inlineModeration = {
 			inlineCheck = element.attr('id').split('_');
 			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (inlineCheck[0] == 'inlinemod'))
 			{
-				id = inlineCheck[1];
+				var id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
 				element.prop('checked', master.prop('checked'));
 
@@ -315,26 +261,33 @@ var inlineModeration = {
 				{
 					if(master.prop('checked') == true)
 					{
-						inlineModeration.inlineCount++;
-						newIds[newIds.length] = id;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.addId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.removeId(removedIds, id);
+						}
 					}
 					else
 					{
-						inlineModeration.inlineCount--;
+						if(inlineIds.indexOf('ALL') == -1)
+						{
+							inlineIds = inlineModeration.removeId(inlineIds, id);
+						}
+						else
+						{
+							removedIds = inlineModeration.addId(removedIds, id);
+						}
 					}
 				}
 			}
 		});
 
-		inlineData = '|'+newIds.join('|')+'|';
-		goButton = $('#inline_go');
+		var count = inlineModeration.updateCookies(inlineIds, removedIds);
 
-		if(inlineModeration.inlineCount < 0)
-		{
-			inlineModeration.inlineCount = 0;
-		}
-
-		if(inlineModeration.inlineCount < all_text)
+		if(count < all_text)
 		{
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
@@ -349,20 +302,12 @@ var inlineModeration = {
 				}
 			}
 		}
-
-		goButton.val(go_text+' ('+inlineModeration.inlineCount+')');
-
-		var date = new Date();
-		date.setTime(date.getTime() + (60 * 60 * 1000));
-		$.cookie(inlineModeration.cookieName, inlineData, { expires: date });
 	},
 
 	selectAll: function()
 	{
-		goButton.val(go_text+' ('+all_text+')');
-		var date = new Date();
-		date.setTime(date.getTime() + (60 * 60 * 1000));
-		$.cookie(inlineModeration.cookieName, '|ALL|', { expires: date });
+		$('#inline_go').val(go_text+' ('+all_text+')');
+		inlineModeration.setCookie(inlineModeration.cookieName, new Array('ALL'));
 
 		var selectRow = $('#selectAllrow');
 		if(selectRow)
@@ -375,6 +320,85 @@ var inlineModeration = {
 		{
 			allSelectedRow.css('display', 'table-row');
 		}
+	},
+
+	getCookie: function(name)
+	{
+		var inlineCookie = $.cookie(name);
+
+		var ids = new Array();
+		if(inlineCookie)
+		{
+			var inlineIds = inlineCookie.split('|');
+			$.each(inlineIds, function(index, item) {
+				if(item != '' && item != null)
+				{
+					ids.push(item);
+				}
+			});
+		}
+		return ids;
+	},
+
+	setCookie: function(name, array)
+	{
+		if(array.length != 0)
+		{
+			var data = '|'+array.join('|')+'|';
+			var date = new Date();
+			date.setTime(date.getTime() + (60 * 60 * 1000));
+			$.cookie(name, data, { expires: date });
+		}
+		else
+		{
+			$.removeCookie(name);
+		}
+	},
+
+	updateCookies: function(inlineIds, removedIds)
+	{
+		if(inlineIds.indexOf('ALL') != -1)
+		{
+			var count = all_text - removedIds.length;
+		}
+		else
+		{
+			var count = inlineIds.length;
+		}
+		if(count < 0)
+		{
+			count = 0;
+		}
+		$('#inline_go').val(go_text+' ('+count+')');
+		if(count == 0)
+		{
+			inlineModeration.clearChecked();
+		}
+		else
+		{
+			inlineModeration.setCookie(inlineModeration.cookieName, inlineIds);
+			inlineModeration.setCookie(inlineModeration.cookieName+'_removed', removedIds);
+		}
+		return count;
+	},
+
+	addId: function(array, id)
+	{
+		if(array.indexOf(id) == -1)
+		{
+			array.push(id);
+		}
+		return array;
+	},
+
+	removeId: function(array, id)
+	{
+		var position = array.indexOf(id);
+		if(position != -1)
+		{
+			array.splice(position, 1);
+		}
+		return array;
 	}
 };
 $(inlineModeration.init);
