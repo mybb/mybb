@@ -7,8 +7,8 @@ var inlineModeration = {
 			return false;
 		}
 
-		inlineModeration.cookieName = "inlinemod_"+inlineType+inlineId;
-		inputs = $("input");
+		inlineModeration.cookieName = 'inlinemod_'+inlineType+inlineId;
+		inputs = $('input');
 
 		if(!inputs)
 		{
@@ -19,19 +19,19 @@ var inlineModeration = {
 
 		if(inlineCookie)
 		{
-			inlineIds = inlineCookie.split("|");
+			inlineIds = inlineCookie.split('|');
 		}
-		
+
 		$(inputs).each(function() {
 			var element = $(this);
-			if((element.attr('name') != "allbox") && (element.attr('type') == "checkbox") && (element.attr('id')) && (element.attr('id').split("_")[0] == "inlinemod"))
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (element.attr('id')) && (element.attr('id').split('_')[0] == 'inlinemod'))
 			{
 				$(element).click(inlineModeration.checkItem);
 			}
 
 			if(inlineCookie && element.attr('id'))
 			{
-				inlineCheck = element.attr('id').split("_");
+				inlineCheck = element.attr('id').split('_');
 				id = inlineCheck[1];
 
 				if(inlineIds.indexOf('ALL') != -1)
@@ -43,19 +43,19 @@ var inlineModeration = {
 				{
 					element.prop('checked', true);
 					var post = element.parents('div.post_content');
-          var thread = element.parents('tr');
+					var thread = element.parents('tr');
 					var fieldset = element.parents('fieldset');
 					if(post.length > 0)
 					{
 						post.addClass('trow_selected');
 					}
-          else if(thread.length > 0)
-          {
-            thread.children('td').addClass('trow_selected');
-          }
+					else if(thread.length > 0)
+					{
+						thread.children('td').addClass('trow_selected');
+					}
 					else if(fieldset.length > 0)
 					{
-						fieldset.addClass('inline_selected');	
+						fieldset.addClass('inline_selected');
 					}
 
 				}
@@ -63,22 +63,22 @@ var inlineModeration = {
 				{
 					element.prop('checked', false);
 					var post = element.parents('div.post_content');
-          var thread = element.parents('tr');
+					var thread = element.parents('tr');
 					if(post.length > 0)
 					{
 						post.removeClass('trow_selected');
 					}
-          else if(thread.length > 0)
-          {
-            thread.children('td').removeClass('trow_selected');
-          }
+					else if(thread.length > 0)
+					{
+						thread.children('td').removeClass('trow_selected');
+					}
 				}
 			}
 		});
-		
+
 		if(inlineCookie)
 		{
-			goButton = $("#inline_go");
+			goButton = $('#inline_go');
 			if(inlineIds)
 			{
 				var inlineCount = 0;
@@ -87,7 +87,7 @@ var inlineModeration = {
 				});
 				inlineModeration.inlineCount = inlineCount;
 			}
-			goButton.val(go_text+" ("+(inlineModeration.inlineCount)+")");
+			goButton.val(go_text+' ('+(inlineModeration.inlineCount)+')');
 		}
 		return true;
 	},
@@ -101,7 +101,7 @@ var inlineModeration = {
 			return false;
 		}
 
-		inlineCheck = element.attr('id').split("_");
+		inlineCheck = element.attr('id').split('_');
 		id = inlineCheck[1];
 
 		if(!id)
@@ -115,9 +115,9 @@ var inlineModeration = {
 
 		if(inlineCookie)
 		{
-			inlineIds = inlineCookie.split("|");
+			inlineIds = inlineCookie.split('|');
 			$.each(inlineIds, function(index, item) {
-				if(item != "" && item != null)
+				if(item != '' && item != null)
 				{
 					if(item != id)
 					{
@@ -138,7 +138,7 @@ var inlineModeration = {
 			{
 				post.addClass('trow_selected');
 			}
-      else if(thread.length > 0)
+			else if(thread.length > 0)
 			{
 				thread.children('td').addClass('trow_selected');
 			}
@@ -147,31 +147,31 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount--;
 			var post = element.parents('div.post_content');
-      var thread = element.parents('tr');
+			var thread = element.parents('tr');
 			if(post.length > 0)
 			{
 				post.removeClass('trow_selected');
 			}
-      else if(thread.length > 0)
-      {
-        thread.children('td').removeClass('trow_selected');
-      }
-
-			if(inlineCookie && inlineCookie.indexOf("ALL") != -1)
+			else if(thread.length > 0)
 			{
-				// We've already selected all threads, add this to our "no-go" cookie
+				thread.children('td').removeClass('trow_selected');
+			}
+
+			if(inlineCookie && inlineCookie.indexOf('ALL') != -1)
+			{
+				// We've already selected all threads, add this to our 'no-go' cookie
 				remIds[remIds.length] = id;
 			}
 		}
 
-		goButton = $("#inline_go");
-    
-    var date = new Date();
-    date.setTime(date.getTime() + (60 * 60 * 1000));
+		goButton = $('#inline_go');
+
+		var date = new Date();
+		date.setTime(date.getTime() + (60 * 60 * 1000));
 
 		if(remIds.length)
 		{
-			inlineData = "|"+remIds.join("|")+"|";
+			inlineData = '|'+remIds.join('|')+'|';
 			$.cookie(inlineModeration.cookieName + '_removed', inlineData, { expires: date });
 
 			// Get the right count for us
@@ -181,7 +181,7 @@ var inlineModeration = {
 		}
 		else
 		{
-			inlineData = "|"+newIds.join("|")+"|";
+			inlineData = '|'+newIds.join('|')+'|';
 			$.cookie(inlineModeration.cookieName, inlineData, { expires: date });
 		}
 
@@ -190,26 +190,26 @@ var inlineModeration = {
 			inlineModeration.inlineCount = 0;
 		}
 
-		goButton.val(go_text+" ("+inlineModeration.inlineCount+")");
+		goButton.val(go_text+' ('+inlineModeration.inlineCount+')');
 
 		return true;
 	},
 
 	clearChecked: function()
 	{
-		var selectRow = $("#selectAllrow");
+		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', "none");
+			selectRow.css('display', 'none');
 		}
-		
-		var allSelectedRow = $("#allSelectedrow");
+
+		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', "none");
+			allSelectedRow.css('display', 'none');
 		}
-		
-		inputs = $("input");
+
+		inputs = $('input');
 
 		if(!inputs)
 		{
@@ -219,7 +219,7 @@ var inlineModeration = {
 		$(inputs).each(function() {
 			var element = $(this);
 			if(!element.val()) return;
-			if(element.attr('type') == "checkbox" && ((element.attr('id') && element.attr('id').split("_")[0] == "inlinemod") || element.attr('name') == "allbox"))
+			if(element.attr('type') == 'checkbox' && ((element.attr('id') && element.attr('id').split('_')[0] == 'inlinemod') || element.attr('name') == 'allbox'))
 			{
 				element.prop('checked', false);
 			}
@@ -238,8 +238,8 @@ var inlineModeration = {
 		});
 
 		inlineModeration.inlineCount = 0;
-		goButton = $("#inline_go");
-		goButton.val(go_text+" (0)");
+		goButton = $('#inline_go');
+		goButton.val(go_text+' (0)');
 		$.removeCookie(inlineModeration.cookieName);
 		$.removeCookie(inlineModeration.cookieName + '_removed');
 
@@ -248,8 +248,8 @@ var inlineModeration = {
 
 	checkAll: function(master)
 	{
-		inputs = $("input");
-    master = $(master);
+		inputs = $('input');
+		master = $(master);
 
 		if(!inputs)
 		{
@@ -260,15 +260,15 @@ var inlineModeration = {
 
 		if(inlineCookie)
 		{
-			inlineIds = inlineCookie.split("|");
+			inlineIds = inlineCookie.split('|');
 		}
 
 		var newIds = new Array();
 		$(inputs).each(function() {
 			var element = $(this);
 			if(!element.val() || !element.attr('id')) return;
-			inlineCheck = element.attr('id').split("_");
-			if((element.attr('name') != "allbox") && (element.attr('type') == "checkbox") && (inlineCheck[0] == "inlinemod"))
+			inlineCheck = element.attr('id').split('_');
+			if((element.attr('name') != 'allbox') && (element.attr('type') == 'checkbox') && (inlineCheck[0] == 'inlinemod'))
 			{
 				id = inlineCheck[1];
 				var changed = (element.prop('checked') != master.prop('checked'));
@@ -276,29 +276,29 @@ var inlineModeration = {
 
 				var post = element.parents('div.post_content');
 				var fieldset = element.parents('fieldset');
-        var thread = element.parents('tr');
+				var thread = element.parents('tr');
 				if(post.length > 0)
-        {
-          if(master.prop('checked') == true)
-          {
-            post.addClass('trow_selected');
-          }
-          else
-          {
-            post.removeClass('trow_selected');
-          }
-        }
-        else if(thread.length > 0)
-        {
-          if(master.prop('checked') == true)
-          {
-            thread.children('td').addClass('trow_selected');
-          }
-          else
-          {
-            thread.children('td').removeClass('trow_selected');
-          }
-        }
+				{
+					if(master.prop('checked') == true)
+					{
+						post.addClass('trow_selected');
+					}
+					else
+					{
+						post.removeClass('trow_selected');
+					}
+				}
+				else if(thread.length > 0)
+				{
+					if(master.prop('checked') == true)
+					{
+						thread.children('td').addClass('trow_selected');
+					}
+					else
+					{
+						thread.children('td').removeClass('trow_selected');
+					}
+				}
 				else if(fieldset.length > 0)
 				{
 					if(master.prop('checked') == true)
@@ -310,7 +310,7 @@ var inlineModeration = {
 						fieldset.removeClass('inline_selected');
 					}
 				}
-				
+
 				if(changed)
 				{
 					if(master.prop('checked') == true)
@@ -326,54 +326,54 @@ var inlineModeration = {
 			}
 		});
 
-		inlineData = "|"+newIds.join("|")+"|";
-		goButton = $("#inline_go");
+		inlineData = '|'+newIds.join('|')+'|';
+		goButton = $('#inline_go');
 
 		if(inlineModeration.inlineCount < 0)
 		{
 			inlineModeration.inlineCount = 0;
 		}
-		
+
 		if(inlineModeration.inlineCount < all_text)
 		{
-			var selectRow = $("#selectAllrow");
+			var selectRow = $('#selectAllrow');
 			if(selectRow)
 			{
 				if(master.prop('checked') == true)
 				{
-					selectRow.css('display', "table-row");
+					selectRow.css('display', 'table-row');
 				}
 				else
 				{
-					selectRow.css('display', "none");
+					selectRow.css('display', 'none');
 				}
 			}
 		}
-		
-		goButton.val(go_text+" ("+inlineModeration.inlineCount+")");
-    
-    var date = new Date();
-    date.setTime(date.getTime() + (60 * 60 * 1000));
+
+		goButton.val(go_text+' ('+inlineModeration.inlineCount+')');
+
+		var date = new Date();
+		date.setTime(date.getTime() + (60 * 60 * 1000));
 		$.cookie(inlineModeration.cookieName, inlineData, { expires: date });
 	},
-		
+
 	selectAll: function()
 	{
-		goButton.val(go_text+" ("+all_text+")");
-    var date = new Date();
-    date.setTime(date.getTime() + (60 * 60 * 1000));
-		$.cookie(inlineModeration.cookieName, "|ALL|", { expires: date });
-		
-		var selectRow = $("#selectAllrow");
+		goButton.val(go_text+' ('+all_text+')');
+		var date = new Date();
+		date.setTime(date.getTime() + (60 * 60 * 1000));
+		$.cookie(inlineModeration.cookieName, '|ALL|', { expires: date });
+
+		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', "none");
+			selectRow.css('display', 'none');
 		}
-		
-		var allSelectedRow = $("#allSelectedrow");
+
+		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', "table-row");
+			allSelectedRow.css('display', 'table-row');
 		}
 	}
 };
