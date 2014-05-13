@@ -26,6 +26,8 @@ var inlineEditor = {
 				event: "hold"+tid,
 				callback: function(values, settings)
 				{
+					id = $(this).attr('id');
+					tid = id.replace( /[^\d.]/g, '');
 					values = JSON.parse(values);
 					if(values.errors)
 					{
