@@ -29,38 +29,41 @@ var inlineModeration = {
 				var inlineCheck = element.attr('id').split('_');
 				var id = inlineCheck[1];
 
-				if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
+				if(inlineCheck[0] == 'inlinemod')
 				{
-					element.prop('checked', true);
-					var post = element.parents('div.post_content');
-					var thread = element.parents('tr');
-					var fieldset = element.parents('fieldset');
-					if(post.length > 0)
+					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
-						post.addClass('trow_selected');
-					}
-					else if(thread.length > 0)
-					{
-						thread.children('td').addClass('trow_selected');
-					}
-					else if(fieldset.length > 0)
-					{
-						fieldset.addClass('inline_selected');
-					}
+						element.prop('checked', true);
+						var post = element.parents('div.post_content');
+						var thread = element.parents('tr');
+						var fieldset = element.parents('fieldset');
+						if(post.length > 0)
+						{
+							post.addClass('trow_selected');
+						}
+						else if(thread.length > 0)
+						{
+							thread.children('td').addClass('trow_selected');
+						}
+						else if(fieldset.length > 0)
+						{
+							fieldset.addClass('inline_selected');
+						}
 
-				}
-				else
-				{
-					element.prop('checked', false);
-					var post = element.parents('div.post_content');
-					var thread = element.parents('tr');
-					if(post.length > 0)
-					{
-						post.removeClass('trow_selected');
 					}
-					else if(thread.length > 0)
+					else
 					{
-						thread.children('td').removeClass('trow_selected');
+						element.prop('checked', false);
+						var post = element.parents('div.post_content');
+						var thread = element.parents('tr');
+						if(post.length > 0)
+						{
+							post.removeClass('trow_selected');
+						}
+						else if(thread.length > 0)
+						{
+							thread.children('td').removeClass('trow_selected');
+						}
 					}
 				}
 			}
