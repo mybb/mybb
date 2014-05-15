@@ -693,10 +693,12 @@ class postParser
 		$message = trim($message);
 		$message = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $message);
 
-		if(!$message) return '';
+		if(!$message)
+		{
+			return '';
+		}
 
-		$message = str_replace('\"', '"', $message);
-		$username = str_replace('\"', '"', $username)."'";
+		$username .= "'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
@@ -937,10 +939,6 @@ class postParser
 			$name = $url;
 		}
 		
-		$name = str_replace("\'", "'", $name);
-		$url = str_replace("\'", "'", $url);
-		$fullurl = str_replace("\'", "'", $fullurl);
-		
 		if($name == $url && (!isset($this->options['shorten_urls']) || $this->options['shorten_urls'] != 0))
 		{
 			if(my_strlen($url) > 55)
@@ -1083,8 +1081,6 @@ class postParser
 	*/
 	function mycode_parse_email($email, $name="")
 	{
-		$name = str_replace("\\'", "'", $name);
-		$email = str_replace("\\'", "'", $email);
 		if(!$name)
 		{
 			$name = $email;
@@ -1290,7 +1286,6 @@ class postParser
 	*/
 	function mycode_parse_list($message, $type="")
 	{
-		$message = str_replace('\"', '"', $message);
 		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 
