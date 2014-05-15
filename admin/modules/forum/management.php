@@ -1291,6 +1291,16 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_not_empty;
 			}
 		}
+
+		if(!empty($mybb->input['linkto']) && empty($forum_data['linkto']))
+		{
+			$query = $db->simple_select('threads', 'COUNT(tid) as num_threads', "fid = '{$fid}'", array( "limit" => 1));
+			if($db->fetch_field($query, "num_threads") > 0)
+			{
+				$errors[] = $lang->error_forum_link_not_empty;
+			}
+		}
+
 		
 		if(!$errors)
 		{
