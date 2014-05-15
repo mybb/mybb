@@ -568,16 +568,15 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
+	// Set display group to their user group if they don't have a display group.
+	if(!$user['displaygroup'])
+	{
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
 	// Fetch display group properties.
 	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
-	if($user['displaygroup'] == 0)
-	{
-		$display_group = usergroup_displaygroup($user['usergroup']);
-	}
-	else
-	{
-		$display_group = usergroup_displaygroup($user['displaygroup']);
-	}
+	$display_group = usergroup_displaygroup($user['displaygroup']);
 
 	if($user_permissions['usereputationsystem'] != 1 || $display_group['title'] && $display_group['usereputationsystem'] == 0)
 	{
