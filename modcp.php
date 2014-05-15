@@ -500,7 +500,7 @@ if($mybb->input['action'] == "modlogs")
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 		if($logitem['tsubject'])
 		{
-			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
@@ -518,6 +518,10 @@ if($mybb->input['action'] == "modlogs")
 			if($data['uid'])
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+			}
+			if($data['aid'])
+			{
+				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
 			}
 		}
 
@@ -582,6 +586,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	$plugins->run_hooks("modcp_do_delete_announcement");
 
 	$db->delete_query("announcements", "aid='{$aid}'");
+	log_moderator_action(array("aid" => $announcement['aid'], "subject" => $announcement['subject']), $lang->announcement_deleted);
 	$cache->update_forumsdisplay();
 
 	redirect("modcp.php?action=announcements", $lang->redirect_delete_announcement);
@@ -988,6 +993,8 @@ if($mybb->input['action'] == "do_edit_announcement")
 		);
 
 		$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
+
+		log_moderator_action(array("aid" => $announcement['aid'], "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_edited);
 
 		$plugins->run_hooks("modcp_do_edit_announcement_end");
 
@@ -3454,7 +3461,7 @@ if(!$mybb->input['action'])
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 		if($logitem['tsubject'])
 		{
-			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
@@ -3472,6 +3479,10 @@ if(!$mybb->input['action'])
 			if($data['uid'])
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+			}
+			if($data['aid'])
+			{
+				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
 			}
 		}
 
