@@ -476,6 +476,12 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
+	// Set display group to their user group if they don't have a display group.
+	if(!$user['displaygroup'])
+	{
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
 	// Fetch display group properties.
 	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
 	$display_group = usergroup_displaygroup($user['displaygroup']);
@@ -491,12 +497,6 @@ if(!$mybb->input['action'])
 
 	// Format the user name using the group username style
 	$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-
-	// Set display group to their user group if they don't have a display group.
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
 
 	// This user has a custom user title
 	if(trim($user['usertitle']) != '')
