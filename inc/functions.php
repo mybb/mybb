@@ -1466,9 +1466,9 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	$mod_cache = $cache->read("moderators");
 
-	foreach($mod_cache as $fid => $forum)
+	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($fid, $parentslist))
+		if(!is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
