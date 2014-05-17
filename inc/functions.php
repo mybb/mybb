@@ -20,6 +20,7 @@ function output_page($contents)
 
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
+	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
@@ -84,7 +85,6 @@ function output_page($contents)
 	}
 
 	$contents = str_replace("<debugstuff>", "", $contents);
-	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
 	{
