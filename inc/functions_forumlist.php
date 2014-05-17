@@ -412,11 +412,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
+				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
+				$expthead = "";
 				$expaltext = "[-]";
 			}
 
