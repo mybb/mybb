@@ -29,6 +29,8 @@ function upgrade29_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$db->update_query('settings', array('value' => -1), 'name IN (\'postmergefignore\', \'postmergeuignore\') AND value=\'\'');
+
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		if($db->index_exists('posts', 'tiddate'))
