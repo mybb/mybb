@@ -641,8 +641,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				if($thread['closed'] != 1)
 				{
-					$data .= "$('#quick_reply_form .trow1').removeClass('trow1').addClass('trow_shaded');
-						$('#quick_reply_form .trow2').removeClass('trow2').addClass('trow_shaded');\n";
+					$data .= "$('#quick_reply_form .trow1').removeClass('trow1 trow2').addClass('trow_shaded');\n";
 				}
 				else
 				{
