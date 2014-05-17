@@ -197,6 +197,11 @@ var MyBB = {
 		}
 	},
 
+	whoPosted: function(tid)
+	{
+		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid);
+	},
+
 	markForumRead: function(event)
 	{
 		var element = $(event);
