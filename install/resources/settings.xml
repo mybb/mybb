@@ -1140,7 +1140,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Merge Forums to Ignore</title>
 			<description><![CDATA[Forums, separated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1148,7 +1148,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Merge User Groups to Ignore</title>
 			<description><![CDATA[Usergroups, separated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1613,7 +1613,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>

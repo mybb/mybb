@@ -80,18 +80,26 @@ if($mybb->settings['portal_showwelcome'] != 0)
 			$newann = 0;
 			if(!empty($mybb->settings['portal_announcementsfid']))
 			{
-				$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-				if(is_array($announcementsfids))
+				$annfidswhere = '';
+				if($mybb->settings['portal_announcementsfid'] != -1)
 				{
-					foreach($announcementsfids as $fid)
+					$announcementsfids = explode(',', (string)$mybb->settings['portal_announcementsfid']);
+					if(is_array($announcementsfids))
 					{
-						$fid_array[] = intval($fid);
-					}
+						foreach($announcementsfids as &$fid)
+						{
+							$fid = (int)$fid;
+						}
+						unset($fid);
 
-					$announcementsfids = implode(',', $fid_array);
-					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids."){$unviewwhere}");
-					$newann = $db->fetch_field($query, "newann");
+						$announcementsfids = implode(',', $announcementsfids);
+
+						$annfidswhere = " AND fid IN (".$announcementsfids.")";
+					}
 				}
+
+				$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$annfidswhere}{$unviewwhere}");
+				$newann = $db->fetch_field($query, "newann");
 			}
 		}
 		else
@@ -366,20 +374,30 @@ $announcements = '';
 if(!empty($mybb->settings['portal_announcementsfid']))
 {
 	// Get latest news announcements
-	// First validate announcement fids:
-	$announcementsfids = explode(',', $mybb->settings['portal_announcementsfid']);
-	if(is_array($announcementsfids))
+	// Build where clause
+	$annfidswhere = '';
+	if($mybb->settings['portal_announcementsfid'] != -1)
 	{
-		foreach($announcementsfids as $fid)
+		// First validate announcement fids:
+		$announcementsfids = explode(',', (string)$mybb->settings['portal_announcementsfid']);
+		if(is_array($announcementsfids))
 		{
-			$fid_array[] = intval($fid);
+			foreach($announcementsfids as $fid)
+			{
+				$fid_array[] = (int)$fid;
+			}
+			unset($fid);
+
+			$announcementsfids = implode(',', $fid_array);
+
+			$annfidswhere = " AND t.fid IN (".$announcementsfids.")";
 		}
-		$announcementsfids = implode(',', $fid_array);
 	}
+
 	// And get them!
 	foreach($forum_cache as $fid => $f)
 	{
-		if(is_array($fid_array) && in_array($fid, $fid_array))
+		if(empty($fid_array) || (is_array($fid_array) && in_array($fid, $fid_array)))
 		{
 			$forum[$fid] = $f;
 		}
@@ -400,7 +418,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+		WHERE t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 		ORDER BY t.dateline DESC
 		LIMIT 0, {$numannouncements}"
 	);
@@ -444,7 +462,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+			WHERE t.tid IN (0{$tids}){$annfidswhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 			ORDER BY t.dateline DESC
 			LIMIT 0, {$numannouncements}"
 		);
