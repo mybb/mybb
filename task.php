@@ -56,6 +56,7 @@ else
 {
 	// Send our fake gif image (clear 1x1 transparent image)
 	header("Content-type: image/gif");
+	header("Cache-Control: no-cache");
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 	
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
