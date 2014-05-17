@@ -10299,13 +10299,13 @@ if(use_xmlhttprequest == "1")
 		</thead>
 		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
 			<tr>
-				<td class="trow1" valign="top" width="22%">
+				<td class="{$trow}" valign="top" width="22%">
 					<strong>{$lang->message}</strong><br />
 					<span class="smalltext">{$lang->message_note}<br /><br />
 					<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
 					<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 				</td>
-				<td class="trow1">
+				<td class="{$trow}">
 					<div style="width: 95%">
 						<textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 					</div>
