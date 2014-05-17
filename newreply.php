@@ -638,6 +638,17 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						inlineModeration.checkItem();
 					});
 				}\n";
+
+				if($thread['closed'] != 1)
+				{
+					$data .= "$('#quick_reply_form .trow1').removeClass('trow1').addClass('trow_shaded');
+						$('#quick_reply_form .trow2').removeClass('trow2').addClass('trow_shaded');\n";
+				}
+				else
+				{
+					$data .= "$('#quick_reply_form .trow_shaded').removeClass('trow_shaded').addClass('trow1');\n";
+				}
+
 				$data .= "</script>\n";
 
 				header("Content-type: application/json; charset={$lang->settings['charset']}");
