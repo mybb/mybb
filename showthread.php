@@ -1139,6 +1139,12 @@ if($mybb->input['action'] == "thread")
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
 		}
 
+		$trow = alt_trow();
+		if($thread['closed'] == 1)
+		{
+			$trow = 'trow_shaded';
+		}
+
 	    $posthash = md5($mybb->user['uid'].random_str());
 		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
 	}
