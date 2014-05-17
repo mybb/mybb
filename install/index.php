@@ -2266,8 +2266,6 @@ function install_done()
 	$cache->update_reportedposts();
 	$cache->update_mycode();
 	$cache->update_posticons();
-	$cache->update_update_check();
-	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
 	$cache->update_banned();
@@ -2292,9 +2290,12 @@ function install_done()
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
 
-	// Attempt to run an update check
-	require_once MYBB_ROOT.'inc/functions_task.php';
-	run_task(12);
+	// Schedule an update check so it occurs an hour ago.  Gotta stay up to date!
+	$update['nextrun'] = TIME_NOW - 3600;
+	$db->update_query("tasks",$update,"tid='12'");
+
+	$cache->update_update_check();
+	$cache->update_tasks();
 
 	echo $lang->done . '</p>';
 
