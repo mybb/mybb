@@ -2292,7 +2292,7 @@ function install_done()
 
 	// Schedule an update check so it occurs an hour ago.  Gotta stay up to date!
 	$update['nextrun'] = TIME_NOW - 3600;
-	$db->update_query("tasks",$update,"tid='12'");
+	$db->update_query("tasks", $update, "tid='12'");
 
 	$cache->update_update_check();
 	$cache->update_tasks();
