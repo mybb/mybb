@@ -353,7 +353,7 @@ var Thread = {
 					{
 						$.each(json.errors, function(i, message)
 						{
-							$.jGrowl('There was an error posting your reply: '+message);
+							$.jGrowl('There was an error deleting your post: '+message);
 						});
 					}
 					else if(json.hasOwnProperty("data"))
