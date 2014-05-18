@@ -1138,17 +1138,17 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="postmergefignore">
 			<title>Merge Forums to Ignore</title>
-			<description><![CDATA[Forums, separated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
+			<description><![CDATA[Forums to exclude from the auto merge feature. Leave blank to disable.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
-			<description><![CDATA[Usergroups, separated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
+			<description><![CDATA[Usergroups, to exclude from the merge feature.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1452,10 +1452,18 @@ descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="pmquickreply">
+			<title>Show Quick Reply Form</title>
+			<description><![CDATA[Allows you to set whether or not the quick reply form will be shown at the bottom of PMs.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="pmsallowhtml">
 			<title>Allow HTML</title>
 			<description><![CDATA[Selecting yes will allow HTML to be used in private messages.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1463,7 +1471,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowmycode">
 			<title>Allow MyCode</title>
 			<description><![CDATA[Selecting yes will allow MyCode to be used in private messages.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1471,7 +1479,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowsmilies">
 			<title>Allow Smilies</title>
 			<description><![CDATA[Selecting yes will allow Smilies to be used in private messages.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1479,7 +1487,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowimgcode">
 			<title>Allow [img] Code</title>
 			<description><![CDATA[Selecting yes will allow [img] Code to be used in private messages.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1487,7 +1495,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowvideocode">
 			<title>Allow [video] Code</title>
 			<description><![CDATA[Selecting yes will allow [video] Code to be used in private messages.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1495,7 +1503,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmfloodsecs">
 			<title>Private Message Flood Time</title>
 			<description><![CDATA[Set the time (in seconds) users have to wait between sending messages, to be in effect; set to 0 to disable.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1503,7 +1511,7 @@ descending=Descending]]></optionscode>
 		<setting name="showpmip">
 			<title>Show Private Message IP Addresses</title>
 			<description><![CDATA[Do you wish to show ip addresses of users who send private messages, and who you want to show ip addresses to?]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[radio
 no=Do not show IP
 hide=Show to Admins & Mods
@@ -1611,9 +1619,9 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="17" isdefault="1">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
+			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
