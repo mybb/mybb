@@ -647,6 +647,7 @@ if($mybb->input['action'] == "permissions")
 
 			'canpostthreads' => 'posting_rating',
 			'canpostreplys' => 'posting_rating',
+			'canonlyreplyownthreads' => 'posting_rating',
 			'canpostattachments' => 'posting_rating',
 			'canratethreads' => 'posting_rating',
 
