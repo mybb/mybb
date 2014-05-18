@@ -168,7 +168,7 @@ function remove_message_quotes(&$text, $rmdepth=null)
 /**
  * Performs cleanup of a quoted message, such as replacing /me commands, before presenting quoted post to the user.
  *
- * @param array quoted post info, taken from the DB (requires the 'message', 'username', 'pid' and 'dateline' entries to be set; will use 'userusername' if present)
+ * @param array quoted post info, taken from the DB (requires the 'message', 'username', 'pid' and 'dateline' entries to be set; will use 'userusername' if present. requires 'quote_is_pm' if quote message is from a private message)
  * @param boolean whether to call remove_message_quotes() on the quoted message
  * @return string the cleaned up message, wrapped in a quote tag
  */
@@ -211,7 +211,13 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 
 	$quoted_post = $plugins->run_hooks("parse_quoted_message", $quoted_post);
 
-	return "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
+	$extra = '';
+	if(empty($quoted_post['quote_is_pm']))
+	{
+		$extra = " pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}'";
+	}
+
+	return "[quote='{$quoted_post['username']}'{$extra}]\n{$quoted_post['message']}\n[/quote]\n\n";
 }
 
 ?>
