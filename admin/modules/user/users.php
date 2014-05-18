@@ -143,6 +143,62 @@ if($mybb->input['action'] == "views")
 	view_manager("index.php?module=user-users", "user", $user_view_fields, $sort_options, "user_search_conditions");
 }
 
+if($mybb->input['action'] == 'iplookup')
+{
+	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
+	$lang->ipaddress_misc_info = $lang->sprintf($lang->ipaddress_misc_info, htmlspecialchars_uni($mybb->input['ipaddress']));
+	$ipaddress_location = $lang->na;
+	$ipaddress_host_name = $lang->na;
+	$modcp_ipsearch_misc_info = '';
+	if(!strstr($mybb->input['ipaddress'], "*"))
+	{
+		// Return GeoIP information if it is available to us
+		if(function_exists('geoip_record_by_name'))
+		{
+			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
+			if($ip_record)
+			{
+				$ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
+				if($ip_record['city'])
+				{
+					$ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
+				}
+			}
+		}
+
+		$ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
+
+		// gethostbyaddr returns the same ip on failure
+		if($ipaddress_host_name == $mybb->input['ipaddress'])
+		{
+			$ipaddress_host_name = $lang->na;
+		}
+	}
+	
+	?>
+	<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+
+	<?php
+
+	$table = new Table();
+
+	$table->construct_cell($lang->ipaddress_host_name.":");
+	$table->construct_cell($ipaddress_host_name);
+	$table->construct_row();
+
+	$table->construct_cell($lang->ipaddress_location.":");
+	$table->construct_cell($ipaddress_location);
+	$table->construct_row();
+
+	$table->output($lang->ipaddress_misc_info);
+
+	?>
+</div>
+</div>
+	<?php
+}
+
 if($mybb->input['action'] == "activate_user")
 {
 	$plugins->run_hooks("admin_user_users_coppa_activate");
@@ -1678,15 +1734,16 @@ if($mybb->input['action'] == "ipaddresses")
 	}
 	else
 	{
+		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
 "index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['lastip']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".$user['lastip']);
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1697,14 +1754,15 @@ if($mybb->input['action'] == "ipaddresses")
 	}
 	else
 	{
+		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['regip']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['regip'])));
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".$user['regip']);
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1714,14 +1772,15 @@ if($mybb->input['action'] == "ipaddresses")
 	while($ip = $db->fetch_array($query))
 	{
 		++$counter;
+		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ip['ipaddress']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
 
-		$table->construct_cell(my_inet_ntop($db->unescape_binary($ip['ipaddress'])));
+		$table->construct_cell($ip['ipaddress']);
 		$table->construct_cell($controls, array('class' => "align_center"));
 		$table->construct_row();
 	}

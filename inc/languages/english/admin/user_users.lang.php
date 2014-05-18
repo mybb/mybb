@@ -395,4 +395,8 @@ You will be able to login with the credentials you registered with.
 
 Thank you,
 {2} Staff";
+
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name";
+$l['ipaddress_location'] = "GeoIP Location";
 ?>

@@ -88,6 +88,7 @@ class DefaultPage
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
+		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/modal.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
 		if(file_exists(MYBB_ADMIN_DIR."styles/{$this->style}/{$this->active_module}.css"))
