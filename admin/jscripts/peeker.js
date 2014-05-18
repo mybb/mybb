@@ -107,7 +107,7 @@ var add_star = function(id)
 		label = cell.find("label").first();
 		star = document.createElement("em");
 		starText = document.createTextNode(" *");
-		star.append(starText);
+		star.appendChild(starText);
 		label.append(star);
 	}
 }
