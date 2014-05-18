@@ -6382,14 +6382,14 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 {$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
+<link rel="stylesheet" href="jscripts/select2/select2.css" />
 <script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->find_users}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -6411,12 +6411,13 @@ if(use_xmlhttprequest == "1")
 			if (query !== "") {
 				$.ajax("xmlhttp.php?action=get_users", {
 					data: {
-						query: query
+						query: query,
+						getone: 1
 					},
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 }
 // -->

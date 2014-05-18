@@ -136,6 +136,15 @@ if($mybb->input['action'] == "get_users")
 		exit;
 	}
 
+	if($mybb->get_input('getone', 1) == 1)
+	{
+		$limit = 1;
+	}
+	else
+	{
+		$limit = 15;
+	}
+
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
 
@@ -144,15 +153,24 @@ if($mybb->input['action'] == "get_users")
 		"order_by" => "username",
 		"order_dir" => "asc",
 		"limit_start" => 0,
-		"limit" => 15
+		"limit" => $limit
 	);
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
-	$data = array();
-	while($user = $db->fetch_array($query))
+	if($limit == 1)
 	{
+		$user = $db->fetch_array($query);
 		$user['username'] = htmlspecialchars_uni($user['username']);
-		$data[] = array('id' => $user['username'], 'text' => $user['username']);
+		$data = array('id' => $user['username'], 'text' => $user['username']);
+	}
+	else
+	{
+		$data = array();
+		while($user = $db->fetch_array($query))
+		{
+			$user['username'] = htmlspecialchars_uni($user['username']);
+			$data[] = array('id' => $user['username'], 'text' => $user['username']);
+		}
 	}
 
 	echo json_encode($data);
