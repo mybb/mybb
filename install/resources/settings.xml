@@ -1146,17 +1146,17 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="postmergefignore">
 			<title>Merge Forums to Ignore</title>
-			<description><![CDATA[Forums to exclude from the auto merge feature. Leave blank to disable.]]></description>
+			<description><![CDATA[Forums, separated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[forumselect]]></optionscode>
+			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
-			<description><![CDATA[Usergroups, to exclude from the merge feature.]]></description>
+			<description><![CDATA[Usergroups, separated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
+			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1645,9 +1645,9 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="19" isdefault="1">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
+			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[forumselect]]></optionscode>
+			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
