@@ -5,7 +5,10 @@
  * var peeker = new Peeker( <id of the controlling select menu>, <id of the thing to show/hide>, <matching regexp to show the thing>);
  */
 
-var Peeker = Class.create();
+var Peeker = function(controller, domain, match, is_nodelist) {
+	this.initialize(controller, domain, match, is_nodelist);
+};
+
 Peeker.prototype = {
 	
     controller: null,
@@ -24,19 +27,26 @@ Peeker.prototype = {
             // Find a match (if found show domain)
             for(i = 0; i < this.controller.length; i++)
             {
-                if(this.controller[i].checked && this.controller[i].value.match(this.match))
+                if(this.controller.eq(i).prop('checked') && this.controller.eq(i).val().match(this.match))
                 {
-                    Element.show(this.domain);
+                    this.domain.show();
                     return;
                 }
             }
             // Nothing found
-            Element.hide(this.domain);
+            this.domain.hide();
 		}
 		else
 		{
-		    type = this.controller.value;
-    		this.domain.style.display = (type.match(this.match)) ? '' : 'none';
+		    type = this.controller.val();
+			if(typeof type == 'undefined') type = '';
+    		if(type.match(this.match)) {
+				this.domain.show();
+			}
+			else 
+			{
+				this.domain.hide();
+			}
 		}
 	},
 	
@@ -49,6 +59,7 @@ Peeker.prototype = {
 	 */
 	initialize: function(controller, domain, match, is_nodelist)
 	{
+        var handler = function(event){ event.data.check(event) };
         // Ugly code to differentiate initialization between nodelist and element
 		if(is_nodelist)
 		{
@@ -61,10 +72,10 @@ Peeker.prototype = {
                 
                 for(i = 0; i < controller.length; i++)
                 {
-           			if(controller[i].getAttribute("id") != null)
+           			if(controller.eq(i).attr("id") != null)
            			{
-               			Event.observe(controller[i], "change", this.check.bindAsEventListener(this));
-              			Event.observe(controller[i], "click", this.check.bindAsEventListener(this));
+						controller.eq(i).bind('change', this, handler);
+               			controller.eq(i).bind('click', this, handler);
            			}
                 }
                 this.check();
@@ -77,7 +88,8 @@ Peeker.prototype = {
             this.match = match;
             this.is_nodelist = is_nodelist;
             
-            Event.observe(controller, "change", this.check.bindAsEventListener(this));
+            controller.bind('change', this, handler);
+
             this.check();
 		}
 	}
@@ -89,13 +101,13 @@ Peeker.prototype = {
  */
 var add_star = function(id)
 {
-	if($(id))
+	if($('#'+id))
 	{
-		cell = $(id).getElementsByTagName("td")[0];
-		label = cell.getElementsByTagName("label")[0];
+		cell = $('#'+id).find("td").first();
+		label = cell.find("label").first();
 		star = document.createElement("em");
 		starText = document.createTextNode(" *");
 		star.appendChild(starText);
-		label.appendChild(star);
+		label.append(star);
 	}
 }
