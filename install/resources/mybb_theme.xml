@@ -5458,7 +5458,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">{$profile_link}</a></td>
 <td class="{$altbg}">{$poster['posts']}</td>
 </tr>]]></template>
-		<template name="modcp" version="1400"><![CDATA[<html>
+		<template name="modcp" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->modcp}</title>
 {$headerinclude}
@@ -5488,11 +5488,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow2" align="center"><span class="smalltext">{$unapproved_posts}</span></td>
 <td class="trow2" align="center"><span class="smalltext">{$latest_post}</span></td>
 </tr>
-<tr>
-<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
-<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
-<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
-</tr>
+{$awaitingattachments}
 </table>
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5808,6 +5804,11 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
+		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
+<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
+<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
+<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
+</tr>]]></template>
 		<template name="modcp_banning" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_banned}</title>
@@ -6683,6 +6684,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
+		<template name="modcp_modqueue_attachment_link" version="1800"><![CDATA[ | <a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>]]></template>
 		<template name="modcp_modqueue_empty" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->mod_queue}</title>
@@ -6713,7 +6715,7 @@ if(use_xmlhttprequest == "1")
 	<li><a href="#" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
 	<li><a href="#" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
-		<template name="modcp_modqueue_posts" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_posts" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
 {$headerinclude}
@@ -6732,8 +6734,8 @@ if(use_xmlhttprequest == "1")
 			<td class="thead" colspan="3">
 				<div class="float_right">
 					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
-					<strong>{$lang->posts}</strong> |
-					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+					<strong>{$lang->posts}</strong>
+					{$attachment_link}
 				</div>
 				<strong>{$lang->posts_awaiting_moderation}</strong>
 			</td>
@@ -6780,7 +6782,7 @@ if(use_xmlhttprequest == "1")
 				</td>
 			</tr>
 ]]></template>
-		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_threads" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
 {$headerinclude}
@@ -6799,8 +6801,8 @@ if(use_xmlhttprequest == "1")
 			<td class="thead" colspan="3">
 				<div class="float_right">
 					<strong>{$lang->threads}</strong> |
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> |
-					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a>
+					{$attachment_link}
 				</div>
 				<strong>{$lang->threads_awaiting_moderation}</strong>
 			</td>
@@ -11197,6 +11199,7 @@ if(use_xmlhttprequest == "1")
 {$usercpmenu}
 </table>
 </td>]]></template>
+		<template name="usercp_nav_attachments" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>]]></template>
 		<template name="usercp_nav_changename" version="1400"><![CDATA[<div><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></div>]]></template>
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
@@ -11230,7 +11233,7 @@ if(use_xmlhttprequest == "1")
 <tbody style="{$collapsed['usercpmisc_e']}" id="usercpmisc_e">
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=usergroups" class="usercp_nav_item usercp_nav_usergroups">{$lang->ucp_nav_usergroups}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editlists" class="usercp_nav_item usercp_nav_editlists">{$lang->ucp_nav_editlists}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>
+	{$attachmentop}
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=drafts" class="usercp_nav_item usercp_nav_drafts">{$draftcount}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=subscriptions" class="usercp_nav_item usercp_nav_subscriptions">{$lang->ucp_nav_subscribed_threads}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=forumsubscriptions" class="usercp_nav_item usercp_nav_fsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></td></tr>

@@ -1866,6 +1866,10 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_threads_end");
 
+			if($mybb->settings['enableattachments'] == 1)
+			{
+				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+			}
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);
@@ -1970,14 +1974,23 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_posts_end");
 
+			if($mybb->settings['enableattachments'] == 1)
+			{
+				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+			}
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);
 		}
 	}
 
-	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
+	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1))
 	{
+		if($mybb->settings['enableattachments'] == 0)
+		{
+			error($lang->attachments_disabled);
+		}
+
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
@@ -3977,38 +3990,43 @@ if($mybb->input['action'] == "do_modnotes")
 
 if(!$mybb->input['action'])
 {
-	$query = $db->query("
-		SELECT COUNT(aid) AS unapprovedattachments
-		FROM  ".TABLE_PREFIX."attachments a
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE a.visible='0' {$tflist}
-	");
-	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
-
-	if($unapproved_attachments > 0)
+	if($mybb->settings['enableattachments'] == 1)
 	{
 		$query = $db->query("
-			SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
+			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE a.visible='0' {$tflist}
-			ORDER BY a.dateuploaded DESC
-			LIMIT 1
 		");
-		$attachment = $db->fetch_array($query);
-		$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
-		$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
-		$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
-		$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-		$unapproved_attachments = my_number_format($unapproved_attachments);
+		$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
-		eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
-	}
-	else
-	{
-		$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		if($unapproved_attachments > 0)
+		{
+			$query = $db->query("
+				SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
+				FROM  ".TABLE_PREFIX."attachments a
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				WHERE a.visible='0' {$tflist}
+				ORDER BY a.dateuploaded DESC
+				LIMIT 1
+			");
+			$attachment = $db->fetch_array($query);
+			$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
+			$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
+			$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
+			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+			$unapproved_attachments = my_number_format($unapproved_attachments);
+
+			eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
+		}
+		else
+		{
+			$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		}
+
+		eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
 	}
 
 	$query = $db->query("
