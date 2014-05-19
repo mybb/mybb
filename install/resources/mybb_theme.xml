@@ -1552,12 +1552,27 @@ div.jGrowl div.jGrowl-closer {
 }
 
 .pmspace_used {
-	background: #e73c3c;
-	border: 1px solid #c00;
 	display: inline-block;
 	color: #fff;
 	margin: -1px;
 }
+
+
+.pmspace_used.low {
+	border: 1px solid #0c5a01;
+	background: #167203;
+}
+
+.pmspace_used.medium {
+	background: #ff862b;
+	border: 1px solid #d7611e;
+}
+
+.pmspace_used.high {
+	background: #e73c3c;
+	border: 1px solid #c00;
+}
+
 
 .pmspace_unused {
 	display: inline-block;

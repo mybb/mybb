@@ -2296,6 +2296,7 @@ if(!$mybb->input['action'])
 		$belowhalf = $overhalf = '';
 		if($spaceused <= "50")
 		{
+			$spaceused_severity = "low";
 			$belowhalf = round($spaceused, 0)."%";
 			if(intval($belowhalf) > 100)
 			{
@@ -2304,6 +2305,16 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			if($spaceused <= "75")
+			{
+				$spaceused_severity = "medium";
+			}
+
+			else
+			{
+				$spaceused_severity = "high";
+			}
+			
 			$overhalf = round($spaceused, 0)."%";
 			if(intval($overhalf) > 100)
 			{
