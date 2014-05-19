@@ -3435,7 +3435,7 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
