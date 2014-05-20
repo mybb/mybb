@@ -89,22 +89,9 @@ var Post = {
 		$('#multiquote_unloaded').hide();
 		$.removeCookie('multiquote');
 	},
-
+	
 	removeAttachment: function(aid)
 	{
-		if(confirm(removeattach_confirm) == true)
-		{
-			document.input.attachmentaid.value = aid;
-			document.input.attachmentact.value = "remove";
-		}
-		else
-		{
-			document.input.attachmentaid.value = 0;
-			document.input.attachmentact.value = "";
-			return false;
-		}
-		
-		/*** TODO: Stop event; Submit form on True.
 		$.prompt(removeattach_confirm, {
 			buttons:[
 					{title: yes_confirm, value: true},
@@ -115,6 +102,8 @@ var Post = {
 				{
 					document.input.attachmentaid.value = aid;
 					document.input.attachmentact.value = "remove";
+					
+					$("form#editpost").submit();
 				}
 				else
 				{
@@ -123,7 +112,8 @@ var Post = {
 				}
 			}
 		});
-		TODO ***/
+		
+		return false;
 	},
 
 	attachmentAction: function(aid,action)
