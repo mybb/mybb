@@ -238,6 +238,18 @@ function upgrade29_dbchanges()
 		$db->insert_query("attachtypes", array('atid' => '5', 'name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
 	}
 
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_announcement>', 'isdefault' => '1'));
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='announcement'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
+	}
+
 	// Sync usergroups with canbereported; no moderators or banned groups
 	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();

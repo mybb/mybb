@@ -134,7 +134,7 @@ $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUE
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('28','managegroup','<lang:group_managegroup>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('29','misc','<lang:group_misc>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('30','modcp','<lang:group_modcp>','1');";
-$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('31','php','<lang:group_php>','1');";
+$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('31','announcement','<lang:group_announcement>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('32','polls','<lang:group_polls>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('33','post','<lang:group_post>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('34','printthread','<lang:group_printthread>','1');";
@@ -143,7 +143,7 @@ $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUE
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('37','stats','<lang:group_stats>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('38','xmlhttp','<lang:group_xmlhttp>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('39','footer','<lang:group_footer>','1');";
-
+$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('40','video','<lang:group_video>','1');";
 
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (1, 0, 'Newbie', 1, '');";
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (2, 1, 'Junior Member', 2, '');";
