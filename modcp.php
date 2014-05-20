@@ -349,12 +349,31 @@ if($mybb->input['action'] == "reports")
 
 					break;
 				case 'profile':
-					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					if(is_array($usercache[$report['pid']]))
+					{
+						$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					}
+					else
+					{
+						$user = $lang->na_deleted;
+					}
+
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
-					$reputation_link = "reputation.php?uid={$usercache[$report['tid']]['uid']}#rid{$report['pid']}";
-					$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					if(is_array($usercache[$report['tid']]))
+					{
+						$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					}
+					elseif($usercache[$report['tid']] > 0)
+					{
+						$bad_user = $lang->na_deleted;
+					}
+					else
+					{
+						$bad_user = $lang->guest;
+					}
+					$reputation_link = "reputation.php?uid={$usercache[$report['fid']]['uid']}#rid{$report['pid']}";
 					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
 					$good_user = build_profile_link($usercache[$report['fid']]['username'], $usercache[$report['fid']]['uid']);
@@ -471,13 +490,14 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
+		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername, ru.username AS repusername
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.pid)
+		LEFT JOIN ".TABLE_PREFIX."users ru ON (ru.uid=r.tid)
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -505,12 +525,31 @@ if($mybb->input['action'] == "allreports")
 			}
 			else if($report['type'] == 'profile')
 			{
-				$user = build_profile_link($report['profileusername'], $report['pid']);
+				if(!$report['profileusername'])
+				{
+					$user = $lang->na_deleted;
+				}
+				else
+				{
+					$user = build_profile_link($report['profileusername'], $report['pid']);
+				}
 				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 			}
 			else if($report['type'] == 'reputation')
 			{
-				$user = build_profile_link($report['profileusername'], $report['fid']);
+				if($report['repusername'])
+				{
+					$user = build_profile_link($report['repusername'], $report['tid']);
+				}
+				elseif($report['tid'] > 0)
+				{
+					$user = $lang->na_deleted;
+				}
+				else
+				{
+					$user = $lang->guest;
+				}
+
 				$reputation_link = "reputation.php?uid={$report['fid']}#rid{$report['pid']}";
 				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
