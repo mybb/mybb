@@ -1672,7 +1672,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$user = get_user($mybb->input['uid']);
 	if(!$user['uid'])
 	{
-		error($lang->invalid_user);
+		error($lang->error_nomember);
 	}
 
 	// Check if the current user has permission to edit this user
@@ -1864,7 +1864,7 @@ if($mybb->input['action'] == "editprofile")
 	$user = get_user($mybb->input['uid']);
 	if(!$user['uid'])
 	{
-		error($lang->invalid_user);
+		error($lang->error_nomember);
 	}
 
 	// Check if the current user has permission to edit this user
