@@ -1292,6 +1292,8 @@ form #message {
 	display: none;
 }
 
+/** jGrowl Start **/
+
 div.jGrowl {
 	z-index: 9999;
 	color: #fff;
@@ -1387,6 +1389,9 @@ div.jGrowl div.jGrowl-closer {
 	text-align: center;
 }
 
+/** jGrowl End **/
+
+/** Modal Start **/
 .modal {
 	display: none;
 	width: 400px;
@@ -1430,7 +1435,138 @@ div.jGrowl div.jGrowl-closer {
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
 	border-radius: 8px;
-}]]>
+}
+
+/** Modal End **/
+
+/** Impromptu Start **/
+/*! jQuery-Impromptu - v5.2.3 - 2014-03-09
+* http://trentrichardson.com/Impromptu
+* Copyright (c) 2014 Trent Richardson; Licensed MIT */
+.jqifade{
+	position: absolute; 
+	background-color: #777777; 
+}
+div.jqi{ 
+	width: 400px; 
+	max-width:90%;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	position: absolute; 
+	background-color: #ffffff; 
+	font-size: 11px; 
+	text-align: left; 
+	border: solid 1px #eeeeee;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	padding: 7px;
+}
+div.jqi .jqicontainer{ 
+}
+div.jqi .jqiclose{ 
+	position: absolute;
+	top: 4px; right: -2px; 
+	width: 18px; 
+	cursor: default; 
+	color: #bbbbbb; 
+	font-weight: bold; 
+}
+div.jqi .jqistate{
+	background-color: #fff;
+}
+div.jqi .jqititle{
+	padding: 5px 10px;
+	font-size: 16px; 
+	line-height: 20px; 
+	border-bottom: solid 1px #eeeeee;
+}
+div.jqi .jqimessage{ 
+	padding: 10px; 
+	line-height: 20px; 
+	color: #444444; 
+}
+div.jqi .jqibuttons{ 
+	text-align: right; 
+	margin: 0 -7px -7px -7px;
+	border-top: solid 1px #e4e4e4; 
+	background-color: #f4f4f4;
+	border-radius: 0 0 6px 6px;
+	-moz-border-radius: 0 0 6px 6px;
+	-webkit-border-radius: 0 0 6px 6px;
+}
+div.jqi .jqibuttons button{ 
+	margin: 0;
+	padding: 15px 20px;
+	background-color: transparent;
+	font-weight: normal; 
+	border: none;
+	border-left: solid 1px #e4e4e4; 
+	color: #777; 
+	font-weight: bold; 
+	font-size: 12px; 
+}
+div.jqi .jqibuttons button.jqidefaultbutton{
+	color: #489afe;
+}
+div.jqi .jqibuttons button:hover,
+div.jqi .jqibuttons button:focus{
+	color: #287ade;
+	outline: none;
+}
+.jqiwarning .jqi .jqibuttons{ 
+	background-color: #b95656;
+}
+
+/* sub states */
+div.jqi .jqiparentstate::after{ 
+	background-color: #777;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+	content: '';
+	position: absolute;
+	top:0;left:0;bottom:0;right:0;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+}
+div.jqi .jqisubstate{
+	position: absolute;
+	top:0;
+	left: 20%;
+	width: 60%;
+	padding: 7px;
+	border: solid 1px #eeeeee;
+	border-top: none;
+	border-radius: 0 0 6px 6px;
+	-moz-border-radius: 0 0 6px 6px;
+	-webkit-border-radius: 0 0 6px 6px;
+}
+div.jqi .jqisubstate .jqibuttons button{
+	padding: 10px 18px;
+}
+
+/* arrows for tooltips/tours */
+.jqi .jqiarrow{ position: absolute; height: 0; width:0; line-height: 0; font-size: 0; border: solid 10px transparent;}
+
+.jqi .jqiarrowtl{ left: 10px; top: -20px; border-bottom-color: #ffffff; }
+.jqi .jqiarrowtc{ left: 50%; top: -20px; border-bottom-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowtr{ right: 10px; top: -20px; border-bottom-color: #ffffff; }
+
+.jqi .jqiarrowbl{ left: 10px; bottom: -20px; border-top-color: #ffffff; }
+.jqi .jqiarrowbc{ left: 50%; bottom: -20px; border-top-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowbr{ right: 10px; bottom: -20px; border-top-color: #ffffff; }
+
+.jqi .jqiarrowlt{ left: -20px; top: 10px; border-right-color: #ffffff; }
+.jqi .jqiarrowlm{ left: -20px; top: 50%; border-right-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowlb{ left: -20px; bottom: 10px; border-right-color: #ffffff; }
+
+.jqi .jqiarrowrt{ right: -20px; top: 10px; border-left-color: #ffffff; }
+.jqi .jqiarrowrm{ right: -20px; top: 50%; border-left-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowrb{ right: -20px; bottom: 10px; border-left-color: #ffffff; }
+
+/** Impromptu End */
+
+]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
@@ -3052,7 +3188,7 @@ a.button {
 {$post_errors}
 {$attacherror}
 {$deletebox}
-<form action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+<form id="editpost" action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -3083,7 +3219,7 @@ a.button {
 </table>
 {$attachbox}
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
+<div align="center"><input type="submit" class="button" name="submitbutton" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
@@ -12413,6 +12549,11 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
+  <script type="text/javascript">
+<!--
+	var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -12429,7 +12570,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
-		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return false;" title="{$lang->announcement_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
+		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
@@ -12523,6 +12664,7 @@ $(function() {
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.plugins.min.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
+
 {$stylesheets}
 <script type="text/javascript">
 <!--
@@ -12537,6 +12679,8 @@ $(function() {
 	var my_post_key = "{$mybb->post_code}";
 	var rootpath = "{$mybb->settings['bburl']}";
 	var imagepath = "{$theme['imgdir']}";
+  	var yes_confirm = "{$lang->yes}";
+	var no_confirm = "{$lang->no}";
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>

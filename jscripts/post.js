@@ -103,6 +103,27 @@ var Post = {
 			document.input.attachmentact.value = "";
 			return false;
 		}
+		
+		/*** TODO: Stop event; Submit form on True.
+		$.prompt(removeattach_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					document.input.attachmentaid.value = aid;
+					document.input.attachmentact.value = "remove";
+				}
+				else
+				{
+					document.input.attachmentaid.value = 0;
+					document.input.attachmentact.value = "";
+				}
+			}
+		});
+		TODO ***/
 	},
 
 	attachmentAction: function(aid,action)

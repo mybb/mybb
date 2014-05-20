@@ -176,21 +176,10 @@ var Thread = {
 				callback: function(values, settings)
 				{
 					values = JSON.parse(values);
-					if(values.errors)
-					{
-						$.each(values.errors, function(i, message)
-						{
-							$.jGrowl('There was an error performing the update. '+message);
-						});
-						$('#pid_' + pid).html($('#pid_' + pid + '_temp').html());
-					}
-					else
-					{
-						// Change html content
-						$('#pid_' + pid).html(values.message);
-						$('#edited_by_' + pid).html(values.editedmsg);
-					}
-					$('#pid_' + pid + '_temp').remove();
+
+					// Change html content
+					$('#pid_' + pid).html(values.message);
+					$('#edited_by_' + pid).html(values.editedmsg);
 				}
 			});
         });
@@ -204,9 +193,6 @@ var Thread = {
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
-
-				// Create a copy of the post
-				$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
 
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
@@ -353,48 +339,57 @@ var Thread = {
 
 	deletePost: function(pid)
 	{
-		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true)
-		{
-			$.ajax(
-			{
-				url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
-				type: 'post',
-				complete: function (request, status)
+		$.prompt(quickdelete_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					var json = $.parseJSON(request.responseText);
-					if(json.hasOwnProperty("errors"))
+					$.ajax(
 					{
-						$.each(json.errors, function(i, message)
+						url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
 						{
-							$.jGrowl('There was an error deleting your post: '+message);
-						});
-					}
-					else if(json.hasOwnProperty("data"))
-					{
-						// Soft deleted
-						if(json.data == 1)
-						{
-							// Change CSS class of div 'pid_[pid]'
-							$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
-							
-							$.jGrowl('The post was deleted successfully.');
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl('There was an error deleting your post: '+message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Soft deleted
+								if(json.data == 1)
+								{
+									// Change CSS class of div 'pid_[pid]'
+									$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
+									
+									$.jGrowl('The post was deleted successfully.');
+								}
+								else if(json.data == 2)
+								{
+									// Actually deleted
+									$('#post_'+pid).slideToggle("slow");
+									
+									$.jGrowl('The post was deleted successfully.');
+								}
+							}
+							else
+							{
+								$.jGrowl('An unknown error has occurred.');
+							}
 						}
-						else if(json.data == 2)
-						{
-							// Actually deleted
-							$('#post_'+pid).slideToggle("slow");
-							
-							$.jGrowl('The post was deleted successfully.');
-						}
-					}
-					else
-					{
-						$.jGrowl('An unknown error has occurred.');
-					}
+					});
 				}
-			});
-		}
+			}
+		});
+		
+		return false;
 	},
 
 	reportPost: function(pid)

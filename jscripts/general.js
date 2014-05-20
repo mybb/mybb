@@ -84,59 +84,65 @@ var MyBB = {
 
 	deleteEvent: function(eid)
 	{
-		confirmReturn = confirm(deleteevent_confirm);
-
-		if(confirmReturn == true)
-		{
-			var form = $("<form />",
-			           {
-					   		method: "post",
-			             	action: "calendar.php",
-			             	style: "display: none;"
-			           });
-
-			form.append(
-			    $("<input />",
+		$.prompt(deleteevent_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					name: "action",
-					type: "hidden",
-					value: "do_editevent"
-				})
-			);
+					var form = $("<form />",
+							   {
+									method: "post",
+									action: "calendar.php",
+									style: "display: none;"
+							   });
 
-			if(my_post_key)
-			{
-				form.append(
-				    $("<input />",
+					form.append(
+						$("<input />",
+						{
+							name: "action",
+							type: "hidden",
+							value: "do_editevent"
+						})
+					);
+
+					if(my_post_key)
 					{
-						name: "my_post_key",
-						type: "hidden",
-						value: my_post_key
-					})
-				);
+						form.append(
+							$("<input />",
+							{
+								name: "my_post_key",
+								type: "hidden",
+								value: my_post_key
+							})
+						);
+					}
+
+					form.append(
+						$("<input />",
+						{
+							name: "eid",
+							type: "hidden",
+							value: eid
+						})
+					);
+
+					form.append(
+						$("<input />",
+						{
+							name: "delete",
+							type: "hidden",
+							value: 1
+						})
+					);
+
+					$("body").append(form);
+					form.submit();
+				}
 			}
-
-			form.append(
-			    $("<input />",
-				{
-					name: "eid",
-					type: "hidden",
-					value: eid
-				})
-			);
-
-			form.append(
-			    $("<input />",
-				{
-					name: "delete",
-					type: "hidden",
-					value: 1
-				})
-			);
-
-			$("body").append(form);
-			form.submit();
-		}
+		});
 	},
 
 	reputation: function(uid, pid)
@@ -151,50 +157,58 @@ var MyBB = {
 
 	deleteReputation: function(uid, rid)
 	{
-		var confirmReturn = confirm(delete_reputation_confirm);
-
-		if(confirmReturn == true)
-		{
-			var form = $("<form />",
-			           {
-			           		method: "post",
-			           		action: "reputation.php?action=delete",
-			           		style: "display: none;"
-			           });
-
-			form.append(
-			    $("<input />",
+		$.prompt(delete_reputation_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					name: "rid",
-					type: "hidden",
-					value: rid
-				})
-			);
-
-			if(my_post_key)
-			{
-				form.append(
-				    $("<input />",
+					var form = $("<form />",
 					{
-						name: "my_post_key",
-						type: "hidden",
-						value: my_post_key
-					})
-				);
+						method: "post",
+						action: "reputation.php?action=delete",
+						style: "display: none;"
+					});
+
+					form.append(
+						$("<input />",
+						{
+							name: "rid",
+							type: "hidden",
+							value: rid
+						})
+					);
+
+					if(my_post_key)
+					{
+						form.append(
+							$("<input />",
+							{
+								name: "my_post_key",
+								type: "hidden",
+								value: my_post_key
+							})
+						);
+					}
+
+					form.append(
+						$("<input />",
+						{
+							name: "uid",
+							type: "hidden",
+							value: uid
+						})
+					);
+
+					$("body").append(form);
+					form.submit();
+				}
 			}
-
-			form.append(
-				$("<input />",
-				{
-					name: "uid",
-					type: "hidden",
-					value: uid
-				})
-			);
-
-			$("body").append(form);
-			form.submit();
-		}
+		});
+		
+		return false;
 	},
 
 	whoPosted: function(tid)
@@ -350,6 +364,24 @@ var MyBB = {
 			},
 			error: function(){
 				  alert('An unknown error has occurred.');
+			}
+		});
+
+		return false;
+	},
+	
+	deleteAnnouncement: function(data)
+	{
+		$.prompt(announcement_quickdelete_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					window.location=data.href.replace('action=delete_announcement','action=do_delete_announcement');
+				}
 			}
 		});
 
