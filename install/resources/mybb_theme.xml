@@ -4384,12 +4384,12 @@ if(use_xmlhttprequest == "1")
 </tr>
 {$passboxes}
 <tr>
-<td><span class="smalltext"><label for="email">{$lang->email}</label></span></td>
-<td><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
+<td width="50%" valign="top"><span class="smalltext"><label for="email">{$lang->email}</label></span></td>
+<td width="50%" valign="top"><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="email" id="email" style="width: 100%" maxlength="50" value="{$email}" /></td>
-<td><input type="text" class="textbox" name="email2" id="email2" style="width: 100%" maxlength="50" value="{$email2}" /></td>
+<td width="50%" valign="top"><input type="text" class="textbox" name="email" id="email" style="width: 100%" maxlength="50" value="{$email}" /></td>
+<td width="50%" valign="top"><input type="text" class="textbox" name="email2" id="email2" style="width: 100%" maxlength="50" value="{$email2}" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
@@ -4503,6 +4503,8 @@ $().ready(function() {
 		rules: {
           username: {
             required: true,
+            minlength: {$mybb->settings['minnamelength']},
+			maxlength: {$mybb->settings['maxnamelength']},
 			remote:{
 				url: "xmlhttp.php?action=username_availability",
 				type: "post",
@@ -4512,10 +4514,6 @@ $().ready(function() {
 					my_post_key: my_post_key
 				},
 			},
-          },
-          password: {
-				required: true,
-				minlength: 6
           },
           password2: {
 				required: true,
@@ -4533,20 +4531,13 @@ $().ready(function() {
           },
 		},
 		messages: {
-          username: "{$lang->js_validator_username_length}",
-			password: {
-				required: "{$lang->js_validator_password_length}",
-              	minlength: "{$lang->js_validator_password_length}",
-			},
-			confirm_password: {
-				required: "{$lang->js_validator_password_length}",
-              	minlength: "{$lang->js_validator_password_length}",
-				equalTo: "{$lang->js_validator_password_matches}"
-			},
+            username: "{$lang->js_validator_username_length}",
           	email: "{$lang->js_validator_invalid_email}",
 			email2: "{$lang->js_validator_email_match}",          
 		}
 	});
+          
+   {$validator_extra}
 });
 // -->
 </script>
@@ -4687,12 +4678,12 @@ $().ready(function() {
 	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
 		<template name="member_register_password" version="1400"><![CDATA[<tr>
-<td><span class="smalltext">{$lang->password}</span></td>
-<td><span class="smalltext">{$lang->confirm_password}</span></td>
+<td width="50%" valign="top"><span class="smalltext">{$lang->password}</span></td>
+<td width="50%" valign="top"><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
 <tr>
-<td><input type="password" class="textbox" name="password" id="password" style="width: 100%" /></td>
-<td><input type="password" class="textbox" name="password2" id="password2" style="width: 100%" /></td>
+<td width="50%" valign="top"><input type="password" class="textbox" name="password" id="password" style="width: 100%" /></td>
+<td width="50%" valign="top"><input type="password" class="textbox" name="password2" id="password2" style="width: 100%" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
@@ -4738,7 +4729,7 @@ if(use_xmlhttprequest == "1")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},

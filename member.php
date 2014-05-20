@@ -725,7 +725,15 @@ if($mybb->input['action'] == "register")
 				{
 					$id = "fid{$profilefield['fid']}";
 				}
-				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {failure_message:'{$lang->js_validator_not_empty}'});\n";
+				
+				$validator_extra .= "
+				$(\"#{$id}\").rules(\"add\", {
+					required: true,
+					minlength: 1,
+					messages: {
+						required: \"{$lang->js_validator_not_empty}\"
+					}
+				});\n";
 
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
@@ -772,7 +780,22 @@ if($mybb->input['action'] == "register")
 				if($mybb->settings['captchaimage'] == 1)
 				{
 					// JS validator extra for our default CAPTCHA
-					$validator_extra .= "\tregValidator.register('imagestring', 'ajax', { url: 'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message: '{$lang->js_validator_captcha_valid}', failure_message: '{$lang->js_validator_no_image_text}'} );\n";
+					$validator_extra .= "
+					$(\"#imagestring\").rules(\"add\", {
+						remote:{
+							url: \"xmlhttp.php?action=validate_captcha\",
+							type: \"post\",
+							dataType: \"json\",
+							data:
+							{
+								imagehash: $('#imagehash').val(),
+								my_post_key: my_post_key
+							},
+						},
+						messages: {
+							remote: \"{$lang->js_validator_no_image_text}\"
+						}
+					});\n";
 				}
 			}
 		}
@@ -789,16 +812,57 @@ if($mybb->input['action'] == "register")
 		{
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
-			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
 
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				$validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					remote:{
+						url: \"xmlhttp.php?action=complex_password\",
+						type: \"post\",
+						dataType: \"json\",
+						data:
+						{
+							my_post_key: my_post_key
+						},
+					},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						remote: \"{$lang->js_validator_no_image_text}\"
+					}
+				});\n";
 			}
-			$validator_extra .= "\tregValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";
+			else
+			{
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\"
+					}
+				});\n";
+			}
 
+			$validator_extra .= "
+				$(\"#password2\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					equalTo: \"#password\",
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						equalTo: \"{$lang->js_validator_password_matches}\"
+					}
+				});\n";
+			
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
@@ -806,7 +870,6 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
 		{
 			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
-			$validator_extra .= "\tregValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
 		}
 
 		$languages = $lang->get_languages();

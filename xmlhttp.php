@@ -626,31 +626,32 @@ else if($mybb->input['action'] == "validate_captcha")
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
 
-	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('value')))
+	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
 	{
-		echo json_encode(array("success" => $lang->captcha_matches));
+		//echo json_encode(array("success" => $lang->captcha_matches));
+		echo json_encode("true");
 		exit;
 	}
 	else
 	{
-		echo json_encode(array("fail" => $lang->captcha_does_not_match));
+		echo json_encode($lang->captcha_does_not_match);
 		exit;
 	}
 }
 else if($mybb->input['action'] == "complex_password")
 {
-	$password = trim($mybb->get_input('value'));
+	$password = trim($mybb->get_input('password'));
 	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
 	header("Content-type: application/json; charset={$charset}");
 	if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $password))
 	{
-		echo json_encode(array("fail" => $lang->complex_password_fails));
+		echo json_encode($lang->complex_password_fails);
 	}
 	else
 	{
 		// Return nothing but an OK password if passes regex
-		echo json_encode(array("success" => 1));
+		echo json_encode("true");
 	}
 
 	exit;
@@ -702,13 +703,13 @@ else if($mybb->input['action'] == "username_availability")
 	if($user['uid'])
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
-		echo $lang->username_taken;
+		echo json_encode($lang->username_taken);
 		exit;
 	}
 	else
 	{
-		$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo "success";
+		//$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
+		echo json_encode("true");
 		exit;
 	}
 }
