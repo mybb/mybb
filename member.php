@@ -1481,12 +1481,13 @@ if($mybb->input['action'] == "profile")
 {
 	$plugins->run_hooks("member_profile_start");
 
-	if($mybb->usergroup['canviewprofiles'] == 0)
+	$uid = $mybb->get_input('uid', 1);
+	
+	if($mybb->usergroup['canviewprofiles'] == 0 && $uid != $mybb->user['uid'])
 	{
 		error_no_permission();
 	}
-
-	$uid = $mybb->get_input('uid', 1);
+	
 	if($uid)
 	{
 		$memprofile = get_user($uid);
