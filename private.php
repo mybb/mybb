@@ -2323,12 +2323,12 @@ if(!$mybb->input['action'])
 		}
 
 		if($spaceused > 100)
-        {
-            $spaceused = 100;
-            $spaceused2 = 0;
-        }
+		{
+			$spaceused = 100;
+			$spaceused2 = 0;
+		}
 
-        eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
+		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}
 
 	$limitwarning = '';
