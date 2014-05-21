@@ -8504,7 +8504,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 		<template name="post_attachments_attachment_mod_unapprove" version="120"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
-		<template name="post_attachments_attachment_postinsert" version="1405"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="clickableEditor.insertAttachment({$attachment['aid']});" />]]></template>
+		<template name="post_attachments_attachment_postinsert" version="1800"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="clickableEditor.sceditor('instance').insertText('[attachment={$attachment['aid']}]');" />]]></template>
 		<template name="post_attachments_attachment_remove" version="1604"><![CDATA[<input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
 		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
 <td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
@@ -12589,7 +12589,8 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
 $(function() {
-	$("#{$bind}").sceditor({
+	var clickableEditor = $("#{$bind}");
+	clickableEditor.sceditor({
 		plugins: "bbcode",
 		style: "jscripts/sceditor/editor_themes/{$theme['editortheme']}",
 		rtl: {$lang->settings['rtl']},
