@@ -9155,7 +9155,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="private.php?fid={$folder}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="private_pmspace" version="1800"><![CDATA[<span class="pmspace">
-  <span class="pmspace_container"><span class="pmspace_used" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
+  <span class="pmspace_container"><span class="pmspace_used {$spaceused_severity}" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
