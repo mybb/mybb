@@ -1,0 +1,32 @@
+body {
+	background: #f7f7f7;
+	padding: 5px;
+}
+
+#popup_container {
+	background: #fff;
+	padding: 5px;
+}
+
+#content {
+	margin: 0;
+	padding: 0;
+}
+
+.popup_title {
+	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	font-size: 170%;
+	letter-spacing: -1px;
+	font-weight: bold;
+	color: #666;
+	margin: 0 0 5px 0;
+	border-bottom: 2px solid #999;
+}
+
+.close_link {
+	float: right;
+	font-size: 13px;
+	margin-top: 7px;
+	font-weight: normal;
+	letter-spacing: normal;
+}
