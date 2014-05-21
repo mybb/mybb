@@ -49,6 +49,7 @@ $l['new_posts'] = "Forum Contains New Posts";
 $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['click_mark_read'] = "Click to mark this forum as read";
 $l['forum_locked'] = "Forum is Locked";
+$l['forum_redirect'] = "Redirect Forum";
 $l['lastpost_never'] = "Never";
 $l['viewing_one'] = " (1 user browsing)";
 $l['viewing_multiple'] = " ({1} users browsing)";

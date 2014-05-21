@@ -460,8 +460,14 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
+	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+	if($forum['linkto'] != '')
+	{
+		$folder = "offlink";
+		$altonoff = $lang->forum_redirect;
+	}
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == 0 || $locked)
+	elseif($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;

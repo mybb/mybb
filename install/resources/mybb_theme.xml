@@ -3913,6 +3913,9 @@ a.button {
 
 	<dt><img src="{$theme['imgdir']}/offlock.png" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
 	<dd>{$lang->forum_locked}</dd>
+
+	<dt><img src="{$theme['imgdir']}/offlink.png" alt="{$lang->forum_redirect}" title="{$lang->forum_redirect}" style="vertical-align: middle;" /></dt>
+	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br style="clear: both" />
 {$footer}
