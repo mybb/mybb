@@ -10166,30 +10166,33 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="4"><strong>{$lang->moderators}</strong></td>
+<td class="thead" colspan="5"><strong>{$lang->moderators}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_username}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->mod_forums}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_email}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_pm}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->pm}</strong></span></td>
 </tr>
 {$modrows}
 </table>
 <br/>]]></template>
 		<template name="showteam_moderators_forum" version="1400"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
 		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
-<td width="50%" class="trow1"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
-<td width="30%" class="trow2"><span class="smalltext">{$forumslist}</span></td>
-<td width="10%" class="trow2"><div class="postbit_buttons">{$emailcode}</div></td>
-<td width="10%" class="trow1"><div class="postbit_buttons">{$pmcode}</div></td>
+<td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
+<td width="15%" class="{$bgcolor}"><div class="postbit_buttons">{$user['lastvisit']}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
 		<template name="showteam_usergroup" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><strong>{$usergroup['title']}</strong></td>
+<td class="thead" colspan="4"><strong>{$usergroup['title']}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->uname}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->pm}</strong></span></td>
 </tr>
@@ -10197,9 +10200,10 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showteam_usergroup_user" version="1800"><![CDATA[<tr>
-<td width="80%" class="{$bgcolor}"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
-<td width="10%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
-<td width="10%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
+<td width="75%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="15%" class="{$bgcolor}">{$user['lastvisit']}</td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
 		<template name="showthread" version="1800"><![CDATA[<html>
 <head>
