@@ -571,8 +571,9 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
 
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
-	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
-	output_page($imcenter);
+	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
+	echo $imcenter;
+	exit;
 }
 elseif($mybb->input['action'] == "syndication")
 {

@@ -4387,11 +4387,11 @@ if(use_xmlhttprequest == "1")
 				</tr>
 				<tr>
 					<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
+					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
 				</tr>
 				<tr>
 					<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
+					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
 				</tr>
 				<tr>
 					<td class="{$bgcolors['msn']}"><strong>{$lang->msn}</strong></td>
@@ -5379,12 +5379,8 @@ if(use_xmlhttprequest == "1")
 <td width="100%" class="{$altbg}"><strong><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a></strong><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
-		<template name="misc_imcenter_aim" version="1610"><![CDATA[<html>
-<head>
-<title>{$lang->aim_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+		<template name="misc_imcenter_aim" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->aim_center}</strong></td>
@@ -5412,8 +5408,8 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_imcenter_msn" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->msn_messenger_center}</title>
@@ -5433,12 +5429,8 @@ if(use_xmlhttprequest == "1")
 </table>
 </body>
 </html>]]></template>
-		<template name="misc_imcenter_yahoo" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->yahoo_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+		<template name="misc_imcenter_yahoo" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
@@ -5458,8 +5450,8 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></td>
 </tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_rules_forum" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
