@@ -328,23 +328,6 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if an MSN Messenger address is valid or not.
-	 *
-	 * @return boolean True when valid, false when invalid.
-	 */
-	function verify_msn()
-	{
-		$msn = &$this->data['msn'];
-
-		if($msn != '' && validate_email_format($msn) == false)
-		{
-			$this->set_error("invalid_msn_address");
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	* Verifies if a birthday is valid or not.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -940,10 +923,6 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_icq();
 		}
-		if($this->method == "insert" || array_key_exists('msn', $user))
-		{
-			$this->verify_msn();
-		}
 		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
 			$this->verify_birthday();
@@ -1027,7 +1006,7 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
-			'yahoo', 'msn', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1056,7 +1035,8 @@ class UserDataHandler extends DataHandler
 			"icq" => intval($user['icq']),
 			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
 			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
+			"skype" => $db->escape_string(htmlspecialchars($user['skype'])),
+			"google" => $db->escape_string(htmlspecialchars($user['google'])),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1246,9 +1226,13 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
 		}
-		if(isset($user['msn']))
+		if(isset($user['skype']))
 		{
-			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars_uni($user['msn']));
+			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
+		}
+		if(isset($user['google']))
+		{
+			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
 		}
 		if(isset($user['bday']))
 		{

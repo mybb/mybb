@@ -533,7 +533,7 @@ elseif($mybb->input['action'] == "smilies")
 elseif($mybb->input['action'] == "imcenter")
 {
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "msn" && $mybb->input['imtype'] != "yahoo")
+	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
 	{
 		error($lang->error_invalidimtype);
 	}
@@ -556,9 +556,9 @@ elseif($mybb->input['action'] == "imcenter")
 		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
 		$navsep = ' - ';
 	}
-	if($user['msn'])
+	if($user['skype'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
+		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=skype&amp;uid=$uid\">$lang->skype</a>";
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
@@ -566,7 +566,8 @@ elseif($mybb->input['action'] == "imcenter")
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
 	}
 
-	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
+	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
+	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
 	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
 

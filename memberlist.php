@@ -197,12 +197,20 @@ else
 		$search_url .= "&icq=".urlencode($mybb->input['icq']);
 	}
 
-	// MSN/Windows Live Messenger address
-	$mybb->input['msn'] = trim($mybb->get_input('msn'));
-	if($mybb->input['msn'])
+	// Google Talk address
+	$mybb->input['google'] = trim($mybb->get_input('google'));
+	if($mybb->input['google'])
 	{
-		$search_query .= " AND u.msn LIKE '%".$db->escape_string_like($mybb->input['msn'])."%'";
-		$search_url .= "&msn=".urlencode($mybb->input['msn']);
+		$search_query .= " AND u.google LIKE '%".$db->escape_string_like($mybb->input['google'])."%'";
+		$search_url .= "&google=".urlencode($mybb->input['google']);
+	}
+
+	// Skype address
+	$mybb->input['skype'] = trim($mybb->get_input('skype'));
+	if($mybb->input['skype'])
+	{
+		$search_query .= " AND u.skype LIKE '%".$db->escape_string_like($mybb->input['skype'])."%'";
+		$search_url .= "&skype=".urlencode($mybb->input['skype']);
 	}
 
 	// Yahoo! Messenger address

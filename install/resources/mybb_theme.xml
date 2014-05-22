@@ -4394,8 +4394,12 @@ if(use_xmlhttprequest == "1")
 					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
 				</tr>
 				<tr>
-					<td class="{$bgcolors['msn']}"><strong>{$lang->msn}</strong></td>
-					<td class="{$bgcolors['msn']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
+					<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
+					<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
+					<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
 				</tr>
 			</table>
 		</td>
@@ -5174,9 +5178,15 @@ if(use_xmlhttprequest == "1")
 	</td>
 </tr>
 <tr>
-	<td class="trow1" width="20%"><strong><label for="msn">{$lang->search_msn}</label></strong></td>
+	<td class="trow1" width="20%"><strong><label for="skype">{$lang->search_skype}</label></strong></td>
 	<td class="trow1">
-		<input type="text" class="textbox" name="msn" id="msn" />
+		<input type="text" class="textbox" name="skype" id="skype" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="google">{$lang->search_google}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="google" id="google" />
 	</td>
 </tr>
 <tr>
@@ -5410,25 +5420,27 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_imcenter_msn" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->msn_messenger_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+		<template name="misc_imcenter_skype" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->msn_messenger_center}</strong></td>
+<td class="thead" align="center"><strong>{$user['username']} - {$lang->skype_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
 </tr>
 <tr>
-<td class="trow1" align="center">{$lang->msn_address_is}<br />{$user['msn']}</td>
+<td class="trow1" align="center"><strong>{$user['skype']}</strong></td>
+</tr>
+<tr>
+<td class="trow1" align="center"><img src="http://mystatus.skype.com/smallclassic/{$user['skype']}" alt="{$lang->skype_status}" border="0"></td>
+</tr>
+<tr>
+<td class="trow1" align="center"><span class="smalltext"><a href="skype:{$user['skype']}?chat">{$lang->chat_on_skype}</a>  -  <a href="skype:{$user['skype']}?call">{$lang->call_on_skype}</a></span></td>
 </tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_imcenter_yahoo" version="1800"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
@@ -5447,7 +5459,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&amp;.src=pg">{$lang->send_y_message}</a></span></td>
 </tr><tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></td>
+<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></span></td>
 </tr>
 </table>
 </div>
@@ -6217,10 +6229,16 @@ if(use_xmlhttprequest == "1")
 											<td><input type="text" class="textbox" name="aim" size="25" value="{$mybb->input['aim']}" /></td>
 										</tr>
 										<tr>
-											<td><span class="smalltext">{$lang->msn}</span></td>
+											<td><span class="smalltext">{$lang->skype_id}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="msn" size="25" value="{$mybb->input['msn']}" /></td>
+											<td><input type="text" class="textbox" name="skype" size="25" value="{$mybb->input['skype']}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->google_id}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="google" size="25" value="{$mybb->input['google']}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
@@ -11704,7 +11722,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_profile" version="1400"><![CDATA[<html>
+		<template name="usercp_profile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -11808,10 +11826,16 @@ if(use_xmlhttprequest == "1")
 <td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
 </tr>
 <tr>
-<td><span class="smalltext">{$lang->msn}</span></td>
+<td><span class="smalltext">{$lang->skype_id}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="msn" size="25" value="{$user['msn']}" /></td>
+<td><input type="text" class="textbox" name="skype" size="25" value="{$user['skype']}" /></td>
+</tr>
+<tr>
+<td><span class="smalltext">{$lang->google_id}</span></td>
+</tr>
+<tr>
+<td><input type="text" class="textbox" name="google" size="25" value="{$user['google']}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->yahoo_id}</span></td>

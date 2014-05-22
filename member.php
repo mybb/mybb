@@ -1550,7 +1550,8 @@ if($mybb->input['action'] == "profile")
 		"icq",
 		"aim",
 		"yahoo",
-		"msn",
+		"skype",
+		"google",
 	);
 
 	$bgcolors = array();

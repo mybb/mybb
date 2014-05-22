@@ -242,7 +242,8 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
-		"msn" => $mybb->get_input('msn'),
+		"skype" => $mybb->get_input('skype'),
+		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy', 1),
 		"away" => $away,
@@ -370,7 +371,8 @@ if($mybb->input['action'] == "profile")
 
 	if($errors)
 	{
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
+		$user['skype'] = htmlspecialchars_uni($user['skype']);
+		$user['google'] = htmlspecialchars_uni($user['google']);
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}

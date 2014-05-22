@@ -159,6 +159,21 @@ function upgrade29_dbchanges()
 		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
 	}
 
+	if($db->field_exists('msn', 'users'))
+	{
+		$db->drop_column("users", "msn");
+	}
+
+	if($db->field_exists('skype', 'users'))
+	{
+		$db->drop_column("users", "skype");
+	}
+
+	if($db->field_exists('google', 'users'))
+	{
+		$db->drop_column("users", "google");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -185,6 +200,8 @@ function upgrade29_dbchanges()
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -209,6 +226,8 @@ function upgrade29_dbchanges()
 			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int(1) NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			break;
 	}
 

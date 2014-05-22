@@ -504,7 +504,8 @@ if($mybb->input['action'] == "edit")
 			"icq" => $mybb->input['icq'],
 			"aim" => $mybb->input['aim'],
 			"yahoo" => $mybb->input['yahoo'],
-			"msn" => $mybb->input['msn'],
+			"skype" => $mybb->input['skype'],
+			"google" => $mybb->input['google'],
 			"birthday" => array(
 				"day" => $mybb->input['bday1'],
 				"month" => $mybb->input['bday2'],
@@ -1112,7 +1113,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->icq_number, "", $form->generate_text_box('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row($lang->msn_messanger_handle, "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
+	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
+	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
 
 	// Birthday
 	$birthday_days = array(0 => '');
@@ -3139,7 +3141,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "skype", "google", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -4013,7 +4015,8 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
-	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn'))." {$lang->or} ".$form->generate_check_box('conditions[msn_blank]', 1, $lang->is_not_blank, array('id' => 'msn_blank', 'checked' => $input['conditions']['msn_blank'])), 'msn');
+	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
+	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
 	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');
 	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle'))." {$lang->or} ".$form->generate_check_box('conditions[usertitle_blank]', 1, $lang->is_not_blank, array('id' => 'usertitle_blank', 'checked' => $input['conditions']['usertitle_blank'])), 'usertitle');
 	$greater_options = array(
