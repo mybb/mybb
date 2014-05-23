@@ -251,6 +251,16 @@ a:hover, a:active {
 	border-color: #ccc;
 }
 
+#footer .upper .theme {
+	float: right;
+	margin: -1px;
+	margin-left: 15px;
+}
+
+#footer .upper .theme select {
+	border-color: #ccc;
+}
+
 #footer .upper ul.bottom_links {
 	float: left;
 	margin: 4px 0 0 0;
@@ -3323,6 +3333,7 @@ a.button {
 	<div class="upper">
 		<div class="wrapper">
 			{$lang_select}
+			{$theme_select}
 			<ul class="menu bottom_links">
 				<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
@@ -3360,6 +3371,14 @@ a.button {
 			{$lang_options}
 		</optgroup>
 	</select>
+	{$gobutton}
+</form>
+</div>]]></template>
+		<template name="footer_themeselect" version="1800"><![CDATA[<div class="theme">
+<form method="{$theme_redirect_url['form_method']}" action="{$theme_redirect_url['location']}" id="theme_select">
+	{$theme_redirect_url['form_html']}
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	{$theme_options}
 	{$gobutton}
 </form>
 </div>]]></template>
