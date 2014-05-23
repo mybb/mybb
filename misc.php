@@ -556,17 +556,17 @@ elseif($mybb->input['action'] == "imcenter")
 		$imtype = "aim";
 		$imtype_lang = $lang->aol_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
+		$navsep = ' - ';
 	}
 	if($user['skype'])
 	{
-		$navsep = ' - ';
 		$imtype = "skype";
 		$imtype_lang = $lang->skype;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
+		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
-		$navsep = ' - ';
 		$imtype = "yahoo";
 		$imtype_lang = $lang->yahoo_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
