@@ -549,21 +549,27 @@ elseif($mybb->input['action'] == "imcenter")
 		error($lang->error_invalidimtype);
 	}
 
-	// build im navigation bar
-	$navigationbar = $navsep = '';
+	// Build IM navigation bar
+	$navigationbar = $navsep = $imtype = $imtype_lang = '';
 	if($user['aim'])
 	{
-		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
-		$navsep = ' - ';
+		$imtype = "aim";
+		$imtype_lang = $lang->aol_im;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
 	if($user['skype'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=skype&amp;uid=$uid\">$lang->skype</a>";
 		$navsep = ' - ';
+		$imtype = "skype";
+		$imtype_lang = $lang->skype;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
 	if($user['yahoo'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
+		$navsep = ' - ';
+		$imtype = "yahoo";
+		$imtype_lang = $lang->yahoo_im;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
