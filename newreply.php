@@ -478,6 +478,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$post_captcha->invalidate_captcha();
 		}
 
+		$force_redirect = false;
+
 		// Deciding the fate
 		if($visible == -2)
 		{
@@ -494,14 +496,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		else
 		{
 			// Moderated post
-			if($mybb->user['showredirect'] != 1)
-			{
-				// User must see moderation notice, regardless of redirect settings
-				$mybb->user['showredirect'] = 1;
-			}
-
 			$lang->redirect_newreply .= '<br />'.$lang->redirect_newreply_moderation;
 			$url = get_thread_link($tid);
+
+			// User must see moderation notice, regardless of redirect settings
+			$force_redirect = true;
 		}
 
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
@@ -658,14 +657,14 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Post is in the moderation queue
 			else
 			{
-				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation);
+				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation, "", true);
 				exit;
 			}
 		}
 		else
 		{
 			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid));
-			redirect($url, $lang->redirect_newreply);
+			redirect($url, $lang->redirect_newreply, "", $force_redirect);
 			exit;
 		}
 	}
