@@ -156,7 +156,7 @@ function import_theme_xml($xml, $options=array())
 
 			$templatecache[] = array(
 				"title" => $db->escape_string($template['attributes']['name']),
-				"template" => $db->escape_string($template['value']),
+				"template" => $db->escape_string(str_replace(array('<![CDATA[', ']]>'), array('&lt;![CDATA[', ']]&gt;'), $template['value'])),
 				"sid" => $db->escape_string($sid),
 				"version" => $db->escape_string($template['attributes']['version']),
 				"dateline" => TIME_NOW
@@ -224,7 +224,7 @@ function import_theme_xml($xml, $options=array())
 				"name" => $db->escape_string($stylesheet['attributes']['name']),
 				"tid" => $theme_id,
 				"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
-				"stylesheet" => $db->escape_string($stylesheet['value']),
+				"stylesheet" => $db->escape_string(str_replace(array('<![CDATA[', ']]>'), array('&lt;![CDATA[', ']]&gt;'), $stylesheet['value'])),
 				"lastmodified" => intval($stylesheet['attributes']['lastmodified']),
 				"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 			);
