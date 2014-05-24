@@ -6651,12 +6651,12 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_ipsearch_misc_info" version="1600"><![CDATA[<div class="modal">
+		<template name="modcp_ipsearch_misc_info" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
 			<td class="thead" align="center" colspan="2">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="window.close();">Close</a></span></div>
+				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="window.close();">{$lang->close_window}</a></span></div>
 				<div><strong>{$lang->ipaddress_misc_info}</strong></div>
 			</td>
 		</tr>
