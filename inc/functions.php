@@ -869,8 +869,10 @@ function error_no_permission()
  *
  * @param string The URL to redirect the user to
  * @param string The redirection message to be shown
+ * @param string The title of the redirection page
+ * @param boolean Force the redirect page regardless of settings
  */
-function redirect($url, $message="", $title="")
+function redirect($url, $message="", $title="", $force_redirect=false)
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
@@ -912,8 +914,8 @@ function redirect($url, $message="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
-	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))
+	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
