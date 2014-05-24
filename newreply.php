@@ -15,7 +15,7 @@ $templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_
 $templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
 $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,post_attachments_update";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,post_attachments_update";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password";
 
@@ -1127,7 +1127,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		if(!empty($mybb->input['previewpost']) || $hide_captcha == true && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
-			// ... but only if it's a default one, reCAPTCHAs must be filled in every time due to draconian limits
+			// ... but only if it's a default one, reCAPTCHA and Are You a Human must be filled in every time due to draconian limits
 			if($post_captcha->validate_captcha() == true)
 			{
 				$correct = true;
@@ -1147,6 +1147,10 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$post_captcha->build_recaptcha();
 			}
+			elseif($post_captcha->type == 3)
+			{
+				$post_captcha->build_ayah();
+			}
 
 			if($post_captcha->html)
 			{
@@ -1156,6 +1160,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else if($correct && $post_captcha->type == 2)
 		{
 			$post_captcha->build_recaptcha();
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
+		}
+		else if($correct && $post_captcha->type == 3)
+		{
+			$post_captcha->build_ayah();
 
 			if($post_captcha->html)
 			{
