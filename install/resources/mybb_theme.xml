@@ -10961,6 +10961,7 @@ if(use_xmlhttprequest == "1")
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
 		lang.adding_buddy = '{$lang->adding_buddy}';
 		lang.adding_ignored = '{$lang->adding_ignored}';
+      	lang.buddylist_error = '{$lang->buddylist_error}';
 	</script>
 
   <link rel="stylesheet" href="jscripts/select2/select2.css">
