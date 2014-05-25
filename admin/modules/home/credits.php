@@ -43,7 +43,6 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'credits');
 
-	//$cache->update('mybb_credits', '');
 	$mybb_credits = $cache->read('mybb_credits');
 
 	if($mybb->get_input('fetch_new', 1) == 1 || $mybb->get_input('fetch_new', 1) == -2 || ($mybb->get_input('fetch_new', 1) != -1 && (!is_array($mybb_credits) || $mybb_credits['last_check'] <= TIME_NOW - 60*60*24*14)))
