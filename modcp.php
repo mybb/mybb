@@ -471,7 +471,7 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
+		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
