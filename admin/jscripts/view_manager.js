@@ -1,41 +1,55 @@
 var ViewManager = {
 	init: function()
 	{
-		if(!$('fields_enabled') || !$('fields_disabled'))
+		if(!$('#fields_enabled') || !$('#fields_disabled'))
 		{
 			return;
 		}
 
-		if(!$('fields_js'))
+		if(!$('#fields_js'))
 		{
 			return;
 		}
-
-		Sortable.create("fields_enabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
-		Sortable.create("fields_disabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
+		
+		$("#fields_enabled").sortable({
+			connectWith: "#fields_disabled",
+			dropOnEmpty: true,
+			update: function(event, ui) {
+				ViewManager.buildFieldsList();
+			}
+		}).disableSelection();
+		
+		$("#fields_disabled").sortable({
+			connectWith: "#fields_enabled",
+			dropOnEmpty: true,
+			update: function(event, ui) {
+				ViewManager.buildFieldsList();
+			}
+		}).disableSelection();
 	},
 
 	buildFieldsList: function()
 	{
 		new_input = '';
-		for(var i=0; i <= $('fields_enabled').childNodes.length; i++)
-		{
-			if($('fields_enabled').childNodes[i] && $('fields_enabled').childNodes[i].id)
+		$('#fields_enabled').children().each(function() {
+			alert
+		
+			id = $(this).attr('id').split("-");
+		
+			if(id[1])
 			{
-				id = $('fields_enabled').childNodes[i].id.split("-");
-				
-				if(id[1])
+				if(new_input)
 				{
-					if(new_input)
-					{
-						new_input += ",";
-					}
-					new_input += id[1];
+					new_input += ",";
 				}
+				new_input += id[1];
 			}
-		}
-		$('fields_js').value = new_input;
+		});
+		$('#fields_js').val(new_input);
 	}
 };
 
-Event.observe(window, 'load', ViewManager.init);
+$(function()
+{
+	ViewManager.init();
+});
