@@ -32,8 +32,6 @@ var ViewManager = {
 	{
 		new_input = '';
 		$('#fields_enabled').children().each(function() {
-			alert
-		
 			id = $(this).attr('id').split("-");
 		
 			if(id[1])
