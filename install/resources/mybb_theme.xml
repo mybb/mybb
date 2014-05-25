@@ -5523,7 +5523,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup" version="1400"><![CDATA[<div class="modal">
+		<template name="misc_smilies_popup" version="1800"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -5536,7 +5536,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1613"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="MyBBEditor.insertText('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="MyBBEditor.insertText('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
@@ -10548,7 +10548,7 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
 <br />]]></template>
 		<template name="showthread_usersbrowsing_user" version="1600"><![CDATA[{$comma}<a href="{$user['profilelink']}" title="{$lang->users_browsing_thread_reading} ({$user['reading']})">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="smilieinsert" version="120"><![CDATA[
+		<template name="smilieinsert" version="1800"><![CDATA[
 <div style="margin:auto; width: 170px; margin-top: 20px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" width="150">
 <tr>
@@ -10565,7 +10565,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 ]]></template>
-		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
+		<template name="smilieinsert_getmore" version="1800"><![CDATA[<tr>
   <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" onclick="console.log(MyBBEditor); MyBBEditor.insertText('{$find}');" /></td>
