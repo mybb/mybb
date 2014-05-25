@@ -5523,25 +5523,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
-{$headerinclude}
-<script type="text/javascript">
-<!--
-	var editor = eval('opener.' + '{$editor}');
-	function insertSmilie(code)
-	{
-		if(editor)
-		{
-			editor.performInsert(code, "", true, false);
-		}
-	}
-// -->
-</script>
-
-</head>
-<body>
+		<template name="misc_smilies_popup" version="1400"><![CDATA[<div class="modal">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->smilies_listing}</strong></td>
@@ -5550,13 +5533,10 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" colspan="4"><span class="smalltext">{$lang->click_to_add}</span></td>
 </tr>
 {$smilies}
-<tr>
-<td class="thead" colspan="4" align="center"><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></td>
-</tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1613"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="insertSmilie('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
+</div>
+</div>]]></template>
+		<template name="misc_smilies_popup_smilie" version="1613"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="MyBBEditor.insertText('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
@@ -10586,9 +10566,9 @@ if(use_xmlhttprequest == "1")
 </div>
 ]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
+  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
-		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" /></td>
+		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" onclick="console.log(MyBBEditor); MyBBEditor.insertText('{$find}');" /></td>
 ]]></template>
 		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
 </tr>
@@ -12660,6 +12640,8 @@ $(function() {
 		},
         toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
 	});
+      
+	MyBBEditor = $("#{$bind}").sceditor("instance");
 });
 </script>]]></template>
 		<template name="contact" version="1800"><![CDATA[<html>
@@ -12724,6 +12706,7 @@ $(function() {
 	var imagepath = "{$theme['imgdir']}";
   	var yes_confirm = "{$lang->yes}";
 	var no_confirm = "{$lang->no}";
+	var MyBBEditor = null;
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>

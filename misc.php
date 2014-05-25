@@ -512,7 +512,7 @@ elseif($mybb->input['action'] == "smilies")
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_empty")."\";");
 		}
-		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup")."\";");
+		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
 		output_page($smiliespage);
 	}
 	else
