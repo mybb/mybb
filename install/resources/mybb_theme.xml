@@ -12495,7 +12495,9 @@ if(use_xmlhttprequest == "1")
 				</table>
 				<script type="text/javascript">
 				<!--
+				$(document).ready(function() {
 					togglePM();
+				});
 				// -->
 				</script>
 			</td>
