@@ -653,20 +653,6 @@ EOF;
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
-		echo "<script type=\"text/javascript\">\n";
-		if($observe_onload)
-		{
-			echo "$(function() {\n";
-		}
-		echo "	\$\$('#{$id}').each(function(tabs)\n";
-		echo "	{\n";
-		echo "		new Control.Tabs(tabs);\n";
-		echo "	});\n";
-		if($observe_onload)
-		{
-			echo "});\n";
-		}
-		echo "</script>\n";
 		echo "<ul class=\"tabs\" id=\"{$id}\">\n";
 		$tab_count = count($tabs);
 		$done = 1;
@@ -772,15 +758,11 @@ EOF;
 	function build_codebuttons_editor($bind, $editor_language)
 	{
 		global $lang;
-		if($bind == "signature")
-		{
-			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
-		}
+		
 		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
 				"<script type=\"text/javascript\">\n".
 				"//<![CDATA[\n".
 				"	{$editor_language}".
-				"	{$tabs_js}".
 				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
 				"//]]>".
 				"</script>";
