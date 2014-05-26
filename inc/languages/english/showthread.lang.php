@@ -20,6 +20,7 @@ $l['view_printable'] = "View a Printable Version";
 $l['send_thread'] = "Send this Thread to a Friend";
 $l['subscribe_thread'] = "Subscribe to this thread";
 $l['unsubscribe_thread'] = "Unsubscribe from this thread";
+$l['add_poll_to_thread'] = "Add Poll to this thread";
 $l['moderation_options'] = "Moderation Options:";
 $l['delayed_moderation'] = "Delayed Moderation";
 $l['thread_notes'] = "Edit / View Thread Notes";

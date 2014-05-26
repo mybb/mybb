@@ -1936,6 +1936,10 @@ ul.thread_tools li.subscription_add {
 
 ul.thread_tools li.subscription_remove {
 	background: url('images/unsubscribe.png') no-repeat 0px 0px;
+}
+
+ul.thread_tools li.poll {
+	background: url('images/poll.png') no-repeat 0px 0px;
 }]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
@@ -10283,6 +10287,7 @@ if(use_xmlhttprequest == "1")
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
 			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
 			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
+			{$addpoll}
 		</ul>
 	</div>
 
@@ -10304,6 +10309,7 @@ if(use_xmlhttprequest == "1")
 	</script>
 </body>
 </html>]]></template>
+		<template name="showthread_add_poll" version="1800"><![CDATA[<li class="poll"><a href="polls.php?action=newpoll&amp;tid={$tid}">{$lang->add_poll_to_thread}</a></li>]]></template>
 		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
 			<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>

@@ -1251,10 +1251,18 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="polltimelimit">
+			<title>Poll Time Limit</title>
+			<description><![CDATA[The number of hours until regular users cannot add a poll to their own threads (if they have the permission). Enter 0 (zero) for no limit.]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[12]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="threadreview">
 			<title>Show Thread Review</title>
 			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
