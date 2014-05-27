@@ -1,13 +1,11 @@
 <?php
-
 /**
  * MyBB 1.8
  * Copyright 2014 MyBB Group, All Rights Reserved
- *
  * Website: http://www.mybb.com
  * License: http://www.mybb.com/about/license
- *
  */
+
 class pluginSystem
 {
 	/**
@@ -25,7 +23,6 @@ class pluginSystem
 
 	/**
 	 * Load all plugins.
-	 *
 	 */
 	function load()
 	{
@@ -51,10 +48,9 @@ class pluginSystem
 	 * @param array|string $function The function of this hook.
 	 * @param int          $priority The priority this hook has.
 	 * @param string       $file     The optional file belonging to this hook.
-	 *
 	 * @return boolean Whether the hook was added.
 	 */
-	function add_hook($hook, $function, $priority = 10, $file = "")
+	function add_hook($hook, $function, $priority=10, $file="")
 	{
 		if(is_array($function))
 		{
@@ -77,10 +73,7 @@ class pluginSystem
 			}
 
 			// Check to see if we already have this hook running at this priority
-			if(!empty($this->hooks[$hook][$priority][$method_representation]) && is_array(
-					$this->hooks[$hook][$priority][$method_representation]
-				)
-			)
+			if(!empty($this->hooks[$hook][$priority][$method_representation]) && is_array($this->hooks[$hook][$priority][$method_representation]))
 			{
 				return true;
 			}
@@ -114,10 +107,9 @@ class pluginSystem
 	 *
 	 * @param string $hook      The name of the hook that is run.
 	 * @param string $arguments The argument for the hook that is run. The passed value MUST be a variable
-	 *
 	 * @return string The arguments for the hook.
 	 */
-	function run_hooks($hook, &$arguments = "")
+	function run_hooks($hook, &$arguments="")
 	{
 		if(!isset($this->hooks[$hook]) || !is_array($this->hooks[$hook]))
 		{
@@ -166,10 +158,9 @@ class pluginSystem
 	 * @param array|string $function The function of the hook.
 	 * @param string       $file     The filename of the plugin.
 	 * @param int          $priority The priority of the hook.
-	 *
 	 * @return bool Whether the hook was removed successfully.
 	 */
-	function remove_hook($hook, $function, $file = "", $priority = 10)
+	function remove_hook($hook, $function, $file="", $priority=10)
 	{
 		if(is_array($function))
 		{
@@ -202,13 +193,13 @@ class pluginSystem
 			unset($this->hooks[$hook][$priority][$function]);
 		}
 
+		return true;
 	}
 
 	/**
 	 * Establishes if a particular plugin is compatible with this version of MyBB.
 	 *
 	 * @param string $plugin The name of the plugin.
-	 *
 	 * @return boolean TRUE if compatible, FALSE if incompatible.
 	 */
 	function is_compatible($plugin)
