@@ -289,6 +289,42 @@ function upgrade29_dbchanges()
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
+	if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
+		}
+	}
+
 	// Update tasks
 	$added_tasks = sync_tasks();
 

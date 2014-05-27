@@ -221,9 +221,9 @@ function add_report($report, $type = 'post')
 	global $cache, $db, $mybb;
 
 	$insert_array = array(
-		'pid' => (int)$report['pid'],
-		'tid' => (int)$report['tid'],
-		'fid' => (int)$report['fid'],
+		'id' => (int)$report['id'],
+		'id2' => (int)$report['id2'],
+		'id3' => (int)$report['id3'],
 		'uid' => (int)$report['uid'],
 		'reportstatus' => 0,
 		'reason' => $db->escape_string($report['reason']),

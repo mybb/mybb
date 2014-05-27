@@ -530,9 +530,9 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
 
 $tables[] = "CREATE TABLE mybb_reportedposts (
 	rid INTEGER PRIMARY KEY,
-	pid int NOT NULL default '0',
-	tid int NOT NULL default '0',
-	fid int NOT NULL default '0',
+	id int NOT NULL default '0',
+	id2 int NOT NULL default '0',
+	id3 int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	reportstatus int(1) NOT NULL default '0',
 	reason varchar(250) NOT NULL default '',
