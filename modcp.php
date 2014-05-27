@@ -168,17 +168,17 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
-		$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+		$query = $db->simple_select('reportedposts', 'id3', "reportstatus='0'");
 
 		$report_count = 0;
-		while($fid = $db->fetch_field($query, 'fid'))
+		while($fid = $db->fetch_field($query, 'id3'))
 		{
 			if(is_moderator($fid))
 			{
 				++$report_count;
 			}
 		}
-		$where = str_replace('t.fid', 'r.fid', $tflist);
+		$where = str_replace('t.fid', 'r.id3', $tflist);
 		unset($fid);
 	}
 
@@ -237,30 +237,30 @@ if($mybb->input['action'] == "reports")
 		{
 			if($report['type'] == 'profile' || $report['type'] == 'reputation')
 			{
-				// Profile UID is in PID
-				if(!isset($usercache[$report['pid']]))
+				// Profile UID is in ID
+				if(!isset($usercache[$report['id']]))
 				{
-					$usercache[$report['pid']] = $report['pid'];
+					$usercache[$report['id']] = $report['id'];
 				}
 
-				// Reputation comment? The offender is the TID
+				// Reputation comment? The offender is the ID2
 				if($report['type'] == 'reputation')
 				{
-					if(!isset($usercache[$report['tid']]))
+					if(!isset($usercache[$report['id2']]))
 					{
-						$usercache[$report['tid']] = $report['tid'];
+						$usercache[$report['id2']] = $report['id2'];
 					}
-					if(!isset($usercache[$report['fid']]))
+					if(!isset($usercache[$report['id3']]))
 					{
 						// The user who was offended
-						$usercache[$report['fid']] = $report['fid'];
+						$usercache[$report['id3']] = $report['id3'];
 					}
 				}
 			}
 			else if(!$report['type'] || $report['type'] == 'post')
 			{
 				// This (should) be a post
-				$postcache[$report['pid']] = $report['pid'];
+				$postcache[$report['id']] = $report['id'];
 			}
 
 			// Lastpost info - is it missing (pre-1.8)?
@@ -339,25 +339,25 @@ if($mybb->input['action'] == "reports")
 			switch($report['type'])
 			{
 				case 'post':
-					$post = get_post_link($report['pid'])."#pid{$report['pid']}";
-					$user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
+					$post = get_post_link($report['id'])."#pid{$report['id']}";
+					$user = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
 
-					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
-					$thread_subject = htmlspecialchars_uni($postcache[$report['pid']]['subject']);
+					$thread_link = get_thread_link($postcache[$report['id']]['tid']);
+					$thread_subject = htmlspecialchars_uni($postcache[$report['id']]['subject']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
 				case 'profile':
-					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					$user = build_profile_link($usercache[$report['id']]['username'], $usercache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
-					$reputation_link = "reputation.php?uid={$usercache[$report['tid']]['uid']}#rid{$report['pid']}";
-					$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					$reputation_link = "reputation.php?uid={$usercache[$report['id2']]['uid']}#rid{$report['id']}";
+					$bad_user = build_profile_link($usercache[$report['id2']]['username'], $usercache[$report['id2']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
-					$good_user = build_profile_link($usercache[$report['fid']]['username'], $usercache[$report['fid']]['uid']);
+					$good_user = build_profile_link($usercache[$report['id3']]['username'], $usercache[$report['id3']]['uid']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
 					break;
 			}
@@ -473,11 +473,11 @@ if($mybb->input['action'] == "allreports")
 	$query = $db->query("
 		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
 		FROM ".TABLE_PREFIX."reportedposts r
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.id=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.pid)
+		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -495,23 +495,23 @@ if($mybb->input['action'] == "allreports")
 
 			if($report['type'] == 'post')
 			{
-				$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+				$post = get_post_link($report['id'])."#pid{$report['id']}";
 				$user = build_profile_link($report['postusername'], $report['postuid']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
-				$thread_link = get_thread_link($report['tid']);
+				$thread_link = get_thread_link($report['id2']);
 				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 			else if($report['type'] == 'profile')
 			{
-				$user = build_profile_link($report['profileusername'], $report['pid']);
+				$user = build_profile_link($report['profileusername'], $report['id']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 			}
 			else if($report['type'] == 'reputation')
 			{
-				$user = build_profile_link($report['profileusername'], $report['fid']);
-				$reputation_link = "reputation.php?uid={$report['fid']}#rid{$report['pid']}";
+				$user = build_profile_link($report['profileusername'], $report['id3']);
+				$reputation_link = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
 				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
 

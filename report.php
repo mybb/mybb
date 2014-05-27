@@ -40,7 +40,7 @@ if(isset($lang->$report_string))
 	$report_title = $lang->$report_string;
 }
 
-$pid = 0;
+$id = 0;
 if($report_type == 'post')
 {
 	if($mybb->usergroup['canview'] == 0)
@@ -57,8 +57,8 @@ if($report_type == 'post')
 	}
 	else
 	{
-		$pid = $post['pid'];
-		$tid = $post['tid'];
+		$id = $post['pid'];
+		$id2 = $post['tid'];
 		$report_type_db = "(type = 'post' OR type = '')";
 
 		// Check for a valid forum
@@ -74,7 +74,7 @@ if($report_type == 'post')
 		}
 
 		// Password protected forums ......... yhummmmy!
-		$fid = $forum['fid'];
+		$id3 = $forum['fid'];
 		check_forum_password($forum['parentlist']);
 	}
 }
@@ -88,8 +88,8 @@ else if($report_type == 'profile')
 	}
 	else
 	{
-		$tid = $fid = 0; // We don't use these on the profile
-		$pid = $user['uid']; // pid is now the profile user
+		$id2 = $id3 = 0; // We don't use these on the profile
+		$id = $user['uid']; // id is the profile user
 		$permissions = user_permissions($user['uid']);
 
 		if(empty($permissions['canbereported']))
@@ -117,9 +117,9 @@ else if($report_type == 'reputation')
 		$verified = true;
 		$reputation = $db->fetch_array($query);
 
-		$pid = $reputation['rid']; // pid is the reputation id
-		$tid = $reputation['adduid']; // tid is now the user who gave the comment
-		$fid = $reputation['uid']; // fid is now the user who received the comment
+		$id = $reputation['rid']; // id is the reputation id
+		$id2 = $reputation['adduid']; // id2 is the user who gave the comment
+		$id3 = $reputation['uid']; // id3 is the user who received the comment
 
 		$report_type_db = "type = 'reputation'";
 	}
@@ -130,7 +130,7 @@ else if($report_type == 'reputation')
 // Check for an existing report
 if(!empty($report_type_db))
 {
-	$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND {$report_type_db}");
+	$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
 
 	if($db->num_rows($query))
 	{
@@ -166,9 +166,9 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 	{
 		// Bad user!
 		$new_report = array(
-			'pid' => $pid,
-			'tid' => $tid,
-			'fid' => $fid,
+			'id' => $id,
+			'id2' => $id2,
+			'id3' => $id3,
 			'uid' => $mybb->user['uid']
 		);
 

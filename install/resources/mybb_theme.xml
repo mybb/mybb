@@ -9549,12 +9549,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
-  <form action="report.php" method="post" class="reportPost_{$pid}" onsubmit="javascript: return Thread.submitReport({$pid});">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
+  <form action="report.php" method="post" class="reportPost_{$id}" onsubmit="javascript: return Thread.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
-<input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="pid" value="{$id}" />
 <input type="hidden" name="no_modal" value="1" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
