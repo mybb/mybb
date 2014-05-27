@@ -1849,7 +1849,7 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("reportedposts", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");

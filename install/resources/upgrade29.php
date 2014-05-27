@@ -325,6 +325,14 @@ function upgrade29_dbchanges()
 		}
 	}
 
+	if($db->table_exists("reportedcontent"))
+	{
+		$db->drop_table("reportedcontent");
+	}
+
+	$db->rename_table("reportedposts", "reportedcontent");
+	$cache->delete('reportedposts');
+
 	// Update tasks
 	$added_tasks = sync_tasks();
 

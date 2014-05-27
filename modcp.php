@@ -140,8 +140,8 @@ if($mybb->input['action'] == "do_reports")
 
 	$plugins->run_hooks("modcp_do_reports");
 
-	$db->update_query("reportedposts", array('reportstatus' => 1), "{$sql}{$flist}");
-	$cache->update_reportedposts();
+	$db->update_query("reportedcontent", array('reportstatus' => 1), "{$sql}{$flist}");
+	$cache->update_reportedcontent();
 
 	$page = $mybb->get_input('page', 1);
 
@@ -163,12 +163,12 @@ if($mybb->input['action'] == "reports")
 	$where = '';
 	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
 	{
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count", "reportstatus ='0'");
 		$report_count = $db->fetch_field($query, "count");
 	}
 	else
 	{
-		$query = $db->simple_select('reportedposts', 'id3', "reportstatus='0'");
+		$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0'");
 
 		$report_count = 0;
 		while($fid = $db->fetch_field($query, 'id3'))
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "reports")
 	$reports = '';
 	$query = $db->query("
 		SELECT r.*, u.username
-		FROM ".TABLE_PREFIX."reportedposts r
+		FROM ".TABLE_PREFIX."reportedcontent r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
 		WHERE r.reportstatus = '0'{$where}
 		ORDER BY r.reports DESC
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
-		$reportedposts = $cache->read("reportedposts");
+		$reportedcontent = $cache->read("reportedcontent");
 		$reportcache = $usercache = $postcache = array();
 
 		while($report = $db->fetch_array($query))
@@ -396,8 +396,8 @@ if($mybb->input['action'] == "reports")
 
 	$plugins->run_hooks("modcp_reports_end");
 
-	eval("\$reportedposts = \"".$templates->get("modcp_reports")."\";");
-	output_page($reportedposts);
+	eval("\$reportedcontent = \"".$templates->get("modcp_reports")."\";");
+	output_page($reportedcontent);
 }
 
 if($mybb->input['action'] == "allreports")
@@ -419,13 +419,13 @@ if($mybb->input['action'] == "allreports")
 		$page = $mybb->get_input('page', 1);
 	}
 
-	$query = $db->simple_select("reportedposts", "COUNT(rid) AS count");
+	$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
 	$warnings = $db->fetch_field($query, "count");
 
 	if(isset($mybb->input['rid']))
 	{
 		$mybb->input['rid'] = $mybb->get_input('rid', 1);
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
 		$result = $db->fetch_field($query, "count");
 		if(($result % $perpage) == 0)
 		{
@@ -472,7 +472,7 @@ if($mybb->input['action'] == "allreports")
 
 	$query = $db->query("
 		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
-		FROM ".TABLE_PREFIX."reportedposts r
+		FROM ".TABLE_PREFIX."reportedcontent r
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.id=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
@@ -540,8 +540,8 @@ if($mybb->input['action'] == "allreports")
 
 	$plugins->run_hooks("modcp_allreports_end");
 
-	eval("\$allreportedposts = \"".$templates->get("modcp_reports_allreports")."\";");
-	output_page($allreportedposts);
+	eval("\$allreportedcontent = \"".$templates->get("modcp_reports_allreports")."\";");
+	output_page($allreportedcontent);
 }
 
 if($mybb->input['action'] == "modlogs")

@@ -239,8 +239,8 @@ function add_report($report, $type = 'post')
 		return send_report($report);
 	}
 
-	$rid = $db->insert_query("reportedposts", $insert_array);
-	$cache->update_reportedposts();
+	$rid = $db->insert_query("reportedcontent", $insert_array);
+	$cache->update_reportedcontent();
 
 	return $rid;
 }
@@ -255,7 +255,7 @@ function update_report($report)
 		'reporters' => $db->escape_string(serialize($report['reporters']))
 	);
 
-	$db->update_query("reportedposts", $update_array, "rid = '{$report['rid']}'");
+	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");
 	return true;
 }
 ?>

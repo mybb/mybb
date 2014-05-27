@@ -1203,6 +1203,27 @@ class DB_MySQL
 	}
 
 	/**
+	 * Renames a table
+	 *
+	 * @param string The old table name
+	 * @param string the new table name
+	 * @param boolean use table prefix
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
+	}
+
+	/**
 	 * Replace contents of table with values
 	 *
 	 * @param string The table
