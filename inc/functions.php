@@ -3938,28 +3938,28 @@ function mark_reports($id, $type="post")
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
 			break;
 		case "post":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "id='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
 			break;
 		case "thread":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "id2='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "forum":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "id3='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "all":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "reportstatus='0'");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 	}
 
