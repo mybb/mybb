@@ -326,7 +326,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" alt=\"\" />";
+			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
