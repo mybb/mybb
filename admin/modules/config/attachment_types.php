@@ -54,6 +54,7 @@ if($mybb->input['action'] == "add")
 			}
 
 			$new_type = array(
+				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
 				"maxsize" => $maxsize,
@@ -121,6 +122,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_new_attachment_type);
+	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
@@ -174,6 +176,7 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$updated_type = array(
+				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
 				"maxsize" => intval($mybb->input['maxsize']),
@@ -234,6 +237,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container = new FormContainer($lang->edit_attachment_type);
+	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
@@ -322,7 +326,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" alt=\"\" />";
+			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" title=\"{$attachment_type['name']}\" alt=\"\" />";
 		}
 
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));

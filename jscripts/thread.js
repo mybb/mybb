@@ -339,41 +339,57 @@ var Thread = {
 
 	deletePost: function(pid)
 	{
-		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true)
-		{
-			$.ajax(
-			{
-				url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
-				type: 'post',
-				complete: function (request, status)
+		$.prompt(quickdelete_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					var json = $.parseJSON(request.responseText);
-					if(json.hasOwnProperty("errors"))
+					$.ajax(
 					{
-						$.each(json.errors, function(i, message)
+						url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
 						{
-							$.jGrowl('There was an error posting your reply: '+message);
-						});
-					}
-					else
-					{
-						// Do we have a "window.location" in our response message?
-						// If so, we were successful
-						if(request.responseText.indexOf("window.location") != -1)
-						{
-							$('#post_'+pid).slideToggle("slow");
-
-							$.jGrowl('The post was deleted successfully.');
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl('There was an error deleting your post: '+message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Soft deleted
+								if(json.data == 1)
+								{
+									// Change CSS class of div 'pid_[pid]'
+									$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
+									
+									$.jGrowl('The post was deleted successfully.');
+								}
+								else if(json.data == 2)
+								{
+									// Actually deleted
+									$('#post_'+pid).slideToggle("slow");
+									
+									$.jGrowl('The post was deleted successfully.');
+								}
+							}
+							else
+							{
+								$.jGrowl('An unknown error has occurred.');
+							}
 						}
-						else
-						{
-							$.jGrowl('An unknown error has occurred.');
-						}
-					}
+					});
 				}
-			});
-		}
+			}
+		});
+		
+		return false;
 	},
 
 	reportPost: function(pid)

@@ -1912,6 +1912,11 @@ if($mybb->input['action'] == "weekview")
 	else
 	{
 		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->get_input('week'));
+		// No negative years please ;)
+		if($mybb->input['week'] < -62167219200)
+		{
+			$mybb->input['week'] = -62167219200;
+		}
 	}
 
 	// This is where we've come from and where we're headed

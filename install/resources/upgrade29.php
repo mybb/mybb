@@ -20,7 +20,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade28_dbchanges()
+function upgrade29_dbchanges()
 {
 	global $cache, $output, $mybb, $db;
 
@@ -154,6 +154,26 @@ function upgrade28_dbchanges()
 		$db->drop_column("usergroups", "canviewboardclosed");
 	}
 
+	if($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
+	}
+
+	if($db->field_exists('msn', 'users'))
+	{
+		$db->drop_column("users", "msn");
+	}
+
+	if($db->field_exists('skype', 'users'))
+	{
+		$db->drop_column("users", "skype");
+	}
+
+	if($db->field_exists('google', 'users'))
+	{
+		$db->drop_column("users", "google");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -179,6 +199,9 @@ function upgrade28_dbchanges()
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -202,6 +225,9 @@ function upgrade28_dbchanges()
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int(1) NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			break;
 	}
 
@@ -225,6 +251,24 @@ function upgrade28_dbchanges()
 
 	$db->update_query("reportedposts", array('type' => 'post'));
 
+	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("attachtypes", array('atid' => '5', 'name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_announcement>', 'isdefault' => '1'));
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='announcement'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
+	}
+
 	// Sync usergroups with canbereported; no moderators or banned groups
 	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();
@@ -245,6 +289,42 @@ function upgrade28_dbchanges()
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
+	if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
+		}
+	}
+
 	// Update tasks
 	$added_tasks = sync_tasks();
 
@@ -259,10 +339,10 @@ function upgrade28_dbchanges()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_dbchanges_ip");
+	$output->print_footer("29_dbchanges_ip");
 }
 
-function upgrade28_dbchanges_ip()
+function upgrade29_dbchanges_ip()
 {
 	global $mybb, $db, $output;
 
@@ -647,7 +727,7 @@ function upgrade28_dbchanges_ip()
 	if($next_task == 9)
 	{
 		$contents = "<p>Click next to continue with the upgrade process.</p>";
-		$nextact = "28_updatetheme";
+		$nextact = "29_updatetheme";
 	}
 	else
 	{
@@ -655,7 +735,7 @@ function upgrade28_dbchanges_ip()
 
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
-		$nextact = "28_dbchanges_ip";
+		$nextact = "29_dbchanges_ip";
 	}
 
 	$output->print_contents($contents);
@@ -663,7 +743,7 @@ function upgrade28_dbchanges_ip()
 	$output->print_footer($nextact);
 }
 
-function upgrade28_updatetheme()
+function upgrade29_updatetheme()
 {
 	global $db, $mybb, $output;
 
@@ -780,6 +860,6 @@ function upgrade28_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("28_done");
+	$output->print_footer("29_done");
 }
 ?>

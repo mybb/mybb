@@ -692,10 +692,12 @@ class postParser
 		$message = trim($message);
 		$message = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $message);
 
-		if(!$message) return '';
+		if(!$message)
+		{
+			return '';
+		}
 
-		$message = str_replace('\"', '"', $message);
-		$username = str_replace('\"', '"', $username)."'";
+		$username .= "'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
@@ -935,10 +937,6 @@ class postParser
 			$name = $url;
 		}
 
-		$name = str_replace("\'", "'", $name);
-		$url = str_replace("\'", "'", $url);
-		$fullurl = str_replace("\'", "'", $fullurl);
-
 		if($name == $url && !empty($this->options['shorten_urls']))
 		{
 			if(my_strlen($url) > 55)
@@ -1081,8 +1079,6 @@ class postParser
 	*/
 	function mycode_parse_email($email, $name="")
 	{
-		$name = str_replace("\\'", "'", $name);
-		$email = str_replace("\\'", "'", $email);
 		if(!$name)
 		{
 			$name = $email;
@@ -1230,11 +1226,53 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-		$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[()]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
+		$message = preg_replace_callback("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<]*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<]*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 
 		return $message;
+	}
+
+	/**
+	* Parses URLs automatically.
+	*
+	* @param array Matches
+	* @return string The parsed message.
+	*/
+	function mycode_auto_url_callback($matches)
+	{
+		$external = '';
+		// Allow links like http://en.wikipedia.org/wiki/PHP_(disambiguation) but detect mismatching braces
+		while(my_substr($matches[3], -1) == ')')
+		{
+			if(substr_count($matches[3], ')') > substr_count($matches[3], '('))
+			{
+				$matches[3] = my_substr($matches[3], 0, -1);
+				$external = ')'.$external;
+			}
+			else
+			{
+				break;
+			}
+
+			// Example: ([...] http://en.wikipedia.org/Example_(disambiguation).)
+			$last_char = my_substr($matches[3], -1);
+			while($last_char == '.' || $last_char == ',' || $last_char == '?' || $last_char == '!')
+			{
+				$matches[3] = my_substr($matches[3], 0, -1);
+				$external = $last_char.$external;
+				$last_char = my_substr($matches[3], -1);
+			}
+		}
+		if($matches[2] == 'www' || $matches[2] == 'ftp')
+		{
+			return "{$matches[1]}[url]{$matches[2]}.{$matches[3]}[/url]{$external}";
+		}
+		else
+		{
+			return "{$matches[1]}[url]{$matches[2]}://{$matches[3]}[/url]{$external}";
+		}
 	}
 
 	/**
@@ -1246,7 +1284,6 @@ class postParser
 	*/
 	function mycode_parse_list($message, $type="")
 	{
-		$message = str_replace('\"', '"', $message);
 		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 

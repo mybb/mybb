@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
-$templatelist = "contact";
+$templatelist = "contact,post_captcha";
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';
 
@@ -23,16 +23,13 @@ $plugins->run_hooks('contact_start');
 // Make navigation
 add_breadcrumb($lang->nav_contact, "contact.php");
 
-if(!$mybb->user['uid'])
+if(!$mybb->user['uid'] && $mybb->settings['contact_guests'] == 1)
 {
-	if($mybb->settings['contact_guests'] == 1)
-	{
-		error_no_permission();
-	}
+	error_no_permission();
 }
 
 $errors = '';
-	
+
 $mybb->input['message'] = trim_blank_chrs($mybb->get_input('message'));
 $mybb->input['subject'] = trim_blank_chrs($mybb->get_input('subject'));
 $mybb->input['email'] = trim_blank_chrs($mybb->get_input('email'));
@@ -86,7 +83,6 @@ if($mybb->request_method == "post")
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $mybb->input['subject'], $mybb->input['message'], $mybb->input['email']);
 
-		// Redirect
 		redirect('contact.php', $lang->contact_success_message);
 	}
 	else
@@ -112,11 +108,15 @@ else
 
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 $mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
-$mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+if(!$mybb->user['uid'])
+{
+	$mybb->input['email'] = htmlspecialchars_uni($mybb->user['email']);
+}
+else
+{
+	$mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+}
 
-// Contact page
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);
-exit;
-
 ?>

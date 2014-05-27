@@ -122,6 +122,8 @@ $l['reset'] = "Reset";
 $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
+$l['alt_enabled'] = "Enabled";
+$l['alt_disabled'] = "Disabled";
 
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";

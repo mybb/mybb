@@ -127,7 +127,8 @@ $l['birthdate'] = "Birthdate:";
 $l['icq_number'] = "ICQ Number:";
 $l['aim_screenname'] = "AIM Screen Name:";
 $l['yahoo_id'] = "Yahoo ID:";
-$l['msn'] = "MSN ID:";
+$l['skype_id'] = "Skype ID:";
+$l['google_id'] = "Google Talk ID:";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
@@ -214,6 +215,8 @@ $l['edited_user_info'] = "<strong>User:</strong> <a href=\"{2}\">{1}</a>";
 $l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
+$l['no_bans_ending'] = "There are no bans ending soon.";
+$l['close_window'] = "Close Window";
 
 $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";

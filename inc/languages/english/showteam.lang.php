@@ -8,13 +8,13 @@
 $l['nav_showteam'] = "Forum Team";
 $l['forum_team'] = "Forum Team";
 $l['moderators'] = "Moderators";
-$l['mod_username'] = "Username";
-$l['mod_forums'] = "Forum(s)";
-$l['mod_email'] = "Email";
-$l['mod_pm'] = "PM";
-$l['uname'] = "Username";
+$l['username'] = "Username";
+$l['lastvisit'] = "Last Visit";
 $l['email'] = "Email";
 $l['pm'] = "PM";
+$l['mod_forums'] = "Forum(s)";
+$l['online'] = "Online";
+$l['offline'] = "Offline";
 
 $l['group_leaders'] = "Leader(s)";
 $l['group_members'] = "Member(s)";

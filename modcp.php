@@ -18,7 +18,7 @@ $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults";
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
-$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread";
+$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
 $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,previewpost";
@@ -168,17 +168,17 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
-		$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+		$query = $db->simple_select('reportedposts', 'id3', "reportstatus='0'");
 
 		$report_count = 0;
-		while($fid = $db->fetch_field($query, 'fid'))
+		while($fid = $db->fetch_field($query, 'id3'))
 		{
 			if(is_moderator($fid))
 			{
 				++$report_count;
 			}
 		}
-		$where = str_replace('t.fid', 'r.fid', $tflist);
+		$where = str_replace('t.fid', 'r.id3', $tflist);
 		unset($fid);
 	}
 
@@ -237,30 +237,30 @@ if($mybb->input['action'] == "reports")
 		{
 			if($report['type'] == 'profile' || $report['type'] == 'reputation')
 			{
-				// Profile UID is in PID
-				if(!isset($usercache[$report['pid']]))
+				// Profile UID is in ID
+				if(!isset($usercache[$report['id']]))
 				{
-					$usercache[$report['pid']] = $report['pid'];
+					$usercache[$report['id']] = $report['id'];
 				}
 
-				// Reputation comment? The offender is the TID
+				// Reputation comment? The offender is the ID2
 				if($report['type'] == 'reputation')
 				{
-					if(!isset($usercache[$report['tid']]))
+					if(!isset($usercache[$report['id2']]))
 					{
-						$usercache[$report['tid']] = $report['tid'];
+						$usercache[$report['id2']] = $report['id2'];
 					}
-					if(!isset($usercache[$report['fid']]))
+					if(!isset($usercache[$report['id3']]))
 					{
 						// The user who was offended
-						$usercache[$report['fid']] = $report['fid'];
+						$usercache[$report['id3']] = $report['id3'];
 					}
 				}
 			}
 			else if(!$report['type'] || $report['type'] == 'post')
 			{
 				// This (should) be a post
-				$postcache[$report['pid']] = $report['pid'];
+				$postcache[$report['id']] = $report['id'];
 			}
 
 			// Lastpost info - is it missing (pre-1.8)?
@@ -339,25 +339,25 @@ if($mybb->input['action'] == "reports")
 			switch($report['type'])
 			{
 				case 'post':
-					$post = get_post_link($report['pid'])."#pid{$report['pid']}";
-					$user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
+					$post = get_post_link($report['id'])."#pid{$report['id']}";
+					$user = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
 
-					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
-					$thread_subject = htmlspecialchars_uni($postcache[$report['pid']]['subject']);
+					$thread_link = get_thread_link($postcache[$report['id']]['tid']);
+					$thread_subject = htmlspecialchars_uni($postcache[$report['id']]['subject']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 
 					break;
 				case 'profile':
-					$user = build_profile_link($usercache[$report['pid']]['username'], $usercache[$report['pid']]['uid']);
+					$user = build_profile_link($usercache[$report['id']]['username'], $usercache[$report['id']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
-					$reputation_link = "reputation.php?uid={$usercache[$report['tid']]['uid']}#rid{$report['pid']}";
-					$bad_user = build_profile_link($usercache[$report['tid']]['username'], $usercache[$report['tid']]['uid']);
+					$reputation_link = "reputation.php?uid={$usercache[$report['id2']]['uid']}#rid{$report['id']}";
+					$bad_user = build_profile_link($usercache[$report['id2']]['username'], $usercache[$report['id2']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
-					$good_user = build_profile_link($usercache[$report['fid']]['username'], $usercache[$report['fid']]['uid']);
+					$good_user = build_profile_link($usercache[$report['id3']]['username'], $usercache[$report['id3']]['uid']);
 					$report_data['content'] .= $lang->sprintf($lang->report_info_rep_profile, $good_user);
 					break;
 			}
@@ -471,13 +471,13 @@ if($mybb->input['action'] == "allreports")
 	$plugins->run_hooks("modcp_allreports_start");
 
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
+		SELECT r.*, u.username, p.username AS postusername, up.uid AS postuid, t.subject AS threadsubject, pr.username AS profileusername
 		FROM ".TABLE_PREFIX."reportedposts r
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.id=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.pid)
+		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -495,23 +495,23 @@ if($mybb->input['action'] == "allreports")
 
 			if($report['type'] == 'post')
 			{
-				$post = get_post_link($report['pid'])."#pid{$report['pid']}";
+				$post = get_post_link($report['id'])."#pid{$report['id']}";
 				$user = build_profile_link($report['postusername'], $report['postuid']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
-				$thread_link = get_thread_link($report['tid']);
+				$thread_link = get_thread_link($report['id2']);
 				$thread_subject = htmlspecialchars_uni($report['threadsubject']);
 				$report_data['content'] .= $lang->sprintf($lang->report_info_post_thread, $thread_link, $thread_subject);
 			}
 			else if($report['type'] == 'profile')
 			{
-				$user = build_profile_link($report['profileusername'], $report['pid']);
+				$user = build_profile_link($report['profileusername'], $report['id']);
 				$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 			}
 			else if($report['type'] == 'reputation')
 			{
-				$user = build_profile_link($report['profileusername'], $report['fid']);
-				$reputation_link = "reputation.php?uid={$report['fid']}#rid{$report['pid']}";
+				$user = build_profile_link($report['profileusername'], $report['id3']);
+				$reputation_link = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
 				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
 
@@ -1866,6 +1866,10 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_threads_end");
 
+			if($mybb->settings['enableattachments'] == 1)
+			{
+				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+			}
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);
@@ -1970,14 +1974,23 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_posts_end");
 
+			if($mybb->settings['enableattachments'] == 1)
+			{
+				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+			}
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);
 		}
 	}
 
-	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
+	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1))
 	{
+		if($mybb->settings['enableattachments'] == 0)
+		{
+			error($lang->attachments_disabled);
+		}
+
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
@@ -2090,7 +2103,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$user = get_user($mybb->input['uid']);
 	if(!$user)
 	{
-		error($lang->invalid_user);
+		error($lang->error_nomember);
 	}
 
 	// Check if the current user has permission to edit this user
@@ -2164,7 +2177,8 @@ if($mybb->input['action'] == "do_editprofile")
 		"icq" => $mybb->get_input('icq'),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
-		"msn" => $mybb->get_input('msn'),
+		"skype" => $mybb->get_input('skype'),
+		"google" => $mybb->get_input('google'),
 		"signature" => $mybb->get_input('signature'),
 		"usernotes" => $mybb->get_input('usernotes'),
 		"away" => $away
@@ -2337,7 +2351,7 @@ if($mybb->input['action'] == "editprofile")
 	$user = get_user($mybb->get_input('uid', 1));
 	if(!$user)
 	{
-		error($lang->invalid_user);
+		error($lang->error_nomember);
 	}
 
 	// Check if the current user has permission to edit this user
@@ -2376,7 +2390,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	// Sanitize all input
-	foreach(array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'msn', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
+	foreach(array('usertitle', 'website', 'icq', 'aim', 'yahoo', 'skype', 'google', 'signature', 'birthday_day', 'birthday_month', 'birthday_year') as $field)
 	{
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
 	}
@@ -3431,7 +3445,7 @@ if($mybb->input['action'] == "ipsearch")
 
 		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/"))
 		{
-			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
+			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."'); return false;\">{$lang->info_on_ip}</a>)</div>";
 		}
 
 		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
@@ -3493,8 +3507,9 @@ if($mybb->input['action'] == "iplookup")
 
 	$plugins->run_hooks("modcp_iplookup_end");
 
-	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info')."\";");
-	output_page($iplookup);
+	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info', 1, 0)."\";");
+	echo($iplookup);
+	exit;
 }
 
 if($mybb->input['action'] == "banning")
@@ -3976,38 +3991,43 @@ if($mybb->input['action'] == "do_modnotes")
 
 if(!$mybb->input['action'])
 {
-	$query = $db->query("
-		SELECT COUNT(aid) AS unapprovedattachments
-		FROM  ".TABLE_PREFIX."attachments a
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE a.visible='0' {$tflist}
-	");
-	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
-
-	if($unapproved_attachments > 0)
+	if($mybb->settings['enableattachments'] == 1)
 	{
 		$query = $db->query("
-			SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
+			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE a.visible='0' {$tflist}
-			ORDER BY a.dateuploaded DESC
-			LIMIT 1
 		");
-		$attachment = $db->fetch_array($query);
-		$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
-		$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
-		$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
-		$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
-		$unapproved_attachments = my_number_format($unapproved_attachments);
+		$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
-		eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
-	}
-	else
-	{
-		$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		if($unapproved_attachments > 0)
+		{
+			$query = $db->query("
+				SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
+				FROM  ".TABLE_PREFIX."attachments a
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				WHERE a.visible='0' {$tflist}
+				ORDER BY a.dateuploaded DESC
+				LIMIT 1
+			");
+			$attachment = $db->fetch_array($query);
+			$attachment['date'] = my_date('relative', $attachment['dateuploaded']);
+			$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
+			$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
+			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+			$unapproved_attachments = my_number_format($unapproved_attachments);
+
+			eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
+		}
+		else
+		{
+			$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		}
+
+		eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
 	}
 
 	$query = $db->query("
@@ -4209,7 +4229,7 @@ if(!$mybb->input['action'])
 
 	if(!$bannedusers)
 	{
-		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+		eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
 	}
 
 	$modnotes = $cache->read("modnotes");

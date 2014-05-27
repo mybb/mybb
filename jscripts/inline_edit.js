@@ -27,9 +27,24 @@ var inlineEditor = {
 				callback: function(values, settings)
 				{
 					values = JSON.parse(values);
-
-					// Change subject
-					$('#tid_' + tid).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
+					if(typeof values == 'object')
+					{
+						if(values.hasOwnProperty("errors"))
+						{
+							$.each(values.errors, function(i, message)
+							{
+								$.jGrowl('There was an error fetching the posts. '+message);
+							});
+							$('#tid_' + tid).html($('#tid_' + tid + '_temp').html());
+						}
+						else
+						{
+							// Change subject
+							$('#tid_' + tid).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
+						}
+					}
+					
+					$('#tid_' + tid + '_temp').remove();
 				},
 				data: function(value, settings)
 				{
@@ -43,6 +58,10 @@ var inlineEditor = {
 				// Take tid out of the id attribute
 				id = $(this).attr('id');
 				tid = id.replace( /[^\d.]/g, '');
+				
+				// We may click again in the textbox and we'd be adding a new (invalid) clone - we don't want that!
+				if(!$('#tid_' + tid + '_temp').length)
+					$('#tid_' + tid).clone().attr('id','tid_' + tid + '_temp').css('display','none').appendTo("body");
 
 				setTimeout(function()
 				{

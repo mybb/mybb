@@ -1611,7 +1611,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
@@ -1926,15 +1928,15 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
-	echo '<script type="text/javascript">
+	echo <<<EOF
 
-Event.observe(window, "load", function() {
-//<![CDATA[
-    new ThemeSelector(\''.$count.'\');
-});
-//]]>
-</script>';
+	<script type="text/javascript" src="./jscripts/theme_properties.js"></script>
+	<script type="text/javascript">
+	<!---
+	themeProperties.setup('{$count}');
+	// -->
+	</script>
+EOF;
 
 	$form->end();
 
@@ -2193,9 +2195,9 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
-$(function() {
+$(document).ready(function() {
 //<![CDATA[
-    new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
+    new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 });
 //]]>
 </script>';
@@ -2456,7 +2458,9 @@ if($mybb->input['action'] == "add_stylesheet")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);

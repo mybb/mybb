@@ -96,7 +96,7 @@ function build_forumbits($pid=0, $depth=1)
 					if(!empty($fids))
 					{
 						$fids = implode(',', $fids);
-						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids})", array("order_by" => "lastpost", "order_dir" => "desc"));
+						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'", array("order_by" => "lastpost", "order_dir" => "desc"));
 
 						while($thread = $db->fetch_array($query))
 						{
@@ -412,11 +412,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
+				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
+				$expthead = "";
 				$expaltext = "[-]";
 			}
 
@@ -427,12 +429,12 @@ function build_forumbits($pid=0, $depth=1)
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
 	}
-	
+
 	if(!isset($parent_lastpost))
 	{
 		$parent_lastpost = 0;
 	}
-	
+
 	if(!isset($lightbulb))
 	{
 		$lightbulb = '';
@@ -458,8 +460,14 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
+	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+	if($forum['linkto'] != '')
+	{
+		$folder = "offlink";
+		$altonoff = $lang->forum_redirect;
+	}
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == 0 || $locked)
+	elseif($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;

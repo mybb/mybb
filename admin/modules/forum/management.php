@@ -647,6 +647,7 @@ if($mybb->input['action'] == "permissions")
 
 			'canpostthreads' => 'posting_rating',
 			'canpostreplys' => 'posting_rating',
+			'canonlyreplyownthreads' => 'posting_rating',
 			'canpostattachments' => 'posting_rating',
 			'canratethreads' => 'posting_rating',
 
@@ -1291,6 +1292,15 @@ if($mybb->input['action'] == "edit")
 			if($db->fetch_field($query, "num_threads") > 0)
 			{
 				$errors[] = $lang->error_not_empty;
+			}
+		}
+
+		if(!empty($mybb->input['linkto']) && empty($forum_data['linkto']))
+		{
+			$query = $db->simple_select('threads', 'COUNT(tid) as num_threads', "fid = '{$fid}'", array("limit" => 1));
+			if($db->fetch_field($query, "num_threads") > 0)
+			{
+				$errors[] = $lang->error_forum_link_not_empty;
 			}
 		}
 
@@ -2554,19 +2564,40 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		// Autocompletion for usernames
 		echo '
-		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
+		<link rel="stylesheet" href="../jscripts/select2/select2.css">
+		<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
 		<script type="text/javascript">
 		<!--
-	        $("#username").typeahead({
-	            name: \'username\',
-	            remote: {
-	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-	                filter: function(response){
-	                	return response.users;
-	                },
-	            },
-	            limit: 10
-	        });
+		$("#username").select2({
+			placeholder: "Search for a user",
+			minimumInputLength: 3,
+			maximumSelectionSize: 3,
+			multiple: false,
+			ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+				url: "../xmlhttp.php?action=get_users",
+				dataType: \'json\',
+				data: function (term, page) {
+					return {
+						query: term, // search term
+					};
+				},
+				results: function (data, page) { // parse the results into the format expected by Select2.
+					// since we are using custom formatting functions we do not need to alter remote JSON data
+					return {results: data};
+				}
+			},
+			initSelection: function(element, callback) {
+				var query = $(element).val();
+				if (query !== "") {
+					$.ajax("xmlhttp.php?action=get_users", {
+						data: {
+							query: query
+						},
+						dataType: "json"
+					}).done(function(data) { callback(data); });
+				}
+			},
+		});
 		// -->
 		</script>';
 
@@ -2575,6 +2606,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form->end();
 
 		echo "</div>\n";
+
+		$plugins->run_hooks("admin_forum_management_start_graph");
 	}
 
 	$page->output_footer();

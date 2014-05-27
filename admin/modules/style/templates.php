@@ -848,7 +848,7 @@ if($mybb->input['action'] == "search_replace")
 					FROM ".TABLE_PREFIX."templates t
 					LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
 					LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')
-					WHERE t.template LIKE '%".$db->escape_string_like($mybb->input['find'])."%' AND NOT (t.sid = -2 AND NOT ISNULL(t2.tid))
+					WHERE t.template LIKE '%".$db->escape_string_like($mybb->input['find'])."%' AND NOT (t.sid = -2 AND (t2.tid) IS NOT NULL)
 					ORDER BY t.title ASC
 				");
 				if($db->num_rows($query) == 0)

@@ -145,10 +145,10 @@ if($mybb->input['action'] == "add")
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
-		Event.observe(window, "load", function() {
-				var maxlength_peeker = new Peeker($("fieldtype"), $("row_maxlength"), /text|textarea/, false);
-				var fieldlength_peeker = new Peeker($("fieldtype"), $("row_fieldlength"), /select|multiselect/, false);
-				var options_peeker = new Peeker($("fieldtype"), $("row_options"), /select|radio|checkbox/, false);
+		$(document).ready(function() {
+				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength"), /text|textarea/, false);
+				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
+				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");
@@ -287,10 +287,10 @@ if($mybb->input['action'] == "edit")
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
-		Event.observe(window, "load", function() {
-				var maxlength_peeker = new Peeker("fieldtype", "row_maxlength", /text|textarea/);
-				var fieldlength_peeker = new Peeker("fieldtype", "row_fieldlength", /select|multiselect/);
-				var options_peeker = new Peeker("fieldtype", "row_options", /select|radio|checkbox/);
+		$(document).ready(function() {
+				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength"), /text|textarea/);
+				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
+				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
 				// Add a star to the extra row since the "extra" is required if the box is shown
 				add_star("row_maxlength");
 				add_star("row_fieldlength");

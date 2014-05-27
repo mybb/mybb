@@ -155,7 +155,7 @@ switch($action)
 
 		$pids = implode(",", $pids);
 
-		if($pids)
+		if($pids && $mybb->settings['enableattachments'] == 1)
 		{
 			// Build attachments cache
 			$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
@@ -199,7 +199,7 @@ switch($action)
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			// Is there an attachment in this post?
-			if(isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
+			if($mybb->settings['enableattachments'] == 1 && isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{

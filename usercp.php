@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
 $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none";
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options";
@@ -237,11 +237,13 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
+		"postnum" => $mybb->user['postnum'],
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
-		"msn" => $mybb->get_input('msn'),
+		"skype" => $mybb->get_input('skype'),
+		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy', 1),
 		"away" => $away,
@@ -369,7 +371,8 @@ if($mybb->input['action'] == "profile")
 
 	if($errors)
 	{
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
+		$user['skype'] = htmlspecialchars_uni($user['skype']);
+		$user['google'] = htmlspecialchars_uni($user['google']);
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
@@ -446,7 +449,7 @@ if($mybb->input['action'] == "profile")
 	while($profilefield = $db->fetch_array($query))
 	{
 		// Does this field have a minimum post count?
-		if($profilefield['postnum'] && $profilefield['postnum'] > $user['postnum'])
+		if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
 		{
 			continue;
 		}
@@ -2882,6 +2885,11 @@ if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	if($mybb->settings['enableattachments'] == 0)
+	{
+		error($lang->attachments_disabled);
+	}
 
 	$attachments = '';
 

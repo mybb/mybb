@@ -20,6 +20,7 @@ function output_page($contents)
 
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
+	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
@@ -84,7 +85,6 @@ function output_page($contents)
 	}
 
 	$contents = str_replace("<debugstuff>", "", $contents);
-	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
 	{
@@ -1545,9 +1545,9 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	$mod_cache = $cache->read("moderators");
 
-	foreach($mod_cache as $fid => $forum)
+	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($fid, $parentslist))
+		if(!is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
@@ -3275,7 +3275,7 @@ function get_ip()
 			{
 				$val = trim($val);
 				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-2])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
+				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
 				{
 					$ip = $val;
 					break;
@@ -3435,7 +3435,7 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
@@ -4350,22 +4350,32 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The ID of the parent theme to select from
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
+ * @param boolean Whether or not theme select is in the footer (true if it is)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
 
 	if($tid == 0)
 	{
-		if(!isset($lang->use_default))
+		if($footer == true)
 		{
-			$lang->use_default = $lang->lang_select_default;
+			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
+			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
+			$tid = 1;
 		}
-		$themeselect = "<select name=\"$name\">";
-		$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-		$themeselect .= "<option value=\"0\">-----------</option>\n";
-		$tid = 1;
+		else
+		{
+			if(!isset($lang->use_default))
+			{
+				$lang->use_default = $lang->lang_select_default;
+			}
+			$themeselect = "<select name=\"$name\">";
+			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
+			$themeselect .= "<option value=\"0\">-----------</option>\n";
+			$tid = 1;
+		}
 	}
 
 	if(!is_array($tcache))
@@ -4416,13 +4426,13 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
 					$depthit = $depth."--";
 				}
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
 				}
 			}
 		}
@@ -4430,6 +4440,11 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if($tid == 1)
 	{
+		if($footer == true)
+		{
+			$themeselect .= "</optgroup>\n";
+		}
+
 		$themeselect .= "</select>";
 	}
 
@@ -6893,11 +6908,27 @@ function secure_seed_rng($count=8)
 {
 	$output = '';
 
+	// Use OpenSSL when available
+	// PHP <5.3.4 had a bug which makes that function unusable on Windows
+	if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+	{
+		$output = openssl_random_pseudo_bytes($count);
+	}
 	// Try the unix/linux method
-	if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+	elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
 	{
 		$output = @fread($handle, $count);
 		@fclose($handle);
+	}
+	// Try Windows CAPICOM before using our own generator
+	elseif(class_exists('COM'))
+	{
+		try
+		{
+			$CAPI_Util = new COM('CAPICOM.Utilities.1');
+			$output = $CAPI_Util->GetRandom($count, 0);
+		} catch (Exception $ex) {
+		}
 	}
 
 	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
