@@ -498,7 +498,7 @@ $unreadreports = '';
 if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
 {
 	// Read the reported posts cache
-	$reported = $cache->read('reportedposts');
+	$reported = $cache->read('reportedcontent');
 
 	// 0 or more reported posts currently exist
 	if($reported['unread'] > 0)
@@ -511,7 +511,7 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 		else
 		{
 			$unread = 0;
-			$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+			$query = $db->simple_select('reportedcontent', 'fid', "reportstatus='0'");
 
 			while($fid = $db->fetch_field($query, 'fid'))
 			{

@@ -2264,7 +2264,7 @@ function install_done()
 	$cache->update_forums();
 	$cache->update_moderators();
 	$cache->update_usertitles();
-	$cache->update_reportedposts();
+	$cache->update_reportedcontent();
 	$cache->update_mycode();
 	$cache->update_posticons();
 	$cache->update_spiders();

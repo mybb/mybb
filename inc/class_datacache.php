@@ -825,18 +825,18 @@ class datacache
 	 * Update reported posts cache.
 	 *
 	 */
-	function update_reportedposts()
+	function update_reportedcontent()
 	{
 		global $db, $mybb;
 
 		$reports = array();
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
 		$reasons = array();
@@ -860,7 +860,7 @@ class datacache
 			"reasons" => $reasons
 		);
 
-		$this->update("reportedposts", $reports);
+		$this->update("reportedcontent", $reports);
 	}
 
 	/**

@@ -568,7 +568,7 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY(plid)
 );";
 
-$tables[] = "CREATE TABLE mybb_reportedposts (
+$tables[] = "CREATE TABLE mybb_reportedcontent (
   rid serial,
   id int NOT NULL default '0',
   id2 int NOT NULL default '0',

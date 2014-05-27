@@ -588,7 +588,7 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY(plid)
 ) ENGINE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_reportedposts (
+$tables[] = "CREATE TABLE mybb_reportedcontent (
   rid int unsigned NOT NULL auto_increment,
   id int unsigned NOT NULL default '0',
   id2 int unsigned NOT NULL default '0',

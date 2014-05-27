@@ -130,7 +130,7 @@ else if($report_type == 'reputation')
 // Check for an existing report
 if(!empty($report_type_db))
 {
-	$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
+	$query = $db->simple_select("reportedcontent", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
 
 	if($db->num_rows($query))
 	{
