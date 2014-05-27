@@ -1292,6 +1292,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
+
+		// Are You a Human game needs to always be filled in
+		if($mybb->settings['captchaimage'] == 3 && $mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		{
+			$do_captcha = true;
+		}
 	}
 	else if($validated && $loginhandler->captcha_verified == true)
 	{

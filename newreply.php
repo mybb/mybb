@@ -1124,7 +1124,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$post_captcha = new captcha(false, "post_captcha");
 
-		if(!empty($mybb->input['previewpost']) || $hide_captcha == true && $post_captcha->type == 1)
+		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
 			// ... but only if it's a default one, reCAPTCHA and Are You a Human must be filled in every time due to draconian limits
