@@ -127,10 +127,11 @@ else
 	$topforumthreads = $forum['threads'];
 }
 
-//top referrer
+// Top referrer
+$top_referrer = '';
 $query = $db->simple_select("users", "uid, username, referrals", "", array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));
 $topreferrer = $db->fetch_array($query);
-//only show this if we have anything more the 0 referrals
+// Only show this if we have anything more the 0 referrals
 if($topreferrer['referrals'] > 0)
 {
 	$toprefuser = build_profile_link($topreferrer['username'], $topreferrer['uid']);
