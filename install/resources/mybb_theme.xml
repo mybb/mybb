@@ -4589,8 +4589,8 @@ if(use_xmlhttprequest == "1")
 <td valign="top"><span class="smalltext"><label for="pmnotice">{$lang->pm_notice}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailpmnotify" id="emailpmnotify" value="1" {$emailpmnotifycheck} /></td>
-<td valign="top"><span class="smalltext"><label for="emailpmnotify">{$lang->email_notify_newpm}</label></span></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1" {$pmnotifycheck} /></td>
+<td valign="top"><span class="smalltext"><label for="pmnotify">{$lang->email_notify_newpm}</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
