@@ -972,6 +972,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  * @param int The number of items to be shown per page
  * @param int The current page number
  * @param string The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
+ * @param boolean Whether or not the multipage is being shown in the navigation breadcrumb
  * @return string The generated pagination
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
@@ -1864,6 +1865,7 @@ function my_get_array_cookie($name, $id)
  * @param string The cookie identifier.
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
+ * @param int The timestamp of the expiry date.
  */
 function my_set_array_cookie($name, $id, $value, $expires="")
 {
@@ -2984,6 +2986,7 @@ function build_prefixes($pid=0)
  *
  *  @param mixed The forum ID (integer ID or string all)
  *  @param mixed The selected prefix ID (integer ID or string any)
+ *  @param int Allow multiple prefix selection
  *  @return string The thread prefix selection menu
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
@@ -4526,6 +4529,13 @@ function my_number_format($number)
 	}
 }
 
+/**
+ * Converts a string of text to or from UTF-8.
+ *
+ * @param string The string of text to convert
+ * @param boolean Whether or not the string is being converted to or from UTF-8 (true if converting to)
+ * @return string The converted string
+ */
 function convert_through_utf8($str, $to=true)
 {
 	global $lang;
@@ -4965,7 +4975,7 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 }
 
 /**
- * lowers the case of a string, mb strings accounted for
+ * Lowers the case of a string, mb strings accounted for
  *
  * @param string The string to lower.
  * @return int The lowered string.
@@ -5012,7 +5022,7 @@ function my_strpos($haystack, $needle, $offset=0)
 }
 
 /**
- * ups the case of a string, mb strings accounted for
+ * Ups the case of a string, mb strings accounted for
  *
  * @param string The string to up.
  * @return int The uped string.
@@ -5245,6 +5255,7 @@ function get_thread_link($tid, $page=0, $action='')
  *
  * @param int The post ID of the post
  * @param int The thread id of the post.
+ * @return string The url to the post.
  */
 function get_post_link($pid, $tid=0)
 {
@@ -6064,6 +6075,7 @@ function build_timezone_select($name, $selected=0, $short=false)
  * Fetch the contents of a remote fle.
  *
  * @param string The URL of the remote file
+ * @param array The array of post data
  * @return string The remote file contents.
  */
 function fetch_remote_file($url, $post_data=array())
@@ -6813,6 +6825,7 @@ function get_execution_time()
  * Processes a checksum list on MyBB files and returns a result set
  *
  * @param array The array of checksums and their corresponding files
+ * @param int The count of files
  * @return array The bad files
  */
 function verify_files($path=MYBB_ROOT, $count=0)
@@ -7146,6 +7159,15 @@ function trim_blank_chrs($string, $charlist=false)
 	return $string;
 }
 
+/**
+ * Match a sequence
+ *
+ * @param string The string to match from
+ * @param array The array to match from
+ * @param int Number in the string
+ * @param int Number of matches
+ * @return int The number matched
+ */
 function match_sequence($string, $array, $i=0, $n=0)
 {
 	if($string === "")
