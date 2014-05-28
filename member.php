@@ -148,7 +148,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
-		"emailpmnotify" => $mybb->input['emailpmnotify'],
+		"pmnotify" => $mybb->input['pmnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"dstcorrection" => $mybb->input['dstcorrection']
 	);
@@ -217,9 +217,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$pmnoticecheck = " checked=\"checked\"";
 		}
 
-		if($mybb->input['emailpmnotify'] == 1)
+		if($mybb->input['pmnotify'] == 1)
 		{
-			$emailpmnotifycheck = "checked=\"checked\"";
+			$pmnotifycheck = "checked=\"checked\"";
 		}
 
 		if($mybb->input['invisible'] == 1)
@@ -705,7 +705,7 @@ if($mybb->input['action'] == "register")
 			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmnoticecheck = " checked=\"checked\"";
-			$emailpmnotifycheck = '';
+			$pmnotifycheck = '';
 			$invisiblecheck = '';
 			if($mybb->settings['dstcorrection'] == 1)
 			{
