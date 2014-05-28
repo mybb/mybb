@@ -150,6 +150,7 @@ if($mybb->input['action'] == "add")
 	$page->extra_header .= "
 	<script type=\"text/javascript\">
 	var my_post_key = '".$mybb->post_code."';
+	lang.mycode_sandbox_test_error = \"{$lang->mycode_sandbox_test_error}\";
 	</script>";
 
 	$page->add_breadcrumb_item($lang->add_new_mycode);
@@ -270,6 +271,7 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= "
 	<script type=\"text/javascript\">
 	var my_post_key = '".$mybb->post_code."';
+	lang.mycode_sandbox_test_error = "{$lang->mycode_sandbox_test_error}";
 	</script>";
 
 	$page->add_breadcrumb_item($lang->edit_mycode);

@@ -373,7 +373,7 @@ var MyBB = {
 				});
 			},
 			error: function(){
-				  alert('An unknown error has occurred.');
+				  alert(lang.unknown_error);
 			}
 		});
 

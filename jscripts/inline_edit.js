@@ -21,7 +21,7 @@ var inlineEditor = {
 				type: "text",
 				submit: '',
 				cancel: '',
-				tooltip: "(Click and hold to edit)",
+				tooltip: lang.inline_edit_description,
 				onblur: "submit",
 				event: "hold"+tid,
 				callback: function(values, settings)
@@ -36,7 +36,7 @@ var inlineEditor = {
 						{
 							$.each(values.errors, function(i, message)
 							{
-								$.jGrowl('There was an error fetching the posts. '+message);
+								$.jGrowl(lang.post_fetch_error + ' ' + message);
 							});
 							$(this).html($('#tid_' + tid + '_temp').html());
 						}
