@@ -173,13 +173,29 @@ var Thread = {
 				cancel: "Cancel Edit",
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
+				dataType: "json",
 				callback: function(values, settings)
 				{
-					values = JSON.parse(values);
+					id = $(this).attr('id');
+					pid = id.replace( /[^\d.]/g, '');
+					
+					var json = $.parseJSON(values);
+					if(typeof json == 'object')
+					{
+						if(json.hasOwnProperty("errors"))
+						{
+							$("div.jGrowl").jGrowl("close");
+
+							$.each(json.errors, function(i, message)
+							{
+								$.jGrowl('There was an error editing your reply: '+message);
+							});
+						}
+					}
 
 					// Change html content
-					$('#pid_' + pid).html(values.message);
-					$('#edited_by_' + pid).html(values.editedmsg);
+					$(this).html(json.message);
+					$('#edited_by_' + pid).html(json.editedmsg);
 				}
 			});
         });
