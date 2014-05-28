@@ -10449,7 +10449,8 @@ if(use_xmlhttprequest == "1")
 {$lang->newest_member} {$stats['newest_user']}<br />
 {$lang->members_posted} <strong>{$havepostedpercent}</strong><br />
 {$lang->todays_top_poster}<br />
-{$lang->popular_forum}
+{$lang->popular_forum}<br />
+{$top_referrer}
 </td>
 </tr>
 </table>
