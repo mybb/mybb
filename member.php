@@ -1137,7 +1137,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	}
 	$plugins->run_hooks("member_do_lostpw_end");
 
-	redirect("index.php", $lang->redirect_lostpwsent);
+	redirect("index.php", $lang->redirect_lostpwsent, "", true);
 }
 
 if($mybb->input['action'] == "resetpassword")

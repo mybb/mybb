@@ -391,6 +391,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$post_captcha->invalidate_captcha();
 		}
 
+		$force_redirect = false;
+
 		// Mark thread as read
 		require_once MYBB_ROOT."inc/functions_indicators.php";
 		mark_thread_read($tid, $fid);
@@ -413,14 +415,11 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		else if(!$visible)
 		{
 			// Moderated thread
-			if($mybb->user['showredirect'] != 1)
-			{
-				// User must see moderation notice, regardless of redirect settings
-				$mybb->user['showredirect'] = 1;
-			}
-
 			$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
 			$url = get_forum_link($fid);
+
+			// User must see moderation notice, regardless of redirect settings
+			$force_redirect = true;
 		}
 
 		// This is just a normal thread - send them to it.
@@ -448,7 +447,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			$lang->redirect_newthread .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid));
 		}
-		redirect($url, $lang->redirect_newthread);
+		redirect($url, $lang->redirect_newthread, "", $force_redirect);
 	}
 }
 
