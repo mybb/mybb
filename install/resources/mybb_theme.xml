@@ -4337,6 +4337,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -8751,7 +8752,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_rep_button" version="1800"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
 		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
 		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
-		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
+		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Report.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
 		<template name="postbit_reputation" version="1400"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature">
 {$post['signature']}
@@ -9590,7 +9591,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
-  <form action="report.php" method="post" class="reportPost_{$id}" onsubmit="javascript: return Thread.submitReport({$id});">
+  <form action="report.php" method="post" class="reportData_{$id}" onsubmit="javascript: return Report.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
@@ -9690,6 +9691,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 // -->
 </script>
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -9867,7 +9869,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</div>]]>
 		</template>
 		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, null, true); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
+			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="search" version="1800"><![CDATA[<html>
@@ -10274,6 +10276,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script src="jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 	{$header}
