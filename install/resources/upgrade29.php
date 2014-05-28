@@ -254,7 +254,7 @@ function upgrade29_dbchanges()
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
-		$db->insert_query("attachtypes", array('atid' => '5', 'name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
+		$db->insert_query("attachtypes", array('name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
@@ -683,13 +683,13 @@ function upgrade29_dbchanges_ip()
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->modify_column($table, $column, "bytea NOT NULL default ''");
+					$db->modify_column($table, $column, "bytea", 'set');
 					break;
 				case "sqlite":
-					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
+					$db->modify_column($table, $column, "blob(16) NOT NULL");
 					break;
 				default:
-					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
+					$db->modify_column($table, $column, "varbinary(16) NOT NULL");
 					break;
 			}
 			if($mybb->input['iptable'] < 10)
