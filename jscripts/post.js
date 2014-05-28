@@ -60,7 +60,7 @@ var Post = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error fetching the posts. '+message);
+					$.jGrowl(lang.post_fetch_error + ' ' + message);
 				});
 				return false;
 			}

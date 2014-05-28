@@ -120,6 +120,9 @@ var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
+
+lang.unknown_error = \"{$lang->unknown_error}\";
+lang.saved = \"{$lang->saved}\";
 //]]>
 </script>\n";
 		echo $this->extra_header;
