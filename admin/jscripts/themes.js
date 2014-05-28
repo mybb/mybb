@@ -102,9 +102,9 @@ var ThemeSelector = (function() {
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 
 			if (!message[1]) {
-				message[1] = "An unknown error occurred.";
+				message[1] = lang.unknown_error;
 			}
-			$.jGrowl('There was an error fetching the style info.\n\n' + message[1]);
+			$.jGrowl(lang.theme_info_fetch_error + '\n\n' + message[1]);
 		} else if(request.responseText) {
 			if ($("#saved").html()) {
 				saved = $("#saved").html();
@@ -228,12 +228,12 @@ var ThemeSelector = (function() {
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 
 			if (!message[1]) {
-				message[1] = "An unknown error occurred.";
+				message[1] = lang.unkown_error;
 			}
-			$.jGrowl('There was an error saving the style info.\n\n'+message[1]);
+			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1]);
 			return false;
 		} else if(request.responseText) {
-			$("#saved").html(" (Saved @ "+Date()+")");
+			$("#saved").html(" (" + lang.saved + " @ "+ Date() + ")");
 			if ($("#ajax_alert")) {
 				$("#ajax_alert").html('').hide();
 			}
@@ -265,9 +265,9 @@ var ThemeSelector = (function() {
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 
 			if (!message[1]) {
-				message[1] = "An unknown error occurred.";
+				message[1] = lang.unkown_error;
 			}
-			$.jGrowl('There was an error saving the style info.\n\n'+message[1]);
+			$.jGrowl(lang.theme_info_save_error + '\n\n' + message[1]);
 			return false;
 		}
 		return true;

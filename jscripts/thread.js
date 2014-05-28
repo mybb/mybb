@@ -107,7 +107,7 @@ var Thread = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error fetching the posts. '+message);
+					$.jGrowl(lang.post_fetch_error + ' ' + message);
 				});
 				return false;
 			}
@@ -169,8 +169,8 @@ var Thread = {
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
-				submit: "Save Changes",
-				cancel: "Cancel Edit",
+				submit: lang.save_changes,
+				cancel: lang.cancel_edit,
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
 				dataType: "json",
@@ -188,7 +188,7 @@ var Thread = {
 
 							$.each(json.errors, function(i, message)
 							{
-								$.jGrowl('There was an error editing your reply: '+message);
+								$.jGrowl(lang.quick_edit_update_error + ' ' + message);
 							});
 						}
 					}
@@ -270,7 +270,7 @@ var Thread = {
 
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error posting your reply: '+message);
+					$.jGrowl(lang.quick_reply_post_error + ' ' + message);
 				});
 				return false;
 			}
@@ -374,7 +374,7 @@ var Thread = {
 							{
 								$.each(json.errors, function(i, message)
 								{
-									$.jGrowl('There was an error deleting your post: '+message);
+									$.jGrowl(lang.quick_delete_error + ' ' + message);
 								});
 							}
 							else if(json.hasOwnProperty("data"))
@@ -385,19 +385,19 @@ var Thread = {
 									// Change CSS class of div 'pid_[pid]'
 									$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
 									
-									$.jGrowl('The post was deleted successfully.');
+									$.jGrowl(lang.quick_delete_success);
 								}
 								else if(json.data == 2)
 								{
 									// Actually deleted
 									$('#post_'+pid).slideToggle("slow");
 									
-									$.jGrowl('The post was deleted successfully.');
+									$.jGrowl(lang.quick_delete_success);
 								}
 							}
 							else
 							{
-								$.jGrowl('An unknown error has occurred.');
+								$.jGrowl(lang.unknown_error);
 							}
 						}
 					});

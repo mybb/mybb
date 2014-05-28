@@ -1223,6 +1223,16 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_settings_start");
 
+	$page->extra_header .= <<<EOF
+	<script type="text/javascript">
+	<!--
+	lang.searching = "{$lang->searching}";
+	lang.search_error = "{$lang->search_error}";
+	lang.search_done = "{$lang->search_done}";
+	// -->
+	</script>
+EOF;
+
 	$page->output_header($lang->board_settings);
 	if(isset($message))
 	{

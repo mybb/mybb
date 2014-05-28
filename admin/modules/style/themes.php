@@ -26,6 +26,9 @@ var globally_lang_string = '{$lang->globally}';
 var specific_actions_lang_string = '{$lang->specific_actions}';
 var specific_actions_desc_lang_string = '{$lang->specific_actions_desc}';
 var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
+
+lang.theme_info_fetch_error = \"{$lang->theme_info_fetch_error}\";
+lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 

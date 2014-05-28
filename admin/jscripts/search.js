@@ -33,7 +33,7 @@ var SettingSearch = {
 		e.preventDefault();
 		if($('#search').val() != "")
 		{
-			$.jGrowl('Searching...');
+			$.jGrowl(lang.searching);
 			pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent($('#search').val());
 			$.ajax({
 				type: 'get',
@@ -52,7 +52,7 @@ var SettingSearch = {
 
 								$.each(json.errors, function(i, message)
 								{
-									$.jGrowl('There was an error posting your reply: '+message);
+									$.jGrowl(lang.search_error + ' ' + message);
 								});
 								return false;
 							}
@@ -64,7 +64,7 @@ var SettingSearch = {
 						$('#group_list').css('display', 'none');
 						$('#search_results').html(request.responseText);
 						loadPeekers();
-						$.jGrowl('Done!');
+						$.jGrowl(lang.search_done);
 						return false;
 					}
 				}
