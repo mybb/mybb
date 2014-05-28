@@ -401,7 +401,7 @@ class postParser
 		for($i = $this->list_count; $i > 0; $i--)
 		{
 			// Ignores missing end tags
-			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message);
+			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 		}
 
 		// Convert images when allowed.
@@ -1344,18 +1344,18 @@ class postParser
 	*/
 	function mycode_prepare_list($matches)
 	{
-		// Append number to identify matching lists to allow nesting
+		// Append number to identify matching list tags
 		if($matches[1] == '[/list]')
 		{
 			$count = array_pop($this->list_elements);
 			if($count !== NULL)
 			{
-				$replacement = "[/list&{$count}]";
+				return "[/list&{$count}]";
 			}
 			else
 			{
 				// No open list tag...
-				$replacement = $matches[0];
+				return $matches[0];
 			}
 		}
 		else
@@ -1364,14 +1364,13 @@ class postParser
 			$this->list_elements[] = $this->list_count;
 			if(!empty($matches[2]))
 			{
-				$replacement = "[list{$matches[2]}&{$this->list_count}]";
+				return "[list{$matches[2]}&{$this->list_count}]";
 			}
 			else
 			{
-				$replacement = "[list&{$this->list_count}]";
+				return "[list&{$this->list_count}]";
 			}
 		}
-		return $replacement;
 	}
 
 	/**
@@ -1472,7 +1471,7 @@ class postParser
 		for($i = $this->list_count; $i > 0; $i--)
 		{
 			// Ignores missing end tags
-			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message);
+			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 		}
 
 		// Run plugin hooks
