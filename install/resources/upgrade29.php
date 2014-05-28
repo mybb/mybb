@@ -234,7 +234,7 @@ function upgrade29_dbchanges()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("privatemessages", "ipaddress", "bytea(16) NOT NULL default ''");
+			$db->add_column("privatemessages", "ipaddress", "bytea NOT NULL default ''");
 			break;
 		case "sqlite":
 			$db->add_column("privatemessages", "ipaddress", "blob(16) NOT NULL default ''");
@@ -683,7 +683,7 @@ function upgrade29_dbchanges_ip()
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->modify_column($table, $column, "bytea(16) NOT NULL default ''");
+					$db->modify_column($table, $column, "bytea NOT NULL default ''");
 					break;
 				case "sqlite":
 					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
