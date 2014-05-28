@@ -425,7 +425,29 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_minute, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+		}
+		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		{
+			$diff = TIME_NOW - $stamp;
+			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
+
+			if($diff < 0)
+			{
+				$diff = abs($diff);
+				$relative['suffix'] = '';
+				$relative['prefix'] = $lang->rel_in;
+			}
+
+			$relative['hour'] = floor($diff / 3600);
+
+			if($relative['hour'] <= 1)
+			{
+				$relative['hour'] = 1;
+				$relative['plural'] = $lang->rel_hours_single;
+			}
+
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
 		}
 		else
 		{
