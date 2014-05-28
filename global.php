@@ -497,10 +497,10 @@ $unreadreports = '';
 // This user is a moderator, super moderator or administrator
 if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
 {
-	// Read the reported posts cache
+	// Read the reported content cache
 	$reported = $cache->read('reportedcontent');
 
-	// 0 or more reported posts currently exist
+	// 0 or more reported items currently exist
 	if($reported['unread'] > 0)
 	{
 		// We want to avoid one extra query for users that can moderate any forum
@@ -511,9 +511,9 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 		else
 		{
 			$unread = 0;
-			$query = $db->simple_select('reportedcontent', 'fid', "reportstatus='0'");
+			$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
 
-			while($fid = $db->fetch_field($query, 'fid'))
+			while($fid = $db->fetch_field($query, 'id3'))
 			{
 				if(is_moderator($fid))
 				{
