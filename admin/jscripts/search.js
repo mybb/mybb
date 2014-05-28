@@ -67,18 +67,6 @@ var SettingSearch = {
 						$.jGrowl('Done!');
 						return false;
 					}
-		
-					/*if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
-					{
-						message = request.responseText.match(/<error>(.*)<\/error>/);
-						if(!message[1])
-						{
-							message[1] = this.error_unknown;
-						}
-						alert(message[1]);
-						$.jGrowl('The following error has occurred: '+message[1]);
-					}*/
-						
 				}
 			});
 		}
