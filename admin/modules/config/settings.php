@@ -1377,80 +1377,12 @@ if(!$mybb->input['action'])
 	echo '</div>';
 
 	echo '
+<script type="text/javascript" src="./jscripts/search.js"></script>
 <script type="text/javascript">
 //<!--
-var SettingSearch = Class.create();
-SettingSearch.prototype = {
-
-	spinner: null,
-	form: null,
-	result_div: null,
-	hide_div: null,
-	search_box: null,
-
-	initialize: function(form, search_box, result_div, hide_div)
-	{
-		Event.observe(form, "submit", this.onSubmit.bind(this));
-		this.form = form;
-		this.result_div = result_div;
-		this.hide_div = hide_div;
-		result_div.style.display = "none";
-		this.search_box = search_box;
-		Event.observe(search_box, "focus", function() {
-			if($("search").value == "'.$lang->settings_search.'")
-			{
-				$("search").removeClassName("search_default");
-				$("search").value = "";
-			}
-		});
-		Event.observe(search_box, "blur", function() {
-			if($("search").value == "")
-			{
-				$("search").addClassName("search_default");
-				$("search").value = "'.$lang->settings_search.'";
-				$("search_results").style.display = "none";
-				$("group_list").style.display = "";
-			}
-		});
-	},
-
-	onSubmit: function(e)
-	{
-		Event.stop(e);
-		if(this.search_box.value != "")
-		{
-			this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
-			pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
-			new Ajax.Request("index.php", {
-			    method: "get",
-				parameters: pars,
-			    onComplete: this.onComplete.bind(this)
-			});
-		}
-	},
-
-	onComplete: function(request)
-	{
-		if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
-		{
-			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
-			{
-				message[1] = "'.$lang->error_ajax_unknown.'";
-			}
-			alert(message[1]);
-		}
-		else if(request.responseText)
-		{
-			this.result_div.style.display = "";
-			this.hide_div.style.display = "none";
-			this.result_div.innerHTML = request.responseText;
-			loadPeekers();
-		}
-		this.spinner.destroy();
-	}
-}
-new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
+$(document).ready(function(){
+	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
+});
 //-->
 </script>';
 
