@@ -632,6 +632,7 @@ function upload_attachment($attachment, $update_attachment=false)
  * @param array The PHP $_FILE array for the file
  * @param string The path to save the file in
  * @param string The filename for the file (if blank, current is used)
+ * @return array The uploaded file
  */
 function upload_file($file, $path, $filename="")
 {

@@ -822,7 +822,7 @@ class datacache
 	}
 
 	/**
-	 * Update reported posts cache.
+	 * Update reported content cache.
 	 *
 	 */
 	function update_reportedcontent()
