@@ -14,7 +14,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields,member_register_password,member_activate,member_resendactivation,member_lostpw";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_profile_addremove";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
 require_once "./global.php";
 
@@ -1292,6 +1292,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
+
+		// Are You a Human game needs to always be filled in
+		if($mybb->settings['captchaimage'] == 3 && $mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		{
+			$do_captcha = true;
+		}
 	}
 	else if($validated && $loginhandler->captcha_verified == true)
 	{
@@ -1390,6 +1396,10 @@ if($mybb->input['action'] == "login")
 			{
 				$login_captcha->build_recaptcha();
 			}
+			elseif($login_captcha->type == 3)
+			{
+				$login_captcha->build_ayah();
+			}
 
 			if($login_captcha->html)
 			{
@@ -1399,6 +1409,15 @@ if($mybb->input['action'] == "login")
 		elseif($correct && $login_captcha->type == 2)
 		{
 			$login_captcha->build_recaptcha();
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
+		}
+		elseif($correct && $login_captcha->type == 3)
+		{
+			$login_captcha->build_ayah();
 
 			if($login_captcha->html)
 			{
