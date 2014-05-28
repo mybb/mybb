@@ -40,6 +40,7 @@ class captcha
 	 *
 	 * 1 = Default CAPTCHA
 	 * 2 = reCAPTCHA
+	 * 3 = Are You a Human
 	 *
 	 * @var int
 	 */
@@ -74,6 +75,17 @@ class captcha
 	public $verify_server = '';
 
 	/**
+	 * Are You a Human configuration
+	 *
+	 * @var string
+	 */
+	public $ayah_web_service_host = '';
+	public $ayah_publisher_key = '';
+	public $ayah_scoring_key = '';
+	public $ayah_debug_mode = '';
+	public $ayah_use_curl = '';
+
+	/**
 	 * HTML of the built CAPTCHA
 	 *
 	 * @var string
@@ -102,10 +114,29 @@ class captcha
 			{
 				$this->captcha_template .= "_recaptcha";
 			}
+			else if($this->type == 3)
+			{
+				$this->captcha_template .= "_ayah";
+			}
 		}
 
 		// Work on which CAPTCHA we've got installed
-		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		if($this->type == 3 && $mybb->settings['ayahpublisherkey'] && $mybb->settings['ayahscoringkey'])
+		{
+			// We want to use Are You A Human, set configuration options
+			$this->ayah_web_service_host = "ws.areyouahuman.com";
+			$this->ayah_publisher_key = $mybb->settings['ayahpublisherkey'];
+			$this->ayah_scoring_key = $mybb->settings['ayahscoringkey'];
+			$this->ayah_debug_mode = false;
+			$this->ayah_use_curl = true;
+
+			if($build == true)
+			{
+				$this->build_ayah();
+			}
+		}
+
+		else if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
 		{
 			// We want to use reCAPTCHA, set the server options
 			$this->server = "http://www.google.com/recaptcha/api";
@@ -170,6 +201,27 @@ class captcha
 		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
 	}
 
+	function build_ayah()
+	{
+		global $lang, $mybb, $templates;
+
+		define('AYAH_PUBLISHER_KEY', $this->ayah_publisher_key);
+		define('AYAH_SCORING_KEY', $this->ayah_scoring_key);
+		define('AYAH_USE_CURL', $this->ayah_use_curl);
+		define('AYAH_DEBUG_MODE', $this->ayah_debug_mode);
+		define('AYAH_WEB_SERVICE_HOST', $this->ayah_web_service_host);
+
+		require_once MYBB_ROOT."inc/3rdparty/ayah/ayah.php";
+		$ayah = new AYAH();
+		$output = $ayah->getPublisherHTML();
+
+		if(!empty($output))
+		{
+			eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
+			//eval("\$this->html = \"".$templates->get("member_register_regimage_ayah")."\";");
+		}
+	}
+
 	function build_hidden_captcha()
 	{
 		global $db, $mybb, $templates;
@@ -195,6 +247,11 @@ class captcha
 			// Values
 			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
 			$field['string'] = $mybb->input['recaptcha_response_field'];
+		}
+		else if($this->type == 3)
+		{
+			// Are You a Human can't be built as a hidden captcha
+			continue;
 		}
 
 		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
@@ -279,6 +336,24 @@ class captcha
 				}
 			}
 		}
+		elseif($this->type == 3)
+		{
+			define('AYAH_PUBLISHER_KEY', $this->ayah_publisher_key);
+			define('AYAH_SCORING_KEY', $this->ayah_scoring_key);
+			define('AYAH_USE_CURL', $this->ayah_use_curl);
+			define('AYAH_DEBUG_MODE', $this->ayah_debug_mode);
+			define('AYAH_WEB_SERVICE_HOST', $this->ayah_web_service_host);
+
+			require_once MYBB_ROOT."inc/3rdparty/ayah/ayah.php";
+			$ayah = new AYAH();
+
+			$result = $ayah->scoreResult();
+
+			if($result == false)
+			{
+				$this->set_error($lang->invalid_ayah_result);
+			}
+		}
 
 		// Plugin hook
 
@@ -305,7 +380,7 @@ class captcha
 				$db->delete_query("captcha", "imagehash = '{$imagehash}'");
 			}
 		}
-		// Not necessary for reCAPTCHA
+		// Not necessary for reCAPTCHA or Are You a Human
 
 		// Plugin hook
 	}
