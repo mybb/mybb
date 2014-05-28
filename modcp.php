@@ -168,7 +168,7 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
-		$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0'");
+		$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
 
 		$report_count = 0;
 		while($fid = $db->fetch_field($query, 'id3'))
