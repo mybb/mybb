@@ -183,7 +183,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 		else
 		{
 			$report_reason_string = "report_reason_{$reason}";
-			$reason = "\n" . $lang->$report_reason_string;
+			$reason = "\n".$lang->$report_reason_string;
 		}
 
 		if(my_strlen($reason) < 3)
