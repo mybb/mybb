@@ -1134,6 +1134,13 @@ if($mybb->input['action'] == "thread")
 			$postoptionschecked['signature'] = 'checked="checked"';
 		}
 
+		// Hide signature option if no permission
+		$option_signature = '';
+		if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+		{
+			eval("\$option_signature = \"".$templates->get('showthread_quickreply_options_signature')."\";");
+		}
+
 		if(isset($mybb->user['emailnotify']) && $mybb->user['emailnotify'] == 1)
 		{
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
