@@ -142,7 +142,7 @@ $errors = array();
 $maximageserror = $attacherror = '';
 
 // Handle attachments if we've got any.
-if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -188,7 +188,7 @@ if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') |
 }
 
 // Are we removing an attachment from the thread?
-if($mybb->get_input('attachmentaid', 1) && $mybb->get_input('attachmentact') == "remove")
+if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', 1) && $mybb->get_input('attachmentact') == "remove")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -795,7 +795,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
 	}
 
-	// Removing an attachment or adding a new one, or showting thread errors.
+	// Removing an attachment or adding a new one, or showing thread errors.
 	else if($mybb->get_input('attachmentaid', 1) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors)
 	{
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
@@ -860,7 +860,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	if($forumpermissions['canpostattachments'] != 0)
+	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
