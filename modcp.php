@@ -20,7 +20,7 @@ $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modque
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
-$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away";
+$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,previewpost";
 
 require_once "./global.php";
