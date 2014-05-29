@@ -107,7 +107,7 @@ var Thread = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error fetching the posts. '+message);
+					$.jGrowl(lang.post_fetch_error + ' ' + message);
 				});
 				return false;
 			}
@@ -169,17 +169,33 @@ var Thread = {
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
-				submit: "Save Changes",
-				cancel: "Cancel Edit",
+				submit: lang.save_changes,
+				cancel: lang.cancel_edit,
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
+				dataType: "json",
 				callback: function(values, settings)
 				{
-					values = JSON.parse(values);
+					id = $(this).attr('id');
+					pid = id.replace( /[^\d.]/g, '');
+					
+					var json = $.parseJSON(values);
+					if(typeof json == 'object')
+					{
+						if(json.hasOwnProperty("errors"))
+						{
+							$("div.jGrowl").jGrowl("close");
+
+							$.each(json.errors, function(i, message)
+							{
+								$.jGrowl(lang.quick_edit_update_error + ' ' + message);
+							});
+						}
+					}
 
 					// Change html content
-					$('#pid_' + pid).html(values.message);
-					$('#edited_by_' + pid).html(values.editedmsg);
+					$(this).html(json.message);
+					$('#edited_by_' + pid).html(json.editedmsg);
 				}
 			});
         });
@@ -254,7 +270,7 @@ var Thread = {
 
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error posting your reply: '+message);
+					$.jGrowl(lang.quick_reply_post_error + ' ' + message);
 				});
 				return false;
 			}
@@ -339,78 +355,58 @@ var Thread = {
 
 	deletePost: function(pid)
 	{
-		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true)
-		{
-			$.ajax(
-			{
-				url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
-				type: 'post',
-				complete: function (request, status)
+		$.prompt(quickdelete_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					var json = $.parseJSON(request.responseText);
-					if(json.hasOwnProperty("errors"))
+					$.ajax(
 					{
-						$.each(json.errors, function(i, message)
+						url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
 						{
-							$.jGrowl('There was an error posting your reply: '+message);
-						});
-					}
-					else if(json.hasOwnProperty("data"))
-					{
-						// Soft deleted
-						if(json.data == 1)
-						{
-							// Change CSS class of div 'pid_[pid]'
-							$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
-							
-							$.jGrowl('The post was deleted successfully.');
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl(lang.quick_delete_error + ' ' + message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Soft deleted
+								if(json.data == 1)
+								{
+									// Change CSS class of div 'pid_[pid]'
+									$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
+									
+									$.jGrowl(lang.quick_delete_success);
+								}
+								else if(json.data == 2)
+								{
+									// Actually deleted
+									$('#post_'+pid).slideToggle("slow");
+									
+									$.jGrowl(lang.quick_delete_success);
+								}
+							}
+							else
+							{
+								$.jGrowl(lang.unknown_error);
+							}
 						}
-						else if(json.data == 2)
-						{
-							// Actually deleted
-							$('#post_'+pid).slideToggle("slow");
-							
-							$.jGrowl('The post was deleted successfully.');
-						}
-					}
-					else
-					{
-						$.jGrowl('An unknown error has occurred.');
-					}
+					});
 				}
-			});
-		}
-	},
-
-	reportPost: function(pid)
-	{
-		MyBB.popupWindow("/report.php?pid="+pid);
-	},
-
-	submitReport: function(pid)
-	{
-		// Get form, serialize it and send it
-		var datastring = $(".reportPost_"+pid).serialize();
-		$.ajax({
-			type: "POST",
-			url: "report.php",
-			data: datastring,
-			dataType: "html",
-			success: function(data) {
-				// Replace modal HTML
-				$('.modal_'+pid).fadeOut('slow', function() {
-					$('.modal_'+pid).html(data);
-					$('.modal_'+pid).fadeIn('slow');
-				});
-			},
-			error: function(){
-				  alert('An unknown error has occurred.');
 			}
 		});
-
+		
 		return false;
-	}
+	},
 };
 
 Thread.init();

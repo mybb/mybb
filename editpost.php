@@ -274,7 +274,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1)
+					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
 					{
 						echo json_encode(array("data" => '1'));
 					}
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				if($mybb->input['ajax'] == 1)
 				{
 					header("Content-type: application/json; charset={$lang->settings['charset']}");
-					if($mybb->settings['soft_delete'] == 1)
+					if($mybb->settings['soft_delete'] == 1 && is_moderator($fid))
 					{
 						echo json_encode(array("data" => '1'));
 					}
@@ -750,7 +750,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$bgcolor2 = "trow2";
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1)
+
+	$time = TIME_NOW;
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid) || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";

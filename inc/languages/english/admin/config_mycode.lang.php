@@ -30,7 +30,6 @@ $l['no_mycode'] = "No custom MyCodes exist at this time.";
 $l['save_mycode'] = "Save MyCode";
 $l['add_mycode'] = "Add MyCode";
 $l['changes_not_saved'] = "Your changes have not yet been saved.";
-$l['deactivated'] = "Deactivated";
 
 $l['sandbox'] = "Sandbox";
 $l['sandbox_desc'] = "You can use this area to test the regular expression and replacement above before saving your changes.";
@@ -55,5 +54,5 @@ $l['success_activated_mycode'] = "The selected MyCode has been activated success
 
 $l['confirm_mycode_deletion'] = "Are you sure you wish to delete this MyCode?";
 
-
+$['mycode_sandbox_test_error'] = 'There was an error fetching the test results.';
 ?>

@@ -49,6 +49,7 @@ $l['new_posts'] = "Forum Contains New Posts";
 $l['no_new_posts'] = "Forum Contains No New Posts";
 $l['click_mark_read'] = "Click to mark this forum as read";
 $l['forum_locked'] = "Forum is Locked";
+$l['forum_redirect'] = "Redirect Forum";
 $l['lastpost_never'] = "Never";
 $l['viewing_one'] = " (1 user browsing)";
 $l['viewing_multiple'] = " ({1} users browsing)";
@@ -257,6 +258,7 @@ $l['forumjump_home'] = "Forum Home";
 
 $l['redirect'] = "You will now be redirected";
 $l['unknown_error'] = "An unknown error has occurred.";
+$l['post_fetch_error'] = 'There was an error fetching the posts.';
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
@@ -299,9 +301,11 @@ $l['seconds_short'] = "s";
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_minute'] = "{1}{2} {3} {4}";
+$l['rel_time'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
+$l['rel_hours_single'] = "hour";
+$l['rel_hours_plural'] = "hours";
 
 $l['permanent'] = "Permanent";
 $l['save_draft'] = "Save as Draft";
@@ -367,11 +371,13 @@ $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";
 $l['refresh'] = "Refresh";
 $l['select_language'] = "Quick Language Select";
+$l['select_theme'] = "Quick Theme Select";
 
 $l['invalid_post_code'] = "Authorization code mismatch. Are you accessing this function correctly? Please go back and try again.";
 $l['invalid_captcha'] = "Please fill out the image verification code to continue. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
+$l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Enitwetok, Kwajalien";
 $l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island, Samoa";

@@ -52,8 +52,6 @@ $l['disable_task'] = "Disable Task";
 $l['run_task'] = "Run Task";
 $l['enable_task'] = "Enable Task";
 $l['delete_task'] = "Delete Task";
-$l['alt_enabled'] = "Enabled";
-$l['alt_disabled'] = "Disabled";
 
 $l['error_invalid_task'] = "The specified task does not exist.";
 $l['error_missing_title'] = "You did not enter a title for this scheduled task";

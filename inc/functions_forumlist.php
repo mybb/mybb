@@ -412,11 +412,13 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
+				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
+				$expthead = "";
 				$expaltext = "[-]";
 			}
 
@@ -452,14 +454,21 @@ function build_forumbits($pid=0, $depth=1)
  *
  * @param array Array of information about the forum
  * @param array Array of information about the lastpost date
+ * @param int Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
+	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+	if($forum['linkto'] != '')
+	{
+		$folder = "offlink";
+		$altonoff = $lang->forum_redirect;
+	}
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == 0 || $locked)
+	elseif($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;

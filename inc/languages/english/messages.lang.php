@@ -79,6 +79,7 @@ $l['error_message_too_short'] = "Sorry, your message is too short and cannot be 
 $l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
+$l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";

@@ -20,6 +20,7 @@ function output_page($contents)
 
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
+	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
@@ -84,7 +85,6 @@ function output_page($contents)
 	}
 
 	$contents = str_replace("<debugstuff>", "", $contents);
-	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
 	{
@@ -425,7 +425,29 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_minute, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
+		}
+		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
+		{
+			$diff = TIME_NOW - $stamp;
+			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
+
+			if($diff < 0)
+			{
+				$diff = abs($diff);
+				$relative['suffix'] = '';
+				$relative['prefix'] = $lang->rel_in;
+			}
+
+			$relative['hour'] = floor($diff / 3600);
+
+			if($relative['hour'] <= 1)
+			{
+				$relative['hour'] = 1;
+				$relative['plural'] = $lang->rel_hours_single;
+			}
+
+			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
 		}
 		else
 		{
@@ -869,8 +891,10 @@ function error_no_permission()
  *
  * @param string The URL to redirect the user to
  * @param string The redirection message to be shown
+ * @param string The title of the redirection page
+ * @param boolean Force the redirect page regardless of settings
  */
-function redirect($url, $message="", $title="")
+function redirect($url, $message="", $title="", $force_redirect=false)
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
@@ -912,8 +936,8 @@ function redirect($url, $message="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
-	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))
+	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
+	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -948,6 +972,7 @@ function redirect($url, $message="", $title="")
  * @param int The number of items to be shown per page
  * @param int The current page number
  * @param string The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
+ * @param boolean Whether or not the multipage is being shown in the navigation breadcrumb
  * @return string The generated pagination
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
@@ -1545,9 +1570,9 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	$mod_cache = $cache->read("moderators");
 
-	foreach($mod_cache as $fid => $forum)
+	foreach($mod_cache as $forumid => $forum)
 	{
-		if(!is_array($forum) || !in_array($fid, $parentslist))
+		if(!is_array($forum) || !in_array($forumid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
@@ -1840,6 +1865,7 @@ function my_get_array_cookie($name, $id)
  * @param string The cookie identifier.
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
+ * @param int The timestamp of the expiry date.
  */
 function my_set_array_cookie($name, $id, $value, $expires="")
 {
@@ -2960,6 +2986,7 @@ function build_prefixes($pid=0)
  *
  *  @param mixed The forum ID (integer ID or string all)
  *  @param mixed The selected prefix ID (integer ID or string any)
+ *  @param int Allow multiple prefix selection
  *  @return string The thread prefix selection menu
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
@@ -3275,7 +3302,7 @@ function get_ip()
 			{
 				$val = trim($val);
 				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-2])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
+				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
 				{
 					$ip = $val;
 					break;
@@ -3435,7 +3462,7 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
@@ -3936,34 +3963,34 @@ function mark_reports($id, $type="post")
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
 			break;
 		case "post":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
+			$db->update_query("reportedcontent", array('reportstatus' => 1), "id='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
+				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
 			}
 			break;
 		case "thread":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
+			$db->update_query("reportedcontent", array('reportstatus' => 1), "id2='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "forum":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
+			$db->update_query("reportedcontent", array('reportstatus' => 1), "id3='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 		case "all":
-			$db->update_query("reportedposts", array('reportstatus' => 1), "reportstatus='0'");
+			$db->update_query("reportedcontent", array('reportstatus' => 1), "reportstatus='0' AND (type = 'post' OR type = '')");
 			break;
 	}
 
 	$arguments = array('id' => $id, 'type' => $type);
 	$plugins->run_hooks("mark_reports", $arguments);
-	$cache->update_reportedposts();
+	$cache->update_reportedcontent();
 }
 
 /**
@@ -4350,22 +4377,32 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The ID of the parent theme to select from
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
+ * @param boolean Whether or not theme select is in the footer (true if it is)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
 
 	if($tid == 0)
 	{
-		if(!isset($lang->use_default))
+		if($footer == true)
 		{
-			$lang->use_default = $lang->lang_select_default;
+			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
+			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
+			$tid = 1;
 		}
-		$themeselect = "<select name=\"$name\">";
-		$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-		$themeselect .= "<option value=\"0\">-----------</option>\n";
-		$tid = 1;
+		else
+		{
+			if(!isset($lang->use_default))
+			{
+				$lang->use_default = $lang->lang_select_default;
+			}
+			$themeselect = "<select name=\"$name\">";
+			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
+			$themeselect .= "<option value=\"0\">-----------</option>\n";
+			$tid = 1;
+		}
 	}
 
 	if(!is_array($tcache))
@@ -4416,13 +4453,13 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
 					$depthit = $depth."--";
 				}
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
 				}
 			}
 		}
@@ -4430,6 +4467,11 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if($tid == 1)
 	{
+		if($footer == true)
+		{
+			$themeselect .= "</optgroup>\n";
+		}
+
 		$themeselect .= "</select>";
 	}
 
@@ -4487,6 +4529,13 @@ function my_number_format($number)
 	}
 }
 
+/**
+ * Converts a string of text to or from UTF-8.
+ *
+ * @param string The string of text to convert
+ * @param boolean Whether or not the string is being converted to or from UTF-8 (true if converting to)
+ * @return string The converted string
+ */
 function convert_through_utf8($str, $to=true)
 {
 	global $lang;
@@ -4926,7 +4975,7 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 }
 
 /**
- * lowers the case of a string, mb strings accounted for
+ * Lowers the case of a string, mb strings accounted for
  *
  * @param string The string to lower.
  * @return int The lowered string.
@@ -4973,7 +5022,7 @@ function my_strpos($haystack, $needle, $offset=0)
 }
 
 /**
- * ups the case of a string, mb strings accounted for
+ * Ups the case of a string, mb strings accounted for
  *
  * @param string The string to up.
  * @return int The uped string.
@@ -5206,6 +5255,7 @@ function get_thread_link($tid, $page=0, $action='')
  *
  * @param int The post ID of the post
  * @param int The thread id of the post.
+ * @return string The url to the post.
  */
 function get_post_link($pid, $tid=0)
 {
@@ -6025,6 +6075,7 @@ function build_timezone_select($name, $selected=0, $short=false)
  * Fetch the contents of a remote fle.
  *
  * @param string The URL of the remote file
+ * @param array The array of post data
  * @return string The remote file contents.
  */
 function fetch_remote_file($url, $post_data=array())
@@ -6774,6 +6825,7 @@ function get_execution_time()
  * Processes a checksum list on MyBB files and returns a result set
  *
  * @param array The array of checksums and their corresponding files
+ * @param int The count of files
  * @return array The bad files
  */
 function verify_files($path=MYBB_ROOT, $count=0)
@@ -7107,6 +7159,15 @@ function trim_blank_chrs($string, $charlist=false)
 	return $string;
 }
 
+/**
+ * Match a sequence
+ *
+ * @param string The string to match from
+ * @param array The array to match from
+ * @param int Number in the string
+ * @param int Number of matches
+ * @return int The number matched
+ */
 function match_sequence($string, $array, $i=0, $n=0)
 {
 	if($string === "")

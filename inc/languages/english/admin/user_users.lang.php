@@ -160,7 +160,8 @@ $l['website'] = "Website";
 $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
-$l['msn_messanger_handle'] = "MSN Messenger Handle";
+$l['skype_handle'] = "Skype Handle";
+$l['google_handle'] = "Google Talk Handle";
 $l['birthday'] = "Date of Birth";
 
 $l['away_information'] = "Away Information";
@@ -336,7 +337,8 @@ $l['website_contains'] = "Website contains";
 $l['icq_number_contains'] = "ICQ number contains";
 $l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
-$l['msn_contains'] = "MSN Messenger handle contains";
+$l['skype_contains'] = "Skype handle contains";
+$l['google_contains'] = "Google Talk handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";
@@ -395,4 +397,8 @@ You will be able to login with the credentials you registered with.
 
 Thank you,
 {2} Staff";
+
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name";
+$l['ipaddress_location'] = "GeoIP Location";
 ?>

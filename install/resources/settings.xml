@@ -185,10 +185,18 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="showthemeselect">
+			<title>Show Theme Selector in Footer</title>
+			<description><![CDATA[Set to no if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -196,7 +204,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="mailingaddress">
 			<title>Mailing Address</title>
 			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -204,7 +212,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="faxno">
 			<title>Contact Fax No</title>
 			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -212,7 +220,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -220,7 +228,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="contact_guests">
 			<title>Disable Contact Page to Guests</title>
 			<description><![CDATA[Setting this to yes will disallow access to the contact page for guests.]]></description>
-			<disporder>25</disporder>
+			<disporder>26</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -228,7 +236,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
 			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
-			<disporder>26</disporder>
+			<disporder>27</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1211,10 +1219,68 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="wordwrap">
+			<title>Number of Characters before Word Wrapping Occurs</title>
+			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[80]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="maxquotedepth">
+			<title>Maximum Nested Quote Tags</title>
+			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="polloptionlimit">
+			<title>Maximum Poll Option Length</title>
+			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
+			<disporder>18</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[250]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="maxpolloptions">
+			<title>Maximum Number of Poll Options</title>
+			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
+			<disporder>19</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="polltimelimit">
+			<title>Poll Time Limit</title>
+			<description><![CDATA[The number of hours until regular users cannot add a poll to their own threads (if they have the permission). Enter 0 (zero) for no limit.]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[12]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="threadreview">
+			<title>Show Thread Review</title>
+			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+	</settinggroup>
+	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="11" isdefault="1">
+		<setting name="enableattachments">
+			<title>Enable Attachment Functionality</title>
+			<description><![CDATA[If you wish to disable attachments on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="maxattachments">
 			<title>Maximum Attachments Per Post</title>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post.]]></description>
-			<disporder>16</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1222,7 +1288,7 @@ show=Show to all Users]]></optionscode>
 		<setting name="attachthumbnails">
 			<title>Show Attached Thumbnails in Posts</title>
 			<description><![CDATA[How do you want images to be shown in posts?]]></description>
-			<disporder>17</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[radio
 yes=Thumbnail
 no=Full Size Image
@@ -1233,7 +1299,7 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbh">
 			<title>Attached Thumbnail Maximum Height</title>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
-			<disporder>18</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1241,53 +1307,13 @@ download=As Download Link]]></optionscode>
 		<setting name="attachthumbw">
 			<title>Attached Thumbnail Maximum Width</title>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
-			<disporder>19</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="wordwrap">
-			<title>Number of Characters before Word Wrapping Occurs</title>
-			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
-			<disporder>20</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[80]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="maxquotedepth">
-			<title>Maximum Nested Quote Tags</title>
-			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
-			<disporder>21</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[5]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="polloptionlimit">
-			<title>Maximum Poll Option Length</title>
-			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
-			<disporder>22</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[250]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="maxpolloptions">
-			<title>Maximum Number of Poll Options</title>
-			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
-			<disporder>23</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[10]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="threadreview">
-			<title>Show Thread Review</title>
-			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
-			<disporder>24</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 	</settinggroup>
-	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="11" isdefault="1">
+	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="12" isdefault="1">
 		<setting name="enablememberlist">
 			<title>Enable Member List Functionality</title>
 			<description><![CDATA[If you wish to disable the member list on your board, set this option to no.]]></description>
@@ -1335,7 +1361,7 @@ descending=Descending]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="12" isdefault="1">
+	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="13" isdefault="1">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
 			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>
@@ -1409,7 +1435,7 @@ descending=Descending]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="13" isdefault="1">
+	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="14" isdefault="1">
 		<setting name="enablewarningsystem">
 			<title>Enable Warning System?</title>
 			<description><![CDATA[Set to no to completely disable the warning system.]]></description>
@@ -1443,7 +1469,7 @@ descending=Descending]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="14" isdefault="1">
+	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="15" isdefault="1">
 		<setting name="enablepms">
 			<title>Enable Private Messaging Functionality</title>
 			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to no.]]></description>
@@ -1452,10 +1478,18 @@ descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="pmquickreply">
+			<title>Show Quick Reply Form</title>
+			<description><![CDATA[Allows you to set whether or not the quick reply form will be shown at the bottom of PMs.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="pmsallowhtml">
 			<title>Allow HTML</title>
 			<description><![CDATA[Selecting yes will allow HTML to be used in private messages.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1463,7 +1497,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowmycode">
 			<title>Allow MyCode</title>
 			<description><![CDATA[Selecting yes will allow MyCode to be used in private messages.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1471,7 +1505,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowsmilies">
 			<title>Allow Smilies</title>
 			<description><![CDATA[Selecting yes will allow Smilies to be used in private messages.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1479,7 +1513,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowimgcode">
 			<title>Allow [img] Code</title>
 			<description><![CDATA[Selecting yes will allow [img] Code to be used in private messages.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1487,7 +1521,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmsallowvideocode">
 			<title>Allow [video] Code</title>
 			<description><![CDATA[Selecting yes will allow [video] Code to be used in private messages.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1495,7 +1529,7 @@ descending=Descending]]></optionscode>
 		<setting name="pmfloodsecs">
 			<title>Private Message Flood Time</title>
 			<description><![CDATA[Set the time (in seconds) users have to wait between sending messages, to be in effect; set to 0 to disable.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1503,7 +1537,7 @@ descending=Descending]]></optionscode>
 		<setting name="showpmip">
 			<title>Show Private Message IP Addresses</title>
 			<description><![CDATA[Do you wish to show ip addresses of users who send private messages, and who you want to show ip addresses to?]]></description>
-			<disporder>10</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[radio
 no=Do not show IP
 hide=Show to Admins & Mods
@@ -1512,7 +1546,7 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="15" isdefault="1">
+	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="16" isdefault="1">
 		<setting name="enablecalendar">
 			<title>Enable Calendar Functionality</title>
 			<description><![CDATA[If you wish to disable the calendar on your board, set this option to no.]]></description>
@@ -1522,7 +1556,7 @@ show=Show to all Users]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="whosonline" title="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="16" isdefault="1">
+	<settinggroup name="whosonline" title="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="17" isdefault="1">
 		<setting name="wolcutoffmins">
 			<title>Cut-off Time (mins)</title>
 			<description><![CDATA[The number of minutes before a user is marked offline. Recommended: 15.]]></description>
@@ -1550,7 +1584,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="17" isdefault="1">
+	<settinggroup name="userpruning" title="User Pruning" description="User Pruning allows you to remove users from your forum meeting certain criteria. Here you can configure that criteria." disporder="18" isdefault="1">
 		<setting name="enablepruning">
 			<title>Enable user pruning?</title>
 			<description><![CDATA[Set to on to prune users by the specified criteria below.]]></description>
@@ -1608,7 +1642,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="17" isdefault="1">
+	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="19" isdefault="1">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
@@ -1682,7 +1716,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB." disporder="18" isdefault="1">
+	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB." disporder="20" isdefault="1">
 		<setting name="searchtype">
 			<title>Search Type</title>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
@@ -1717,7 +1751,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="19" isdefault="1">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="21" isdefault="1">
 		<setting name="bbcodeinserter">
 			<title>Clickable MyCode Editor</title>
 			<description><![CDATA[Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.]]></description>
@@ -1751,7 +1785,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="20" isdefault="1">
+	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="22" isdefault="1">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -1785,7 +1819,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="21" isdefault="1">
+	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="23" isdefault="1">
 		<setting name="mail_handler">
 			<title>Mail handler</title>
 			<description><![CDATA[The medium through which MyBB will send outgoing emails.]]></description>

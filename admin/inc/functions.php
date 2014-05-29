@@ -241,9 +241,10 @@ function save_quick_perms($fid)
 		}
 	}
 
-	// "Can Only View Own Threads" permission is a forum permission only option
+	// "Can Only View Own Threads" and "Can Only Reply Own Threads" permissions are forum permission only options
 	$usergroup_permission_fields = $permission_fields;
 	unset($usergroup_permission_fields['canonlyviewownthreads']);
+	unset($usergroup_permission_fields['canonlyreplyownthreads']);
 
 	$query = $db->simple_select("usergroups", "gid");
 	while($usergroup = $db->fetch_array($query))

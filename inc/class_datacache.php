@@ -822,21 +822,21 @@ class datacache
 	}
 
 	/**
-	 * Update reported posts cache.
+	 * Update reported content cache.
 	 *
 	 */
-	function update_reportedposts()
+	function update_reportedcontent()
 	{
 		global $db, $mybb;
 
 		$reports = array();
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
 		$reasons = array();
@@ -860,7 +860,7 @@ class datacache
 			"reasons" => $reasons
 		);
 
-		$this->update("reportedposts", $reports);
+		$this->update("reportedcontent", $reports);
 	}
 
 	/**
@@ -1219,6 +1219,11 @@ class datacache
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
 		$this->update("adminnotes", @unserialize($db->fetch_field($query, "cache")));
+	}
+
+	function reload_mybb_credits()
+	{
+		admin_redirect('index.php?module=home-credits&amp;fetch_new=-2');
 	}
 }
 ?>

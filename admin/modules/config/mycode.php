@@ -150,6 +150,7 @@ if($mybb->input['action'] == "add")
 	$page->extra_header .= "
 	<script type=\"text/javascript\">
 	var my_post_key = '".$mybb->post_code."';
+	lang.mycode_sandbox_test_error = \"{$lang->mycode_sandbox_test_error}\";
 	</script>";
 
 	$page->add_breadcrumb_item($lang->add_new_mycode);
@@ -270,6 +271,7 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= "
 	<script type=\"text/javascript\">
 	var my_post_key = '".$mybb->post_code."';
+	lang.mycode_sandbox_test_error = "{$lang->mycode_sandbox_test_error}";
 	</script>";
 
 	$page->add_breadcrumb_item($lang->edit_mycode);
@@ -392,12 +394,12 @@ if(!$mybb->input['action'])
 		if($mycode['active'] == 1)
 		{
 			$phrase = $lang->deactivate_mycode;
-			$indicator = '';
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
 		else
 		{
 			$phrase = $lang->activate_mycode;
-			$indicator = "<div class=\"float_right\"><small>{$lang->deactivated}</small></div>";
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
 
 		if($mycode['description'])
@@ -405,7 +407,7 @@ if(!$mybb->input['action'])
 			$mycode['description'] = "<small>{$mycode['description']}</small>";
 		}
 
-		$table->construct_cell("{$indicator}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}");
+		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}</div>");
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
 		$popup->add_item($lang->edit_mycode, "index.php?module=config-mycode&amp;action=edit&amp;cid={$mycode['cid']}");

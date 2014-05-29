@@ -26,6 +26,8 @@ function rebuild_stats()
 
 /**
  * Completely rebuild the counters for a particular forum (useful if they become out of sync)
+ *
+ * @param int The forum ID
  */
 function rebuild_forum_counters($fid)
 {
@@ -56,7 +58,6 @@ function rebuild_forum_counters($fid)
  * Completely rebuild the counters for a particular thread (useful if they become out of sync)
  *
  * @param int The thread ID
- * @param array Optional thread array so we don't have to query it
  */
 function rebuild_thread_counters($tid)
 {

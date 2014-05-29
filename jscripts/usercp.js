@@ -41,7 +41,7 @@ var UserCP = {
 				{
 					$.each(json.errors, function(i, message)
 					{
-					  $.jGrowl('There was an error fetching the buddy list. '+message);
+					  $.jGrowl(lang.buddylist_error+message);
 					});
 					return false;
 				}
@@ -217,20 +217,24 @@ var UserCP = {
 			var message = lang.remove_buddy;
 		}
 
-		if(confirm(message))
-		{
-			if(use_xmlhttprequest != 1)
-			{
-				return true;
+		$.prompt(message, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					$.ajax(
+					{
+						type: 'post',
+						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
+						data: { ajax: 1 },
+						async: false
+					});
+				}
 			}
-			$.ajax(
-			{
-				type: 'post',
-				url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
-				data: { ajax: 1 },
-				async: false
-			});
-		}
+		});
 
 		return false;
 	}
