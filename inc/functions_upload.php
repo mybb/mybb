@@ -441,6 +441,18 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
+	// Check to see how many attachments exist for this post already
+	if($mybb->settings['maxattachments'] > 0 && $update_attachment == false)
+	{
+		$query = $db->simple_select("attachments", "COUNT(aid) AS numattachs", $uploaded_query);
+		$attachcount = $db->fetch_field($query, "numattachs");
+		if($attachcount >= $mybb->settings['maxattachments'])
+		{
+			$ret['error'] = $lang->sprintf($lang->error_maxattachpost, $mybb->settings['maxattachments']);
+			return $ret;
+		}
+	}
+
 	$month_dir = '';
 	if(ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
 	{
