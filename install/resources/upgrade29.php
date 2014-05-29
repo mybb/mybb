@@ -527,15 +527,15 @@ function upgrade29_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$ip1 = my_inet_pton($data['regip']);
-						$ip2 = my_inet_pton($data['lastip']);
+						$ip1 = my_inet_pton($db->unescape_binary($data['regip']));
+						$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
 						if($ip1 === false && $ip2 === false)
 						{
 							continue;
 						}
 						break;
 					case 5:
-						$ip = my_inet_pton($data['ip']);
+						$ip = my_inet_pton($db->unescape_binary($data['ip']));
 						if($ip === false)
 						{
 							continue;
@@ -546,7 +546,7 @@ function upgrade29_dbchanges_ip()
 					case 3:
 					case 2:
 					default:
-						$ip = my_inet_pton($data['ipaddress']);
+						$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
 						if($ip === false)
 						{
 							continue;
@@ -557,25 +557,25 @@ function upgrade29_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => $db->escape_binary(my_inet_pton($data['regip'])), 'lastip' => $db->escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
+						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".intval($data['uid'])."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".intval($data['rid'])."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => $db->escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".intval($data['sid'])."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".intval($data['pid'])."'");
 						break;
 					case 3:
-						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".intval($data['mid'])."'");
 						break;
 					default:
-						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 				}
 				$ipaddress = true;
@@ -683,7 +683,9 @@ function upgrade29_dbchanges_ip()
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->modify_column($table, $column, "bytea", 'set');
+					// Drop default value before converting the column
+					$db->modify_column($table, $column, false, false);
+					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
 					break;
 				case "sqlite":
 					$db->modify_column($table, $column, "blob(16) NOT NULL");
