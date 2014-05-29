@@ -9190,6 +9190,45 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
+		<template name="private_quickreply" version="1800"><![CDATA[<br />
+<form action="private.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="to" value="{$to}" />
+	<input type="hidden" name="bcc" value="{$bcc}" />
+	<input type="hidden" name="subject" value="Re: {$subject}" />
+	<input type="hidden" name="action" value="do_send" />
+	<input type="hidden" name="pmid" value="{$pmid}" />
+	<input type="hidden" name="do" value="reply" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="2">
+					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
+					<div><strong>{$lang->quick_reply}</strong></div>
+				</td>
+			</tr>
+		</thead>
+		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
+			<tr>
+              <td class="{$trow}" valign="top" width="22%">
+					<strong>{$lang->message}</strong><br />
+					<span class="smalltext">{$lang->message_note}<br /><br />
+					<label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{$optionschecked['signature']} {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->quickreply_signature}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{$optionschecked['disablesmilies']} />&nbsp;<strong>{$lang->quickreply_disable_smilies}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{$optionschecked['savecopy']} />&nbsp;<strong>{$lang->quickreply_save_copy}</strong></label>{$private_send_tracking}</span>
+				</td>
+				<td class="{$trow}">
+					<div style="width: 95%">
+						<textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1">{$quoted_message}</textarea>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->send_message}" tabindex="2" accesskey="s" /> <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="3" /></td>
+			</tr>
+		</tbody>
+	</table>
+</form>]]></template>
 		<template name="private_read" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -9212,6 +9251,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <div id="posts">
 {$message}
 </div>
+{$quickreply}
 </td></tr>
 </table>
 </td>
@@ -9345,7 +9385,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label>
 {$private_send_tracking}
 </span></td>
 </tr>
@@ -9462,7 +9502,7 @@ if(use_xmlhttprequest == "1")
 		<template name="private_send_buddyselect" version="1800"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
-		<template name="private_send_tracking" version="1610"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
+		<template name="private_send_tracking" version="1610"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label>]]></template>
 		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
