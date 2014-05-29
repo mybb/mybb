@@ -73,6 +73,22 @@ class postParser
 	public $options;
 
 	/**
+	 * Internal cache for nested lists
+	 *
+	 * @access public
+	 * @var array
+	 */
+	public $list_elements;
+
+	/**
+	 * Internal counter for nested lists
+	 *
+	 * @access public
+	 * @var int
+	 */
+	public $list_count;
+
+	/**
 	 * Parses a message with the specified options.
 	 *
 	 * @param string The message to be parsed.
@@ -374,16 +390,18 @@ class postParser
 			}
 		}
 
-		// Special code requiring special attention
-		while(preg_match("#\[list\](.*?)\[/list\]#si", $message))
-		{
-			$message = preg_replace_callback("#\s?\[list\](.*?)\[/list\](\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message);
-		}
+		// Reset list cache
+		$this->list_elements = array();
+		$this->list_count = 0;
 
-		// Replace lists.
-		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#si", $message))
+		// Find all lists
+		$message = preg_replace_callback("#(\[list(=(a|A|i|I|1))?\]|\[/list\])#si", array($this, 'mycode_prepare_list'), $message);
+
+		// Replace all lists
+		for($i = $this->list_count; $i > 0; $i--)
 		{
-			$message = preg_replace_callback("#\s?\[list=(a|A|i|I|1)\](.*?)\[/list\]#si", array($this, 'mycode_parse_list_callback_type'), $message);
+			// Ignores missing end tags
+			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 		}
 
 		// Convert images when allowed.
@@ -1286,6 +1304,12 @@ class postParser
 	*/
 	function mycode_parse_list($message, $type="")
 	{
+		// No list elements? That's invalid HTML
+		if(strpos($message, '[*]') === false)
+		{
+			$message = "[*]{$message}";
+		}
+
 		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 
@@ -1309,18 +1333,44 @@ class postParser
 	*/
 	function mycode_parse_list_callback($matches)
 	{
-		return $this->mycode_parse_list($matches[1]);
+		return $this->mycode_parse_list($matches[3], $matches[2]);
 	}
 
 	/**
-	* Parses list MyCode.
+	* Prepares list MyCode by finding the matching list tags.
 	*
 	* @param array Matches
-	* @return string The parsed message.
+	* @return string Temporary replacements.
 	*/
-	function mycode_parse_list_callback_type($matches)
+	function mycode_prepare_list($matches)
 	{
-		return $this->mycode_parse_list($matches[2], $matches[1]);
+		// Append number to identify matching list tags
+		if($matches[1] == '[/list]')
+		{
+			$count = array_pop($this->list_elements);
+			if($count !== NULL)
+			{
+				return "[/list&{$count}]";
+			}
+			else
+			{
+				// No open list tag...
+				return $matches[0];
+			}
+		}
+		else
+		{
+			++$this->list_count;
+			$this->list_elements[] = $this->list_count;
+			if(!empty($matches[2]))
+			{
+				return "[list{$matches[2]}&{$this->list_count}]";
+			}
+			else
+			{
+				return "[list&{$this->list_count}]";
+			}
+		}
 	}
 
 	/**
@@ -1410,16 +1460,18 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
 		}
 
-		// Special code requiring special attention
-		while(preg_match("#\[list\](.*?)\[/list\]#si", $message))
-		{
-			$message = preg_replace_callback("#\s?\[list\](.*?)\[/list\](\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message);
-		}
+		// Reset list cache
+		$this->list_elements = array();
+		$this->list_count = 0;
 
-		// Replace lists.
-		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#si", $message))
+		// Find all lists
+		$message = preg_replace_callback("#(\[list(=(a|A|i|I|1))?\]|\[/list\])#si", array($this, 'mycode_prepare_list'), $message);
+
+		// Replace all lists
+		for($i = $this->list_count; $i > 0; $i--)
 		{
-			$message = preg_replace_callback("#\s?\[list=(a|A|i|I|1)\](.*?)\[/list\]#si", array($this, 'mycode_parse_list_callback_type'), $message);
+			// Ignores missing end tags
+			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
 		}
 
 		// Run plugin hooks
