@@ -21,6 +21,7 @@ $l['report_reason_spam'] = "Spam Content";
 $l['report_reason_rules'] = "Breaks Forum Rules";
 $l['report_reason_wrong'] = "Wrong Forum";
 $l['report_reason_other'] = "Other";
+$l['report_reason_other_description'] = "If 'Other' please provide a reason for reporting this content.";
 
 $l['success_report_voted'] = "Thanks for reporting this content.<br />A member of the forum team will check your report soon.";
 

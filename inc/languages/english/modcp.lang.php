@@ -311,4 +311,5 @@ $l['error_end_before_start'] = "The ending date must be after the start date.";
 $l['error_invalid_announcement'] = "The specified announcement is invalid.";
 
 $l['preview'] = 'Preview';
+$l['post'] = 'Post';
 ?>
