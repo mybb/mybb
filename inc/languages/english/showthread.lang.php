@@ -98,11 +98,11 @@ $l['verification_note'] = "Please enter the text within the image on the left in
 $l['verification_subnote'] = "(case insensitive)";
 $l['view_thread_notes'] = "Thread Notes";
 
-$['save_changes'] = 'Save Changes';
-$['cancel_edit'] = 'Cancel Edit';
-$['quick_edit_update_error'] = 'There was an error editing your reply:';
+$l['save_changes'] = 'Save Changes';
+$l['cancel_edit'] = 'Cancel Edit';
+$l['quick_edit_update_error'] = 'There was an error editing your reply:';
 $l['quick_reply_post_error'] = 'There was an error posting your reply:';
-$['quick_delete_error'] = 'There was an error deleting your reply:';
-$['quick_delete_success'] = 'The post was deleted successfully.';
+$l['quick_delete_error'] = 'There was an error deleting your reply:';
+$l['quick_delete_success'] = 'The post was deleted successfully.';
 
 ?>
