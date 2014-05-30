@@ -193,9 +193,22 @@ var Thread = {
 						}
 					}
 
-					// Change html content
-					$(this).html(json.message);
-					$('#edited_by_' + pid).html(json.editedmsg);
+
+					if(values.errors)
+					{
+						$.each(values.errors, function(i, message)
+						{
+							$.jGrowl('There was an error performing the update. '+message);
+						});
+						$('#pid_' + pid).html($('#pid_' + pid + '_temp').html());
+					}
+					else
+					{
+						// Change html content
+						$('#pid_' + pid).html(values.message);
+						$('#edited_by_' + pid).html(values.editedmsg);
+					}
+					$('#pid_' + pid + '_temp').remove();
 				}
 			});
         });
@@ -209,6 +222,9 @@ var Thread = {
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
+
+				// Create a copy of the post
+				$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
 
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
