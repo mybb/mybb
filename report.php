@@ -186,6 +186,11 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 			// Replace the reason with the user comment
 			$reason = trim($mybb->get_input('comment'));
 		}
+		else
+		{
+			$report_reason_string = "report_reason_{$reason}";
+			$reason = "\n".$lang->$report_reason_string;
+		}
 
 		if(my_strlen($reason) < 3)
 		{
