@@ -3564,5 +3564,5 @@ if(!$mybb->input['action'])
 
 	eval("\$usercp = \"".$templates->get("usercp")."\";");
 	output_page($usercp);
-
+}
 ?>
