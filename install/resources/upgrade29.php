@@ -376,6 +376,12 @@ function upgrade29_dbchanges3()
 	$db->rename_table("reportedposts", "reportedcontent");
 	$cache->delete('reportedposts');
 
+	$query = $db->simple_select("settings", "COUNT(*) as numexists", "name='captchaimage'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
+	}
+
 	// Update tasks
 	$added_tasks = sync_tasks();
 
