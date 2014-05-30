@@ -9465,7 +9465,7 @@ if(use_xmlhttprequest == "1")
 		},
 	});
   
-  $("#bbc").select2({
+  $("#bcc").select2({
 		placeholder: "Search for a user",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
