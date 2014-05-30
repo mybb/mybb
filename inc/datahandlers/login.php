@@ -76,7 +76,7 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($user['imagestring'])
+		if($user['imagestring'] || $mybb->settings['captchaimage'] == 3)
 		{
 			// Check their current captcha input - if correct, hide the captcha input area
 			require_once MYBB_ROOT.'inc/class_captcha.php';

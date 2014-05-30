@@ -225,6 +225,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   candlattachments int(1) NOT NULL default '0',
   canpostthreads int(1) NOT NULL default '0',
   canpostreplys int(1) NOT NULL default '0',
+  canonlyreplyownthreads int(1) NOT NULL default '0',
   canpostattachments int(1) NOT NULL default '0',
   canratethreads int(1) NOT NULL default '0',
   caneditposts int(1) NOT NULL default '0',
@@ -587,11 +588,11 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY(plid)
 ) ENGINE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_reportedposts (
+$tables[] = "CREATE TABLE mybb_reportedcontent (
   rid int unsigned NOT NULL auto_increment,
-  pid int unsigned NOT NULL default '0',
-  tid int unsigned NOT NULL default '0',
-  fid int unsigned NOT NULL default '0',
+  id int unsigned NOT NULL default '0',
+  id2 int unsigned NOT NULL default '0',
+  id3 int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   reportstatus int(1) NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
@@ -600,7 +601,6 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   reporters text NOT NULL,
   dateline bigint(30) NOT NULL default '0',
   lastreport bigint(30) NOT NULL default '0',
-  KEY fid (fid),
   KEY dateline (dateline),
   KEY lastreport (lastreport),
   PRIMARY KEY (rid)
@@ -969,7 +969,8 @@ $tables[] = "CREATE TABLE mybb_users (
   icq varchar(10) NOT NULL default '',
   aim varchar(50) NOT NULL default '',
   yahoo varchar(50) NOT NULL default '',
-  msn varchar(75) NOT NULL default '',
+  skype varchar(75) NOT NULL default '',
+  google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
   birthdayprivacy varchar(4) NOT NULL default 'all',
   signature text NOT NULL,

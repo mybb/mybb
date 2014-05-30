@@ -1825,7 +1825,7 @@ function configure()
 		}
 
 		// IP addresses and hostnames are not valid
-		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
+		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) === false || strpos($cookiedomain, '.') !== false)
 		{
 			$cookiedomain = '';
 		}
@@ -2158,7 +2158,8 @@ function install_done()
 		'icq' => '',
 		'aim' => '',
 		'yahoo' => '',
-		'msn' =>'',
+		'skype' =>'',
+		'google' =>'',
 		'birthday' => '',
 		'signature' => '',
 		'allownotices' => 1,
@@ -2263,7 +2264,7 @@ function install_done()
 	$cache->update_forums();
 	$cache->update_moderators();
 	$cache->update_usertitles();
-	$cache->update_reportedposts();
+	$cache->update_reportedcontent();
 	$cache->update_mycode();
 	$cache->update_posticons();
 	$cache->update_spiders();

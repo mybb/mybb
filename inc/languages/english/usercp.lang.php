@@ -207,7 +207,8 @@ $l['birthdate'] = "Birthdate:";
 $l['icq_number'] = "ICQ Number:";
 $l['aim_screenname'] = "AIM Screen Name:";
 $l['yahoo_id'] = "Yahoo ID:";
-$l['msn'] = "MSN ID:";
+$l['skype_id'] = "Skype ID:";
+$l['google_id'] = "Google Talk ID:";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['away_information'] = "Away Information";
@@ -377,4 +378,6 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
+
+$l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 ?>

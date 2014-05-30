@@ -128,13 +128,18 @@ $l['reset'] = "Reset";
 $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
+$l['alt_enabled'] = "Enabled";
+$l['alt_disabled'] = "Disabled";
+$l['saved'] = 'Saved';
 
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_minute'] = "{1}{2} {3} {4}";
+$l['rel_time'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
+$l['rel_hours_single'] = "hour";
+$l['rel_hours_plural'] = "hours";
 
 // Parser bits
 $l['quote'] = "Quote:";
@@ -213,6 +218,7 @@ $l['delete_all'] = "Delete All Filtered";
 $l['encountered_errors'] = "The following errors were encountered:";
 $l['invalid_post_verify_key'] = "An authorization code mismatch occurred. Please confirm that you wish to perform the action below.";
 $l['invalid_post_verify_key2'] = "An authorization code mismatch occurred. Please double check that you are accessing this page correctly.";
+$l['unknown_error'] = "An unknown error has occurred.";
 
 // Code buttons editor language strings
 $l['editor_title_bold'] = "Insert bold text";
@@ -311,4 +317,5 @@ $l['comma'] = ", ";
 // If the language string for "Username" is too cramped in the ACP Login box
 // then use this to define how much larger you want the gap to be (in px)
 // $l['login_field_width'] = "0";
+
 ?>

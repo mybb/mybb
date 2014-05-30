@@ -505,7 +505,7 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<script type=\"text/javascript\">$('row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
+			echo "<script type=\"text/javascript\">$('#row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
 			die;
 		}
 		else
@@ -647,6 +647,7 @@ if($mybb->input['action'] == "permissions")
 
 			'canpostthreads' => 'posting_rating',
 			'canpostreplys' => 'posting_rating',
+			'canonlyreplyownthreads' => 'posting_rating',
 			'canpostattachments' => 'posting_rating',
 			'canratethreads' => 'posting_rating',
 
@@ -938,9 +939,9 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
-	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
+	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
 	echo "<div id=\"additional_options\" style=\"display: none;\">";
-	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
+	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
 	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $forum_data['linkto'], array('id' => 'linkto')), 'linkto');
 	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
 

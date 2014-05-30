@@ -10,10 +10,12 @@ $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
 $l['aol_im'] = "AOL IM";
-$l['msn'] = "MSN Messenger";
+$l['skype'] = "Skype";
 $l['yahoo_im'] = "Yahoo IM";
-$l['msn_messenger_center'] = "MSN Messenger Center";
-$l['msn_address_is'] = "{1}'s MSN Address is:";
+$l['skype_center'] = "Skype Center";
+$l['skype_status'] = "Skype Status";
+$l['chat_on_skype'] = "Chat with {1} on Skype";
+$l['call_on_skype'] = "Call {1} on Skype";
 $l['yahoo_center'] = "Yahoo! Center";
 $l['send_y_message'] = "Send {1} a Yahoo! Message.";
 $l['view_y_profile'] = "View {1}'s Yahoo! Profile.";

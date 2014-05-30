@@ -92,4 +92,9 @@ $l['success_setting_group_added'] = "The setting group has been created successf
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";
 $l['success_setting_group_deleted'] = "The selected setting group has been deleted successfully.";
 $l['success_duplicate_settings_deleted'] = "All duplicate setting groups have been deleted successfully.";
+
+$l['searching'] = 'Searching...';
+$l['search_error'] = 'There was an error fetching your search results:';
+$l['search_done'] = 'Done!';
+
 ?>

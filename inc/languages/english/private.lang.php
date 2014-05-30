@@ -188,4 +188,12 @@ $l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders hav
 $l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 
+$l['quick_reply'] = "Quick Reply";
+$l['message_note'] = "Type your reply to this message here.";
+$l['send_reply'] = "Send Reply";
+$l['quickreply_signature'] = "Signature";
+$l['quickreply_disable_smilies'] = "Disable Smilies";
+$l['quickreply_save_copy'] = "Save a Copy";
+$l['quickreply_read_receipt'] = "<strong>Request Read Receipt</strong>";
+
 ?>

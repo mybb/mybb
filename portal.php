@@ -32,7 +32,7 @@ if(!@chdir($forumdir) && !empty($forumdir))
 }
 
 $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
-$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments";
+$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_announcement_avatar";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -62,6 +62,17 @@ else
 	$unviewwhere = '';
 }
 
+// get inactive forums
+$inactive = get_inactive_forums(true);
+if($inactive)
+{
+	$inactivewhere = " AND fid NOT IN ($inactive)";
+}
+else
+{
+	$inactivewhere = '';
+}
+
 $welcome = '';
 // If user is known, welcome them
 if($mybb->settings['portal_showwelcome'] != 0)
@@ -69,12 +80,12 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	if($mybb->user['uid'] != 0)
 	{
 		// Get number of new posts, threads, announcements
-		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
+		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}{$inactivewhere}");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
 		{
 			// If there aren't any new posts, there is no point in wasting two more queries
-			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}");
+			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."'{$unviewwhere}{$inactivewhere}");
 			$newthreads = $db->fetch_field($query, "newthreads");
 
 			$newann = 0;
@@ -328,7 +339,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		SELECT t.*, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 $unviewwhere AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
@@ -437,7 +448,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	}
 	if(!empty($posts))
 	{
-		if($pids != '')
+		if($pids != '' && $mybb->settings['enableattachments'] == 1)
 		{
 			$pids = "pid IN(0{$pids})";
 			// Now lets fetch all of the attachments for these posts
@@ -536,7 +547,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$message = $parser->parse_message($announcement['message'], $parser_options);
 
 			$post['attachments'] = '';
-			if(isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
+			if($mybb->settings['enableattachments'] == 1 && isset($attachcache[$announcement['pid']]) && is_array($attachcache[$announcement['pid']]))
 			{ // This post has 1 or more attachments
 				$validationcount = 0;
 				$id = $announcement['pid'];

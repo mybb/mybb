@@ -240,6 +240,7 @@ $l['viewing_field_candlattachments'] = "Can download attachments?";
 
 $l['posting_rating_field_canpostthreads'] = "Can post threads?";
 $l['posting_rating_field_canpostreplys'] = "Can post replies?";
+$l['posting_rating_field_canonlyreplyownthreads'] = "Can only reply to own threads?";
 $l['posting_rating_field_canpostattachments'] = "Can post attachments?";
 $l['posting_rating_field_canratethreads'] = "Can rate threads?";
 

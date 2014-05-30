@@ -14,7 +14,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields,member_register_password,member_activate,member_resendactivation,member_lostpw";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_profile_addremove";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
 require_once "./global.php";
 
@@ -725,7 +725,15 @@ if($mybb->input['action'] == "register")
 				{
 					$id = "fid{$profilefield['fid']}";
 				}
-				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {failure_message:'{$lang->js_validator_not_empty}'});\n";
+				
+				$validator_extra .= "
+				$(\"#{$id}\").rules(\"add\", {
+					required: true,
+					minlength: 1,
+					messages: {
+						required: \"{$lang->js_validator_not_empty}\"
+					}
+				});\n";
 
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
@@ -772,7 +780,22 @@ if($mybb->input['action'] == "register")
 				if($mybb->settings['captchaimage'] == 1)
 				{
 					// JS validator extra for our default CAPTCHA
-					$validator_extra .= "\tregValidator.register('imagestring', 'ajax', { url: 'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message: '{$lang->js_validator_captcha_valid}', failure_message: '{$lang->js_validator_no_image_text}'} );\n";
+					$validator_extra .= "
+					$(\"#imagestring\").rules(\"add\", {
+						remote:{
+							url: \"xmlhttp.php?action=validate_captcha\",
+							type: \"post\",
+							dataType: \"json\",
+							data:
+							{
+								imagehash: $('#imagehash').val(),
+								my_post_key: my_post_key
+							},
+						},
+						messages: {
+							remote: \"{$lang->js_validator_no_image_text}\"
+						}
+					});\n";
 				}
 			}
 		}
@@ -789,16 +812,57 @@ if($mybb->input['action'] == "register")
 		{
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
-			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
 
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				$validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					remote:{
+						url: \"xmlhttp.php?action=complex_password\",
+						type: \"post\",
+						dataType: \"json\",
+						data:
+						{
+							my_post_key: my_post_key
+						},
+					},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						remote: \"{$lang->js_validator_no_image_text}\"
+					}
+				});\n";
 			}
-			$validator_extra .= "\tregValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";
+			else
+			{
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\"
+					}
+				});\n";
+			}
 
+			$validator_extra .= "
+				$(\"#password2\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					equalTo: \"#password\",
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						equalTo: \"{$lang->js_validator_password_matches}\"
+					}
+				});\n";
+			
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
@@ -806,7 +870,6 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
 		{
 			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
-			$validator_extra .= "\tregValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
 		}
 
 		$languages = $lang->get_languages();
@@ -1074,7 +1137,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	}
 	$plugins->run_hooks("member_do_lostpw_end");
 
-	redirect("index.php", $lang->redirect_lostpwsent);
+	redirect("index.php", $lang->redirect_lostpwsent, "", true);
 }
 
 if($mybb->input['action'] == "resetpassword")
@@ -1229,6 +1292,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
+
+		// Are You a Human game needs to always be filled in
+		if($mybb->settings['captchaimage'] == 3 && $mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		{
+			$do_captcha = true;
+		}
 	}
 	else if($validated && $loginhandler->captcha_verified == true)
 	{
@@ -1327,6 +1396,10 @@ if($mybb->input['action'] == "login")
 			{
 				$login_captcha->build_recaptcha();
 			}
+			elseif($login_captcha->type == 3)
+			{
+				$login_captcha->build_ayah();
+			}
 
 			if($login_captcha->html)
 			{
@@ -1336,6 +1409,15 @@ if($mybb->input['action'] == "login")
 		elseif($correct && $login_captcha->type == 2)
 		{
 			$login_captcha->build_recaptcha();
+
+			if($login_captcha->html)
+			{
+				$captcha = $login_captcha->html;
+			}
+		}
+		elseif($correct && $login_captcha->type == 3)
+		{
+			$login_captcha->build_ayah();
 
 			if($login_captcha->html)
 			{
@@ -1487,7 +1569,8 @@ if($mybb->input['action'] == "profile")
 		"icq",
 		"aim",
 		"yahoo",
-		"msn",
+		"skype",
+		"google",
 	);
 
 	$bgcolors = array();
@@ -2041,10 +2124,7 @@ if($mybb->input['action'] == "profile")
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
-			// This is cheating; override the class to add onclick
-			$onclick = "\" onclick=\"MyBB.popupWindow(this.href, null, true); return false;";
-
-			$add_remove_options = array('url' => "report.php?type=profile&amp;pid={$memprofile['uid']}", 'class' => 'report_user_button'.$onclick, 'lang' => $lang->report_user);
+			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
 			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
 		}
 	}

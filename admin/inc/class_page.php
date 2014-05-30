@@ -101,6 +101,9 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
+		
+		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
+		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
@@ -117,6 +120,9 @@ var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
+
+lang.unknown_error = \"{$lang->unknown_error}\";
+lang.saved = \"{$lang->saved}\";
 //]]>
 </script>\n";
 		echo $this->extra_header;
@@ -653,20 +659,6 @@ EOF;
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
-		echo "<script type=\"text/javascript\">\n";
-		if($observe_onload)
-		{
-			echo "$(function() {\n";
-		}
-		echo "	\$\$('#{$id}').each(function(tabs)\n";
-		echo "	{\n";
-		echo "		new Control.Tabs(tabs);\n";
-		echo "	});\n";
-		if($observe_onload)
-		{
-			echo "});\n";
-		}
-		echo "</script>\n";
 		echo "<ul class=\"tabs\" id=\"{$id}\">\n";
 		$tab_count = count($tabs);
 		$done = 1;
@@ -772,15 +764,11 @@ EOF;
 	function build_codebuttons_editor($bind, $editor_language)
 	{
 		global $lang;
-		if($bind == "signature")
-		{
-			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
-		}
+		
 		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
 				"<script type=\"text/javascript\">\n".
 				"//<![CDATA[\n".
 				"	{$editor_language}".
-				"	{$tabs_js}".
 				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
 				"//]]>".
 				"</script>";

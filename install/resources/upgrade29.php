@@ -73,16 +73,6 @@ function upgrade29_dbchanges()
 		$db->drop_column("reportedposts", "lastreport");
 	}
 
-	if($db->field_exists('canbereported', 'usergroups'))
-	{
-		$db->drop_column('usergroups', 'canbereported');
-	}
-
-	if($db->field_exists('ipaddress', 'privatemessages'))
-	{
-		$db->drop_column('privatemessages', 'ipaddress');
-	}
-
 	if($db->field_exists('warnings', 'promotions'))
 	{
 		$db->drop_column("promotions", "warnings");
@@ -107,30 +97,64 @@ function upgrade29_dbchanges()
 	{
 		$db->drop_column("forums", "deletedposts");
 	}
-
-	if($db->field_exists('cansoftdelete', 'moderators'))
+	switch($db->type)
 	{
-		$db->drop_column("moderators", "cansoftdelete");
+		case "pgsql":
+		case "sqlite":
+			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
+			break;
+		default:
+			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL");
+			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
+			break;
 	}
 
-	if($db->field_exists('canrestore', 'moderators'))
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("29_dbchanges2");
+}
+
+function upgrade29_dbchanges2()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($db->field_exists('ipaddress', 'privatemessages'))
 	{
-		$db->drop_column("moderators", "canrestore");
+		$db->drop_column('privatemessages', 'ipaddress');
 	}
 
-	if($db->field_exists('deletedthreads', 'threads'))
+	if($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
 	{
-		$db->drop_column("threads", "deletedthreads");
+		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
 	}
 
-	if($db->field_exists('deletedposts', 'threads'))
+	if($db->field_exists('canbereported', 'usergroups'))
 	{
-		$db->drop_column("threads", "deletedposts");
-	}
-
-	if($db->field_exists('used', 'captcha'))
-	{
-		$db->drop_column("captcha", "used");
+		$db->drop_column('usergroups', 'canbereported');
 	}
 
 	if($db->field_exists('edittimelimit', 'usergroups'))
@@ -143,11 +167,6 @@ function upgrade29_dbchanges()
 		$db->drop_column("usergroups", "maxposts");
 	}
 
-	if($db->field_exists('postbit', 'profilefields'))
-	{
-		$db->drop_column("profilefields", "postbit");
-	}
-
 	if($db->field_exists('showmemberlist', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "showmemberlist");
@@ -158,61 +177,111 @@ function upgrade29_dbchanges()
 		$db->drop_column("usergroups", "canviewboardclosed");
 	}
 
+	if($db->field_exists('cansoftdelete', 'moderators'))
+	{
+		$db->drop_column("moderators", "cansoftdelete");
+	}
+
+	if($db->field_exists('canrestore', 'moderators'))
+	{
+		$db->drop_column("moderators", "canrestore");
+	}
+
+	if($db->field_exists('deletedposts', 'threads'))
+	{
+		$db->drop_column("threads", "deletedposts");
+	}
+
+	if($db->field_exists('used', 'captcha'))
+	{
+		$db->drop_column("captcha", "used");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
 		case "sqlite":
-			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
-			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
-			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
-			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
-			$db->add_column("usergroups", "canbereported", "int NOT NULL default '0'");
-			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
-			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
-			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
-			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
-			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
-			$db->add_column("threads", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("captcha", "used", "int NOT NULL default '0'");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
-			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
-			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");			
+			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
+			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("captcha", "used", "int NOT NULL default '0'");
 			break;
 		default:
-			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
-			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
-			$db->add_column("reportedposts", "reporters", "text NOT NULL");
-			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
-			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0'");
-			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
-			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
-			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
-			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
-			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
-			$db->add_column("threads", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int(1) NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
-			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
+			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
+			break;
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("29_dbchanges3");
+}
+
+function upgrade29_dbchanges3()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+
+	if($db->field_exists('msn', 'users'))
+	{
+		$db->drop_column("users", "msn");
+	}
+
+	if($db->field_exists('postbit', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "postbit");
+	}
+
+	if($db->field_exists('skype', 'users'))
+	{
+		$db->drop_column("users", "skype");
+	}
+
+	if($db->field_exists('google', 'users'))
+	{
+		$db->drop_column("users", "google");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
+			break;
+		default:
+			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
+			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			break;
 	}
 
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("privatemessages", "ipaddress", "bytea(16) NOT NULL default ''");
+			$db->add_column("privatemessages", "ipaddress", "bytea NOT NULL default ''");
 			break;
 		case "sqlite":
 			$db->add_column("privatemessages", "ipaddress", "blob(16) NOT NULL default ''");
@@ -232,7 +301,19 @@ function upgrade29_dbchanges()
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
-		$db->insert_query("attachtypes", array('atid' => '5', 'name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
+		$db->insert_query("attachtypes", array('name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
+	if($db->fetch_field($query, "numexists") == 0)
+	{
+		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_video>', 'isdefault' => '1'));
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='php'");
+	if($db->fetch_field($query, "numexists") != 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
@@ -254,6 +335,52 @@ function upgrade29_dbchanges()
 	$db->update_query('usergroups', array('canbereported' => 1), "gid IN ({$usergroups})");
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
+
+	if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->table_exists("reportedcontent"))
+	{
+		$db->drop_table("reportedcontent");
+	}
+
+	$db->rename_table("reportedposts", "reportedcontent");
+	$cache->delete('reportedposts');
+
+	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
 
 	// Update tasks
 	$added_tasks = sync_tasks();
@@ -449,15 +576,15 @@ function upgrade29_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$ip1 = my_inet_pton($data['regip']);
-						$ip2 = my_inet_pton($data['lastip']);
+						$ip1 = my_inet_pton($db->unescape_binary($data['regip']));
+						$ip2 = my_inet_pton($db->unescape_binary($data['lastip']));
 						if($ip1 === false && $ip2 === false)
 						{
 							continue;
 						}
 						break;
 					case 5:
-						$ip = my_inet_pton($data['ip']);
+						$ip = my_inet_pton($db->unescape_binary($data['ip']));
 						if($ip === false)
 						{
 							continue;
@@ -468,7 +595,7 @@ function upgrade29_dbchanges_ip()
 					case 3:
 					case 2:
 					default:
-						$ip = my_inet_pton($data['ipaddress']);
+						$ip = my_inet_pton($db->unescape_binary($data['ipaddress']));
 						if($ip === false)
 						{
 							continue;
@@ -479,25 +606,25 @@ function upgrade29_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => $db->escape_binary(my_inet_pton($data['regip'])), 'lastip' => $db->escape_binary(my_inet_pton($data['lastip']))), "uid = '".intval($data['uid'])."'");
+						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".intval($data['uid'])."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "rid = '".intval($data['rid'])."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".intval($data['rid'])."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => $db->escape_binary(my_inet_pton($data['ip']))), "sid = '".intval($data['sid'])."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".intval($data['sid'])."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "pid = '".intval($data['pid'])."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".intval($data['pid'])."'");
 						break;
 					case 3:
-						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "mid = '".intval($data['mid'])."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".intval($data['mid'])."'");
 						break;
 					default:
-						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary(my_inet_pton($data['ipaddress']))), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
+						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 				}
 				$ipaddress = true;
@@ -605,13 +732,15 @@ function upgrade29_dbchanges_ip()
 			switch($db->type)
 			{
 				case "pgsql":
-					$db->modify_column($table, $column, "bytea(16) NOT NULL default ''");
+					// Drop default value before converting the column
+					$db->modify_column($table, $column, false, false);
+					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
 					break;
 				case "sqlite":
-					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
+					$db->modify_column($table, $column, "blob(16) NOT NULL");
 					break;
 				default:
-					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
+					$db->modify_column($table, $column, "varbinary(16) NOT NULL");
 					break;
 			}
 			if($mybb->input['iptable'] < 10)

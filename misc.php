@@ -512,7 +512,7 @@ elseif($mybb->input['action'] == "smilies")
 		{
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_empty")."\";");
 		}
-		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup")."\";");
+		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
 		output_page($smiliespage);
 	}
 	else
@@ -533,7 +533,7 @@ elseif($mybb->input['action'] == "smilies")
 elseif($mybb->input['action'] == "imcenter")
 {
 	$mybb->input['imtype'] = $mybb->get_input('imtype');
-	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "msn" && $mybb->input['imtype'] != "yahoo")
+	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "skype" && $mybb->input['imtype'] != "yahoo")
 	{
 		error($lang->error_invalidimtype);
 	}
@@ -549,30 +549,38 @@ elseif($mybb->input['action'] == "imcenter")
 		error($lang->error_invalidimtype);
 	}
 
-	// build im navigation bar
-	$navigationbar = $navsep = '';
+	// Build IM navigation bar
+	$navigationbar = $navsep = $imtype = $imtype_lang = '';
 	if($user['aim'])
 	{
-		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
+		$imtype = "aim";
+		$imtype_lang = $lang->aol_im;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 		$navsep = ' - ';
 	}
-	if($user['msn'])
+	if($user['skype'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
+		$imtype = "skype";
+		$imtype_lang = $lang->skype;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
+		$imtype = "yahoo";
+		$imtype_lang = $lang->yahoo_im;
+		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
 
-	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
+	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
+	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
 	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
 
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
-	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
-	output_page($imcenter);
+	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
+	echo $imcenter;
+	exit;
 }
 elseif($mybb->input['action'] == "syndication")
 {

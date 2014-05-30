@@ -20,6 +20,7 @@ $l['view_printable'] = "View a Printable Version";
 $l['send_thread'] = "Send this Thread to a Friend";
 $l['subscribe_thread'] = "Subscribe to this thread";
 $l['unsubscribe_thread'] = "Unsubscribe from this thread";
+$l['add_poll_to_thread'] = "Add Poll to this thread";
 $l['moderation_options'] = "Moderation Options:";
 $l['delayed_moderation'] = "Delayed Moderation";
 $l['thread_notes'] = "Edit / View Thread Notes";
@@ -96,4 +97,12 @@ $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['view_thread_notes'] = "Thread Notes";
+
+$l['save_changes'] = 'Save Changes';
+$l['cancel_edit'] = 'Cancel Edit';
+$l['quick_edit_update_error'] = 'There was an error editing your reply:';
+$l['quick_reply_post_error'] = 'There was an error posting your reply:';
+$l['quick_delete_error'] = 'There was an error deleting your reply:';
+$l['quick_delete_success'] = 'The post was deleted successfully.';
+
 ?>
