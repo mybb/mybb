@@ -608,7 +608,7 @@ if($mybb->input['action'] == "export")
 			$attachedto = $theme_stylesheets[$filename]['attachedto'];
 			$stylesheet = $theme_stylesheets[$filename]['stylesheet'];
 
-			$stylesheet = str_replace(array('<![CDATA[', ']]>'), array('&lt;![CDATA[', ']]&gt;'), $stylesheet);
+			$stylesheet = str_replace(']]>', ']]]]><![CDATA[>', $stylesheet);
 
 			if($attachedto)
 			{
@@ -628,7 +628,7 @@ if($mybb->input['action'] == "export")
 			$query = $db->simple_select("templates", "*", "sid='".$properties['templateset']."'");
 			while($template = $db->fetch_array($query))
 			{
-				$template['template'] = str_replace(array('<![CDATA[', ']]>'), array('&lt;![CDATA[', ']]&gt;'), $template['template']);
+				$template['template'] = str_replace(']]>', ']]]]><![CDATA[>', $template['template']);
 
 				$xml .= "\t\t<template name=\"{$template['title']}\" version=\"{$template['version']}\"><![CDATA[{$template['template']}]]></template>\r\n";
 			}

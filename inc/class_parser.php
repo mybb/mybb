@@ -569,7 +569,7 @@ class postParser
 	 */
 	function parse_cdata($message)
 	{
-		$message = str_replace(array('<![CDATA[', ']]>'), array('&lt;![CDATA[', ']]&gt;'), $message);
+		$message = str_replace(']]>', ']]]]><![CDATA[>', $message);
 
 		return $message;
 	}
