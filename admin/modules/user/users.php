@@ -174,7 +174,7 @@ if($mybb->input['action'] == 'iplookup')
 			$ipaddress_host_name = $lang->na;
 		}
 	}
-	
+
 	?>
 	<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
@@ -1636,7 +1636,12 @@ if($mybb->input['action'] == "delete")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
-		if(delete_user($user) == false)
+		// Set up user handler.
+		require_once MYBB_ROOT.'inc/datahandlers/user.php';
+		$userhandler = new UserDataHandler('delete');
+
+		// Delete the user
+		if(!$userhandler->delete_user($user['uid']))
 		{
 			flash_message($lang->error_cannot_delete_user, 'error');
 			admin_redirect("index.php?module=user-users");
@@ -1855,16 +1860,6 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
-			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
-
-			// Is the source user a moderator?
-			if($groupscache[$source_user['usergroup']]['canmodcp'])
-			{
-				$db->delete_query("moderators", "id='{$source_user['uid']}' AND isgroup = '0'");
-
-				// Update the moderator cache...
-				$cache->update_moderators();
-			}
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
@@ -1981,16 +1976,12 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
-			// Delete the old user
-			$db->delete_query("users", "uid='{$source_user['uid']}'");
-			$db->delete_query("banned", "uid='{$source_user['uid']}'");
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
 
-			// Did the old user have an uploaded avatar?
-			if($source_user['avatartype'] == "upload")
-			{
-				// Removes the ./ at the beginning the timestamp on the end...
-				@unlink("../".substr($source_user['avatar'], 2, -20));
-			}
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
@@ -2559,38 +2550,14 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					if($mybb->input['processed'] == 1)
 					{
-						// Admin wants these users, gone!
-						$sql_array = implode(",", $selected);
-						$query = $db->simple_select("users", "uid", "uid IN (".$sql_array.")");
-						$to_be_deleted = $db->num_rows($query);
-						while($user = $db->fetch_array($query))
-						{
-							if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
-							{
-								// Remove me and super admins
-								continue;
-							}
-							else
-							{
-								// Run delete queries
-								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->delete_query("userfields", "ufid='{$user['uid']}'");
-								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
-								$db->delete_query("events", "uid='{$user['uid']}'");
-								$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
-								$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("sessions", "uid='{$user['uid']}'");
-								$db->delete_query("banned", "uid='{$user['uid']}'");
-								$db->delete_query("threadratings", "uid='{$user['uid']}'");
-								$db->delete_query("users", "uid='{$user['uid']}'");
-								$db->delete_query("joinrequests", "uid='{$user['uid']}'");
-								$db->delete_query("warnings", "uid='{$user['uid']}'");
-							}
-						}
+						// Set up user handler.
+						require_once MYBB_ROOT.'inc/datahandlers/user.php';
+						$userhandler = new UserDataHandler('delete');
+
+						// Delete users
+						$userhandler->delete_user($selected);
+
 						// Update forum stats, remove the cookie and redirect the user
-						update_stats(array('numusers' => '-'.$to_be_deleted.''));
 						my_unsetcookie("inlinemod_useracp");
 						$mybb->input['action'] = "inline_delete";
 						log_admin_action($to_be_deleted);

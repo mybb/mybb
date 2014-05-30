@@ -1368,5 +1368,108 @@ class UserDataHandler extends DataHandler
 			}
 		}
 	}
+
+	/**
+	 * Provides a method to completely delete a user.
+	 *
+	 * @param array Array of user information
+	 * @param integer Whether if delete threads/posts or not
+	 * @return boolean True when successful, false if fails
+	 */
+	function delete_user($delete_uids, $prunecontent=0)
+	{
+		global $db, $plugins, $mybb, $cache;
+
+		// Yes, validating is required.
+		if(count($this->get_errors()) > 0)
+		{
+			die('The user is not valid.');
+		}
+
+		$this->delete_uids = array_map('intval', (array)$delete_uids);
+
+		foreach($this->delete_uids as $key => $uid)
+		{
+			if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+			{
+				// Remove super admins
+				unset($this->delete_uids[$key]);
+			}
+		}
+
+		$plugins->run_hooks('datahandler_user_delete_start', $this);
+
+		$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+
+		// Delete the user
+		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
+		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+		$db->delete_query('forumsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('reputation', 'uid IN('.$this->delete_uids.') OR adduid IN('.$this->delete_uids.')');
+		$db->delete_query('posts', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+
+		// Remove any of the user(s) uploaded avatars
+		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
+		while($avatar = $db->fetch_field($query, 'avatar'))
+		{
+			$avatar = substr($avatar, 2, -20);
+			@unlink(MYBB_ROOT.$avatar);
+		}
+
+		$query = $db->delete_query('users', 'uid IN('.$this->delete_uids.')');
+		$this->deleted_users = (int)$db->affected_rows($query);
+
+		// Are we removing the posts/threads of a user?
+		if((int)$prunecontent == 1)
+		{
+			require_once MYBB_ROOT.'inc/class_moderation.php';
+			$moderation = new Moderation();
+
+			// Threads
+			$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
+			while($tid = $db->fetch_field($query, 'tid'))
+			{
+				$moderation->delete_thread($tid);
+			}
+
+			// Posts
+			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
+			while($pid = $db->fetch_field($query, 'pid'))
+			{
+				$moderation->delete_post($pid);
+			}
+		}
+		else
+		{
+			// We're just updating the UID
+			$db->update_query('posts', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+			$db->update_query('threads', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+		}
+
+		// Update forums & threads if user is the lastposter
+		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
+		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
+
+		$plugins->run_hooks('datahandler_user_delete_end', $this);
+
+		$cache->update_banned();
+		$cache->update_moderators();
+
+		// Update forum stats
+		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
+
+		return $this->deleted_users;
+	}
 }
 ?>
