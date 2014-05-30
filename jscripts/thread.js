@@ -190,22 +190,20 @@ var Thread = {
 							{
 								$.jGrowl(lang.quick_edit_update_error + ' ' + message);
 							});
+							$(this).html($('#pid_' + pid + '_temp').html());
 						}
-					}
-
-					if(values.errors)
-					{
-						$.each(values.errors, function(i, message)
+						else
 						{
-							$.jGrowl('There was an error performing the update. '+message);
-						});
-						$('#pid_' + pid).html($('#pid_' + pid + '_temp').html());
+							// Change html content
+							$(this).html(json.message);
+							$('#edited_by_' + pid).html(json.editedmsg);
+						}
 					}
 					else
 					{
 						// Change html content
-						$('#pid_' + pid).html(values.message);
-						$('#edited_by_' + pid).html(values.editedmsg);
+						$(this).html(json.message);
+						$('#edited_by_' + pid).html(json.editedmsg);
 					}
 					$('#pid_' + pid + '_temp').remove();
 				}
