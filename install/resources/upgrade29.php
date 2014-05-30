@@ -303,11 +303,11 @@ function upgrade29_dbchanges3()
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
-		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_announcement>', 'isdefault' => '1'));
+		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_video>', 'isdefault' => '1'));
 	}
 
-	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='announcement'");
-	if($db->fetch_field($query, "numexists") == 0)
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='php'");
+	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
@@ -376,11 +376,7 @@ function upgrade29_dbchanges3()
 	$db->rename_table("reportedposts", "reportedcontent");
 	$cache->delete('reportedposts');
 
-	$query = $db->simple_select("settings", "COUNT(*) as numexists", "name='captchaimage'");
-	if($db->fetch_field($query, "numexists") == 0)
-	{
-		$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
-	}
+	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
 
 	// Update tasks
 	$added_tasks = sync_tasks();
