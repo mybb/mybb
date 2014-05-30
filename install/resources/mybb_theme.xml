@@ -4942,6 +4942,15 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_regimage_ayah" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+  <legend><strong>{$lang->image_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td>{$output}</td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_regimage_recaptcha" version="1605"><![CDATA[<br />
 <script type="text/javascript">
 <!--
@@ -8568,6 +8577,16 @@ if(use_xmlhttprequest == "1")
 		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
 	</tr>
 </table>
+</td>
+</tr>]]></template>
+		<template name="post_captcha_ayah" version="1800"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1">
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+		<tr>
+            <td>{$output}</td>
+		</tr>
+	</table>
 </td>
 </tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
