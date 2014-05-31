@@ -4663,10 +4663,6 @@ if(use_xmlhttprequest == "1")
 </form>
 <script type="text/javascript">
 <!--
-$.validator.setDefaults({
-	submitHandler: function() { alert("submitted!"); }
-});
-
 $().ready(function() {
 	// validate registration_form
 	$("#registration_form").validate({
