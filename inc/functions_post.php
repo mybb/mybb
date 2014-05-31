@@ -341,7 +341,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if($post['website'] != "")
+		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']))
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
