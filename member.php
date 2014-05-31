@@ -177,7 +177,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', 1),
 		"receivepms" => $mybb->get_input('receivepms', 1),
 		"pmnotice" => $mybb->get_input('pmnotice', 1),
-		"emailpmnotify" => $mybb->get_input('emailpmnotify', 1),
+		"pmnotify" => $mybb->get_input('pmnotify', 1),
 		"invisible" => $mybb->get_input('invisible', 1),
 		"dstcorrection" => $mybb->get_input('dstcorrection')
 	);
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
 
 		$allownoticescheck = $hideemailcheck = $no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
-		$receivepmscheck = $pmnoticecheck = $emailpmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
+		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 
 		if($mybb->get_input('allownotices', 1) == 1)
 		{
@@ -249,9 +249,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$pmnoticecheck = " checked=\"checked\"";
 		}
 
-		if($mybb->get_input('emailpmnotify', 1) == 1)
+		if($mybb->get_input('pmnotify', 1) == 1)
 		{
-			$emailpmnotifycheck = "checked=\"checked\"";
+			$pmnotifycheck = "checked=\"checked\"";
 		}
 
 		if($mybb->get_input('invisible', 1) == 1)
@@ -756,7 +756,7 @@ if($mybb->input['action'] == "register")
 			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmnoticecheck = " checked=\"checked\"";
-			$emailpmnotifycheck = '';
+			$pmnotifycheck = '';
 			$invisiblecheck = '';
 			if($mybb->settings['dstcorrection'] == 1)
 			{
