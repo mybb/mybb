@@ -1293,10 +1293,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 		$errors = $loginhandler->get_friendly_errors();
 
-		// Are You a Human game needs to always be filled in
-		if($mybb->settings['captchaimage'] == 3 && $mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		// If we need a captcha set it here
+		if($mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
 		{
 			$do_captcha = true;
+			$correct = $loginhandler->captcha_verified;
 		}
 	}
 	else if($validated && $loginhandler->captcha_verified == true)
@@ -1332,15 +1333,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		}
 	}
 
-	if($loginhandler->captcha_verified == false)
-	{
-		// CAPTCHA required
-		$mybb->input['action'] = "login";
-		$mybb->request_method = "get";
-
-		$do_captcha = true;
-	}
-
 	$plugins->run_hooks("member_do_login_end");
 }
 
@@ -1373,56 +1365,32 @@ if($mybb->input['action'] == "login")
 	// Show captcha image for guests if enabled and only if we have to do
 	if($mybb->settings['captchaimage'] && $do_captcha == true)
 	{
-		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$login_captcha = new captcha(false, "post_captcha");
 
-		if($do_captcha == false && $login_captcha->type == 1)
+		if($login_captcha->type == 1)
 		{
-			if($login_captcha->validate_captcha() == true)
-			{
-				$correct = true;
-				$captcha = $login_captcha->build_hidden_captcha();
-			}
-		}
-
-		if(!$correct)
-		{
-			if($login_captcha->type == 1)
+			if(!$correct)
 			{
 				$login_captcha->build_captcha();
 			}
-			elseif($login_captcha->type == 2)
+			else
 			{
-				$login_captcha->build_recaptcha();
-			}
-			elseif($login_captcha->type == 3)
-			{
-				$login_captcha->build_ayah();
-			}
-
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
+				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($correct && $login_captcha->type == 2)
+		elseif($login_captcha->type == 2)
 		{
 			$login_captcha->build_recaptcha();
-
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
-			}
 		}
-		elseif($correct && $login_captcha->type == 3)
+		elseif($login_captcha->type == 3)
 		{
 			$login_captcha->build_ayah();
+		}
 
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
-			}
+		if($login_captcha->html)
+		{
+			$captcha = $login_captcha->html;
 		}
 	}
 
