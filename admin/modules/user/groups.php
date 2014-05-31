@@ -73,7 +73,8 @@ $usergroup_permissions = array(
 	"signofollow" => 0,
 	"edittimelimit" => 0,
 	"maxposts" => 0,
-	"showmemberlist" => 1
+	"showmemberlist" => 1,
+	"signhide" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -828,7 +829,8 @@ if($mybb->input['action'] == "edit")
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
 				"maxposts" => intval($mybb->input['maxposts']),
-				"showmemberlist" => intval($mybb->input['showmemberlist'])
+				"showmemberlist" => intval($mybb->input['showmemberlist']),
+				"signhide" => intval($mybb->input['signhide'])				
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -1006,6 +1008,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars'])),
 		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
 		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
+		$form->generate_check_box("signhide", 1, $lang->uses_sign_hide, array("checked" => $mybb->input['signhide'])),
 		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_text_box('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");
