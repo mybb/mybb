@@ -29,6 +29,10 @@ function upgrade29_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$db->update_query('settings', array('value' => -1), 'name IN (\'postmergefignore\', \'postmergeuignore\') AND value=\'\'');
+	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
+	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
+
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		if($db->index_exists('posts', 'tiddate'))

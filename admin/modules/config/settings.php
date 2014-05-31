@@ -395,6 +395,8 @@ if($mybb->input['action'] == "add")
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
+		"forumselect" => $lang->forum_selection_box,
+		"groupselect" => $lang->group_selection_box,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -584,6 +586,8 @@ if($mybb->input['action'] == "edit")
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
+		"forumselect" => $lang->forum_selection_box,
+		"groupselect" => $lang->group_selection_box,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -864,10 +868,48 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Get settings which optionscode is a forum/group select
+		// We cannot rely on user input to decide this
+		$forum_group_select = array();
+		$query = $db->simple_select('settings', 'name', 'optionscode IN (\'forumselect\', \'groupselect\')');
+		while($name = $db->fetch_field($query, 'name'))
+		{
+			$forum_group_select[] = $name;
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
 			{
+				if(!empty($forum_group_select) && in_array($name, $forum_group_select))
+				{
+					if($value == 'all')
+					{
+						$value = -1;
+					}
+					elseif($value == 'custom')
+					{
+						if(isset($mybb->input['select'][$name]) && is_array($mybb->input['select'][$name]))
+						{
+							foreach($mybb->input['select'][$name] as &$val)
+							{
+								$val = (int)$val;
+							}
+							unset($val);
+
+							$value = implode(',', (array)$mybb->input['select'][$name]);
+						}
+						else
+						{
+							$value = '';
+						}
+					}
+					else
+					{
+						$value = '';
+					}
+				}
+
 				$value = $db->escape_string($value);
 				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
 			}
@@ -1138,6 +1180,102 @@ if($mybb->input['action'] == "change")
 			{
 				$setting['optionscode'] = substr($setting['optionscode'], 3);
 				eval("\$setting_code = \"".$setting['optionscode']."\";");
+			}
+			else if($type[0] == "forumselect")
+			{
+				$selected_values = '';
+				if($setting['value'] != '' && $setting['value'] != -1)
+				{
+					$selected_values = explode(',', (string)$setting['value']);
+
+					foreach($selected_values as &$value)
+					{
+						$value = (int)$value;
+					}
+					unset($value);
+				}
+
+				$forum_checked = array('all' => '', 'custom' => '', 'none' => '');
+				if($setting['value'] == -1)
+				{
+					$forum_checked['all'] = 'checked="checked"';
+				}
+				elseif($setting['value'] != '')
+				{
+					$forum_checked['custom'] = 'checked="checked"';
+				}
+				else
+				{
+					$forum_checked['none'] = 'checked="checked"';
+				}
+
+				print_selection_javascript();
+
+				$setting_code = "
+				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$forum_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$forum_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_forums}</strong></label></dt>
+					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
+						<table cellpadding=\"4\">
+							<tr>
+								<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
+								<td>".$form->generate_forum_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+							</tr>
+						</table>
+					</dd>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$forum_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+				</dl>
+				<script type=\"text/javascript\">
+					checkAction('{$element_id}');
+				</script>";
+			}
+			else if($type[0] == "groupselect")
+			{
+				$selected_values = '';
+				if($setting['value'] != '' && $setting['value'] != -1)
+				{
+					$selected_values = explode(',', (string)$setting['value']);
+
+					foreach($selected_values as &$value)
+					{
+						$value = (int)$value;
+					}
+					unset($value);
+				}
+
+				$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+				if($setting['value'] == -1)
+				{
+					$group_checked['all'] = 'checked="checked"';
+				}
+				elseif($setting['value'] != '')
+				{
+					$group_checked['custom'] = 'checked="checked"';
+				}
+				else
+				{
+					$group_checked['none'] = 'checked="checked"';
+				}
+
+				print_selection_javascript();
+
+				$setting_code = "
+				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$group_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$group_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
+						<table cellpadding=\"4\">
+							<tr>
+								<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+								<td>".$form->generate_group_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+							</tr>
+						</table>
+					</dd>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$group_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+				</dl>
+				<script type=\"text/javascript\">
+					checkAction('{$element_id}');
+				</script>";
 			}
 			else
 			{
@@ -1460,5 +1598,42 @@ function print_setting_peekers()
 			' . $setting_peekers . '
 		}
 	</script>';
+}
+
+function print_selection_javascript()
+{
+	static $already_printed = false;
+
+	if($already_printed)
+	{
+		return;
+	}
+
+	$already_printed = true;
+
+	echo "<script type=\"text/javascript\">
+	function checkAction(id)
+	{
+		var checked = '';
+
+		$('.'+id+'_forums_groups_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+
+		$('.'+id+'_forums_groups').each(function(e)
+		{
+			$(this).hide();
+		});
+
+		if($('#'+id+'_forums_groups_'+checked))
+		{
+			$('#'+id+'_forums_groups_'+checked).show();
+		}
+	}
+</script>";
 }
 ?>
