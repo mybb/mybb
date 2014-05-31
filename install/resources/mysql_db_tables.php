@@ -943,7 +943,6 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   edittimelimit int(4) NOT NULL default '0',
   maxposts int(4) NOT NULL default '0',
   showmemberlist int(1) NOT NULL default '1',
-  wwwhide int(1) NOT NULL default '0',
   PRIMARY KEY (gid)
 ) ENGINE=MyISAM;";
 
