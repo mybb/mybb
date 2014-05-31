@@ -206,6 +206,12 @@ class LoginDataHandler extends DataHandler
 	{
 		global $db, $lang, $mybb;
 
+		// Don't show an error when the captcha was wrong!
+		if(!$this->captcha_verified)
+		{
+			return;
+		}
+
 		$login_text = '';
 		if($show_login_attempts)
 		{
