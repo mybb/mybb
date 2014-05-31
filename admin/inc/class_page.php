@@ -773,8 +773,6 @@ $(function() {
 		plugins: "bbcode",
 		style: "../jscripts/sceditor/editor_themes/{$theme['editortheme']}",
 		rtl: {$lang->settings['rtl']},
-		resizeMinHeight: 200,
-		resizeMaxHeight: 200,
 		resizeEnabled: false,
         locale: "{$lang->settings['htmllang']}",
 		emoticons: {
@@ -809,7 +807,6 @@ $(function() {
 	});
       
 	MyBBEditor = $("#{$bind}").sceditor("instance");
-	MyBBEditor.sourceMode(true);
 });
 </script>
 EOF;
