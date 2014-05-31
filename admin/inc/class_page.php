@@ -765,13 +765,50 @@ EOF;
 	{
 		global $lang;
 		
-		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
-				"<script type=\"text/javascript\">\n".
-				"//<![CDATA[\n".
-				"	{$editor_language}".
-				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
-				"//]]>".
-				"</script>";
+		return <<<EOF
+
+<script type="text/javascript">
+$(function() {
+	$("#{$bind}").sceditor({
+		plugins: "bbcode",
+		style: "../jscripts/sceditor/editor_themes/{$theme['editortheme']}",
+		rtl: {$lang->settings['rtl']},
+        locale: "{$lang->settings['htmllang']}",
+		emoticons: {
+			// Emoticons to be included in the dropdown
+			dropdown: {
+				":s": "../images/smilies/confused.png",
+				":-/": "../images/smilies/undecided.png",
+				":)": "../images/smilies/smile.png",
+				";)": "../images/smilies/wink.png",
+				":D": "../images/smilies/biggrin.png",
+				":P": "../images/smilies/tongue.png",
+				":(": "../images/smilies/sad.png",
+				":@": "../images/smilies/angry.png",
+				":blush:": "../images/smilies/blush.png",
+			},
+			// Emoticons to be included in the more section
+			more: {
+				":angel:": "../images/smilies/angel.png",
+				":dodgy:": "../images/smilies/dodgy.png",
+				":exclamation:": "../images/smilies/exclamation.png",
+				":heart:": "../images/smilies/heart.png",
+				":huh:": "../images/smilies/huh.png",
+				":idea:": "../images/smilies/lightbulb.png",
+				":sleepy:": "../images/smilies/sleepy.png",
+				":cool:": "../images/smilies/cool.png",
+				":rolleyes:": "../images/smilies/rolleyes.png",
+				":shy:": "../images/smilies/shy.png",
+				":at:": "../images/smilies/at.png"
+			}
+		},
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|horizontalrule,image,email,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
+	});
+      
+	MyBBEditor = $("#{$bind}").sceditor("instance");
+});
+</script>
+EOF;
 	}
 }
 
