@@ -640,6 +640,8 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
+		$this->verify_yesno_option($options, 'showcodebuttons', 1);
+		$this->verify_yesno_option($options, 'sourceeditor', 1);
 
 		if($mybb->settings['postlayout'] == 'classic')
 		{
@@ -678,19 +680,6 @@ class UserDataHandler extends DataHandler
 		{
 			$options['dst'] = 0;
 		}
-
-		if(isset($options['showcodebuttons']))
-        {
-            $options['showcodebuttons'] = intval($options['showcodebuttons']);
-            if($options['showcodebuttons'] != 0)
-            {
-                $options['showcodebuttons'] = 1;
-            }
-        }
-        else if($this->method == "insert")
-        {
-            $options['showcodebuttons'] = 1;
-        }
 
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
 		{
@@ -1089,6 +1078,7 @@ class UserDataHandler extends DataHandler
 			"regip" => $db->escape_binary($user['regip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
+			"sourceeditor" => $user['options']['sourceeditor'],
 			"away" => $user['away']['away'],
 			"awaydate" => $user['away']['date'],
 			"returndate" => $user['away']['returndate'],

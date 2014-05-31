@@ -950,7 +950,8 @@ $tables[] = "CREATE TABLE mybb_users (
 	coppauser tinyint(1) NOT NULL default '0',
 	classicpostbit tinyint(1) NOT NULL default '0',
 	loginattempts tinyint(2) NOT NULL default '1',
-	usernotes TEXT NOT NULL
+	usernotes TEXT NOT NULL,
+	sourceeditor tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_usertitles (

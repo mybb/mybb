@@ -578,6 +578,11 @@ function upgrade30_dbchanges5()
 		$db->drop_column("awaitingactivation", "validated");
 	}
 
+	if($db->field_exists('sourceeditor', 'users'))
+	{
+		$db->drop_column("users", "sourceeditor");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -593,6 +598,7 @@ function upgrade30_dbchanges5()
 			$db->add_column("joinrequests", "invite", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "smallint NOT NULL default '0' AFTER required");
 			$db->add_column("awaitingactivation", "validated", "smallint NOT NULL default '0' AFTER type");
+			$db->add_column("users", "sourceeditor", "smallint NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER hidden");
@@ -607,6 +613,7 @@ function upgrade30_dbchanges5()
 			$db->add_column("joinrequests", "invite", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "tinyint(1) NOT NULL default '0' AFTER required");
 			$db->add_column("awaitingactivation", "validated", "tinyint(1) NOT NULL default '0' AFTER type");
+			$db->add_column("users", "sourceeditor", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
 

@@ -718,6 +718,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"receivefrombuddy" => $mybb->get_input('receivefrombuddy', 1),
 		"daysprune" => $mybb->get_input('daysprune', 1),
 		"showcodebuttons" => $mybb->get_input('showcodebuttons', 1),
+		"sourceeditor" => $mybb->get_input('sourceeditor', 1),
 		"pmnotify" => $mybb->get_input('pmnotify', 1),
 		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', 1),
 		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', 1),
@@ -926,6 +927,15 @@ if($mybb->input['action'] == "options")
 	else
 	{
 		$showcodebuttonscheck = "";
+	}
+
+	if(isset($user['sourceeditor']) && $user['sourceeditor'] == 1)
+	{
+		$sourcemodecheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$sourcemodecheck = "";
 	}
 
 	if(isset($user['showredirect']) && $user['showredirect'] != 0)

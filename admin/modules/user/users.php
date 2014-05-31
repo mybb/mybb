@@ -562,7 +562,8 @@ if($mybb->input['action'] == "edit")
 			"receivefrombuddy" => $mybb->input['receivefrombuddy'],
 			"pmnotice" => $mybb->input['pmnotice'],
 			"daysprune" => $mybb->input['daysprune'],
-			"showcodebuttons" => intval($mybb->input['showcodebuttons']),
+			"showcodebuttons" => $mybb->input['showcodebuttons'],
+			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
 			"showredirect" => $mybb->input['showredirect']
 		);
@@ -1307,6 +1308,7 @@ EOF;
 	$other_options = array(
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->input['showcodebuttons'])),
+		$form->generate_check_box("sourceeditor", "1", $lang->source_editor, array("checked" => $mybb->input['sourceeditor'])),
 		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true, false, true),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->input['language'], array('id' => 'language'))
 	);

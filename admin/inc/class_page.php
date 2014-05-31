@@ -824,7 +824,7 @@ EOF;
 			}
 		}
 
-		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
 
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
@@ -877,6 +877,11 @@ EOF;
 			$code = "code,";
 		}
 
+		if($mybb->user['sourceeditor'] == 1)
+		{
+			$sourcemode = "MyBBEditor.sourceMode(true);";
+		}
+
 		return <<<EOF
 
 <script type="text/javascript">
@@ -902,6 +907,7 @@ $(function() {
 	});
       
 	MyBBEditor = $("#{$bind}").sceditor("instance");
+	{$sourcemode}
 });
 </script>
 EOF;

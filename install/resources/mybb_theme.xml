@@ -12213,6 +12213,10 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" {$showcodebuttonscheck} /></td>
 <td><span class="smalltext"><label for="showcodebuttons">{$lang->show_codebuttons}</label></span></td>
 </tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="sourceeditor" id="sourceeditor" value="1" {$sourcemodecheck} /></td>
+<td><span class="smalltext"><label for="sourceeditor">{$lang->source_editor}</label></span></td>
+</tr>
 {$board_style}
 {$board_language}
 </table>
@@ -13229,6 +13233,7 @@ $(function() {
 	});
 
 	MyBBEditor = $("#{$bind}").sceditor("instance");
+	{$sourcemode}
 });
 </script>]]></template>
 		<template name="contact" version="1800"><![CDATA[<html>

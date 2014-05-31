@@ -1063,6 +1063,7 @@ $tables[] = "CREATE TABLE mybb_users (
   classicpostbit tinyint(1) NOT NULL default '0',
   loginattempts tinyint(2) NOT NULL default '1',
   usernotes text NOT NULL,
+  sourceeditor tinyint(1) NOT NULL default '0',
   UNIQUE KEY username (username),
   KEY usergroup (usergroup),
   KEY regip (regip),
