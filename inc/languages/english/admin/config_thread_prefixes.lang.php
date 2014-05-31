@@ -25,11 +25,6 @@ $l['display_style'] = "Display Style";
 $l['display_style_desc'] = "This is how the prefix will appear next to thread subjects. You may enter HTML markup here or simply use the same as the plain text version above.";
 $l['available_in_forums'] = "Available in forums";
 $l['available_to_groups'] = "Available to groups";
-$l['all_forums'] = "All forums";
-$l['all_groups'] = "All groups";
-$l['select_forums'] = "Select forums";
-$l['select_groups'] = "Select groups";
-$l['groups_colon'] = "Groups:";
 
 $l['no_thread_prefixes'] = "There are no thread prefixes setup on your forum.";
 

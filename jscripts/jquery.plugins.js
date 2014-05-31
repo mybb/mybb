@@ -311,7 +311,9 @@
     close: function() {
       this.unblock();
       this.hide();
-	  this.$elm.remove();
+	  // Deletes the element (multi-modal feature: e.g. when you click on multiple report buttons, you will want to see different content for each)
+	  if (!this.options.keepelement)
+		this.$elm.remove();
       $(document).off('keydown.modal');
     },
 
@@ -430,7 +432,8 @@
     showSpinner: true,
     showClose: true,
     fadeDuration: null,   // Number of milliseconds the fade animation takes.
-    fadeDelay: 1.0        // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
+    fadeDelay: 1.0,        // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
+	keepelement: false // Added by Pirata Nervo: this allows modal elements to be kept on closing when the HTML is present in the same template as the jQuery code (e.g. login modal)
   };
 
   // Event constants

@@ -112,6 +112,12 @@ $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
 $l['all_forums'] = "All Forums";
+$l['all_groups'] = "All groups";
+$l['select_forums'] = "Select forums";
+$l['select_groups'] = "Select groups";
+$l['forums_colon'] = "Forums:";
+$l['groups_colon'] = "Groups:";
+$l['none'] = "None";
 $l['mybb_acp'] = "MyBB ACP";
 $l['pages'] = "Pages";
 $l['previous'] = "Previous";
@@ -212,7 +218,6 @@ $l['delete_all'] = "Delete All Filtered";
 $l['encountered_errors'] = "The following errors were encountered:";
 $l['invalid_post_verify_key'] = "An authorization code mismatch occurred. Please confirm that you wish to perform the action below.";
 $l['invalid_post_verify_key2'] = "An authorization code mismatch occurred. Please double check that you are accessing this page correctly.";
-$l['forums_colon'] = "Forums:";
 $l['unknown_error'] = "An unknown error has occurred.";
 
 // Code buttons editor language strings
