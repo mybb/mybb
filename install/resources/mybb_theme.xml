@@ -13327,6 +13327,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
+var partialmode = {$mybb->settings['partialmode']};
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
