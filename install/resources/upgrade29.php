@@ -153,6 +153,11 @@ function upgrade29_dbchanges()
 	{
 		$db->drop_column("usergroups", "canviewboardclosed");
 	}
+	
+	if($db->field_exists('signhide', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "signhide");
+	}
 
 	switch($db->type)
 	{
@@ -179,6 +184,7 @@ function upgrade29_dbchanges()
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("usergroups", "signhide", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -202,6 +208,7 @@ function upgrade29_dbchanges()
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("usergroups", "signhide", "int(1) NOT NULL default '0'");
 			break;
 	}
 
