@@ -159,7 +159,7 @@ var UserCP = {
 				});
 				$(this.buddy_field).select2("data", newbuddies);
 			}
-			$(this.buddy_field).focus();
+			$(this.buddy_field).select2("focus");
 		}
 		$("#buddyselect_container").hide();
 	},
