@@ -883,7 +883,7 @@ EOF;
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
-		style: "../jscripts/sceditor/editor_themes/mybb.css",
+		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
 		emoticonsEnabled: {$emoticons_enabled},
