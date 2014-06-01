@@ -43,6 +43,11 @@ function upgrade29_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	if($db->field_exists('groups', 'modtools'))
+	{
+		$db->drop_column('modtools', 'groups');
+	}
+
 	if($db->field_exists('posthash', 'posts'))
 	{
 		$db->drop_column("posts", "posthash");
@@ -101,6 +106,7 @@ function upgrade29_dbchanges()
 	{
 		case "pgsql":
 		case "sqlite":
+			$db->add_column("modtools", "groups", "text NOT NULL default '' AFTER forums");
 			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
@@ -113,6 +119,7 @@ function upgrade29_dbchanges()
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
 			break;
 		default:
+			$db->add_column("modtools", "groups", "text NOT NULL AFTER forums");
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");

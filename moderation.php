@@ -2669,6 +2669,11 @@ switch($mybb->input['action'])
 			// Verify incoming POST request
 			verify_post_check($mybb->get_input('my_post_key'));
 
+
+			if(!empty($tool['groups']) && !is_member($tool['groups']))
+			{
+				error_no_permission();
+			}
 			if($tool['type'] == 't' && $mybb->get_input('modtype') == 'inlinethread')
 			{
 				if($mybb->get_input('inlinetype') == 'search')
