@@ -771,7 +771,7 @@ EOF;
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
-		style: "../jscripts/sceditor/editor_themes/{$theme['editortheme']}",
+		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
 		emoticons: {
