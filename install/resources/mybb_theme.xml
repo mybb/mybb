@@ -9470,14 +9470,18 @@ if(use_xmlhttprequest == "1")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+				var newqueries = [];
+				exp_queries = query.split(",");
+				$.each(exp_queries, function(index, value ){
+                  	if(value.replace(/\s/g, '') != "")
+                  	{
+						var newquery = { id: value.replace(/,\s?/g, ", "), text: value.replace(/,\s?/g, ", ") };
+						newqueries.push(newquery);
+                    }
+				});
+              	callback(newqueries);
 			}
-		},
+		}
 	});
   
   $("#bcc").select2({
