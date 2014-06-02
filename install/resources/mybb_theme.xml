@@ -9473,16 +9473,16 @@ if(use_xmlhttprequest == "1")
 				var newqueries = [];
 				exp_queries = query.split(",");
 				$.each(exp_queries, function(index, value ){
-                  	if(value.replace(/\s/g, '') != "")
-                  	{
+					if(value.replace(/\s/g, '') != "")
+					{
 						var newquery = {
 							id: value.replace(/,\s?/g, ", "),
 							text: value.replace(/,\s?/g, ", ")
 						};
 						newqueries.push(newquery);
-                    }
+					}
 				});
-              	callback(newqueries);
+				callback(newqueries);
 			}
 		}
 	});
