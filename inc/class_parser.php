@@ -306,7 +306,7 @@ class postParser
         $callback_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
         $callback_mycode['size_int']['replacement'] = array($this, 'mycode_handle_size_callback');
 
-        $nestable_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
+        $nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_]+)\](.*?)\[/font\]#si";
         $nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
         $nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
