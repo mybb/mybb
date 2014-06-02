@@ -216,7 +216,6 @@ $l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
 $l['no_bans_ending'] = "There are no bans ending soon.";
-$l['close_window'] = "Close Window";
 
 $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";
