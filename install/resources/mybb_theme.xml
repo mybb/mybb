@@ -10285,7 +10285,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_modqueue_attachments_attachment" version="1400"><![CDATA[			<tr>
+		<template name="modcp_modqueue_attachments_attachment" version="1614"><![CDATA[			<tr>
 				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class="modqueue_meta">{$lang->post}: <a href="{$link}">{$attachment['postsubject']}</a></small></td>
 				<td class="{$altbg}" align="center">{$profile_link}</td>
 				<td align="center" class="{$altbg}">{$attachdate}, {$attachtime}</td>
