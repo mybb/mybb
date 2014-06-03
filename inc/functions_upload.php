@@ -460,6 +460,18 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
+	// Check to see how many attachments exist for this post already
+	if($mybb->settings['maxattachments'] > 0 && $update_attachment == false)
+	{
+		$query = $db->simple_select("attachments", "COUNT(aid) AS numattachs", $uploaded_query);
+		$attachcount = $db->fetch_field($query, "numattachs");
+		if($attachcount >= $mybb->settings['maxattachments'])
+		{
+			$ret['error'] = $lang->sprintf($lang->error_maxattachpost, $mybb->settings['maxattachments']);
+			return $ret;
+		}
+	}
+
 	$month_dir = '';
 	if($mybb->safemode == false)
 	{
@@ -632,6 +644,7 @@ function upload_attachment($attachment, $update_attachment=false)
  * @param array The PHP $_FILE array for the file
  * @param string The path to save the file in
  * @param string The filename for the file (if blank, current is used)
+ * @return array The uploaded file
  */
 function upload_file($file, $path, $filename="")
 {

@@ -252,7 +252,7 @@ class Moderation
 			$pids = implode(',', $pids);
 			$db->delete_query("posts", "pid IN ($pids)");
 			$db->delete_query("attachments", "pid IN ($pids)");
-			$db->delete_query("reportedposts", "pid IN ($pids)");
+			$db->delete_query("reportedcontent", "id IN ($pids) AND (type = 'post' OR type = '')");
 		}
 
 		// Delete threads, redirects, subscriptions, polls, and poll votes
@@ -650,7 +650,7 @@ class Moderation
 		$db->delete_query("posts", "pid='$pid'");
 
 		// Remove any reports attached to this post
-		$db->delete_query("reportedposts", "pid='$pid'");
+		$db->delete_query("reportedcontent", "id='{$pid}' AND (type = 'post' OR type = '')");
 
 		// Update unapproved post count
 		if($post['visible'] == 0)

@@ -48,6 +48,12 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_posts;
 		}
 
+		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."'");
+		if($db->num_rows($query))
+		{
+			$errors[] = $lang->error_cannot_have_same_posts;
+		}
+
 		if(!$errors)
 		{
 			$new_title = array(
@@ -128,6 +134,12 @@ if($mybb->input['action'] == "edit")
 		if(!isset($mybb->input['posts']))
 		{
 			$errors[] = $lang->error_missing_posts;
+		}
+
+		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."'");
+		if($db->num_rows($query))
+		{
+			$errors[] = $lang->error_cannot_have_same_posts;
 		}
 
 		if(!$errors)
@@ -216,6 +228,8 @@ if($mybb->input['action'] == "delete")
 
 		$plugins->run_hooks("admin_user_titles_delete_commit");
 
+		$cache->update_usertitles();
+		
 		// Log admin action
 		log_admin_action($usertitle['utid'], $usertitle['title'], $usertitle['posts']);
 

@@ -505,7 +505,7 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<script type=\"text/javascript\">$('row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
+			echo "<script type=\"text/javascript\">$('#row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
 			die;
 		}
 		else
@@ -647,6 +647,7 @@ if($mybb->input['action'] == "permissions")
 
 			'canpostthreads' => 'posting_rating',
 			'canpostreplys' => 'posting_rating',
+			'canonlyreplyownthreads' => 'posting_rating',
 			'canpostattachments' => 'posting_rating',
 			'canratethreads' => 'posting_rating',
 
@@ -938,9 +939,9 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
-	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
+	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
 	echo "<div id=\"additional_options\" style=\"display: none;\">";
-	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
+	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
 	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $forum_data['linkto'], array('id' => 'linkto')), 'linkto');
 	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
 
@@ -1291,6 +1292,15 @@ if($mybb->input['action'] == "edit")
 			if($db->fetch_field($query, "num_threads") > 0)
 			{
 				$errors[] = $lang->error_not_empty;
+			}
+		}
+
+		if(!empty($mybb->input['linkto']) && empty($forum_data['linkto']))
+		{
+			$query = $db->simple_select('threads', 'COUNT(tid) as num_threads', "fid = '{$fid}'", array("limit" => 1));
+			if($db->fetch_field($query, "num_threads") > 0)
+			{
+				$errors[] = $lang->error_forum_link_not_empty;
 			}
 		}
 
@@ -2554,19 +2564,40 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		// Autocompletion for usernames
 		echo '
-		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
+		<link rel="stylesheet" href="../jscripts/select2/select2.css">
+		<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
 		<script type="text/javascript">
 		<!--
-	        $("#username").typeahead({
-	            name: \'username\',
-	            remote: {
-	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-	                filter: function(response){
-	                	return response.users;
-	                },
-	            },
-	            limit: 10
-	        });
+		$("#username").select2({
+			placeholder: "Search for a user",
+			minimumInputLength: 3,
+			maximumSelectionSize: 3,
+			multiple: false,
+			ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+				url: "../xmlhttp.php?action=get_users",
+				dataType: \'json\',
+				data: function (term, page) {
+					return {
+						query: term, // search term
+					};
+				},
+				results: function (data, page) { // parse the results into the format expected by Select2.
+					// since we are using custom formatting functions we do not need to alter remote JSON data
+					return {results: data};
+				}
+			},
+			initSelection: function(element, callback) {
+				var query = $(element).val();
+				if (query !== "") {
+					$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+						data: {
+							query: query
+						},
+						dataType: "json"
+					}).done(function(data) { callback(data); });
+				}
+			},
+		});
 		// -->
 		</script>';
 
@@ -2575,6 +2606,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form->end();
 
 		echo "</div>\n";
+
+		$plugins->run_hooks("admin_forum_management_start_graph");
 	}
 
 	$page->output_footer();

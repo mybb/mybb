@@ -106,6 +106,13 @@ if($mybb->input['action'] == "newpoll")
 		error($lang->error_pollalready);
 	}
 
+	$time = TIME_NOW;
+	if($thread['dateline'] < ($time-($mybb->settings['polltimelimit']*60*60)) && $mybb->settings['polltimelimit'] != 0 && $ismod == false)
+	{
+		$lang->poll_time_limit = $lang->sprintf($lang->poll_time_limit, $mybb->settings['polltimelimit']);
+		error($lang->poll_time_limit);
+	}
+
 	// Sanitize number of poll options
 	if($mybb->get_input('numpolloptions', 1) > 0)
 	{

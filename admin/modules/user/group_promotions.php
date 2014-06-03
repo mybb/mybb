@@ -660,7 +660,16 @@ if(!$mybb->input['action'])
 	{
 		$promotion['title'] = htmlspecialchars_uni($promotion['title']);
 		$promotion['description'] = htmlspecialchars_uni($promotion['description']);
-		$table->construct_cell("<div><strong><a href=\"index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
+		if($promotion['enabled'] == 1)
+		{
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
+		}
+		else
+		{
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}\"  style=\"vertical-align: middle;\" /> ";
+		}
+
+		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
 
 		$popup = new PopupMenu("promotion_{$promotion['pid']}", $lang->options);
 		$popup->add_item($lang->edit_promotion, "index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");

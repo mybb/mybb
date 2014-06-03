@@ -13,8 +13,8 @@ define('THIS_SCRIPT', 'newthread.php');
 
 $templatelist = "newthread,previewpost,loginbox,changeuserbox,newthread_postpoll,posticons,codebuttons,smilieinsert,newthread_multiquote_external,post_attachments_attachment_unapproved";
 $templatelist .= ",newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove";
-$templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,newthread_options_signature";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,postbit_groupimage,postbit_online,postbit_away,postbit_offline";
+$templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_attachment_postinsert,post_attachments_attachment,post_attachments_add,newthread_options_signature";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_online,postbit_away,postbit_offline";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved,post_attachments_update";
 $templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
@@ -142,7 +142,7 @@ $errors = array();
 $maximageserror = $attacherror = '';
 
 // Handle attachments if we've got any.
-if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
+if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || ($mybb->input['action'] == "do_newthread" && $mybb->get_input('submit') && $_FILES['attachment'])))
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -155,16 +155,17 @@ if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') |
 	{
 		$attachwhere = "posthash='".$db->escape_string($mybb->get_input('posthash'))."'";
 	}
-	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", $attachwhere);
-	$attachcount = $db->fetch_field($query, "numattachs");
 
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 ||  $attachcount < $mybb->settings['maxattachments']))
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
 	{
+		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
+		$updateattach = $db->fetch_field($query, "aid");
+
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
 		$update_attachment = false;
-		if($mybb->get_input('updateattachment'))
+		if($updateattach > 0 && $mybb->get_input('updateattachment'))
 		{
 			$update_attachment = true;
 		}
@@ -187,7 +188,7 @@ if(!$mybb->get_input('attachmentaid', 1) && ($mybb->get_input('newattachment') |
 }
 
 // Are we removing an attachment from the thread?
-if($mybb->get_input('attachmentaid', 1) && $mybb->get_input('attachmentact') == "remove")
+if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid', 1) && $mybb->get_input('attachmentact') == "remove")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -391,6 +392,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$post_captcha->invalidate_captcha();
 		}
 
+		$force_redirect = false;
+
 		// Mark thread as read
 		require_once MYBB_ROOT."inc/functions_indicators.php";
 		mark_thread_read($tid, $fid);
@@ -413,14 +416,11 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		else if(!$visible)
 		{
 			// Moderated thread
-			if($mybb->user['showredirect'] != 1)
-			{
-				// User must see moderation notice, regardless of redirect settings
-				$mybb->user['showredirect'] = 1;
-			}
-
 			$lang->redirect_newthread .= $lang->redirect_newthread_moderation;
 			$url = get_forum_link($fid);
+
+			// User must see moderation notice, regardless of redirect settings
+			$force_redirect = true;
 		}
 
 		// This is just a normal thread - send them to it.
@@ -448,13 +448,19 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		{
 			$lang->redirect_newthread .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid));
 		}
-		redirect($url, $lang->redirect_newthread);
+		redirect($url, $lang->redirect_newthread, "", $force_redirect);
 	}
 }
 
 if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft")
 {
 	$plugins->run_hooks("newthread_start");
+
+	// Do we have attachment errors?
+	if(count($errors) > 0)
+	{
+		$thread_errors = inline_error($errors);
+	}
 
 	$multiquote_external = $quoted_ids = '';
 
@@ -647,12 +653,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$numpolloptions = "2";
 	}
 
-	// Do we have attachment errors?
-	if(count($errors) > 0)
-	{
-		$thread_errors = inline_error($errors);
-	}
-
 	$preview = '';
 
 	// If we're preving a post then generate the preview.
@@ -795,7 +795,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
 	}
 
-	// Removing an attachment or adding a new one, or showting thread errors.
+	// Removing an attachment or adding a new one, or showing thread errors.
 	else if($mybb->get_input('attachmentaid', 1) || $mybb->get_input('newattachment') || $mybb->get_input('updateattachment') || $thread_errors)
 	{
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
@@ -860,7 +860,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	if($forumpermissions['canpostattachments'] != 0)
+	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
@@ -915,11 +915,16 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
-			if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
-			{
-				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
-			}
+			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
+		}
 
+		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
+		{
+			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
+		}
+
+		if($attach_add_options || $attach_update_options)
+		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
@@ -941,10 +946,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$post_captcha = new captcha(false, "post_captcha");
 
-		if(!empty($mybb->input['previewpost']) || $hide_captcha == true && $post_captcha->type == 1)
+		if((!empty($mybb->input['previewpost']) || $hide_captcha == true) && $post_captcha->type == 1)
 		{
 			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
-			// ... but only if it's a default one, reCAPTCHAs must be filled in every time due to draconian limits
+			// ... but only if it's a default one, reCAPTCHA and Are You a Human must be filled in every time due to draconian limits
 			if($post_captcha->validate_captcha() == true)
 			{
 				$correct = true;
@@ -964,6 +969,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post_captcha->build_recaptcha();
 			}
+			elseif($post_captcha->type == 3)
+			{
+				$post_captcha->build_ayah();
+			}
 
 			if($post_captcha->html)
 			{
@@ -973,6 +982,15 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		else if($correct && $post_captcha->type == 2)
 		{
 			$post_captcha->build_recaptcha();
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
+		}
+		else if($correct && $post_captcha->type == 3)
+		{
+			$post_captcha->build_ayah();
 
 			if($post_captcha->html)
 			{

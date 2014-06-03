@@ -27,6 +27,10 @@ function acp_rebuild_forum_counters()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['forumcounters']);
+	if($per_page <= 0)
+	{
+		$per_page = 50;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -50,6 +54,10 @@ function acp_rebuild_thread_counters()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['threadcounters']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -71,6 +79,10 @@ function acp_recount_user_posts()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['userposts']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -197,6 +209,10 @@ function acp_rebuild_attachment_thumbnails()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['attachmentthumbs']);
+	if($per_page <= 0)
+	{
+		$per_page = 20;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 

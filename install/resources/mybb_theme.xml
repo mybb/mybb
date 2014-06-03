@@ -251,6 +251,16 @@ a:hover, a:active {
 	border-color: #ccc;
 }
 
+#footer .upper .theme {
+	float: right;
+	margin: -1px;
+	margin-left: 15px;
+}
+
+#footer .upper .theme select {
+	border-color: #ccc;
+}
+
 #footer .upper ul.bottom_links {
 	float: left;
 	margin: 4px 0 0 0;
@@ -574,7 +584,7 @@ input.button:hover {
 	color: red;
 }
 
-.invalid_field {
+form input.error {
 	border: 1px solid #f30;
 	color: #f30;
 	background: #ffffff;
@@ -584,7 +594,7 @@ input.button:hover {
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-.valid_field {
+form input.valid {
 	border: 1px solid #0c0;
 	background: #ffffff;
 	padding: 3px;
@@ -593,29 +603,8 @@ input.button:hover {
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-.validation_error {
-	background: url(images/invalid.png) no-repeat center left;
+form label.error {
 	color: #f30;
-	margin: 5px 0;
-	padding: 5px;
-	font-weight: bold;
-	font-size: 11px;
-	padding-left: 22px;
-}
-
-.validation_success {
-	background: url(images/valid.png) no-repeat center left;
-	color: #00b200;
-	margin: 5px 0;
-	padding: 5px;
-	font-weight: bold;
-	font-size: 11px;
-	padding-left: 22px;
-}
-
-.validation_loading {
-	background: url(images/spinner.gif) no-repeat center left;
-	color: #555;
 	margin: 5px 0;
 	padding: 5px;
 	font-weight: bold;
@@ -1313,6 +1302,8 @@ form #message {
 	display: none;
 }
 
+/** jGrowl Start **/
+
 div.jGrowl {
 	z-index: 9999;
 	color: #fff;
@@ -1408,6 +1399,9 @@ div.jGrowl div.jGrowl-closer {
 	text-align: center;
 }
 
+/** jGrowl End **/
+
+/** Modal Start **/
 .modal {
 	display: none;
 	width: 400px;
@@ -1451,7 +1445,138 @@ div.jGrowl div.jGrowl-closer {
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
 	border-radius: 8px;
-}]]>
+}
+
+/** Modal End **/
+
+/** Impromptu Start **/
+/*! jQuery-Impromptu - v5.2.3 - 2014-03-09
+* http://trentrichardson.com/Impromptu
+* Copyright (c) 2014 Trent Richardson; Licensed MIT */
+.jqifade{
+	position: absolute; 
+	background-color: #777777; 
+}
+div.jqi{ 
+	width: 400px; 
+	max-width:90%;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	position: absolute; 
+	background-color: #ffffff; 
+	font-size: 11px; 
+	text-align: left; 
+	border: solid 1px #eeeeee;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	padding: 7px;
+}
+div.jqi .jqicontainer{ 
+}
+div.jqi .jqiclose{ 
+	position: absolute;
+	top: 4px; right: -2px; 
+	width: 18px; 
+	cursor: default; 
+	color: #bbbbbb; 
+	font-weight: bold; 
+}
+div.jqi .jqistate{
+	background-color: #fff;
+}
+div.jqi .jqititle{
+	padding: 5px 10px;
+	font-size: 16px; 
+	line-height: 20px; 
+	border-bottom: solid 1px #eeeeee;
+}
+div.jqi .jqimessage{ 
+	padding: 10px; 
+	line-height: 20px; 
+	color: #444444; 
+}
+div.jqi .jqibuttons{ 
+	text-align: right; 
+	margin: 0 -7px -7px -7px;
+	border-top: solid 1px #e4e4e4; 
+	background-color: #f4f4f4;
+	border-radius: 0 0 6px 6px;
+	-moz-border-radius: 0 0 6px 6px;
+	-webkit-border-radius: 0 0 6px 6px;
+}
+div.jqi .jqibuttons button{ 
+	margin: 0;
+	padding: 15px 20px;
+	background-color: transparent;
+	font-weight: normal; 
+	border: none;
+	border-left: solid 1px #e4e4e4; 
+	color: #777; 
+	font-weight: bold; 
+	font-size: 12px; 
+}
+div.jqi .jqibuttons button.jqidefaultbutton{
+	color: #489afe;
+}
+div.jqi .jqibuttons button:hover,
+div.jqi .jqibuttons button:focus{
+	color: #287ade;
+	outline: none;
+}
+.jqiwarning .jqi .jqibuttons{ 
+	background-color: #b95656;
+}
+
+/* sub states */
+div.jqi .jqiparentstate::after{ 
+	background-color: #777;
+	opacity: 0.6;
+	filter: alpha(opacity=60);
+	content: '';
+	position: absolute;
+	top:0;left:0;bottom:0;right:0;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+}
+div.jqi .jqisubstate{
+	position: absolute;
+	top:0;
+	left: 20%;
+	width: 60%;
+	padding: 7px;
+	border: solid 1px #eeeeee;
+	border-top: none;
+	border-radius: 0 0 6px 6px;
+	-moz-border-radius: 0 0 6px 6px;
+	-webkit-border-radius: 0 0 6px 6px;
+}
+div.jqi .jqisubstate .jqibuttons button{
+	padding: 10px 18px;
+}
+
+/* arrows for tooltips/tours */
+.jqi .jqiarrow{ position: absolute; height: 0; width:0; line-height: 0; font-size: 0; border: solid 10px transparent;}
+
+.jqi .jqiarrowtl{ left: 10px; top: -20px; border-bottom-color: #ffffff; }
+.jqi .jqiarrowtc{ left: 50%; top: -20px; border-bottom-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowtr{ right: 10px; top: -20px; border-bottom-color: #ffffff; }
+
+.jqi .jqiarrowbl{ left: 10px; bottom: -20px; border-top-color: #ffffff; }
+.jqi .jqiarrowbc{ left: 50%; bottom: -20px; border-top-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowbr{ right: 10px; bottom: -20px; border-top-color: #ffffff; }
+
+.jqi .jqiarrowlt{ left: -20px; top: 10px; border-right-color: #ffffff; }
+.jqi .jqiarrowlm{ left: -20px; top: 50%; border-right-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowlb{ left: -20px; bottom: 10px; border-right-color: #ffffff; }
+
+.jqi .jqiarrowrt{ right: -20px; top: 10px; border-left-color: #ffffff; }
+.jqi .jqiarrowrm{ right: -20px; top: 50%; border-left-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowrb{ right: -20px; bottom: 10px; border-left-color: #ffffff; }
+
+/** Impromptu End */
+
+]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
@@ -1573,12 +1698,27 @@ div.jGrowl div.jGrowl-closer {
 }
 
 .pmspace_used {
-	background: #e73c3c;
-	border: 1px solid #c00;
 	display: inline-block;
 	color: #fff;
 	margin: -1px;
 }
+
+
+.pmspace_used.low {
+	border: 1px solid #0c5a01;
+	background: #167203;
+}
+
+.pmspace_used.medium {
+	background: #ff862b;
+	border: 1px solid #d7611e;
+}
+
+.pmspace_used.high {
+	background: #e73c3c;
+	border: 1px solid #c00;
+}
+
 
 .pmspace_unused {
 	display: inline-block;
@@ -1796,6 +1936,10 @@ ul.thread_tools li.subscription_add {
 
 ul.thread_tools li.subscription_remove {
 	background: url('images/unsubscribe.png') no-repeat 0px 0px;
+}
+
+ul.thread_tools li.poll {
+	background: url('images/poll.png') no-repeat 0px 0px;
 }]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
@@ -1897,6 +2041,15 @@ tr td.trow_shaded:last-child {
 	-webkit-border-top-right-radius: 6px;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
+}
+
+.thead_collapsed {
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
 }
 
 .thead_left {
@@ -2235,19 +2388,19 @@ a.button {
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
 											{$lang->repeats_on_day}</label>
-											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('#repeats_4_type_1').prop('checked', true);" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('#repeats_4_type_1').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_occurance" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+											<select name="repeats_4_weekday" onfocus="$('#repeats_4_type_2').prop('checked', true);">
 												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
@@ -2257,15 +2410,15 @@ a.button {
 												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of_every}
-											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+											<input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('#repeats_4_type_2').prop('checked', true);" /> {$lang->month_or_months}
 										</div>
 									</div>
 									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
 										<div class="smalltext"><label>
 											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
 											{$lang->repeats_on}</label>
-											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
-											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('#repeats_5_type_1').prop('checked', true);" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('#repeats_5_type_1').prop('checked', true);" >
 												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
@@ -2280,19 +2433,19 @@ a.button {
 												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('#repeats_5_type_1').prop('checked', true);" size="2" /> {$lang->year_or_years}
 										</div>
 										<div class="smalltext" style="margin-top: 5px;"><label>
 											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
 											{$lang->repeats_on_the}</label>
-											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_occurance" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
 												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
 												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
 												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
 												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
 											</select>
-											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_weekday" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
 												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
 												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
@@ -2302,7 +2455,7 @@ a.button {
 												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
 											</select>
 											{$lang->of}
-											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+											<select name="repeats_5_month2" onfocus="$('#repeats_5_type_2').prop('checked', true);" >
 												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
 												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
 												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
@@ -2317,7 +2470,7 @@ a.button {
 												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
 											</select>
 											{$lang->every}
-											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('#repeats_5_type_2').prop('checked', true);" /> {$lang->year_or_years}
 										</div>
 									</div>
 								</td>
@@ -3049,7 +3202,7 @@ a.button {
 {$post_errors}
 {$attacherror}
 {$deletebox}
-<form action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+<form id="editpost" action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -3080,7 +3233,7 @@ a.button {
 </table>
 {$attachbox}
 <br />
-<div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
+<div align="center"><input type="submit" class="button" name="submitbutton" value="{$lang->update_post}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
@@ -3184,6 +3337,7 @@ a.button {
 	<div class="upper">
 		<div class="wrapper">
 			{$lang_select}
+			{$theme_select}
 			<ul class="menu bottom_links">
 				<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
@@ -3224,10 +3378,18 @@ a.button {
 	{$gobutton}
 </form>
 </div>]]></template>
-		<template name="forumbit_depth1_cat" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="footer_themeselect" version="1800"><![CDATA[<div class="theme">
+<form method="{$theme_redirect_url['form_method']}" action="{$theme_redirect_url['location']}" id="theme_select">
+	{$theme_redirect_url['form_html']}
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	{$theme_options}
+	{$gobutton}
+</form>
+</div>]]></template>
+		<template name="forumbit_depth1_cat" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
-<td class="thead" colspan="5">
+<td class="thead{$expthead}" colspan="5">
 <div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="cat_{$forum['fid']}_img" class="expander" alt="{$expaltext}" title="{$expaltext}" /></div>
 <div><strong><a href="{$forum_url}">{$forum['name']}</a></strong><br /><div class="smalltext">{$forum['description']}</div></div>
 </td>
@@ -3276,7 +3438,7 @@ a.button {
 		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1800"><![CDATA[<html>
+		<template name="forumdisplay" version="1801"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3285,6 +3447,8 @@ a.button {
 <!--
 	lang.no_new_posts = "{$lang->no_new_posts}";
 	lang.click_mark_read = "{$lang->click_mark_read}";
+	lang.inline_edit_description = "{$lang->inline_edit_description}";
+	lang.post_fetch_error = "{$lang->post_fetch_error}";
 // -->
 </script>
 <!-- jeditable (jquery) -->
@@ -3582,7 +3746,7 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1801"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<script type="text/javascript">
@@ -3593,6 +3757,7 @@ a.button {
 			lang.stars[3] = "{$lang->three_stars}";
 			lang.stars[4] = "{$lang->four_stars}";
 			lang.stars[5] = "{$lang->five_stars}";
+			lang.ratings_update_error = "{$lang->ratings_update_error}";
 		// -->
 		</script>
 	</td>
@@ -3691,7 +3856,7 @@ a.button {
 				<navigation>
 				<br />]]></template>
 		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
-						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('div#quick_login').modal({ fadeDuration: 250 }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('div#quick_login').modal({ fadeDuration: 250, keepelement: true }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>
 				</div>
 				<div class="modal" id="quick_login" style="display: none;">
@@ -3774,6 +3939,9 @@ a.button {
 
 	<dt><img src="{$theme['imgdir']}/offlock.png" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
 	<dd>{$lang->forum_locked}</dd>
+
+	<dt><img src="{$theme['imgdir']}/offlink.png" alt="{$lang->forum_redirect}" title="{$lang->forum_redirect}" style="vertical-align: middle;" /></dt>
+	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br style="clear: both" />
 {$footer}
@@ -3787,7 +3955,7 @@ a.button {
 		<template name="index_boardstats" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
-<td class="thead">
+<td class="thead{$collapsedthead['boardstats']}">
 <div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.png" id="boardstats_img" class="expander" alt="[-]" title="[-]" /></div>
 <div><strong>{$lang->boardstats}</strong></div>
 </td>
@@ -3874,25 +4042,46 @@ a.button {
 </tr>
 <tr>
 <td class="trow1">{$lang->username}</td>
-<td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" /></td>
+  <td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>
 <br />
@@ -4151,6 +4340,7 @@ a.button {
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -4224,15 +4414,19 @@ a.button {
 				</tr>
 				<tr>
 					<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['aim']}</a></td>
+					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
 				</tr>
 				<tr>
 					<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['yahoo']}</a></td>
+					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
 				</tr>
 				<tr>
-					<td class="{$bgcolors['msn']}"><strong>{$lang->msn}</strong></td>
-					<td class="{$bgcolors['msn']}"><a href="javascript:;" onclick="MyBB.popupWindow('misc.php?action=imcenter&amp;imtype=msn&amp;uid={$uid}', 'imcenter', 450, 300);">{$memprofile['msn']}</a></td>
+					<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
+					<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
+				</tr>
+				<tr>
+					<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
+					<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
 				</tr>
 			</table>
 		</td>
@@ -4337,7 +4531,7 @@ a.button {
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/validator.js"></script>
+<script src="jscripts/validate/jquery.validate.min.js"></script>
 </head>
 <body>
 {$header}
@@ -4360,12 +4554,12 @@ a.button {
 </tr>
 {$passboxes}
 <tr>
-<td><span class="smalltext"><label for="email">{$lang->email}</label></span></td>
-<td><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
+<td width="50%" valign="top"><span class="smalltext"><label for="email">{$lang->email}</label></span></td>
+<td width="50%" valign="top"><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="email" id="email" style="width: 100%" maxlength="50" value="{$email}" /></td>
-<td><input type="text" class="textbox" name="email2" id="email2" style="width: 100%" maxlength="50" value="{$email2}" /></td>
+<td width="50%" valign="top"><input type="text" class="textbox" name="email" id="email" style="width: 100%" maxlength="50" value="{$email}" /></td>
+<td width="50%" valign="top"><input type="text" class="textbox" name="email2" id="email2" style="width: 100%" maxlength="50" value="{$email2}" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
@@ -4398,8 +4592,8 @@ a.button {
 <td valign="top"><span class="smalltext"><label for="pmnotice">{$lang->pm_notice}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailpmnotify" id="emailpmnotify" value="1" {$emailpmnotifycheck} /></td>
-<td valign="top"><span class="smalltext"><label for="emailpmnotify">{$lang->email_notify_newpm}</label></span></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1" {$pmnotifycheck} /></td>
+<td valign="top"><span class="smalltext"><label for="pmnotify">{$lang->email_notify_newpm}</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="1" {$invisiblecheck} /></td>
@@ -4469,12 +4663,48 @@ a.button {
 </form>
 <script type="text/javascript">
 <!--
-	regValidator = new FormValidator('registration_form');
-	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
-    regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\\.\\+\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
-	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
-{$validator_extra}
-	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last
+$().ready(function() {
+	// validate registration_form
+	$("#registration_form").validate({
+		rules: {
+          username: {
+            required: true,
+            minlength: {$mybb->settings['minnamelength']},
+			maxlength: {$mybb->settings['maxnamelength']},
+			remote:{
+				url: "xmlhttp.php?action=username_availability",
+				type: "post",
+              	dataType: "json",
+				data:
+				{
+					my_post_key: my_post_key
+				},
+			},
+          },
+          password2: {
+				required: true,
+				minlength: 6,
+				equalTo: "#password"
+          },
+          email: {
+				required: true,
+				email: true,
+          },
+          email2: {
+				required: true,
+				email: true,
+				equalTo: "#email"
+          },
+		},
+		messages: {
+            username: "{$lang->js_validator_username_length}",
+          	email: "{$lang->js_validator_invalid_email}",
+			email2: "{$lang->js_validator_email_match}",          
+		}
+	});
+          
+   {$validator_extra}
+});
 // -->
 </script>
 {$footer}
@@ -4614,12 +4844,12 @@ a.button {
 	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
 		<template name="member_register_password" version="1400"><![CDATA[<tr>
-<td><span class="smalltext">{$lang->password}</span></td>
-<td><span class="smalltext">{$lang->confirm_password}</span></td>
+<td width="50%" valign="top"><span class="smalltext">{$lang->password}</span></td>
+<td width="50%" valign="top"><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
 <tr>
-<td><input type="password" class="textbox" name="password" id="password" style="width: 100%" /></td>
-<td><input type="password" class="textbox" name="password2" id="password2" style="width: 100%" /></td>
+<td width="50%" valign="top"><input type="password" class="textbox" name="password" id="password" style="width: 100%" /></td>
+<td width="50%" valign="top"><input type="password" class="textbox" name="password2" id="password2" style="width: 100%" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
@@ -4638,26 +4868,52 @@ a.button {
 </td>
 </tr></table>
 </fieldset>
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#referrer").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#referrer").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1800"><![CDATA[<br />
+		<template name="member_register_regimage" version="1801"><![CDATA[<br />
 <fieldset class="trow2">
+<script type="text/javascript">
+<!--
+	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
+// -->
+</script>
 <script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -4680,6 +4936,15 @@ a.button {
 <tr>
 	<td id="imagestring_status"  style="display: none;" colspan="2">&nbsp;</td>
 </tr>
+</table>
+</fieldset>]]></template>
+		<template name="member_register_regimage_ayah" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+  <legend><strong>{$lang->image_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td>{$output}</td>
+	</tr>
 </table>
 </fieldset>]]></template>
 		<template name="member_register_regimage_recaptcha" version="1605"><![CDATA[<br />
@@ -4860,22 +5125,51 @@ a.button {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+       // Allow the user entered text to be selected as well
+       createSearchChoice:function(term, data) {
+			if ( $(data).filter( function() {
+				return this.text.localeCompare(term)===0;
+			}).length===0) {
+				return {id:term, text:term};
+			}
+		},
+	});
+}
 // -->
 </script>
 </body>
@@ -4921,9 +5215,15 @@ a.button {
 	</td>
 </tr>
 <tr>
-	<td class="trow1" width="20%"><strong><label for="msn">{$lang->search_msn}</label></strong></td>
+	<td class="trow1" width="20%"><strong><label for="skype">{$lang->search_skype}</label></strong></td>
 	<td class="trow1">
-		<input type="text" class="textbox" name="msn" id="msn" />
+		<input type="text" class="textbox" name="skype" id="skype" />
+	</td>
+</tr>
+<tr>
+	<td class="trow1" width="20%"><strong><label for="google">{$lang->search_google}</label></strong></td>
+	<td class="trow1">
+		<input type="text" class="textbox" name="google" id="google" />
 	</td>
 </tr>
 <tr>
@@ -4966,22 +5266,51 @@ a.button {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+       // Allow the user entered text to be selected as well
+       createSearchChoice:function(term, data) {
+			if ( $(data).filter( function() {
+				return this.text.localeCompare(term)===0;
+			}).length===0) {
+				return {id:term, text:term};
+			}
+		},
+	});
+}
 // -->
 </script>
 </body>
@@ -5079,10 +5408,10 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_help_section" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<template name="misc_help_section" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <thead>
 <tr>
-<td class="thead"><div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="sid_{$section['sid']}_img" class="expander" alt="[-]" title="[-]" /></div><div><strong>{$section['name']}</strong></div></td>
+<td class="thead{$expthead}"><div class="expcolimage"><img src="{$theme['imgdir']}/{$expcolimage}" id="sid_{$section['sid']}_img" class="expander" alt="[-]" title="[-]" /></div><div><strong>{$section['name']}</strong></div></td>
 </tr>
 </thead>
 <tbody style="{$expdisplay}" id="sid_{$section['sid']}_e">
@@ -5097,12 +5426,8 @@ a.button {
 <td width="100%" class="{$altbg}"><strong><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a></strong><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
-		<template name="misc_imcenter_aim" version="1610"><![CDATA[<html>
-<head>
-<title>{$lang->aim_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+		<template name="misc_imcenter_aim" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->aim_center}</strong></td>
@@ -5130,33 +5455,32 @@ a.button {
 </td>
 </tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="misc_imcenter_msn" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->msn_messenger_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+</div>
+</div>]]></template>
+		<template name="misc_imcenter_nav" version="1800"><![CDATA[{$navsep}<a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}'); return false;">{$imtype_lang}</a>]]></template>
+		<template name="misc_imcenter_skype" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->msn_messenger_center}</strong></td>
+<td class="thead" align="center"><strong>{$user['username']} - {$lang->skype_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
 </tr>
 <tr>
-<td class="trow1" align="center">{$lang->msn_address_is}<br />{$user['msn']}</td>
+<td class="trow1" align="center"><strong>{$user['skype']}</strong></td>
+</tr>
+<tr>
+<td class="trow1" align="center"><img src="http://mystatus.skype.com/smallclassic/{$user['skype']}" alt="{$lang->skype_status}" border="0"></td>
+</tr>
+<tr>
+<td class="trow1" align="center"><span class="smalltext"><a href="skype:{$user['skype']}?chat">{$lang->chat_on_skype}</a>  -  <a href="skype:{$user['skype']}?call">{$lang->call_on_skype}</a></span></td>
 </tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="misc_imcenter_yahoo" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->yahoo_center}</title>
-{$headerinclude}
-</head>
-<body style="margin:0;left:0;top:0" class="trow2">
+</div>
+</div>]]></template>
+		<template name="misc_imcenter_yahoo" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
@@ -5173,11 +5497,11 @@ a.button {
 <tr>
 <td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://edit.yahoo.com/config/send_webmesg?.target={$user['yahoo']}&amp;.src=pg">{$lang->send_y_message}</a></span></td>
 </tr><tr>
-<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></td>
+<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://members.yahoo.com/interests?.oc=t&amp;.kw={$user['yahoo']}&amp;.sb=1">{$lang->view_y_profile}</a></span></td>
 </tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_rules_forum" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
@@ -5217,25 +5541,8 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="misc_smilies_popup" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
-{$headerinclude}
-<script type="text/javascript">
-<!--
-	var editor = eval('opener.' + '{$editor}');
-	function insertSmilie(code)
-	{
-		if(editor)
-		{
-			editor.performInsert(code, "", true, false);
-		}
-	}
-// -->
-</script>
-
-</head>
-<body>
+		<template name="misc_smilies_popup" version="1800"><![CDATA[<div class="modal">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->smilies_listing}</strong></td>
@@ -5244,13 +5551,10 @@ a.button {
 <td class="tcat" colspan="4"><span class="smalltext">{$lang->click_to_add}</span></td>
 </tr>
 {$smilies}
-<tr>
-<td class="thead" colspan="4" align="center"><span class="smalltext">[<a href="javascript:window.close();">{$lang->close_window}</a>]</span></td>
-</tr>
 </table>
-</body>
-</html>]]></template>
-		<template name="misc_smilies_popup_smilie" version="123"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="insertSmilie('{$smilie['insert']}');" /></a></td>
+</div>
+</div>]]></template>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="MyBBEditor.insertText('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
@@ -5303,12 +5607,8 @@ a.button {
 </td></tr>
 </table>
 <br />]]></template>
-		<template name="misc_whoposted" version="120"><![CDATA[<html>
-<head>
-<title>{$lang->who_posted}</title>
-{$headerinclude}
-</head>
-<body style="margin:0px;top:0px;left:0px" class="trow2">
+		<template name="misc_whoposted" version="1800"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->total_posts} {$numposts}</strong></td>
@@ -5318,17 +5618,14 @@ a.button {
 <td class="tcat"><span class="smalltext"><strong><a href="misc.php?action=whoposted&amp;tid={$tid}&amp;sort=numposts">{$lang->num_posts}</a></strong></span></td>
 </tr>
 {$whoposted}
-<tr>
-<td colspan="2" class="thead" align="center"><span class="smalltext">[<a href="javascript:self.close();">{$lang->close_window}</a>]</span></td>
-</tr>
 </table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="misc_whoposted_poster" version="120"><![CDATA[<tr>
 <td class="{$altbg}">{$profile_link}</a></td>
 <td class="{$altbg}">{$poster['posts']}</td>
 </tr>]]></template>
-		<template name="modcp" version="1400"><![CDATA[<html>
+		<template name="modcp" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->modcp}</title>
 {$headerinclude}
@@ -5358,11 +5655,7 @@ a.button {
 <td class="trow2" align="center"><span class="smalltext">{$unapproved_posts}</span></td>
 <td class="trow2" align="center"><span class="smalltext">{$latest_post}</span></td>
 </tr>
-<tr>
-<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
-<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
-<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
-</tr>
+{$awaitingattachments}
 </table>
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5678,6 +5971,11 @@ a.button {
 	{$footer}
 </body>
 </html>]]></template>
+		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
+<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
+<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
+<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
+</tr>]]></template>
 		<template name="modcp_banning" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->ban_banned}</title>
@@ -5766,22 +6064,43 @@ a.button {
 		</tr>
 	</table>
 	{$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>
 </body>
@@ -5928,10 +6247,16 @@ a.button {
 											<td><input type="text" class="textbox" name="aim" size="25" value="{$mybb->input['aim']}" /></td>
 										</tr>
 										<tr>
-											<td><span class="smalltext">{$lang->msn}</span></td>
+											<td><span class="smalltext">{$lang->skype_id}</span></td>
 										</tr>
 										<tr>
-											<td><input type="text" class="textbox" name="msn" size="25" value="{$mybb->input['msn']}" /></td>
+											<td><input type="text" class="textbox" name="skype" size="25" value="{$mybb->input['skype']}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->google_id}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="google" size="25" value="{$mybb->input['google']}" /></td>
 										</tr>
 										<tr>
 											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
@@ -6231,22 +6556,44 @@ a.button {
 		</table>
 	</form>
 {$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css" />
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "{$lang->find_users}",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query,
+						getone: 1
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		}
+	});
+}
 // -->
 </script>
 </body>
@@ -6302,22 +6649,12 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_ipsearch_misc_info" version="1600"><![CDATA[<html>
-<head>
-<title>{$lang->ipaddress_misc_info}</title>
-{$headerinclude}
-<style type="text/css">
-body {
-	text-align: left;
-}
-</style>
-</head>
-<body style="margin:0; padding: 4px; top: 0; left: 0;">
+		<template name="modcp_ipsearch_misc_info" version="1800"><![CDATA[<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
 			<td class="thead" align="center" colspan="2">
-				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="window.close();">Close</a></span></div>
-				<div><strong>{$lang->ipaddress_misc_info}</strong></div>
+				<strong>{$lang->ipaddress_misc_info}</strong>
 			</td>
 		</tr>
 		<tr>
@@ -6329,8 +6666,8 @@ body {
 			<td class="trow2">{$ipaddress_location}</td>
 		</tr>
 	</table>
-</body>
-</html>]]></template>
+</div>
+</div>]]></template>
 		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="2">{$lang->error_no_results}</td>
 </tr>]]></template>
@@ -6519,6 +6856,7 @@ body {
 		<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
+		<template name="modcp_modqueue_attachment_link" version="1800"><![CDATA[ | <a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>]]></template>
 		<template name="modcp_modqueue_empty" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->mod_queue}</title>
@@ -6544,12 +6882,12 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_modqueue_masscontrols" version="1400"><![CDATA[<ul class="modqueue_mass">
-	<li><a href="#" class="mass_ignore" onclick="$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_ignored}</a></li>
-	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
-	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
+		<template name="modcp_modqueue_masscontrols" version="1800"><![CDATA[<ul class="modqueue_mass">
+  <li><a href="#" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false">{$lang->mark_all_ignored}</a></li>
+	<li><a href="#" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="#" class="mass_approve" onclick="$('input.radio_approve').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
-		<template name="modcp_modqueue_posts" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_posts" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
 {$headerinclude}
@@ -6568,8 +6906,8 @@ body {
 			<td class="thead" colspan="3">
 				<div class="float_right">
 					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
-					<strong>{$lang->posts}</strong> |
-					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+					<strong>{$lang->posts}</strong>
+					{$attachment_link}
 				</div>
 				<strong>{$lang->posts_awaiting_moderation}</strong>
 			</td>
@@ -6616,7 +6954,7 @@ body {
 				</td>
 			</tr>
 ]]></template>
-		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_threads" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
 {$headerinclude}
@@ -6635,8 +6973,8 @@ body {
 			<td class="thead" colspan="3">
 				<div class="float_right">
 					<strong>{$lang->threads}</strong> |
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> |
-					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a>
+					{$attachment_link}
 				</div>
 				<strong>{$lang->threads_awaiting_moderation}</strong>
 			</td>
@@ -6831,6 +7169,9 @@ body {
 	<td class="{$trow} smalltext" align="right">{$report_data['lastreporter']}</td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
+		<template name="modcp_nobanned" version="1613"><![CDATA[<tr>
+		<td class="trow1" align="center" colspan="4">{$lang->no_bans_ending}</td>
+</tr>]]></template>
 		<template name="modcp_warninglogs" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warning_logs}</title>
@@ -6907,22 +7248,43 @@ body {
 		</tr>
 	</table>
 	{$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#username").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>
 </body>
@@ -7188,7 +7550,7 @@ body {
 <td class="trow2">
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_users=1">{$lang->search_ip_users}</a><br />
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_posts=1">{$lang->search_ip_posts}</a><br />
-	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ipaddress}', 'iplookup', 500, 250); return false;">{$lang->info_on_ip}</a>
+	<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress}'); return false;">{$lang->info_on_ip}</a>
 </td>
 </tr>]]></template>
 		<template name="moderation_inline_deleteposts" version="1600"><![CDATA[<html>
@@ -8162,6 +8524,7 @@ body {
 {$newattach}
 {$attachments}
 </table>]]></template>
+		<template name="post_attachments_add" version="1614"><![CDATA[<input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}" tabindex="13" />]]></template>
 		<template name="post_attachments_attachment" version="1604"><![CDATA[<tr>
 <td class="trow2" width="1" align="center">{$attachment['icon']}</td>
 <td class="trow2" width="75%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
@@ -8169,7 +8532,7 @@ body {
 </tr>]]></template>
 		<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 		<template name="post_attachments_attachment_mod_unapprove" version="120"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
-		<template name="post_attachments_attachment_postinsert" version="1405"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="clickableEditor.insertAttachment({$attachment['aid']});" />]]></template>
+		<template name="post_attachments_attachment_postinsert" version="1800"><![CDATA[<input type="button" class="button" name="insert" value="{$lang->insert_attachment_post}" onclick="$('#message').sceditor('instance').insertText('[attachment={$attachment['aid']}]');" />]]></template>
 		<template name="post_attachments_attachment_remove" version="1604"><![CDATA[<input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" />]]></template>
 		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
 <td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
@@ -8178,13 +8541,18 @@ body {
 </tr>]]></template>
 		<template name="post_attachments_new" version="1800"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.png" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="13" />
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} {$attach_add_options}
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1801"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
+<script type="text/javascript">
+<!--
+	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
+// -->
+</script>
 <script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
@@ -8204,6 +8572,16 @@ body {
 		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
 	</tr>
 </table>
+</td>
+</tr>]]></template>
+		<template name="post_captcha_ayah" version="1800"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1">
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+		<tr>
+            <td>{$output}</td>
+		</tr>
+	</table>
 </td>
 </tr>]]></template>
 		<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
@@ -8402,7 +8780,7 @@ body {
 		<template name="postbit_rep_button" version="1800"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});" title="{$lang->postbit_reputation_add}" class="postbit_reputation_add"><span>{$lang->postbit_button_reputation_add}</span></a>]]></template>
 		<template name="postbit_reply_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply" title="{$lang->reply_title}" class="postbit_reply_pm"><span>{$lang->postbit_button_reply_pm}</span></a>]]></template>
 		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
-		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
+		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Report.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
 		<template name="postbit_reputation" version="1400"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature">
 {$post['signature']}
@@ -8823,10 +9201,49 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="private.php?fid={$folder}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="private_pmspace" version="1800"><![CDATA[<span class="pmspace">
-  <span class="pmspace_container"><span class="pmspace_used" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
+  <span class="pmspace_container"><span class="pmspace_used {$spaceused_severity}" style="width: {$spaceused}px;"><span class="pmspace_text">{$overhalf}&nbsp;</span></span><span class="pmspace_unused" style="width: {$spaceused2}px;"><span class="pmspace_text">{$belowhalf}&nbsp;</span></span>
   </span>
   {$lang->pmspaceused}
 </span>]]></template>
+		<template name="private_quickreply" version="1800"><![CDATA[<br />
+<form action="private.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="to" value="{$to}" />
+	<input type="hidden" name="bcc" value="{$bcc}" />
+	<input type="hidden" name="subject" value="Re: {$subject}" />
+	<input type="hidden" name="action" value="do_send" />
+	<input type="hidden" name="pmid" value="{$pmid}" />
+	<input type="hidden" name="do" value="reply" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="2">
+					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.png" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
+					<div><strong>{$lang->quick_reply}</strong></div>
+				</td>
+			</tr>
+		</thead>
+		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
+			<tr>
+              <td class="{$trow}" valign="top" width="22%">
+					<strong>{$lang->message}</strong><br />
+					<span class="smalltext">{$lang->message_note}<br /><br />
+					<label><input type="checkbox" class="checkbox" name="options[signature]" value="1"{$optionschecked['signature']} {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->quickreply_signature}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1"{$optionschecked['disablesmilies']} />&nbsp;<strong>{$lang->quickreply_disable_smilies}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1"{$optionschecked['savecopy']} />&nbsp;<strong>{$lang->quickreply_save_copy}</strong></label>{$private_send_tracking}</span>
+				</td>
+				<td class="{$trow}">
+					<div style="width: 95%">
+						<textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1">{$quoted_message}</textarea>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->send_message}" tabindex="2" accesskey="s" /> <input type="submit" class="button" name="preview" value="{$lang->preview}" tabindex="3" /></td>
+			</tr>
+		</tbody>
+	</table>
+</form>]]></template>
 		<template name="private_read" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
@@ -8849,6 +9266,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <div id="posts">
 {$message}
 </div>
+{$quickreply}
 </td></tr>
 </table>
 </td>
@@ -8959,11 +9377,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
-<td class="trow1" valign="top"><textarea name="to" id="to" rows="2" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="2" cols="38" tabindex="1" style="width: 450px;">{$to}</textarea>{$max_recipients}</td>
 </tr>
 <tr id="bcc_area">
 <td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong>{$buddy_select_bcc}</td>
-<td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1">{$bcc}</textarea></td>
+<td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1" style="width: 450px;">{$bcc}</textarea></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->compose_subject}</strong></td>
@@ -8982,7 +9400,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
+<label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label>
 {$private_send_tracking}
 </span></td>
 </tr>
@@ -9024,36 +9442,88 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-		new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-		if($('bcc'))
-		{
-			new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+if(use_xmlhttprequest == "1")
+{
+	$("#to").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: true,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				var newqueries = [];
+				exp_queries = query.split(",");
+				$.each(exp_queries, function(index, value ){
+					if(value.replace(/\s/g, '') != "")
+					{
+						var newquery = {
+							id: value.replace(/,\s?/g, ", "),
+							text: value.replace(/,\s?/g, ", ")
+						};
+						newqueries.push(newquery);
+					}
+				});
+				callback(newqueries);
+			}
 		}
-	}
-// -->
-</script>
-
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#to").typeahead({
-            name: 'to',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+	});
+  
+  $("#bcc").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: true,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				var newqueries = [];
+				exp_queries = query.split(",");
+				$.each(exp_queries, function(index, value ){
+					if(value.replace(/\s/g, '') != "")
+					{
+						var newquery = {
+							id: value.replace(/,\s?/g, ", "),
+							text: value.replace(/,\s?/g, ", ")
+						};
+						newqueries.push(newquery);
+					}
+				});
+				callback(newqueries);
+			}
+		}
+	});
+}
 // -->
 </script>
 
@@ -9061,7 +9531,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_send_buddyselect" version="1800"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.png" alt="" style="vertical-align: middle;" alt="" title="{$lang->select_from_buddies}" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
-		<template name="private_send_tracking" version="1610"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
+		<template name="private_send_tracking" version="1610"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label>]]></template>
 		<template name="private_tracking" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
@@ -9162,12 +9632,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
-  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$pid}">
-  <form action="report.php" method="post" class="reportPost_{$pid}" onsubmit="javascript: return Thread.submitReport({$pid});">
+  <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
+  <form action="report.php" method="post" class="reportData_{$id}" onsubmit="javascript: return Report.submitReport({$id});">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="type" value="{$report_type}" />
-<input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="pid" value="{$id}" />
 <input type="hidden" name="no_modal" value="1" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -9263,6 +9733,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 // -->
 </script>
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -9398,6 +9869,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
   </div>
 </div>]]></template>
+		<template name="reputation_add_error_nomodal" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="trow1" style="padding: 20px">
+			<strong>{$lang->error}</strong><br /><br />
+			   <blockquote>{$message}</blockquote>
+		</td>
+	</tr>
+</table>]]></template>
 		<template name="reputation_added" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
@@ -9432,7 +9911,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</div>]]>
 		</template>
 		<template name="reputation_vote_report" version="1800"><![CDATA[		<div class="float_right postbit_buttons">
-			<a href="report.php?type=reputation&amp;pid={$reputation_vote['rid']}" onclick="MyBB.popupWindow(this.href, 'reportReputation', 400, 300); return false;" class="postbit_report"><span>{$lang->report_vote}</span></a>
+			<a href="javascript:Report.reportReputation({$reputation_vote['rid']});" class="postbit_report"><span>{$lang->report_vote}</span></a>
 		</div>]]>
 		</template>
 		<template name="search" version="1800"><![CDATA[<html>
@@ -9515,22 +9994,43 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/typeahead.js?ver=1800"></script>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-	if(use_xmlhttprequest == "1")
-	{
-        $("#author").typeahead({
-            name: 'username',
-            remote: {
-              url: 'xmlhttp.php?action=get_users&query=%QUERY',
-              filter: function(response){
-                return response.users;
-              },
-            },
-            limit: 10
-        });
-    }
+if(use_xmlhttprequest == "1")
+{
+	$("#author").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
 // -->
 </script>
 </body>
@@ -9767,30 +10267,33 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </html>]]></template>
 		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="4"><strong>{$lang->moderators}</strong></td>
+<td class="thead" colspan="5"><strong>{$lang->moderators}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_username}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->mod_forums}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_email}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->mod_pm}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->pm}</strong></span></td>
 </tr>
 {$modrows}
 </table>
 <br/>]]></template>
 		<template name="showteam_moderators_forum" version="1400"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
 		<template name="showteam_moderators_mod" version="1800"><![CDATA[<tr>
-<td width="50%" class="trow1"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
-<td width="30%" class="trow2"><span class="smalltext">{$forumslist}</span></td>
-<td width="10%" class="trow2"><div class="postbit_buttons">{$emailcode}</div></td>
-<td width="10%" class="trow1"><div class="postbit_buttons">{$pmcode}</div></td>
+<td width="45%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="30%" class="{$bgcolor}"><span class="smalltext">{$forumslist}</span></td>
+<td width="15%" class="{$bgcolor}"><div class="postbit_buttons">{$user['lastvisit']}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
 		<template name="showteam_usergroup" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><strong>{$usergroup['title']}</strong></td>
+<td class="thead" colspan="4"><strong>{$usergroup['title']}</strong></td>
 </tr>
 <tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->uname}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->email}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->pm}</strong></span></td>
 </tr>
@@ -9798,22 +10301,30 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 <br />]]></template>
 		<template name="showteam_usergroup_user" version="1800"><![CDATA[<tr>
-<td width="80%" class="{$bgcolor}"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
-<td width="10%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
-<td width="10%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
+<td width="75%" class="{$bgcolor}"><img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="{$lang->$status}" style="vertical-align: middle;" /><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="15%" class="{$bgcolor}">{$user['lastvisit']}</td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
+<td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1800"><![CDATA[<html>
+		<template name="showthread" version="1801"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
 <script type="text/javascript">
 <!--
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
+	lang.save_changes = "{$lang->save_changes}";
+	lang.cancel_edit = "{$lang->cancel_edit}";
+	lang.quick_edit_update_error = "{$lang->quick_edit_update_error}";
+	lang.quick_reply_post_error = "{$lang->quick_reply_post_error}";
+	lang.quick_delete_error = "{$lang->quick_delete_error}";
+	lang.quick_delete_success = "{$lang->quick_delete_success}";
 // -->
 </script>
 <!-- jeditable (jquery) -->
 <script src="jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
+<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 	{$header}
@@ -9867,6 +10378,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
 			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
 			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
+			{$addpoll}
 		</ul>
 	</div>
 
@@ -9888,6 +10400,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</script>
 </body>
 </html>]]></template>
+		<template name="showthread_add_poll" version="1800"><![CDATA[<li class="poll"><a href="polls.php?action=newpoll&amp;tid={$tid}">{$lang->add_poll_to_thread}</a></li>]]></template>
 		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
 			<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
@@ -10044,13 +10557,13 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</thead>
 		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
 			<tr>
-				<td class="trow1" valign="top" width="22%">
+				<td class="{$trow}" valign="top" width="22%">
 					<strong>{$lang->message}</strong><br />
 					<span class="smalltext">{$lang->message_note}<br /><br />
-					<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
+					{$option_signature}
 					<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 				</td>
-				<td class="trow1">
+				<td class="{$trow}">
 					<div style="width: 95%">
 						<textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 					</div>
@@ -10068,7 +10581,13 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</tbody>
 	</table>
 </form>]]></template>
-		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
+		<template name="showthread_ratethread" version="1801"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<script type="text/javascript">
+		<!--
+			lang.ratings_update_error = "{$lang->ratings_update_error}";
+		// -->
+		</script>
 		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
@@ -10132,7 +10651,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
 <br />]]></template>
 		<template name="showthread_usersbrowsing_user" version="1600"><![CDATA[{$comma}<a href="{$user['profilelink']}" title="{$lang->users_browsing_thread_reading} ({$user['reading']})">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="smilieinsert" version="120"><![CDATA[
+		<template name="smilieinsert" version="1800"><![CDATA[
 <div style="margin:auto; width: 170px; margin-top: 20px;">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" width="150">
 <tr>
@@ -10149,10 +10668,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 </div>
 ]]></template>
-		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
-<td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
+		<template name="smilieinsert_getmore" version="1800"><![CDATA[<tr>
+  <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
-		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" /></td>
+		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" onclick="console.log(MyBBEditor); MyBBEditor.insertText('{$find}');" /></td>
 ]]></template>
 		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
 </tr>
@@ -10545,6 +11064,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
 		lang.adding_buddy = '{$lang->adding_buddy}';
 		lang.adding_ignored = '{$lang->adding_ignored}';
+      	lang.buddylist_error = '{$lang->buddylist_error}';
 	</script>
 
   <link rel="stylesheet" href="jscripts/select2/select2.css">
@@ -10645,7 +11165,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
                                 if(use_xmlhttprequest == "1")
                                 {
 									$("#ignored_add_username").select2({
-										placeholder: "Search for a movie",
+										placeholder: "Search for a user",
 										minimumInputLength: 3,
 										maximumSelectionSize: 3,
 										multiple: true,
@@ -10663,9 +11183,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 											}
 										},
 										initSelection: function(element, callback) {
-											// the input tag has a value attribute preloaded that points to a preselected movie's id
-											// this function resolves that id attribute to an object that select2 can render
-											// using its formatResult renderer - that way the movie name is shown preselected
 											var query = $(element).val();
 											if (query !== "") {
 												$.ajax("xmlhttp.php?action=get_users", {
@@ -10945,6 +11462,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$usercpmenu}
 </table>
 </td>]]></template>
+		<template name="usercp_nav_attachments" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>]]></template>
 		<template name="usercp_nav_changename" version="1400"><![CDATA[<div><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></div>]]></template>
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
@@ -10978,7 +11496,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <tbody style="{$collapsed['usercpmisc_e']}" id="usercpmisc_e">
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=usergroups" class="usercp_nav_item usercp_nav_usergroups">{$lang->ucp_nav_usergroups}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editlists" class="usercp_nav_item usercp_nav_editlists">{$lang->ucp_nav_editlists}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>
+	{$attachmentop}
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=drafts" class="usercp_nav_item usercp_nav_drafts">{$draftcount}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=subscriptions" class="usercp_nav_item usercp_nav_subscriptions">{$lang->ucp_nav_subscribed_threads}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=forumsubscriptions" class="usercp_nav_item usercp_nav_fsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></td></tr>
@@ -11308,7 +11826,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_profile" version="1400"><![CDATA[<html>
+		<template name="usercp_profile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -11412,10 +11930,16 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
 </tr>
 <tr>
-<td><span class="smalltext">{$lang->msn}</span></td>
+<td><span class="smalltext">{$lang->skype_id}</span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="msn" size="25" value="{$user['msn']}" /></td>
+<td><input type="text" class="textbox" name="skype" size="25" value="{$user['skype']}" /></td>
+</tr>
+<tr>
+<td><span class="smalltext">{$lang->google_id}</span></td>
+</tr>
+<tr>
+<td><input type="text" class="textbox" name="google" size="25" value="{$user['google']}" /></td>
 </tr>
 <tr>
 <td><span class="smalltext">{$lang->yahoo_id}</span></td>
@@ -11956,7 +12480,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 					{
 						var checked = '';
 
-						$('.types_check').each(function(e, val)
+                      $('.types_check').each(function(e, val)
 						{
 							if($(this).prop('checked') == true)
 							{
@@ -12040,36 +12564,23 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		{$warnings}
 		</tbody>
 	</table><br />]]></template>
-		<template name="warnings_warn_pm" version="1402"><![CDATA[		<tr>
+		<template name="warnings_warn_pm" version="1800"><![CDATA[<tr>
 			<td width="20%" class="trow1" valign="top">
-				<strong>{$lang->send_pm}</strong>
-				<div style="margin:auto" id="pm_smilie_insert">{$smilieinserter}</div>
+              	<strong>{$lang->send_pm}</strong>
 			</td>
 			<td class="trow1">
 				<script type="text/javascript">
 				// <!--
-					var mybb_editor_disabled = true;
-					var clickableEditor = '';
 					function togglePM()
 					{
-						if($('send_pm').checked == true)
+						if($('#send_pm').prop('checked') == true)
 						{
-							$('pm_input').show();
-							$('pm_smilie_insert').show();
-							if(mybb_editor_disabled == true && editor_language)
-							{
-								mybb_editor_disabled = false;
-								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
-								if(clickableEditor)
-								{
-									clickableEditor.bindSmilieInserter("clickable_smilies");
-								}
-							}
+							$('#pm_input').show();
+							$('#pm_smilie_insert').show();
 						}
 						else
 						{
-							$('pm_input').hide();
-							$('pm_smilie_insert').hide();
+							$('#pm_input').hide();
 						}
 					}
 				// -->
@@ -12088,7 +12599,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				</table>
 				<script type="text/javascript">
 				<!--
+				$(document).ready(function() {
 					togglePM();
+				});
 				// -->
 				</script>
 			</td>
@@ -12165,6 +12678,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
+  <script type="text/javascript">
+<!--
+	var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
+// -->
+</script>
 </head>
 <body>
 {$header}
@@ -12181,7 +12699,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
-		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="if(confirm(&quot;{$lang->announcement_quickdelete_confirm}&quot;))window.location=this.href.replace('action=delete_announcement','action=do_delete_announcement');return false;" title="{$lang->announcement_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
+		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
@@ -12201,33 +12719,35 @@ $(function() {
 		emoticons: {
 			// Emoticons to be included in the dropdown
 			dropdown: {
-				":s": "images/smilies/confused.gif",
-				":-/": "images/smilies/undecided.gif",
-				":)": "images/smilies/smile.gif",
-				";)": "images/smilies/wink.gif",
-				":D": "images/smilies/biggrin.gif",
-				":P": "images/smilies/tongue.gif",
-				":(": "images/smilies/sad.gif",
-				":@": "images/smilies/angry.gif",
-				":blush:": "images/smilies/blush.gif",
+				":s": "images/smilies/confused.png",
+				":-/": "images/smilies/undecided.png",
+				":)": "images/smilies/smile.png",
+				";)": "images/smilies/wink.png",
+				":D": "images/smilies/biggrin.png",
+				":P": "images/smilies/tongue.png",
+				":(": "images/smilies/sad.png",
+				":@": "images/smilies/angry.png",
+				":blush:": "images/smilies/blush.png",
 			},
 			// Emoticons to be included in the more section
 			more: {
-				":angel:": "images/smilies/angel.gif",
-				":dodgy:": "images/smilies/dodgy.gif",
-				":exclamation:": "images/smilies/exclamation.gif",
-				":heart:": "images/smilies/heart.gif",
-				":huh:": "images/smilies/huh.gif",
-				":idea:": "images/smilies/lightbulb.gif",
-				":sleepy:": "images/smilies/sleepy.gif",
-				":cool:": "images/smilies/cool.gif",
-				":rolleyes:": "images/smilies/rolleyes.gif",
-				":shy:": "images/smilies/shy.gif",
-				":at:": "images/smilies/at.gif"
+				":angel:": "images/smilies/angel.png",
+				":dodgy:": "images/smilies/dodgy.png",
+				":exclamation:": "images/smilies/exclamation.png",
+				":heart:": "images/smilies/heart.png",
+				":huh:": "images/smilies/huh.png",
+				":idea:": "images/smilies/lightbulb.png",
+				":sleepy:": "images/smilies/sleepy.png",
+				":cool:": "images/smilies/cool.png",
+				":rolleyes:": "images/smilies/rolleyes.png",
+				":shy:": "images/smilies/shy.png",
+				":at:": "images/smilies/at.png"
 			}
 		},
-        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|image,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
+        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|horizontalrule,image,email,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
 	});
+      
+	MyBBEditor = $("#{$bind}").sceditor("instance");
 });
 </script>]]></template>
 		<template name="contact" version="1800"><![CDATA[<html>
@@ -12268,16 +12788,19 @@ $(function() {
 </body>
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="headerinclude" version="1800"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1801"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.plugins.min.js?ver=1800"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
+
 {$stylesheets}
 <script type="text/javascript">
 <!--
+	lang.unknown_error = "{$lang->unknown_error}";
+
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
 	var cookiePrefix = "{$mybb->settings['cookieprefix']}";
@@ -12289,6 +12812,9 @@ $(function() {
 	var my_post_key = "{$mybb->post_code}";
 	var rootpath = "{$mybb->settings['bburl']}";
 	var imagepath = "{$theme['imgdir']}";
+  	var yes_confirm = "{$lang->yes}";
+	var no_confirm = "{$lang->no}";
+	var MyBBEditor = null;
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>

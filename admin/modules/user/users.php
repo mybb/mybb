@@ -143,6 +143,62 @@ if($mybb->input['action'] == "views")
 	view_manager("index.php?module=user-users", "user", $user_view_fields, $sort_options, "user_search_conditions");
 }
 
+if($mybb->input['action'] == 'iplookup')
+{
+	$mybb->input['ipaddress'] = $mybb->get_input('ipaddress');
+	$lang->ipaddress_misc_info = $lang->sprintf($lang->ipaddress_misc_info, htmlspecialchars_uni($mybb->input['ipaddress']));
+	$ipaddress_location = $lang->na;
+	$ipaddress_host_name = $lang->na;
+	$modcp_ipsearch_misc_info = '';
+	if(!strstr($mybb->input['ipaddress'], "*"))
+	{
+		// Return GeoIP information if it is available to us
+		if(function_exists('geoip_record_by_name'))
+		{
+			$ip_record = @geoip_record_by_name($mybb->input['ipaddress']);
+			if($ip_record)
+			{
+				$ipaddress_location = htmlspecialchars_uni(utf8_encode($ip_record['country_name']));
+				if($ip_record['city'])
+				{
+					$ipaddress_location .= $lang->comma.htmlspecialchars_uni(utf8_encode($ip_record['city']));
+				}
+			}
+		}
+
+		$ipaddress_host_name = htmlspecialchars_uni(@gethostbyaddr($mybb->input['ipaddress']));
+
+		// gethostbyaddr returns the same ip on failure
+		if($ipaddress_host_name == $mybb->input['ipaddress'])
+		{
+			$ipaddress_host_name = $lang->na;
+		}
+	}
+
+	?>
+	<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">
+
+	<?php
+
+	$table = new Table();
+
+	$table->construct_cell($lang->ipaddress_host_name.":");
+	$table->construct_cell($ipaddress_host_name);
+	$table->construct_row();
+
+	$table->construct_cell($lang->ipaddress_location.":");
+	$table->construct_cell($ipaddress_location);
+	$table->construct_row();
+
+	$table->output($lang->ipaddress_misc_info);
+
+	?>
+</div>
+</div>
+	<?php
+}
+
 if($mybb->input['action'] == "activate_user")
 {
 	$plugins->run_hooks("admin_user_users_coppa_activate");
@@ -448,7 +504,8 @@ if($mybb->input['action'] == "edit")
 			"icq" => $mybb->input['icq'],
 			"aim" => $mybb->input['aim'],
 			"yahoo" => $mybb->input['yahoo'],
-			"msn" => $mybb->input['msn'],
+			"skype" => $mybb->input['skype'],
+			"google" => $mybb->input['google'],
 			"birthday" => array(
 				"day" => $mybb->input['bday1'],
 				"month" => $mybb->input['bday2'],
@@ -841,6 +898,14 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$page->add_breadcrumb_item($lang->edit_user.": ".htmlspecialchars_uni($user['username']));
+
+	$page->extra_header .= <<<EOF
+
+	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
+EOF;
 	$page->output_header($lang->edit_user);
 
 	$sub_tabs['edit_user'] = array(
@@ -1056,7 +1121,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->icq_number, "", $form->generate_text_box('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row($lang->msn_messanger_handle, "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
+	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
+	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
 
 	// Birthday
 	$birthday_days = array(0 => '');
@@ -1239,7 +1305,7 @@ if($mybb->input['action'] == "edit")
 	//
 	// SIGNATURE EDITOR
 	//
-	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
+	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'height: 250px; width: 95%'));
 	$sig_smilies = $lang->off;
 	if($mybb->settings['sigsmilies'] == 1)
 	{
@@ -1483,6 +1549,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->end();
 	echo "</div>\n";
 
+	$plugins->run_hooks("admin_user_users_edit_graph");
+
 	$buttons[] = $form->generate_submit_button($lang->save_user);
 	$form->output_submit_wrapper($buttons);
 
@@ -1576,7 +1644,12 @@ if($mybb->input['action'] == "delete")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
-		if(delete_user($user) == false)
+		// Set up user handler.
+		require_once MYBB_ROOT.'inc/datahandlers/user.php';
+		$userhandler = new UserDataHandler('delete');
+
+		// Delete the user
+		if(!$userhandler->delete_user($user['uid']))
 		{
 			flash_message($lang->error_cannot_delete_user, 'error');
 			admin_redirect("index.php?module=user-users");
@@ -1676,15 +1749,16 @@ if($mybb->input['action'] == "ipaddresses")
 	}
 	else
 	{
+		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
 "index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['lastip']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['lastip'])));
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> ".$user['lastip']);
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1695,14 +1769,15 @@ if($mybb->input['action'] == "ipaddresses")
 	}
 	else
 	{
+		$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
 		$popup = new PopupMenu("user_reg", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$user['regip']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['regip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".my_inet_ntop($db->unescape_binary($user['regip'])));
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> ".$user['regip']);
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1712,14 +1787,15 @@ if($mybb->input['action'] == "ipaddresses")
 	while($ip = $db->fetch_array($query))
 	{
 		++$counter;
+		$ip['ipaddress'] = my_inet_ntop($db->unescape_binary($ip['ipaddress']));
 		$popup = new PopupMenu("id_{$counter}", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
-		$popup->add_item($lang->info_on_ip, "{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress={$ip['ipaddress']}', 'iplookup', 500, 250); return false;");
+		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$ip['ipaddress']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$ip['ipaddress']}");
 		$controls = $popup->fetch();
 
-		$table->construct_cell(my_inet_ntop($db->unescape_binary($ip['ipaddress'])));
+		$table->construct_cell($ip['ipaddress']);
 		$table->construct_cell($controls, array('class' => "align_center"));
 		$table->construct_row();
 	}
@@ -1786,22 +1862,12 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("reportedposts", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
-			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
-
-			// Is the source user a moderator?
-			if($groupscache[$source_user['usergroup']]['canmodcp'])
-			{
-				$db->delete_query("moderators", "id='{$source_user['uid']}' AND isgroup = '0'");
-
-				// Update the moderator cache...
-				$cache->update_moderators();
-			}
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
@@ -1893,16 +1959,37 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("privatemessages", $to_uid, "toid='{$source_user['uid']}'");
 
-			// Delete the old user
-			$db->delete_query("users", "uid='{$source_user['uid']}'");
-			$db->delete_query("banned", "uid='{$source_user['uid']}'");
+			// Buddy/ignore lists
+			$destination_buddies = explode(',', $destination_user['buddylist']);
+			$source_buddies = explode(',', $source_user['buddylist']);
+			$buddies = array_unique(array_merge($source_buddies, $destination_buddies));
+			// Make sure the new buddy list doesn't contain either users
+			$buddies_array = array_diff($buddies, array($destination_user['uid'], $source_user['uid']));
 
-			// Did the old user have an uploaded avatar?
-			if($source_user['avatartype'] == "upload")
-			{
-				// Removes the ./ at the beginning the timestamp on the end...
-				@unlink("../".substr($source_user['avatar'], 2, -20));
-			}
+			$destination_ignored = explode(',', $destination_user['ignorelist']);
+			$source_ignored = explode(',', $destination_user['ignorelist']);
+			$ignored = array_unique(array_merge($source_ignored, $destination_ignored));
+			// ... and the same for the new ignore list
+			$ignored_array = array_diff($ignored, array($destination_user['uid'], $source_user['uid']));
+
+			// Remove any ignored users from the buddy list
+			$buddies = array_diff($buddies_array, $ignored_array);
+			// implode the arrays so we get a nice neat list for each
+			$buddies = trim(implode(',', $buddies), ',');
+			$ignored = trim(implode(',', $ignored_array), ',');
+
+			$lists = array(
+				"buddylist" => $buddies,
+				"ignorelist" => $ignored
+			);
+			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
+
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
+
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
@@ -1966,29 +2053,70 @@ if($mybb->input['action'] == "merge")
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
+	<link rel="stylesheet" href="../jscripts/select2/select2.css">
+	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
 	<script type="text/javascript">
 	<!--
-        $("#source_username").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },            limit: 10
-        });
-        $("#destination_username").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },
-            limit: 10
-        });
-
+	$("#source_username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+			url: "../xmlhttp.php?action=get_users",
+			dataType: \'json\',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+	$("#destination_username").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+			url: "../xmlhttp.php?action=get_users",
+			dataType: \'json\',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
 	// -->
 	</script>';
 
@@ -2430,38 +2558,14 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					if($mybb->input['processed'] == 1)
 					{
-						// Admin wants these users, gone!
-						$sql_array = implode(",", $selected);
-						$query = $db->simple_select("users", "uid", "uid IN (".$sql_array.")");
-						$to_be_deleted = $db->num_rows($query);
-						while($user = $db->fetch_array($query))
-						{
-							if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
-							{
-								// Remove me and super admins
-								continue;
-							}
-							else
-							{
-								// Run delete queries
-								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->delete_query("userfields", "ufid='{$user['uid']}'");
-								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
-								$db->delete_query("events", "uid='{$user['uid']}'");
-								$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
-								$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("sessions", "uid='{$user['uid']}'");
-								$db->delete_query("banned", "uid='{$user['uid']}'");
-								$db->delete_query("threadratings", "uid='{$user['uid']}'");
-								$db->delete_query("users", "uid='{$user['uid']}'");
-								$db->delete_query("joinrequests", "uid='{$user['uid']}'");
-								$db->delete_query("warnings", "uid='{$user['uid']}'");
-							}
-						}
+						// Set up user handler.
+						require_once MYBB_ROOT.'inc/datahandlers/user.php';
+						$userhandler = new UserDataHandler('delete');
+
+						// Delete users
+						$userhandler->delete_user($selected);
+
 						// Update forum stats, remove the cookie and redirect the user
-						update_stats(array('numusers' => '-'.$to_be_deleted.''));
 						my_unsetcookie("inlinemod_useracp");
 						$mybb->input['action'] = "inline_delete";
 						log_admin_action($to_be_deleted);
@@ -3012,7 +3116,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "skype", "google", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -3886,7 +3990,8 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
-	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn'))." {$lang->or} ".$form->generate_check_box('conditions[msn_blank]', 1, $lang->is_not_blank, array('id' => 'msn_blank', 'checked' => $input['conditions']['msn_blank'])), 'msn');
+	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
+	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
 	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');
 	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle'))." {$lang->or} ".$form->generate_check_box('conditions[usertitle_blank]', 1, $lang->is_not_blank, array('id' => 'usertitle_blank', 'checked' => $input['conditions']['usertitle_blank'])), 'usertitle');
 	$greater_options = array(
@@ -3929,21 +4034,42 @@ function user_search_conditions($input=array(), &$form)
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
-	<script type="text/javascript">
-	<!--
-        $("#username").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },
-            limit: 10
-        });
-	// -->
-	</script>';
+<link rel="stylesheet" href="../jscripts/select2/select2.css">
+<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript">
+<!--
+$("#username").select2({
+	placeholder: "Search for a user",
+	minimumInputLength: 3,
+	maximumSelectionSize: 3,
+	multiple: false,
+	ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+		url: "../xmlhttp.php?action=get_users",
+		dataType: \'json\',
+		data: function (term, page) {
+			return {
+				query: term, // search term
+			};
+		},
+		results: function (data, page) { // parse the results into the format expected by Select2.
+			// since we are using custom formatting functions we do not need to alter remote JSON data
+			return {results: data};
+		}
+	},
+	initSelection: function(element, callback) {
+		var query = $(element).val();
+		if (query !== "") {
+			$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+				data: {
+					query: query
+				},
+				dataType: "json"
+			}).done(function(data) { callback(data); });
+		}
+	},
+});
+// -->
+</script>';
 }
 
 ?>
