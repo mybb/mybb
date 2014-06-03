@@ -499,6 +499,8 @@ function build_postbit($post, $post_type=0)
 			$editreason = "";
 			if($post['editreason'] != "")
 			{
+				$post['editreason'] = $parser->parse_badwords($post['editreason']);
+				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
 				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
 			}
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
