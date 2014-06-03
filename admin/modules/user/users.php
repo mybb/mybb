@@ -1305,7 +1305,7 @@ EOF;
 	//
 	// SIGNATURE EDITOR
 	//
-	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
+	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'height: 250px; width: 95%'));
 	$sig_smilies = $lang->off;
 	if($mybb->settings['sigsmilies'] == 1)
 	{
