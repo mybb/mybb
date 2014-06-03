@@ -773,6 +773,7 @@ $(function() {
 		plugins: "bbcode",
 		style: "../jscripts/sceditor/editor_themes/mybb.css",
 		rtl: {$lang->settings['rtl']},
+		resizeEnabled: false,
         locale: "{$lang->settings['htmllang']}",
 		emoticons: {
 			// Emoticons to be included in the dropdown
