@@ -2078,7 +2078,7 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
@@ -2108,7 +2108,7 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
