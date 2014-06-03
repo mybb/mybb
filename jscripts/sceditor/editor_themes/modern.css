@@ -166,7 +166,7 @@ div.sceditor-grip {
     More info at: http://lesselements.com
   ---------------------------------------------------*/
 .sceditor-container {
-  /*position: relative;*/
+  position: relative;
   background: #fff;
   border: 1px solid #d9d9d9;
   font-size: 13px;
