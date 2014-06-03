@@ -14,7 +14,7 @@ var MyBB = {
 		expandables.init();
 		
 		/* Create the Check All feature */
-		$('[name="checkall"]').each(function(key, value) {
+		$('[name="allbox"]').each(function(key, value) {
 			$(this).change(function() {
 				var checkboxes = $(this).closest('form').find(':checkbox');
 				if($(this).is(':checked')) {
