@@ -263,6 +263,11 @@ function upgrade29_dbchanges3()
 		$db->drop_column("users", "google");
 	}
 
+	if($db->field_exists('cplanguage', 'adminoptions'))
+	{
+		$db->drop_column("adminoptions", "cplanguage");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -270,11 +275,13 @@ function upgrade29_dbchanges3()
 			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
+			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
+			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			break;
 	}
 

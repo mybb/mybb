@@ -20,6 +20,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
 $tables[] = "CREATE TABLE mybb_adminoptions (
 	uid int unsigned NOT NULL default '0',
 	cpstyle varchar(50) NOT NULL default '',
+	cplanguage varchar(50) NOT NULL default '',
 	codepress int(1) NOT NULL default '1',
 	notes TEXT NOT NULL,
 	permissions TEXT NOT NULL,
