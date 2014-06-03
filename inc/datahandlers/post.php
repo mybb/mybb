@@ -1743,6 +1743,11 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['message'] = $db->escape_string($post['message']);
 		}
 
+		if(isset($post['editreason']))
+		{
+			$this->post_update_data['editreason'] = $db->escape_string($post['editreason']);
+		}
+
 		if(isset($post['icon']))
 		{
 			$this->post_update_data['icon'] = intval($post['icon']);

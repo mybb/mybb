@@ -496,6 +496,11 @@ function build_postbit($post, $post_type=0)
 			$post['editdate'] = my_date('relative', $post['edittime']);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
+			$editreason = "";
+			if($post['editreason'] != "")
+			{
+				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+			}
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 

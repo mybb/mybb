@@ -3222,8 +3222,12 @@ a.button {
 </td>
 </tr>
 <tr>
-<td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
-<td class="trow1"><span class="smalltext">
+<td class="trow1"><strong>{$lang->editreason}</strong></td>
+<td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="100" value="{$editreason}" tabindex="1" /></td>
+</tr>
+<tr>
+<td class="trow2" valign="top"><strong>{$lang->post_options}</strong></td>
+<td class="trow2"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
 {$disablesmilies}</span>
 </td>
@@ -8735,7 +8739,8 @@ if(use_xmlhttprequest == "1")
 	}
 // -->
 </script>]]></template>
-		<template name="postbit_editedby" version="1800"><![CDATA[<span class="edited_post">({$post['editnote']} {$post['editedprofilelink']}.)</span>]]></template>
+		<template name="postbit_editedby" version="1800"><![CDATA[<span class="edited_post">({$post['editnote']} {$post['editedprofilelink']}.{$editreason})</span>]]></template>
+		<template name="postbit_editedby_editreason" version="1800"><![CDATA[ <em>{$lang->postbit_editreason}: {$post['editreason']}</em>]]></template>
 		<template name="postbit_email" version="1800"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}" title="{$lang->postbit_email}" class="postbit_email"><span>{$lang->postbit_button_email}</span></a>]]></template>
 		<template name="postbit_find" version="1800"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}" title="{$lang->postbit_find}" class="postbit_find"><span>{$lang->postbit_button_find}</span></a>]]></template>
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>

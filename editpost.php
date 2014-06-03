@@ -373,6 +373,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		"username" => $mybb->user['username'],
 		"edit_uid" => $mybb->user['uid'],
 		"message" => $mybb->get_input('message'),
+		"editreason" => $mybb->get_input('editreason'),
 	);
 
 	$postoptions = $mybb->get_input('postoptions', 2);
@@ -550,11 +551,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
+		$editreason = $post['editreason'];
 	}
 	else
 	{
 		$message = $mybb->get_input('message');
 		$subject = $mybb->get_input('subject');
+		$editreason = $mybb->get_input('editreason');
 	}
 
 	if(!isset($post_errors))
@@ -749,10 +752,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Fetch subscription select box
-	$bgcolor = "trow1";
+	$bgcolor = "trow2";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	$bgcolor2 = "trow2";
+	$bgcolor2 = "trow1";
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
 

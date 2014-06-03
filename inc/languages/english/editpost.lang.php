@@ -14,6 +14,7 @@ $l['delete_2'] = "<b>Note:</b> If this post is the first post in a thread deleti
 $l['subject'] = "Subject";
 $l['your_message'] = "Your Message";
 $l['post_options'] = "Post Options:";
+$l['editreason'] = "Edit Reason:";
 $l['options_sig'] = "<strong>Signature:</strong> include your signature. (registered users only)";
 $l['options_emailnotify'] = "<strong>Email Notification:</strong> receive an email whenever there is a new reply. (registered users only)";
 $l['options_disablesmilies'] = "<strong>Disable Smilies:</strong> disable smilies from showing in this post.";
