@@ -834,7 +834,14 @@ function upgrade29_updatetheme()
 	}
 
 	$output->print_header("Updating Themes");
-	$contents = "<p>Updating the Default theme... ";
+
+	// New default user star
+	$contents = "<p>Updating the Default user star image... ";
+	$update['starimage'] = "images/star.png";
+	$db->update_query("usergroups", $update, "starimage='images/star.gif'");
+	$contents .= "done.</p>";
+
+	$contents .= "<p>Updating the Default theme... ";
 
 	$db->delete_query("templates", "sid = '1'");
 	$query = $db->simple_select("themes", "tid", "tid = '2'");
