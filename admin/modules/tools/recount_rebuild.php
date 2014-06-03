@@ -130,6 +130,10 @@ function acp_recount_reputation()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['reputation']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -158,6 +162,10 @@ function acp_recount_warning()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['warning']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -186,6 +194,10 @@ function acp_recount_private_messages()
 
 	$page = intval($mybb->input['page']);
 	$per_page = intval($mybb->input['privatemessages']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
