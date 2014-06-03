@@ -279,7 +279,7 @@ var Thread = {
 		{
 			if(json.hasOwnProperty("errors"))
 			{
-				$("div.jGrowl").jGrowl("close");
+				$(".jGrowl").jGrowl("close");
 
 				$.each(json.errors, function(i, message)
 				{
@@ -357,7 +357,7 @@ var Thread = {
 			});
 		}
 
-		$("div.jGrowl").jGrowl("close");
+		$(".jGrowl").jGrowl("close");
 	},
 
 	showIgnoredPost: function(pid)
