@@ -72,7 +72,7 @@ var MyBB = {
 
 	popupWindow: function(url, options, root)
 	{
-		if(!options) options = { fadeDuration: 250 }
+		if(!options) options = { fadeDuration: 250, zIndex: 5 }
 		if(root != true)
 			url = rootpath + url;
 		
