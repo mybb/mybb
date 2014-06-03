@@ -2589,7 +2589,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			initSelection: function(element, callback) {
 				var query = $(element).val();
 				if (query !== "") {
-					$.ajax("xmlhttp.php?action=get_users", {
+					$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 						data: {
 							query: query
 						},
