@@ -10324,6 +10324,7 @@ if(use_xmlhttprequest == "1")
 	lang.quick_reply_post_error = "{$lang->quick_reply_post_error}";
 	lang.quick_delete_error = "{$lang->quick_delete_error}";
 	lang.quick_delete_success = "{$lang->quick_delete_success}";
+	lang.editreason = "{$lang->postbit_editreason}";
 // -->
 </script>
 <!-- jeditable (jquery) -->

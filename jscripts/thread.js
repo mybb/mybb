@@ -233,7 +233,7 @@ var Thread = {
 
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
-				
+
 				// Edit Reason
 				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 				$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="40" maxlength="100" id="quickedit_' + pid + '_editreason" /><br />');
