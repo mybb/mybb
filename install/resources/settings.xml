@@ -307,7 +307,15 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>	
+		</setting>
+		<setting name="hidesignatures">
+			<title>Hide Signatures To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
+			<disporder>23</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">

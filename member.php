@@ -1747,7 +1747,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
+	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
