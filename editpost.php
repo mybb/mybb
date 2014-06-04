@@ -551,13 +551,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
-		$editreason = $post['editreason'];
+		$editreason = htmlspecialchars_uni($post['editreason']);
 	}
 	else
 	{
 		$message = $mybb->get_input('message');
 		$subject = $mybb->get_input('subject');
-		$editreason = $mybb->get_input('editreason');
+		$editreason = htmlspecialchars_uni($mybb->get_input('editreason'));
 	}
 
 	if(!isset($post_errors))
