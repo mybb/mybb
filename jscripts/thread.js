@@ -174,6 +174,14 @@ var Thread = {
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
 				dataType: "json",
+				submitdata: function (values, settings)
+				{
+					id = $(this).attr('id');
+					pid = id.replace( /[^\d.]/g, '');
+					return {
+						editreason: $("#quickedit_" + pid + "_editreason").val()
+					}
+				},
 				callback: function(values, settings)
 				{
 					id = $(this).attr('id');
@@ -225,7 +233,10 @@ var Thread = {
 
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
-
+				
+				// Edit Reason
+				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
+				$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="40" maxlength="100" id="quickedit_' + pid + '_editreason" /><br />');
 			});
         });
 
