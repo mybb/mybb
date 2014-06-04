@@ -204,7 +204,7 @@ var ThemeSelector = (function() {
 
 		if (isAjax == true) {
 			completeMethod = 'onSaveComplete';
-			$.jGrowl('saving...');
+			$.jGrowl('Saving...');
 		}
 
 		$.ajax({
