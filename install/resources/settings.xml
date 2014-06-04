@@ -242,18 +242,34 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="contact">
+			<title>Enable Contact Page</title>
+			<description><![CDATA[Setting this to yes will allow access to the contact page.]]></description>
+			<disporder>28</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="contact_guests">
 			<title>Disable Contact Page to Guests</title>
 			<description><![CDATA[Setting this to yes will disallow access to the contact page for guests.]]></description>
-			<disporder>28</disporder>
+			<disporder>29</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="contact_badwords">
+			<title>Enable Word Filter on Contact Page</title>
+			<description><![CDATA[Setting this to yes will will send the subject and message fields through the word filter before sending.]]></description>
+			<disporder>30</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
 			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
-			<disporder>29</disporder>
+			<disporder>31</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

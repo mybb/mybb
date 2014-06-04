@@ -438,4 +438,10 @@ To accept or decline this request, go to
 
 Thank you,
 {4} Staff";
+
+$l['email_contact_subject'] = "Contact: {1}";
+$l['email_contact'] = "Forum profile: {1}
+IP Address: {2}
+Message:
+{3}";
 ?>
