@@ -40,14 +40,24 @@ if($mybb->request_method == "post")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate input
+	if(empty($mybb->input['subject']))
+	{
+		$errors[] = $lang->contact_no_subject;
+	}
+
+	if(strlen($mybb->input['subject']) > $mybb->settings['contact_maxsubjectlength'] && $mybb->settings['contact_maxsubjectlength'] > 0)
+	{
+		$errors[] = $lang->sprintf($lang->subject_too_long, $mybb->settings['contact_maxsubjectlength'], strlen($mybb->input['subject']));
+	}
+
 	if(empty($mybb->input['message']))
 	{
 		$errors[] = $lang->contact_no_message;
 	}
 
-	if(empty($mybb->input['subject']))
+	if(strlen($mybb->input['message']) > $mybb->settings['contact_maxmessagelength'] && $mybb->settings['contact_maxmessagelength'] > 0)
 	{
-		$errors[] = $lang->contact_no_subject;
+		$errors[] = $lang->sprintf($lang->message_too_long, $mybb->settings['contact_maxmessagelength'], strlen($mybb->input['message']));
 	}
 
 	if(empty($mybb->input['email']))

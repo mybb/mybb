@@ -1585,6 +1585,8 @@ function print_setting_peekers()
 		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahscoringkey"), 3, false)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_badwords"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxsubjectlength"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxmessagelength"), /1/, true)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
