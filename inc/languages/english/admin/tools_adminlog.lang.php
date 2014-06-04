@@ -216,11 +216,14 @@ $l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1})";
 $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
+$l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
 $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
+$l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
+$l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
