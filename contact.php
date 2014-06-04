@@ -60,6 +60,11 @@ if($mybb->request_method == "post")
 		$errors[] = $lang->sprintf($lang->message_too_long, $mybb->settings['contact_maxmessagelength'], strlen($mybb->input['message']));
 	}
 
+	if(strlen($mybb->input['message']) < $mybb->settings['contact_minmessagelength'] && $mybb->settings['contact_minmessagelength'] > 0)
+	{
+		$errors[] = $lang->sprintf($lang->message_too_short, $mybb->settings['contact_minmessagelength'], strlen($mybb->input['message']));
+	}
+
 	if(empty($mybb->input['email']))
 	{
 		$errors[] = $lang->contact_no_email;

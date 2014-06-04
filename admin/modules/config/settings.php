@@ -1586,6 +1586,7 @@ function print_setting_peekers()
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_badwords"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxsubjectlength"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_minmessagelength"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxmessagelength"), /1/, true)',
 	);
 
