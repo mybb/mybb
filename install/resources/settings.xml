@@ -258,6 +258,22 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="guestimages">
+			<title>Show Posted Images To Guests</title>
+			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
+			<disporder>30</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="guestvideos">
+			<title>Show Posted Videos To Guests</title>
+			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
+			<disporder>31</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
 		<setting name="seourls">
