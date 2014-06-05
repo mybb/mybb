@@ -5383,7 +5383,7 @@ if(use_xmlhttprequest == "1")
 						</td>
 					</tr>]]></template>
 		<template name="misc_buddypopup_user_sendpm" version="1400"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
-		<template name="misc_help" version="120"><![CDATA[<html>
+		<template name="misc_help" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->help_docs}</title>
 {$headerinclude}
@@ -5391,6 +5391,7 @@ if(use_xmlhttprequest == "1")
 <body>
 {$header}
 {$sections}
+{$search}
 {$footer}
 </body>
 </html>]]></template>
@@ -5412,6 +5413,31 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="misc_help_search" version="1800"><![CDATA[<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="3"><strong>{$lang->search}</strong></td>
+</tr>
+<tr>
+<td class="trow1">
+<form action="misc.php" method="post">
+<div class="float_left" style="padding-top: 5px;">
+<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
+</div>
+<div class="float_left" style="padding-left: 20px;">
+<span class="smalltext">
+<label><input name="name" checked="checked" value="1" type="checkbox"> {$lang->search_by_name}</label><br />
+<label><input name="document" checked="checked" value="1" type="checkbox"> {$lang->search_by_document}</label>
+</span>
+</div>
+<div class="float_left" style="padding-left: 20px; padding-top: 5px;">
+<input type="hidden" name="action" value="do_helpsearch" />
+<input type="submit" class="button" name="submit" value="{$lang->search_help_documents}" />
+</div>
+</form>
+</td>
+</tr>
+</table>]]></template>
 		<template name="misc_help_section" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <thead>
 <tr>
@@ -5430,6 +5456,36 @@ if(use_xmlhttprequest == "1")
 <td width="100%" class="{$altbg}"><strong><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a></strong><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
+		<template name="misc_helpresults" version="1800"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->help_doc_results}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$lang->help_doc_results}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="left"><span class="smalltext"><strong>{$lang->document}</strong></span></td>
+</tr>
+{$helpdoclist}
+</table>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="misc_helpresults_bit" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolor}">
+		<span class="smalltext">
+          <a href="misc.php?action=help&hid={$helpdoc['hid']}{$highlight}">{$helpdoc['name']}</a><br />
+		</span>
+		<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table>
+	</td>
+</tr>]]></template>
+		<template name="misc_helpresults_noresults" version="1800"><![CDATA[<tr>
+	<td class="trow1">{$lang->no_help_results}</td>
+</tr>]]></template>
 		<template name="misc_imcenter_aim" version="1800"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">

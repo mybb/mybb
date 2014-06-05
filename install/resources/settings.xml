@@ -102,7 +102,7 @@
 		<setting name="cookieprefix">
 			<title>Cookie Prefix</title>
 			<description><![CDATA[A prefix to append to all cookies set by MyBB. This is useful if you wish to install multiple copies of MyBB on the one domain or have other software installed which conflicts with the names of the cookies in MyBB. If not specified, no prefix will be used.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -110,7 +110,7 @@
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -118,7 +118,7 @@
 		<setting name="captchaimage">
 			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
 			<description><![CDATA[To help prevent automated registrations and postings, you can choose a type of image verification for the user to complete. Please see the MyBB Docs for more information on CAPTCHAs.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[select
 0=No CAPTCHA
 1=MyBB Default CAPTCHA
@@ -246,6 +246,14 @@ email=Sent via Email]]></optionscode>
 			<title>Enable Soft Delete</title>
 			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
 			<disporder>28</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="helpsearch">
+			<title>Enable Help Documents Search</title>
+			<description><![CDATA[If enabled it will allow users to search through the help documents.]]></description>
+			<disporder>29</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
