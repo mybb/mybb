@@ -411,11 +411,22 @@ class postParser
 			$message = preg_replace_callback("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback3'), $message);
 			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback4'), $message);
 		}
+		else
+		{
+			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback1'), $message);
+			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback2'), $message);
+			$message = preg_replace_callback("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback3'), $message);
+			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_disabled_callback4'), $message);
+		}
 
 		// Convert videos when allow.
 		if(!empty($options['allow_videocode']))
 		{
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
+		}
+		else
+		{
+			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_disabled_callback'), $message);
 		}
 
 		return $message;
@@ -1089,6 +1100,80 @@ class postParser
 	}
 
 	/**
+	 * Parses IMG MyCode disabled.
+	 *
+	 * @param string The URL to the image
+	 */
+	function mycode_parse_img_disabled($url)
+	{
+		global $lang;
+		$url = trim($url);
+		$url = str_replace("\n", "", $url);
+		$url = str_replace("\r", "", $url);
+		$url = str_replace("\'", "'", $url);
+
+		if(!empty($this->options['shorten_urls']))
+		{
+			if(my_strlen($url) > 55)
+			{
+				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
+			}
+		}
+		else
+		{
+			$name = $url;
+		}
+
+		$link = "<a href=\"{$url}\" target=\"_blank\">{$name}</a>";
+		$image = $lang->sprintf($lang->posted_image, $link);
+		return $image;
+	}
+
+	/**
+	 * Parses IMG MyCode disabled.
+	 *
+	 * @param array Matches.
+	 * @return string Image code.
+	 */
+	function mycode_parse_img_disabled_callback1($matches)
+	{
+		return $this->mycode_parse_img_disabled($matches[2]);
+	}
+
+	/**
+	 * Parses IMG MyCode disabled.
+	 *
+	 * @param array Matches.
+	 * @return string Image code.
+	 */
+	function mycode_parse_img_disabled_callback2($matches)
+	{
+		return $this->mycode_parse_img_disabled($matches[4]);
+	}
+
+	/**
+	 * Parses IMG MyCode disabled.
+	 *
+	 * @param array Matches.
+	 * @return string Image code.
+	 */
+	function mycode_parse_img_disabled_callback3($matches)
+	{
+		return $this->mycode_parse_img_disabled($matches[3]);
+	}
+
+	/**
+	 * Parses IMG MyCode disabled.
+	 *
+	 * @param array Matches.
+	 * @return string Image code.
+	 */
+	function mycode_parse_img_disabled_callback4($matches)
+	{
+		return $this->mycode_parse_img_disabled($matches[5]);
+	}
+
+	/**
 	* Parses email MyCode.
 	*
 	* @param string The email address to link to.
@@ -1233,6 +1318,47 @@ class postParser
 	function mycode_parse_video_callback($matches)
 	{
 		return $this->mycode_parse_video($matches[1], $matches[2]);
+	}
+
+	/**
+	 * Parses video MyCode disabled.
+	 *
+	 * @param string The URL to the video
+	 */
+	function mycode_parse_video_disabled($url)
+	{
+		global $lang;
+		$url = trim($url);
+		$url = str_replace("\n", "", $url);
+		$url = str_replace("\r", "", $url);
+		$url = str_replace("\'", "'", $url);
+
+		if(!empty($this->options['shorten_urls']))
+		{
+			if(my_strlen($url) > 55)
+			{
+				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
+			}
+		}
+		else
+		{
+			$name = $url;
+		}
+
+		$link = "<a href=\"{$url}\" target=\"_blank\">{$name}</a>";
+		$video = $lang->sprintf($lang->posted_video, $link);
+		return $video;
+	}
+
+	/**
+	* Parses video MyCode disabled.
+	*
+	* @param array Matches.
+	* @return string The built-up video code.
+	*/
+	function mycode_parse_video_disabled_callback($matches)
+	{
+		return $this->mycode_parse_video_disabled($matches[2]);
 	}
 
 	/**

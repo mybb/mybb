@@ -187,6 +187,7 @@ $l['wrote'] = "Wrote:";
 $l['code'] = "Code:";
 $l['php_code'] = "PHP Code:";
 $l['posted_image'] = "[Image: {1}]";
+$l['posted_video'] = "[Video: {1}]";
 $l['linkback'] = "Original Post";
 
 $l['at'] = "at";
