@@ -464,6 +464,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
+	$post['button_quickrestore'] = '';
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
@@ -527,7 +528,23 @@ function build_postbit($post, $post_type=0)
 
 		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
 		{
+			$display = "";
+			if($post['visible'] == -1)
+			{
+				$display = "none";
+			}
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+			// Restore Post
+			if(is_moderator($fid))
+			{
+				$display = "none";
+				if($post['visible'] == -1)
+				{
+					$display = "";
+				}
+				eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+			}
 		}
 
 		// Inline moderation stuff
