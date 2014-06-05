@@ -617,6 +617,16 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
+	if($mybb->user['showimages'] != 1)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1)
+	{
+		$parser_options['allow_videocode'] = 0;
+	}
+
 	// If we have incoming search terms to highlight - get it done.
 	if(!empty($mybb->input['highlight']))
 	{
@@ -646,6 +656,11 @@ function build_postbit($post, $post_type=0)
 		if($usergroup['signofollow'])
 		{
 			$sig_parser['nofollow_on'] = 1;
+		}
+
+		if($mybb->user['showimages'] != 1)
+		{
+			$sig_parser['allow_imgcode'] = 0;
 		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);

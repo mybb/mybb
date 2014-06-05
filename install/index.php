@@ -2168,6 +2168,8 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
+		'showimages' => 1,
+		'showvideos' => 1,
 		'showsigs' => 1,
 		'showavatars' => 1,
 		'showquickreply' => 1,

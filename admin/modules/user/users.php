@@ -546,6 +546,8 @@ if($mybb->input['action'] == "edit")
 			"dstcorrection" => $mybb->input['dstcorrection'],
 			"threadmode" => $mybb->input['threadmode'],
 			"classicpostbit" => $mybb->input['classicpostbit'],
+			"showimages" => $mybb->input['showimages'],
+			"showvideos" => $mybb->input['showvideos'],
 			"showsigs" => $mybb->input['showsigs'],
 			"showavatars" => $mybb->input['showavatars'],
 			"showquickreply" => $mybb->input['showquickreply'],
@@ -1281,6 +1283,8 @@ EOF;
 
 	$thread_options = array(
 		$form->generate_check_box("classicpostbit", 1, $lang->show_classic_postbit, array("checked" => $mybb->input['classicpostbit'])),
+		$form->generate_check_box("showimages", 1, $lang->display_images, array("checked" => $mybb->input['showimages'])),
+		$form->generate_check_box("showvideos", 1, $lang->display_videos, array("checked" => $mybb->input['showvideos'])),
 		$form->generate_check_box("showsigs", 1, $lang->display_users_sigs, array("checked" => $mybb->input['showsigs'])),
 		$form->generate_check_box("showavatars", 1, $lang->display_users_avatars, array("checked" => $mybb->input['showavatars'])),
 		$form->generate_check_box("showquickreply", 1, $lang->show_quick_reply, array("checked" => $mybb->input['showquickreply'])),

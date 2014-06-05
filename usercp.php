@@ -702,6 +702,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"invisible" => $mybb->get_input('invisible', 1),
 		"dstcorrection" => $mybb->get_input('dstcorrection', 1),
 		"threadmode" => $mybb->get_input('threadmode'),
+		"showimages" => $mybb->get_input('showimages', 1),
+		"showvideos" => $mybb->get_input('showvideos', 1),
 		"showsigs" => $mybb->get_input('showsigs', 1),
 		"showavatars" => $mybb->get_input('showavatars', 1),
 		"showquickreply" => $mybb->get_input('showquickreply', 1),
@@ -808,6 +810,24 @@ if($mybb->input['action'] == "options")
 	else
 	{
 		$no_subscribe_selected = "selected=\"selected\"";
+	}
+
+	if(isset($user['showimages']) && $user['showimages'] == 1)
+	{
+		$showimagescheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showimagescheck = "";
+	}
+
+	if(isset($user['showvideos']) && $user['showvideos'] == 1)
+	{
+		$showvideoscheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showvideoscheck = "";
 	}
 
 	if(isset($user['showsigs']) && $user['showsigs'] == 1)

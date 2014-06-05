@@ -985,6 +985,8 @@ $tables[] = "CREATE TABLE mybb_users (
   pmnotice int(1) NOT NULL default '0',
   pmnotify int(1) NOT NULL default '0',
   threadmode varchar(8) NOT NULL default '',
+  showimages int(1) NOT NULL default '0',
+  showvideos int(1) NOT NULL default '0',
   showsigs int(1) NOT NULL default '0',
   showavatars int(1) NOT NULL default '0',
   showquickreply int(1) NOT NULL default '0',

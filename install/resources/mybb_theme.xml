@@ -11601,7 +11601,7 @@ if(use_xmlhttprequest == "1")
 <input type="submit" class="button" name="submit" value="{$lang->update_notepad}" />
 </div>
 </form>]]></template>
-		<template name="usercp_options" version="1600"><![CDATA[<html>
+		<template name="usercp_options" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -11749,6 +11749,14 @@ if(use_xmlhttprequest == "1")
 	<td valign="top" width="1"><input type="checkbox" class="checkbox" name="classicpostbit" id="classicpostbit" value="1" {$classicpostbitcheck} /></td>
 	<td><span class="smalltext"><label for="classicpostbit">{$lang->show_classic_postbit}</label></span></td>
 	</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showimages" id="showimages" value="1" {$showimagescheck} /></td>
+<td><span class="smalltext"><label for="showimages">{$lang->show_images}</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="showvideos" id="showvideos" value="1" {$showvideoscheck} /></td>
+<td><span class="smalltext"><label for="showvideos">{$lang->show_videos}</label></span></td>
+</tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="1" {$showsigscheck} /></td>
 <td><span class="smalltext"><label for="showsigs">{$lang->show_sigs}</label></span></td>

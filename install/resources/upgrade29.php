@@ -275,6 +275,16 @@ function upgrade29_dbchanges3()
 		$db->drop_column("adminoptions", "cplanguage");
 	}
 
+	if($db->field_exists('showimages', 'users'))
+	{
+		$db->drop_column("users", "showimages");
+	}
+
+	if($db->field_exists('showvideos', 'users'))
+	{
+		$db->drop_column("users", "showvideos");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -283,12 +293,16 @@ function upgrade29_dbchanges3()
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
+			$db->add_column("users", "showimages", "int NOT NULL default '1' AFTER threadmode");
+			$db->add_column("users", "showvideos", "int NOT NULL default '1' AFTER showimages");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
+			$db->add_column("users", "showimages", "int(1) NOT NULL default '1' AFTER threadmode");
+			$db->add_column("users", "showvideos", "int(1) NOT NULL default '1' AFTER showimages");
 			break;
 	}
 

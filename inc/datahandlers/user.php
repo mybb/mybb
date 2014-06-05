@@ -616,6 +616,8 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'pmnotice', 1);
 		$this->verify_yesno_option($options, 'pmnotify', 1);
 		$this->verify_yesno_option($options, 'invisible', 0);
+		$this->verify_yesno_option($options, 'showimages', 1);
+		$this->verify_yesno_option($options, 'showvideos', 1);
 		$this->verify_yesno_option($options, 'showsigs', 1);
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
@@ -1045,6 +1047,8 @@ class UserDataHandler extends DataHandler
 			"receivefrombuddy" => $user['options']['receivefrombuddy'],
 			"pmnotice" => $user['options']['pmnotice'],
 			"pmnotify" => $user['options']['pmnotify'],
+			"showimages" => $user['options']['showimages'],
+			"showvideos" => $user['options']['showvideos'],
 			"showsigs" => $user['options']['showsigs'],
 			"showavatars" => $user['options']['showavatars'],
 			"showquickreply" => $user['options']['showquickreply'],
