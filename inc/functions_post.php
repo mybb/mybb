@@ -658,7 +658,7 @@ function build_postbit($post, $post_type=0)
 			$sig_parser['nofollow_on'] = 1;
 		}
 
-		if($mybb->user['showimages'] != 1)
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 		{
 			$sig_parser['allow_imgcode'] = 0;
 		}

@@ -1571,6 +1571,11 @@ if($mybb->input['action'] == "profile")
 			$sig_parser['nofollow_on'] = 1;
 		}
 
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
+
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
 	}

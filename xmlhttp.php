@@ -477,6 +477,16 @@ else if($mybb->input['action'] == "edit_post")
 			$parser_options['allow_smilies'] = 0;
 		}
 
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_imgcode'] = 0;
+		}
+
+		if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_videocode'] = 0;
+		}
+
 		$post['message'] = $parser->parse_message($message, $parser_options);
 
 		// Now lets fetch all of the attachments for these posts.

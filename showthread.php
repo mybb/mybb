@@ -470,6 +470,16 @@ if($mybb->input['action'] == "thread")
 				"filter_badwords" => 1
 			);
 
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_imgcode'] = 0;
+		}
+
+		if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_videocode'] = 0;
+		}
+
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$totalvotes += $votes;

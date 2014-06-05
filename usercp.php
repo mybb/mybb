@@ -59,6 +59,12 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'allow_imgcode' => $mybb->settings['sigimgcode'],
 		"filter_badwords" => 1
 	);
+
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
 	$parsed_sig = $parser->parse_message($mybb->get_input('signature'), $parser_options);
 	if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
 		substr_count($parsed_sig, "<img") > 0) ||
@@ -1844,6 +1850,11 @@ if($mybb->input['action'] == "editsig")
 			"me_username" => $mybb->user['username'],
 			"filter_badwords" => 1
 		);
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
