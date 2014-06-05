@@ -602,9 +602,13 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 
 	$pm['options'] = array();
-	if(isset($mybb->input['options']['signature']))
+	if(isset($mybb->input['options']['signature']) && $mybb->input['options']['signature'] == 1)
 	{
-		$pm['options']['signature'] = $mybb->input['options']['signature'];
+		$pm['options']['signature'] = 1;
+	}
+	else
+	{
+		$pm['options']['signature'] = 0;
 	}
 	if(isset($mybb->input['options']['disablesmilies']))
 	{
