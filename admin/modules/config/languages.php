@@ -44,6 +44,12 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			$info = str_replace("\\", "\\\\", $info);
 			$info = str_replace('$', '\$', $info);
+			
+			if($key == 'admin' || $key == 'rtl')
+			{
+				$info = (int)$info;
+			}
+			
 			$newlanginfo[$key] = str_replace("\"", '\"', $info);
 		}
 
@@ -650,7 +656,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><small>{$author}</small>");
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
 
-		$popup = new PopupMenu("laguage_{$key}", $lang->options);
+		$popup = new PopupMenu("language_{$key}", $lang->options);
 		$popup->add_item($lang->edit_language_variables, "index.php?module=config-languages&amp;action=edit&amp;lang={$key}");
 		foreach($langselectlangs as $key1 => $langname1)
 		{

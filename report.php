@@ -22,10 +22,12 @@ if(!$mybb->user['uid'])
 	error_no_permission();
 }
 
+$plugins->run_hooks("report_start");
+
 $report = array();
 $verified = false;
 $report_type = 'post';
-$error = $go_back = $report_type_db = '';
+$error = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
@@ -40,7 +42,7 @@ if(isset($lang->$report_string))
 	$report_title = $lang->$report_string;
 }
 
-$pid = 0;
+$id = 0;
 if($report_type == 'post')
 {
 	if($mybb->usergroup['canview'] == 0)
@@ -57,8 +59,8 @@ if($report_type == 'post')
 	}
 	else
 	{
-		$pid = $post['pid'];
-		$tid = $post['tid'];
+		$id = $post['pid'];
+		$id2 = $post['tid'];
 		$report_type_db = "(type = 'post' OR type = '')";
 
 		// Check for a valid forum
@@ -74,7 +76,7 @@ if($report_type == 'post')
 		}
 
 		// Password protected forums ......... yhummmmy!
-		$fid = $forum['fid'];
+		$id3 = $forum['fid'];
 		check_forum_password($forum['parentlist']);
 	}
 }
@@ -88,8 +90,8 @@ else if($report_type == 'profile')
 	}
 	else
 	{
-		$tid = $fid = 0; // We don't use these on the profile
-		$pid = $user['uid']; // pid is now the profile user
+		$id2 = $id3 = 0; // We don't use these on the profile
+		$id = $user['uid']; // id is the profile user
 		$permissions = user_permissions($user['uid']);
 
 		if(empty($permissions['canbereported']))
@@ -117,20 +119,20 @@ else if($report_type == 'reputation')
 		$verified = true;
 		$reputation = $db->fetch_array($query);
 
-		$pid = $reputation['rid']; // pid is the reputation id
-		$tid = $reputation['adduid']; // tid is now the user who gave the comment
-		$fid = $reputation['uid']; // fid is now the user who received the comment
+		$id = $reputation['rid']; // id is the reputation id
+		$id2 = $reputation['adduid']; // id2 is the user who gave the comment
+		$id3 = $reputation['uid']; // id3 is the user who received the comment
 
 		$report_type_db = "type = 'reputation'";
 	}
 }
 
-// Plugin hook?
+$plugins->run_hooks("report_type");
 
 // Check for an existing report
 if(!empty($report_type_db))
 {
-	$query = $db->simple_select("reportedposts", "*", "reportstatus != '1' AND pid = '{$pid}' AND {$report_type_db}");
+	$query = $db->simple_select("reportedcontent", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
 
 	if($db->num_rows($query))
 	{
@@ -151,12 +153,16 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 {
 	verify_post_check($mybb->get_input('my_post_key'));
 
+	$plugins->run_hooks("report_do_report_start");
+
 	// Is this an existing report or a new offender?
 	if(!empty($report))
 	{
 		// Existing report, add vote
 		$report['reporters'][] = $mybb->user['uid'];
 		update_report($report);
+
+		$plugins->run_hooks("report_do_report_end");
 
 		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
 		echo $report_thanks;
@@ -166,9 +172,9 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 	{
 		// Bad user!
 		$new_report = array(
-			'pid' => $pid,
-			'tid' => $tid,
-			'fid' => $fid,
+			'id' => $id,
+			'id2' => $id2,
+			'id3' => $id3,
 			'uid' => $mybb->user['uid']
 		);
 
@@ -180,17 +186,23 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 			// Replace the reason with the user comment
 			$reason = trim($mybb->get_input('comment'));
 		}
+		else
+		{
+			$report_reason_string = "report_reason_{$reason}";
+			$reason = "\n".$lang->$report_reason_string;
+		}
 
 		if(my_strlen($reason) < 3)
 		{
 			$error = $lang->error_report_length;
-			$go_back = $lang->go_back;
 		}
 
 		if(empty($error))
 		{
 			$new_report['reason'] = $reason;
 			add_report($new_report, $report_type);
+
+			$plugins->run_hooks("report_do_report_end");
 
 			eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
 			echo $report_thanks;
@@ -233,12 +245,14 @@ if(!$mybb->input['action'])
 			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
 		}
 	}
-	
+
 	if($mybb->input['no_modal'])
 	{
 		echo $report_reasons;
 		exit;
 	}
+
+	$plugins->run_hooks("report_end");
 
 	eval("\$report = \"".$templates->get("report", 1, 0)."\";");
 	echo $report;

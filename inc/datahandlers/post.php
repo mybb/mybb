@@ -366,17 +366,13 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Check to see if this person is in a usergroup that is excluded
-		if(trim($mybb->settings['postmergeuignore']) != "")
+		if($mybb->settings['postmergeuignore'] == -1)
 		{
-			$gids = explode(',', $mybb->settings['postmergeuignore']);
-			$gids = array_map('intval', $gids);
-
-			$user = get_user($post['uid']);
-			$user_usergroups = explode(',', $user['usergroup'].",".$user['additionalgroups']);
-			if(count(array_intersect($user_usergroups, $gids)) > 0)
-			{
-				return true;
-			}
+			return true;
+		}
+		elseif($mybb->settings['postmergeuignore'] != '' && is_member($mybb->settings['postmergeuignore'], $post['uid']))
+		{
+			return true;
 		}
 
 		// Select the lastpost and fid information for this thread
@@ -389,24 +385,27 @@ class PostDataHandler extends DataHandler
 			return true;
 		}
 
-		if(strstr($mybb->settings['postmergefignore'], ','))
-		{
-			$fids = explode(',', $mybb->settings['postmergefignore']);
-			$fid = array();
-			foreach($fids as $key => $forumid)
-			{
-				$fid[] = intval($forumid);
-			}
-
-			if(in_array($thread['fid'], $fid))
-			{
-				return true;
-			}
-
-		}
-		else if(trim($mybb->settings['postmergefignore']) != "" && $thread['fid'] == intval($mybb->settings['postmergefignore']))
+		if($mybb->settings['postmergefignore'] == -1)
 		{
 			return true;
+		}
+		elseif($mybb->settings['postmergefignore'] != '')
+		{
+			$fids = explode(',', (string)$mybb->settings['postmergefignore']);
+
+			if(is_array($fids))
+			{
+				foreach($fids as &$fid)
+				{
+					$fid = (int)$fid;
+				}
+				unset($fid);
+
+				if(in_array($thread['fid'], $fids))
+				{
+					return true;
+				}
+			}
 		}
 
 		if($simple_mode == true)
@@ -1742,6 +1741,11 @@ class PostDataHandler extends DataHandler
 		if(isset($post['message']))
 		{
 			$this->post_update_data['message'] = $db->escape_string($post['message']);
+		}
+
+		if(isset($post['editreason']))
+		{
+			$this->post_update_data['editreason'] = $db->escape_string($post['editreason']);
 		}
 
 		if(isset($post['icon']))

@@ -53,14 +53,14 @@ $l['manual_date'] = "Enter a manual date";
 $l['relative_date'] = "Or select a delete option";
 $l['multi_selected_dates'] = "You've selected both a manual date and a set option. Please select either a manual date or a set option.";
 $l['incorrect_date'] = "The date you entered is invalid. Please enter a valid date, or leave blank and select a set option.";
-$l['prune_complete'] = "Prune completed succesfully.";
+$l['prune_complete'] = "Prune completed successfully.";
 $l['prune_fail'] = "No posts were found for the selected user(s). No posts were pruned.";
 $l['no_prune_option'] = "Please enter a date or select an option to continue.";
 $l['prune_posts'] = "Prune Posts";
 $l['delete_posts'] = "Delete Posts";
 $l['usergroup_info'] = "The following action will affect {1} user(s). By choosing the options below, you will be overwriting the selected users' primary / additional / display usergroup.";
 $l['mass_usergroups'] = "Mass Usergroup Change";
-$l['success_mass_usergroups'] = "User(s) updated succssfully.";
+$l['success_mass_usergroups'] = "User(s) updated successfully.";
 $l['alter_usergroups'] = "Save Changes";
 $l['no_usergroup_changed'] = "None of the user(s) you selected can have their usergroups changed.";
 $l['no_set_option'] = "A valid set date was not selected. Please select an option from the dropdown box or enter a manual date.";
@@ -86,7 +86,7 @@ $l['option_4'] = "More than a year old";
 $l['option_5'] = "More than 18 months old";
 $l['option_6'] = "More than 2 years old";
 
-$l['error_avatartoobig'] = "Sorry but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
+$l['error_avatartoobig'] = "Sorry, but we cannot change your avatar as the new avatar you specified is too big. The maximum dimensions are {1}x{2} (width x height)";
 $l['error_invalidavatarurl'] = "The URL you entered for your avatar does not appear to be valid. Please ensure you enter a valid URL.";
 $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
@@ -101,7 +101,7 @@ $l['error_invalid_view_perpage'] = "You have entered an invalid number of result
 $l['error_invalid_view_sortby'] = "You have selected an invalid field to sort results by";
 $l['error_invalid_view_sortorder'] = "You have selected an invalid sort order";
 $l['error_invalid_view_delete'] = "You selected an invalid administration view to delete";
-$l['error_cannot_delete_view'] = "You must have atleast 1 administration view.";
+$l['error_cannot_delete_view'] = "You must have at least 1 administration view.";
 $l['error_inline_no_users_selected'] = "Sorry, but you did not select any users. Please select some users and try again.";
 $l['error_cannot_delete_user'] = "This user cannot be deleted.";
 $l['error_no_referred_users'] = "The selected user does not have any referred users.";
@@ -160,7 +160,8 @@ $l['website'] = "Website";
 $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
-$l['msn_messanger_handle'] = "MSN Messenger Handle";
+$l['skype_handle'] = "Skype Handle";
+$l['google_handle'] = "Google Talk Handle";
 $l['birthday'] = "Date of Birth";
 
 $l['away_information'] = "Away Information";
@@ -172,6 +173,7 @@ $l['away_reason'] = "Away Reason:";
 $l['away_reason_desc'] = "Allows you to enter a small description of why you are away  (max 200 characters).";
 $l['return_date'] = "Return Date:";
 $l['return_date_desc'] = "If you know when you will be back, you can enter your return date here.";
+$l['error_acp_return_date_past'] = "You cannot return in the past!";
 
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
@@ -208,6 +210,8 @@ $l['threads_per_page'] = "Threads Per Page";
 $l['default_thread_age_view'] = "Default Thread Age View";
 $l['forum_display_options'] = "Forum Display Options";
 $l['show_classic_postbit'] = "Display posts in classic mode";
+$l['display_images'] = "Display images in posts";
+$l['display_videos'] = "Display videos in posts";
 $l['display_users_sigs'] = "Display users' signatures in their posts";
 $l['display_users_avatars'] = "Display users' avatars in their posts";
 $l['show_quick_reply'] = "Show the quick reply box at the bottom of the thread view";
@@ -238,14 +242,14 @@ $l['suspend_sig_error'] = "You entered an incorrect time to suspend this user's 
 $l['moderate_posts'] = "Moderate Posts";
 $l['moderate_posts_info'] = "Moderate new posts made by {1}.";
 $l['moderate_for'] = "Moderate for:";
-$l['moderated_perm'] = "<p><small>Moderated permanently.<br />Enter a new time below to change or uncheck this option to remove this moderation.</small></p>";
-$l['moderate_length'] = "<p><small>Moderated until {1}.<br />Enter a new time below to change or uncheck this option to remove this moderation.</small></p>";
+$l['moderated_perm'] = "<p><small>Moderated permanently.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
+$l['moderate_length'] = "<p><small>Moderated until {1}.<br />Enter a new time below to change or untick this option to remove this moderation.</small></p>";
 
 $l['suspend_posts'] = "Suspend Posts";
 $l['suspend_posts_info'] = "Suspend {1} from making new posts.";
 $l['suspend_for'] = "Suspend for:";
-$l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or uncheck this option to remove this suspension.</small></p>";
-$l['suspend_length'] = "<p><small>Suspended until {1}.<br />Enter a new time below to change or uncheck this option to remove this suspension.</small></p>";
+$l['suspended_perm'] = "<p><small>Suspended permanently.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
+$l['suspend_length'] = "<p><small>Suspended until {1}.<br />Enter a new time below to change or untick this option to remove this suspension.</small></p>";
 
 $l['suspendsignature_error'] = "You selected to suspend this user's signature, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
 $l['moderateposting_error'] = "You selected to moderate this user's posts, but didn't enter a valid time period. Please enter a valid time to continue or untick the option to cancel.";
@@ -316,6 +320,7 @@ $l['manage_views'] = "Manage Views";
 $l['none'] = "None";
 $l['search'] = "Search";
 
+$l['view_profile'] = "View Profile";
 $l['edit_profile_and_settings'] = "Edit Profile &amp; Settings";
 $l['ban_user'] = "Ban User";
 $l['approve_coppa_user'] = "Activate COPPA User";
@@ -334,7 +339,8 @@ $l['website_contains'] = "Website contains";
 $l['icq_number_contains'] = "ICQ number contains";
 $l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
-$l['msn_contains'] = "MSN Messenger handle contains";
+$l['skype_contains'] = "Skype handle contains";
+$l['google_contains'] = "Google Talk handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";
@@ -393,4 +399,8 @@ You will be able to login with the credentials you registered with.
 
 Thank you,
 {2} Staff";
+
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name";
+$l['ipaddress_location'] = "GeoIP Location";
 ?>

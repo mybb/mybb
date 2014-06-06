@@ -184,7 +184,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			{
 				if($fields[$field])
 				{
-					$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
+					$field_select .= "<li id=\"field-{$field}\">&#149; {$fields[$field]['title']}</li>";
 					$active[$field] = 1;
 				}
 			}
@@ -197,7 +197,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			{
 				continue;
 			}
-			$field_select .= "<li id=\"field-{$key}\">{$field['title']}</li>";
+			$field_select .= "<li id=\"field-{$key}\">&#149; {$field['title']}</li>";
 		}
 		$field_select .= "</div></ul>\n";
 		$field_select .= $form->generate_hidden_field("fields_js", @implode(",", @array_keys($active)), array('id' => 'fields_js'));
@@ -391,7 +391,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				if($fields[$field])
 				{
-					$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
+					$field_select .= "<li id=\"field-{$field}\">&#149; {$fields[$field]['title']}</li>";
 					$active[$field] = 1;
 				}
 			}
@@ -406,7 +406,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				{
 					continue;
 				}
-				$field_select .= "<li id=\"field-{$key}\">{$field['title']}</li>";
+				$field_select .= "<li id=\"field-{$key}\">&#149; {$field['title']}</li>";
 			}
 		}
 		$field_select .= "</div></ul>\n";

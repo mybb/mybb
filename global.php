@@ -109,6 +109,31 @@ $load_from_forum = $load_from_user = 0;
 $style = array();
 
 // This user has a custom theme set in their profile
+if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
+{
+	$mybb->user['style'] = $mybb->get_input('theme');
+	// If user is logged in, update their theme selection with the new one
+	if($mybb->user['uid'])
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$db->update_query('users', array('style' => intval($mybb->user['style'])), "uid = '{$mybb->user['uid']}'");
+	}
+	// Guest = cookie
+	else
+	{
+		my_setcookie('mybbtheme', $mybb->get_input('theme'));
+	}
+}
+// Cookied theme!
+else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
+{
+	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+}
+
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
@@ -135,7 +160,7 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(isset($mybb->input['pid']))
+	if(isset($mybb->input['pid']) && THIS_SCRIPT != "polls.php")
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '{$mybb->input['pid']}'", array("limit" => 1));
 		$fid = $db->fetch_field($query, 'fid');
@@ -150,6 +175,18 @@ if(in_array($current_page, $valid))
 	else if(isset($mybb->input['tid']))
 	{
 		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
+		$fid = $db->fetch_field($query, 'fid');
+
+		if($fid)
+		{
+			$style = $forum_cache[$fid];
+			$load_from_forum = 1;
+		}
+	}
+	// If we're accessing poll results, fetch the forum theme for it and if we're overriding it
+	else if(isset($mybb->input['pid']) && THIS_SCRIPT == "polls.php")
+	{
+		$query = $db->simple_select('threads', 'fid', "poll = '{$mybb->input['pid']}'", array('limit' => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -345,7 +382,7 @@ else
 }
 
 $templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error';
+$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,error';
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary";
 $templates->cache($db->escape_string($templatelist));
 
@@ -365,9 +402,9 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
-// If the board is closed and we have an Administrator, show board closed warning
+// If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
 $bbclosedwarning = '';
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] == 1)
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
 	eval('$bbclosedwarning = "'.$templates->get('global_boardclosed_warning').'";');
 }
@@ -460,10 +497,10 @@ $unreadreports = '';
 // This user is a moderator, super moderator or administrator
 if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
 {
-	// Read the reported posts cache
-	$reported = $cache->read('reportedposts');
+	// Read the reported content cache
+	$reported = $cache->read('reportedcontent');
 
-	// 0 or more reported posts currently exist
+	// 0 or more reported items currently exist
 	if($reported['unread'] > 0)
 	{
 		// We want to avoid one extra query for users that can moderate any forum
@@ -474,9 +511,9 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 		else
 		{
 			$unread = 0;
-			$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+			$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
 
-			while($fid = $db->fetch_field($query, 'fid'))
+			while($fid = $db->fetch_field($query, 'id3'))
 			{
 				if(is_moderator($fid))
 				{
@@ -643,6 +680,16 @@ if($mybb->settings['showlanguageselect'] != 0)
 	}
 }
 
+// Are we showing the quick theme selection box?
+$theme_select = $theme_options = '';
+if($mybb->settings['showthemeselect'] != 0)
+{
+	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+
+	$theme_redirect_url = get_current_location(true, 'theme');
+	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+}
+
 // DST Auto detection enabled?
 $auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
@@ -683,7 +730,7 @@ $closed_bypass = array(
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
@@ -785,6 +832,7 @@ if($colcookie)
 		$collapsed[$co] = "display: show;";
 		$collapsed[$ex] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
+		$collapsedthead[$val] = " thead_collapsed";
 	}
 }
 

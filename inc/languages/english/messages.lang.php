@@ -71,7 +71,8 @@ $l['error_too_many_images2'] = "We are sorry, but we cannot process your post be
 $l['error_too_many_images3'] = "<b>Note:</b> The maximum amount of images per post is";
 $l['error_attach_file'] = "Error Attaching File";
 $l['please_correct_errors'] = "Please correct the following errors before continuing:";
-$l['error_reachedattachquota'] = "Sorry but you cannot attach this file because you have reached your attachment quota of {1}";
+$l['error_reachedattachquota'] = "Sorry, but you cannot attach this file because you have reached your attachment quota of {1}";
+$l['error_maxattachpost'] = "Sorry but you cannot attach this file because you have reached the maximum number of attachments allowed per post of {1}";
 $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
@@ -79,6 +80,7 @@ $l['error_message_too_short'] = "Sorry, your message is too short and cannot be 
 $l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
+$l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
@@ -92,6 +94,7 @@ $l['emailsubject_changeemail'] = "Change of Email at {1}";
 $l['emailsubject_newpm'] = "New Private Message at {1} - {2}";
 $l['emailsubject_newjoinrequest'] = "New Join Request at {1}";
 $l['emailsubject_sendtofriend'] = "Interesting discussion at {1}";
+$l['emailsubject_changepassword'] = "Change of Password at {1}";
 $l['emailbit_viewthread'] = "... (visit the thread to read more..)";
 
 $l['email_lostpw'] = "{1},
@@ -369,6 +372,19 @@ Thank you,
 {2} Staff
 {5}";
 
+$l['email_changepassword'] = "{1},
+
+You are receiving this email because you, or someone with access to your password, recently changed your account password.
+
+Username: {1}
+Email address: {2}
+
+If you did not request this change, please get in touch with an Administrator.
+
+Thank you,
+{3} Staff
+{4}";
+
 $l['email_newpm'] = "{1},
 
 You have received a new private message on {3} from {2}:
@@ -422,4 +438,10 @@ To accept or decline this request, go to
 
 Thank you,
 {4} Staff";
+
+$l['email_contact_subject'] = "Contact: {1}";
+$l['email_contact'] = "Forum profile: {1}
+IP Address: {2}
+Message:
+{3}";
 ?>

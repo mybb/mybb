@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
 $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none";
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options";
@@ -59,6 +59,12 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'allow_imgcode' => $mybb->settings['sigimgcode'],
 		"filter_badwords" => 1
 	);
+
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
 	$parsed_sig = $parser->parse_message($mybb->get_input('signature'), $parser_options);
 	if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
 		substr_count($parsed_sig, "<img") > 0) ||
@@ -237,11 +243,13 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
+		"postnum" => $mybb->user['postnum'],
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
-		"msn" => $mybb->get_input('msn'),
+		"skype" => $mybb->get_input('skype'),
+		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy', 1),
 		"away" => $away,
@@ -369,7 +377,8 @@ if($mybb->input['action'] == "profile")
 
 	if($errors)
 	{
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
+		$user['skype'] = htmlspecialchars_uni($user['skype']);
+		$user['google'] = htmlspecialchars_uni($user['google']);
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
@@ -446,7 +455,7 @@ if($mybb->input['action'] == "profile")
 	while($profilefield = $db->fetch_array($query))
 	{
 		// Does this field have a minimum post count?
-		if($profilefield['postnum'] && $profilefield['postnum'] > $user['postnum'])
+		if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
 		{
 			continue;
 		}
@@ -699,6 +708,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"invisible" => $mybb->get_input('invisible', 1),
 		"dstcorrection" => $mybb->get_input('dstcorrection', 1),
 		"threadmode" => $mybb->get_input('threadmode'),
+		"showimages" => $mybb->get_input('showimages', 1),
+		"showvideos" => $mybb->get_input('showvideos', 1),
 		"showsigs" => $mybb->get_input('showsigs', 1),
 		"showavatars" => $mybb->get_input('showavatars', 1),
 		"showquickreply" => $mybb->get_input('showquickreply', 1),
@@ -805,6 +816,24 @@ if($mybb->input['action'] == "options")
 	else
 	{
 		$no_subscribe_selected = "selected=\"selected\"";
+	}
+
+	if(isset($user['showimages']) && $user['showimages'] == 1)
+	{
+		$showimagescheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showimagescheck = "";
+	}
+
+	if(isset($user['showvideos']) && $user['showvideos'] == 1)
+	{
+		$showvideoscheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showvideoscheck = "";
 	}
 
 	if(isset($user['showsigs']) && $user['showsigs'] == 1)
@@ -1045,35 +1074,27 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1)
+			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != "verify")
 			{
 				$uid = $mybb->user['uid'];
 				$username = $mybb->user['username'];
 
-				if($mybb->settings['regtype'] == "verify")
-				{
-					// Emails require verification
-					$activationcode = random_str();
-					$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+				// Emails require verification
+				$activationcode = random_str();
+				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
 
-					$newactivation = array(
-						"uid" => $mybb->user['uid'],
-						"dateline" => TIME_NOW,
-						"code" => $activationcode,
-						"type" => "e",
-						"oldgroup" => $mybb->user['usergroup'],
-						"misc" => $db->escape_string($mybb->get_input('email'))
-					);
+				$newactivation = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => "e",
+					"oldgroup" => $mybb->user['usergroup'],
+					"misc" => $db->escape_string($mybb->get_input('email'))
+				);
 
-					$db->insert_query("awaitingactivation", $newactivation);
+				$db->insert_query("awaitingactivation", $newactivation);
 
-					$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-				}
-				else
-				{
-					// Email requires no activation
-					$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
-				}
+				$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 
 				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
 				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
@@ -1084,6 +1105,9 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 			else
 			{
 				$userhandler->update_user();
+				// Email requires no activation
+				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
+				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 				$plugins->run_hooks("usercp_do_email_changed");
 				redirect("usercp.php", $lang->redirect_emailupdated);
 			}
@@ -1149,6 +1173,12 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 		{
 			$userhandler->update_user();
 			my_setcookie("mybbuser", $mybb->user['uid']."_".$userhandler->data['loginkey']);
+
+			// Notify the user by email that their password has been changed
+			$mail_message = $lang->sprintf($lang->email_changepassword, $mybb->user['username'], $mybb->user['email'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+			$lang->emailsubject_changepassword = $lang->sprintf($lang->emailsubject_changepassword, $mybb->settings['bbname']);
+			my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
+
 			$plugins->run_hooks("usercp_do_password_end");
 			redirect("usercp.php", $lang->redirect_passwordupdated);
 		}
@@ -1786,7 +1816,7 @@ if($mybb->input['action'] == "editsig")
 		$sig = $mybb->get_input('signature');
 		$template = false;
 	}
-	
+
 	if(!isset($error))
 	{
 		$error = '';
@@ -1820,6 +1850,11 @@ if($mybb->input['action'] == "editsig")
 			"me_username" => $mybb->user['username'],
 			"filter_badwords" => 1
 		);
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
@@ -2083,7 +2118,7 @@ if($mybb->input['action'] == "avatar")
 	}
 
 	$plugins->run_hooks("usercp_avatar_end");
-	
+
 	if(!isset($avatar_error))
 	{
 		$avatar_error = '';
@@ -2876,6 +2911,11 @@ if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	if($mybb->settings['enableattachments'] == 0)
+	{
+		error($lang->attachments_disabled);
+	}
 
 	$attachments = '';
 

@@ -36,84 +36,110 @@ if(!$mybb->input['action'])
 		'link_target' => "_blank",
 	);
 
+	$sub_tabs['check_for_updates'] = array(
+		'title' => $lang->check_for_updates,
+		'link' => "index.php?module=home-credits&amp;fetch_new=1",
+	);
+
 	$page->output_nav_tabs($sub_tabs, 'credits');
 
-	$table = new Table;
-	$table->construct_header($lang->product_managers, array('width' => '15%'));
-	$table->construct_header($lang->developers, array('width' => '15%'));
-	$table->construct_header($lang->software_quality_assurance, array('width' => '20%'));
-	$table->construct_header($lang->support_representative, array('width' => '20%'));
-	$table->construct_header($lang->pr_liaison, array('width' => '15%'));
+	$mybb_credits = $cache->read('mybb_credits');
 
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-1.html\" target=\"_blank\">Chris Boulton</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-8242.html\" target=\"_blank\">dvb</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-6928.html\" target=\"_blank\">Imad Jomaa</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-24328.html\" target=\"_blank\">Alan Shepperson</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-3971.html\" target=\"_blank\">Ryan Loos</a>");
-	$table->construct_row();
+	if($mybb->get_input('fetch_new', 1) == 1 || $mybb->get_input('fetch_new', 1) == -2 || ($mybb->get_input('fetch_new', 1) != -1 && (!is_array($mybb_credits) || $mybb_credits['last_check'] <= TIME_NOW - 60*60*24*14)))
+	{
+		$new_mybb_credits = array(
+			'last_check' => TIME_NOW
+		);
 
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-81.html\" target=\"_blank\">Dennis Tsang</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-23291.html\" target=\"_blank\">Huji Lee</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-12694.html\" target=\"_blank\">Jitendra M</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-22890.html\" target=\"_blank\">Dylan M</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		require_once MYBB_ROOT."inc/class_xml.php";
+		$contents = fetch_remote_file("http://www.mybb.com/mybb_team.xml");
 
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-8198.html\" target=\"_blank\">Tim B.</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-24611.html\" target=\"_blank\">Jammerx2</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-15525.html\" target=\"_blank\">Kieran Dunbar</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-21114.html\" target=\"_blank\">euantor</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		if(!$contents)
+		{
+			flash_message($lang->error_communication, 'error');
+			if($mybb->get_input('fetch_new', 1) == -2)
+			{
+				admin_redirect('index.php?module=tools-cache');
+			}
+			admin_redirect('index.php?module=home-credits&amp;fetch_new=-1');
+		}
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-1830.html\" target=\"_blank\">Justin Soltesz</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-57502.html\" target=\"_blank\">King Louis</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-16693.html\" target=\"_blank\">F&aacute;bio Maia</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		$parser = new XMLParser($contents);
+		$tree = $parser->get_tree();
+		$mybbgroup = array();
+		foreach($tree['mybbgroup']['team'] as $team)
+		{
+			$members = array();
+			foreach($team['member'] as $member)
+			{
+				$members[] = array(
+					'name' => $member['name']['value'],
+					'username' => $member['username']['value'],
+					'profile' => $member['profile']['value'],
+					'lead' => (bool) $member['attributes']['lead'] or false
+				);
+			}
+			$mybbgroup[] = array(
+				'title' => $team['attributes']['title'],
+				'members' => $members
+			);
+		}
+		$new_mybb_credits['credits'] = $mybbgroup;
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-63966.html\" target=\"_blank\">KevinVR</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-23276.html\" target=\"_blank\">Leefish</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		$cache->update('mybb_credits', $new_mybb_credits);
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-7331.html\" target=\"_blank\">Mike Creuzer</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-13556.html\" target=\"_blank\">Matt Rogowski</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		if($mybb->get_input('fetch_new', 1) == -2)
+		{
+			$lang->load('tools_cache');
+			flash_message($lang->success_cache_reloaded, 'sucess');
+			admin_redirect('index.php?module=tools-cache');
+		}
+		$mybb_credits = $new_mybb_credits;
+	}
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-27579.html\" target=\"_blank\">Nathan Malcolm</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-25096.html\" target=\"_blank\">Omar G.</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+	if(empty($mybb_credits) || (is_array($mybb_credits) && empty($mybb_credits['credits'])))
+	{
+		$table = new Table;
+		$table->construct_cell($lang->no_credits);
+		$table->construct_row();
+	}
+	else
+	{
+		$largest_count = $i = 0;
+		$team_max = array();
+		foreach($mybb_credits['credits'] as $team)
+		{
+			$count = count($team['members']);
+			$team_max[$i++] = $count;
+			if($largest_count < $count)
+			{
+				$largest_count = $count;
+			}
+		}
+		$largest_count -= 1;
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-8582.html\" target=\"_blank\">Pirata Nervo</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-37431.html\" target=\"_blank\">Paul H.</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		$table = new Table;
+		foreach($mybb_credits['credits'] as $team)
+		{
+			$table->construct_header($team['title'], array('width' => '16%'));
+		}
 
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-2824.html\" target=\"_blank\">Stefan T.</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-19236.html\" target=\"_blank\">Sam S.</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
-
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-14621.html\" target=\"_blank\">Tom Moore</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-55924.html\" target=\"_blank\">Vernier</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
+		for($i = 0; $i <= $largest_count; $i++)
+		{
+			foreach($team_max as $team => $max)
+			{
+				if($max < $i)
+				{
+					$table->construct_cell("&nbsp;");
+				}
+				else
+				{
+					$table->construct_cell("<a href=\"{$mybb_credits['credits'][$team]['members'][$i]['profile']}\" title=\"{$mybb_credits['credits'][$team]['members'][$i]['username']}\" target=\"_blank\">{$mybb_credits['credits'][$team]['members'][$i]['name']}</a>");
+				}
+			}
+			$table->construct_row();
+		}
+	}
 
 	$table->output($lang->mybb_credits);
 

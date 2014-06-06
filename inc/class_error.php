@@ -8,7 +8,7 @@
  *
  */
 
-// Set to 1 if recieving a blank page (template failure).
+// Set to 1 if receiving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
 
 // Define Custom MyBB error handler constants with a value not used by php's error handler.
@@ -211,7 +211,7 @@ class errorHandler {
 			{
 				if($mybb->settings['errortypemedium'] == "none" || $mybb->settings['errortypemedium'] == "error")
 				{
-					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occured. Please contact your administrator for assistance.</div>";
+					echo "<div class=\"php_warning\">MyBB Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 				}
 				else
 				{
@@ -248,7 +248,7 @@ class errorHandler {
 			return false;
 		}
 
-		// Incase a template fails and we're recieving a blank page.
+		// Incase a template fails and we're receiving a blank page.
 		if(MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";
@@ -256,35 +256,28 @@ class errorHandler {
 
 		if(!$lang->warnings)
 		{
-			$lang->warnings = "The following warnings occured:";
+			$lang->warnings = "The following warnings occurred:";
 		}
 
-		if(defined("IN_ADMINCP"))
+		$template_exists = false;
+
+		if(!is_object($templates) || !method_exists($templates, 'get'))
 		{
-			$warning = makeacpphpwarning($this->warnings);
+			if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
+			{
+				@require_once MYBB_ROOT."inc/class_templates.php";
+				$templates = new templates;
+				$template_exists = true;
+			}
 		}
 		else
 		{
-			$template_exists = false;
+			$template_exists = true;
+		}
 
-			if(!is_object($templates) || !method_exists($templates, 'get'))
-			{
-				if(@file_exists(MYBB_ROOT."inc/class_templates.php"))
-				{
-					@require_once MYBB_ROOT."inc/class_templates.php";
-					$templates = new templates;
-					$template_exists = true;
-				}
-			}
-			else
-			{
-				$template_exists = true;
-			}
-
-			if($template_exists == true)
-			{
-				eval("\$warning = \"".$templates->get("php_warnings")."\";");
-			}
+		if($template_exists == true)
+		{
+			eval("\$warning = \"".$templates->get("php_warnings")."\";");
 		}
 
 		return $warning;

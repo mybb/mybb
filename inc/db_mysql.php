@@ -130,6 +130,14 @@ class DB_MySQL
 	public $query_time = 0;
 
 	/**
+	 * Stores previous run query type: 1 => write; 0 => read
+	 *
+	 * @var int
+	 */
+
+	protected $last_query_type = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -296,7 +304,7 @@ class DB_MySQL
 	 *
 	 * @param string The query SQL.
 	 * @param integer 1 if hide errors, 0 if not.
-	 * @param integer 1 if executes on slave database, 0 if not.
+	 * @param integer 1 if executes on master database, 0 if not.
 	 * @return resource The query data.
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
@@ -305,8 +313,8 @@ class DB_MySQL
 
 		get_execution_time();
 
-		// Only execute write queries on slave database
-		if($write_query && $this->write_link)
+		// Only execute write queries on master database
+		if(($write_query || $this->last_query_type) && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;
 			$query = @mysql_query($string, $this->write_link);
@@ -323,6 +331,15 @@ class DB_MySQL
 			 exit;
 		}
 
+		if($write_query)
+		{
+			$this->last_query_type = 1;
+		}
+		else
+		{
+			$this->last_query_type = 0;
+		}
+
 		$query_time = get_execution_time();
 		$this->query_time += $query_time;
 		$this->query_count++;
@@ -336,7 +353,7 @@ class DB_MySQL
 	}
 
 	/**
-	 * Execute a write query on the slave database
+	 * Execute a write query on the master database
 	 *
 	 * @param string The query SQL.
 	 * @param boolean 1 if hide errors, 0 if not.
@@ -373,13 +390,13 @@ class DB_MySQL
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
+				"<td><strong>Table</strong></td>\n".
+				"<td><strong>Type</strong></td>\n".
+				"<td><strong>Possible Keys</strong></td>\n".
+				"<td><strong>Key</strong></td>\n".
+				"<td><strong>Key Length</strong></td>\n".
+				"<td><strong>Ref</strong></td>\n".
+				"<td><strong>Rows</strong></td>\n".
 				"<td><strong>Extra</strong></td>\n".
 				"</tr>\n";
 
@@ -843,7 +860,14 @@ class DB_MySQL
 			}
 			else
 			{
-				$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				if(is_numeric($value))
+				{
+					$query .= $comma."`".$field."`={$value}";
+				}
+				else
+				{
+					$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				}
 			}
 			$comma = ', ';
 		}
@@ -1176,6 +1200,27 @@ class DB_MySQL
 		{
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
+	}
+
+	/**
+	 * Renames a table
+	 *
+	 * @param string The old table name
+	 * @param string the new table name
+	 * @param boolean use table prefix
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
 	}
 
 	/**

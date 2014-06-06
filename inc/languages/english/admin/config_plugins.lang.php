@@ -37,6 +37,8 @@ $l['search'] = "Search";
 
 $l['error_vcheck_no_supported_plugins'] = "None of the plugins installed support version checking.";
 $l['error_vcheck_communications_problem'] = "There was a problem communicating with the MyBB modifications version server. Please try again in a few minutes.";
+$l['error_vcheck_vulnerable'] = "[Vulnerable plugin]:";
+$l['error_vcheck_vulnerable_notes'] = "This submission has currently been marked as vulnerable by the MyBB Staff. We recommend complete removal of this modification. Please see the notes below: ";
 $l['error_no_input'] = "Error code 1: No input specified.";
 $l['error_no_pids'] = "Error code 2: No plugin ids specified.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB modifications server. Please try again in a few minutes.";

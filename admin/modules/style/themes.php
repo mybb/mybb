@@ -26,6 +26,9 @@ var globally_lang_string = '{$lang->globally}';
 var specific_actions_lang_string = '{$lang->specific_actions}';
 var specific_actions_desc_lang_string = '{$lang->specific_actions_desc}';
 var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
+
+lang.theme_info_fetch_error = \"{$lang->theme_info_fetch_error}\";
+lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 
@@ -152,16 +155,11 @@ if($mybb->input['action'] == "browse")
 	}
 
 	// Gets the major version code. i.e. 1410 -> 1400 or 121 -> 1200
-	if($mybb->version_code >= 1000)
-	{
-		$major_version_code = round($mybb->version_code/100, 0)*100;
-	}
-	else
-	{
-		$major_version_code = round($mybb->version_code/10, 0)*100;
-	}
+	$major_version_code = round($mybb->version_code/100, 0)*100;
+	// Convert to mods site version codes
+	$search_version = ($major_version_code/100).'x';
 
-	$contents = fetch_remote_file("http://mods.mybb.com/xmlbrowse.php?type=theme&version={$major_version_code}{$keywords}{$url_page}", $post_data);
+	$contents = fetch_remote_file("http://community.mybb.com/xmlbrowse.php?type=themes&version={$search_version}{$keywords}{$url_page}", $post_data);
 
 	if(!$contents)
 	{
@@ -195,9 +193,9 @@ if($mybb->input['action'] == "browse")
 
 		foreach($tree['results']['result'] as $result)
 		{
-			$table->construct_cell("<img src=\"http://mods.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
+			$table->construct_cell("<img src=\"http://community.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
-			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -1616,7 +1614,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
@@ -1931,15 +1931,15 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
-	echo '<script type="text/javascript">
+	echo <<<EOF
 
-Event.observe(window, "load", function() {
-//<![CDATA[
-    new ThemeSelector(\''.$count.'\');
-});
-//]]>
-</script>';
+	<script type="text/javascript" src="./jscripts/theme_properties.js"></script>
+	<script type="text/javascript">
+	<!---
+	themeProperties.setup('{$count}');
+	// -->
+	</script>
+EOF;
 
 	$form->end();
 
@@ -2198,9 +2198,9 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
-Event.observe(window, "load", function() {
+$(document).ready(function() {
 //<![CDATA[
-    new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
+    new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 });
 //]]>
 </script>';
@@ -2295,8 +2295,12 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -2457,7 +2461,9 @@ if($mybb->input['action'] == "add_stylesheet")
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
 
-		if(substr($mybb->input['name'], -4) != ".css")
+		// Get 30 chars only because we don't want more than that
+		$mybb->input['name'] = my_substr($mybb->input['name'], 0, 30);
+		if(get_extension($mybb->input['name']) != "css")
 		{
 			// Does not end with '.css'
 			$errors[] = $lang->sprintf($lang->error_missing_stylesheet_extension, $mybb->input['name']);
@@ -2558,8 +2564,12 @@ if($mybb->input['action'] == "add_stylesheet")
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
 <link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
+<script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
+<script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
+<script src="./jscripts/codemirror/addon/search/search.js"></script>
 ';
 	}
 
@@ -2822,9 +2832,8 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
-Event.observe(window, "load", function() {
+$(function() {
 //<![CDATA[
-    new ThemeSelector(\''.$count.'\');
 	checkAction(\'add\');
 });
 //]]>

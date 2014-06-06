@@ -737,7 +737,7 @@ if(!$mybb->input['action'])
 
 			switch($mybb->input['sortby'])
 			{
-				case "lastactive":
+				case "filesize":
 					$sort_field = "a.filesize";
 					break;
 				case "downloads":
@@ -754,9 +754,9 @@ if(!$mybb->input['action'])
 					$mybb->input['sortby'] = "filename";
 			}
 
-			if($mybb->input['sortorder'] != "desc")
+			if($mybb->input['order'] != "desc")
 			{
-				$mybb->input['sortorder'] = "asc";
+				$mybb->input['order'] = "asc";
 			}
 
 			$page->add_breadcrumb_item($lang->results);
@@ -783,7 +783,7 @@ if(!$mybb->input['action'])
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 				WHERE {$search_sql}
-				ORDER BY {$sort_field} {$mybb->input['sortorder']}
+				ORDER BY {$sort_field} {$mybb->input['order']}
 				LIMIT {$start}, {$mybb->input['perpage']}
 			");
 			while($attachment = $db->fetch_array($query))
@@ -795,7 +795,7 @@ if(!$mybb->input['action'])
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
-				$pagination_vars = array('filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])

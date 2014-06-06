@@ -71,6 +71,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[0]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -143,6 +144,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -215,6 +217,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -232,6 +235,7 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
+		<canviewboardclosed><![CDATA[1]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
@@ -287,6 +291,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -359,6 +364,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -431,6 +437,7 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -503,5 +510,6 @@
 		<signofollow><![CDATA[0]]></signofollow>
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
+		<showmemberlist><![CDATA[1]]></showmemberlist>
 	</usergroup>
 </usergroups>

@@ -501,11 +501,18 @@ function build_postbit($post, $post_type=0)
 	if(!$post_type)
 	{
 		// Figure out if we need to show an "edited by" message
-		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1))
+		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && (($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0) || ($mybb->settings['showeditedbyadmin'] != 0 && $usergroup['cancp'] == 1)))
 		{
 			$post['editdate'] = my_date('relative', $post['edittime']);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
+			$editreason = "";
+			if($post['editreason'] != "")
+			{
+				$post['editreason'] = $parser->parse_badwords($post['editreason']);
+				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
+				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+			}
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 
@@ -562,12 +569,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -587,18 +594,23 @@ function build_postbit($post, $post_type=0)
 	}
 
 	$post['iplogged'] = '';
+	$show_ips = $mybb->settings['logip'];
 	$ipaddress = my_inet_ntop($db->unescape_binary($post['ipaddress']));
 
 	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
+	if($post_type == 2)
+	{
+		$show_ips = $mybb->settings['showpmip'];
+	}
 	if(!$post_type || $post_type == 2)
 	{
-		if($mybb->settings['logip'] != "no")
+		if($show_ips != "no" && !empty($post['ipaddress']))
 		{
-			if($mybb->settings['logip'] == "show")
+			if($show_ips == "show")
 			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
-			else if($mybb->settings['logip'] == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
+			else if($show_ips == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
 				$action = 'getip';
 				if($post_type == 2)
@@ -615,6 +627,16 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_videocode'] = 0;
+	}
+
 	// If we have incoming search terms to highlight - get it done.
 	if(!empty($mybb->input['highlight']))
 	{
@@ -625,7 +647,10 @@ function build_postbit($post, $post_type=0)
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	$post['attachments'] = '';
-	get_post_attachments($id, $post);
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		get_post_attachments($id, $post);
+	}
 
 	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
 	{
@@ -641,6 +666,11 @@ function build_postbit($post, $post_type=0)
 		if($usergroup['signofollow'])
 		{
 			$sig_parser['nofollow_on'] = 1;
+		}
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
 		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);

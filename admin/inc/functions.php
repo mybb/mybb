@@ -241,9 +241,10 @@ function save_quick_perms($fid)
 		}
 	}
 
-	// "Can Only View Own Threads" permission is a forum permission only option
+	// "Can Only View Own Threads" and "Can Only Reply Own Threads" permissions are forum permission only options
 	$usergroup_permission_fields = $permission_fields;
 	unset($usergroup_permission_fields['canonlyviewownthreads']);
+	unset($usergroup_permission_fields['canonlyreplyownthreads']);
 
 	$query = $db->simple_select("usergroups", "gid");
 	while($usergroup = $db->fetch_array($query))
@@ -755,61 +756,5 @@ function delete_user_posts($uid, $date)
 			return $to_return;
 		}
 	}
-}
-
-/**
- * Provides a function to completely delete a user
- *
- * @param array Array of user information
- * @return boolean If the deletion was successful or not
- */
-function delete_user($user)
-{
-	global $cache, $db, $mybb;
-
-	if(!$user['uid'] || is_super_admin($user['uid']) && $mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid']))
-	{
-		return false;
-	}
-
-	$db->delete_query("userfields", "ufid='{$user['uid']}'");
-	$db->delete_query("privatemessages", "uid='{$user['uid']}'");
-	$db->delete_query("events", "uid='{$user['uid']}'");
-	$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-	$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
-	$db->delete_query("sessions", "uid='{$user['uid']}'");
-	$db->delete_query("banned", "uid='{$user['uid']}'");
-	$db->delete_query("threadratings", "uid='{$user['uid']}'");
-	$db->delete_query("users", "uid='{$user['uid']}'");
-	$db->delete_query("joinrequests", "uid='{$user['uid']}'");
-	$db->delete_query("warnings", "uid='{$user['uid']}'");
-	$db->delete_query("reputation", "uid='{$user['uid']}' OR adduid='{$user['uid']}'");
-	$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
-	$db->delete_query("posts", "uid = '{$user['uid']}' AND visible = '-2'");
-	$db->delete_query("threads", "uid = '{$user['uid']}' AND visible = '-2'");
-
-	// Update post data
-	$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-	$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
-	$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
-
-	// Update forum stats
-	update_stats(array('numusers' => '-1'));
-
-	// Did this user have an uploaded avatar?
-	if($user['avatartype'] == "upload")
-	{
-		// Removes the ./ at the beginning the timestamp on the end...
-		@unlink("../".substr($user['avatar'], 2, -20));
-	}
-
-	// Was this user a moderator?
-	if(is_moderator($user['uid']))
-	{
-		$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
-		$cache->update_moderators();
-	}
-
-	return true;
 }
 ?>

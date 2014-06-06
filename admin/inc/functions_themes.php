@@ -426,8 +426,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	if(!empty($mybb->settings['minifycss']))
 	{
 		$stylesheet_min = minify_stylesheet($stylesheet);
-		$filename_min = str_replace('.css', '.min.css', $filename);
-		$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");
+		$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
 		if(!$fp_min)
 		{
 			return false;
@@ -879,12 +878,16 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	$stylesheet['tid'] = $tid;
 	unset($stylesheet['sid']);
 
+	$new_stylesheet = array();
 	foreach($stylesheet as $key => $value)
 	{
-		$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+		if(!is_numeric($key))
+		{
+			$new_stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+		}
 	}
 
-	$sid = $db->insert_query("themestylesheets", $stylesheet);
+	$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 
 	return $sid;
 }
@@ -1331,13 +1334,6 @@ function fetch_theme_stylesheets($theme)
 	}
 
 	return $stylesheets;
-}
-
-function update_stylesheet_displayorder($theme, $added = array())
-{
-	global $db, $lang, $mybb;
-
-
 }
 
 function upgrade_css_120_to_140($css)

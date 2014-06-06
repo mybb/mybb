@@ -41,8 +41,6 @@ $l['error_invalid_thread_tool'] = "The specified thread tool does not exist.";
 $l['general_options'] = "General Options";
 $l['short_description'] = "Short Description";
 $l['available_in_forums'] = "Available in forums";
-$l['all_forums'] = "All forums";
-$l['select_forums'] = "Select forums";
 $l['save_thread_tool'] = "Save Thread Tool";
 
 $l['title'] = "Title";

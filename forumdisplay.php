@@ -832,6 +832,19 @@ if($fpermissions['canviewthreads'] != 0)
 			}
 		}
 	}
+
+	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == true)
+	{
+		// Check if we've rated threads on this page
+		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
+		$imp = implode(",", array_keys($threadcache));
+		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
+
+		while($rating = $db->fetch_array($query))
+		{
+			$threadcache[$rating['tid']]['rated'] = 1;
+		}
+	}
 }
 
 // If user has moderation tools available, prepare the Select All feature
@@ -1215,7 +1228,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		}
 
 		// If this thread has 1 or more attachments show the papperclip
-		if($thread['attachmentcount'] > 0)
+		if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
 		{
 			if($thread['attachmentcount'] > 1)
 			{

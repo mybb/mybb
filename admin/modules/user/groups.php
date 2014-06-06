@@ -15,6 +15,7 @@ $usergroup_permissions = array(
 	"canviewthreads" => 1,
 	"canviewprofiles" => 1,
 	"candlattachments" => 1,
+	"canviewboardclosed" => 1,
 	"canpostthreads" => 1,
 	"canpostreplys" => 1,
 	"canpostattachments" => 1,
@@ -71,7 +72,8 @@ $usergroup_permissions = array(
 	"canusesigxposts" => 0,
 	"signofollow" => 0,
 	"edittimelimit" => 0,
-	"maxposts" => 0
+	"maxposts" => 0,
+	"showmemberlist" => 1
 );
 
 // Disallow direct access to this file for security reasons
@@ -557,7 +559,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	$page->output_nav_tabs($sub_tabs, 'group_leaders');
 
-	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}'", "post");
+	$form = new Form("index.php?module=user-groups&amp;action=edit_leader&amp;lid={$leader['lid']}", "post");
 
 	$form_container = new FormContainer($lang->edit_group_leader);
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
@@ -770,6 +772,7 @@ if($mybb->input['action'] == "edit")
 				"canviewthreads" => intval($mybb->input['canviewthreads']),
 				"canviewprofiles" => intval($mybb->input['canviewprofiles']),
 				"candlattachments" => intval($mybb->input['candlattachments']),
+				"canviewboardclosed" => intval($mybb->input['canviewboardclosed']),
 				"canpostthreads" => intval($mybb->input['canpostthreads']),
 				"canpostreplys" => intval($mybb->input['canpostreplys']),
 				"canpostattachments" => intval($mybb->input['canpostattachments']),
@@ -824,7 +827,8 @@ if($mybb->input['action'] == "edit")
 				"canusesigxposts" => intval($mybb->input['canusesigxposts']),
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
-				"maxposts" => intval($mybb->input['maxposts'])
+				"maxposts" => intval($mybb->input['maxposts']),
+				"showmemberlist" => intval($mybb->input['showmemberlist'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -910,6 +914,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
+	$general_options[] = $form->generate_check_box("showmemberlist", 1, $lang->member_list, array("checked" => $mybb->input['showmemberlist']));
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
 		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->input['showforumteam']));
@@ -950,6 +955,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("cansearch", 1, $lang->can_search_forums, array("checked" => $mybb->input['cansearch'])),
 		$form->generate_check_box("canviewprofiles", 1, $lang->can_view_profiles, array("checked" => $mybb->input['canviewprofiles'])),
 		$form->generate_check_box("candlattachments", 1, $lang->can_download_attachments, array("checked" => $mybb->input['candlattachments'])),
+		$form->generate_check_box("canviewboardclosed", 1, $lang->can_view_board_closed, array("checked" => $mybb->input['canviewboardclosed']))
 	);
 	$form_container->output_row($lang->viewing_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $viewing_options)."</div>");
 

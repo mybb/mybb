@@ -1330,6 +1330,16 @@ if($mybb->input['action'] == "event")
 		"allow_videocode" => $calendar['allowvideocode']
 	);
 
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$event_parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$event_parser_options['allow_videocode'] = 0;
+	}
+
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 	// Get the usergroup
@@ -1663,6 +1673,16 @@ if($mybb->input['action'] == "dayview")
 				"allow_videocode" => $calendar['allowvideocode']
 			);
 
+			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$event_parser_options['allow_imgcode'] = 0;
+			}
+
+			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$event_parser_options['allow_videocode'] = 0;
+			}
+
 			$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 			// Get the usergroup
@@ -1912,6 +1932,11 @@ if($mybb->input['action'] == "weekview")
 	else
 	{
 		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->get_input('week'));
+		// No negative years please ;)
+		if($mybb->input['week'] < -62167219200)
+		{
+			$mybb->input['week'] = -62167219200;
+		}
 	}
 
 	// This is where we've come from and where we're headed

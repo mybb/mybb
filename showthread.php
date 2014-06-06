@@ -13,7 +13,7 @@ define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread,showthread_moderationoptions";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,showthread_threadnoteslink,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,forumdisplay_password_wrongpass,forumdisplay_password,postbit_purgespammer";
@@ -470,6 +470,16 @@ if($mybb->input['action'] == "thread")
 				"filter_badwords" => 1
 			);
 
+			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$parser_options['allow_imgcode'] = 0;
+			}
+
+			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$parser_options['allow_videocode'] = 0;
+			}
+
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);
 			$votes = $votesarray[$i-1];
 			$totalvotes += $votes;
@@ -791,7 +801,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$attachcache = array();
-		if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
+		if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 		{
 			// Get the attachments for this post.
 			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
@@ -981,7 +991,7 @@ if($mybb->input['action'] == "thread")
 			$pids = "pid IN($pids)";
 
 			$attachcache = array();
-			if($thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
+			if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0 || is_moderator($fid, 'caneditposts'))
 			{
 				// Now lets fetch all of the attachments for these posts.
 				$query = $db->simple_select("attachments", "*", $pids);
@@ -1110,7 +1120,7 @@ if($mybb->input['action'] == "thread")
 
 	// Decide whether or not to show quick reply.
 	$quickreply = '';
-	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0)
+	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != '0' && $forum['open'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc", "limit" => 1));
 		$last_pid = $db->fetch_field($query, "pid");
@@ -1134,9 +1144,22 @@ if($mybb->input['action'] == "thread")
 			$postoptionschecked['signature'] = 'checked="checked"';
 		}
 
+		// Hide signature option if no permission
+		$option_signature = '';
+		if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
+		{
+			eval("\$option_signature = \"".$templates->get('showthread_quickreply_options_signature')."\";");
+		}
+
 		if(isset($mybb->user['emailnotify']) && $mybb->user['emailnotify'] == 1)
 		{
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
+		}
+
+		$trow = alt_trow();
+		if($thread['closed'] == 1)
+		{
+			$trow = 'trow_shaded';
 		}
 
 	    $posthash = md5($mybb->user['uid'].random_str());
@@ -1190,6 +1213,14 @@ if($mybb->input['action'] == "thread")
 		}
 
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
+	}
+
+	// Display 'add poll' link to thread creator (or mods) if thread doesn't have a poll already
+	$addpoll = '';
+	$time = TIME_NOW;
+	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
+	{
+		eval("\$addpoll = \"".$templates->get("showthread_add_poll")."\";");
 	}
 
 	// Subscription status

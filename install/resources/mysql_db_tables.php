@@ -21,6 +21,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
+  cplanguage varchar(50) NOT NULL default '',
   codepress int(1) NOT NULL default '1',
   notes text NOT NULL,
   permissions text NOT NULL,
@@ -225,6 +226,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   candlattachments int(1) NOT NULL default '0',
   canpostthreads int(1) NOT NULL default '0',
   canpostreplys int(1) NOT NULL default '0',
+  canonlyreplyownthreads int(1) NOT NULL default '0',
   canpostattachments int(1) NOT NULL default '0',
   canratethreads int(1) NOT NULL default '0',
   caneditposts int(1) NOT NULL default '0',
@@ -501,6 +503,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   edituid int unsigned NOT NULL default '0',
   edittime int(10) NOT NULL default '0',
   visible int(1) NOT NULL default '0',
+  editreason varchar(100) NOT NULL default '',
   KEY tid (tid, uid),
   KEY uid (uid),
   KEY visible (visible),
@@ -587,11 +590,11 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY(plid)
 ) ENGINE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_reportedposts (
+$tables[] = "CREATE TABLE mybb_reportedcontent (
   rid int unsigned NOT NULL auto_increment,
-  pid int unsigned NOT NULL default '0',
-  tid int unsigned NOT NULL default '0',
-  fid int unsigned NOT NULL default '0',
+  id int unsigned NOT NULL default '0',
+  id2 int unsigned NOT NULL default '0',
+  id3 int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   reportstatus int(1) NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
@@ -600,7 +603,6 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   reporters text NOT NULL,
   dateline bigint(30) NOT NULL default '0',
   lastreport bigint(30) NOT NULL default '0',
-  KEY fid (fid),
   KEY dateline (dateline),
   KEY lastreport (lastreport),
   PRIMARY KEY (rid)
@@ -883,6 +885,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canviewthreads int(1) NOT NULL default '0',
   canviewprofiles int(1) NOT NULL default '0',
   candlattachments int(1) NOT NULL default '0',
+  canviewboardclosed int(1) NOT NULL default '0',
   canpostthreads int(1) NOT NULL default '0',
   canpostreplys int(1) NOT NULL default '0',
   canpostattachments int(1) NOT NULL default '0',
@@ -940,6 +943,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   signofollow int(1) NOT NULL default '0',
   edittimelimit int(4) NOT NULL default '0',
   maxposts int(4) NOT NULL default '0',
+  showmemberlist int(1) NOT NULL default '1',
   PRIMARY KEY (gid)
 ) ENGINE=MyISAM;";
 
@@ -967,7 +971,8 @@ $tables[] = "CREATE TABLE mybb_users (
   icq varchar(10) NOT NULL default '',
   aim varchar(50) NOT NULL default '',
   yahoo varchar(50) NOT NULL default '',
-  msn varchar(75) NOT NULL default '',
+  skype varchar(75) NOT NULL default '',
+  google varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
   birthdayprivacy varchar(4) NOT NULL default 'all',
   signature text NOT NULL,
@@ -980,6 +985,8 @@ $tables[] = "CREATE TABLE mybb_users (
   pmnotice int(1) NOT NULL default '0',
   pmnotify int(1) NOT NULL default '0',
   threadmode varchar(8) NOT NULL default '',
+  showimages int(1) NOT NULL default '0',
+  showvideos int(1) NOT NULL default '0',
   showsigs int(1) NOT NULL default '0',
   showavatars int(1) NOT NULL default '0',
   showquickreply int(1) NOT NULL default '0',
