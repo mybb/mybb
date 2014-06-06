@@ -12991,12 +12991,12 @@ $(function() {
 {$footer}
 </body>
 </html>]]></template>
-	<template name="moderation_purgespammer_option_checkbox" version="1800"><![CDATA[<tr>
-        <td class="{$altbg}" width="99%"><strong>{$title}</strong></label><br />{$description}</td>
+	<template name="moderation_purgespammer_option" version="1800"><![CDATA[<tr>
+		<td class="{$altbg}" width="99%"><strong>{$title}</strong></label><br />{$description}</td>
 		<input type="hidden" name="actions[{$action}]" id="actions_{$action}" value="1" />
 </tr>]]></template>
 	<template name="moderation_purgespammer_option_textbox" version="1800"><![CDATA[<tr>
-                <td class="{$altbg}" width="100%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
+			<td class="{$altbg}" width="100%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
 </tr>]]></template>
 	</templates>
 </theme>

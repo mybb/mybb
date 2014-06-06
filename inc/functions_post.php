@@ -393,10 +393,10 @@ function build_postbit($post, $post_type=0)
 		}
 
 		if(purgespammer_show($post['postnum'], $post['usergroup']))
-        {
+		{
 			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
-        }
-		
+		}
+
 		// Display profile fields on posts - only if field is filled in
 		if(is_array($profile_fields))
 		{

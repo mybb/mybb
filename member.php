@@ -2064,10 +2064,10 @@ if($mybb->input['action'] == "profile")
 			$memprofile['usernotes'] = $lang->no_usernotes;
 		}
 
-        if(purgespammer_show($memprofile['postnum'], $memprofile['usergroup']))
-        {
-                eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
-        }
+		if(purgespammer_show($memprofile['postnum'], $memprofile['usergroup']))
+		{
+			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
+		}
 
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}

@@ -2757,8 +2757,8 @@ switch($mybb->input['action'])
 							$db->update_query("users", $repupdate, "uid = '" . intval($user_id) . "'");
 						}
 						break;
-					case "deletereportedposts":
-						$db->delete_query("reportedposts", "uid = '{$uid}'");
+					case "deletereportedcontent":
+						$db->delete_query("reportedcontent", "uid = '{$uid}'");
 						break;
 					case "deleteevents":
 						$db->delete_query("events", "uid = '{$uid}'");
@@ -2814,25 +2814,10 @@ switch($mybb->input['action'])
 						}
 						elseif($mybb->settings['purgespammerbandelete'] == "delete")
 						{
-							$db->delete_query("forumsubscriptions", "uid = '{$uid}'");
-							$db->delete_query("threadsubscriptions", "uid = '{$uid}'");
-							$db->delete_query("sessions", "uid = '{$uid}'");
-							$db->delete_query("banned", "uid = '{$uid}'");
-							$db->delete_query("threadratings", "uid = '{$uid}'");
-							$db->delete_query("users", "uid = '{$uid}'");
-							$db->delete_query("joinrequests", "uid = '{$uid}'");
-							$db->delete_query("warnings", "uid = '{$uid}'");
-							$db->delete_query("awaitingactivation", "uid='{$uid}'");
+							require_once MyBB_ROOT.'inc/datahandlers/user.php';
+							$userhandler = new UserDataHandler('delete');
 
-							update_stats(array('numusers' => '-1'));
-
-							if($user['avatartype'] == "upload")
-							{
-								// Removes the ./ at the beginning the timestamp on the end...
-								@unlink("../".substr($user['avatar'], 2, -20));
-							}
-
-							$user_deleted = true;
+							$user_deleted = $userhandler->delete_user($uid);
 						}
 						break;
 					case "stopforumspam":
@@ -2841,7 +2826,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$cache->update_reportedposts();
+			$cache->update_reportedcontent();
 
 			log_moderator_action(array(), $lang->sprintf($lang->purgespammer_modlog, htmlspecialchars_uni($user['username'])));
 
@@ -2867,7 +2852,7 @@ switch($mybb->input['action'])
 				"clearprofile",
 				"deletepms",
 				"deletereps",
-				"deletereportedposts",
+				"deletereportedcontent",
 				"deleteevents",
 				"bandelete",
 				"stopforumspam"
@@ -2976,12 +2961,12 @@ switch($mybb->input['action'])
 							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}
 						break;
-					case "deletereportedposts":
-						$query = $db->simple_select("reportedposts", "rid", "uid = '{$uid}'");
-						$reportedposts = $db->num_rows($query);
-						if($reportedposts > 0)
+					case "deletereportedcontent":
+						$query = $db->simple_select("reportedcontent", "rid", "uid = '{$uid}'");
+						$reportedcontent = $db->num_rows($query);
+						if($reportedcontent > 0)
 						{
-							$title .= " (" . $reportedposts . ")";
+							$title .= " (" . $reportedcontent . ")";
 							$altbg = alt_trow();
 							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
 						}

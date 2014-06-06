@@ -1986,10 +1986,10 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="purgespammer" title="Goodbye Spammer" description="This section allows you to change the settings of the purgespammer feature" disporder="22" isdefault="1">
+	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the purgespammer feature" disporder="22" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
-			<description><![CDATA[Enter the ID of the usergroups who are allowed to use Goodbye Spammer.]]></description>
+			<description><![CDATA[Enter the ID of the usergroups who are allowed to use Purge Spammer.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3,4,6]]></settingvalue>
@@ -2007,7 +2007,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="purgespammerbandelete">
 			<title>Ban or Delete Spammers</title>
-			<description><![CDATA[Do you want to ban or delete spammers with this tool?? It will still be optional on the Goodbye Spammer page.]]></description>
+			<description><![CDATA[Do you want to ban or delete spammers with this tool? It will still be optional on the Purge Spammer page.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[radio
 ban=Ban (Permanent)
