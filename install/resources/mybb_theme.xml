@@ -8479,6 +8479,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
+{$lang->forum} <a href="{$thread['forumlink']}">{$thread['forumname']}</a><br />
 <a href="{$thread['lastpostlink']}">{$lang->latest_threads_lastpost}</a> {$lastposterlink}<br />
 {$lastpostdate}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />

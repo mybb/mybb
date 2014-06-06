@@ -336,9 +336,10 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	$altbg = alt_trow();
 	$threadlist = '';
 	$query = $db->query("
-		SELECT t.*, u.username
+		SELECT t.*, u.username, f.name AS forumname
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = t.fid)
 		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
@@ -371,6 +372,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+		$thread['forumlink'] = get_thread_link($thread['fid']);
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
