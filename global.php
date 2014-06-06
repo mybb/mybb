@@ -474,7 +474,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		$gids .= ",'{$user['gid']}'";
 	}
 
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids})");
+	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
 	$total_joinrequests = $db->fetch_field($query, 'total');
 
 	if($total_joinrequests > 0)

@@ -2615,7 +2615,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('leavegroup', 1)."'");
 		$usergroup = $db->fetch_array($query);
-		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
+		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
 			error($lang->cannot_leave_group);
 		}
@@ -2649,6 +2649,11 @@ if($mybb->input['action'] == "usergroups")
 
 		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('joingroup', 1)."'");
 		$usergroup = $db->fetch_array($query);
+
+		if($usergroup['type'] == 5)
+		{
+			error($lang->cannot_join_invite_group);
+		}
 
 		if(($usergroup['type'] != 4 && $usergroup['type'] != 3) || !$usergroup['gid'])
 		{
@@ -2707,6 +2712,35 @@ if($mybb->input['action'] == "usergroups")
 			redirect("usercp.php?action=usergroups", $lang->joined_group);
 		}
 	}
+
+	// Accepting invitation
+	if($mybb->get_input('acceptinvite', 1))
+	{
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('acceptinvite', 1)."'");
+		$usergroup = $db->fetch_array($query);
+
+		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', 1).",") !== false)
+		{
+			error($lang->already_accepted_invite);
+		}
+
+		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', 1)."' AND invite='1'");
+		$joinrequest = $db->fetch_array($query);
+		if($joinrequest['rid'])
+		{
+			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', 1));
+			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', 1)."'");
+			$plugins->run_hooks("usercp_usergroups_accept_invite");
+			redirect("usercp.php?action=usergroups", $lang->joined_group);
+		}
+		else
+		{
+			error($lang->no_pending_invitation);
+		}
+	}
 	// Show listing of various group related things
 
 	// List of groups this user is a leader of
@@ -2717,18 +2751,18 @@ if($mybb->input['action'] == "usergroups")
 		case "pgsql":
 		case "sqlite":
 			$query = $db->query("
-				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 				FROM ".TABLE_PREFIX."groupleaders l
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
 				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid AND j.uid != 0)
 				WHERE l.uid='".$mybb->user['uid']."'
-				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers
+				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 			");
 			break;
 		default:
 			$query = $db->query("
-				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 				FROM ".TABLE_PREFIX."groupleaders l
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
@@ -2791,7 +2825,7 @@ if($mybb->input['action'] == "usergroups")
 			{
 				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
 			}
-			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3)
+			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 			{
 				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
 			}
@@ -2844,7 +2878,7 @@ if($mybb->input['action'] == "usergroups")
 	}
 
 	$joinablegroups = $joinablegrouplist = '';
-	$query = $db->simple_select("usergroups", "*", "(type='3' OR type='4') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
+	$query = $db->simple_select("usergroups", "*", "(type='3' OR type='4' OR type='5') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
@@ -2862,15 +2896,27 @@ if($mybb->input['action'] == "usergroups")
 		{
 			$conditions = $lang->usergroup_joins_moderated;
 		}
+		elseif($usergroup['type'] == 5)
+		{
+			$conditions = $lang->usergroup_joins_invite;
+		}
 		else
 		{
 			$conditions = $lang->usergroup_joins_anyone;
 		}
 
-		if(isset($appliedjoin[$usergroup['gid']]))
+		if(isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] != 5)
 		{
 			$applydate = my_date('relative', $appliedjoin[$usergroup['gid']]);
 			$joinlink = $lang->sprintf($lang->join_group_applied, $applydate);
+		}
+		elseif(isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] == 5)
+		{
+			$joinlink = $lang->sprintf($lang->pending_invitation, $usergroup['gid'], $mybb->post_code);
+		}
+		elseif($usergroup['type'] == 5)
+		{
+			$joinlink = "--";
 		}
 		else
 		{

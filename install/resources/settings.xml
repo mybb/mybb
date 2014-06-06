@@ -260,10 +260,18 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="deleteinvites">
+			<title>Expire Old Group Invites</title>
+			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[180]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="guestimages">
 			<title>Show Posted Images To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -271,7 +279,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestvideos">
 			<title>Show Posted Videos To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>

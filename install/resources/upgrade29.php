@@ -285,6 +285,16 @@ function upgrade29_dbchanges3()
 		$db->drop_column("users", "showvideos");
 	}
 
+	if($db->field_exists('caninvitemembers', 'groupleaders'))
+	{
+		$db->drop_column("groupleaders", "caninvitemembers");
+	}
+
+	if($db->field_exists('invite', 'joinrequests'))
+	{
+		$db->drop_column("joinrequests", "invite");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -295,6 +305,8 @@ function upgrade29_dbchanges3()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "int NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "int NOT NULL default '1' AFTER showimages");
+			$db->add_column("groupleaders", "caninvitemembers", "int NOT NULL default '0'");
+			$db->add_column("joinrequests", "invite", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
@@ -303,6 +315,8 @@ function upgrade29_dbchanges3()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "int(1) NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "int(1) NOT NULL default '1' AFTER showimages");
+			$db->add_column("groupleaders", "caninvitemembers", "int(1) NOT NULL default '0'");
+			$db->add_column("joinrequests", "invite", "int(1) NOT NULL default '0'");
 			break;
 	}
 

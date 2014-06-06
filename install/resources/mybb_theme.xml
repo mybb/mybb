@@ -4000,7 +4000,7 @@ a.button {
 <td class="trow1"><span class="smalltext">{$lang->online_note}<br />{$onlinemembers}</span></td>
 </tr>]]></template>
 		<template name="index_whosonline_memberbit" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="managegroup" version="1600"><![CDATA[<html>
+		<template name="managegroup" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->members_of}</title>
 {$headerinclude}
@@ -4031,7 +4031,7 @@ a.button {
 <div align="center">{$remove_users}</div>
 </form>
 {$add_user}
-
+{$invite_user}
 {$footer}
 </body>
 </html>]]></template>
@@ -4090,6 +4090,62 @@ if(use_xmlhttprequest == "1")
 </script>
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
+</form>]]></template>
+		<template name="managegroup_inviteuser" version="1800"><![CDATA[<br />
+<form method="post" action="managegroup.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_invite" />
+<input type="hidden" name="gid" value="{$gid}" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="6"><strong>{$lang->invite_member}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$lang->username}</td>
+  <td class="trow1"><input type="text" id="inviteusername" class="textbox" name="inviteusername" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
+</tr>
+</table>
+<link rel="stylesheet" href="jscripts/select2/select2.css">
+<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<script type="text/javascript">
+<!--
+if(use_xmlhttprequest == "1")
+{
+	$("#inviteusername").select2({
+		placeholder: "Search for a user",
+		minimumInputLength: 3,
+		maximumSelectionSize: 3,
+		multiple: false,
+		ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+			url: "xmlhttp.php?action=get_users",
+			dataType: 'json',
+			data: function (term, page) {
+				return {
+					query: term, // search term
+				};
+			},
+			results: function (data, page) { // parse the results into the format expected by Select2.
+				// since we are using custom formatting functions we do not need to alter remote JSON data
+				return {results: data};
+			}
+		},
+		initSelection: function(element, callback) {
+			var query = $(element).val();
+			if (query !== "") {
+				$.ajax("xmlhttp.php?action=get_users", {
+					data: {
+						query: query
+					},
+					dataType: "json"
+				}).done(function(data) { callback(data); });
+			}
+		},
+	});
+}
+// -->
+</script>
+<br />
+<div align="center"><input type="submit" class="button" value="{$lang->invite_member_submit}" /></div>
 </form>]]></template>
 		<template name="managegroup_joinrequests" version="1400"><![CDATA[<html>
 <head>

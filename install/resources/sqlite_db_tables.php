@@ -280,6 +280,7 @@ $tables[] = "CREATE TABLE mybb_groupleaders (
 	uid int NOT NULL default '0',
 	canmanagemembers int(1) NOT NULL default '0',
 	canmanagerequests int(1) NOT NULL default '0'
+	caninvitemembers int(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_helpdocs (
@@ -317,6 +318,7 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
 	gid smallint NOT NULL default '0',
 	reason varchar(250) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0'
+	invite int(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_massemails (
