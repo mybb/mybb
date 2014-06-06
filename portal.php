@@ -470,9 +470,10 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$icon_cache = $cache->read("posticons");
 
 		$query = $db->query("
-			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
+			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions, f.name AS forumname
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = t.fid)
 			WHERE t.tid IN (0{$tids}){$annfidswhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 			ORDER BY t.dateline DESC
 			LIMIT 0, {$numannouncements}"
@@ -489,6 +490,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
+			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 
 			if($announcement['uid'] == 0)
 			{

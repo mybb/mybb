@@ -7,6 +7,7 @@
 
 $l['nav_portal'] = "Portal";
 $l['posted_by'] = "Posted by:";
+$l['forum'] = "Forum:";
 $l['replies'] = "Replies";
 $l['no_replies'] = "No Replies";
 $l['latest_threads'] = "Latest Threads";

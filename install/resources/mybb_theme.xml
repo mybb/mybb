@@ -8438,7 +8438,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} - {$lang->forum} <a href="{$mybb->settings['bburl']}/{$announcement['forumlink']}">{$announcement['forumname']}</a> {$numcomments}</span>
 </td>
 </tr>
 <tr>
