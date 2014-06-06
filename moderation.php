@@ -2715,7 +2715,8 @@ switch($mybb->input['action'])
 						$update['icq'] = "";
 						$update['aim'] = "";
 						$update['yahoo'] = "";
-						$update['msn'] = "";
+						$update['skype'] = "";
+						$update['google'] = "";
 						$update['usertitle'] = "";
 						break;
 					case "deletepms":
@@ -2807,7 +2808,7 @@ switch($mybb->input['action'])
 
 							$update['usergroup'] = intval($mybb->settings['purgespammerbangroup']);
 							$update['additionalgroups'] = "";
-							$update['displaygroup'] = "";
+							$update['displaygroup'] = 0;
 
 							$cache->update_banned();
 							$cache->update_bannedips();
