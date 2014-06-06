@@ -412,19 +412,23 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		$message = $mybb->get_input('value');
+		$editreason = $mybb->get_input('editreason');
 		if(my_strtolower($charset) != "utf-8")
 		{
 			if(function_exists("iconv"))
 			{
 				$message = iconv($charset, "UTF-8//IGNORE", $message);
+				$editreason = iconv($charset, "UTF-8//IGNORE", $editreason);
 			}
 			else if(function_exists("mb_convert_encoding"))
 			{
 				$message = @mb_convert_encoding($message, $charset, "UTF-8");
+				$editreason = @mb_convert_encoding($editreason, $charset, "UTF-8");
 			}
 			else if(my_strtolower($charset) == "iso-8859-1")
 			{
 				$message = utf8_decode($message);
+				$editreason = utf8_decode($editreason);
 			}
 		}
 
@@ -437,6 +441,7 @@ else if($mybb->input['action'] == "edit_post")
 		$updatepost = array(
 			"pid" => $post['pid'],
 			"message" => $message,
+			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
 		$posthandler->set_data($updatepost);
@@ -510,6 +515,14 @@ else if($mybb->input['action'] == "edit_post")
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
+			$post['editreason'] = $editreason;
+			$editreason = "";
+			if($post['editreason'] != "")
+			{
+				$post['editreason'] = $parser->parse_badwords($post['editreason']);
+				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
+				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+			}
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
 
