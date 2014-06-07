@@ -516,6 +516,7 @@ if($mybb->input['action'] == "export")
 		{
 			if($property == "inherited") continue;
 
+			$value = str_replace(']]>', ']]]]><![CDATA[>', $value);
 			$xml .= "\t\t<{$property}><![CDATA[{$value}]]></{$property}>\r\n";
 		}
 		$xml .= "\t</properties>\r\n";

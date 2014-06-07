@@ -562,7 +562,7 @@ class postParser
 	}
 
 	/**
-	 * Filters <![CDATA[ and ]]> tags in the specified message.
+	 * Resolves nested CDATA tags in the specified message.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
