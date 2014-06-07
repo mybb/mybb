@@ -336,10 +336,9 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	$altbg = alt_trow();
 	$threadlist = '';
 	$query = $db->query("
-		SELECT t.*, u.username, f.name AS forumname
+		SELECT t.*, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = t.fid)
 		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
@@ -373,6 +372,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		$thread['forumlink'] = get_thread_link($thread['fid']);
+		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
@@ -472,10 +472,9 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$icon_cache = $cache->read("posticons");
 
 		$query = $db->query("
-			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions, f.name AS forumname
+			SELECT t.*, t.username AS threadusername, u.username, u.avatar, u.avatardimensions
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid = t.fid)
 			WHERE t.tid IN (0{$tids}){$annfidswhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 			ORDER BY t.dateline DESC
 			LIMIT 0, {$numannouncements}"
@@ -493,7 +492,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
-
+			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 			if($announcement['uid'] == 0)
 			{
 				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
