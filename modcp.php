@@ -511,7 +511,7 @@ if($mybb->input['action'] == "modlogs")
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
-		// Edited a user?
+		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
@@ -712,8 +712,9 @@ if($mybb->input['action'] == "do_new_announcement")
 			'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
 			'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
 		);
-
 		$aid = $db->insert_query("announcements", $insert_announcement);
+
+		log_moderator_action(array("aid" => $aid, "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_added);
 
 		$plugins->run_hooks("modcp_do_new_announcement_end");
 
@@ -3472,7 +3473,7 @@ if(!$mybb->input['action'])
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
-		// Edited a user?
+		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
