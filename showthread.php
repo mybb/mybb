@@ -1034,6 +1034,12 @@ if($mybb->input['action'] == "thread")
 	$similarthreads = '';
 	if($mybb->settings['showsimilarthreads'] != 0)
 	{
+		$own_perm = '';
+		if($forumpermissions['canonlyviewownthreads'] == 1)
+		{
+			$own_perm = " AND t.uid={$mybb->user['uid']}";
+		}
+
 		switch($db->type)
 		{
 			case "pgsql":
@@ -1041,7 +1047,7 @@ if($mybb->input['action'] == "thread")
 					SELECT t.*, t.username AS threadusername, u.username
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid), plainto_tsquery ('".$db->escape_string($thread['subject'])."') AS query
-					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query
+					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query{$own_perm}
 					ORDER BY t.lastpost DESC
 					OFFSET 0 LIMIT {$mybb->settings['similarlimit']}
 				");
@@ -1051,7 +1057,7 @@ if($mybb->input['action'] == "thread")
 					SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
+					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%'{$own_perm} AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
 					ORDER BY t.lastpost DESC
 					LIMIT 0, {$mybb->settings['similarlimit']}
 				");
