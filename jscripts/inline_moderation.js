@@ -53,7 +53,7 @@ var inlineModeration = {
           {
             thread.children('td').addClass('trow_selected');
           }
-					else if(fieldset.length > 0)
+					if(fieldset.length > 0)
 					{
 						fieldset.addClass('inline_selected');	
 					}
@@ -299,7 +299,7 @@ var inlineModeration = {
             thread.children('td').removeClass('trow_selected');
           }
         }
-				else if(fieldset.length > 0)
+				if(fieldset.length > 0)
 				{
 					if(master.prop('checked') == true)
 					{
