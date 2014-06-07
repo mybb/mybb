@@ -6961,7 +6961,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="modcp_modqueue_attachments_attachment" version="1800"><![CDATA[			<tr>
-				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class="modqueue_meta">Post: <a href="{$link}">{$attachment['postsubject']}</a></small></td>
+				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class="modqueue_meta">{$lang->post}: <a href="{$link}">{$attachment['postsubject']}</a></small></td>
 				<td class="{$altbg}" align="center">{$profile_link}</td>
 				<td align="center" class="{$altbg}">{$attachdate}</td>
 				<td class="{$altbg}" align="center"><label class="label_radio_ignore"><input type="radio" class="radio radio_ignore" name="attachments[{$attachment['aid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label></td>
@@ -9823,7 +9823,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <tr id="reason">
 	<td class="trow2">&nbsp;</td>
 	<td class="trow2" align="left">
-		<div>If 'Other' please provide a reason for reporting this content.</div>
+		<div>{$lang->report_reason_other_description}</div>
 		<input type="text" class="textbox" name="comment" size="40" maxlength="250" />
 	</td>
 </tr>
