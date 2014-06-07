@@ -295,6 +295,11 @@ function upgrade29_dbchanges3()
 		$db->drop_column("joinrequests", "invite");
 	}
 
+	if($db->field_exists('registration', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "registration");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -307,6 +312,7 @@ function upgrade29_dbchanges3()
 			$db->add_column("users", "showvideos", "int NOT NULL default '1' AFTER showimages");
 			$db->add_column("groupleaders", "caninvitemembers", "int NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "int NOT NULL default '0'");
+			$db->add_column("profilefields", "registration", "int NOT NULL default '0' AFTER required");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
@@ -317,6 +323,7 @@ function upgrade29_dbchanges3()
 			$db->add_column("users", "showvideos", "int(1) NOT NULL default '1' AFTER showimages");
 			$db->add_column("groupleaders", "caninvitemembers", "int(1) NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "int(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "registration", "int(1) NOT NULL default '0' AFTER required");
 			break;
 	}
 

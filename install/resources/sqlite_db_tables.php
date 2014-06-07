@@ -492,6 +492,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	length smallint NOT NULL default '0',
 	maxlength smallint NOT NULL default '0',
 	required int(1) NOT NULL default '0',
+	registration int(1) NOT NULL default '0',
 	editable int(1) NOT NULL default '0',
 	hidden int(1) NOT NULL default '0',
 	postbit int(1) NOT NULL default '0',

@@ -14,7 +14,7 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields,member_register_password,member_activate,member_resendactivation,member_lostpw";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove,member_register_additionalfields";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
 require_once "./global.php";
 
@@ -572,8 +572,8 @@ if($mybb->input['action'] == "register")
 		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
 		// Custom profile fields baby!
 		$altbg = "trow1";
-		$requiredfields = '';
-		$query = $db->simple_select("profilefields", "*", "required='1' AND editable !='0'", array('order_by' => 'disporder'));
+		$requiredfields = $customfields = '';
+		$query = $db->simple_select("profilefields", "*", "(required='1' OR registration='1') AND editable !='0'", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -737,6 +737,11 @@ if($mybb->input['action'] == "register")
 
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
+			else
+			{
+				eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+			}
+
 			$code = '';
 			$select = '';
 			$val = '';
@@ -748,6 +753,10 @@ if($mybb->input['action'] == "register")
 		if(!empty($requiredfields))
 		{
 			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
+		}
+		if(!empty($customfields))
+		{
+			eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
 		}
 		if(!isset($fromreg))
 		{

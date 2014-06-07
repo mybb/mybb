@@ -86,6 +86,7 @@ $l['optional_fields'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
 $l['birthdate'] = "Birthdate:";
 $l['additional_info'] = "Additional Information";
+$l['required_info'] = "Required Information";
 $l['i_agree'] = "I Agree";
 $l['account_details'] = "Account Details";
 $l['account_prefs'] = "Account Preferences:";

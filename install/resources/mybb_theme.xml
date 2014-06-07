@@ -4628,6 +4628,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>
 {$requiredfields}
+{$customfields}
 {$referrer}
 {$regimage}
 </td>
@@ -4770,6 +4771,13 @@ $().ready(function() {
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_register_additionalfields" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong>{$lang->additional_info}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+{$customfields}
+</table>
+</fieldset>]]></template>
 		<template name="member_register_agreement" version="123"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->agreement}</title>
@@ -5026,9 +5034,9 @@ if(use_xmlhttprequest == "1")
 	</tr>
 </table>
 </fieldset>]]></template>
-		<template name="member_register_requiredfields" version="1400"><![CDATA[<br />
+		<template name="member_register_requiredfields" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
-<legend><strong>{$lang->additional_info}</strong></legend>
+<legend><strong>{$lang->required_info}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 {$requiredfields}
 </table>
