@@ -1588,6 +1588,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="maxpmquotedepth">
+			<title>Maximum PM Nested Quote Tags</title>
+			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a PM, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect PMs already sent. Set to 0 to disable.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar (calendar.php)." disporder="17" isdefault="1">
 		<setting name="enablecalendar">

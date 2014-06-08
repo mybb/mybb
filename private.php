@@ -846,6 +846,13 @@ if($mybb->input['action'] == "send")
 			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 
+			require_once MYBB_ROOT."inc/functions_posting.php";
+
+			if($mybb->settings['maxpmquotedepth'] != '0')
+			{
+				$message = remove_message_quotes($message, $mybb->settings['maxpmquotedepth']);
+			}
+
 			if($mybb->input['do'] == 'forward')
 			{
 				$subject = "Fw: $subject";
@@ -1159,6 +1166,11 @@ if($mybb->input['action'] == "read")
 			'quote_is_pm' => true
 		);
 		$quoted_message = parse_quoted_message($quoted_message);
+
+		if($mybb->settings['maxpmquotedepth'] != '0')
+		{
+			$quoted_message = remove_message_quotes($quoted_message, $mybb->settings['maxpmquotedepth']);
+		}
 
 		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 		$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
