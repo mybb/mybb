@@ -837,8 +837,7 @@ function upgrade29_updatetheme()
 
 	// New default user star
 	$contents = "<p>Updating the Default user star image... ";
-	$update['starimage'] = "images/star.png";
-	$db->update_query("usergroups", $update, "starimage='images/star.gif'");
+	$db->update_query("usergroups", array('starimage' => 'images/star.png'), "starimage='images/star.gif'");
 	$contents .= "done.</p>";
 
 	$contents .= "<p>Updating the Default theme... ";
