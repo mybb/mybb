@@ -817,7 +817,8 @@ classic=Display posts using the classic layout]]></optionscode>
 instant=Instant Activation
 verify=Send Email Verification
 randompass=Send Random Password
-admin=Administrator Activation]]></optionscode>
+admin=Administrator Activation
+both=Email Verification & Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>

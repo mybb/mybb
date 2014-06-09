@@ -367,6 +367,40 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 			error($lang->redirect_registered_admin_activate);
 		}
+		else if($mybb->settings['regtype'] == "both")
+		{
+			$activationcode = random_str();
+			$activationarray = array(
+				"uid" => $user_info['uid'],
+				"dateline" => TIME_NOW,
+				"code" => $activationcode,
+				"type" => "b"
+			);
+			$db->insert_query("awaitingactivation", $activationarray);
+			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 1:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 2:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				default:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+			}
+			my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
+
+			$plugins->run_hooks("member_do_register_end");
+
+			error($lang->redirect_registered_activation);
+		}
 		else
 		{
 			$lang->redirect_registered = $lang->sprintf($lang->redirect_registered, $mybb->settings['bbname'], $user_info['username']);
@@ -956,7 +990,7 @@ if($mybb->input['action'] == "activate")
 	if(isset($mybb->input['code']) && $user)
 	{
 		$mybb->settings['awaitingusergroup'] = "5";
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
 		if(!$activation['uid'])
 		{
@@ -966,8 +1000,15 @@ if($mybb->input['action'] == "activate")
 		{
 			error($lang->error_badactivationcode);
 		}
+
+		if($activation['type'] == "b" && $activation['validated'] == 1)
+		{
+			error($lang->error_alreadyvalidated);
+		}
+
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
-		if($user['usergroup'] == 5 && $activation['type'] != "e")
+
+		if($user['usergroup'] == 5 && $activation['type'] != "e" && $activation['type'] != "b")
 		{
 			$db->update_query("users", array("usergroup" => 2), "uid='".$user['uid']."'");
 		}
@@ -975,11 +1016,21 @@ if($mybb->input['action'] == "activate")
 		{
 			$newemail = array(
 				"email" => $db->escape_string($activation['misc']),
-				);
+			);
 			$db->update_query("users", $newemail, "uid='".$user['uid']."'");
 			$plugins->run_hooks("member_activate_emailupdated");
 
 			redirect("usercp.php", $lang->redirect_emailupdated);
+		}
+		elseif($activation['type'] == "b")
+		{
+			$update = array(
+				"validated" => 1,
+			);
+			$db->update_query("awaitingactivation", $update, "uid='".$user['uid']."' AND type='b'");
+			$plugins->run_hooks("member_activate_emailactivated");
+
+			redirect("index.php", $lang->redirect_accountactivated_admin, "", true);
 		}
 		else
 		{
@@ -1017,6 +1068,14 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_alreadyactivated);
 	}
 
+	$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
+	$activation = $db->fetch_array($query);
+
+	if($activation['validated'] == 1)
+	{
+		error($lang->error_activated_by_admin);
+	}
+
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
@@ -1031,9 +1090,9 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	}
 
 	$query = $db->query("
-		SELECT u.uid, u.username, u.usergroup, u.email, a.code
+		SELECT u.uid, u.username, u.usergroup, u.email, a.code, a.type, a.validated
 		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r')
+		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r' OR a.type='b')
 		WHERE u.email='".$db->escape_string($mybb->get_input('email'))."'
 	");
 	$numusers = $db->num_rows($query);
@@ -1045,18 +1104,22 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	{
 		while($user = $db->fetch_array($query))
 		{
+			if($user['type'] == "b" && $user['validated'] == 1)
+			{
+				error($lang->error_activated_by_admin);
+			}
+
 			if($user['usergroup'] == 5)
 			{
 				if(!$user['code'])
 				{
 					$user['code'] = random_str();
-					$now = TIME_NOW;
 					$uid = $user['uid'];
 					$awaitingarray = array(
 						"uid" => $uid,
 						"dateline" => TIME_NOW,
 						"code" => $user['code'],
-						"type" => "r"
+						"type" => $user['type']
 					);
 					$db->insert_query("awaitingactivation", $awaitingarray);
 				}

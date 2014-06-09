@@ -108,6 +108,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
   dateline bigint(30) NOT NULL default '0',
   code varchar(100) NOT NULL default '',
   type char(1) NOT NULL default '',
+  validated tinyint(1) NOT NULL default '0',
   oldgroup bigint(30) NOT NULL default '0',
   misc varchar(255) NOT NULL default '',
   PRIMARY KEY  (aid)

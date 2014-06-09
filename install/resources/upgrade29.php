@@ -300,6 +300,11 @@ function upgrade29_dbchanges3()
 		$db->drop_column("profilefields", "registration");
 	}
 
+	if($db->field_exists('validated', 'awaitingactivation'))
+	{
+		$db->drop_column("awaitingactivation", "validated");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -313,6 +318,7 @@ function upgrade29_dbchanges3()
 			$db->add_column("groupleaders", "caninvitemembers", "int NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "int NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "int NOT NULL default '0' AFTER required");
+			$db->add_column("awaitingactivation", "validated", "smallint NOT NULL default '0' AFTER type");
 			break;
 		default:
 			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
@@ -324,6 +330,7 @@ function upgrade29_dbchanges3()
 			$db->add_column("groupleaders", "caninvitemembers", "int(1) NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "int(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "int(1) NOT NULL default '0' AFTER required");
+			$db->add_column("awaitingactivation", "validated", "tinyint(1) NOT NULL default '0' AFTER type");
 			break;
 	}
 
@@ -430,6 +437,7 @@ function upgrade29_dbchanges3()
 	$cache->delete('reportedposts');
 
 	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
+	$db->update_query("settings", array('optionscode' => 'select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation\r\nboth=Email Verification & Administrator Activation'), "name='regtype'");
 
 	// Update tasks
 	$added_tasks = sync_tasks();

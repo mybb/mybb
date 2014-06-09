@@ -177,6 +177,7 @@ $l['admin_options'] = "Administrator Options";
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, please check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
 $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />You will now be taken back to the main page.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
+$l['redirect_accountactivated_admin'] = "Your email has successfully validated.<br />Your registration must now be activated by an administrator. Until then, you may not be able to post on these forums.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
 $l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";
 $l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
@@ -194,6 +195,7 @@ $l['error_alreadyregisteredtime'] = "We cannot process your registration because
 $l['error_badlostpwcode'] = "You seem to have entered an invalid password reset code. Please re-read the email you were sent or contact the forum administrators for more help.";
 $l['error_badactivationcode'] = "You have entered an invalid account activation code. To resend all activation emails to the email address on file, please click <a href=\"member.php?action=resendactivation\">here</a>.";
 $l['error_alreadyactivated'] = "It appears your account is already activated or does not require email verification.";
+$l['error_alreadyvalidated'] = "Your email have already been validated.";
 $l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.";
