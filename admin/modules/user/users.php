@@ -2023,8 +2023,6 @@ if($mybb->input['action'] == "merge")
 				$db->update_query("users", array('regdate' => $source_user['regdate']), "uid='{$destination_user['uid']}'");
 			}
 
-			update_stats(array('numusers' => '-1'));
-
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
 			// Log admin action
