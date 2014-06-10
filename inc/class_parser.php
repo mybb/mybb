@@ -140,7 +140,7 @@ class postParser
 		}
 
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if(!empty($this->options['allow_mycode']))
+		if(!empty($this->options['allow_mycode']) && $mybb->settings['allowcodemycode'] == 1)
 		{
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
@@ -150,7 +150,7 @@ class postParser
 		$message = $this->fix_javascript($message);
 
 		// Replace "me" code and slaps if we have a username
-		if(!empty($this->options['me_username']))
+		if(!empty($this->options['me_username']) && $mybb->settings['allowmemycode'] == 1)
 		{
 			global $lang;
 
@@ -250,67 +250,109 @@ class postParser
 	 */
 	private function cache_mycode()
 	{
-		global $cache, $lang;
+		global $cache, $lang, $mybb;
 		$this->mycode_cache = array();
 
-		$standard_mycode = $callback_mycode = array();
+		$standard_mycode = $callback_mycode = $nestable_mycode = array();
+		$standard_count = $callback_count = $nestable_count = 0;
 
-		$standard_mycode['b']['regex'] = "#\[b\](.*?)\[/b\]#si";
-        $standard_mycode['b']['replacement'] = "<span style=\"font-weight: bold;\">$1</span>";
+		if($mybb->settings['allowbasicmycode'] == 1)
+		{
+			$standard_mycode['b']['regex'] = "#\[b\](.*?)\[/b\]#si";
+			$standard_mycode['b']['replacement'] = "<span style=\"font-weight: bold;\">$1</span>";
 
-        $standard_mycode['u']['regex'] = "#\[u\](.*?)\[/u\]#si";
-        $standard_mycode['u']['replacement'] = "<span style=\"text-decoration: underline;\">$1</span>";
+			$standard_mycode['u']['regex'] = "#\[u\](.*?)\[/u\]#si";
+			$standard_mycode['u']['replacement'] = "<span style=\"text-decoration: underline;\">$1</span>";
 
-        $standard_mycode['i']['regex'] = "#\[i\](.*?)\[/i\]#si";
-        $standard_mycode['i']['replacement'] = "<span style=\"font-style: italic;\">$1</span>";
+			$standard_mycode['i']['regex'] = "#\[i\](.*?)\[/i\]#si";
+			$standard_mycode['i']['replacement'] = "<span style=\"font-style: italic;\">$1</span>";
 
-		$standard_mycode['s']['regex'] = "#\[s\](.*?)\[/s\]#si";
-		$standard_mycode['s']['replacement'] = "<del>$1</del>";
+			$standard_mycode['s']['regex'] = "#\[s\](.*?)\[/s\]#si";
+			$standard_mycode['s']['replacement'] = "<del>$1</del>";
 
-		$standard_mycode['copy']['regex'] = "#\(c\)#i";
-		$standard_mycode['copy']['replacement'] = "&copy;";
+			$standard_mycode['hr']['regex'] = "#\[hr\]#si";
+			$standard_mycode['hr']['replacement'] = "<hr />";
 
-		$standard_mycode['tm']['regex'] = "#\(tm\)#i";
-		$standard_mycode['tm']['replacement'] = "&#153;";
+			++$standard_count;
+		}
 
-		$standard_mycode['reg']['regex'] = "#\(r\)#i";
-		$standard_mycode['reg']['replacement'] = "&reg;";
+		if($mybb->settings['allowsymbolmycode'] == 1)
+		{
+			$standard_mycode['copy']['regex'] = "#\(c\)#i";
+			$standard_mycode['copy']['replacement'] = "&copy;";
 
-		$callback_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
-		$callback_mycode['url_simple']['replacement'] = array($this, 'mycode_parse_url_callback1');
+			$standard_mycode['tm']['regex'] = "#\(tm\)#i";
+			$standard_mycode['tm']['replacement'] = "&#153;";
 
-		$callback_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"<]+?)\[/url\]#i";
-		$callback_mycode['url_simple2']['replacement'] = array($this, 'mycode_parse_url_callback2');
+			$standard_mycode['reg']['regex'] = "#\(r\)#i";
+			$standard_mycode['reg']['replacement'] = "&reg;";
 
-		$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
-		$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
+			++$standard_count;
+		}
 
-		$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si";
-		$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
+		if($mybb->settings['allowlinkmycode'] == 1)
+		{
+			$callback_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"<]+?)\[/url\]#si";
+			$callback_mycode['url_simple']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-		$callback_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#i";
-		$callback_mycode['email_simple']['replacement'] = array($this, 'mycode_parse_email_callback');
+			$callback_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"<]+?)\[/url\]#i";
+			$callback_mycode['url_simple2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
-		$callback_mycode['email_complex']['regex'] = "#\[email=(.*?)\](.*?)\[/email\]#i";
-		$callback_mycode['email_complex']['replacement'] = array($this, 'mycode_parse_email_callback');
+			$callback_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex']['replacement'] = array($this, 'mycode_parse_url_callback1');
 
-		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
-		$standard_mycode['hr']['replacement'] = "<hr />";
+			$callback_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#si";
+			$callback_mycode['url_complex2']['replacement'] = array($this, 'mycode_parse_url_callback2');
 
-		$nestable_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si";
-		$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
+			++$callback_count;
+		}
 
-		$nestable_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
-        $nestable_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
+		if($mybb->settings['allowemailmycode'] == 1)
+		{
+			$callback_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#i";
+			$callback_mycode['email_simple']['replacement'] = array($this, 'mycode_parse_email_callback');
 
-        $callback_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
-        $callback_mycode['size_int']['replacement'] = array($this, 'mycode_handle_size_callback');
+			$callback_mycode['email_complex']['regex'] = "#\[email=(.*?)\](.*?)\[/email\]#i";
+			$callback_mycode['email_complex']['replacement'] = array($this, 'mycode_parse_email_callback');
 
-        $nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_]+)\](.*?)\[/font\]#si";
-        $nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
+			++$callback_count;
+		}
 
-        $nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
-        $nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
+		if($mybb->settings['allowcolormycode'] == 1)
+		{
+			$nestable_mycode['color']['regex'] = "#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si";
+			$nestable_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
+
+			++$nestable_count;
+		}
+
+		if($mybb->settings['allowsizemycode'] == 1)
+		{
+			$nestable_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
+			$nestable_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
+
+			$callback_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
+			$callback_mycode['size_int']['replacement'] = array($this, 'mycode_handle_size_callback');
+
+			++$nestable_count;
+			++$callback_count;
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_]+)\](.*?)\[/font\]#si";
+			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
+
+			++$nestable_count;
+		}
+
+		if($mybb->settings['allowalignmycode'] == 1)
+		{
+			$nestable_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
+			$nestable_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
+
+			++$nestable_count;
+		}
 
 		$custom_mycode = $cache->read("mycode");
 
@@ -323,6 +365,7 @@ class postParser
 				$custom_mycode[$key]['regex'] = "#".$mycode['regex']."#si";
 			}
 			$mycode = array_merge($standard_mycode, $custom_mycode);
+			++$standard_count;
 		}
 		else
 		{
@@ -347,6 +390,10 @@ class postParser
 		{
 			$this->mycode_cache['callback'][] = array('find' => $code['regex'], 'replacement' => $code['replacement']);
 		}
+
+		$this->mycode_cache['standard_count'] = $standard_count;
+		$this->mycode_cache['callback_count'] = $callback_count;
+		$this->mycode_cache['nestable_count'] = $nestable_count;
 	}
 
 	/**
@@ -358,7 +405,7 @@ class postParser
 	 */
 	function parse_mycode($message, $options=array())
 	{
-		global $lang;
+		global $lang, $mybb;
 
 		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
@@ -374,33 +421,46 @@ class postParser
 		$message = str_replace('$', '&#36;', $message);
 
 		// Replace the rest
-		$message = preg_replace($this->mycode_cache['standard']['find'], $this->mycode_cache['standard']['replacement'], $message);
-		foreach($this->mycode_cache['callback'] as $replace)
+		if($this->mycode_cache['standard_count'] > 0)
 		{
-			$message = preg_replace_callback($replace['find'], $replace['replacement'], $message);
+			$message = preg_replace($this->mycode_cache['standard']['find'], $this->mycode_cache['standard']['replacement'], $message);
+		}
+
+		if($this->mycode_cache['callback_count'] > 0)
+		{
+			foreach($this->mycode_cache['callback'] as $replace)
+			{
+				$message = preg_replace_callback($replace['find'], $replace['replacement'], $message);
+			}
 		}
 
 		// Replace the nestable mycode's
-		foreach($this->mycode_cache['nestable'] as $mycode)
+		if($this->mycode_cache['nestable_count'] > 0)
 		{
-			while(preg_match($mycode['find'], $message))
+			foreach($this->mycode_cache['nestable'] as $mycode)
 			{
-				$message = preg_replace($mycode['find'], $mycode['replacement'], $message);
+				while(preg_match($mycode['find'], $message))
+				{
+					$message = preg_replace($mycode['find'], $mycode['replacement'], $message);
+				}
 			}
 		}
 
 		// Reset list cache
-		$this->list_elements = array();
-		$this->list_count = 0;
-
-		// Find all lists
-		$message = preg_replace_callback("#(\[list(=(a|A|i|I|1))?\]|\[/list\])#si", array($this, 'mycode_prepare_list'), $message);
-
-		// Replace all lists
-		for($i = $this->list_count; $i > 0; $i--)
+		if($mybb->settings['allowlistmycode'] == 1)
 		{
-			// Ignores missing end tags
-			$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
+			$this->list_elements = array();
+			$this->list_count = 0;
+
+			// Find all lists
+			$message = preg_replace_callback("#(\[list(=(a|A|i|I|1))?\]|\[/list\])#si", array($this, 'mycode_prepare_list'), $message);
+
+			// Replace all lists
+			for($i = $this->list_count; $i > 0; $i--)
+			{
+				// Ignores missing end tags
+				$message = preg_replace_callback("#\s?\[list(=(a|A|i|I|1))?&{$i}\](.*?)(\[/list&{$i}\]|$)(\r\n?|\n?)#si", array($this, 'mycode_parse_list_callback'), $message, 1);
+			}
 		}
 
 		// Convert images when allowed.
