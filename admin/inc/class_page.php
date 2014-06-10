@@ -802,6 +802,7 @@ $(function() {
 				":at:": "../images/smilies/at.png"
 			}
 		},
+		emoticonsCompat: true,
         toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|horizontalrule,image,email,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
 	});
       
