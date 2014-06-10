@@ -404,7 +404,7 @@ if(!$mybb->input['action'])
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
 	
-	if ($handle !== false)
+	if($handle !== false)
 	{
 		while(($file = readdir($handle)) !== false)
 		{
