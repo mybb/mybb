@@ -2826,6 +2826,59 @@ function build_mycode_inserter($bind="message")
 		}
 		else
 		{
+			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+
+			if($mybb->settings['allowbasicmycode'] == 1)
+			{
+				$basic1 = "bold,italic,underline,strike|";
+				$basic2 = "horizontalrule,";
+			}
+
+			if($mybb->settings['allowalignmycode'] == 1)
+			{
+				$align = "left,center,right,justify|";
+			}
+
+			if($mybb->settings['allowfontmycode'] == 1)
+			{
+				$font = "font,";
+			}
+
+			if($mybb->settings['allowsizemycode'] == 1)
+			{
+				$size = "size,";
+			}
+
+			if($mybb->settings['allowcolormycode'] == 1)
+			{
+				$color = "color,";
+			}
+
+			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
+			{
+				$removeformat = "removeformat|";
+			}
+
+			if($mybb->settings['allowemailmycode'] == 1)
+			{
+				$email = "email,";
+			}
+
+			if($mybb->settings['allowlinkmycode'] == 1)
+			{
+				$link = "link,unlink";
+			}
+
+			if($mybb->settings['allowlistmycode'] == 1)
+			{
+				$list = "bulletlist,orderedlist|";
+			}
+
+			if($mybb->settings['allowcodemycode'] == 1)
+			{
+				$code = "code,";
+			}
+
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
 		}
 	}
