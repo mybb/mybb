@@ -1323,6 +1323,15 @@ class postParser
 			case "myspacetv":
 				$id = $path[4]; // http://www.myspace.com/video/fds/fds/123
 				break;
+			case "facebook":
+				$id = $input['v']; // http://www.facebook.com/video/video.php?v=123
+				break;
+			case "veoh":
+				$id = $path[2]; // http://www.veoh.com/watch/123
+				break;
+			case "liveleak":
+				$id = $input['i']; // http://www.liveleak.com/view?i=123
+				break;
 			case "yahoo":
 				$id = $path[1]; // http://xy.screen.yahoo.com/fds-123.html
 				// Support for localized portals
