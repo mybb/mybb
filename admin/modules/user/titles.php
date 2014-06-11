@@ -136,7 +136,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."' AND utid!= '".intval($mybb->input['utid'])."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
