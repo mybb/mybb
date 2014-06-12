@@ -4698,9 +4698,10 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td colspan="2">
 	<select name="subscriptionmethod" id="subscriptionmethod">
-		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
-		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
+		<option value="0" {$no_auto_subscribe_selected}>{$lang->no_auto_subscribe}</option>
+		<option value="1" {$no_subscribe_selected}>{$lang->no_subscribe}</option>
 		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
+		<option value="3" {$instant_pm_subscribe_selected}>{$lang->instant_pm_subscribe}</option>
 	</select>
 </td>
 </tr>
@@ -8768,8 +8769,9 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext">{$lang->thread_subscription_method_desc}</span></td>
 <td class="{$bgcolor} smalltext">
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_dont} value="" style="vertical-align: middle;" /> {$lang->no_subscribe}</label><br />
-	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_none} value="none" style="vertical-align: middle;" /> {$lang->no_email_subscribe}</label><br />
-	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_instant} value="instant" style="vertical-align: middle;" /> {$lang->instant_email_subscribe}</label><br />
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_none} value="none" style="vertical-align: middle;" /> {$lang->no_subscribe_notification}</label><br />
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_email} value="email" style="vertical-align: middle;" /> {$lang->instant_email_subscribe}</label><br />
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_pm} value="pm" style="vertical-align: middle;" /> {$lang->instant_pm_subscribe}</label><br />
 </td>
 </tr>]]></template>
 		<template name="postbit" version="1800"><![CDATA[{$ignore_bit}
@@ -10933,7 +10935,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_addsubscription_thread" version="1600"><![CDATA[<html>
+		<template name="usercp_addsubscription_thread" version="1800"><![CDATA[<html>
 <head>
 <title>{$lang->subscribe_to_thread}</title>
 {$headerinclude}
@@ -10961,8 +10963,12 @@ if(use_xmlhttprequest == "1")
 			<td><strong><label for="notification_none">{$lang->no_notification}</label></strong><br /><span class="smalltext">{$lang->no_notification_desc}</span></td>
 		</tr>
 		<tr>
-			<td width="1"><input type="radio" name="notification" id="notification_instant" value="1" {$notification_instant_checked} /></td>
-			<td><strong><label for="notification_instant">{$lang->instant_notification}</label></strong><br /><span class="smalltext">{$lang->instant_notification_desc}</span></td>
+			<td width="1"><input type="radio" name="notification" id="notification_email" value="1" {$notification_email_checked} /></td>
+			<td><strong><label for="notification_email">{$lang->email_notification}</label></strong><br /><span class="smalltext">{$lang->email_notification_desc}</span></td>
+		</tr>
+		<tr>
+			<td width="1"><input type="radio" name="notification" id="notification_pm" value="2" {$notification_pm_checked} /></td>
+			<td><strong><label for="notification_pm">{$lang->pm_notification}</label></strong><br /><span class="smalltext">{$lang->pm_notification_desc}</span></td>
 		</tr>
 	</table>
 </td>
@@ -11758,9 +11764,10 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td colspan="2">
 	<select name="subscriptionmethod" id="subscriptionmethod">
-		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
-		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
+		<option value="0" {$no_auto_subscribe_selected}>{$lang->no_auto_subscribe}</option>
+		<option value="1" {$no_subscribe_selected}>{$lang->no_subscribe}</option>
 		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
+		<option value="3" {$instant_pm_subscribe_selected}>{$lang->instant_pm_subscribe}</option>
 	</select>
 </td>
 </tr>
@@ -12293,14 +12300,15 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_subscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_thread_subscriptions}</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_remove" version="1600"><![CDATA[<tr>
+		<template name="usercp_subscriptions_remove" version="1800"><![CDATA[<tr>
 	<td class="tfoot" colspan="7">
 	<div class="float_right">
 		<strong>{$lang->with_selected}</strong>
 		<select name="do">
 			<option value="delete">{$lang->delete_subscriptions}</option>
 			<option value="no_notification">{$lang->update_no_notification}</option>
-			<option value="instant_notification">{$lang->update_instant_notification}</option>
+			<option value="email_notification">{$lang->update_email_notification}</option>
+			<option value="pm_notification">{$lang->update_pm_notification}</option>
 		</select>
 		{$gobutton}
 	</div>

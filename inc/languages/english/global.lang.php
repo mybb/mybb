@@ -127,8 +127,9 @@ $l['no_post_icon'] = "no icon";
 $l['thread_subscription_method'] = "Thread Subscription:";
 $l['thread_subscription_method_desc'] = "Specify the type of email notification and thread subscription you'd like to have to this thread. (Registered users only)";
 $l['no_subscribe'] = "Do not subscribe to this thread";
-$l['no_email_subscribe'] = "Subscribe without receiving email notification of new replies";
+$l['no_subscribe_notification'] = "Subscribe without receiving any notification of new replies";
 $l['instant_email_subscribe'] = "Subscribe and receive email notification of new replies";
+$l['instant_pm_subscribe'] = "Subscribe and receive PM notification of new replies";
 
 $l['today'] = "Today";
 $l['yesterday'] = "Yesterday";

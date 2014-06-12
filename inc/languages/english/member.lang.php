@@ -219,8 +219,9 @@ $l['js_validator_captcha_valid'] = "Checking whether or not you entered the corr
 
 $l['subscription_method'] = "Default Thread Subscription Mode:";
 $l['no_auto_subscribe'] = "Do not subscribe";
-$l['no_email_subscribe'] = "No email notification";
+$l['no_subscribe'] = "No notification";
 $l['instant_email_subscribe'] = "Instant email notification";
+$l['instant_pm_subscribe'] = "Instant PM notification";
 
 $l['remove_from_buddy_list'] = "Remove from Buddy List";
 $l['add_to_buddy_list'] = "Add to Buddy List";

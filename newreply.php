@@ -119,7 +119,11 @@ if($mybb->get_input('method') == "quickreply")
 	}
 	else if($mybb->user['subscriptionmethod'] == 2)
 	{
-		$mybb->input['postoptions']['subscriptionmethod'] = "instant";
+		$mybb->input['postoptions']['subscriptionmethod'] = "email";
+	}
+	else if($mybb->user['subscriptionmethod'] == 3)
+	{
+		$mybb->input['postoptions']['subscriptionmethod'] = "pm";
 	}
 }
 
@@ -793,7 +797,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$message = htmlspecialchars_uni($message);
 
 	$postoptionschecked = array('signature' => '', 'disablesmilies' => '');
-	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_instant = '';
+	$postoptions_subscriptionmethod_dont = $postoptions_subscriptionmethod_none = $postoptions_subscriptionmethod_email = $postoptions_subscriptionmethod_pm = '';
 
 	// Set up the post options.
 	if(!empty($mybb->input['previewpost']) || $reply_errors != '')
@@ -808,9 +812,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "instant")
+		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
 		{
-			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
+		}
+		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
+		{
+			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
 		}
 		else
 		{
@@ -838,9 +846,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
-		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "instant")
+		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "email")
 		{
-			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
+		}
+		else if(isset($postoptions['subscriptionmethod']) && $postoptions['subscriptionmethod'] == "pm")
+		{
+			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
 		}
 		else
 		{
@@ -860,7 +872,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		else if($mybb->user['subscriptionmethod'] == 2)
 		{
-			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+			$postoptions_subscriptionmethod_email = "checked=\"checked\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 3)
+		{
+			$postoptions_subscriptionmethod_pm = "checked=\"checked\"";
 		}
 		else
 		{

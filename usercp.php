@@ -804,18 +804,22 @@ if($mybb->input['action'] == "options")
 		$hideemailcheck = "";
 	}
 
-	$no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
+	$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 	if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 1)
 	{
-		$no_email_subscribe_selected = "selected=\"selected\"";
+		$no_subscribe_selected = "selected=\"selected\"";
 	}
 	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 2)
 	{
 		$instant_email_subscribe_selected = "selected=\"selected\"";
 	}
+	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 3)
+	{
+		$instant_pm_subscribe_selected = "selected=\"selected\"";
+	}
 	else
 	{
-		$no_subscribe_selected = "selected=\"selected\"";
+		$no_auto_subscribe_selected = "selected=\"selected\"";
 	}
 
 	if(isset($user['showimages']) && $user['showimages'] == 1)
@@ -1287,9 +1291,13 @@ if($mybb->input['action'] == "do_subscriptions")
 		{
 			$new_notification = 0;
 		}
-		else if($mybb->get_input('do') == "instant_notification")
+		else if($mybb->get_input('do') == "email_notification")
 		{
 			$new_notification = 1;
+		}
+		else if($mybb->get_input('do') == "pm_notification")
+		{
+			$new_notification = 2;
 		}
 
 		// Update
@@ -1611,8 +1619,11 @@ if($mybb->input['action'] == "subscriptions")
 			// What kind of notification type do we have here?
 			switch($thread['notification'])
 			{
-				case "1": // Instant
-					$notification_type = $lang->instant_notification;
+				case "2": // PM
+					$notification_type = $lang->pm_notification;
+					break;
+				case "1": // Email
+					$notification_type = $lang->email_notification;
 					break;
 				default: // No notification
 					$notification_type = $lang->no_notification;

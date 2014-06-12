@@ -213,7 +213,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
 		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
 
-		$allownoticescheck = $hideemailcheck = $no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
+		$allownoticescheck = $hideemailcheck = $no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 
 		if($mybb->get_input('allownotices', 1) == 1)
@@ -228,15 +228,19 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		if($mybb->get_input('subscriptionmethod', 1) == 1)
 		{
-			$no_email_subscribe_selected = "selected=\"selected\"";
+			$no_subscribe_selected = "selected=\"selected\"";
 		}
 		else if($mybb->get_input('subscriptionmethod', 1) == 2)
 		{
 			$instant_email_subscribe_selected = "selected=\"selected\"";
 		}
+		else if($mybb->get_input('subscriptionmethod', 1) == 3)
+		{
+			$instant_pm_subscribe_selected = "selected=\"selected\"";
+		}
 		else
 		{
-			$no_subscribe_selected = "selected=\"selected\"";
+			$no_auto_subscribe_selected = "selected=\"selected\"";
 		}
 
 		if($mybb->get_input('receivepms', 1) == 1)
@@ -805,7 +809,7 @@ if($mybb->input['action'] == "register")
 			{
 				$enabledstcheck = "checked=\"checked\"";
 			}
-			$no_subscribe_selected = $no_email_subscribe_selected = $instant_email_subscribe_selected = '';
+			$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 			$dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 			$username = $email = $email2 = '';
 			$regerrors = '';

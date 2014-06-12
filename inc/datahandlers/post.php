@@ -774,7 +774,10 @@ class PostDataHandler extends DataHandler
 			{
 				switch($post['options']['subscriptionmethod'])
 				{
-					case "instant":
+					case "pm":
+						$notification = 2;
+						break;
+					case "email":
 						$notification = 1;
 						break;
 					default:
@@ -1029,10 +1032,10 @@ class PostDataHandler extends DataHandler
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.subscriptionkey
+				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.subscriptionkey, s.notification
 				FROM ".TABLE_PREFIX."threadsubscriptions s
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
-				WHERE s.notification='1' AND s.tid='{$post['tid']}'
+				WHERE (s.notification='1' OR s.notification='2') AND s.tid='{$post['tid']}'
 				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
@@ -1071,38 +1074,82 @@ class PostDataHandler extends DataHandler
 
 				if($uselang == $mybb->settings['bblanguage'])
 				{
-					$emailsubject = $lang->emailsubject_subscription;
-					$emailmessage = $lang->email_subscription;
+					if($subscribedmember['notification'] == 1)
+					{
+						$emailsubject = $lang->emailsubject_subscription;
+						$emailmessage = $lang->email_subscription;
+					}
+					elseif($subscribedmember['notification'] == 2)
+					{
+						$pmsubject = $lang->pmsubject_subscription;
+						$pmmessage = $lang->pm_subscription;
+					}
 				}
 				else
 				{
-					if(!isset($langcache[$uselang]['emailsubject_subscription']))
+					if($subscribedmember['notification'] == 1)
 					{
-						$userlang = new MyLanguage;
-						$userlang->set_path(MYBB_ROOT."inc/languages");
-						$userlang->set_language($uselang);
-						$userlang->load("messages");
-						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-						unset($userlang);
+						if(!isset($langcache[$uselang]['emailsubject_subscription']))
+						{
+							$userlang = new MyLanguage;
+							$userlang->set_path(MYBB_ROOT."inc/languages");
+							$userlang->set_language($uselang);
+							$userlang->load("messages");
+							$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
+							$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
+							unset($userlang);
+						}
+						$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
+						$emailmessage = $langcache[$uselang]['email_subscription'];
 					}
-					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
-					$emailmessage = $langcache[$uselang]['email_subscription'];
+					elseif($subscribedmember['notification'] == 2)
+					{
+						if(!isset($langcache[$uselang]['pmsubject_subscription']))
+						{
+							$userlang = new MyLanguage;
+							$userlang->set_path(MYBB_ROOT."inc/languages");
+							$userlang->set_language($uselang);
+							$userlang->load("messages");
+							$langcache[$uselang]['pmsubject_subscription'] = $userlang->pmsubject_subscription;
+							$langcache[$uselang]['pm_subscription'] = $userlang->pm_subscription;
+							unset($userlang);
+						}
+						$pmsubject = $langcache[$uselang]['pmsubject_subscription'];
+						$pmmessage = $langcache[$uselang]['pm_subscription'];
+					}
 				}
-				$emailsubject = $lang->sprintf($emailsubject, $subject);
 
-				$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
-				$new_email = array(
-					"mailto" => $db->escape_string($subscribedmember['email']),
-					"mailfrom" => '',
-					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage),
-					"headers" => ''
-				);
-				$db->insert_query("mailqueue", $new_email);
-				unset($userlang);
-				$queued_email = 1;
+				if($subscribedmember['notification'] == 1)
+				{
+					$emailsubject = $lang->sprintf($emailsubject, $subject);
+
+					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
+					$new_email = array(
+						"mailto" => $db->escape_string($subscribedmember['email']),
+						"mailfrom" => '',
+						"subject" => $db->escape_string($emailsubject),
+						"message" => $db->escape_string($emailmessage),
+						"headers" => ''
+					);
+					$db->insert_query("mailqueue", $new_email);
+					unset($userlang);
+					$queued_email = 1;
+				}
+				elseif($subscribedmember['notification'] == 2)
+				{
+					$pmsubject = $lang->sprintf($pmsubject, $subject);
+
+					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
+					$pmmessage = $lang->sprintf($pmmessage, $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
+					$pm = array(
+						'subject' => $db->escape_string($pmsubject),
+						'message' => $db->escape_string($pmmessage),
+						'touid' => $subscribedmember['uid']
+					);
+					send_pm($pm, -1, true);
+					unset($userlang);
+				}
 			}
 			// Have one or more emails been queued? Update the queue count
 			if(isset($queued_email) && $queued_email == 1)
@@ -1378,7 +1425,10 @@ class PostDataHandler extends DataHandler
 			{
 				switch($thread['options']['subscriptionmethod'])
 				{
-					case "instant":
+					case "pm":
+						$notification = 2;
+						break;
+					case "email":
 						$notification = 1;
 						break;
 					default:
@@ -1783,7 +1833,10 @@ class PostDataHandler extends DataHandler
 		{
 			switch($post['options']['subscriptionmethod'])
 			{
-				case "instant":
+				case "pm":
+					$notification = 2;
+					break;
+				case "email":
 					$notification = 1;
 					break;
 				default:

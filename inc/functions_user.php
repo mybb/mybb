@@ -263,7 +263,7 @@ function update_loginkey($uid)
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
- * @param int (Optional) The type of notification to receive for replies (0=none, 1=instant)
+ * @param int (Optional) The type of notification to receive for replies (0=none, 1=email, 2=pm)
  * @param int (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
