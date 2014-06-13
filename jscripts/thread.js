@@ -426,9 +426,6 @@ var Thread = {
 										$.jGrowl(lang.unknown_error);
 									}
 									
-									// hide post
-									$('#post_'+pid).slideToggle("slow");
-									
 									// set timeout for redirect
 									window.setTimeout(function() 
 									{
