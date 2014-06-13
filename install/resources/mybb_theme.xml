@@ -3860,9 +3860,9 @@ a.button {
 				<div class="wrapper">
 					<a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a>
 					<ul class="menu top_links">
-						<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>
-						<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>
-						<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>
+						{$menu_search}
+						{$menu_memberlist}
+						{$menu_calendar}
 						<li><a href="{$mybb->settings['bburl']}/misc.php?action=help" class="help">{$lang->toplinks_help}</a></li>
 					</ul>
 				</div>
@@ -3870,13 +3870,7 @@ a.button {
 			<div id="panel">
 				<div class="upper">
 					<div class="wrapper">
-						<form action="{$mybb->settings['bburl']}/search.php" method="post">
-						<fieldset id="search">
-							<input name="keywords" type="text" class="textbox" />
-							<input value="{$lang->search_button}" type="submit" class="button" />
-							<input type="hidden" name="action" value="do_search" />
-						</fieldset>
-						</form>
+						{$quicksearch}
 						{$welcomeblock}
 					<!-- </div> in header_welcomeblock_member and header_welcomeblock_guest -->
 				<!-- </div> in header_welcomeblock_member and header_welcomeblock_guest -->
@@ -3891,6 +3885,16 @@ a.button {
 				{$pending_joinrequests}
 				<navigation>
 				<br />]]></template>
+		<template name="header_menu_calendar" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>]]></template>
+		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
+		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
+		<template name="header_quicksearch" version="1800"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
+						<fieldset id="search">
+							<input name="keywords" type="text" class="textbox" />
+							<input value="{$lang->search_button}" type="submit" class="button" />
+							<input type="hidden" name="action" value="do_search" />
+						</fieldset>
+						</form>]]></template>
 		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
 						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('div#quick_login').modal({ fadeDuration: 250, keepelement: true }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>

@@ -381,9 +381,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,error';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary";
+$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error';
+$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -453,6 +453,24 @@ else
 			break;
 	}
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
+}
+
+// Display menu links and quick search if user has permission
+$menu_search = $menu_memberlist = $menu_calendar = $quicksearch = '';
+if($mybb->usergroup['cansearch'] == 1)
+{
+	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
+	eval('$quicksearch = "'.$templates->get('header_quicksearch').'";');
+}
+
+if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberlist'] == 1)
+{
+	eval('$menu_memberlist = "'.$templates->get('header_menu_memberlist').'";');
+}
+
+if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
+{
+	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
 }
 
 // See if there are any pending join requests for group leaders
