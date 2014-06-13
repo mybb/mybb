@@ -8551,7 +8551,7 @@ if(use_xmlhttprequest == "1")
 	<tr>
 		<td align="right" colspan="2" valign="bottom">
 			<span class="smalltext">
-				<a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$theme['imgdir']}/printable.png" alt="{$lang->print_this_item}" title="{$lang->print_this_item}" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$theme['imgdir']}/send.png" alt="{$lang->send_to_friend}" title="{$lang->send_to_friend}" /></a>
+				<a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$theme['imgdir']}/printable.png" alt="{$lang->print_this_item}" title="{$lang->print_this_item}" /></a>{$senditem}
 			</span>
 		</td>
 	</tr>
@@ -8560,9 +8560,10 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
+		<template name="portal_announcement_avatar" version="1800"><![CDATA[<td class="trow1" width="1" align="center" valign="top"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></td>]]></template>
 		<template name="portal_announcement_numcomments" version="1400"><![CDATA[- <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
 		<template name="portal_announcement_numcomments_no" version="120"><![CDATA[- {$lang->no_replies}]]></template>
-		<template name="portal_announcement_avatar" version="1800"><![CDATA[<td class="trow1" width="1" align="center" valign="top"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></td>]]></template>
+		<template name="portal_announcement_send_item" version="1800"><![CDATA[&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$theme['imgdir']}/send.png" alt="{$lang->send_to_friend}" title="{$lang->send_to_friend}" /></a>]]></template>
 		<template name="portal_latestthreads" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->latest_threads}</strong></td>
@@ -10466,7 +10467,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1801"><![CDATA[<html>
+		<template name="showthread" version="1800"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -10538,7 +10539,7 @@ if(use_xmlhttprequest == "1")
 	<div class="float_left">
 		<ul class="thread_tools">
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
-			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
+			{$sendthread}
 			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
 			{$addpoll}
 		</ul>
@@ -10744,7 +10745,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 </form>]]></template>
 		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
-		<template name="showthread_ratethread" version="1801"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
+		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript">
 		<!--
 			lang.ratings_update_error = "{$lang->ratings_update_error}";
@@ -10771,6 +10772,7 @@ if(use_xmlhttprequest == "1")
 			<input type="submit" class="button" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>
+		<template name="showthread_send_thread" version="1800"><![CDATA[<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>]]></template>
 		<template name="showthread_similarthreads" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
