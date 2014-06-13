@@ -595,18 +595,22 @@ if($mybb->input['action'] == "thread")
 	mark_thread_read($tid, $fid);
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
-	if($forum['open'] != 0)
+	$newthread = $newreply = '';
+	if($forum['open'] != 0 && $forum['type'] == "f")
 	{
-		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
+		if($forumpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] != 1)
+		{
+			eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
+		}
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($thread['closed'] == 1)
-		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
-		}
-		else
+		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
+		}
+		elseif($thread['closed'] == 1)
+		{
+			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
 		}
 	}
 

@@ -174,7 +174,7 @@ if($mybb->settings['enableforumjump'] != 0)
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
-if($foruminfo['type'] == "f" && $foruminfo['open'] != 0)
+if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
