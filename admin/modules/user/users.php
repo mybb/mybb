@@ -3736,7 +3736,7 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" /> {$user['view']['username']}</legend>\n";
+	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
