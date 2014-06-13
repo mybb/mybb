@@ -1143,7 +1143,7 @@ class PostDataHandler extends DataHandler
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
 					$pmmessage = $lang->sprintf($pmmessage, $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
 					$pm = array(
-						'subject' => $db->escape_string($pmsubject),
+						'subject' => $pmsubject,
 						'message' => $pmmessage,
 						'touid' => $subscribedmember['uid']
 					);
