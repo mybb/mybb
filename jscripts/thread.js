@@ -417,6 +417,26 @@ var Thread = {
 									$('#post_'+pid).slideToggle("slow");
 									
 									$.jGrowl(lang.quick_delete_success);
+								} else if(json.data == 3) 
+								{
+									// deleted thread --> redirect
+									
+									if(!json.hasOwnProperty("url")) 
+									{
+										$.jGrowl(lang.unknown_error);
+									}
+									
+									// hide post
+									$('#post_'+pid).slideToggle("slow");
+									
+									// set timeout for redirect
+									window.setTimeout(function() 
+									{
+ 										window.location = json.url;
+									}, 3000);
+									
+									// print success message
+									$.jGrowl(lang.quick_delete_thread_success);
 								}
 							}
 							else
