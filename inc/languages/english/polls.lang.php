@@ -34,7 +34,7 @@ $l['post_new_poll'] = "Post New Poll";
 $l['days'] = "days";
 $l['poll_results'] = "Poll Results";
 $l['poll_total'] = "Total:";
-$l['poll_votes'] = "votes";
+$l['poll_votes'] = "vote(s)";
 
 $l['redirect_pollposted'] = "Your poll has been posted.<br />You will now be returned to the thread.";
 $l['redirect_pollpostedmoderated'] = "Your poll has been posted, but your thread is still pending moderation.<br />You will be returned to the forum.";
