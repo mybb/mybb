@@ -1144,7 +1144,7 @@ class PostDataHandler extends DataHandler
 					$pmmessage = $lang->sprintf($pmmessage, $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
 					$pm = array(
 						'subject' => $db->escape_string($pmsubject),
-						'message' => $db->escape_string($pmmessage),
+						'message' => $pmmessage,
 						'touid' => $subscribedmember['uid']
 					);
 					send_pm($pm, -1, true);
