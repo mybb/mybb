@@ -8998,7 +8998,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$usercpnav}
 <td valign="top">
 <fieldset>
-  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
 </fieldset>
 <br />
 {$limitwarning}
@@ -9231,6 +9231,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 ------------------------------------------------------------------------
 
 ]]></template>
+		<template name="private_composelink" version="1800"><![CDATA[ | <a href="private.php?action=send">{$lang->compose_message2}</a>]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->empty_folders}</title>
@@ -11067,6 +11068,7 @@ if(use_xmlhttprequest == "1")
 <body>
 {$header}
 <form enctype="multipart/form-data" action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 	{$usercpnav}
@@ -11089,17 +11091,7 @@ if(use_xmlhttprequest == "1")
 			<tr>
 				<td class="tcat" colspan="2"><strong>{$lang->custom_avatar}</strong></td>
 			</tr>
-			<tr>
-				<td class="trow1" width="40%">
-					<strong>{$lang->avatar_upload}</strong>
-					<br /><span class="smalltext">{$lang->avatar_upload_note}</span>
-				</td>
-				<td class="trow1" width="60%">
-					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-					<input type="file" name="avatarupload" size="25" class="fileupload" />
-					{$auto_resize}
-				</td>
-			</tr>
+			{$avatarupload}
 			<tr>
 				<td class="trow2" width="40%">
 					<strong>{$lang->avatar_url}</strong>
@@ -11126,6 +11118,16 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="usercp_avatar_current" version="1800"><![CDATA[<td width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
+		<template name="usercp_avatar_upload" version="1800"><![CDATA[			<tr>
+				<td class="trow1" width="40%">
+					<strong>{$lang->avatar_upload}</strong>
+					<br /><span class="smalltext">{$lang->avatar_upload_note}</span>
+				</td>
+				<td class="trow1" width="60%">
+					<input type="file" name="avatarupload" size="25" class="fileupload" />
+					{$auto_resize}
+				</td>
+			</tr>]]></template>
 		<template name="usercp_changename" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
@@ -11638,7 +11640,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </tbody>
 <tbody style="{$collapsed['usercppms_e']}" id="usercppms_e">
-	<tr><td class="trow1 smalltext"><a href="private.php?action=send" class="usercp_nav_item usercp_nav_composepm">{$lang->ucp_nav_compose}</a></td></tr>
+	{$ucp_nav_compose}
 	<tr>
 		<td class="trow1 smalltext">
 			{$folderlinks}
@@ -11648,6 +11650,7 @@ if(use_xmlhttprequest == "1")
 	<tr><td class="trow1 smalltext"><a href="private.php?action=folders" class="usercp_nav_item usercp_nav_pmfolders">{$lang->ucp_nav_edit_folders}</a></td></tr>
 </tbody>
 ]]></template>
+		<template name="usercp_nav_messenger_compose" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=send" class="usercp_nav_item usercp_nav_composepm">{$lang->ucp_nav_compose}</a></td></tr>]]></template>
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
