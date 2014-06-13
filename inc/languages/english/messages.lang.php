@@ -456,7 +456,7 @@ Here is an excerpt of the message:
 ------------------------------------------
 
 To view the thread, you can go to the following URL:
-{5}/{6}
+[url]{5}/{6}[/url]
 
 There may also be other replies to this thread but you will not receive anymore notifications until you visit the thread again.
 
@@ -464,7 +464,7 @@ There may also be other replies to this thread but you will not receive anymore 
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}
+[url]{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}[/url]
 
 ------------------------------------------";
 ?>
