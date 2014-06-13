@@ -442,6 +442,13 @@ function usercp_menu_messenger()
 	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
+	// Hide compose link if no permission
+	$ucp_nav_compose = '';
+	if($mybb->usergroup['cansendpms'] == 1)
+	{
+		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
+	}
+
 	$folderlinks = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
