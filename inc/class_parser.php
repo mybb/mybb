@@ -363,9 +363,10 @@ class postParser
 			{
 				$mycode['regex'] = str_replace("\x0", "", $mycode['regex']);
 				$custom_mycode[$key]['regex'] = "#".$mycode['regex']."#si";
+
+				++$standard_count;
 			}
 			$mycode = array_merge($standard_mycode, $custom_mycode);
-			++$standard_count;
 		}
 		else
 		{
