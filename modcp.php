@@ -691,7 +691,7 @@ if($mybb->input['action'] == "modlogs")
 		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 		if($logitem['tsubject'])
 		{
-			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
@@ -702,13 +702,17 @@ if($mybb->input['action'] == "modlogs")
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
-		// Edited a user?
+		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
 			if(!empty($data['uid']))
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+			}
+			if(!empty($data['aid']))
+			{
+				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
 			}
 		}
 
@@ -776,6 +780,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	$plugins->run_hooks("modcp_do_delete_announcement");
 
 	$db->delete_query("announcements", "aid='{$aid}'");
+	log_moderator_action(array("aid" => $announcement['aid'], "subject" => $announcement['subject']), $lang->announcement_deleted);
 	$cache->update_forumsdisplay();
 
 	redirect("modcp.php?action=announcements", $lang->redirect_delete_announcement);
@@ -943,8 +948,9 @@ if($mybb->input['action'] == "do_new_announcement")
 				'allowmycode' => $allowmycode,
 				'allowsmilies' => $allowsmilies
 			);
-
 			$aid = $db->insert_query("announcements", $insert_announcement);
+
+			log_moderator_action(array("aid" => $aid, "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_added);
 
 			$plugins->run_hooks("modcp_do_new_announcement_end");
 
@@ -1317,8 +1323,9 @@ if($mybb->input['action'] == "do_edit_announcement")
 				'allowmycode' => $allowmycode,
 				'allowsmilies' => $allowsmilies
 			);
-
 			$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
+
+			log_moderator_action(array("aid" => $announcement['aid'], "subject" => $db->escape_string($mybb->input['title'])), $lang->announcement_edited);
 
 			$plugins->run_hooks("modcp_do_edit_announcement_end");
 
@@ -4136,7 +4143,7 @@ if(!$mybb->input['action'])
 		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
 		if($logitem['tsubject'])
 		{
-			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
@@ -4147,13 +4154,17 @@ if(!$mybb->input['action'])
 			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
-		// Edited a user?
+		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
 			$data = unserialize($logitem['data']);
 			if($data['uid'])
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+			}
+			if($data['aid'])
+			{
+				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
 			}
 		}
 
