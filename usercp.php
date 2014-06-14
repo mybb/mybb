@@ -3454,7 +3454,7 @@ if(!$mybb->input['action'])
 	while($thread = $db->fetch_array($query))
 	{
 		// Moderated, and not moderator?
-		if($thread['visible'] == 0 && is_moderator($thread['fid']) === false)
+		if($thread['visible'] == 0 && is_moderator($thread['fid'], "canviewunapprove") === false)
 		{
 			continue;
 		}

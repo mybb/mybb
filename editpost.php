@@ -61,7 +61,7 @@ $thread['subject'] = htmlspecialchars_uni($thread['subject']);
 $fid = $post['fid'];
 $forum = get_forum($fid);
 
-if((($thread['visible'] == 0 || $thread['visible'] == -1) && !is_moderator($fid)) || ($thread['visible'] < 0 && $thread['uid'] != $mybb->user['uid']))
+if($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove") || $thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted") || ($thread['visible'] < -1 && $thread['uid'] != $mybb->user['uid']))
 {
 	error($lang->error_invalidthread);
 }
@@ -213,13 +213,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
 	}
-	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'caneditposts'))
+	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canviewunapprove'))
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
-	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'caneditposts'))
+	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canviewunapprove'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
@@ -422,13 +422,13 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->get_input('numpolloptions', 1);
 			$lang->redirect_postedited = $lang->redirect_postedited_poll;
 		}
-		else if($visible == 0 && $first_post && !is_moderator($fid, "", $mybb->user['uid']))
+		else if($visible == 0 && $first_post && !is_moderator($fid, "canviewunapprove", $mybb->user['uid']))
 		{
 			// Moderated post
 			$lang->redirect_postedited .= $lang->redirect_thread_moderation;
 			$url = get_forum_link($fid);
 		}
-		else if($visible == 0 && !is_moderator($fid, "", $mybb->user['uid']))
+		else if($visible == 0 && !is_moderator($fid, "canviewunapprove", $mybb->user['uid']))
 		{
 			$lang->redirect_postedited .= $lang->redirect_post_moderation;
 			$url = get_thread_link($tid);
@@ -768,7 +768,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$firstcheck = $db->fetch_array($query);
 
 	$time = TIME_NOW;
-	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid) || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1 && (is_moderator($fid, "canmanagepolls") || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";

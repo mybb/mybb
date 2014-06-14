@@ -84,7 +84,7 @@ if($mybb->input['action'] == "newpoll")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
+		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "newpoll")
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid, "canmanagepolls")) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
 	{
 		error_no_permission();
 	}
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
+		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid, "canmanagepolls")) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
 	{
 		error_no_permission();
 	}
@@ -367,14 +367,14 @@ if($mybb->input['action'] == "editpoll")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
+		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
 	}
 
-	if(!is_moderator($fid, "caneditposts"))
+	if(!is_moderator($fid, "canmanagepolls"))
 	{
 		error_no_permission();
 	}
@@ -544,14 +544,14 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if($forum['open'] == 0 && !is_moderator($fid, "caneditposts"))
+		if($forum['open'] == 0 && !is_moderator($fid, "canmanagepolls"))
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
 	}
 
-	if(!is_moderator($thread['fid'], "caneditposts"))
+	if(!is_moderator($thread['fid'], "canmanagepolls"))
 	{
 		error_no_permission();
 	}
@@ -793,7 +793,7 @@ if($mybb->input['action'] == "showresults")
 		$guest_comma = '';
 		$userlist = '';
 		$guest_count = 0;
-		if($poll['public'] == 1 || is_moderator($fid))
+		if($poll['public'] == 1 || is_moderator($fid, "canmanagepolls"))
 		{
 			if(isset($voters[$number]) && is_array($voters[$number]))
 			{

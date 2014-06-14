@@ -515,7 +515,7 @@ if($mybb->input['action'] == "results")
 			$threadpages = '';
 			$morelink = '';
 			$thread['posts'] = $thread['replies'] + 1;
-			if(is_moderator($thread['fid']))
+			if(is_moderator($thread['fid'], "canviewunapprove"))
 			{
 				$thread['posts'] += $thread['unapprovedposts'];
 			}

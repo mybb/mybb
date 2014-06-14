@@ -382,8 +382,25 @@ if(is_moderator($fid))
 	$inlinecount = "0";
 	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
-	$visibleonly = " AND visible IN (-1,0,1)";
-	$tvisibleonly = " AND t.visible IN (-1,0,1)";
+
+	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	{
+		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
+		{
+			$visibleonly = "AND visible IN (0,1)";
+			$tvisibleonly = "AND t.visible IN (0,1)";
+		}
+		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
+		{
+			$visibleonly = "AND visible IN (-1,1)";
+			$tvisibleonly = "AND t.visible IN (-1,1)";
+		}
+		else
+		{
+			$visibleonly = " AND visible IN (-1,0,1)";
+			$tvisibleonly = " AND t.visible IN (-1,0,1)";
+		}
+	}
 }
 else
 {

@@ -83,11 +83,11 @@ add_breadcrumb($lang->nav_newreply);
 $forumpermissions = forum_permissions($fid);
 
 // See if everything is valid up to here.
-if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid)) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
+if(isset($post) && (($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($post['visible'] < 0 && $post['uid'] != $mybb->user['uid'])))
 {
 	error($lang->error_invalidpost);
 }
-if(($thread['visible'] == 0 && !is_moderator($fid)) || $thread['visible'] < 0)
+if(($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $thread['visible'] < 0)
 {
 	error($lang->error_invalidthread);
 }
@@ -1216,7 +1216,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$mybb->settings['postsperpage'] = 20;
 		}
 
-		if(is_moderator($fid))
+		if(is_moderator($fid, "canviewunapprove"))
 		{
 			$visibility = "(visible='1' OR visible='0')";
 		}
