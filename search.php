@@ -687,7 +687,7 @@ if($mybb->input['action'] == "results")
 				$moderated_forums .= ','.$forum['fid'];
 				$test_moderated_forums[$forum['fid']] = $forum['fid'];
 			}
-			$p_unapproved_where = "visible >= 0";
+			$p_unapproved_where = "(visible > 0 OR (visible=0 AND fid IN ({$moderated_forums})))";
 			$t_unapproved_where = "visible < 0 AND fid NOT IN ({$moderated_forums})";
 		}
 		else
