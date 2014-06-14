@@ -414,7 +414,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<h3>{$lang->step2of2}</h3>";
 		echo "<p class=\"align_center\">{$lang->step2of2_line1}</p>";
 		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
-		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
+		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"{$lang->scanning}\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
 		flush();
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<h3>{$lang->step1of2}</h3>";
 		echo "<p class=\"align_center\">{$lang->step1of2_line1}</p>";
 		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
-		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
+		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"{$lang->scanning}\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
 		
