@@ -506,7 +506,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$admin_view['title'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['title']);
 			$admin_view['sortby'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortby']);
 			$admin_view['sortorder'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortorder']);
-			$admin_view['perpage'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['perpage']);
 			$admin_view['view_type'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['view_type']);
 
 			$xml .= "\t<view vid=\"{$admin_view['vid']}\" uid=\"{$admin_view['uid']}\" type=\"{$admin_view['type']}\" visibility=\"{$admin_view['visibility']}\">\n";
