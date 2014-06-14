@@ -8934,7 +8934,7 @@ if(use_xmlhttprequest == "1")
 {$post['inlinecheck']}
 </div>]]></template>
 		<template name="postbit_profilefield" version="1800"><![CDATA[<br />{$post['fieldname']}: {$post['fieldvalue']}]]></template>
-		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$lang->postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
+		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--
 	$('#quick_delete_{$post['pid']}').css('display', '');

@@ -533,7 +533,7 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 
 			while($fid = $db->fetch_field($query, 'id3'))
 			{
-				if(is_moderator($fid))
+				if(is_moderator($fid, "canmanagereportedposts"))
 				{
 					++$unread;
 				}

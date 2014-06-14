@@ -512,22 +512,32 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Quick Delete button
-		$can_delete = 0;
+		$can_delete_thread = $can_delete_post = 0;
 		if($mybb->user['uid'] == $post['uid'])
 		{
 			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{
-				$can_delete = 1;
+				$can_delete_thread = 1;
 			}
 			else if($forumpermissions['candeleteposts'] == 1 && $postcounter != 1)
 			{
-				$can_delete = 1;
+				$can_delete_post = 1;
 			}
 		}
 
-		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
+		$postbit_qdelete = '';
+		if($mybb->user['uid'] != 0)
 		{
-			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			if((is_moderator($fid, "candeleteposts") || $can_delete_post == 1) && $postcounter != 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_post;
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			}
+			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_thread;
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			}
 		}
 
 		// Inline moderation stuff

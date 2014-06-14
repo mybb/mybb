@@ -612,7 +612,7 @@ elseif($mybb->input['action'] == "whoposted")
 		error($lang->error_invalidthread);
 	}
 
-	if(is_moderator($thread['fid']))
+	if(is_moderator($thread['fid'], "canviewunapprove"))
 	{
 		$ismod = true;
 		$show_posts = "(p.visible = '1' OR p.visible = '0')";

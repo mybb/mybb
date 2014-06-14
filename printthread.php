@@ -125,7 +125,7 @@ else
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
-if(is_moderator($forum['fid']))
+if(is_moderator($forum['fid'], "canviewunapprove"))
 {
     $visible = "AND (p.visible='0' OR p.visible='1')";
 }
