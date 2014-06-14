@@ -307,14 +307,25 @@ if($mybb->input['action'] == "editmod")
 			$update_array = array(
 				'fid' => intval($fid),
 				'caneditposts' => intval($mybb->input['caneditposts']),
+				'cansoftdeleteposts' => intval($mybb->input['cansoftdeleteposts']),
+				'canrestoreposts' => intval($mybb->input['canrestoreposts']),
 				'candeleteposts' => intval($mybb->input['candeleteposts']),
+				'cansoftdeletethreads' => intval($mybb->input['cansoftdeletethreads']),
+				'canrestorethreads' => intval($mybb->input['canrestorethreads']),
+				'candeletethreads' => intval($mybb->input['candeletethreads']),
 				'canviewips' => intval($mybb->input['canviewips']),
+				'canviewunapprove' => intval($mybb->input['canviewunapprove']),
+				'canviewdeleted' => intval($mybb->input['canviewdeleted']),
 				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
+				'canstickunstickthreads' => intval($mybb->input['canstickunstickthreads']),
+				'canapproveunapprovethreads' => intval($mybb->input['canapproveunapprovethreads']),
+				'canapproveunapproveposts' => intval($mybb->input['canapproveunapproveposts']),
 				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
+				'canmanagepolls' => intval($mybb->input['canmanagepolls']),
 				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
 				'canusecustomtools' => intval($mybb->input['canusecustomtools']),
-				'cansoftdelete' => intval($mybb->input['cansoftdelete']),
-				'canrestore' => intval($mybb->input['canrestore'])
+				'canmanageannouncements' => intval($mybb->input['canmanageannouncements']),
+				'canmanagereportedposts' => intval($mybb->input['canmanagereportedposts'])
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 
@@ -368,17 +379,31 @@ if($mybb->input['action'] == "editmod")
 
 	$moderator_permissions = array(
 		$form->generate_check_box('caneditposts', 1, $lang->can_edit_posts, array('checked' => $mod_data['caneditposts'], 'id' => 'caneditposts')),
+		$form->generate_check_box('cansoftdeleteposts', 1, $lang->can_soft_delete_posts, array('checked' => $mod_data['cansoftdeleteposts'], 'id' => 'cansoftdeleteposts')),
+		$form->generate_check_box('canrestoreposts', 1, $lang->can_restore_posts, array('checked' => $mod_data['canrestoreposts'], 'id' => 'canrestoreposts')),
 		$form->generate_check_box('candeleteposts', 1, $lang->can_delete_posts, array('checked' => $mod_data['candeleteposts'], 'id' => 'candeleteposts')),
+		$form->generate_check_box('cansoftdeletethreads', 1, $lang->can_soft_delete_threads, array('checked' => $mod_data['cansoftdeletethreads'], 'id' => 'cansoftdeletethreads')),
+		$form->generate_check_box('canrestorethreads', 1, $lang->can_restore_threads, array('checked' => $mod_data['canrestorethreads'], 'id' => 'canrestorethreads')),
+		$form->generate_check_box('candeletethreads', 1, $lang->can_delete_threads, array('checked' => $mod_data['candeletethreads'], 'id' => 'candeletethreads')),
 		$form->generate_check_box('canviewips', 1, $lang->can_view_ips, array('checked' => $mod_data['canviewips'], 'id' => 'canviewips')),
+		$form->generate_check_box('canviewunapprove', 1, $lang->can_view_unapprove, array('checked' => $mod_data['canviewunapprove'], 'id' => 'canviewunapprove')),
+		$form->generate_check_box('canviewdeleted', 1, $lang->can_view_deleted, array('checked' => $mod_data['canviewdeleted'], 'id' => 'canviewdeleted')),
 		$form->generate_check_box('canopenclosethreads', 1, $lang->can_open_close_threads, array('checked' => $mod_data['canopenclosethreads'], 'id' => 'canopenclosethreads')),
+		$form->generate_check_box('canstickunstickthreads', 1, $lang->can_stick_unstick_threads, array('checked' => $mod_data['canstickunstickthreads'], 'id' => 'canstickunstickthreads')),
+		$form->generate_check_box('canapproveunapprovethreads', 1, $lang->can_approve_unapprove_threads, array('checked' => $mod_data['canapproveunapprovethreads'], 'id' => 'canapproveunapprovethreads')),
+		$form->generate_check_box('canapproveunapproveposts', 1, $lang->can_approve_unapprove_posts, array('checked' => $mod_data['canapproveunapproveposts'], 'id' => 'canapproveunapproveposts')),
 		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
+		$form->generate_check_box('canmanagepolls', 1, $lang->can_manage_polls, array('checked' => $mod_data['canmanagepolls'], 'id' => 'canmanagepolls')),
 		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum')),
-		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools')),
-		$form->generate_check_box('cansoftdelete', 1, $lang->can_soft_delete, array('checked' => $mod_data['cansoftdelete'], 'id' => 'cansoftdelete')),
-		$form->generate_check_box('canrestore', 1, $lang->can_restore, array('checked' => $mod_data['canrestore'], 'id' => 'canrestore'))
+		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools'))
 	);
-
 	$form_container->output_row($lang->moderator_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_permissions)."</div>");
+
+	$moderator_cp_permissions = array(
+		$form->generate_check_box('canmanageannouncements', 1, $lang->can_manage_announcements, array('checked' => $mod_data['canmanageannouncements'], 'id' => 'canmanageannouncements')),
+		$form->generate_check_box('canmanagereportedposts', 1, $lang->can_manage_reported_posts, array('checked' => $mod_data['canmanagereportedposts'], 'id' => 'canmanagereportedposts'))
+	);
+	$form_container->output_row($lang->moderator_cp_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_cp_permissions)."</div>");
 
 	$form_container->end();
 
@@ -2140,14 +2165,25 @@ if(!$mybb->input['action'])
 						"id" => $newmod['id'],
 						"isgroup" => $isgroup,
 						"caneditposts" => 1,
+						"cansoftdeleteposts" => 1,
+						"canrestoreposts" => 1,
 						"candeleteposts" => 1,
+						"cansoftdeletethreads" => 1,
+						"canrestorethreads" => 1,
+						"candeletethreads" => 1,
 						"canviewips" => 1,
+						"canviewunapprove" => 1,
+						"canviewdeleted" => 1,
 						"canopenclosethreads" => 1,
+						"canstickunstickthreads" => 1,
+						"canapproveunapprovethreads" => 1,
+						"canapproveunapproveposts" => 1,
 						"canmanagethreads" => 1,
+						"canmanagepolls" => 1,
 						"canmovetononmodforum" => 1,
 						"canusecustomtools" => 1,
-						"cansoftdelete" => 1,
-						"canrestore" => 1
+						"canmanageannouncements" => 1,
+						"canmanagereportedposts" => 1
 					);
 
 					$mid = $db->insert_query("moderators", $new_mod);

@@ -389,14 +389,25 @@ $tables[] = "CREATE TABLE mybb_moderators (
 	id int NOT NULL default '0',
 	isgroup int(1) NOT NULL default '0',
 	caneditposts int(1) NOT NULL default '0',
+	cansoftdeleteposts tinyint(1) NOT NULL default '0',
+	canrestoreposts tinyint(1) NOT NULL default '0',
 	candeleteposts int(1) NOT NULL default '0',
+	cansoftdeletethreads tinyint(1) NOT NULL default '0',
+	canrestorethreads tinyint(1) NOT NULL default '0',
+	candeletethreads tinyint(1) NOT NULL default '0',
 	canviewips int(1) NOT NULL default '0',
+	canviewunapprove tinyint(1) NOT NULL default '0',
+	canviewdeleted tinyint(1) NOT NULL default '0',
 	canopenclosethreads int(1) NOT NULL default '0',
+	canstickunstickthreads tinyint(1) NOT NULL default '0',
+	canapproveunapprovethreads tinyint(1) NOT NULL default '0',
+	canapproveunapproveposts tinyint(1) NOT NULL default '0',
 	canmanagethreads int(1) NOT NULL default '0',
+	canmanagepolls tinyint(1) NOT NULL default '0',
 	canmovetononmodforum int(1) NOT NULL default '0',
 	canusecustomtools int(1) NOT NULL default '0',
-	cansoftdelete int(1) NOT NULL default '0',
-	canrestore int(1) NOT NULL default '0'
+	canmanageannouncements tinyint(1) NOT NULL default '0',
+	canmanagereportedposts tinyint(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_modtools (

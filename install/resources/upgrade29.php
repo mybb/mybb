@@ -184,16 +184,6 @@ function upgrade29_dbchanges2()
 		$db->drop_column("usergroups", "canviewboardclosed");
 	}
 
-	if($db->field_exists('cansoftdelete', 'moderators'))
-	{
-		$db->drop_column("moderators", "cansoftdelete");
-	}
-
-	if($db->field_exists('canrestore', 'moderators'))
-	{
-		$db->drop_column("moderators", "canrestore");
-	}
-
 	if($db->field_exists('deletedposts', 'threads'))
 	{
 		$db->drop_column("threads", "deletedposts");
@@ -214,8 +204,6 @@ function upgrade29_dbchanges2()
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");			
-			$db->add_column("moderators", "cansoftdelete", "int NOT NULL default '0' AFTER canusecustomtools");
-			$db->add_column("moderators", "canrestore", "int NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int NOT NULL default '0'");
 			break;
@@ -226,8 +214,6 @@ function upgrade29_dbchanges2()
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
-			$db->add_column("moderators", "cansoftdelete", "int(1) NOT NULL default '0' AFTER canusecustomtools");
-			$db->add_column("moderators", "canrestore", "int(1) NOT NULL default '0' AFTER cansoftdelete");
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
 			break;
@@ -241,6 +227,121 @@ function upgrade29_dbchanges2()
 }
 
 function upgrade29_dbchanges3()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($db->field_exists('cansoftdeleteposts', 'moderators'))
+	{
+		$db->drop_column('moderators', 'cansoftdeleteposts');
+	}
+
+	if($db->field_exists('canrestoreposts', 'moderators'))
+	{
+		$db->drop_column("moderators", "canrestoreposts");
+	}
+
+	if($db->field_exists('cansoftdeletethreads', 'moderators'))
+	{
+		$db->drop_column('moderators', 'cansoftdeletethreads');
+	}
+
+	if($db->field_exists('canrestorethreads', 'moderators'))
+	{
+		$db->drop_column("moderators", "canrestorethreads");
+	}
+
+	if($db->field_exists('candeletethreads', 'moderators'))
+	{
+		$db->drop_column("moderators", "candeletethreads");
+	}
+
+	if($db->field_exists('canviewunapprove', 'moderators'))
+	{
+		$db->drop_column("moderators", "canviewunapprove");
+	}
+
+	if($db->field_exists('canviewdeleted', 'moderators'))
+	{
+		$db->drop_column("moderators", "canviewdeleted");
+	}
+
+	if($db->field_exists('canstickunstickthreads', 'moderators'))
+	{
+		$db->drop_column("moderators", "canstickunstickthreads");
+	}
+
+	if($db->field_exists('canapproveunapprovethreads', 'moderators'))
+	{
+		$db->drop_column("moderators", "canapproveunapprovethreads");
+	}
+
+	if($db->field_exists('canapproveunapproveposts', 'moderators'))
+	{
+		$db->drop_column("moderators", "canapproveunapproveposts");
+	}
+
+	if($db->field_exists('canmanagepolls', 'moderators'))
+	{
+		$db->drop_column("moderators", "canmanagepolls");
+	}
+
+	if($db->field_exists('canmanageannouncements', 'moderators'))
+	{
+		$db->drop_column("moderators", "canmanageannouncements");
+	}
+
+	if($db->field_exists('canmanagereportedposts', 'moderators'))
+	{
+		$db->drop_column("moderators", "canmanagereportedposts");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("moderators", "cansoftdeleteposts", "smallint NOT NULL default '0' AFTER caneditposts");
+			$db->add_column("moderators", "canrestoreposts", "smallint NOT NULL default '0' AFTER cansoftdeleteposts");
+			$db->add_column("moderators", "cansoftdeletethreads", "smallint NOT NULL default '0' AFTER candeleteposts");
+			$db->add_column("moderators", "canrestorethreads", "smallint NOT NULL default '0' AFTER cansoftdeletethreads");
+			$db->add_column("moderators", "candeletethreads", "smallint NOT NULL default '0' AFTER canrestorethreads");
+			$db->add_column("moderators", "canviewunapprove", "smallint NOT NULL default '0' AFTER canviewips");			
+			$db->add_column("moderators", "canviewdeleted", "smallint NOT NULL default '0' AFTER canviewunapprove");
+			$db->add_column("moderators", "canstickunstickthreads", "smallint NOT NULL default '0' AFTER canopenclosethreads");
+			$db->add_column("moderators", "canapproveunapprovethreads", "smallint NOT NULL default '0' AFTER canstickunstickthreads");
+			$db->add_column("moderators", "canapproveunapproveposts", "smallint NOT NULL default '0' AFTER canapproveunapprovethreads");
+			$db->add_column("moderators", "canmanagepolls", "smallint NOT NULL default '0' AFTER canmanagethreads");
+			$db->add_column("moderators", "canmanageannouncements", "smallint NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canmanagereportedposts", "smallint NOT NULL default '0' AFTER canmanageannouncements");
+			break;
+		default:
+			$db->add_column("moderators", "cansoftdeleteposts", "tinyint(1) NOT NULL default '0' AFTER caneditposts");
+			$db->add_column("moderators", "canrestoreposts", "tinyint(1) NOT NULL default '0' AFTER cansoftdeleteposts");
+			$db->add_column("moderators", "cansoftdeletethreads", "tinyint(1) NOT NULL default '0' AFTER candeleteposts");
+			$db->add_column("moderators", "canrestorethreads", "tinyint(1) NOT NULL default '0' AFTER cansoftdeletethreads");
+			$db->add_column("moderators", "candeletethreads", "tinyint(1) NOT NULL default '0' AFTER canrestorethreads");
+			$db->add_column("moderators", "canviewunapprove", "tinyint(1) NOT NULL default '0' AFTER canviewips");
+			$db->add_column("moderators", "canviewdeleted", "tinyint(1) NOT NULL default '0' AFTER canviewunapprove");
+			$db->add_column("moderators", "canstickunstickthreads", "tinyint(1) NOT NULL default '0' AFTER canopenclosethreads");
+			$db->add_column("moderators", "canapproveunapprovethreads", "tinyint(1) NOT NULL default '0' AFTER canstickunstickthreads");
+			$db->add_column("moderators", "canapproveunapproveposts", "tinyint(1) NOT NULL default '0' AFTER canapproveunapprovethreads");
+			$db->add_column("moderators", "canmanagepolls", "tinyint(1) NOT NULL default '0' AFTER canmanagethreads");
+			$db->add_column("moderators", "canmanageannouncements", "tinyint(1) NOT NULL default '0' AFTER canusecustomtools");
+			$db->add_column("moderators", "canmanagereportedposts", "tinyint(1) NOT NULL default '0' AFTER canmanageannouncements");
+			break;
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("29_dbchanges4");
+}
+
+function upgrade29_dbchanges4()
 {
 	global $cache, $output, $mybb, $db;
 
