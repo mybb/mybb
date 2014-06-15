@@ -320,12 +320,15 @@ if($mybb->input['action'] == "editmod")
 				'canstickunstickthreads' => intval($mybb->input['canstickunstickthreads']),
 				'canapproveunapprovethreads' => intval($mybb->input['canapproveunapprovethreads']),
 				'canapproveunapproveposts' => intval($mybb->input['canapproveunapproveposts']),
+				'canapproveunapproveattachs' => intval($mybb->input['canapproveunapproveattachs']),
 				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
 				'canmanagepolls' => intval($mybb->input['canmanagepolls']),
+				'canpostclosedthreads' => intval($mybb->input['canpostclosedthreads']),
 				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
 				'canusecustomtools' => intval($mybb->input['canusecustomtools']),
 				'canmanageannouncements' => intval($mybb->input['canmanageannouncements']),
-				'canmanagereportedposts' => intval($mybb->input['canmanagereportedposts'])
+				'canmanagereportedposts' => intval($mybb->input['canmanagereportedposts']),
+				'canviewmodlog' => intval($mybb->input['canviewmodlog'])
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 
@@ -392,8 +395,10 @@ if($mybb->input['action'] == "editmod")
 		$form->generate_check_box('canstickunstickthreads', 1, $lang->can_stick_unstick_threads, array('checked' => $mod_data['canstickunstickthreads'], 'id' => 'canstickunstickthreads')),
 		$form->generate_check_box('canapproveunapprovethreads', 1, $lang->can_approve_unapprove_threads, array('checked' => $mod_data['canapproveunapprovethreads'], 'id' => 'canapproveunapprovethreads')),
 		$form->generate_check_box('canapproveunapproveposts', 1, $lang->can_approve_unapprove_posts, array('checked' => $mod_data['canapproveunapproveposts'], 'id' => 'canapproveunapproveposts')),
+		$form->generate_check_box('canapproveunapproveattachs', 1, $lang->can_approve_unapprove_attachments, array('checked' => $mod_data['canapproveunapproveattachs'], 'id' => 'canapproveunapproveattachs')),
 		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
 		$form->generate_check_box('canmanagepolls', 1, $lang->can_manage_polls, array('checked' => $mod_data['canmanagepolls'], 'id' => 'canmanagepolls')),
+		$form->generate_check_box('canpostclosedthreads', 1, $lang->can_post_closed_threads, array('checked' => $mod_data['canpostclosedthreads'], 'id' => 'canpostclosedthreads')),
 		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum')),
 		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools'))
 	);
@@ -401,7 +406,8 @@ if($mybb->input['action'] == "editmod")
 
 	$moderator_cp_permissions = array(
 		$form->generate_check_box('canmanageannouncements', 1, $lang->can_manage_announcements, array('checked' => $mod_data['canmanageannouncements'], 'id' => 'canmanageannouncements')),
-		$form->generate_check_box('canmanagereportedposts', 1, $lang->can_manage_reported_posts, array('checked' => $mod_data['canmanagereportedposts'], 'id' => 'canmanagereportedposts'))
+		$form->generate_check_box('canmanagereportedposts', 1, $lang->can_manage_reported_posts, array('checked' => $mod_data['canmanagereportedposts'], 'id' => 'canmanagereportedposts')),
+		$form->generate_check_box('canviewmodlog', 1, $lang->can_view_mod_log, array('checked' => $mod_data['canviewmodlog'], 'id' => 'canviewmodlog'))
 	);
 	$form_container->output_row($lang->moderator_cp_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_cp_permissions)."</div>");
 
@@ -2178,12 +2184,15 @@ if(!$mybb->input['action'])
 						"canstickunstickthreads" => 1,
 						"canapproveunapprovethreads" => 1,
 						"canapproveunapproveposts" => 1,
+						"canapproveunapproveattachs" => 1,
 						"canmanagethreads" => 1,
 						"canmanagepolls" => 1,
+						"canpostclosedthreads" => 1,
 						"canmovetononmodforum" => 1,
 						"canusecustomtools" => 1,
 						"canmanageannouncements" => 1,
-						"canmanagereportedposts" => 1
+						"canmanagereportedposts" => 1,
+						"canviewmodlog" => 1
 					);
 
 					$mid = $db->insert_query("moderators", $new_mod);

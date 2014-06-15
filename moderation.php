@@ -875,43 +875,47 @@ switch($mybb->input['action'])
 		}
 		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
 		$trow = alt_trow(1);
-		$query = $db->query("
-			SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
-			FROM ".TABLE_PREFIX."moderatorlog l
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
-			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
-			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
-			WHERE t.tid='$tid'
-			ORDER BY l.dateline DESC
-			LIMIT  0, 20
-		");
-		$modactions = '';
-		while($modaction = $db->fetch_array($query))
-		{
-			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
-			$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
-			$modaction['action'] = htmlspecialchars_uni($modaction['action']);
-			$info = '';
-			if($modaction['tsubject'])
-			{
-				$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
-			}
-			if($modaction['fname'])
-			{
-				$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
-			}
-			if($modaction['psubject'])
-			{
-				$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
-			}
 
-			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
-			$trow = alt_trow();
-		}
-		if(!$modactions)
+		if(is_moderator($fid, "canviewmodlog"))
 		{
-			eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
+			$query = $db->query("
+				SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+				FROM ".TABLE_PREFIX."moderatorlog l
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+				WHERE t.tid='$tid'
+				ORDER BY l.dateline DESC
+				LIMIT  0, 20
+			");
+			$modactions = '';
+			while($modaction = $db->fetch_array($query))
+			{
+				$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+				$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
+				$modaction['action'] = htmlspecialchars_uni($modaction['action']);
+				$info = '';
+				if($modaction['tsubject'])
+				{
+					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
+				}
+				if($modaction['fname'])
+				{
+					$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
+				}
+				if($modaction['psubject'])
+				{
+					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
+				}
+
+				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
+				$trow = alt_trow();
+			}
+			if(!$modactions)
+			{
+				eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
+			}
 		}
 
 		$actions = array(

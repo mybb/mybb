@@ -442,12 +442,15 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canstickunstickthreads tinyint(1) NOT NULL default '0',
   canapproveunapprovethreads tinyint(1) NOT NULL default '0',
   canapproveunapproveposts tinyint(1) NOT NULL default '0',
+  canapproveunapproveattachs tinyint(1) NOT NULL default '0',
   canmanagethreads int(1) NOT NULL default '0',
   canmanagepolls tinyint(1) NOT NULL default '0',
+  canpostclosedthreads tinyint(1) NOT NULL default '0',
   canmovetononmodforum int(1) NOT NULL default '0',
   canusecustomtools int(1) NOT NULL default '0',
   canmanageannouncements tinyint(1) NOT NULL default '0',
   canmanagereportedposts tinyint(1) NOT NULL default '0',
+  canviewmodlog tinyint(1) NOT NULL default '0',
   KEY uid (id, fid),
   PRIMARY KEY (mid)
 ) ENGINE=MyISAM;";

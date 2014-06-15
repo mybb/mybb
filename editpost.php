@@ -213,13 +213,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
 	}
-	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canviewunapprove'))
+	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
-	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canviewunapprove'))
+	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");

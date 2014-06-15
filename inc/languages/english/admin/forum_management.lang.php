@@ -81,12 +81,15 @@ $l['can_open_close_threads'] = "Can open/close threads?";
 $l['can_stick_unstick_threads'] = "Can stick/unstick threads?";
 $l['can_approve_unapprove_threads'] = "Can approve/unapprove threads?";
 $l['can_approve_unapprove_posts'] = "Can approve/unapprove posts?";
+$l['can_approve_unapprove_attachments'] = "Can approve/unapprove attachments?";
 $l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)?";
 $l['can_manage_polls'] = "Can manage polls?";
+$l['can_post_closed_threads'] = "Can post in closed threads?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
 $l['can_manage_announcements'] = "Can manage announcements?";
 $l['can_manage_reported_posts'] = "Can manage reported posts?";
+$l['can_view_mod_log'] = "Can view moderator log?";
 $l['moderator_cp_permissions'] = "Moderator CP Permissions";
 
 $l['save_mod'] = "Save Moderator";

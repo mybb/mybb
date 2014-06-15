@@ -432,12 +432,15 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canstickunstickthreads smallint NOT NULL default '0',
   canapproveunapprovethreads smallint NOT NULL default '0',
   canapproveunapproveposts smallint NOT NULL default '0',
+  canapproveunapproveattachs smallint NOT NULL default '0',
   canmanagethreads int NOT NULL default '0',
   canmanagepolls smallint NOT NULL default '0',
+  canpostclosedthreads smallint NOT NULL default '0',
   canmovetononmodforum int NOT NULL default '0',
   canusecustomtools int NOT NULL default '0',
   canmanageannouncements smallint NOT NULL default '0',
   canmanagereportedposts smallint NOT NULL default '0',
+  canviewmodlog smallint NOT NULL default '0',
   PRIMARY KEY (mid)
 );";
 

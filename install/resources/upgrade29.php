@@ -285,9 +285,19 @@ function upgrade29_dbchanges3()
 		$db->drop_column("moderators", "canapproveunapproveposts");
 	}
 
+	if($db->field_exists('canapproveunapproveattachs', 'moderators'))
+	{
+		$db->drop_column("moderators", "canapproveunapproveattachs");
+	}
+
 	if($db->field_exists('canmanagepolls', 'moderators'))
 	{
 		$db->drop_column("moderators", "canmanagepolls");
+	}
+
+	if($db->field_exists('canpostclosedthreads', 'moderators'))
+	{
+		$db->drop_column("moderators", "canpostclosedthreads");
 	}
 
 	if($db->field_exists('canmanageannouncements', 'moderators'))
@@ -298,6 +308,11 @@ function upgrade29_dbchanges3()
 	if($db->field_exists('canmanagereportedposts', 'moderators'))
 	{
 		$db->drop_column("moderators", "canmanagereportedposts");
+	}
+
+	if($db->field_exists('canviewmodlog', 'moderators'))
+	{
+		$db->drop_column("moderators", "canviewmodlog");
 	}
 
 	switch($db->type)
@@ -313,9 +328,12 @@ function upgrade29_dbchanges3()
 			$db->add_column("moderators", "canstickunstickthreads", "smallint NOT NULL default '0' AFTER canopenclosethreads");
 			$db->add_column("moderators", "canapproveunapprovethreads", "smallint NOT NULL default '0' AFTER canstickunstickthreads");
 			$db->add_column("moderators", "canapproveunapproveposts", "smallint NOT NULL default '0' AFTER canapproveunapprovethreads");
+			$db->add_column("moderators", "canapproveunapproveattachs", "smallint NOT NULL default '0' AFTER canapproveunapproveposts");
 			$db->add_column("moderators", "canmanagepolls", "smallint NOT NULL default '0' AFTER canmanagethreads");
+			$db->add_column("moderators", "canpostclosedthreads", "smallint NOT NULL default '0' AFTER canmanagepolls");
 			$db->add_column("moderators", "canmanageannouncements", "smallint NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canmanagereportedposts", "smallint NOT NULL default '0' AFTER canmanageannouncements");
+			$db->add_column("moderators", "canviewmodlog", "smallint NOT NULL default '0' AFTER canmanagereportedposts");
 			break;
 		default:
 			$db->add_column("moderators", "cansoftdeleteposts", "tinyint(1) NOT NULL default '0' AFTER caneditposts");
@@ -328,9 +346,12 @@ function upgrade29_dbchanges3()
 			$db->add_column("moderators", "canstickunstickthreads", "tinyint(1) NOT NULL default '0' AFTER canopenclosethreads");
 			$db->add_column("moderators", "canapproveunapprovethreads", "tinyint(1) NOT NULL default '0' AFTER canstickunstickthreads");
 			$db->add_column("moderators", "canapproveunapproveposts", "tinyint(1) NOT NULL default '0' AFTER canapproveunapprovethreads");
+			$db->add_column("moderators", "canapproveunapproveattachs", "tinyint(1) NOT NULL default '0' AFTER canapproveunapproveposts");
 			$db->add_column("moderators", "canmanagepolls", "tinyint(1) NOT NULL default '0' AFTER canmanagethreads");
+			$db->add_column("moderators", "canpostclosedthreads", "tinyint(1) NOT NULL default '0' AFTER canmanagepolls");
 			$db->add_column("moderators", "canmanageannouncements", "tinyint(1) NOT NULL default '0' AFTER canusecustomtools");
 			$db->add_column("moderators", "canmanagereportedposts", "tinyint(1) NOT NULL default '0' AFTER canmanageannouncements");
+			$db->add_column("moderators", "canviewmodlog", "tinyint(1) NOT NULL default '0' AFTER canmanagereportedposts");
 			break;
 	}
 

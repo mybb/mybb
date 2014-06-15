@@ -48,11 +48,23 @@ $errors = '';
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
-	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
+	$query = $db->simple_select("moderators", "fid, canviewmodlog", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 
-	$flist = null;
+	$flist = $flist_modlog = null;
 	while($forum = $db->fetch_array($query))
 	{
+		// For the Mod Log
+		if($forum['canviewmodlog'] == 1)
+		{
+			$flist_modlog .= ",'{$forum['fid']}'";
+
+			$children = get_child_list($forum['fid']);
+			if(!empty($children))
+			{
+				$flist_modlog .= ",'".implode("','", $children)."'";
+			}
+		}
+
 		$flist .= ",'{$forum['fid']}'";
 
 		$children = get_child_list($forum['fid']);
@@ -61,6 +73,11 @@ if($mybb->usergroup['issupermod'] != 1)
 			$flist .= ",'".implode("','", $children)."'";
 		}
 		$moderated_forums[] = $forum['fid'];
+	}
+	if($flist_modlog)
+	{
+		$tflist_modlog = " AND t.fid IN (0{$flist_modlog})";
+		$flist_modlog = " AND fid IN (0{$flist_modlog})";
 	}
 	if($flist)
 	{
@@ -610,7 +627,7 @@ if($mybb->input['action'] == "modlogs")
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
-		WHERE 1=1 {$where}{$tflist}
+		WHERE 1=1 {$where}{$tflist_modlog}
 	");
 	$rescount = $db->fetch_field($query, "count");
 
@@ -675,7 +692,7 @@ if($mybb->input['action'] == "modlogs")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
-		WHERE 1=1 {$where}{$tflist}
+		WHERE 1=1 {$where}{$tflist_modlog}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$perpage}
 	");
@@ -4114,9 +4131,9 @@ if(!$mybb->input['action'])
 	}
 
 	$where = '';
-	if($tflist)
+	if($tflist_modlog)
 	{
-		$where = "WHERE (t.fid <> 0 {$tflist}) OR (!l.fid)";
+		$where = "WHERE (t.fid <> 0 {$tflist_modlog}) OR (!l.fid)";
 	}
 
 	$query = $db->query("

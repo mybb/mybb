@@ -158,7 +158,7 @@ else
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
-if(!is_moderator($fid, "caneditposts"))
+if(!is_moderator($fid, "canpostclosedthreads"))
 {
 	if($thread['closed'] == 1)
 	{
