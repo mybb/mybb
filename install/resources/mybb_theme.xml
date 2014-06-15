@@ -1602,7 +1602,7 @@ body {
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="showthread_inlinemoderation" version="1614"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1614"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -2385,7 +2385,7 @@ body {
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="forumdisplay_inlinemoderation" version="1614"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1614"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -11238,7 +11238,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="search_results_inlinemodcol" version="1408"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-	<template name="search_results_posts_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+	<template name="search_results_posts_inlinemoderation" version="1614"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1614"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -11268,7 +11268,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script><br />]]></template>
 		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1600"></script>
+		<template name="search_results_threads_inlinemoderation" version="1614"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1614"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
