@@ -220,31 +220,31 @@ else
 	
 	if($mybb->user['uid'] == 0)
 	{
-		$output->print_header("Please Login", "errormsg", 0, 1);
+		$output->print_header($lang->please_login, "errormsg", 0, 1);
 		
-		$output->print_contents('<p>Please enter your username and password to begin the upgrade process. You must be a valid forum administrator to perform the upgrade.</p>
+		$output->print_contents('<p>'.$lang->login_desc.'</p>
 <form action="upgrade.php" method="post">
 	<div class="border_wrapper">
 		<table class="general" cellspacing="0">
 		<thead>
 			<tr>
-				<th colspan="2" class="first last">Login</th>
+				<th colspan="2" class="first last">'.$lang->login.'</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="first">
-				<td class="first">Username:</td>
+				<td class="first">'.$lang->login_username.':</td>
 				<td class="last alt_col"><input type="text" class="textbox" name="username" size="25" maxlength="'.$mybb->settings['maxnamelength'].'" style="width: 200px;" /></td>
 			</tr>
 			<tr class="alt_row last">
-				<td class="first">Password:<br /><small>Please note that passwords are case sensitive.</small></td>
+				<td class="first">'.$lang->login_password.':<br /><small>'.$lang->login_password_desc.'</small></td>
 				<td class="last alt_col"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" /></td>
 			</tr>
 		</tbody>
 		</table>
 	</div>
 	<div id="next_button">
-		<input type="submit" class="submit_button" name="submit" value="Login" />
+		<input type="submit" class="submit_button" name="submit" value="'.$lang->login.'" />
 		<input type="hidden" name="action" value="do_login" />
 	</div>
 </form>');
@@ -254,7 +254,7 @@ else
 	}
 	else if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['cancp'] != 'yes')
 	{
-		$output->print_error("You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}\">here</a>. From there you will be able to log in again under your administrator account.");
+		$output->print_error($lang->sprintf($lang->no_permision, $mybb->user['logoutkey']));
 	}
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
