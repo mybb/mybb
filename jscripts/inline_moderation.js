@@ -70,7 +70,7 @@ var inlineModeration = {
 				allSelectedRow.style.display = 'table-row';
 			}
 		}
-		else if(allChecked == true)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
 			var selectRow = document.getElementById('selectAllrow');
 			if(selectRow)
@@ -292,6 +292,23 @@ var inlineModeration = {
 				{
 					selectRow.style.display = 'none';
 				}
+			}
+		}
+
+		if(inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
+		{
+			var allSelectedRow = document.getElementById('allSelectedrow');
+			if(allSelectedRow)
+			{
+				allSelectedRow.style.display = 'none';
+			}
+		}
+		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
+		{
+			var allSelectedRow = document.getElementById('allSelectedrow');
+			if(allSelectedRow)
+			{
+				allSelectedRow.style.display = 'table-row';
 			}
 		}
 	},
