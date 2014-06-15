@@ -280,7 +280,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 					}
 					else
 					{
-						echo json_encode(array("data" => '2'));
+						echo json_encode(array("data" => '3', "url" => get_forum_link($fid)));
 					}
 				}
 				else

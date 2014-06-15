@@ -104,5 +104,5 @@ $l['quick_edit_update_error'] = 'There was an error editing your reply:';
 $l['quick_reply_post_error'] = 'There was an error posting your reply:';
 $l['quick_delete_error'] = 'There was an error deleting your reply:';
 $l['quick_delete_success'] = 'The post was deleted successfully.';
-
+$l['quick_delete_thread_success'] = 'The thread was deleted successfully.';
 ?>
