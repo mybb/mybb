@@ -5827,20 +5827,7 @@ if(use_xmlhttprequest == "1")
 {$awaitingattachments}
 </table>
 <br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-	<td class="thead" align="center" colspan="5"><strong>{$lang->latest_5_modactions}</strong></td>
-</tr>
-<tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->action}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->information}</strong></span></td>
-<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->ip}</strong></span></td>
-</tr>
-{$modlogresults}
-</table>
-<br />
+{$latestfivemodactions}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="4"><strong>{$lang->bans_ending_soon}</strong></td>
@@ -6871,6 +6858,20 @@ if(use_xmlhttprequest == "1")
 <a href="{$thread['link']}" title="{$thread['fullsubject']}"><strong>{$thread['subject']}</strong></a>
 <br />{$thread['date']}<br />{$lang->by} {$thread['profilelink']}</span>
 ]]></template>
+		<template name="modcp_latestfivemodactions" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="5"><strong>{$lang->latest_5_modactions}</strong></td>
+</tr>
+<tr>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->action}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->information}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->ip}</strong></span></td>
+</tr>
+{$modlogresults}
+</table>
+<br />]]></template>
 		<template name="modcp_modlogs" version="1405"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->modlogs}</title>
@@ -7203,10 +7204,10 @@ if(use_xmlhttprequest == "1")
 		</td>
 	</tr>
 	<tbody style="{$collapsed['modcpforums_e']}" id="modcpforums_e">
-		<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>
+		{$nav_announcements}
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>
+		{$nav_reportcenter}
+		{$nav_modlogs}
 	</tbody>
 	<tr>
 		<td class="tcat tcat_menu">
@@ -7222,6 +7223,9 @@ if(use_xmlhttprequest == "1")
 	</tbody>
 </table>
 </td>]]></template>
+		<template name="modcp_nav_announcements" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>]]></template>
+		<template name="modcp_nav_modlogs" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>]]></template>
+		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_no_announcements_forum" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_forum_announcements}</td>
 					</tr>]]></template>

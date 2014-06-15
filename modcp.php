@@ -20,8 +20,8 @@ $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modque
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
-$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link";
-$templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,previewpost";
+$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions";
+$templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -48,11 +48,31 @@ $errors = '';
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
-	$query = $db->simple_select("moderators", "fid, canviewmodlog", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
+	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 
-	$flist = $flist_modlog = null;
+	$flist = $flist_reports = $flist_modlog = null;
+	$numannouncements = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
+		// For Announcements
+		if($forum['canmanageannouncements'] == 1)
+		{
+			++$numannouncements;
+		}
+
+		// For Reported posts
+		if($forum['canmanagereportedposts'] == 1)
+		{
+			$flist_reports .= ",'{$forum['fid']}'";
+
+			$children = get_child_list($forum['fid']);
+			if(!empty($children))
+			{
+				$flist_reports .= ",'".implode("','", $children)."'";
+			}
+			++$numreportedposts;
+		}
+
 		// For the Mod Log
 		if($forum['canviewmodlog'] == 1)
 		{
@@ -63,6 +83,7 @@ if($mybb->usergroup['issupermod'] != 1)
 			{
 				$flist_modlog .= ",'".implode("','", $children)."'";
 			}
+			++$nummodlogs;
 		}
 
 		$flist .= ",'{$forum['fid']}'";
@@ -73,6 +94,11 @@ if($mybb->usergroup['issupermod'] != 1)
 			$flist .= ",'".implode("','", $children)."'";
 		}
 		$moderated_forums[] = $forum['fid'];
+	}
+	if($flist_reports)
+	{
+		$tflist_reports = " AND r.id3 IN (0{$flist_reports})";
+		$flist_reports = " AND id3 IN (0{$flist_reports})";
 	}
 	if($flist_modlog)
 	{
@@ -127,6 +153,23 @@ if(!isset($collapsed['modcpusers_e']))
 }
 
 // Fetch the Mod CP menu
+if($numannouncements > 0 || $mybb->usergroup['issupermod'] == 1)
+{
+	eval("\$nav_announcements = \"".$templates->get("modcp_nav_announcements")."\";");
+}
+
+if($numreportedposts > 0 || $mybb->usergroup['issupermod'] == 1)
+{
+	eval("\$nav_reportcenter = \"".$templates->get("modcp_nav_reportcenter")."\";");
+}
+
+if($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1)
+{
+	eval("\$nav_modlogs = \"".$templates->get("modcp_nav_modlogs")."\";");
+}
+
+$plugins->run_hooks("modcp_nav");
+
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
 
 $plugins->run_hooks("modcp_start");
@@ -157,7 +200,7 @@ if($mybb->input['action'] == "do_reports")
 
 	$plugins->run_hooks("modcp_do_reports");
 
-	$db->update_query("reportedcontent", array('reportstatus' => 1), "{$sql}{$flist}");
+	$db->update_query("reportedcontent", array('reportstatus' => 1), "{$sql}{$flist_reports}");
 	$cache->update_reportedcontent();
 
 	$page = $mybb->get_input('page', 1);
@@ -167,6 +210,11 @@ if($mybb->input['action'] == "do_reports")
 
 if($mybb->input['action'] == "reports")
 {
+	if($numreportedposts == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_view_reported_posts);
+	}
+
 	$lang->load('report');
 	add_breadcrumb($lang->mcp_nav_report_center, "modcp.php?action=reports");
 
@@ -177,7 +225,6 @@ if($mybb->input['action'] == "reports")
 	}
 
 	// Multipage
-	$where = '';
 	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
 	{
 		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count", "reportstatus ='0'");
@@ -195,7 +242,6 @@ if($mybb->input['action'] == "reports")
 				++$report_count;
 			}
 		}
-		$where = str_replace('t.fid', 'r.id3', $tflist);
 		unset($fid);
 	}
 
@@ -235,7 +281,7 @@ if($mybb->input['action'] == "reports")
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reportedcontent r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
-		WHERE r.reportstatus = '0'{$where}
+		WHERE r.reportstatus = '0'{$tflist_reports}
 		ORDER BY r.reports DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -575,6 +621,11 @@ if($mybb->input['action'] == "allreports")
 
 if($mybb->input['action'] == "modlogs")
 {
+	if($nummodlogs == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_view_mod_logs);
+	}
+
 	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
 
 	$perpage = $mybb->get_input('perpage', 1);
@@ -1606,6 +1657,11 @@ if($mybb->input['action'] == "edit_announcement")
 
 if($mybb->input['action'] == "announcements")
 {
+	if($numannouncements == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_manage_announcements);
+	}
+
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 
 	// Fetch announcements into their proper arrays
@@ -4130,67 +4186,73 @@ if(!$mybb->input['action'])
 		$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 	}
 
-	$where = '';
-	if($tflist_modlog)
+	$latestfivemodactions = '';
+	if($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1)
 	{
-		$where = "WHERE (t.fid <> 0 {$tflist_modlog}) OR (!l.fid)";
-	}
-
-	$query = $db->query("
-		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
-		FROM ".TABLE_PREFIX."moderatorlog l
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
-		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
-		{$where}
-		ORDER BY l.dateline DESC
-		LIMIT 5
-	");
-
-	$modlogresults = '';
-	while($logitem = $db->fetch_array($query))
-	{
-		$information = '';
-		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
-		$log_date = my_date('relative', $logitem['dateline']);
-		$trow = alt_trow();
-		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
-		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
-		if($logitem['tsubject'])
+		$where = '';
+		if($tflist_modlog)
 		{
-			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
-		}
-		if($logitem['fname'])
-		{
-			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
-		}
-		if($logitem['psubject'])
-		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			$where = "WHERE (t.fid <> 0 {$tflist_modlog}) OR (!l.fid)";
 		}
 
-		// Edited a user or managed announcement?
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		$query = $db->query("
+			SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+			FROM ".TABLE_PREFIX."moderatorlog l
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+			{$where}
+			ORDER BY l.dateline DESC
+			LIMIT 5
+		");
+
+		$modlogresults = '';
+		while($logitem = $db->fetch_array($query))
 		{
-			$data = unserialize($logitem['data']);
-			if($data['uid'])
+			$information = '';
+			$logitem['action'] = htmlspecialchars_uni($logitem['action']);
+			$log_date = my_date('relative', $logitem['dateline']);
+			$trow = alt_trow();
+			$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
+			$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+			$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
+			if($logitem['tsubject'])
 			{
-				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+				$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 			}
-			if($data['aid'])
+			if($logitem['fname'])
 			{
-				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
+				$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 			}
+			if($logitem['psubject'])
+			{
+				$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			}
+
+			// Edited a user or managed announcement?
+			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+			{
+				$data = unserialize($logitem['data']);
+				if($data['uid'])
+				{
+					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
+				}
+				if($data['aid'])
+				{
+					$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
+				}
+			}
+
+			eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
 		}
 
-		eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
-	}
+		if(!$modlogresults)
+		{
+			eval("\$modlogresults = \"".$templates->get("modcp_modlogs_nologs")."\";");
+		}
 
-	if(!$modlogresults)
-	{
-		eval("\$modlogresults = \"".$templates->get("modcp_modlogs_nologs")."\";");
+		eval("\$latestfivemodactions = \"".$templates->get("modcp_latestfivemodactions")."\";");
 	}
 
 	$query = $db->query("

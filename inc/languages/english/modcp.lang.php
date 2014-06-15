@@ -315,4 +315,8 @@ $l['announcement_deleted'] = "Announcement Deleted";
 
 $l['preview'] = 'Preview';
 
+$l['you_cannot_view_mod_logs'] = "You do not have sufficient permission to view the Moderator Logs.";
+$l['you_cannot_view_reported_posts'] = "You do not have sufficient permission to view Reported Posts.";
+$l['you_cannot_manage_announcements'] = "You do not have sufficient permission to manage Announcements.";
+
 ?>
