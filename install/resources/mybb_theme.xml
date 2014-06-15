@@ -10580,14 +10580,11 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
 <select name="action">
 <optgroup label="{$lang->standard_mod_tools}">
-	<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>
-	<option value="multirestoreposts">{$lang->inline_restore_posts}</option>
-	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
-	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
-	<option value="multisplitposts">{$lang->inline_split_posts}</option>
-	<option value="multimoveposts">{$lang->inline_move_posts}</option>
-	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
-	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
+	{$inlinemodsoftdelete}
+	{$inlinemodrestore}
+	{$inlinemoddelete}
+	{$inlinemodmanage}
+	{$inlinemodapprove}
 </optgroup>
 {$customposttools}
 </select>
@@ -10602,8 +10599,16 @@ if(use_xmlhttprequest == "1")
 	var inlineId = {$tid};
 // -->
 </script><br />]]></template>
+		<template name="showthread_inlinemoderation_approve" version="1800"><![CDATA[	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
+	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_inlinemoderation_delete" version="1800"><![CDATA[	<option value="multideleteposts">{$lang->inline_delete_posts}</option>]]></template>
+		<template name="showthread_inlinemoderation_manage" version="1800"><![CDATA[	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
+	<option value="multisplitposts">{$lang->inline_split_posts}</option>
+	<option value="multimoveposts">{$lang->inline_move_posts}</option>]]></template>
+		<template name="showthread_inlinemoderation_restore" version="1800"><![CDATA[	<option value="multirestoreposts">{$lang->inline_restore_posts}</option>]]></template>
+		<template name="showthread_inlinemoderation_softdelete" version="1800"><![CDATA[	<option value="multisoftdeleteposts">{$lang->inline_soft_delete_posts}</option>]]></template>
 		<template name="showthread_moderationoptions" version="1800"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
@@ -10614,17 +10619,13 @@ if(use_xmlhttprequest == "1")
 	<select name="action" id="moderator_options_selector">
 		<option value="delayedmoderation">{$lang->delayed_moderation}</option>
 		<optgroup label="{$lang->standard_mod_tools}">
-			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>
-			<option value="openclosethread">{$lang->open_close_thread}</option>
+			{$threadnotes}
+			{$openclosethread}
 			{$softdeletethread}
-			<option value="deletethread">{$lang->delete_thread}</option>
+			{$deletethread}
 			{$adminpolloptions}
-			<option value="move">{$lang->move_thread}</option>
-			<option value="stick">{$lang->stick_unstick_thread}</option>
-			<option value="split">{$lang->split_thread}</option>
-			<option value="merge">{$lang->merge_threads}</option>
-			<option value="removeredirects">{$lang->remove_redirects}</option>
-			<option value="removesubscriptions">{$lang->remove_subscriptions}</option>
+			{$stickunstickthread}
+			{$managethread}
 			{$approveunapprovethread}
 		</optgroup>
 		{$customthreadtools}
@@ -10641,6 +10642,16 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="showthread_moderationoptions_delete" version="1800"><![CDATA[			<option value="deletethread">{$lang->delete_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_deletepoll" version="1800"><![CDATA[			<option value="deletepoll">{$lang->delete_poll}</option>]]></template>
+		<template name="showthread_moderationoptions_manage" version="1800"><![CDATA[			<option value="move">{$lang->move_thread}</option>
+			<option value="split">{$lang->split_thread}</option>
+			<option value="merge">{$lang->merge_threads}</option>
+			<option value="removeredirects">{$lang->remove_redirects}</option>
+			<option value="removesubscriptions">{$lang->remove_subscriptions}</option>]]></template>
+		<template name="showthread_moderationoptions_openclose" version="1800"><![CDATA[			<option value="openclosethread">{$lang->open_close_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_stickunstick" version="1800"><![CDATA[			<option value="stick">{$lang->stick_unstick_thread}</option>]]></template>
+		<template name="showthread_moderationoptions_threadnotes" version="1800"><![CDATA[			<option value="threadnotes" selected="selected">{$lang->thread_notes}</option>]]></template>
 		<template name="showthread_multipage" version="126"><![CDATA[<tr>
 <td class="tcat" colspan="2"> {$multipage}</td>
 </tr>]]></template>
@@ -10667,6 +10678,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </form>]]></template>
+		<template name="showthread_poll_editpoll" version="1800"><![CDATA[ | <a href="polls.php?action=editpoll&amp;pid={$poll['pid']}">{$lang->edit_poll}</a>]]></template>
 		<template name="showthread_poll_option" version="1600"><![CDATA[<tr>
 <td class="trow1" width="1%"><input type="radio" class="radio" name="option" id="option_{$number}" value="{$number}" /></td>
 <td class="trow1" colspan="3">{$option}</td>
@@ -10700,6 +10712,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 <br />]]></template>
+		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
 		<template name="showthread_quickreply" version="1800"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />

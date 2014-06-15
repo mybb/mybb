@@ -173,7 +173,7 @@ if($mybb->input['action'] == "reports")
 		$report_count = 0;
 		while($fid = $db->fetch_field($query, 'id3'))
 		{
-			if(is_moderator($fid))
+			if(is_moderator($fid, "canmanagereportedposts"))
 			{
 				++$report_count;
 			}
@@ -772,7 +772,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	{
 		error($lang->error_invalid_announcement);
 	}
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -799,7 +799,7 @@ if($mybb->input['action'] == "delete_announcement")
 		error($lang->error_invalid_announcement);
 	}
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -815,7 +815,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	$announcement_fid = $mybb->get_input('fid', 1);
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -971,7 +971,7 @@ if($mybb->input['action'] == "new_announcement")
 
 	$announcement_fid = $mybb->get_input('fid', 1);
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -1195,7 +1195,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	// Mod has permissions to edit this announcement
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}
@@ -1357,7 +1357,7 @@ if($mybb->input['action'] == "edit_announcement")
 	{
 		error($lang->error_invalid_announcement);
 	}
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'], "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
 	{
 		error_no_permission();
 	}

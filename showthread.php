@@ -12,11 +12,12 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread,showthread_moderationoptions";
-$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread";
+$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,showthread_inlinemoderation_manage,showthread_inlinemoderation_approve";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,showthread_threadnoteslink,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
-$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic";
+$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,forumdisplay_password_wrongpass";
+$templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage, showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_resultbit,showthread_poll_results,showthread_classic_header,forumdisplay_password";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -88,9 +89,25 @@ if(!$thread['username'])
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
-	$visibleonly = " AND visible IN (-1,0,1)";
-	$visibleonly2 = "AND p.visible IN (-1,0,1) AND t.visible IN (-1,0,1)";
 	$ismod = true;
+	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	{
+		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
+		{
+			$visibleonly = " AND visible IN (0,1)";
+			$visibleonly2 = "AND p.visible IN (0,1) AND t.visible IN (0,1)";
+		}
+		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
+		{
+			$visibleonly = " AND visible IN (-1,1)";
+			$visibleonly2 = "AND p.visible IN (-1,1) AND t.visible IN (-1,1)";
+		}
+		else
+		{
+			$visibleonly = " AND visible IN (-1,0,1)";
+			$visibleonly2 = "AND p.visible IN (-1,0,1) AND t.visible IN (-1,0,1)";
+		}
+	}
 }
 else
 {
@@ -126,7 +143,7 @@ if(!$forum || $forum['type'] != "f")
 }
 
 $threadnoteslink = '';
-if(is_moderator($fid) && !empty($thread['notes']))
+if(is_moderator($fid, "canmanagethreads") && !empty($thread['notes']))
 {
 	eval('$threadnoteslink = "'.$templates->get('showthread_threadnoteslink').'";');
 }
@@ -535,13 +552,10 @@ if($mybb->input['action'] == "thread")
 		}
 
 		// Check if user is allowed to edit posts; if so, show "edit poll" link.
-		if(!is_moderator($fid, 'caneditposts'))
+		$edit_poll = '';
+		if(is_moderator($fid, 'canmanagepolls'))
 		{
-			$edit_poll = '';
-		}
-		else
-		{
-			$edit_poll = " | <a href=\"polls.php?action=editpoll&amp;pid={$poll['pid']}\">{$lang->edit_poll}</a>";
+			eval("\$edit_poll = \"".$templates->get("showthread_poll_editpoll")."\";");
 		}
 
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
@@ -553,7 +567,7 @@ if($mybb->input['action'] == "thread")
 
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
-					$pollstatus .= " [<a href=\"polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}\">{$lang->undo_vote}</a>]";
+					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
 				}
 			}
 			else
@@ -617,30 +631,7 @@ if($mybb->input['action'] == "thread")
 	// Create the admin tools dropdown box.
 	if($ismod == true)
 	{
-		$adminpolloptions = $closelinkch = $stickch = '';
-
-		if($pollbox)
-		{
-			$adminpolloptions = "<option value=\"deletepoll\">".$lang->delete_poll."</option>";
-		}
-
-		if($thread['visible'] == 0)
-		{
-			$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
-		}
-		else
-		{
-			$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
-		}
-
-		if($thread['visible'] == -1)
-		{
-			$softdeletethread = "<option value=\"restorethread\">".$lang->restore_thread."</option>";
-		}
-		else
-		{
-			$softdeletethread = "<option value=\"softdeletethread\">".$lang->soft_delete_thread."</option>";
-		}
+		$closelinkch = $stickch = '';
 
 		if($thread['closed'] == 1)
 		{
@@ -1214,7 +1205,38 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
+		$inlinemodsoftdelete = $inlinemodrestore = $inlinemoddelete = $inlinemodmanage = $inlinemodapprove = '';
+
+		if(is_moderator($forum['fid'], "cansoftdeleteposts"))
+		{
+			eval("\$inlinemodsoftdelete = \"".$templates->get("showthread_inlinemoderation_softdelete")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canrestoreposts"))
+		{
+			eval("\$inlinemodrestore = \"".$templates->get("showthread_inlinemoderation_restore")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "candeleteposts"))
+		{
+			eval("\$inlinemoddelete = \"".$templates->get("showthread_inlinemoderation_delete")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canmanagethreads"))
+		{
+			eval("\$inlinemodmanage = \"".$templates->get("showthread_inlinemoderation_manage")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canapproveunapproveposts"))
+		{
+			eval("\$inlinemodapprove = \"".$templates->get("showthread_inlinemoderation_approve")."\";");
+		}
+
+		// Only show inline mod menu if there's options to show
+		if(!empty($inlinemodsoftdelete) || !empty($inlinemodrestore) || !empty($inlinemoddelete) || !empty($inlinemodmanage) || !empty($inlinemodapprove) || !empty($customposttools))
+		{
+			eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
+		}
 
 		// Build thread moderation dropdown
 		if(!empty($customthreadtools))
@@ -1222,7 +1244,63 @@ if($mybb->input['action'] == "thread")
 			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
 		}
 
-		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
+		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = '';
+
+		if(is_moderator($forum['fid'], "canopenclosethreads"))
+		{
+			eval("\$openclosethread = \"".$templates->get("showthread_moderationoptions_openclose")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canstickunstickthreads"))
+		{
+			eval("\$stickunstickthread = \"".$templates->get("showthread_moderationoptions_stickunstick")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "candeletethreads"))
+		{
+			eval("\$deletethread = \"".$templates->get("showthread_moderationoptions_delete")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canmanagethreads"))
+		{
+			eval("\$threadnotes = \"".$templates->get("showthread_moderationoptions_threadnotes")."\";");
+			eval("\$managethread = \"".$templates->get("showthread_moderationoptions_manage")."\";");
+		}
+
+		if($pollbox && is_moderator($forum['fid'], "canmanagepolls"))
+		{
+			eval("\$adminpolloptions = \"".$templates->get("showthread_moderationoptions_deletepoll")."\";");
+		}
+
+		if(is_moderator($forum['fid'], "canapproveunapprovethreads"))
+		{
+			if($thread['visible'] == 0)
+			{
+				$approveunapprovethread = "<option value=\"approvethread\">".$lang->approve_thread."</option>";
+			}
+			else
+			{
+				$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
+			}
+		}
+
+		if(is_moderator($forum['fid'], "cansoftdeletethreads"))
+		{
+			if($thread['visible'] == -1)
+			{
+				$softdeletethread = "<option value=\"restorethread\">".$lang->restore_thread."</option>";
+			}
+			else
+			{
+				$softdeletethread = "<option value=\"softdeletethread\">".$lang->soft_delete_thread."</option>";
+			}
+		}
+
+		// Only show inline mod menu if there's options to show
+		if(!empty($openclosethread) || !empty($stickunstickthread) || !empty($deletethread) || !empty($managethread) || !empty($adminpolloptions) || !empty($approveunapprovethread) || !empty($softdeletethread) || !empty($customthreadtools))
+		{
+			eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
+		}
 	}
 
 	// Display 'send thread' link if permissions allow
