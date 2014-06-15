@@ -16,6 +16,7 @@ var inlineModeration = {
 
 		var inlineIds = inlineModeration.getCookie(inlineModeration.cookieName);
 		var removedIds = inlineModeration.getCookie(inlineModeration.cookieName+'_removed');
+		var allChecked = true;
 
 		for(var i=0; i < inputs.length; i++)
 		{
@@ -54,18 +55,27 @@ var inlineModeration = {
 					{
 						tr.removeClassName('trow_selected');
 					}
+					allChecked = false;
 				}
 			}
 		}
 
 		inlineModeration.updateCookies(inlineIds, removedIds);
 
-		if(inlineIds.indexOf('ALL') != -1)
+		if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
 		{
 			var allSelectedRow = document.getElementById('allSelectedrow');
 			if(allSelectedRow)
 			{
 				allSelectedRow.style.display = 'table-row';
+			}
+		}
+		else if(allChecked == true)
+		{
+			var selectRow = document.getElementById('selectAllrow');
+			if(selectRow)
+			{
+				selectRow.style.display = 'table-row';
 			}
 		}
 		return true;
@@ -100,6 +110,14 @@ var inlineModeration = {
 			else
 			{
 				removedIds = inlineModeration.removeId(removedIds, id);
+				if(removedIds.length == 0)
+				{
+					var allSelectedRow = document.getElementById('allSelectedrow');
+					if(allSelectedRow)
+					{
+						allSelectedRow.style.display = 'table-row';
+					}
+				}
 			}
 			var tr = element.up('tr');
 			if(tr)
@@ -112,10 +130,20 @@ var inlineModeration = {
 			if(inlineIds.indexOf('ALL') == -1)
 			{
 				inlineIds = inlineModeration.removeId(inlineIds, id);
+				var selectRow = document.getElementById('selectAllrow');
+				if(selectRow)
+				{
+					selectRow.style.display = 'none';
+				}
 			}
 			else
 			{
 				removedIds = inlineModeration.addId(removedIds, id);
+				var allSelectedRow = document.getElementById('allSelectedrow');
+				if(allSelectedRow)
+				{
+					allSelectedRow.style.display = 'none';
+				}
 			}
 			var tr = element.up('tr');
 			if(tr)
@@ -270,8 +298,7 @@ var inlineModeration = {
 
 	selectAll: function()
 	{
-		$('inline_go').value = go_text+' ('+all_text+')';
-		inlineModeration.setCookie(inlineModeration.cookieName, new Array('ALL'));
+		inlineModeration.updateCookies(new Array('ALL'), new Array());
 
 		var selectRow = document.getElementById('selectAllrow');
 		if(selectRow)
