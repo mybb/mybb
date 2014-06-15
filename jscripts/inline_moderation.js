@@ -81,7 +81,7 @@ var inlineModeration = {
 				allSelectedRow.css('display', 'table-row');
 			}
 		}
-		else if(allChecked == true)
+		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
 		{
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
@@ -331,6 +331,23 @@ var inlineModeration = {
 				{
 					selectRow.css('display', 'none');
 				}
+			}
+		}
+
+		if(inlineIds.indexOf('ALL') == -1 || removedIds.length != 0)
+		{
+			var allSelectedRow = $('#allSelectedrow');
+			if(allSelectedRow)
+			{
+				allSelectedRow.css('display', 'none');
+			}
+		}
+		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
+		{
+			var allSelectedRow = $('#allSelectedrow');
+			if(allSelectedRow)
+			{
+				allSelectedRow.css('display', 'table-row');
 			}
 		}
 	},
