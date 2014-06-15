@@ -602,6 +602,25 @@ function upload_attachment($attachment, $update_attachment=false)
 	if($prevattach['aid'] && $update_attachment == true)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
+
+		// Remove old attachment file
+		// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
+		$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($prevattach['attachname'])."'");
+		if($db->fetch_field($query, "numreferences") == 0)
+		{
+			@unlink($mybb->settings['uploadspath']."/".$prevattach['attachname']);
+			if($prevattach['thumbnail'])
+			{
+				@unlink($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
+			}
+
+			$date_directory = explode('/', $prevattach['attachname']);
+			if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+			{
+				@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+			}
+		}
+
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
 		$aid = $prevattach['aid'];
 	}
