@@ -11,14 +11,14 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'modcp.php');
 
-$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread";
-$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty";
+$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads";
+$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts";
 $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
-$templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults";
-$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result";
-$templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info";
-$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned";
+$templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults, modcp_nav_forums_posts";
+$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue";
+$templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info,modcp_nav_announcements,modcp_modqueue_post_link";
+$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned,modcp_modqueue_thread_link";
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
 $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
@@ -50,14 +50,51 @@ if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 
-	$flist = $flist_reports = $flist_modlog = null;
-	$numannouncements = $numreportedposts = $nummodlogs = 0;
+	$flist = $flist_queue_threads = $flist_queue_posts = $flist_queue_attach = $flist_reports = $flist_modlog = null;
+	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
 		// For Announcements
 		if($forum['canmanageannouncements'] == 1)
 		{
 			++$numannouncements;
+		}
+
+		// For the Mod Queues
+		if($forum['canapproveunapprovethreads'] == 1)
+		{
+			$flist_queue_threads .= ",'{$forum['fid']}'";
+
+			$children = get_child_list($forum['fid']);
+			if(!empty($children))
+			{
+				$flist_queue_threads .= ",'".implode("','", $children)."'";
+			}
+			++$nummodqueuethreads;
+		}
+
+		if($forum['canapproveunapproveposts'] == 1)
+		{
+			$flist_queue_posts .= ",'{$forum['fid']}'";
+
+			$children = get_child_list($forum['fid']);
+			if(!empty($children))
+			{
+				$flist_queue_posts .= ",'".implode("','", $children)."'";
+			}
+			++$nummodqueueposts;
+		}
+
+		if($forum['canapproveunapproveattachs'] == 1)
+		{
+			$flist_queue_attach .= ",'{$forum['fid']}'";
+
+			$children = get_child_list($forum['fid']);
+			if(!empty($children))
+			{
+				$flist_queue_attach .= ",'".implode("','", $children)."'";
+			}
+			++$nummodqueueattach;
 		}
 
 		// For Reported posts
@@ -94,6 +131,21 @@ if($mybb->usergroup['issupermod'] != 1)
 			$flist .= ",'".implode("','", $children)."'";
 		}
 		$moderated_forums[] = $forum['fid'];
+	}
+	if($flist_queue_threads)
+	{
+		$tflist_queue_threads = " AND t.fid IN (0{$flist_queue_threads})";
+		$flist_queue_threads = " AND fid IN (0{$flist_queue_threads})";
+	}
+	if($flist_queue_posts)
+	{
+		$tflist_queue_posts = " AND t.fid IN (0{$flist_queue_posts})";
+		$flist_queue_posts = " AND fid IN (0{$flist_queue_posts})";
+	}
+	if($flist_queue_attach)
+	{
+		$tflist_queue_attach = " AND t.fid IN (0{$flist_queue_attach})";
+		$flist_queue_attach = " AND fid IN (0{$flist_queue_attach})";
 	}
 	if($flist_reports)
 	{
@@ -153,9 +205,15 @@ if(!isset($collapsed['modcpusers_e']))
 }
 
 // Fetch the Mod CP menu
+$nav_announcements = $nav_modqueue = $nav_reportcenter = $nav_modlogs = $nav_forums_posts = '';
 if($numannouncements > 0 || $mybb->usergroup['issupermod'] == 1)
 {
 	eval("\$nav_announcements = \"".$templates->get("modcp_nav_announcements")."\";");
+}
+
+if($nummodqueuethreads > 0 || $nummodqueueposts > 0 || $nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)
+{
+	eval("\$nav_modqueue = \"".$templates->get("modcp_nav_modqueue")."\";");
 }
 
 if($numreportedposts > 0 || $mybb->usergroup['issupermod'] == 1)
@@ -169,6 +227,11 @@ if($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1)
 }
 
 $plugins->run_hooks("modcp_nav");
+
+if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
+{
+	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
+}
 
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
 
@@ -1740,7 +1803,7 @@ if($mybb->input['action'] == "do_modqueue")
 		$mybb->input['threads'] = array_map("intval", array_keys($mybb->input['threads']));
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $mybb->input['threads'])."){$flist}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $mybb->input['threads'])."){$flist_queue_threads}");
 		while($thread = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['threads'][$thread['tid']]))
@@ -1766,7 +1829,7 @@ if($mybb->input['action'] == "do_modqueue")
 		{
 			if($mybb->settings['soft_delete'] == 1)
 			{
-				$moderation->self_delete_threads($threads_to_delete);
+				$moderation->soft_delete_threads($threads_to_delete);
 				log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_soft_delete_threads);
 			}
 			else
@@ -1788,7 +1851,7 @@ if($mybb->input['action'] == "do_modqueue")
 		$mybb->input['posts'] = array_map("intval", array_keys($mybb->input['posts']));
 		// Fetch posts
 		$posts_to_approve = $posts_to_delete = array();
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $mybb->input['posts'])."){$flist}");
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $mybb->input['posts'])."){$flist_queue_posts}");
 		while($post = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['posts'][$post['pid']]))
@@ -1818,7 +1881,7 @@ if($mybb->input['action'] == "do_modqueue")
 		{
 			if($mybb->settings['soft_delete'] == 1)
 			{
-				$moderation->self_delete_posts($posts_to_delete);
+				$moderation->soft_delete_posts($posts_to_delete);
 				log_moderator_action(array('pids' => $posts_to_delete), $lang->multi_soft_delete_posts);
 			}
 			else
@@ -1839,7 +1902,7 @@ if($mybb->input['action'] == "do_modqueue")
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE aid IN (".implode(",", $mybb->input['attachments'])."){$tflist}
+			WHERE aid IN (".implode(",", $mybb->input['attachments'])."){$tflist_queue_attach}
 		");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -1866,13 +1929,25 @@ if($mybb->input['action'] == "do_modqueue")
 
 if($mybb->input['action'] == "modqueue")
 {
+	$navsep = '';
+
+	if($nummodqueuethreads == 0 && $nummodqueueposts == 0 && $nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1)
+	{
+		error($lang->you_cannot_use_mod_queue);
+	}
+
 	$mybb->input['type'] = $mybb->get_input('type');
 	$threadqueue = $postqueue = $attachmentqueue = '';
-	if($mybb->input['type'] == "threads" || !$mybb->input['type'])
+	if($mybb->input['type'] == "threads" || !$mybb->input['type'] && ($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1))
 	{
+		if($nummodqueuethreads == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_threads);
+		}
+
 		$forum_cache = $cache->read("forums");
 
-		$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0 {$flist}");
+		$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible='0' {$flist_queue_threads}");
 		$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
 
 		// Figure out if we need to display multiple pages.
@@ -1912,7 +1987,7 @@ if($mybb->input['action'] == "modqueue")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			WHERE t.visible='0' {$tflist}
+			WHERE t.visible='0' {$tflist_queue_threads}
 			ORDER BY t.lastpost DESC
 			LIMIT {$start}, {$perpage}
 		");
@@ -1958,10 +2033,18 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_threads_end");
 
-			if($mybb->settings['enableattachments'] == 1)
+			if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
+				$navsep = " | ";
+				eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+			}
+
+			if($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))
+			{
+				$navsep = " | ";
 				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
 			}
+
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);
@@ -1969,15 +2052,20 @@ if($mybb->input['action'] == "modqueue")
 		$type = 'threads';
 	}
 
-	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue))
+	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue && ($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)))
 	{
+		if($nummodqueueposts == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_posts);
+		}
+
 		$forum_cache = $cache->read("forums");
 
 		$query = $db->query("
 			SELECT COUNT(pid) AS unapprovedposts
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
 		");
 		$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
 
@@ -2018,7 +2106,7 @@ if($mybb->input['action'] == "modqueue")
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+			WHERE p.visible='0' {$tflist_queue_posts} AND t.firstpost != p.pid
 			ORDER BY p.dateline DESC
 			LIMIT {$start}, {$perpage}
 		");
@@ -2066,21 +2154,34 @@ if($mybb->input['action'] == "modqueue")
 
 			$plugins->run_hooks("modcp_modqueue_posts_end");
 
-			if($mybb->settings['enableattachments'] == 1)
+			if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
+				$navsep = " | ";
+				eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+			}
+
+			if($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))
+			{
+				$navsep = " | ";
 				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
 			}
+
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);
 		}
 	}
 
-	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1))
+	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue && $mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1)))
 	{
 		if($mybb->settings['enableattachments'] == 0)
 		{
 			error($lang->attachments_disabled);
+		}
+
+		if($nummodqueueattach == 0 && $mybb->usergroup['issupermod'] != 1)
+		{
+			error($lang->you_cannot_moderate_attachments);
 		}
 
 		$query = $db->query("
@@ -2088,7 +2189,7 @@ if($mybb->input['action'] == "modqueue")
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE a.visible='0' {$tflist}
+			WHERE a.visible='0'{$tflist_queue_attach}
 		");
 		$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
@@ -2130,7 +2231,7 @@ if($mybb->input['action'] == "modqueue")
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE a.visible='0'
+			WHERE a.visible='0'{$tflist_queue_attach}
 			ORDER BY a.dateuploaded DESC
 			LIMIT {$start}, {$perpage}
 		");
@@ -2168,6 +2269,18 @@ if($mybb->input['action'] == "modqueue")
 			add_breadcrumb($lang->mcp_nav_modqueue_attachments, "modcp.php?action=modqueue&amp;type=attachments");
 
 			$plugins->run_hooks("modcp_modqueue_attachments_end");
+
+			if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+				$navsep = " | ";
+			}
+
+			if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
+			{
+				eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+				$navsep = " | ";
+			}
 
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
@@ -4083,8 +4196,19 @@ if($mybb->input['action'] == "do_modnotes")
 
 if(!$mybb->input['action'])
 {
-	if($mybb->settings['enableattachments'] == 1)
+	$awaitingattachments = $awaitingposts = $awaitingthreads = $awaitingmoderation = '';
+
+	if($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))
 	{
+		if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
+		{
+			$bgcolor = "trow1";
+		}
+		else
+		{
+			$bgcolor = "trow2";
+		}
+
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
@@ -4122,68 +4246,83 @@ if(!$mybb->input['action'])
 		eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
 	}
 
-	$query = $db->query("
-		SELECT COUNT(pid) AS unapprovedposts
-		FROM  ".TABLE_PREFIX."posts p
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-	");
-	$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
-
-	if($unapproved_posts > 0)
+	if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
 	{
 		$query = $db->query("
-			SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
+			SELECT COUNT(pid) AS unapprovedposts
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
-			ORDER BY p.dateline DESC
-			LIMIT 1
 		");
-		$post = $db->fetch_array($query);
-		$post['date'] = my_date('relative', $post['dateline']);
-		$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
-		$post['link'] = get_post_link($post['pid'], $post['tid']);
-		$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
-		if(my_strlen($post['subject']) > 25)
+		$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
+
+		if($unapproved_posts > 0)
 		{
-			$post['subject'] = my_substr($post['subject'], 0, 25)."...";
+			$query = $db->query("
+				SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
+				FROM  ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+				ORDER BY p.dateline DESC
+				LIMIT 1
+			");
+			$post = $db->fetch_array($query);
+			$post['date'] = my_date('relative', $post['dateline']);
+			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+			$post['link'] = get_post_link($post['pid'], $post['tid']);
+			$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
+			if(my_strlen($post['subject']) > 25)
+			{
+				$post['subject'] = my_substr($post['subject'], 0, 25)."...";
+			}
+			$post['subject'] = htmlspecialchars_uni($post['subject']);
+			$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
+			$unapproved_posts = my_number_format($unapproved_posts);
+
+			eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
 		}
-		$post['subject'] = htmlspecialchars_uni($post['subject']);
-		$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
-		$unapproved_posts = my_number_format($unapproved_posts);
-
-		eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
-	}
-	else
-	{
-		$latest_post =  "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
-	}
-
-	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0 {$flist}");
-	$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
-
-	if($unapproved_threads > 0)
-	{
-		$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible=0 {$flist}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
-		$thread = $db->fetch_array($query);
-		$thread['date'] = my_date('relative', $thread['dateline']);
-		$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
-		$thread['link'] = get_thread_link($thread['tid']);
-		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
-		if(my_strlen($thread['subject']) > 25)
+		else
 		{
-			$post['subject'] = my_substr($thread['subject'], 0, 25)."...";
+			$latest_post =  "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 		}
-		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
-		$unapproved_threads = my_number_format($unapproved_threads);
 
-		eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
+		eval("\$awaitingposts = \"".$templates->get("modcp_awaitingposts")."\";");
 	}
-	else
+
+	if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
 	{
-		$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible='0' {$flist_queue_threads}");
+		$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
+
+		if($unapproved_threads > 0)
+		{
+			$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible='0' {$flist_queue_threads}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
+			$thread = $db->fetch_array($query);
+			$thread['date'] = my_date('relative', $thread['dateline']);
+			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
+			$thread['link'] = get_thread_link($thread['tid']);
+			$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
+			if(my_strlen($thread['subject']) > 25)
+			{
+				$post['subject'] = my_substr($thread['subject'], 0, 25)."...";
+			}
+			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+			$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
+			$unapproved_threads = my_number_format($unapproved_threads);
+
+			eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
+		}
+		else
+		{
+			$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+		}
+
+		eval("\$awaitingthreads = \"".$templates->get("modcp_awaitingthreads")."\";");
+	}
+
+	if(!empty($awaitingattachments) || !empty($awaitingposts) || !empty($awaitingthreads))
+	{
+		eval("\$awaitingmoderation = \"".$templates->get("modcp_awaitingmoderation")."\";");
 	}
 
 	$latestfivemodactions = '';

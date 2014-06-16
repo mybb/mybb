@@ -5805,28 +5805,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 {$modcp_nav}
 <td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="3"><strong>{$lang->awaiting_moderation}</strong></td>
-</tr>
-<tr>
-<td class="tcat" width="23%"><span class="smalltext"><strong>{$lang->type}</strong></span></td>
-<td class="tcat" align="center" width="33%"><span class="smalltext"><strong>{$lang->number_awaiting}</strong></span></td>
-<td class="tcat" align="center" width="44%"><span class="smalltext"><strong>{$lang->latest}</strong></span></td>
-</tr>
-<tr>
-<td class="trow1"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
-<td class="trow1" align="center"><span class="smalltext">{$unapproved_threads}</span></td>
-<td class="trow1" align="center"><span class="smalltext">{$latest_thread}</span></td>
-</tr>
-<tr>
-<td class="trow2"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
-<td class="trow2" align="center"><span class="smalltext">{$unapproved_posts}</span></td>
-<td class="trow2" align="center"><span class="smalltext">{$latest_post}</span></td>
-</tr>
-{$awaitingattachments}
-</table>
-<br />
+{$awaitingmoderation}
 {$latestfivemodactions}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -6128,9 +6107,33 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
-<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
-<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
-<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
+<td class="{$bgcolor}"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
+<td class="{$bgcolor}" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
+<td class="{$bgcolor}" align="center"><span class="smalltext">{$latest_attachment}</span></td>
+</tr>]]></template>
+		<template name="modcp_awaitingposts" version="1800"><![CDATA[<tr>
+<td class="trow2"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
+<td class="trow2" align="center"><span class="smalltext">{$unapproved_posts}</span></td>
+<td class="trow2" align="center"><span class="smalltext">{$latest_post}</span></td>
+</tr>]]></template>
+		<template name="modcp_awaitingmoderation" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="3"><strong>{$lang->awaiting_moderation}</strong></td>
+</tr>
+<tr>
+<td class="tcat" width="23%"><span class="smalltext"><strong>{$lang->type}</strong></span></td>
+<td class="tcat" align="center" width="33%"><span class="smalltext"><strong>{$lang->number_awaiting}</strong></span></td>
+<td class="tcat" align="center" width="44%"><span class="smalltext"><strong>{$lang->latest}</strong></span></td>
+</tr>
+{$awaitingthreads}
+{$awaitingposts}
+{$awaitingattachments}
+</table>
+<br />]]></template>
+		<template name="modcp_awaitingthreads" version="1800"><![CDATA[<tr>
+<td class="trow1"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
+<td class="trow1" align="center"><span class="smalltext">{$unapproved_threads}</span></td>
+<td class="trow1" align="center"><span class="smalltext">{$latest_thread}</span></td>
 </tr>]]></template>
 		<template name="modcp_banning" version="1400"><![CDATA[<html>
 <head>
@@ -6970,7 +6973,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center" valign="top">{$information}</td>
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
 </tr>]]></template>
-		<template name="modcp_modqueue_attachments" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_attachments" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_awaiting_moderation}</title>
 {$headerinclude}
@@ -6988,9 +6991,9 @@ if(use_xmlhttprequest == "1")
 		<tr>
 			<td class="thead" colspan="6">
 				<div class="float_right">
-					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> |
-					<strong>{$lang->attachments}</strong>
+					{$thread_link}
+					{$post_link}
+					{$navsep}<strong>{$lang->attachments}</strong>
 				</div>
 				<strong>{$lang->attachments_awaiting_moderation}</strong>
 			</td>
@@ -7026,7 +7029,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
-		<template name="modcp_modqueue_attachment_link" version="1800"><![CDATA[ | <a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>]]></template>
+		<template name="modcp_modqueue_attachment_link" version="1800"><![CDATA[{$navsep}<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>]]></template>
 		<template name="modcp_modqueue_empty" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->mod_queue}</title>
@@ -7075,7 +7078,7 @@ if(use_xmlhttprequest == "1")
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
-					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
+					{$thread_link}
 					<strong>{$lang->posts}</strong>
 					{$attachment_link}
 				</div>
@@ -7124,6 +7127,7 @@ if(use_xmlhttprequest == "1")
 				</td>
 			</tr>
 ]]></template>
+		<template name="modcp_modqueue_post_link" version="1800"><![CDATA[{$navsep}<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a>]]></template>
 		<template name="modcp_modqueue_threads" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
@@ -7142,8 +7146,8 @@ if(use_xmlhttprequest == "1")
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
-					<strong>{$lang->threads}</strong> |
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a>
+					<strong>{$lang->threads}</strong>
+					{$post_link}
 					{$attachment_link}
 				</div>
 				<strong>{$lang->threads_awaiting_moderation}</strong>
@@ -7191,24 +7195,14 @@ if(use_xmlhttprequest == "1")
 				</td>
 			</tr>
 ]]></template>
+		<template name="modcp_modqueue_thread_link" version="1800"><![CDATA[<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a>{$navsep}]]></template>
 		<template name="modcp_nav" version="1800"><![CDATA[<td width="{$lang->nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="thead"><strong>{$lang->nav_menu}</strong></td>
 	</tr>
 	<tr><td class="trow1 smalltext"><a href="modcp.php" class="modcp_nav_item modcp_nav_home">{$lang->mcp_nav_home}</a></td></tr>
-	<tr>
-		<td class="tcat tcat_menu">
-			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
-			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
-		</td>
-	</tr>
-	<tbody style="{$collapsed['modcpforums_e']}" id="modcpforums_e">
-		{$nav_announcements}
-		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>
-		{$nav_reportcenter}
-		{$nav_modlogs}
-	</tbody>
+	{$modcp_nav_forums_posts}
 	<tr>
 		<td class="tcat tcat_menu">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
@@ -7224,7 +7218,20 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>]]></template>
 		<template name="modcp_nav_announcements" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>]]></template>
+		<template name="modcp_nav_forums_posts" version="1800"><![CDATA[<tr>
+		<td class="tcat tcat_menu">
+			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
+			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
+		</td>
+	</tr>
+	<tbody style="{$collapsed['modcpforums_e']}" id="modcpforums_e">
+		{$nav_announcements}
+		{$nav_modqueue}
+		{$nav_reportcenter}
+		{$nav_modlogs}
+	</tbody>]]></template>
 		<template name="modcp_nav_modlogs" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>]]></template>
+		<template name="modcp_nav_modqueue" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>]]></template>
 		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_no_announcements_forum" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_forum_announcements}</td>
