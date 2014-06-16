@@ -98,10 +98,6 @@ function upgrade29_dbchanges()
 		$db->drop_column("forums", "deletedposts");
 	}
 
-	if($db->field_exists('editreason', 'posts'))
-	{
-		$db->drop_column("editreason", "posts");
-	}
 	switch($db->type)
 	{
 		case "pgsql":
@@ -116,7 +112,6 @@ function upgrade29_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("posts", "editreason", "varchar(100) NOT NULL default ''");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
@@ -129,7 +124,6 @@ function upgrade29_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
-			$db->add_column("posts", "editreason", "varchar(100) NOT NULL default ''");
 			break;
 	}
 
@@ -194,6 +188,11 @@ function upgrade29_dbchanges2()
 		$db->drop_column("captcha", "used");
 	}
 
+	if($db->field_exists('editreason', 'posts'))
+	{
+		$db->drop_column("posts", "editreason");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -206,6 +205,7 @@ function upgrade29_dbchanges2()
 			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");			
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int NOT NULL default '0'");
+			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			break;
 		default:
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int(1) NOT NULL default '0' AFTER canpostreplys");
@@ -216,6 +216,7 @@ function upgrade29_dbchanges2()
 			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
+			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			break;
 	}
 

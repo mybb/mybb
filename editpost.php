@@ -11,7 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'editpost.php');
 
-$templatelist = "editpost,previewpost,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,post_attachments_add,newthread_postpoll,editpost_disablesmilies,post_subscription_method,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "editpost,previewpost,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment";
+$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,editpost_disablesmilies,post_subscription_method,post_attachments_add,newthread_postpoll,post_attachments_new,post_attachments";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -551,13 +552,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
-		$editreason = htmlspecialchars_uni($post['editreason']);
+		$reason = htmlspecialchars_uni($post['editreason']);
 	}
 	else
 	{
 		$message = $mybb->get_input('message');
 		$subject = $mybb->get_input('subject');
-		$editreason = htmlspecialchars_uni($mybb->get_input('editreason'));
+		$reason = htmlspecialchars_uni($mybb->get_input('editreason'));
 	}
 
 	if(!isset($post_errors))
@@ -759,11 +760,22 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$prefixselect = "";
 	}
 
+	$editreason = '';
+	if($mybb->settings['alloweditreason'] == 1)
+	{
+		eval("\$editreason = \"".$templates->get("editpost_reason")."\";");
+		$bgcolor = "trow2";
+		$bgcolor2 = "trow1";
+	}
+	else
+	{
+		$bgcolor = "trow1";
+		$bgcolor2 = "trow2";
+	}
+
 	// Fetch subscription select box
-	$bgcolor = "trow2";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	$bgcolor2 = "trow1";
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
 

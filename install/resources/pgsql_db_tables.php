@@ -507,6 +507,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   smilieoff int NOT NULL default '0',
   edituid int NOT NULL default '0',
   edittime int NOT NULL default '0',
+  editreason varchar(150) NOT NULL default '',
   visible int NOT NULL default '0',
   PRIMARY KEY (pid)
 );";

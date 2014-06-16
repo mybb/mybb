@@ -1311,6 +1311,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="alloweditreason">
+			<title>Allow Edit Reason</title>
+			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">

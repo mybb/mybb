@@ -3253,10 +3253,7 @@ a.button {
 {$codebuttons}
 </td>
 </tr>
-<tr>
-<td class="trow1"><strong>{$lang->editreason}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="100" value="{$editreason}" tabindex="1" /></td>
-</tr>
+{$editreason}
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow2"><span class="smalltext">
@@ -3295,6 +3292,10 @@ a.button {
 <br />]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="editpost_reason" version="1800"><![CDATA[<tr>
+<td class="trow1"><strong>{$lang->editreason}</strong></td>
+<td class="trow1"><input type="text" class="textbox" name="editreason" size="50" maxlength="150" value="{$editreason}" tabindex="5" /></td>
+</tr>]]></template>
 		<template name="error" version="120"><![CDATA[<html>
 <head>
 <title>{$title}</title>
@@ -10497,6 +10498,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript">
 <!--
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
+	var allowEditReason = "{$mybb->settings['alloweditreason']}";
 	lang.save_changes = "{$lang->save_changes}";
 	lang.cancel_edit = "{$lang->cancel_edit}";
 	lang.quick_edit_update_error = "{$lang->quick_edit_update_error}";

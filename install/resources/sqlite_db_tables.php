@@ -472,6 +472,7 @@ $tables[] = "CREATE TABLE mybb_posts (
 	smilieoff int(1) NOT NULL default '0',
 	edituid int NOT NULL default '0',
 	edittime int(10) NOT NULL default '0',
+	editreason varchar(150) NOT NULL default '',
 	visible int(1) NOT NULL default '0'
 );";
 
