@@ -102,7 +102,7 @@ function upgrade29_dbchanges()
 	{
 		case "pgsql":
 		case "sqlite":
-			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
+			$db->add_column("templategroups", "isdefault", "smallint NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
@@ -114,7 +114,7 @@ function upgrade29_dbchanges()
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
 			break;
 		default:
-			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
+			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL");
@@ -196,26 +196,25 @@ function upgrade29_dbchanges2()
 	switch($db->type)
 	{
 		case "pgsql":
-		case "sqlite":
-			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int NOT NULL default '0' AFTER canpostreplys");
-			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0' AFTER canchangename");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "smallint NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("usergroups", "canbereported", "smallint NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
-			$db->add_column("usergroups", "showmemberlist", "int NOT NULL default '1'");
-			$db->add_column("usergroups", "canviewboardclosed", "int NOT NULL default '0' AFTER candlattachments");			
+			$db->add_column("usergroups", "showmemberlist", "smallint NOT NULL default '1'");
+			$db->add_column("usergroups", "canviewboardclosed", "smallint NOT NULL default '0' AFTER candlattachments");			
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("captcha", "used", "int NOT NULL default '0'");
+			$db->add_column("captcha", "used", "smallint NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			break;
 		default:
-			$db->add_column("forumpermissions", "canonlyreplyownthreads", "int(1) NOT NULL default '0' AFTER canpostreplys");
-			$db->add_column("usergroups", "canbereported", "int(1) NOT NULL default '0' AFTER canchangename");
+			$db->add_column("forumpermissions", "canonlyreplyownthreads", "tinyint(1) NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("usergroups", "canbereported", "tinyint(1) NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
-			$db->add_column("usergroups", "showmemberlist", "int(1) NOT NULL default '1'");
-			$db->add_column("usergroups", "canviewboardclosed", "int(1) NOT NULL default '0' AFTER candlattachments");
+			$db->add_column("usergroups", "showmemberlist", "tinyint(1) NOT NULL default '1'");
+			$db->add_column("usergroups", "canviewboardclosed", "tinyint(1) NOT NULL default '0' AFTER candlattachments");
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
-			$db->add_column("captcha", "used", "int(1) NOT NULL default '0'");
+			$db->add_column("captcha", "used", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			break;
 	}
@@ -431,28 +430,27 @@ function upgrade29_dbchanges4()
 	switch($db->type)
 	{
 		case "pgsql":
-		case "sqlite":
-			$db->add_column("profilefields", "postbit", "int NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
-			$db->add_column("users", "showimages", "int NOT NULL default '1' AFTER threadmode");
-			$db->add_column("users", "showvideos", "int NOT NULL default '1' AFTER showimages");
-			$db->add_column("groupleaders", "caninvitemembers", "int NOT NULL default '0'");
-			$db->add_column("joinrequests", "invite", "int NOT NULL default '0'");
-			$db->add_column("profilefields", "registration", "int NOT NULL default '0' AFTER required");
+			$db->add_column("users", "showimages", "smallint NOT NULL default '1' AFTER threadmode");
+			$db->add_column("users", "showvideos", "smallint NOT NULL default '1' AFTER showimages");
+			$db->add_column("groupleaders", "caninvitemembers", "smallint NOT NULL default '0'");
+			$db->add_column("joinrequests", "invite", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "registration", "smallint NOT NULL default '0' AFTER required");
 			$db->add_column("awaitingactivation", "validated", "smallint NOT NULL default '0' AFTER type");
 			break;
 		default:
-			$db->add_column("profilefields", "postbit", "int(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
-			$db->add_column("users", "showimages", "int(1) NOT NULL default '1' AFTER threadmode");
-			$db->add_column("users", "showvideos", "int(1) NOT NULL default '1' AFTER showimages");
-			$db->add_column("groupleaders", "caninvitemembers", "int(1) NOT NULL default '0'");
-			$db->add_column("joinrequests", "invite", "int(1) NOT NULL default '0'");
-			$db->add_column("profilefields", "registration", "int(1) NOT NULL default '0' AFTER required");
+			$db->add_column("users", "showimages", "tinyint(1) NOT NULL default '1' AFTER threadmode");
+			$db->add_column("users", "showvideos", "tinyint(1) NOT NULL default '1' AFTER showimages");
+			$db->add_column("groupleaders", "caninvitemembers", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("joinrequests", "invite", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "registration", "tinyint(1) NOT NULL default '0' AFTER required");
 			$db->add_column("awaitingactivation", "validated", "tinyint(1) NOT NULL default '0' AFTER type");
 			break;
 	}
@@ -574,6 +572,71 @@ function upgrade29_dbchanges4()
 	$db->update_query("tasks", $update_array, "file = 'versioncheck'");
 
 	echo "<p>Added {$added_tasks} new tasks.</p>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("29_dbchanges_optimize");
+}
+
+function upgrade29_dbchanges_optimize()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Optimizing Database");
+
+	echo "<p>Performing necessary optimization queries...</p>";
+	flush();
+
+	$to_int = array(
+		"adminoptions" => array("codepress"),
+		"adminviews" => array("visibility"),
+		"announcements" => array("allowhtml", "allowmycode", "allowsmilies"),
+		"attachments" => array("visible"),
+		"banfilters" => array("type"),
+		"calendars" => array("startofweek", "showbirthdays", "moderation", "allowhtml", "allowmycode", "allowimgcode", "allowvideocode", "allowsmilies"),
+		"calendarpermissions" => array("canviewcalendar", "canaddevents", "canbypasseventmod", "canmoderateevents"),
+		"events" => array("visible", "private", "ignoretimezone", "usingtime"),
+		"forumpermissions" => array("canview", "canviewthreads", "canonlyviewownthreads", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch"),
+		"forums" => array("active", "open", "allowhtml", "allowmycode", "allowsmilies", "allowimgcode", "allowvideocode", "allowpicons", "allowtratings", "usepostcounts", "showinjump", "modposts", "modthreads", "modattachments", "mod_edit_posts", "overridestyle", "rulestype"),
+		"groupleaders" => array("canmanagemembers", "canmanagerequests"),
+		"helpdocs" => array("usetranslation", "enabled"),
+		"helpsections" => array("usetranslation", "enabled"),
+		"moderators" => array("isgroup", "caneditposts", "candeleteposts", "canviewips", "canopenclosethreads", "canmanagethreads", "canmovetononmodforum", "canusecustomtools"),
+		"mycode" => array("active"),
+		"polls" => array("closed", "multiple", "public"),
+		"posts" => array("includesig", "smilieoff", "visible"),
+		"privatemessages" => array("status", "includesig", "smilieoff", "receipt"),
+		"profilefields" => array("required", "editable", "hidden"),
+		"reportedcontent" => array("reportstatus"),
+		"sessions" => array("anonymous", "nopermission"),
+		"settinggroups" => array("isdefault"),
+		"settings" => array("isdefault"),
+		"smilies" => array("sid", "showclickable"),
+		"tasks" => array("enabled", "logging"),
+		"themes" => array("def"),
+		"threads" => array("sticky", "visible"),
+		"threadsubscriptions" => array("notification"),
+		"usergroups" => array("isbannedgroup", "canview", "canviewthreads", "canviewprofiles", "candlattachments", "canviewboardclosed", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "canundovotes", "canusepms", "cansendpms", "cantrackpms", "candenypmreceipts", "cansendemail", "cansendemailoverride", "canviewmemberlist", "canviewcalendar", "canaddevents", "canbypasseventmod", "canmoderateevents", "canviewonline", "canviewwolinvis", "canviewonlineips", "cancp", "issupermod", "cansearch", "canusercp", "canuploadavatars", "canratemembers", "canchangename", "canbereported", "showforumteam", "usereputationsystem", "cangivereputations", "candisplaygroup", "cancustomtitle", "canwarnusers", "canreceivewarnings", "canmodcp", "showinbirthdaylist", "canoverridepm", "canusesig", "signofollow"),
+		"users" => array("allownotices", "hideemail", "subscriptionmethod", "invisible", "receivepms", "receivefrombuddy", "pmnotice", "pmnotify", "showsigs", "showavatars", "showquickreply", "showredirect", "showcodebuttons", "coppauser", "classicpostbit"),
+		"warnings" => array("expired")
+	);
+
+	foreach($to_int as $table => $columns)
+	{
+		echo "<p>{$table}: Converting column type</p>";
+		$change_column = array();
+		foreach($columns as $column)
+		{
+			if($db->type == "pgsql")
+			{
+				$change_column[] = "MODIFY {$column} smallint NOT NULL default '0'";
+			}
+			else
+			{
+				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
+			}
+		}
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("29_dbchanges_ip");
