@@ -27,6 +27,7 @@ require_once MYBB_ROOT."inc/functions_user.php";
 $lang->load("newthread");
 
 $tid = $pid = 0;
+$subject = $message = '';
 $mybb->input['action'] = $mybb->get_input('action');
 $mybb->input['tid'] = $mybb->get_input('tid', 1);
 $mybb->input['pid'] = $mybb->get_input('pid', 1);
@@ -467,7 +468,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(empty($mybb->input['previewpost']) && !$thread_errors && $mybb->input['action'] != "editdraft")
 	{
-		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
 		if(isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0)
@@ -812,10 +812,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-	}
-	else
-	{
-		$subject = $message = '';
 	}
 
 	// Generate thread prefix selector
