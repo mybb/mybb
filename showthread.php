@@ -115,7 +115,7 @@ else
 }
 
 // Make sure we are looking at a real thread here.
-if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || ($thread['visible'] == -1 && !is_moderator($fid, "canviewdeleted")))
 {
 	error($lang->error_invalidthread);
 }
@@ -360,7 +360,7 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 	$forum_threads = $db->fetch_array($query);
 	$threadcount = $forum_threads['threads'];
 
-	if($ismod == true)
+	if(is_moderator($fid, "canviewunapprove") == true)
 	{
 		$threadcount += $forum_threads['unapprovedthreads'];
 	}
@@ -704,7 +704,15 @@ if($mybb->input['action'] == "thread")
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
-	if($ismod)
+	if($ismod && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
+	{
+		$visible = "AND p.visible IN (-1,1)";
+	}
+	elseif($ismod && is_moderator($fid, "canviewdeleted") == false && is_moderator($fid, "canviewunapprove") == true)
+	{
+		$visible = "AND p.visible IN (0,1)";
+	}
+	elseif($ismod)
 	{
 		$visible = "AND p.visible IN (-1,0,1)";
 	}

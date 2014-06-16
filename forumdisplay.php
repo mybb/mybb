@@ -1226,7 +1226,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['views'] = my_number_format($thread['views']);
 
 		// Threads and posts requiring moderation
-		if($thread['unapprovedposts'] > 0 && $ismod)
+		if($thread['unapprovedposts'] > 0 && is_moderator($fid, "canviewunapprove"))
 		{
 			if($thread['unapprovedposts'] > 1)
 			{
