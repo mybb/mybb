@@ -2751,9 +2751,9 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message")
+function build_mycode_inserter($bind="message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins;
+	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $smiliecount, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -2822,10 +2822,74 @@ function build_mycode_inserter($bind="message")
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
 		}
 		else
 		{
+			// Smilies		
+			$emoticon = "";
+			$emoticons_enabled = "false";
+			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{
+				$emoticon = ",emoticon";
+				$emoticons_enabled = "true";
+				if(!$smiliecount)
+				{
+					$smilie_cache = $cache->read("smilies");
+					$smiliecount = count($smilie_cache);
+				}
+
+				if(!$smiliecache)
+				{
+					if(!is_array($smilie_cache))
+					{
+						$smilie_cache = $cache->read("smilies");
+					}
+					foreach($smilie_cache as $smilie)
+					{
+						if($smilie['showclickable'] != 0)
+						{
+							$smiliecache[$smilie['find']] = $smilie['image'];
+						}
+					}
+				}
+
+				unset($smilie);
+
+				if(is_array($smiliecache))
+				{
+					reset($smiliecache);
+
+					if($mybb->settings['smilieinsertertot'] >= $smiliecount)
+					{
+						$mybb->settings['smilieinsertertot'] = $smiliecount;
+					}
+					else if($mybb->settings['smilieinsertertot'] < $smiliecount)
+					{
+						$smiliecount = $mybb->settings['smilieinsertertot'];
+					}
+
+					$dropdownsmilies = "";
+					$moresmilies = "";
+					$i = 0;
+
+					foreach($smiliecache as $find => $image)
+					{
+						$find = htmlspecialchars_uni($find);
+						$image = htmlspecialchars_uni($image);
+						if($i < $mybb->settings['smilieinsertertot'])
+						{
+							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						else
+						{
+							$moresmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						++$i;
+					}
+				}
+			}
+
 			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
 
 			if($mybb->settings['allowbasicmycode'] == 1)

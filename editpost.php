@@ -95,7 +95,7 @@ $forumpermissions = forum_permissions($fid);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 {
-	$codebuttons = build_mycode_inserter();
+	$codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
 }
 if($mybb->settings['smilieinserter'] != 0)
 {
