@@ -855,6 +855,7 @@ $(function() {
 				":at:": "../images/smilies/at.png"
 			}
 		},
+		emoticonsCompat: true,
         toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video,emoticon|{$list}{$code}quote|maximize,source",
 	});
       
