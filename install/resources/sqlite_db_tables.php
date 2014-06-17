@@ -135,7 +135,7 @@ $tables[] = "CREATE TABLE mybb_calendars (
 	disporder int NOT NULL default '0',
 	startofweek tinyint(1) NOT NULL default '0',
 	showbirthdays tinyint(1) NOT NULL default '0',
-	eventlimit int(3) NOT NULL default '0',
+	eventlimit smallint(3) NOT NULL default '0',
 	moderation tinyint(1) NOT NULL default '0',
 	allowhtml tinyint(1) NOT NULL default '0',
 	allowmycode tinyint(1) NOT NULL default '0',
@@ -293,7 +293,6 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
 	disporder smallint NOT NULL default '0'
 );";
 
-
 $tables[] = "CREATE TABLE mybb_helpsections (
 	sid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
@@ -303,13 +302,11 @@ $tables[] = "CREATE TABLE mybb_helpsections (
 	disporder smallint NOT NULL default '0'
 );";
 
-
 $tables[] = "CREATE TABLE mybb_icons (
 	iid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
 	path varchar(220) NOT NULL default ''
 );";
-
 
 $tables[] = "CREATE TABLE mybb_joinrequests (
 	rid INTEGER PRIMARY KEY,
@@ -346,7 +343,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
 	dateline bigint(30) NOT NULL default '0',
 	error TEXT NOT NULL,
 	smtperror varchar(200) NOT NULL default '',
-	smtpcode int(5) NOT NULL default '0'
+	smtpcode smallint(5) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_maillogs (
@@ -508,7 +505,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	editable tinyint(1) NOT NULL default '0',
 	hidden tinyint(1) NOT NULL default '0',
 	postbit tinyint(1) NOT NULL default '0',
-	postnum bigint(30) NOT NULL default '0'
+	postnum smallint NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_promotions (
@@ -563,7 +560,7 @@ $tables[] = "CREATE TABLE mybb_reputation (
 	uid int NOT NULL default '0',
 	adduid int NOT NULL default '0',
 	pid int NOT NULL default '0',
-	reputation bigint(30) NOT NULL default '0',
+	reputation smallint NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
 	comments TEXT NOT NULL
 );";
@@ -675,7 +672,7 @@ $tables[] = "CREATE TABLE mybb_templates (
 	tid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
 	template TEXT NOT NULL,
-	sid int(10) NOT NULL default '0',
+	sid smallint NOT NULL default '0',
 	version varchar(20) NOT NULL default '0',
 	status varchar(10) NOT NULL default '',
 	dateline int(10) NOT NULL default '0'
@@ -699,7 +696,7 @@ $tables[] = "CREATE TABLE mybb_themes (
 $tables[] = "CREATE TABLE mybb_themestylesheets(
 	sid INTEGER PRIMARY KEY,
 	name varchar(30) NOT NULL default '',
-	tid int unsigned NOT NULL default '0',
+	tid smallint unsigned NOT NULL default '0',
 	attachedto TEXT NOT NULL,
 	stylesheet TEXT NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
@@ -946,14 +943,14 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid INTEGER PRIMARY KEY,
-	percentage int(2) NOT NULL default '0',
+	percentage smallint(3) NOT NULL default '0',
 	action TEXT NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
+	points smallint NOT NULL default '0',
 	expirationtime bigint(30) NOT NULL default '0'
 );";
 
@@ -963,7 +960,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	tid int NOT NULL default '0',
 	pid int NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
+	points smallint NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
 	issuedby int NOT NULL default '0',
 	expires bigint(30) NOT NULL default '0',

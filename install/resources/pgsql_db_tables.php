@@ -149,7 +149,7 @@ $tables[] = "CREATE TABLE mybb_calendars (
   disporder int NOT NULL default '0',
   startofweek smallint NOT NULL default '0',
   showbirthdays smallint NOT NULL default '0',
-  eventlimit int NOT NULL default '0',
+  eventlimit smallint NOT NULL default '0',
   moderation smallint NOT NULL default '0',
   allowhtml smallint NOT NULL default '0',
   allowmycode smallint NOT NULL default '0',
@@ -370,7 +370,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   dateline bigint NOT NULL default '0',
   error text NOT NULL default '',
   smtperror varchar(200) NOT NULL default '',
-  smtpcode int NOT NULL default '0',
+  smtpcode smallint NOT NULL default '0',
   PRIMARY KEY(eid)
 );";
 
@@ -543,7 +543,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   editable smallint NOT NULL default '0',
   hidden smallint NOT NULL default '0',
   postbit smallint NOT NULL default '0',
-  postnum int NOT NULL default '0',
+  postnum smallint NOT NULL default '0',
   PRIMARY KEY (fid)
 );";
 
@@ -602,7 +602,7 @@ $tables[] = "CREATE TABLE mybb_reputation (
   uid int NOT NULL default '0',
   adduid int NOT NULL default '0',
   pid int NOT NULL default '0',
-  reputation bigint NOT NULL default '0',
+  reputation smallint NOT NULL default '0',
   dateline bigint NOT NULL default '0',
   comments text NOT NULL default '',
   PRIMARY KEY(rid)
@@ -725,7 +725,7 @@ $tables[] = "CREATE TABLE mybb_templates (
   tid serial,
   title varchar(120) NOT NULL default '',
   template text NOT NULL default '',
-  sid int NOT NULL default '0',
+  sid smallint NOT NULL default '0',
   version varchar(20) NOT NULL default '0',
   status varchar(10) NOT NULL default '',
   dateline int NOT NULL default '0',
@@ -737,7 +737,6 @@ $tables[] = "CREATE TABLE mybb_templatesets (
   title varchar(120) NOT NULL default '',
   PRIMARY KEY (sid)
 );";
-
 
 $tables[] = "CREATE TABLE mybb_themes (
   tid serial,
@@ -1020,7 +1019,7 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid serial,
-	percentage int NOT NULL default '0',
+	percentage smallintk NOT NULL default '0',
 	action text NOT NULL,
 	PRIMARY KEY(lid)
 );";
@@ -1028,7 +1027,7 @@ $tables[] = "CREATE TABLE mybb_warninglevels (
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid serial,
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
+	points smallint NOT NULL default '0',
 	expirationtime bigint NOT NULL default '0',
 	PRIMARY KEY(tid)
 );";
@@ -1039,7 +1038,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	tid int NOT NULL default '0',
 	pid int NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
+	points smallint NOT NULL default '0',
 	dateline bigint NOT NULL default '0',
 	issuedby int NOT NULL default '0',
 	expires bigint NOT NULL default '0',

@@ -150,7 +150,7 @@ $tables[] = "CREATE TABLE mybb_calendars (
   disporder int unsigned NOT NULL default '0',
   startofweek tinyint(1) NOT NULL default '0',
   showbirthdays tinyint(1) NOT NULL default '0',
-  eventlimit int(3) NOT NULL default '0',
+  eventlimit smallint(3) NOT NULL default '0',
   moderation tinyint(1) NOT NULL default '0',
   allowhtml tinyint(1) NOT NULL default '0',
   allowmycode tinyint(1) NOT NULL default '0',
@@ -323,7 +323,6 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
   PRIMARY KEY  (hid)
 ) ENGINE=MyISAM;";
 
-
 $tables[] = "CREATE TABLE mybb_helpsections (
   sid smallint unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
@@ -334,14 +333,12 @@ $tables[] = "CREATE TABLE mybb_helpsections (
   PRIMARY KEY (sid)
 ) ENGINE=MyISAM;";
 
-
 $tables[] = "CREATE TABLE mybb_icons (
   iid smallint unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
   path varchar(220) NOT NULL default '',
   PRIMARY KEY (iid)
 ) ENGINE=MyISAM;";
-
 
 $tables[] = "CREATE TABLE mybb_joinrequests (
   rid int unsigned NOT NULL auto_increment,
@@ -380,7 +377,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   dateline bigint(30) NOT NULL default '0',
   error text NOT NULL,
   smtperror varchar(200) NOT NULL default '',
-  smtpcode int(5) NOT NULL default '0',
+  smtpcode smallint(5) unsigned NOT NULL default '0',
   PRIMARY KEY (eid)
 ) ENGINE=MyISAM;";
 
@@ -564,7 +561,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   editable tinyint(1) NOT NULL default '0',
   hidden tinyint(1) NOT NULL default '0',
   postbit tinyint(1) NOT NULL default '0',
-  postnum bigint(30) NOT NULL default '0',
+  postnum smallint unsigned NOT NULL default '0',
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM;";
 
@@ -625,7 +622,7 @@ $tables[] = "CREATE TABLE mybb_reputation (
   uid int unsigned NOT NULL default '0',
   adduid int unsigned NOT NULL default '0',
   pid int unsigned NOT NULL default '0',
-  reputation bigint(30) NOT NULL default '0',
+  reputation smallint unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   comments text NOT NULL,
   KEY uid (uid),
@@ -756,7 +753,7 @@ $tables[] = "CREATE TABLE mybb_templates (
   tid int unsigned NOT NULL auto_increment,
   title varchar(120) NOT NULL default '',
   template text NOT NULL,
-  sid int(10) NOT NULL default '0',
+  sid smallint unsigned NOT NULL default '0',
   version varchar(20) NOT NULL default '0',
   status varchar(10) NOT NULL default '',
   dateline int(10) NOT NULL default '0',
@@ -783,7 +780,7 @@ $tables[] = "CREATE TABLE mybb_themes (
 $tables[] = "CREATE TABLE mybb_themestylesheets(
 	sid int unsigned NOT NULL auto_increment,
 	name varchar(30) NOT NULL default '',
-	tid int unsigned NOT NULL default '0',
+	tid smallint unsigned NOT NULL default '0',
 	attachedto text NOT NULL,
 	stylesheet text NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
@@ -1055,7 +1052,7 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid int unsigned NOT NULL auto_increment,
-	percentage int(3) NOT NULL default '0',
+	percentage smallint(3) NOT NULL default '0',
 	action text NOT NULL,
 	PRIMARY KEY (lid)
 ) ENGINE=MyISAM;";
@@ -1063,7 +1060,7 @@ $tables[] = "CREATE TABLE mybb_warninglevels (
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid int unsigned NOT NULL auto_increment,
 	title varchar(120) NOT NULL default '',
-	points int unsigned NOT NULL default '0',
+	points smallint unsigned NOT NULL default '0',
 	expirationtime bigint(30) NOT NULL default '0',
 	PRIMARY KEY (tid)
 ) ENGINE=MyISAM;";
@@ -1074,7 +1071,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	tid int unsigned NOT NULL default '0',
 	pid int unsigned NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
-	points int unsigned NOT NULL default '0',
+	points smallint unsigned NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
 	issuedby int unsigned NOT NULL default '0',
 	expires bigint(30) NOT NULL default '0',
