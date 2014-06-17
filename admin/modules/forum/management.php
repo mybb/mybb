@@ -581,8 +581,30 @@ if($mybb->input['action'] == "permissions")
 	else
 	{
 		echo "
-		<div class=\"modal\">
-		<div style=\"overflow-y: auto; max-height: 400px;\">";
+		<div class=\"modal\" style=\"width: auto\">
+		<script src=\"jscripts/tabs.js\" type=\"text/javascript\"></script>\n
+		<script type=\"text/javascript\">
+<!--
+$(document).ready(function() {
+	$(\"#modal_form\").on(\"click\", \"#savePermissions\", function(e) {
+		e.preventDefault();
+		
+		var datastring = $(\"#modal_form\").serialize();
+		$.ajax({
+			type: \"POST\",
+			url: $(\"#modal_form\").attr('action'),
+			data: datastring,
+			dataType: \"json\",
+			success: function(data) {
+			},
+			error: function(){
+			}
+		});
+	});
+});
+// -->
+		</script>
+		<div style=\"overflow-y: auto; max-height: 400px\">";
 	}
 
 	if($mybb->input['pid'] || ($mybb->input['gid'] && $mybb->input['fid']))
@@ -593,7 +615,7 @@ if($mybb->input['action'] == "permissions")
 		}
 		else
 		{
-			$form = new Form("#", "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)intval($mybb->input['gid'])."&amp;fid=".(int)intval($mybb->input['gid']), "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 
@@ -747,12 +769,11 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "</div><div class=\"ModalButtonRow\">";
-			$buttons[] = $form->generate_submit_button($lang->cancel, array('id' => 'modalCancel'));
-			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'modalSubmit'));
+			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close();'));
+			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'savePermissions'));
 			$form->output_submit_wrapper($buttons);
-			echo "</div>";
 			$form->end();
+			echo "</div>";
 			echo "</div>";
 		}
 		else
