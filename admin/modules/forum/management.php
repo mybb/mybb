@@ -580,7 +580,9 @@ if($mybb->input['action'] == "permissions")
 	}
 	else
 	{
-		echo "<div id=\"ModalContentContainer\"><div class=\"ModalTitle\">{$lang->forum_permissions}<a href=\"javascript:;\" id=\"modalClose\" class=\"float_right modalClose\">&nbsp;</a></div><div class=\"ModalContent\">";
+		echo "
+		<div class=\"modal\">
+		<div style=\"overflow-y: auto; max-height: 400px;\">";
 	}
 
 	if($mybb->input['pid'] || ($mybb->input['gid'] && $mybb->input['fid']))
@@ -1805,16 +1807,17 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => true))."</noscript>\n";
 		$form_container->output_cell($field_select, array('colspan' => 2));
-
+		
 		if(!$default_checked)
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 		}
 		else
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 		}
+		
 		$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
 
 		$ids[] = $usergroup['gid'];
@@ -2497,12 +2500,12 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 			}
 			$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
 
@@ -2903,12 +2906,12 @@ function retrieve_single_permissions_row($gid, $fid)
 
 	if(!$default_checked)
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 	}
 	else
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 	}
 	$form_container->construct_row();
 	return $form_container->output_row_cells(0, true);
