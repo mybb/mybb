@@ -239,7 +239,7 @@ if($mybb->input['action'] == "addevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -726,7 +726,7 @@ if($mybb->input['action'] == "editevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
