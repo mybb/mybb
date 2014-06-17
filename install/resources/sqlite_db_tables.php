@@ -439,7 +439,7 @@ $tables[] = "CREATE TABLE mybb_polls (
 	options TEXT NOT NULL,
 	votes TEXT NOT NULL,
 	numoptions smallint NOT NULL default '0',
-	numvotes TEXT NOT NULL,
+	numvotes int NOT NULL default '0',
 	timeout bigint(30) NOT NULL default '0',
 	closed tinyint(1) NOT NULL default '0',
 	multiple tinyint(1) NOT NULL default '0',

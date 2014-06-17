@@ -584,10 +584,37 @@ function upgrade29_dbchanges4()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("29_dbchanges_optimize");
+	$output->print_footer("29_dbchanges_optimize1");
 }
 
-function upgrade29_dbchanges_optimize()
+function upgrade29_dbchanges_optimize1()
+{
+	global $output, $mybb, $db;
+
+	$output->print_header("Optimizing Database");
+
+	echo "<p>Performing necessary optimization queries...</p>";
+	flush();
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$db->modify_column("polls", "numvotes", "int NOT NULL default '0'");
+			break;
+		default:
+			$db->modify_column("polls", "numvotes", "int unsigned NOT NULL default '0'");
+			break;
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("29_dbchanges_optimize2");
+}
+
+function upgrade29_dbchanges_optimize2()
 {
 	global $cache, $output, $mybb, $db;
 
