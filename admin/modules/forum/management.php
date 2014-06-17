@@ -536,7 +536,7 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<script type=\"text/javascript\">$('#row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
+			echo json_encode("<script type=\"text/javascript\">$('#row_{$gid}').html('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>");
 			die;
 		}
 		else
@@ -596,6 +596,10 @@ $(document).ready(function() {
 			data: datastring,
 			dataType: \"json\",
 			success: function(data) {
+				$(data).filter(\"script\").each(function(e) {
+					eval($(this).text());
+				});
+				$.modal.close();
 			},
 			error: function(){
 			}
@@ -615,7 +619,7 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)intval($mybb->input['gid'])."&amp;fid=".(int)intval($mybb->input['gid']), "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)intval($mybb->input['gid'])."&amp;fid=".(int)intval($mybb->input['gid']), "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 
