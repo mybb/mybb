@@ -99,7 +99,6 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
 	code varchar(100) NOT NULL default '',
 	type char(1) NOT NULL default '',
 	validated tinyint(1) NOT NULL default '0',
-	oldgroup bigint(30) NOT NULL default '0',
 	misc varchar(255) NOT NULL default ''
 );";
 
@@ -241,7 +240,6 @@ $tables[] = "CREATE TABLE mybb_forums (
 	allowvideocode tinyint(1) NOT NULL default '0',
 	allowpicons tinyint(1) NOT NULL default '0',
 	allowtratings tinyint(1) NOT NULL default '0',
-	status int(4) NOT NULL default '1',
 	usepostcounts tinyint(1) NOT NULL default '0',
 	password varchar(50) NOT NULL default '',
 	showinjump tinyint(1) NOT NULL default '0',

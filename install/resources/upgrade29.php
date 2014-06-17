@@ -43,6 +43,16 @@ function upgrade29_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	if($db->field_exists('oldgroup', 'awaitingactivation'))
+	{
+		$db->drop_column("awaitingactivation", "oldgroup");
+	}
+
+	if($db->field_exists('status', 'forums'))
+	{
+		$db->drop_column("forums", "status");
+	}
+
 	if($db->field_exists('posthash', 'posts'))
 	{
 		$db->drop_column("posts", "posthash");

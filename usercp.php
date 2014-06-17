@@ -1092,7 +1092,6 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 					"dateline" => TIME_NOW,
 					"code" => $activationcode,
 					"type" => "e",
-					"oldgroup" => $mybb->user['usergroup'],
 					"misc" => $db->escape_string($mybb->get_input('email'))
 				);
 
