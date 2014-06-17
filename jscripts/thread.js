@@ -235,9 +235,9 @@ var Thread = {
 				$('#pid_' + pid).trigger("edit" + pid);
 
 				// Edit Reason
+				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 				if(allowEditReason == 1)
 				{
-					$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 					$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="50" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
 				}
 			});
