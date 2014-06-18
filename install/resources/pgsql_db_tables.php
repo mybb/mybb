@@ -1019,7 +1019,7 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid serial,
-	percentage smallintk NOT NULL default '0',
+	percentage smallint NOT NULL default '0',
 	action text NOT NULL,
 	PRIMARY KEY(lid)
 );";

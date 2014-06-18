@@ -622,7 +622,7 @@ $tables[] = "CREATE TABLE mybb_reputation (
   uid int unsigned NOT NULL default '0',
   adduid int unsigned NOT NULL default '0',
   pid int unsigned NOT NULL default '0',
-  reputation smallint unsigned NOT NULL default '0',
+  reputation smallint NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   comments text NOT NULL,
   KEY uid (uid),
