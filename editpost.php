@@ -135,6 +135,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		error($lang->error_already_deleted);
 	}
 }
+elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	if(!is_moderator($fid) || $post['visible'] != -1 || $mybb->settings['soft_delete'] == 0)
+	{
+		error_no_permission();
+	}
+}
 else
 {
 	if(!is_moderator($fid, "caneditposts"))
@@ -349,6 +356,84 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	else
 	{
 		error($lang->redirect_nodelete);
+	}
+}
+
+if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("editpost_restorepost");
+
+	if($mybb->get_input('restore', 1) == 1)
+	{
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$firstcheck = $db->fetch_array($query);
+		if($firstcheck['pid'] == $pid)
+		{
+			$firstpost = 1;
+		}
+		else
+		{
+			$firstpost = 0;
+		}
+
+		$modlogdata['fid'] = $fid;
+		$modlogdata['tid'] = $tid;
+		if($firstpost)
+		{
+			if(is_moderator($fid))
+			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_threads(array($tid));
+				log_moderator_action($modlogdata, $lang->thread_restored);
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect(get_forum_link($fid), $lang->redirect_threadrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			if(is_moderator($fid))
+			{
+				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_posts(array($pid));
+				log_moderator_action($modlogdata, $lang->post_restored);
+				$redirect = get_post_link($pid, $tid)."#pid{$pid}";
+
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect($redirect, $lang->redirect_postrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+	}
+	else
+	{
+		error($lang->redirect_norestore);
 	}
 }
 
