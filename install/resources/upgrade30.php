@@ -650,6 +650,78 @@ function upgrade30_dbchanges_optimize1()
 
 function upgrade30_dbchanges_optimize2()
 {
+	global $output, $mybb, $db;
+
+	$output->print_header("Optimizing Database");
+
+	echo "<p>Performing necessary optimization queries...</p>";
+	echo "<p>Adding indexes to tables...</p>";
+	flush();
+
+	if($db->index_exists('sessions', 'location1'))
+	{
+		$db->drop_index('sessions', 'location1');
+	}
+
+	if($db->index_exists('sessions', 'location2'))
+	{
+		$db->drop_index('sessions', 'location2');
+	}
+
+	if($db->type == "mysql" || $db->type == "mysqli")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminlog ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banfilters ADD INDEX ( `type` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD INDEX ( `cid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD INDEX `fid` ( `fid` , `gid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumsubscriptions ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `fid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ADD INDEX ( `tid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."reportedcontent ADD INDEX ( `reportstatus` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX `location` ( `location1` , `location2` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings ADD INDEX ( `gid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD INDEX `sid` ( `sid` , `title` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themestylesheets ADD INDEX ( `tid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ADD INDEX ( `uid` )");
+	}
+
+	echo "<p>Dropping old indexes from tables...</p>";
+
+	if($db->index_exists('attachments', 'posthash'))
+	{
+		$db->drop_index('attachments', 'posthash');
+	}
+
+	if($db->index_exists('reportedcontent', 'dateline'))
+	{
+		$db->drop_index('reportedcontent', 'dateline');
+	}
+
+	if($db->index_exists('reputation', 'pid'))
+	{
+		$db->drop_index('reputation', 'pid');
+	}
+
+	if($db->index_exists('reputation', 'dateline'))
+	{
+		$db->drop_index('reputation', 'dateline');
+	}
+
+	if($db->index_exists('users', 'birthday'))
+	{
+		$db->drop_index('users', 'birthday');
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges_optimize3");
+}
+
+function upgrade30_dbchanges_optimize3()
+{
 	global $cache, $output, $mybb, $db;
 
 	$output->print_header("Optimizing Database");
