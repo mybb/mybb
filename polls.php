@@ -440,7 +440,7 @@ if($mybb->input['action'] == "editpoll")
 			$counter = $i;
 			$option = $options[$i];
 			$option = htmlspecialchars_uni($option);
-			$optionvotes = $votes[$i];
+			$optionvotes = intval($votes[$i]);
 
 			if(!$optionvotes)
 			{
