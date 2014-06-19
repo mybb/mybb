@@ -300,6 +300,9 @@ elseif($mybb->input['action'] == "helpresults")
 	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
 	$helpdoclist = '';
 
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser();
+
 	$query = $db->query("
 		SELECT h.*, s.enabled
 		FROM ".TABLE_PREFIX."helpdocs h
@@ -320,10 +323,18 @@ elseif($mybb->input['action'] == "helpresults")
 			$helpdoc['name'] = htmlspecialchars_uni($helpdoc['name']);
 		}
 
-		$helpdoc['helpdoc'] = strip_tags(htmlspecialchars_uni($helpdoc['document']));
-		if(my_strlen($helpdoc['helpdoc']) > 300)
+		$parser_options = array(
+			'allow_html' => 1,
+			'allow_mycode' => 0,
+			'allow_smilies' => 0,
+			'allow_imgcode' => 0,
+			'filter_badwords' => 1
+		);
+		$helpdoc['helpdoc'] = strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+
+		if(my_strlen($helpdoc['helpdoc']) > 350)
 		{
-			$prev = my_substr($helpdoc['helpdoc'], 0, 300)."...";
+			$prev = my_substr($helpdoc['helpdoc'], 0, 350)."...";
 		}
 		else
 		{
