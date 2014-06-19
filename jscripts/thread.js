@@ -410,8 +410,12 @@ var Thread = {
 								if(json.data == 1)
 								{
 									// Change CSS class of div 'pid_[pid]'
-									$("#post_"+pid).attr("class", "post unapproved_post deleted_post");
-									
+									$("#post_"+pid).addClass("unapproved_post");
+									$("#post_"+pid).addClass("deleted_post");
+
+									$("#quick_delete_" + pid).hide();
+									$("#quick_restore_" + pid).show();
+
 									$.jGrowl(lang.quick_delete_success);
 								}
 								else if(json.data == 2)
@@ -451,6 +455,55 @@ var Thread = {
 		
 		return false;
 	},
+
+
+	restorePost: function(pid)
+	{
+		$.prompt(quickrestore_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					$.ajax(
+					{
+						url: 'editpost.php?ajax=1&action=restorepost&restore=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
+						{
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl(lang.quick_restore_error + ' ' + message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Change CSS class of div 'pid_[pid]'
+								$("#post_"+pid).removeClass("unapproved_post");
+								$("#post_"+pid).removeClass("deleted_post");
+
+								$("#quick_delete_" + pid).show();
+								$("#quick_restore_" + pid).hide();
+
+								$.jGrowl(lang.quick_restore_success);
+							}
+							else
+							{
+								$.jGrowl(lang.unknown_error);
+							}
+						}
+					});
+				}
+			}
+		});
+		
+		return false;
+	}
 };
 
 Thread.init();

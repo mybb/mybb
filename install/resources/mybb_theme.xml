@@ -1186,6 +1186,10 @@ div.error ul {
 	background-position: 0 -180px;
 }
 
+.postbit_buttons a.postbit_qrestore span {
+	background-position: 0 -520px;
+}
+
 .postbit_buttons a.postbit_report span {
 	background-position: 0 -200px;
 }
@@ -8836,7 +8840,7 @@ if(use_xmlhttprequest == "1")
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
 	<div class="postbit_buttons post_management_buttons float_right">
-		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quickrestore']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
 	</div>
 </div>
 </div>]]></template>
@@ -8903,7 +8907,7 @@ if(use_xmlhttprequest == "1")
 		{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}{$post['button_rep']}
 	</div>
 	<div class="postbit_buttons post_management_buttons float_right">
-		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+		{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quickrestore']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
 	</div>
 </div>
 </div>]]></template>
@@ -8957,7 +8961,13 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--
-	$('#quick_delete_{$post['pid']}').css('display', '');
+	$('#quick_delete_{$post['pid']}').css('display', '{$display}');
+// -->
+</script>]]></template>
+		<template name="postbit_quickrestore" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.restorePost({$post['pid']}); return false;" style="display: none;" id="quick_restore_{$post['pid']}" title="{$postbit_qrestore}" class="postbit_qrestore"><span>{$lang->postbit_button_qrestore}</span></a>
+<script type="text/javascript">
+// <!--
+	$('#quick_restore_{$post['pid']}').css('display', '{$display}');
 // -->
 </script>]]></template>
 		<template name="postbit_quote" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}&amp;replyto={$post['pid']}" title="{$lang->postbit_quote}" class="postbit_quote"><span>{$lang->postbit_button_quote}</span></a>]]></template>
@@ -10498,6 +10508,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript">
 <!--
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
+	var quickrestore_confirm = "{$lang->quickrestore_confirm}";
 	var allowEditReason = "{$mybb->settings['alloweditreason']}";
 	lang.save_changes = "{$lang->save_changes}";
 	lang.cancel_edit = "{$lang->cancel_edit}";
@@ -10506,6 +10517,8 @@ if(use_xmlhttprequest == "1")
 	lang.quick_delete_error = "{$lang->quick_delete_error}";
 	lang.quick_delete_success = "{$lang->quick_delete_success}";
 	lang.quick_delete_thread_success = "{$lang->quick_delete_thread_success}";
+	lang.quick_restore_error = "{$lang->quick_restore_error}";
+	lang.quick_restore_success = "{$lang->quick_restore_success}";
 	lang.editreason = "{$lang->postbit_editreason}";
 // -->
 </script>
