@@ -287,6 +287,7 @@ function build_postbit($post, $post_type=0)
 
 		$postnum = $post['postnum'];
 		$post['postnum'] = my_number_format($post['postnum']);
+		$post['threadnum'] = my_number_format($post['threadnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];

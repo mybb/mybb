@@ -94,6 +94,12 @@ $user_view_fields = array(
 		"align" => "center"
 	),
 
+	"threadnum" => array(
+		"title" => $lang->thread_count,
+		"width" => "",
+		"align" => "center"
+	),
+
 	"reputation" => array(
 		"title" => $lang->reputation,
 		"width" => "",
@@ -495,6 +501,7 @@ if($mybb->input['action'] == "edit")
 			"additionalgroups" => $additionalgroups,
 			"displaygroup" => $mybb->input['displaygroup'],
 			"postnum" => $mybb->input['postnum'],
+			"threadnum" => $mybb->input['threadnum'],
 			"usertitle" => $mybb->input['usertitle'],
 			"timezone" => $mybb->input['timezone'],
 			"language" => $mybb->input['language'],
@@ -1108,6 +1115,7 @@ EOF;
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_text_box('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -2015,6 +2023,14 @@ if($mybb->input['action'] == "merge")
 			$num = $db->fetch_array($query);
 			$updated_count = array(
 				"postnum" => $num['postnum']
+			);
+			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
+
+			// Update user thread count
+			$query = $db->simple_select("threads", "COUNT(*) AS threadnum", "uid='".$destination_user['uid']."' {$fids_not_in}");
+			$num = $db->fetch_array($query);
+			$updated_count = array(
+				"threadnum" => $num['threadnum']
 			);
 			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
@@ -3143,7 +3159,7 @@ function build_users_view($view)
 	}
 
 	// LESS THAN or GREATER THAN
-	$direction_fields = array("postnum");
+	$direction_fields = array("postnum", "threadnum");
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
@@ -3381,6 +3397,9 @@ function build_users_view($view)
 				break;
 			case "numposts":
 				$view['sortby'] = "postnum";
+				break;
+			case "numthreads":
+				$view['sortby'] = "threadnum";
 				break;
 			case "warninglevel":
 				$view['sortby'] = "warningpoints";
@@ -4003,6 +4022,7 @@ function user_search_conditions($input=array(), &$form)
 		"less_than" => $lang->less_than
 	);
 	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');

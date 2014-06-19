@@ -4488,11 +4488,15 @@ if(use_xmlhttprequest == "1")
 				</tr>
 				<tr>
 					<td class="trow1"><strong>{$lang->total_posts}</strong></td>
-					<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a> &mdash; <a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span></td>
+					<td class="trow1">{$memprofile['postnum']} ({$lang->ppd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduser&amp;uid={$uid}">{$lang->find_posts}</a>)</span></td>
 				</tr>
 				<tr>
-					<td class="trow2"><strong>{$lang->timeonline}</strong></td>
-					<td class="trow2">{$timeonline}</td>
+					<td class="trow2"><strong>{$lang->total_threads}</strong></td>
+					<td class="trow2">{$memprofile['threadnum']} ({$lang->tpd_percent_total})<br /><span class="smalltext">(<a href="search.php?action=finduserthreads&amp;uid={$uid}">{$lang->find_threads}</a>)</span></td>
+				</tr>
+				<tr>
+					<td class="trow1"><strong>{$lang->timeonline}</strong></td>
+					<td class="trow1">{$timeonline}</td>
 				</tr>
 				{$referrals}
 				{$reputation}
@@ -5150,7 +5154,7 @@ if(use_xmlhttprequest == "1")
 {$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="6">
+<td class="thead" colspan="7">
 	<div class="float_right">
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->a}" style="padding: 5px;">{$lang->a}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->b}" style="padding: 5px;">{$lang->b}</a>
@@ -5187,6 +5191,7 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
 <td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
 {$referral_header}
 </tr>
 {$users}
@@ -5227,6 +5232,7 @@ if(use_xmlhttprequest == "1")
 			<option value="regdate"{$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
 			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
 			<option value="postnum"{$sort_selected['postnum']}>{$lang->sort_by_posts}</option>
+			<option value="threadnum"{$sort_selected['threadnum']}>{$lang->sort_by_threads}</option>
 			<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>
 		</select><br />
 		<span class="smalltext">
@@ -5363,6 +5369,8 @@ if(use_xmlhttprequest == "1")
 			<option value="regdate">{$lang->sort_by_regdate}</option>
 			<option value="lastvisit">{$lang->sort_by_lastvisit}</option>
 			<option value="postnum">{$lang->sort_by_posts}</option>
+			<option value="threadnum">{$lang->sort_by_threads}</option>
+			<option value="referrals">{$lang->sort_by_referrals}</option>
 		</select><br />
 		<span class="smalltext">
 		<input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{$lang->order_asc}</label><br />
@@ -5429,7 +5437,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="memberlist_user" version="1600"><![CDATA[<tr>
+		<template name="memberlist_user" version="1800"><![CDATA[<tr>
 	<td class="{$alt_bg}" align="center">{$user['avatar']}</td>
 	<td class="{$alt_bg}">{$user['profilelink']}<br />
 <span class="smalltext">
@@ -5440,6 +5448,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$alt_bg}" align="center">{$user['regdate']}</td>
 	<td class="{$alt_bg}" align="center">{$user['lastvisit']}</td>
 	<td class="{$alt_bg}" align="center">{$user['postnum']}</td>
+	<td class="{$alt_bg}" align="center">{$user['threadnum']}</td>
 	{$referral_bit}
 </tr>]]></template>
 		<template name="memberlist_error" version="1800"><![CDATA[<tr>
@@ -8861,6 +8870,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 		<template name="postbit_author_user" version="1800"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
+	{$lang->postbit_threads} {$post['threadnum']}<br />
 	{$lang->postbit_joined} {$post['userregdate']}
 	{$post['replink']}{$post['profilefield']}{$post['warninglevel']}]]></template>
 		<template name="postbit_avatar" version="1800"><![CDATA[<div class="author_avatar"><a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a></div>]]></template>
@@ -10880,7 +10890,7 @@ if(use_xmlhttprequest == "1")
 		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
 </tr>
 ]]></template>
-		<template name="stats" version="1400"><![CDATA[<html>
+		<template name="stats" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->board_stats}</title>
 {$headerinclude}
@@ -10906,6 +10916,7 @@ if(use_xmlhttprequest == "1")
 {$lang->tpd} <strong>{$threadsperday}</strong><br />
 {$lang->mpd} <strong>{$membersperday}</strong><br />
 {$lang->ppm} <strong>{$postspermember}</strong><br />
+{$lang->tpm} <strong>{$threadspermember}</strong><br />
 {$lang->rpt} <strong>{$repliesperthread}</strong>
 </td>
 </tr>

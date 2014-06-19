@@ -1663,27 +1663,54 @@ if($mybb->input['action'] == "profile")
 		$daysreg = 1;
 	}
 
+	$stats = $cache->read("stats");
+
+	// Format post count, per day count and percent of total
 	$ppd = $memprofile['postnum'] / $daysreg;
 	$ppd = round($ppd, 2);
 	if($ppd > $memprofile['postnum'])
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$stats = $cache->read("stats");
+
 	$numposts = $stats['numposts'];
 	if($numposts == 0)
 	{
-		$percent = "0";
+		$post_percent = "0";
 	}
 	else
 	{
-		$percent = $memprofile['postnum']*100/$numposts;
-		$percent = round($percent, 2);
+		$post_percent = $memprofile['postnum']*100/$numposts;
+		$post_percent = round($post_percent, 2);
 	}
 
-	if($percent > 100)
+	if($post_percent > 100)
 	{
-		$percent = 100;
+		$post_percent = 100;
+	}
+
+	// Format thread count, per day count and percent of total
+	$tpd = $memprofile['threadnum'] / $daysreg;
+	$tpd = round($tpd, 2);
+	if($tpd > $memprofile['threadnum'])
+	{
+		$tpd = $memprofile['threadnum'];
+	}
+
+	$numthreads = $stats['numthreads'];
+	if($numthreads == 0)
+	{
+		$thread_percent = "0";
+	}
+	else
+	{
+		$thread_percent = $memprofile['threadnum']*100/$numthreads;
+		$thread_percent = round($thread_percent, 2);
+	}
+
+	if($thread_percent > 100)
+	{
+		$thread_percent = 100;
 	}
 
 	if(!empty($memprofile['icq']))
@@ -2114,7 +2141,11 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
-	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
+	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $post_percent);
+
+	$memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
+	$lang->tpd_percent_total = $lang->sprintf($lang->tpd_percent_total, my_number_format($tpd), $thread_percent);
+
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 
 	$adminoptions = '';

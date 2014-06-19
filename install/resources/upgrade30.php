@@ -203,6 +203,16 @@ function upgrade30_dbchanges2()
 		$db->drop_column("posts", "editreason");
 	}
 
+	if($db->field_exists('usethreadcounts', 'forums'))
+	{
+		$db->drop_column("forums", "usethreadcounts");
+	}
+
+	if($db->field_exists('threadnum', 'users'))
+	{
+		$db->drop_column("users", "threadnum");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -215,6 +225,8 @@ function upgrade30_dbchanges2()
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "smallint NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
+			$db->add_column("forums", "usethreadcounts", "smallint NOT NULL default '0' AFTER usepostcounts");
+			$db->add_column("users", "threadnum", "int NOT NULL default '0' AFTER postnum");
 			break;
 		default:
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "tinyint(1) NOT NULL default '0' AFTER canpostreplys");
@@ -226,8 +238,12 @@ function upgrade30_dbchanges2()
 			$db->add_column("threads", "deletedposts", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
+			$db->add_column("forums", "usethreadcounts", "tinyint(1) NOT NULL default '0' AFTER usepostcounts");
+			$db->add_column("users", "threadnum", "int(10) NOT NULL default '0' AFTER postnum");
 			break;
 	}
+
+	$db->update_query('forums', array('usethreadcounts' => 1), 'usepostcounts = 1');
 
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";

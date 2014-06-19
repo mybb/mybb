@@ -454,6 +454,24 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	* Verifies if the thread count field is filled in correctly.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
+	function verify_threadnum()
+	{
+		$user = &$this->data;
+
+		if(isset($user['threadnum']) && $user['threadnum'] < 0)
+		{
+			$this->set_error("invalid_threadnum");
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -932,6 +950,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_postnum();
 		}
+		if($this->method == "insert" || array_key_exists('threadnum', $user))
+		{
+			$this->verify_threadnum();
+		}
 		if($this->method == "insert" || array_key_exists('profile_fields', $user))
 		{
 			$this->verify_profile_fields();
@@ -1006,7 +1028,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
 			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
@@ -1023,6 +1045,7 @@ class UserDataHandler extends DataHandler
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
 			"postnum" => intval($user['postnum']),
+			"threadnum" => intval($user['threadnum']),
 			"avatar" => $db->escape_string($user['avatar']),
 			"avatartype" => $db->escape_string($user['avatartype']),
 			"usergroup" => intval($user['usergroup']),
@@ -1175,6 +1198,10 @@ class UserDataHandler extends DataHandler
 		if(isset($user['postnum']))
 		{
 			$this->user_update_data['postnum'] = intval($user['postnum']);
+		}
+		if(isset($user['threadnum']))
+		{
+			$this->user_update_data['threadnum'] = intval($user['threadnum']);
 		}
 		if(isset($user['avatar']))
 		{

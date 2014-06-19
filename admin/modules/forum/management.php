@@ -838,6 +838,7 @@ if($mybb->input['action'] == "add")
 				"allowpicons" => intval($mybb->input['allowpicons']),
 				"allowtratings" => intval($mybb->input['allowtratings']),
 				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
 				"modposts" => intval($mybb->input['modposts']),
@@ -965,6 +966,7 @@ if($mybb->input['action'] == "add")
 		$forum_data['allowtratings'] = 1;
 		$forum_data['showinjump'] = 1;
 		$forum_data['usepostcounts'] = 1;
+		$forum_data['usethreadcounts'] = 1;
 	}
 
 	$types = array(
@@ -1098,7 +1100,8 @@ if($mybb->input['action'] == "add")
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
 		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
-		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts'))
+		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
+		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts'))
 	);
 
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
@@ -1385,6 +1388,7 @@ if($mybb->input['action'] == "edit")
 				"allowpicons" => intval($mybb->input['allowpicons']),
 				"allowtratings" => intval($mybb->input['allowtratings']),
 				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
 				"modposts" => intval($mybb->input['modposts']),
@@ -1647,7 +1651,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
 		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
-		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts'))
+		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
+		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts'))
 	);
 
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");

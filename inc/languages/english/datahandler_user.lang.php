@@ -38,4 +38,6 @@ $l['userdata_bad_profile_field_values'] = 'You did not select a valid option for
 $l['userdata_max_limit_reached'] = 'You entered an invalid number of characters for the "{1}" field. Please fill in this field with no more than {2} characters.';
 $l['userdata_invalid_checkfield'] = "It has been detected that this form has been submitted by a spam bot. If this is in error, please contact the administrator.";
 $l['userdata_invalid_postnum'] = "The post count you entered is invalid. Please enter a valid post count, or leave the field empty.";
+$l['userdata_invalid_threadnum'] = "The thread count you entered is invalid. Please enter a valid thread count, or leave the field empty.";
+
 ?>

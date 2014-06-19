@@ -2416,7 +2416,7 @@ function update_thread_data($tid)
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The user ID
- * @param array Array of items being updated (postnum) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (postnum, threadnum) and their value (ex, 1, +1, -1)
  */
 function update_user_counters($uid, $changes=array())
 {
@@ -2424,7 +2424,7 @@ function update_user_counters($uid, $changes=array())
 
 	$update_query = array();
 
-	$counters = array('postnum');
+	$counters = array('postnum', 'threadnum');
 	$uid = intval($uid);
 
 	// Fetch above counters for this user

@@ -215,6 +215,7 @@ $l['allow_post_icons'] = "Yes, allow post icons to be chosen for posts";
 $l['allow_thread_ratings'] = "Yes, allow threads to be rated";
 $l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
 $l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
+$l['use_threadcounts'] = "Yes, posts in this forum should count towards user thread counts";
 
 $l['use_permissions'] = "Use Permissions";
 $l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";

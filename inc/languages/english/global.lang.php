@@ -197,6 +197,7 @@ $l['guest'] = "Guest";
 $l['unknown'] = "Unknown";
 $l['never'] = "Never";
 $l['postbit_posts'] = "Posts:";
+$l['postbit_threads'] = "Threads:";
 $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
 $l['postbit_status'] = "Status:";

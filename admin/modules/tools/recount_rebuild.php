@@ -143,7 +143,57 @@ function acp_recount_user_posts()
 		$db->update_query("users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
 	}
 
-	check_proceed($num_users, $end, ++$page, $per_page, "userposts", "do_recountuserposts", $lang->success_rebuilt_user_counters);
+	check_proceed($num_users, $end, ++$page, $per_page, "userposts", "do_recountuserposts", $lang->success_rebuilt_user_post_counters);
+}
+
+function acp_recount_user_threads()
+{
+	global $db, $mybb, $lang;
+
+	$query = $db->simple_select("users", "COUNT(uid) as num_users");
+	$num_users = $db->fetch_field($query, 'num_users');
+
+	$page = intval($mybb->input['page']);
+	$per_page = intval($mybb->input['userthreads']);
+	if($per_page <= 0)
+	{
+		$per_page = 500;
+	}
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+
+	$query = $db->simple_select("forums", "fid", "usethreadcounts = 0");
+	while($forum = $db->fetch_array($query))
+	{
+		$fids[] = $forum['fid'];
+	}
+	if(is_array($fids))
+    {
+        $fids = implode(',', $fids);
+    }
+	if($fids)
+	{
+		$fids = " AND t.fid NOT IN($fids)";
+	}
+	else
+	{
+		$fids = "";
+	}
+
+	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($user = $db->fetch_array($query))
+	{
+		$query2 = $db->query("
+			SELECT COUNT(t.tid) AS thread_count
+			FROM ".TABLE_PREFIX."threads t
+			WHERE t.uid='{$user['uid']}' AND t.visible > 0{$fids}
+		");
+		$num_threads = $db->fetch_field($query2, "thread_count");
+
+		$db->update_query("users", array("threadnum" => intval($num_threads)), "uid='{$user['uid']}'");
+	}
+
+	check_proceed($num_users, $end, ++$page, $per_page, "userthreads", "do_recountuserthreads", $lang->success_rebuilt_user_thread_counters);
 }
 
 function acp_recount_reputation()
@@ -429,6 +479,22 @@ if(!$mybb->input['action'])
 
 			acp_recount_user_posts();
 		}
+		elseif(isset($mybb->input['do_recountuserthreads']))
+		{
+			$plugins->run_hooks("admin_tools_recount_rebuild_user_threads");
+
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("userthreads");
+			}
+			if(!intval($mybb->input['userthreads']))
+			{
+				$mybb->input['userthreads'] = 500;
+			}
+
+			acp_recount_user_threads();
+		}
 		elseif(isset($mybb->input['do_rebuildattachmentthumbs']))
 		{
 			$plugins->run_hooks("admin_tools_recount_rebuild_attachment_thumbs");
@@ -597,6 +663,11 @@ if(!$mybb->input['action'])
 	$form_container->output_cell("<label>{$lang->recount_user_posts}</label><div class=\"description\">{$lang->recount_user_posts_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("userposts", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserposts")));
+	$form_container->construct_row();
+
+	$form_container->output_cell("<label>{$lang->recount_user_threads}</label><div class=\"description\">{$lang->recount_user_threads_desc}</div>");
+	$form_container->output_cell($form->generate_text_box("userthreads", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserthreads")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_attachment_thumbs}</label><div class=\"description\">{$lang->rebuild_attachment_thumbs_desc}</div>");

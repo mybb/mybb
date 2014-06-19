@@ -218,6 +218,7 @@ $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum count
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
 $l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
+$l['admin_log_tools_recount_rebuild_userthreads'] = "Recounted and rebuilt user thread counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
