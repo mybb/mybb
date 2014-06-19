@@ -488,11 +488,17 @@
 			// Setup popup menu
 			var offset = el.offset();
 			offset.top += el.outerHeight();
-	
+
+			// We only adjust if it goes out of the page (?)
+			if((el.offset().left + popup_menu.outerWidth()) > $(window).width())
+				var adjust = popup_menu.outerWidth() - el.outerWidth();
+			else
+				var adjust = 0;
+
 			popup_menu.css({
 				position: 'absolute',
 				top: offset.top,
-				left: offset.left
+				left: offset.left-adjust
 			});
 
 			popup_menu.show();
