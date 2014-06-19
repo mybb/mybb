@@ -705,9 +705,9 @@ $tables[] = "CREATE TABLE mybb_smilies (
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid int unsigned NOT NULL auto_increment,
 	name varchar(100) NOT NULL default '',
-	theme int unsigned NOT NULL default '0',
+	theme smallint unsigned NOT NULL default '0',
 	language varchar(20) NOT NULL default '',
-	usergroup int unsigned NOT NULL default '0',
+	usergroup smallint unsigned NOT NULL default '0',
 	useragent varchar(200) NOT NULL default '',
 	lastvisit bigint(30) NOT NULL default '0',
 	PRIMARY KEY (sid)
@@ -789,7 +789,7 @@ $tables[] = "CREATE TABLE mybb_themestylesheets (
 	name varchar(30) NOT NULL default '',
 	tid smallint unsigned NOT NULL default '0',
 	attachedto text NOT NULL,
-	stylesheet text NOT NULL,
+	stylesheet longtext NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
 	lastmodified bigint(30) NOT NULL default '0',
 	KEY tid (tid),

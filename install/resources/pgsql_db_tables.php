@@ -672,9 +672,9 @@ $tables[] = "CREATE TABLE mybb_smilies (
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid serial,
 	name varchar(100) NOT NULL default '',
-	theme int NOT NULL default '0',
+	theme smallint NOT NULL default '0',
 	language varchar(20) NOT NULL default '',
-	usergroup int NOT NULL default '0',
+	usergroup smallint NOT NULL default '0',
 	useragent varchar(200) NOT NULL default '',
 	lastvisit bigint NOT NULL default '0',
 	PRIMARY KEY(sid)

@@ -621,6 +621,8 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("polls", "numvotes", "int NOT NULL default '0'");
 			$db->modify_column("profilefields", "postnum", "smallint NOT NULL default '0'");
 			$db->modify_column("reputation", "reputation", "smallint NOT NULL default '0'");
+			$db->modify_column("spiders", "theme", "smallint NOT NULL default '0'");
+			$db->modify_column("spiders", "usergroup", "smallint NOT NULL default '0'");
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint NOT NULL default '0'");
@@ -633,12 +635,20 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("polls", "numvotes", "int unsigned NOT NULL default '0'");
 			$db->modify_column("profilefields", "postnum", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("reputation", "reputation", "smallint NOT NULL default '0'");
+			$db->modify_column("spiders", "theme", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("spiders", "usergroup", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint unsigned NOT NULL default '0'");
 			break;
+	}
+
+	if($db->type != "pgsql")
+	{
+		// PgSQL doesn't support longtext
+		$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
 	}
 
 	global $footer_extra;
