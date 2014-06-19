@@ -633,7 +633,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("polls", "numvotes", "int unsigned NOT NULL default '0'");
 			$db->modify_column("profilefields", "postnum", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("reputation", "reputation", "smallint NOT NULL default '0'");
-			$db->modify_column("templates", "sid", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint unsigned NOT NULL default '0'");
