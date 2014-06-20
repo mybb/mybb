@@ -616,6 +616,9 @@ function upgrade30_dbchanges_optimize1()
 	{
 		case "pgsql":
 		case "sqlite":
+			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
+			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
+			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint NOT NULL default '0'");
 			$db->modify_column("polls", "numvotes", "int NOT NULL default '0'");
@@ -630,6 +633,9 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("warnings", "points", "smallint NOT NULL default '0'");
 			break;
 		default:
+			$db->modify_column("adminoptions", "loginattempts", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("adminviews", "perpage", "smallint(4) NOT NULL default '0'");
+			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint(5) unsigned NOT NULL default '0'");
 			$db->modify_column("polls", "numvotes", "int unsigned NOT NULL default '0'");

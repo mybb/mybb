@@ -27,7 +27,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   notes text NOT NULL,
   permissions text NOT NULL,
   defaultviews text NOT NULL,
-  loginattempts int unsigned NOT NULL default '0',
+  loginattempts smallint unsigned NOT NULL default '0',
   loginlockoutexpiry int unsigned NOT NULL default '0',
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM;";
@@ -54,7 +54,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	custom_profile_fields text NOT NULL,
 	sortby varchar(20) NOT NULL default '',
 	sortorder varchar(4) NOT NULL default '',
-	perpage int(4) NOT NULL default '0',
+	perpage smallint(4) NOT NULL default '0',
 	view_type varchar(6) NOT NULL default '',
 	PRIMARY KEY (vid)
 ) ENGINE=MyISAM;";
@@ -148,7 +148,7 @@ $tables[] = "CREATE TABLE mybb_banned (
 $tables[] = "CREATE TABLE mybb_calendars (
   cid int unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',
-  disporder int unsigned NOT NULL default '0',
+  disporder smallint unsigned NOT NULL default '0',
   startofweek tinyint(1) NOT NULL default '0',
   showbirthdays tinyint(1) NOT NULL default '0',
   eventlimit smallint(3) NOT NULL default '0',
@@ -158,7 +158,7 @@ $tables[] = "CREATE TABLE mybb_calendars (
   allowimgcode tinyint(1) NOT NULL default '0',
   allowvideocode tinyint(1) NOT NULL default '0',
   allowsmilies tinyint(1) NOT NULL default '0',
-  PRIMARY KEY(cid)
+  PRIMARY KEY (cid)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_calendarpermissions (
@@ -182,7 +182,7 @@ $tables[] = "CREATE TABLE mybb_captcha (
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
   cache mediumtext NOT NULL,
-  PRIMARY KEY(title)
+  PRIMARY KEY (title)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_delayedmoderation (
@@ -239,7 +239,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   canvotepolls tinyint(1) NOT NULL default '0',
   cansearch tinyint(1) NOT NULL default '0',
   KEY fid (fid, gid),
-  PRIMARY KEY  (pid)
+  PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_forums (
@@ -802,7 +802,7 @@ $tables[] = "CREATE TABLE mybb_threadprefixes (
 	displaystyle varchar(200) NOT NULL default '',
 	forums text NOT NULL,
 	groups text NOT NULL,
-	PRIMARY KEY(pid)
+	PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadratings (

@@ -25,7 +25,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
 	notes TEXT NOT NULL,
 	permissions TEXT NOT NULL,
 	defaultviews TEXT NOT NULL,
-	loginattempts int unsigned NOT NULL default '0',
+	loginattempts smallint unsigned NOT NULL default '0',
 	loginlockoutexpiry int unsigned NOT NULL default '0'
  );";
 
@@ -51,7 +51,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	custom_profile_fields TEXT NOT NULL,
 	sortby varchar(20) NOT NULL default '',
 	sortorder varchar(4) NOT NULL default '',
-	perpage int(4) NOT NULL default '0',
+	perpage smallint(4) NOT NULL default '0',
 	view_type varchar(6) NOT NULL default ''
 );";
 
@@ -132,7 +132,7 @@ $tables[] = "CREATE TABLE mybb_banned (
 $tables[] = "CREATE TABLE mybb_calendars (
 	cid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',
-	disporder int NOT NULL default '0',
+	disporder smallint NOT NULL default '0',
 	startofweek tinyint(1) NOT NULL default '0',
 	showbirthdays tinyint(1) NOT NULL default '0',
 	eventlimit smallint(3) NOT NULL default '0',
