@@ -1187,31 +1187,31 @@ div.error ul {
 }
 
 .postbit_buttons a.postbit_qrestore span {
-	background-position: 0 -520px;
-}
-
-.postbit_buttons a.postbit_report span {
 	background-position: 0 -200px;
 }
 
-.postbit_buttons a.postbit_warn span {
+.postbit_buttons a.postbit_report span {
 	background-position: 0 -220px;
 }
 
-.postbit_buttons a.postbit_reply_pm span {
+.postbit_buttons a.postbit_warn span {
 	background-position: 0 -240px;
 }
 
-.postbit_buttons a.postbit_reply_all span {
+.postbit_buttons a.postbit_reply_pm span {
 	background-position: 0 -260px;
 }
 
-.postbit_buttons a.postbit_forward_pm span {
+.postbit_buttons a.postbit_reply_all span {
 	background-position: 0 -280px;
 }
 
-.postbit_buttons a.postbit_delete_pm span {
+.postbit_buttons a.postbit_forward_pm span {
 	background-position: 0 -300px;
+}
+
+.postbit_buttons a.postbit_delete_pm span {
+	background-position: 0 -320px;
 }
 
 a.button:link,
@@ -1241,39 +1241,39 @@ a.button span {
 }
 
 a.button.new_thread_button span {
-	background-position: 0 -319px;
+	background-position: 0 -340px;
 }
 
 a.button.new_reply_button span {
-	background-position: 0 -339px;
+	background-position: 0 -360px;
 }
 
 a.button.closed_button span {
-	background-position: 0 -359px;
+	background-position: 0 -380px;
 }
 
 a.button.rate_user_button span {
-	background-position: 0 -379px;
+	background-position: 0 -400px;
 }
 
 a.button.add_buddy_button span {
-	background-position: 0 -418px;
+	background-position: 0 -440px;
 }
 
 a.button.remove_buddy_button span {
-	background-position: 0 -458px;
+	background-position: 0 -480px;
 }
 
 a.button.add_ignore_button span {
-	background-position: 0 -439px;
+	background-position: 0 -460px;
 }
 
 a.button.remove_ignore_button span {
-	background-position: 0 -481px;
+	background-position: 0 -500px;
 }
 
 a.button.report_user_button span {
-	background-position: 0 -500px;
+	background-position: 0 -520px;
 }
 
 .quick_jump {
