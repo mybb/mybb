@@ -712,7 +712,7 @@ if($mybb->input['action'] == "thread")
 	{
 		$visible = "AND p.visible IN (0,1)";
 	}
-	elseif($ismod)
+	elseif($ismod && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == true)
 	{
 		$visible = "AND p.visible IN (-1,0,1)";
 	}
