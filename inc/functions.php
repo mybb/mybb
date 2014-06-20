@@ -6056,6 +6056,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"-12" => $lang->timezone_gmt_minus_1200,
 		"-11" => $lang->timezone_gmt_minus_1100,
 		"-10" => $lang->timezone_gmt_minus_1000,
+		"-9.5" => $lang->timezone_gmt_minus_950,
 		"-9" => $lang->timezone_gmt_minus_900,
 		"-8" => $lang->timezone_gmt_minus_800,
 		"-7" => $lang->timezone_gmt_minus_700,
@@ -6076,14 +6077,21 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"4.5" => $lang->timezone_gmt_450,
 		"5" => $lang->timezone_gmt_500,
 		"5.5" => $lang->timezone_gmt_550,
+		"5.75" => $lang->timezone_gmt_575,
 		"6" => $lang->timezone_gmt_600,
+		"6.5" => $lang->timezone_gmt_650,
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
+		"10.5" => $lang->timezone_gmt_1050,
 		"11" => $lang->timezone_gmt_1100,
-		"12" => $lang->timezone_gmt_1200
+		"11.5" => $lang->timezone_gmt_1150,
+		"12" => $lang->timezone_gmt_1200,
+		"12.75" => $lang->timezone_gmt_1275,
+		"13" => $lang->timezone_gmt_1300,
+		"14" => $lang->timezone_gmt_1400
 	);
 
 	$selected = str_replace("+", "", $selected);
@@ -6109,6 +6117,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 				{
 					$label = str_replace(".", ":", $label);
 					$label = str_replace(":5", ":30", $label);
+					$label = str_replace(":75", ":45", $label);
 				}
 				else
 				{

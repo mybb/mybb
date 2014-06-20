@@ -622,6 +622,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("attachments", "pid", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
+			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
 			$db->modify_column("forums", "lastposttid", "int NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint NOT NULL default '0'");
 			$db->modify_column("maillogs", "touid", "int NOT NULL default '0'");
@@ -633,6 +634,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint NOT NULL default '0'");
 			$db->modify_column("usergroups", "canusesigxposts", "smallint NOT NULL default '0'");
+			$db->modify_column("users", "timezone", "varchar(5) NOT NULL default ''");
 			$db->modify_column("warninglevels", "percentage", "smallint NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint NOT NULL default '0'");
@@ -644,6 +646,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("attachments", "pid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
+			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
 			$db->modify_column("forums", "lastposttid", "int unsigned NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint(5) unsigned NOT NULL default '0'");
 			$db->modify_column("maillogs", "touid", "int unsigned NOT NULL default '0'");
@@ -655,6 +658,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("usergroups", "canusesigxposts", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("users", "timezone", "varchar(5) NOT NULL default ''");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint unsigned NOT NULL default '0'");

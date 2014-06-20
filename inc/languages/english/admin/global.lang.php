@@ -174,8 +174,9 @@ $l['loading_text'] = "Loading<br />Please wait...";
 
 // Time zone selection boxes
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Eniwetok, Kwajalein";
-$l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island, Samoa";
+$l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island";
 $l['timezone_gmt_minus_1000'] = "(GMT -10:00) Hawaii";
+$l['timezone_gmt_minus_950'] = "(GMT -9:30) Marquesas Islands";
 $l['timezone_gmt_minus_900'] = "(GMT -9:00) Alaska";
 $l['timezone_gmt_minus_800'] = "(GMT -8:00) Pacific Time";
 $l['timezone_gmt_minus_700'] = "(GMT -7:00) Mountain Time";
@@ -196,14 +197,21 @@ $l['timezone_gmt_400'] = "(GMT +4:00) Abu Dhabi, Baku, Muscat, Tbilisi";
 $l['timezone_gmt_450'] = "(GMT +4:30) Kabul";
 $l['timezone_gmt_500'] = "(GMT +5:00) Islamabad, Karachi, Tashkent";
 $l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Calcutta, Madras, New Delhi";
+$l['timezone_gmt_575'] = "(GMT +5:45) Kathmandu";
 $l['timezone_gmt_600'] = "(GMT +6:00) Almaty, Colomba, Dhakra";
+$l['timezone_gmt_650'] = "(GMT +6:30) Yangon";
 $l['timezone_gmt_700'] = "(GMT +7:00) Bangkok, Hanoi, Jakarta";
 $l['timezone_gmt_800'] = "(GMT +8:00) Beijing, Hong Kong, Perth, Singapore, Taipei";
 $l['timezone_gmt_900'] = "(GMT +9:00) Osaka, Sapporo, Seoul, Tokyo, Yakutsk";
 $l['timezone_gmt_950'] = "(GMT +9:30) Adelaide, Darwin";
 $l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua New Guinea, Sydney, Vladivostok";
+$l['timezone_gmt_1050'] = "(GMT +10:30) Lord Howe Island";
 $l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands";
+$l['timezone_gmt_1150'] = "(GMT +11:30) Norfolk Island";
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island";
+$l['timezone_gmt_1275'] = "(GMT +12:45) Chatham Islands";
+$l['timezone_gmt_1300'] = "(GMT +13:00) Samoa, Tonga, Tokelau";
+$l['timezone_gmt_1400'] = "(GMT +14:00) Line Islands";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
 
 // Global language strings used for log deletion pages

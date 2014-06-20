@@ -486,6 +486,7 @@ none=Hide Errors and Warnings
 <option value=\"-12\" ".($setting['value'] == -12?"selected=\"selected\"":"").">GMT -12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -12).")</option>
 <option value=\"-11\" ".($setting['value'] == -11?"selected=\"selected\"":"").">GMT -11:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -11).")</option>
 <option value=\"-10\" ".($setting['value'] == -10?"selected=\"selected\"":"").">GMT -10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -10).")</option>
+<option value=\"-9.5\" ".($setting['value'] == -9.5?"selected=\"selected\"":"").">GMT -9:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -9.5).")</option>
 <option value=\"-9\" ".($setting['value'] == -9?"selected=\"selected\"":"").">GMT -9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -9).")</option>
 <option value=\"-8\" ".($setting['value'] == -8?"selected=\"selected\"":"").">GMT -8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -8).")</option>
 <option value=\"-7\" ".($setting['value'] == -7?"selected=\"selected\"":"").">GMT -7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -7).")</option>
@@ -506,7 +507,8 @@ none=Hide Errors and Warnings
 <option value=\"+5\" ".($setting['value'] == 5?"selected=\"selected\"":"").">GMT +5:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5).")</option>
 <option value=\"+5.5\" ".($setting['value'] == 5.5?"selected=\"selected\"":"").">GMT +5:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5.5).")</option>
 <option value=\"+5.75\" ".($setting['value'] == 5.75?"selected=\"selected\"":"").">GMT +5:45 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5.75).")</option>
-<option value=\"+6\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6).")</option>
+<option value=\"+6\" ".($setting['value'] == 6?"selected=\"selected\"":"").">GMT +6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6).")</option>
+<option value=\"+6.5\" ".($setting['value'] == 6.5?"selected=\"selected\"":"").">GMT +6:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6.5).")</option>
 <option value=\"+7\" ".($setting['value'] == 7?"selected=\"selected\"":"").">GMT +7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 7).")</option>
 <option value=\"+8\" ".($setting['value'] == 8?"selected=\"selected\"":"").">GMT +8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8).")</option>
 <option value=\"+9\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9).")</option>
@@ -514,9 +516,13 @@ none=Hide Errors and Warnings
 <option value=\"+10\" ".($setting['value'] == 10?"selected=\"selected\"":"").">GMT +10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10).")</option>
 <option value=\"+10.5\" ".($setting['value'] == 10.5?"selected=\"selected\"":"").">GMT +10:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10.5).")</option>
 <option value=\"+11\" ".($setting['value'] == 11?"selected=\"selected\"":"").">GMT +11:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 11).")</option>
+<option value=\"+11.5\" ".($setting['value'] == 11.5?"selected=\"selected\"":"").">GMT +11:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 11.5).")</option>
 <option value=\"+12\" ".($setting['value'] == 12?"selected=\"selected\"":"").">GMT +12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 12).")</option>
+<option value=\"+12.75\" ".($setting['value'] == 12.75?"selected=\"selected\"":"").">GMT +12:45 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 12.75).")</option>
+<option value=\"+13\" ".($setting['value'] == 13?"selected=\"selected\"":"").">GMT +13:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 13).")</option>
+<option value=\"+14\" ".($setting['value'] == 14?"selected=\"selected\"":"").">GMT +14:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 14).")</option>
 </select>]]></optionscode>
-			<settingvalue><![CDATA[+10]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="dstcorrection">
