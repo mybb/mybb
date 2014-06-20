@@ -618,9 +618,13 @@ function upgrade30_dbchanges_optimize1()
 		case "sqlite":
 			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
+			$db->modify_column("announcements", "fid", "smallint NOT NULL default '0'");
+			$db->modify_column("attachments", "pid", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
+			$db->modify_column("forums", "lastposttid", "int NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint NOT NULL default '0'");
+			$db->modify_column("maillogs", "touid", "int NOT NULL default '0'");
 			$db->modify_column("polls", "numvotes", "int NOT NULL default '0'");
 			$db->modify_column("profilefields", "postnum", "smallint NOT NULL default '0'");
 			$db->modify_column("reputation", "reputation", "smallint NOT NULL default '0'");
@@ -628,6 +632,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("spiders", "usergroup", "smallint NOT NULL default '0'");
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint NOT NULL default '0'");
+			$db->modify_column("usergroups", "canusesigxposts", "smallint NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint NOT NULL default '0'");
@@ -635,9 +640,13 @@ function upgrade30_dbchanges_optimize1()
 		default:
 			$db->modify_column("adminoptions", "loginattempts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint(4) NOT NULL default '0'");
+			$db->modify_column("announcements", "fid", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("attachments", "pid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
+			$db->modify_column("forums", "lastposttid", "int unsigned NOT NULL default '0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint(5) unsigned NOT NULL default '0'");
+			$db->modify_column("maillogs", "touid", "int unsigned NOT NULL default '0'");
 			$db->modify_column("polls", "numvotes", "int unsigned NOT NULL default '0'");
 			$db->modify_column("profilefields", "postnum", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("reputation", "reputation", "smallint NOT NULL default '0'");
@@ -645,6 +654,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("spiders", "usergroup", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("templates", "sid", "smallint NOT NULL default '0'");
 			$db->modify_column("themestylesheets", "tid", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("usergroups", "canusesigxposts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint unsigned NOT NULL default '0'");
@@ -745,7 +755,7 @@ function upgrade30_dbchanges_optimize3()
 	echo "<p>Performing necessary optimization queries...</p>";
 	flush();
 
-	$to_int = array(
+	$to_tinyint = array(
 		"adminoptions" => array("codepress"),
 		"adminviews" => array("visibility"),
 		"announcements" => array("allowhtml", "allowmycode", "allowsmilies"),
@@ -779,9 +789,9 @@ function upgrade30_dbchanges_optimize3()
 		"warnings" => array("expired")
 	);
 
-	foreach($to_int as $table => $columns)
+	foreach($to_tinyint as $table => $columns)
 	{
-		echo "<p>{$table}: Converting column type</p>";
+		echo "<p>{$table}: Converting column type to tinyint</p>";
 		$change_column = array();
 		foreach($columns as $column)
 		{
@@ -792,6 +802,81 @@ function upgrade30_dbchanges_optimize3()
 			else
 			{
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
+			}
+		}
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges_optimize4");
+}
+
+function upgrade30_dbchanges_optimize4()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Optimizing Database");
+
+	echo "<p>Performing necessary optimization queries...</p>";
+	flush();
+
+	$to_int = array(
+		"adminlog" => array("dateline"),
+		"adminsessions" => array("dateline", "lastactive"),
+		"announcements" => array("startdate", "enddate"),
+		"attachments" => array("dateuploaded"),
+		"awaitingactivation" => array("dateline"),
+		"banfilters" => array("lastuse", "dateline"),
+		"banned" => array("dateline", "lifted"),
+		"captcha" => array("dateline"),
+		"delayedmoderation" => array("delaydateline", "dateline"),
+		"forumsread" => array("dateline"),
+		"joinrequests" => array("dateline"),
+		"massemails" => array("dateline", "senddate"),
+		"mailerrors" => array("dateline"),
+		"maillogs" => array("dateline"),
+		"moderatorlog" => array("dateline"),
+		"polls" => array("dateline", "timeout"),
+		"pollvotes" => array("dateline"),
+		"posts" => array("dateline", "edittime"),
+		"privatemessages" => array("dateline", "deletetime", "statustime", "readtime"),
+		"promotionlogs" => array("dateline"),
+		"reportedcontent" => array("dateline", "lastreport"),
+		"reputation" => array("dateline"),
+		"searchlog" => array("dateline"),
+		"sessions" => array("time"),
+		"spiders" => array("lastvisit"),
+		"stats" => array("dateline"),
+		"tasks" => array("nextrun", "lastrun", "locked"),
+		"tasklog" => array("dateline"),
+		"templates" => array("dateline"),
+		"themestylesheets" => array("lastmodified"),
+		"threads" => array("dateline", "lastpost"),
+		"threadsread" => array("dateline"),
+		"threadsubscriptions" => array("dateline"),
+		"threadsread" => array("dateline"),
+		"usergroups" => array("reputationpower", "maxreputationsday", "maxreputationsperuser", "maxreputationsperthread", "attachquota"),
+		"users" => array("regdate", "lastactive", "lastvisit", "lastpost", "reputation", "timeonline", "moderationtime", "suspensiontime", "suspendsigtime"),
+		"warningtypes" => array("expirationtime"),
+		"warnings" => array("dateline", "expires", "daterevoked")
+	);
+
+	foreach($to_int as $table => $columns)
+	{
+		echo "<p>{$table}: Converting column type to int</p>";
+		$change_column = array();
+		foreach($columns as $column)
+		{
+			if($db->type == "pgsql")
+			{
+				$change_column[] = "MODIFY {$column} int NOT NULL default '0'";
+			}
+			else
+			{
+				$change_column[] = "MODIFY {$column} int unsigned NOT NULL default '0'";
 			}
 		}
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
