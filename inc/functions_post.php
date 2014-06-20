@@ -541,7 +541,7 @@ function build_postbit($post, $post_type=0)
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 
 				// Restore Post
-				if(is_moderator($fid))
+				if(is_moderator($fid, "canrestoreposts"))
 				{
 					$display = "none";
 					if($post['visible'] == -1)
@@ -564,7 +564,7 @@ function build_postbit($post, $post_type=0)
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 
 				// Restore Post
-				if(is_moderator($fid))
+				if(is_moderator($fid, "canrestoreposts"))
 				{
 					$display = "none";
 					if($post['visible'] == -1)
@@ -605,12 +605,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -622,7 +622,7 @@ function build_postbit($post, $post_type=0)
 	}
 	elseif($post_type == 3) // announcement
 	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid))
+		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid, "canmanageannouncements"))
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
@@ -859,7 +859,7 @@ function get_post_attachments($id, &$post)
 				$validationcount++;
 			}
 		}
-		if($validationcount > 0 && is_moderator($post['fid']))
+		if($validationcount > 0 && is_moderator($post['fid'], "canviewunapprove"))
 		{
 			if($validationcount == 1)
 			{
