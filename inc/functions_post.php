@@ -465,6 +465,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
+	$post['button_quickrestore'] = '';
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
@@ -532,12 +533,46 @@ function build_postbit($post, $post_type=0)
 			if((is_moderator($fid, "candeleteposts") || $can_delete_post == 1) && $postcounter != 1)
 			{
 				$postbit_qdelete = $lang->postbit_qdelete_post;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					$postbit_qrestore = $lang->postbit_qrestore_post;
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
 			}
 			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
 			{
 				$postbit_qdelete = $lang->postbit_qdelete_thread;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
+				$postbit_qrestore = $lang->postbit_qrestore_thread;
 				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
 			}
 		}
 
