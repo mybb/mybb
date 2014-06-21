@@ -3484,7 +3484,7 @@ a.button {
 		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1801"><![CDATA[<html>
+		<template name="forumdisplay" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3687,6 +3687,7 @@ a.button {
 ]]></template>
 		<template name="forumdisplay_thread_attachment_count" version="1800"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.png" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_thread_gotounread" version="1800"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.png" alt="{$lang->goto_first_unread}" title="{$lang->goto_first_unread}" /></a> ]]></template>
+		<template name="forumdisplay_thread_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" />]]></template>
 		<template name="forumdisplay_thread_modbit" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
 		<template name="forumdisplay_thread_multipage" version="120"><![CDATA[ <span class="smalltext">({$lang->pages} {$threadpages}{$morelink})</span>]]></template>
 		<template name="forumdisplay_thread_multipage_more" version="1600"><![CDATA[... <a href="{$page_link}">{$thread['pages']}</a>]]></template>
@@ -3703,6 +3704,7 @@ a.button {
 	</td>
 ]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
+		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
 		<template name="forumdisplay_threadlist" version="1800"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
@@ -3800,7 +3802,7 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1801"><![CDATA[	<td class="tcat" align="center" width="80">
+		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
 		<script type="text/javascript">
