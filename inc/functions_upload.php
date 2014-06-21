@@ -602,6 +602,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	if($prevattach['aid'] && $update_attachment == true)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
+		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
 
 		// Remove old attachment file
 		// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
@@ -621,7 +622,6 @@ function upload_attachment($attachment, $update_attachment=false)
 			}
 		}
 
-		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
 		$aid = $prevattach['aid'];
 	}
 	else
