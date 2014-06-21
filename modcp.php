@@ -22,13 +22,13 @@ $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,mo
 $templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
 $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
+$templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/functions_modcp.php";
 require_once MYBB_ROOT."inc/class_parser.php";
-
 $parser = new postParser;
 
 // Set up the array of ban times.
@@ -820,17 +820,23 @@ if($mybb->input['action'] == "modlogs")
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 		$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
+
 		if($logitem['tsubject'])
 		{
-			$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+			$logitem['thread'] = get_thread_link($logitem['tid']);
+			eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 		}
 		if($logitem['fname'])
 		{
-			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">{$logitem['fname']}</a><br />";
+			$logitem['forum'] = get_forum_link($logitem['fid']);
+			eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
 		}
 		if($logitem['psubject'])
 		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+			$logitem['post'] = get_post_link($logitem['pid']);
+			eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 		}
 
 		// Edited a user or managed announcement?
@@ -843,7 +849,9 @@ if($mybb->input['action'] == "modlogs")
 			}
 			if(!empty($data['aid']))
 			{
-				$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
+				$data['subject'] = htmlspecialchars_uni($data['subject']);
+				$data['announcement'] = get_announcement_link($data['aid']);
+				eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 			}
 		}
 
@@ -882,7 +890,9 @@ if($mybb->input['action'] == "modlogs")
 		{
 			$selected = " selected=\"selected\"";
 		}
-		$user_options .= "<option value=\"{$user['uid']}\"{$selected}>".htmlspecialchars_uni($user['username'])."</option>\n";
+
+		$user['username'] = htmlspecialchars_uni($user['username']);
+		eval("\$user_options .= \"".$templates->get("modcp_modlogs_user")."\";");
 	}
 
 	$forum_select = build_forum_jump("", $mybb->get_input('fid', 1), 1, '', 0, true, '', "fid");
@@ -3789,7 +3799,7 @@ if($mybb->input['action'] == "banning")
 		$edit_link = '';
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
-			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
+			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
 		}
 
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
@@ -4155,13 +4165,15 @@ if($mybb->input['action'] == "banuser")
 			{
 				$selected = " selected=\"selected\"";
 			}
-			$bangroups .= "<option value=\"{$group['gid']}\"{$selected}>".htmlspecialchars_uni($group['title'])."</option>\n";
+
+			$group['title'] = htmlspecialchars_uni($group['title']);
+			eval("\$bangroups .= \"".$templates->get("modcp_banuser_group")."\";");
 		}
 	}
 
 	if(!empty($user['uid']))
 	{
-		$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
+		eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
 		$uid = $user['uid'];
 	}
 	else
@@ -4240,7 +4252,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+			eval("\$latest_attachment = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
 		}
 
 		eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
@@ -4283,7 +4295,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$latest_post =  "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+			eval("\$latest_post = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
 		}
 
 		eval("\$awaitingposts = \"".$templates->get("modcp_awaitingposts")."\";");
@@ -4314,7 +4326,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
+			eval("\$latest_thread = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
 		}
 
 		eval("\$awaitingthreads = \"".$templates->get("modcp_awaitingthreads")."\";");
@@ -4356,17 +4368,23 @@ if(!$mybb->input['action'])
 			$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 			$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 			$logitem['ipaddress'] = my_inet_ntop($db->unescape_binary($logitem['ipaddress']));
+
 			if($logitem['tsubject'])
 			{
-				$information = "<strong>{$lang->thread}:</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+				$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
+				$logitem['thread'] = get_thread_link($logitem['tid']);
+				eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
 			}
 			if($logitem['fname'])
 			{
-				$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
+				$logitem['forum'] = get_forum_link($logitem['fid']);
+				eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
 			}
 			if($logitem['psubject'])
 			{
-				$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+				$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
+				$logitem['post'] = get_post_link($logitem['pid']);
+				eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
 			}
 
 			// Edited a user or managed announcement?
@@ -4379,7 +4397,9 @@ if(!$mybb->input['action'])
 				}
 				if($data['aid'])
 				{
-					$information = "<strong>{$lang->announcement}:</strong> <a href=\"".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
+					$data['subject'] = htmlspecialchars_uni($data['subject']);
+					$data['announcement'] = get_announcement_link($data['aid']);
+					eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
 				}
 			}
 
@@ -4414,7 +4434,7 @@ if(!$mybb->input['action'])
 		$edit_link = '';
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
-			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
+			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
 		}
 
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);

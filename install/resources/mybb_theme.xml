@@ -6161,6 +6161,7 @@ if(use_xmlhttprequest == "1")
 {$awaitingattachments}
 </table>
 <br />]]></template>
+		<template name="modcp_awaitingmoderation_none" version="1800"><![CDATA[<span style="text-align: center;">{$lang->lastpost_never}</span>]]></template>
 		<template name="modcp_awaitingthreads" version="1800"><![CDATA[<tr>
 <td class="trow1"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
 <td class="trow1" align="center"><span class="smalltext">{$unapproved_threads}</span></td>
@@ -6204,6 +6205,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$trow}" align="center">{$banlength}<br /><span class="smalltext">{$timeremaining}</span></td>
 	<td class="{$trow}" align="center">{$admin_profile}</td>
 </tr>]]></template>
+		<template name="modcp_banning_edit" version="1800"><![CDATA[<br /><span class="smalltext"><a href="modcp.php?action=banuser&amp;uid={$banned['uid']}">{$lang->edit_ban}</a> | <a href="modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></span>]]></template>
 		<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
@@ -6303,6 +6305,8 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
+		<template name="modcp_banuser_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
+		<template name="modcp_banuser_lift" version="1800"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
 		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
@@ -7004,6 +7008,11 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center" valign="top">{$information}</td>
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
 </tr>]]></template>
+		<template name="modcp_modlogs_result_announcement" version="1800"><![CDATA[<strong>{$lang->announcement}:</strong> <a href="{$data['announcement']}" target="_blank">{$data['subject']}</a>]]></template>
+		<template name="modcp_modlogs_result_forum" version="1800"><![CDATA[<strong>{$lang->forum}</strong> <a href="{$logitem['forum']}" target="_blank">{$logitem['fname']}</a><br />]]></template>
+		<template name="modcp_modlogs_result_post" version="1800"><![CDATA[<strong>{$lang->post}</strong> <a href="{$logitem['post']}#pid{$logitem['pid']}">{$logitem['psubject']}</a>]]></template>
+		<template name="modcp_modlogs_result_thread" version="1800"><![CDATA[<strong>{$lang->thread}:</strong> <a href="{$logitem['thread']}" target="_blank">{$logitem['tsubject']}</a><br />]]></template>
+		<template name="modcp_modlogs_user" version="1800"><![CDATA[<option value="{$user['uid']}"{$selected}>{$user['username']}</option>]]></template>
 		<template name="modcp_modqueue_attachments" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_awaiting_moderation}</title>
