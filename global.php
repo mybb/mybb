@@ -381,7 +381,7 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error';
+$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option';
 $templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
 $templates->cache($db->escape_string($templatelist));
@@ -685,12 +685,14 @@ if($mybb->settings['showlanguageselect'] != 0)
 			// Current language matches
 			if($lang->language == $key)
 			{
-				$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = " selected=\"selected\"";
 			}
 			else
 			{
-				$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = '';
 			}
+
+			eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
 		}
 
 		$lang_redirect_url = get_current_location(true, 'language');

@@ -245,6 +245,7 @@ a:hover, a:active {
 #footer .upper .language {
 	float: right;
 	margin: -1px;
+	margin-left: 15px;
 }
 
 #footer .upper .language select {
@@ -3424,6 +3425,7 @@ a.button {
 	{$gobutton}
 </form>
 </div>]]></template>
+		<template name="footer_languageselect_option" version="1800"><![CDATA[<option value="{$key}"{$selected}>&nbsp;&nbsp;&nbsp;{$language}</option>]]></template>
 		<template name="footer_themeselect" version="1800"><![CDATA[<div class="theme">
 <form method="{$theme_redirect_url['form_method']}" action="{$theme_redirect_url['location']}" id="theme_select">
 	{$theme_redirect_url['form_html']}
