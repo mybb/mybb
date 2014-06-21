@@ -1440,7 +1440,6 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
@@ -1486,6 +1485,24 @@ class UserDataHandler extends DataHandler
 			$db->update_query('posts', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
 			$db->update_query('threads', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
 		}
+
+		// Update thread ratings
+		$query = $db->query("
+			SELECT r.*, t.numratings, t.totalratings
+			FROM ".TABLE_PREFIX."threadratings r
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
+			WHERE r.uid='{$this->delete_uids}'
+		");
+		while($rating = $db->fetch_array($query))
+		{
+			$update_thread = array(
+				"numratings" => $rating['numratings'] - 1,
+				"totalratings" => $rating['totalratings'] - $rating['rating']
+			);
+			$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
+		}
+
+		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
 
 		// Update forums & threads if user is the lastposter
 		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
