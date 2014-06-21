@@ -1491,7 +1491,7 @@ class UserDataHandler extends DataHandler
 			SELECT r.*, t.numratings, t.totalratings
 			FROM ".TABLE_PREFIX."threadratings r
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
-			WHERE r.uid='{$this->delete_uids}'
+			WHERE r.uid IN({$this->delete_uids})
 		");
 		while($rating = $db->fetch_array($query))
 		{
