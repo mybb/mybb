@@ -1059,7 +1059,7 @@ if($mybb->input['action'] == "editevent")
 	$single_days = $start_days = $end_days = '';
 
 	// Construct option list for days
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
 		if($day == $single_day)
 		{
