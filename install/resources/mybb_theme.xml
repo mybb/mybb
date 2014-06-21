@@ -4582,6 +4582,7 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>
 </table>]]></template>
+		<template name="member_profile_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="member_profile_away" version="1800"><![CDATA[<tr>
 <fieldset>
 <legend><strong>{$lang->away_note}</strong></legend>
@@ -4635,6 +4636,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><strong>{$lang->reputation}</strong></td>
 	<td class="{$bg_color}">{$reputation} [<a href="reputation.php?uid={$memprofile['uid']}">{$lang->reputation_details}</a>] {$vote_link}</td>
 </tr>]]></template>
+		<template name="member_profile_reputation_vote" version="1800"><![CDATA[[<a href="javascript:MyBB.reputation({$memprofile['uid']});">{$lang->reputation_vote}</a>]]]></template>
 		<template name="member_profile_signature" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -4649,6 +4651,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
 	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
+		<template name="member_profile_website" version="1800"><![CDATA[<a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a>]]></template>
 		<template name="member_register" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>

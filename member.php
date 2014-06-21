@@ -1595,7 +1595,7 @@ if($mybb->input['action'] == "profile")
 	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
 
 	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
-	$avatar = "<img src=\"{$useravatar['image']}\" alt=\"\" {$useravatar['width_height']} />";
+	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
 
 	$sendemail = '';
 	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
@@ -1627,7 +1627,7 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
+		eval("\$website = \"".$templates->get("member_profile_website")."\";");
 	}
 
 	$signature = '';
@@ -2046,7 +2046,7 @@ if($mybb->input['action'] == "profile")
 		$vote_link = '';
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 		{
-			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
+			eval("\$vote_link = \"".$templates->get("member_profile_reputation_vote")."\";");
 		}
 
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
