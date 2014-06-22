@@ -324,4 +324,5 @@ $l['you_cannot_moderate_attachments'] = "You do not have sufficient permission t
 $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
 
 $l['post'] = 'Post';
+$l['search_user'] = "Search for a user";
 ?>

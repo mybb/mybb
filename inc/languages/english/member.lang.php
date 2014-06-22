@@ -143,6 +143,7 @@ $l['submit_registration'] = "Submit Registration!";
 $l['confirm_password'] = "Confirm Password:";
 $l['referrer'] = "Referrer:";
 $l['referrer_desc'] = "If you were referred to these forums by another member you can enter their name below. If not, simply leave this field blank.";
+$l['search_user'] = "Search for a user";
 $l['resend_activation'] = "Resend Account Activation";
 $l['request_activation'] = "Request Activation Code";
 $l['ppp'] = "Posts Per Page:";
