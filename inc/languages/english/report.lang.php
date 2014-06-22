@@ -27,4 +27,5 @@ $l['success_report_voted'] = "Thanks for reporting this content.<br />A member o
 $l['error_report_length'] = "Please provide a detailed reason for your report.";
 $l['error_invalid_report'] = "This content either does not exist or is not able to be reported.";
 $l['error_report_duplicate'] = "This content has already been reported by another member.<br />You may also report this content below.";
+$l['report_reason_other_description'] = "If 'Other' please provide a reason for reporting this content.";
 ?>
