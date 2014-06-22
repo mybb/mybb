@@ -285,4 +285,5 @@ $l['announcement_added'] = "Announcement Added";
 $l['announcement_edited'] = "Announcement Edited";
 $l['announcement_deleted'] = "Announcement Deleted";
 
+$l['post'] = 'Post';
 ?>

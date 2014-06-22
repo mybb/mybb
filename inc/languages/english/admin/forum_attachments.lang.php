@@ -71,6 +71,7 @@ $l['step2of2'] = "Step 2 of 2 - Database Scan";
 $l['step1of2_line1'] = "Please wait, the file system is currently being scanned for orphaned attachments.";
 $l['step2of2_line1'] = "Please wait, the database is currently being scanned for orphaned attachments.";
 $l['step_line2'] = "You'll automatically be redirected to the next step once this process is complete.";
+$l['scanning'] = 'Scanning..';
 
 // = Attachments / Index
 $l['index_find_attachments'] = "Attachments - Find Attachments";
