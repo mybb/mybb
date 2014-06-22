@@ -7006,27 +7006,53 @@ function signed($int)
 function secure_seed_rng($count=8)
 {
 	$output = '';
-
-	// Use OpenSSL when available
-	// PHP <5.3.4 had a bug which makes that function unusable on Windows
-	if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+	// DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR != '\\')
 	{
-		$output = openssl_random_pseudo_bytes($count);
-	}
-	// Try the unix/linux method
-	elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
-	{
-		$output = @fread($handle, $count);
-		@fclose($handle);
-	}
-	// Try Windows CAPICOM before using our own generator
-	elseif(class_exists('COM'))
-	{
-		try
+		// Unix/Linux
+		// Use OpenSSL when available
+		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			$CAPI_Util = new COM('CAPICOM.Utilities.1');
-			$output = $CAPI_Util->GetRandom($count, 0);
-		} catch (Exception $ex) {
+			$output = openssl_random_pseudo_bytes($count);
+		}
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
+		{
+			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
+		}
+		// Try /dev/urandom
+		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		{
+			$output = @fread($handle, $count);
+			@fclose($handle);
+		}
+	}
+	else
+	{
+		// Windows
+		// Use OpenSSL when available
+		// PHP <5.3.4 had a bug which makes that function unusable on Windows
+		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+		{
+			$output = openssl_random_pseudo_bytes($count);
+		}
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
+		{
+			$output = mcrypt_create_iv($count, MCRYPT_RAND);
+		}
+		// Try Windows CAPICOM before using our own generator
+		elseif(class_exists('COM'))
+		{
+			try
+			{
+				$CAPI_Util = new COM('CAPICOM.Utilities.1');
+				if(is_callable(array($CAPI_Util, 'GetRandom')))
+				{
+					$output = $CAPI_Util->GetRandom($count, 0);
+				}
+			} catch (Exception $e) {
+			}
 		}
 	}
 
