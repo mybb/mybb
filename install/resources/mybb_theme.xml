@@ -3236,7 +3236,7 @@ a.button {
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -3500,8 +3500,8 @@ a.button {
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script src="jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="jscripts/inline_edit.js?ver=1800"></script>
+<script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -3806,7 +3806,7 @@ a.button {
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
 		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
-		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
 		<script type="text/javascript">
 		<!--
 			lang.stars = new Array();
@@ -5048,7 +5048,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -8184,7 +8184,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -8277,7 +8277,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/post.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -8779,7 +8779,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -9589,7 +9589,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/usercp.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -10564,9 +10564,9 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script src="jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="jscripts/thread.js?ver=1800"></script>
 <script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
+<script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1800"></script>
 </head>
 <body>
 	{$header}
@@ -10845,7 +10845,7 @@ if(use_xmlhttprequest == "1")
 			lang.ratings_update_error = "{$lang->ratings_update_error}";
 		// -->
 		</script>
-		<script type="text/javascript" src="jscripts/rating.js?ver=1800"></script>
+		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -11322,7 +11322,7 @@ if(use_xmlhttprequest == "1")
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 	{$headerinclude}
-	<script type="text/javascript" src="jscripts/usercp.js"></script>
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/usercp.js"></script>
 	<script type="text/javascript">
 		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
 		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
@@ -12982,9 +12982,9 @@ if(use_xmlhttprequest == "1")
 ]]></template>
 		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <link rel="stylesheet" href="jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
-<script type="text/javascript" src="jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
-<script type="text/javascript" src="jscripts/bbcodes_sceditor.js"></script>
-<script type="text/javascript" src="jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
 $(function() {
 	$("#{$bind}").sceditor({
