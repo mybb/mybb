@@ -342,6 +342,14 @@ $l['upgrade_template_reversion'] = "Template Reversion Warning";
 $l['upgrade_template_reversion_success'] = "<p>All necessary database modifications have successfully been made to upgrade your board.</p><p>This upgrade requires all templates to be reverted to the new ones contained in the package so please back up any custom templates you have made before clicking next.";
 $l['upgrade_send_stats'] = "<p><input type=\"checkbox\" name=\"allow_anonymous_info\" value=\"1\" id=\"allow_anonymous\" checked=\"checked\" /> <label for=\"allow_anonymous\"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href=\"http://docs.mybb.com/Anonymous_Statistics.html\" style=\"color: #555;\" target=\"_blank\"><small>What information is sent?</small></a>)</p>";
 
+$l['please_login'] = "Please Login";
+$l['login'] = "Login";
+$l['login_desc'] = "Please enter your username and password to begin the upgrade process. You must be a valid forum administrator to perform the upgrade.";
+$l['login_username'] = "Username";
+$l['login_password'] = "Password";
+$l['login_password_desc'] = "Please note that passwords are case sensitive.";
+
 /* Error messages */
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';
+$l['no_permision'] = "You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={1}\">here</a>. From there you will be able to log in again under your administrator account.";
 ?>
