@@ -597,7 +597,7 @@ if($mybb->input['action'] == "warn")
 				}
 				else
 				{
-					$expires = my_date('relative', $warning['expires']);
+					$expires = my_date($mybb->settings['dateformat'], $warning['expires']) . ", " . my_date($mybb->settings['timeformat'], $warning['expires']);
 				}
 			}
 			else
@@ -1043,7 +1043,7 @@ if($mybb->input['action'] == "view")
 		}
 		else
 		{
-			$expires = my_date('relative', $warning['expires']);
+			$expires = my_date($mybb->settings['dateformat'], $warning['expires']) . ", " . my_date($mybb->settings['timeformat'], $warning['expires']);
 		}
 		$status = $lang->warning_active;
 	}
@@ -1055,7 +1055,7 @@ if($mybb->input['action'] == "view")
 		}
 		else if($warning['expires'])
 		{
-			$revoked_date = '('.my_date($mybb->settings['dateformat'], $warning['expires']).' '.my_date($mybb->settings['timeformat'], $warning['expires']).')';
+			$revoked_date = '('.my_date($mybb->settings['dateformat'], $warning['expires']).', '.my_date($mybb->settings['timeformat'], $warning['expires']).')';
 			$expires = $status = $lang->already_expired;
 		}
 	}
@@ -1218,7 +1218,7 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$expires = my_date('relative', $warning['expires']);
+				$expires = my_date($mybb->settings['dateformat'], $warning['expires']) . ", " . my_date($mybb->settings['timeformat'], $warning['expires']);
 			}
 		}
 		else

@@ -263,7 +263,7 @@ function update_loginkey($uid)
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
- * @param int (Optional) The type of notification to receive for replies (0=none, 1=instant)
+ * @param int (Optional) The type of notification to receive for replies (0=none, 1=email, 2=pm)
  * @param int (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
@@ -442,6 +442,13 @@ function usercp_menu_messenger()
 	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
+	// Hide compose link if no permission
+	$ucp_nav_compose = '';
+	if($mybb->usergroup['cansendpms'] == 1)
+	{
+		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
+	}
+
 	$folderlinks = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
@@ -530,6 +537,11 @@ function usercp_menu_misc()
 	if($count > 0)
 	{
 		$draftcount = $lang->sprintf($lang->ucp_nav_drafts_active, my_number_format($count));
+	}
+
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		eval("\$attachmentop = \"".$templates->get("usercp_nav_attachments")."\";");
 	}
 
 	if(!isset($collapsedimg['usercpmisc']))

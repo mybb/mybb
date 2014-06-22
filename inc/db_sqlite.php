@@ -173,7 +173,7 @@ class DB_SQLite
 			else
 			{
 				// SQLITE 3 supports ADD Alter statements
-				if(strtolower(substr(ltrim($string), 0, 3)) == 'add')
+				if(strtolower(substr(ltrim($alterdefs), 0, 3)) == 'add')
 				{
 					$query = $this->db->query($string);
 				}
@@ -962,6 +962,27 @@ class DB_SQLite
 		{
 			$this->query('DROP TABLE '.$table_prefix.$table);
 		}
+	}
+
+	/**
+	 * Renames a table
+	 *
+	 * @param string The old table name
+	 * @param string the new table name
+	 * @param boolean use table prefix
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
 	}
 
 	/**

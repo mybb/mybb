@@ -26,6 +26,8 @@ function rebuild_stats()
 
 /**
  * Completely rebuild the counters for a particular forum (useful if they become out of sync)
+ *
+ * @param int The forum ID
  */
 function rebuild_forum_counters($fid)
 {
@@ -56,7 +58,6 @@ function rebuild_forum_counters($fid)
  * Completely rebuild the counters for a particular thread (useful if they become out of sync)
  *
  * @param int The thread ID
- * @param array Optional thread array so we don't have to query it
  */
 function rebuild_thread_counters($tid)
 {
@@ -87,5 +88,53 @@ function rebuild_thread_counters($tid)
 
 	update_thread_counters($tid, $count);
 	update_thread_data($tid);
+}
+
+/**
+ * Completely rebuild poll counters for a particular poll (useful if they become out of sync)
+ *
+ * @param int The poll ID
+ */
+function rebuild_poll_counters($pid)
+{
+	global $db;
+
+	$query = $db->simple_select("polls", "pid, numoptions", "pid='".intval($pid)."'");
+	$poll = $db->fetch_array($query);
+
+	$votes = array();
+	$query = $db->query("
+		SELECT voteoption, COUNT(vid) AS vote_count
+		FROM ".TABLE_PREFIX."pollvotes
+		WHERE pid='{$poll['pid']}'
+		GROUP BY voteoption
+	");
+	while($vote = $db->fetch_array($query))
+	{
+		$votes[$vote['voteoption']] = $vote['vote_count'];
+	}
+
+	$voteslist = '';
+	$numvotes = '';
+	for($i = 1; $i <= $poll['numoptions']; ++$i)
+	{
+		if(trim($voteslist != ''))
+		{
+			$voteslist .= "||~|~||";
+		}
+
+		if(!isset($votes[$i]) || intval($votes[$i]) <= 0)
+		{
+			$votes[$i] = "0";
+		}
+		$voteslist .= $votes[$i];
+		$numvotes = $numvotes + $votes[$i];
+	}
+
+	$updatedpoll = array(
+		"votes" => $db->escape_string($voteslist),
+		"numvotes" => intval($numvotes)
+	);
+	$db->update_query("polls", $updatedpoll, "pid='{$poll['pid']}'");
 }
 ?>

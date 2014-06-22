@@ -127,7 +127,8 @@ $l['birthdate'] = "Birthdate:";
 $l['icq_number'] = "ICQ Number:";
 $l['aim_screenname'] = "AIM Screen Name:";
 $l['yahoo_id'] = "Yahoo ID:";
-$l['msn'] = "MSN ID:";
+$l['skype_id'] = "Skype ID:";
+$l['google_id'] = "Google Talk ID:";
 $l['away_notice'] = "This option will allow you to select whether you are away or not.";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
@@ -214,6 +215,7 @@ $l['edited_user_info'] = "<strong>User:</strong> <a href=\"{2}\">{1}</a>";
 $l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
+$l['no_bans_ending'] = "There are no bans ending soon.";
 
 $l['warning_logs'] = "Warning Logs";
 $l['warned_user'] = "Warned User";
@@ -307,5 +309,20 @@ $l['error_invalid_end_date'] = "The ending date for the announcement is invalid.
 $l['error_end_before_start'] = "The ending date must be after the start date.";
 $l['error_invalid_announcement'] = "The specified announcement is invalid.";
 
+$l['announcement_added'] = "Announcement Added";
+$l['announcement_edited'] = "Announcement Edited";
+$l['announcement_deleted'] = "Announcement Deleted";
+
 $l['preview'] = 'Preview';
+
+$l['you_cannot_view_mod_logs'] = "You do not have sufficient permission to view the Moderator Logs.";
+$l['you_cannot_view_reported_posts'] = "You do not have sufficient permission to view Reported Posts.";
+$l['you_cannot_manage_announcements'] = "You do not have sufficient permission to manage Announcements.";
+$l['you_cannot_moderate_threads'] = "You do not have sufficient permission to moderate threads.";
+$l['you_cannot_moderate_posts'] = "You do not have sufficient permission to moderate posts.";
+$l['you_cannot_moderate_attachments'] = "You do not have sufficient permission to moderate attachments.";
+$l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use the Mod Queue.";
+
+$l['post'] = 'Post';
+$l['search_user'] = "Search for a user";
 ?>

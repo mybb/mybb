@@ -414,7 +414,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<h3>{$lang->step2of2}</h3>";
 		echo "<p class=\"align_center\">{$lang->step2of2_line1}</p>";
 		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
-		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
+		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"{$lang->scanning}\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
 		flush();
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "orphans")
 		echo "<h3>{$lang->step1of2}</h3>";
 		echo "<p class=\"align_center\">{$lang->step1of2_line1}</p>";
 		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
-		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
+		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"{$lang->scanning}\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
 
@@ -754,9 +754,9 @@ if(!$mybb->input['action'])
 					$mybb->input['sortby'] = "filename";
 			}
 
-			if($mybb->input['sortorder'] != "desc")
+			if($mybb->input['order'] != "desc")
 			{
-				$mybb->input['sortorder'] = "asc";
+				$mybb->input['order'] = "asc";
 			}
 
 			$page->add_breadcrumb_item($lang->results);
@@ -783,7 +783,7 @@ if(!$mybb->input['action'])
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 				WHERE {$search_sql}
-				ORDER BY {$sort_field} {$mybb->input['sortorder']}
+				ORDER BY {$sort_field} {$mybb->input['order']}
 				LIMIT {$start}, {$mybb->input['perpage']}
 			");
 			while($attachment = $db->fetch_array($query))
@@ -795,7 +795,7 @@ if(!$mybb->input['action'])
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum-attachments&amp;results=1";
-				$pagination_vars = array('filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('perpage', 'sortby', 'order', 'filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])

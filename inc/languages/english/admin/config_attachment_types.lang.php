@@ -17,6 +17,8 @@ $l['extension'] = "Extension";
 $l['maximum_size'] = "Maximum Size";
 $l['no_attachment_types'] = "There are no attachment types on your forum at this time.";
 
+$l['name'] = "Name";
+$l['name_desc'] = "Enter the name of the attachment type.";
 $l['file_extension'] = "File Extension";
 $l['file_extension_desc'] = "Enter the file extension you wish to allow uploads for here (Do not include the period before the extension) (Example: txt)";
 $l['mime_type'] = "MIME Type";

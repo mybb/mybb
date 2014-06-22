@@ -11,12 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'forumdisplay.php');
 
-$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_orderarrow,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating,forumbit_moderators,forumbit_subforums,forumbit_depth2_forum_lastpost";
-$templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more";
-$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
-$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating";
+$templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_threadlist_inlineedit_js,forumdisplay_orderarrow";
+$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit";
+$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom,forumbit_subforums,forumbit_moderators";
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumdisplay_announcements_announcement_modbit,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_thread_gotounread,forumdisplay_nothreads,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating";
+$templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove,forumdisplay_inlinemoderation_standard";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -174,7 +175,7 @@ if($mybb->settings['enableforumjump'] != 0)
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
-if($foruminfo['type'] == "f" && $foruminfo['open'] != 0)
+if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
@@ -382,8 +383,25 @@ if(is_moderator($fid))
 	$inlinecount = "0";
 	$inlinemod = '';
 	$inlinecookie = "inlinemod_forum".$fid;
-	$visibleonly = " AND visible IN (-1,0,1)";
-	$tvisibleonly = " AND t.visible IN (-1,0,1)";
+
+	if(is_moderator($fid, "canviewdeleted") == true || is_moderator($fid, "canviewunapprove") == true)
+	{
+		if(is_moderator($fid, "canviewunapprove") == true && is_moderator($fid, "canviewdeleted") == false)
+		{
+			$visibleonly = "AND visible IN (0,1)";
+			$tvisibleonly = "AND t.visible IN (0,1)";
+		}
+		elseif(is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
+		{
+			$visibleonly = "AND visible IN (-1,1)";
+			$tvisibleonly = "AND t.visible IN (-1,1)";
+		}
+		else
+		{
+			$visibleonly = " AND visible IN (-1,0,1)";
+			$tvisibleonly = " AND t.visible IN (-1,0,1)";
+		}
+	}
 }
 else
 {
@@ -832,14 +850,26 @@ if($fpermissions['canviewthreads'] != 0)
 			}
 		}
 	}
+
+	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && !empty($threadcache) && $ratings == true)
+	{
+		// Check if we've rated threads on this page
+		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
+		$imp = implode(",", array_keys($threadcache));
+		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
+
+		while($rating = $db->fetch_array($query))
+		{
+			$threadcache[$rating['tid']]['rated'] = 1;
+		}
+	}
 }
 
 // If user has moderation tools available, prepare the Select All feature
 $selectall = '';
-$num_results = $db->num_rows($query);
-if(is_moderator($fid) && $num_results > 0)
+if(is_moderator($fid) && $threadcount > $perpage)
 {
-	$lang->page_selected = $lang->sprintf($lang->page_selected, intval($num_results));
+	$lang->page_selected = $lang->sprintf($lang->page_selected, count($threadcache));
 	$lang->select_all = $lang->sprintf($lang->select_all, intval($threadcount));
 	$lang->all_selected = $lang->sprintf($lang->all_selected, intval($threadcount));
 	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
@@ -976,7 +1006,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
 			$icon = $icon_cache[$thread['icon']];
-			$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 		}
 		else
 		{
@@ -1196,7 +1226,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$thread['views'] = my_number_format($thread['views']);
 
 		// Threads and posts requiring moderation
-		if($thread['unapprovedposts'] > 0 && $ismod)
+		if($thread['unapprovedposts'] > 0 && is_moderator($fid, "canviewunapprove"))
 		{
 			if($thread['unapprovedposts'] > 1)
 			{
@@ -1207,7 +1237,8 @@ if(!empty($threadcache) && is_array($threadcache))
 				$unapproved_posts_count = $lang->sprintf($lang->thread_unapproved_post_count, 1);
 			}
 
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($thread['unapprovedposts']).")</span>";
+			$thread['unapprovedposts'] = my_number_format($thread['unapprovedposts']);
+			eval("\$unapproved_posts = \"".$templates->get("forumdisplay_thread_unapproved_posts")."\";");
 		}
 		else
 		{
@@ -1215,7 +1246,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		}
 
 		// If this thread has 1 or more attachments show the papperclip
-		if($thread['attachmentcount'] > 0)
+		if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
 		{
 			if($thread['attachmentcount'] > 1)
 			{
@@ -1236,7 +1267,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
-	$customthreadtools = '';
+	$customthreadtools = $standardthreadtools = '';
 	if($ismod)
 	{
 		if(is_moderator($fid, "canusecustomtools") && $has_modtools == true)
@@ -1262,7 +1293,53 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 		}
 
-		eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
+		$inlinemodopenclose = $inlinemodstickunstick = $inlinemodsoftdelete = $inlinemodrestore = $inlinemoddelete = $inlinemodmanage = $inlinemodapproveunapprove = '';
+
+		if(is_moderator($fid, "canopenclosethreads"))
+		{
+			eval("\$inlinemodopenclose = \"".$templates->get("forumdisplay_inlinemoderation_openclose")."\";");
+		}
+
+		if(is_moderator($fid, "canstickunstickthreads"))
+		{
+			eval("\$inlinemodstickunstick = \"".$templates->get("forumdisplay_inlinemoderation_stickunstick")."\";");
+		}
+
+		if(is_moderator($fid, "cansoftdeletethreads"))
+		{
+			eval("\$inlinemodsoftdelete = \"".$templates->get("forumdisplay_inlinemoderation_softdelete")."\";");
+		}
+
+		if(is_moderator($fid, "canrestorethreads"))
+		{
+			eval("\$inlinemodrestore = \"".$templates->get("forumdisplay_inlinemoderation_restore")."\";");
+		}
+
+		if(is_moderator($fid, "candeletethreads"))
+		{
+			eval("\$inlinemoddelete = \"".$templates->get("forumdisplay_inlinemoderation_delete")."\";");
+		}
+
+		if(is_moderator($fid, "canmanagethreads"))
+		{
+			eval("\$inlinemodmanage = \"".$templates->get("forumdisplay_inlinemoderation_manage")."\";");
+		}
+
+		if(is_moderator($fid, "canapproveunapproveposts"))
+		{
+			eval("\$inlinemodapproveunapprove = \"".$templates->get("forumdisplay_inlinemoderation_approveunapprove")."\";");
+		}
+
+		if(!empty($inlinemodopenclose) || !empty($inlinemodstickunstick) || !empty($inlinemodsoftdelete) || !empty($inlinemodrestore) || !empty($inlinemoddelete) || !empty($inlinemodmanage) || !empty($inlinemodapproveunapprove))
+		{
+			eval("\$standardthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_standard")."\";");
+		}
+
+		// Only show inline mod menu if there's options to show
+		if(!empty($standardthreadtools) || !empty($customthreadtools))
+		{
+			eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
+		}
 	}
 }
 

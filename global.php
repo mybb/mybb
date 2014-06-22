@@ -109,6 +109,31 @@ $load_from_forum = $load_from_user = 0;
 $style = array();
 
 // This user has a custom theme set in their profile
+if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
+{
+	$mybb->user['style'] = $mybb->get_input('theme');
+	// If user is logged in, update their theme selection with the new one
+	if($mybb->user['uid'])
+	{
+		if(isset($mybb->cookies['mybbtheme']))
+		{
+			my_unsetcookie('mybbtheme');
+		}
+
+		$db->update_query('users', array('style' => intval($mybb->user['style'])), "uid = '{$mybb->user['uid']}'");
+	}
+	// Guest = cookie
+	else
+	{
+		my_setcookie('mybbtheme', $mybb->get_input('theme'));
+	}
+}
+// Cookied theme!
+else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
+{
+	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+}
+
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
@@ -356,9 +381,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary";
+$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option';
+$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -377,9 +402,9 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
-// If the board is closed and we have an Administrator, show board closed warning
+// If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
 $bbclosedwarning = '';
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] == 1)
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
 	eval('$bbclosedwarning = "'.$templates->get('global_boardclosed_warning').'";');
 }
@@ -430,6 +455,24 @@ else
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
 }
 
+// Display menu links and quick search if user has permission
+$menu_search = $menu_memberlist = $menu_calendar = $quicksearch = '';
+if($mybb->usergroup['cansearch'] == 1)
+{
+	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
+	eval('$quicksearch = "'.$templates->get('header_quicksearch').'";');
+}
+
+if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberlist'] == 1)
+{
+	eval('$menu_memberlist = "'.$templates->get('header_menu_memberlist').'";');
+}
+
+if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
+{
+	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
+}
+
 // See if there are any pending join requests for group leaders
 $pending_joinrequests = '';
 $groupleaders = $cache->read('groupleaders');
@@ -449,7 +492,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		$gids .= ",'{$user['gid']}'";
 	}
 
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids})");
+	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
 	$total_joinrequests = $db->fetch_field($query, 'total');
 
 	if($total_joinrequests > 0)
@@ -472,10 +515,10 @@ $unreadreports = '';
 // This user is a moderator, super moderator or administrator
 if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
 {
-	// Read the reported posts cache
-	$reported = $cache->read('reportedposts');
+	// Read the reported content cache
+	$reported = $cache->read('reportedcontent');
 
-	// 0 or more reported posts currently exist
+	// 0 or more reported items currently exist
 	if($reported['unread'] > 0)
 	{
 		// We want to avoid one extra query for users that can moderate any forum
@@ -486,11 +529,11 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 		else
 		{
 			$unread = 0;
-			$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+			$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
 
-			while($fid = $db->fetch_field($query, 'fid'))
+			while($fid = $db->fetch_field($query, 'id3'))
 			{
-				if(is_moderator($fid))
+				if(is_moderator($fid, "canmanagereportedposts"))
 				{
 					++$unread;
 				}
@@ -642,17 +685,29 @@ if($mybb->settings['showlanguageselect'] != 0)
 			// Current language matches
 			if($lang->language == $key)
 			{
-				$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = " selected=\"selected\"";
 			}
 			else
 			{
-				$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = '';
 			}
+
+			eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
 		}
 
 		$lang_redirect_url = get_current_location(true, 'language');
 		eval('$lang_select = "'.$templates->get('footer_languageselect').'";');
 	}
+}
+
+// Are we showing the quick theme selection box?
+$theme_select = $theme_options = '';
+if($mybb->settings['showthemeselect'] != 0)
+{
+	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
+
+	$theme_redirect_url = get_current_location(true, 'theme');
+	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
 }
 
 // DST Auto detection enabled?
@@ -695,7 +750,7 @@ $closed_bypass = array(
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] != 1 && !in_array($current_page, $closed_bypass) && (!is_array($closed_bypass[$current_page]) || !in_array($mybb->get_input('action'), $closed_bypass[$current_page])))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
@@ -797,6 +852,7 @@ if($colcookie)
 		$collapsed[$co] = "display: show;";
 		$collapsed[$ex] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
+		$collapsedthead[$val] = " thead_collapsed";
 	}
 }
 

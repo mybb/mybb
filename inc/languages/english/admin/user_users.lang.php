@@ -160,7 +160,8 @@ $l['website'] = "Website";
 $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
-$l['msn_messanger_handle'] = "MSN Messenger Handle";
+$l['skype_handle'] = "Skype Handle";
+$l['google_handle'] = "Google Talk Handle";
 $l['birthday'] = "Date of Birth";
 
 $l['away_information'] = "Away Information";
@@ -209,6 +210,8 @@ $l['threads_per_page'] = "Threads Per Page";
 $l['default_thread_age_view'] = "Default Thread Age View";
 $l['forum_display_options'] = "Forum Display Options";
 $l['show_classic_postbit'] = "Display posts in classic mode";
+$l['display_images'] = "Display images in posts";
+$l['display_videos'] = "Display videos in posts";
 $l['display_users_sigs'] = "Display users' signatures in their posts";
 $l['display_users_avatars'] = "Display users' avatars in their posts";
 $l['show_quick_reply'] = "Show the quick reply box at the bottom of the thread view";
@@ -268,6 +271,7 @@ $l['additional_groups'] = "Additional Groups";
 $l['registered'] = "Registered";
 $l['last_active'] = "Last Active";
 $l['post_count'] = "Post Count";
+$l['thread_count'] = "Thread Count";
 $l['reputation'] = "Reputation";
 $l['warning_level'] = "Warning Level";
 $l['registration_ip'] = "Registration IP";
@@ -336,13 +340,15 @@ $l['website_contains'] = "Website contains";
 $l['icq_number_contains'] = "ICQ number contains";
 $l['aim_handle_contains'] = "AIM handle contains";
 $l['yahoo_contains'] = "Yahoo! Messenger handle contains";
-$l['msn_contains'] = "MSN Messenger handle contains";
+$l['skype_contains'] = "Skype handle contains";
+$l['google_contains'] = "Google Talk handle contains";
 $l['signature_contains'] = "Signature contains";
 $l['user_title_contains'] = "Custom user title contains";
 $l['greater_than'] = "Greater than";
 $l['is_exactly'] = "Is exactly";
 $l['less_than'] = "Less than";
 $l['post_count_is'] = "Post count is";
+$l['thread_count_is'] = "Thread count is";
 $l['reg_ip_matches'] = "Registration IP address matches";
 $l['wildcard'] = "To search for ranges of IP addresses use * (Ex: 127.0.0.*) or CIDR notation (Ex: 127.0.0.0/8)";
 $l['posted_with_ip'] = "Has posted with the IP address";
@@ -395,4 +401,8 @@ You will be able to login with the credentials you registered with.
 
 Thank you,
 {2} Staff";
+
+$l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
+$l['ipaddress_host_name'] = "Host Name";
+$l['ipaddress_location'] = "GeoIP Location";
 ?>

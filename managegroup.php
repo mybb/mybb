@@ -53,6 +53,9 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
+
+	$plugins->run_hooks("managegroup_do_add_start");
+
 	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->get_input('username'))."'", array("limit" => 1));
 	$user = $db->fetch_array($query);
 	if($user['uid'])
@@ -61,7 +64,81 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
 			join_usergroup($user['uid'], $gid);
+			$db->delete_query("joinrequests", "uid='{$user['uid']}' AND gid='{$gid}'");
+			$plugins->run_hooks("managegroup_do_add_end");
 			redirect("managegroup.php?gid=".$gid, $lang->user_added);
+		}
+		else
+		{
+			error($lang->error_alreadyingroup);
+		}
+	}
+	else
+	{
+		error($lang->error_invalidusername);
+	}
+}
+elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	if($groupleader['caninvitemembers'] == 0)
+	{
+		error_no_permission();
+	}
+
+	$plugins->run_hooks("managegroup_do_invite_start");
+
+	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->get_input('inviteusername'))."'", array("limit" => 1));
+	$user = $db->fetch_array($query);
+	if($user['uid'])
+	{
+		$additionalgroups = explode(',', $user['additionalgroups']);
+		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
+		{
+			$query = $db->simple_select("joinrequests", "rid", "uid = '".intval($user['uid'])."' AND gid = '".intval($gid)."'", array("limit" => 1));
+			$pendinginvite = $db->fetch_array($query);
+			if($pendinginvite['rid'])
+			{
+				error($lang->error_alreadyinvited);
+			}
+			else
+			{
+				$query = $db->simple_select("usergroups", "gid, title", "gid = '".intval($gid)."'", array("limit" => 1));
+				$usergroup = $db->fetch_array($query);
+
+				$joinrequest = array(
+					"uid" => $user['uid'],
+					"gid" => $usergroup['gid'],
+					"dateline" => TIME_NOW,
+					"invite" => 1
+				);
+				$db->insert_query("joinrequests", $joinrequest);
+
+				if($mybb->settings['deleteinvites'] != 0)
+				{
+					$expires = $lang->sprintf($lang->invite_expires, $mybb->settings['deleteinvites']);
+				}
+				else
+				{
+					$expires = $lang->does_not_expire;
+				}
+
+				$lang->invite_pm_subject = $lang->sprintf($lang->invite_pm_subject, $usergroup['title']);
+				$lang->invite_pm_message = $lang->sprintf($lang->invite_pm_message, $usergroup['title'], $mybb->settings['bburl'], $expires);
+
+				$pm = array(
+					'subject' => $lang->invite_pm_subject,
+					'message' => $lang->invite_pm_message,
+					'touid' => $user['uid']
+				);
+				send_pm($pm, $mybb->user['uid'], 1);
+
+				$plugins->run_hooks("managegroup_do_invite_end");
+
+				redirect("managegroup.php?gid=".$gid, $lang->user_invited);
+			}
 		}
 		else
 		{
@@ -177,8 +254,13 @@ else
 
 	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
 	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
+	$lang->invite_member = $lang->sprintf($lang->invite_member, $usergroup['title']);
 	$joinrequests = '';
-	if($usergroup['type'] == 4)
+	if($usergroup['type'] == 5)
+	{
+		$usergrouptype = $lang->group_public_invite;
+	}
+	elseif($usergroup['type'] == 4)
 	{
 		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='{$gid}'");
 		$numrequests = $db->fetch_array($query);
@@ -319,6 +401,11 @@ else
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
 		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+	}
+
+	if($usergroup['type'] == 5 && $groupleader['caninvitemembers'] == 1)
+	{
+		eval("\$invite_user = \"".$templates->get("managegroup_inviteuser")."\";");
 	}
 
 	$plugins->run_hooks("managegroup_end");

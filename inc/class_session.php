@@ -234,7 +234,7 @@ class session
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['banoldadditionalgroups']."', displaygroup='".intval($mybb->user['banolddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
@@ -538,23 +538,19 @@ class session
 			{
 				$array[2] = intval($mybb->input['tid']);
 			}
-			elseif($mybb->get_input('pid', 1) > 0)
-			{
-				$array[2] = intval($mybb->input['pid']);
-			}
 
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
-			if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
+			elseif(isset($mybb->input['pid']) && !empty($mybb->input['pid']))
 			{
 				$options = array(
 					"limit" => 1
 				);
 				$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
 				$post = $db->fetch_array($query);
-				$mybb->input['tid'] = $post['tid'];
+				$array[2] = $post['tid'];
 			}
 
-			$thread = get_thread(intval($mybb->get_input('tid', 1)));
+			$thread = get_thread($array[2]);
 			$array[1] = $thread['fid'];
 		}
 		return $array;

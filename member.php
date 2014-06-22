@@ -13,11 +13,12 @@ define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword");
 
 $nosession['avatar'] = 1;
-$templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields,member_register_password,member_activate,member_resendactivation,member_lostpw";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,post_captcha_hidden,post_captcha,post_captcha_recaptcha,member_profile_addremove";
-$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
-require_once "./global.php";
+$templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
+$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
 
+require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -102,7 +103,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else
 		{
-			error($lang->error_spam_deny."s");
+			error($lang->error_spam_deny);
 		}
 	}
 
@@ -135,7 +136,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	// Set up user handler.
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	$userhandler = new UserDataHandler("insert");
-	
+
 	$coppauser = 0;
 	if(isset($mybb->cookies['coppauser']))
 	{
@@ -177,7 +178,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"subscriptionmethod" => $mybb->get_input('subscriptionmethod', 1),
 		"receivepms" => $mybb->get_input('receivepms', 1),
 		"pmnotice" => $mybb->get_input('pmnotice', 1),
-		"emailpmnotify" => $mybb->get_input('emailpmnotify', 1),
+		"pmnotify" => $mybb->get_input('pmnotify', 1),
 		"invisible" => $mybb->get_input('invisible', 1),
 		"dstcorrection" => $mybb->get_input('dstcorrection')
 	);
@@ -212,9 +213,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email = htmlspecialchars_uni($mybb->get_input('email'));
 		$email2 = htmlspecialchars_uni($mybb->get_input('email2'));
 		$referrername = htmlspecialchars_uni($mybb->get_input('referrername'));
-		
-		$allownoticescheck = $hideemailcheck = $no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
-		$receivepmscheck = $pmnoticecheck = $emailpmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
+
+		$allownoticescheck = $hideemailcheck = $no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
+		$receivepmscheck = $pmnoticecheck = $pmnotifycheck = $invisiblecheck = $dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 
 		if($mybb->get_input('allownotices', 1) == 1)
 		{
@@ -228,15 +229,19 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		if($mybb->get_input('subscriptionmethod', 1) == 1)
 		{
-			$no_email_subscribe_selected = "selected=\"selected\"";
+			$no_subscribe_selected = "selected=\"selected\"";
 		}
 		else if($mybb->get_input('subscriptionmethod', 1) == 2)
 		{
 			$instant_email_subscribe_selected = "selected=\"selected\"";
 		}
+		else if($mybb->get_input('subscriptionmethod', 1) == 3)
+		{
+			$instant_pm_subscribe_selected = "selected=\"selected\"";
+		}
 		else
 		{
-			$no_subscribe_selected = "selected=\"selected\"";
+			$no_auto_subscribe_selected = "selected=\"selected\"";
 		}
 
 		if($mybb->get_input('receivepms', 1) == 1)
@@ -249,9 +254,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$pmnoticecheck = " checked=\"checked\"";
 		}
 
-		if($mybb->get_input('emailpmnotify', 1) == 1)
+		if($mybb->get_input('pmnotify', 1) == 1)
 		{
-			$emailpmnotifycheck = "checked=\"checked\"";
+			$pmnotifycheck = "checked=\"checked\"";
 		}
 
 		if($mybb->get_input('invisible', 1) == 1)
@@ -366,6 +371,40 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$plugins->run_hooks("member_do_register_end");
 
 			error($lang->redirect_registered_admin_activate);
+		}
+		else if($mybb->settings['regtype'] == "both")
+		{
+			$activationcode = random_str();
+			$activationarray = array(
+				"uid" => $user_info['uid'],
+				"dateline" => TIME_NOW,
+				"code" => $activationcode,
+				"type" => "b"
+			);
+			$db->insert_query("awaitingactivation", $activationarray);
+			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 1:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 2:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				default:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+			}
+			my_mail($user_info['email'], $emailsubject, $emailmessage);
+
+			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
+
+			$plugins->run_hooks("member_do_register_end");
+
+			error($lang->redirect_registered_activation);
 		}
 		else
 		{
@@ -563,9 +602,6 @@ if($mybb->input['action'] == "register")
 			{
 				$refbg = "trow2";
 			}
-			// JS validator extra
-			$validator_extra .= "\tregValidator.register('referrer', 'ajax', {url:'xmlhttp.php?action=username_exists', loading_message:'{$lang->js_validator_checking_referrer}'});\n";
-
 			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
 		}
 		else
@@ -575,8 +611,8 @@ if($mybb->input['action'] == "register")
 		$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
 		// Custom profile fields baby!
 		$altbg = "trow1";
-		$requiredfields = '';
-		$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
+		$requiredfields = $customfields = '';
+		$query = $db->simple_select("profilefields", "*", "(required='1' OR registration='1') AND editable !='0'", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -728,10 +764,23 @@ if($mybb->input['action'] == "register")
 				{
 					$id = "fid{$profilefield['fid']}";
 				}
-				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {failure_message:'{$lang->js_validator_not_empty}'});\n";
+				
+				$validator_extra .= "
+				$(\"#{$id}\").rules(\"add\", {
+					required: true,
+					minlength: 1,
+					messages: {
+						required: \"{$lang->js_validator_not_empty}\"
+					}
+				});\n";
 
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}
+			else
+			{
+				eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+			}
+
 			$code = '';
 			$select = '';
 			$val = '';
@@ -744,6 +793,10 @@ if($mybb->input['action'] == "register")
 		{
 			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
 		}
+		if(!empty($customfields))
+		{
+			eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
+		}
 		if(!isset($fromreg))
 		{
 			$allownoticescheck = "checked=\"checked\"";
@@ -751,13 +804,13 @@ if($mybb->input['action'] == "register")
 			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmnoticecheck = " checked=\"checked\"";
-			$emailpmnotifycheck = '';
+			$pmnotifycheck = '';
 			$invisiblecheck = '';
 			if($mybb->settings['dstcorrection'] == 1)
 			{
 				$enabledstcheck = "checked=\"checked\"";
 			}
-			$no_subscribe_selected = $no_email_subscribe_selected = $instant_email_subscribe_selected = '';
+			$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 			$dst_auto_selected = $dst_enabled_selected = $dst_disabled_selected = '';
 			$username = $email = $email2 = '';
 			$regerrors = '';
@@ -775,7 +828,22 @@ if($mybb->input['action'] == "register")
 				if($mybb->settings['captchaimage'] == 1)
 				{
 					// JS validator extra for our default CAPTCHA
-					$validator_extra .= "\tregValidator.register('imagestring', 'ajax', { url: 'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message: '{$lang->js_validator_captcha_valid}', failure_message: '{$lang->js_validator_no_image_text}'} );\n";
+					$validator_extra .= "
+					$(\"#imagestring\").rules(\"add\", {
+						remote:{
+							url: \"xmlhttp.php?action=validate_captcha\",
+							type: \"post\",
+							dataType: \"json\",
+							data:
+							{
+								imagehash: $('#imagehash').val(),
+								my_post_key: my_post_key
+							},
+						},
+						messages: {
+							remote: \"{$lang->js_validator_no_image_text}\"
+						}
+					});\n";
 				}
 			}
 		}
@@ -792,16 +860,57 @@ if($mybb->input['action'] == "register")
 		{
 			// JS validator extra
 			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
-			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
 
 			// See if the board has "require complex passwords" enabled.
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				$validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					remote:{
+						url: \"xmlhttp.php?action=complex_password\",
+						type: \"post\",
+						dataType: \"json\",
+						data:
+						{
+							my_post_key: my_post_key
+						},
+					},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						remote: \"{$lang->js_validator_no_image_text}\"
+					}
+				});\n";
 			}
-			$validator_extra .= "\tregValidator.register('password2', 'matches', {match_field:'password', status_field:'password_status', failure_message:'{$lang->js_validator_password_matches}'});\n";
+			else
+			{
+				$validator_extra .= "
+				$(\"#password\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\"
+					}
+				});\n";
+			}
 
+			$validator_extra .= "
+				$(\"#password2\").rules(\"add\", {
+					required: true,
+					minlength: {$mybb->settings['minpasswordlength']},
+					equalTo: \"#password\",
+					messages: {
+						minlength: \"{$lang->js_validator_password_length}\",
+						required: \"{$lang->js_validator_password_length}\",
+						equalTo: \"{$lang->js_validator_password_matches}\"
+					}
+				});\n";
+			
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 		}
 
@@ -809,7 +918,6 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
 		{
 			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
-			$validator_extra .= "\tregValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
 		}
 
 		$languages = $lang->get_languages();
@@ -887,7 +995,7 @@ if($mybb->input['action'] == "activate")
 	if(isset($mybb->input['code']) && $user)
 	{
 		$mybb->settings['awaitingusergroup'] = "5";
-		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e')");
+		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
 		if(!$activation['uid'])
 		{
@@ -897,8 +1005,15 @@ if($mybb->input['action'] == "activate")
 		{
 			error($lang->error_badactivationcode);
 		}
+
+		if($activation['type'] == "b" && $activation['validated'] == 1)
+		{
+			error($lang->error_alreadyvalidated);
+		}
+
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
-		if($user['usergroup'] == 5 && $activation['type'] != "e")
+
+		if($user['usergroup'] == 5 && $activation['type'] != "e" && $activation['type'] != "b")
 		{
 			$db->update_query("users", array("usergroup" => 2), "uid='".$user['uid']."'");
 		}
@@ -906,11 +1021,21 @@ if($mybb->input['action'] == "activate")
 		{
 			$newemail = array(
 				"email" => $db->escape_string($activation['misc']),
-				);
+			);
 			$db->update_query("users", $newemail, "uid='".$user['uid']."'");
 			$plugins->run_hooks("member_activate_emailupdated");
 
 			redirect("usercp.php", $lang->redirect_emailupdated);
+		}
+		elseif($activation['type'] == "b")
+		{
+			$update = array(
+				"validated" => 1,
+			);
+			$db->update_query("awaitingactivation", $update, "uid='".$user['uid']."' AND type='b'");
+			$plugins->run_hooks("member_activate_emailactivated");
+
+			redirect("index.php", $lang->redirect_accountactivated_admin, "", true);
 		}
 		else
 		{
@@ -922,9 +1047,9 @@ if($mybb->input['action'] == "activate")
 	else
 	{
 		$plugins->run_hooks("member_activate_form");
-		
+
 		$code = $mybb->get_input('code');
-		
+
 		if(!isset($user['username']))
 		{
 			$user['username'] = '';
@@ -948,6 +1073,14 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_alreadyactivated);
 	}
 
+	$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='b'");
+	$activation = $db->fetch_array($query);
+
+	if($activation['validated'] == 1)
+	{
+		error($lang->error_activated_by_admin);
+	}
+
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
@@ -962,9 +1095,9 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	}
 
 	$query = $db->query("
-		SELECT u.uid, u.username, u.usergroup, u.email, a.code
+		SELECT u.uid, u.username, u.usergroup, u.email, a.code, a.type, a.validated
 		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r')
+		LEFT JOIN ".TABLE_PREFIX."awaitingactivation a ON (a.uid=u.uid AND a.type='r' OR a.type='b')
 		WHERE u.email='".$db->escape_string($mybb->get_input('email'))."'
 	");
 	$numusers = $db->num_rows($query);
@@ -976,18 +1109,22 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 	{
 		while($user = $db->fetch_array($query))
 		{
+			if($user['type'] == "b" && $user['validated'] == 1)
+			{
+				error($lang->error_activated_by_admin);
+			}
+
 			if($user['usergroup'] == 5)
 			{
 				if(!$user['code'])
 				{
 					$user['code'] = random_str();
-					$now = TIME_NOW;
 					$uid = $user['uid'];
 					$awaitingarray = array(
 						"uid" => $uid,
 						"dateline" => TIME_NOW,
 						"code" => $user['code'],
-						"type" => "r"
+						"type" => $user['type']
 					);
 					$db->insert_query("awaitingactivation", $awaitingarray);
 				}
@@ -1077,7 +1214,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 	}
 	$plugins->run_hooks("member_do_lostpw_end");
 
-	redirect("index.php", $lang->redirect_lostpwsent);
+	redirect("index.php", $lang->redirect_lostpwsent, "", true);
 }
 
 if($mybb->input['action'] == "resetpassword")
@@ -1180,9 +1317,9 @@ if($mybb->input['action'] == "resetpassword")
 				$lang_username = $lang->username;
 				break;
 		}
-		
+
 		$code = $mybb->get_input('code');
-		
+
 		if(!isset($user['username']))
 		{
 			$user['username'] = '';
@@ -1232,6 +1369,13 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
+
+		// If we need a captcha set it here
+		if($mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		{
+			$do_captcha = true;
+			$correct = $loginhandler->captcha_verified;
+		}
 	}
 	else if($validated && $loginhandler->captcha_verified == true)
 	{
@@ -1244,7 +1388,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$loginhandler->complete_login();
 
 		$plugins->run_hooks("member_do_login_end");
-		
+
 		$mybb->input['url'] = $mybb->get_input('url');
 
 		if(!empty($mybb->input['url']) && my_strpos(basename($mybb->input['url']), 'member.php') === false)
@@ -1264,15 +1408,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 			redirect("index.php", $lang->redirect_loggedin);
 		}
-	}
-
-	if($loginhandler->captcha_verified == false)
-	{
-		// CAPTCHA required
-		$mybb->input['action'] = "login";
-		$mybb->request_method = "get";
-
-		$do_captcha = true;
 	}
 
 	$plugins->run_hooks("member_do_login_end");
@@ -1307,43 +1442,32 @@ if($mybb->input['action'] == "login")
 	// Show captcha image for guests if enabled and only if we have to do
 	if($mybb->settings['captchaimage'] && $do_captcha == true)
 	{
-		$correct = false;
 		require_once MYBB_ROOT.'inc/class_captcha.php';
 		$login_captcha = new captcha(false, "post_captcha");
 
-		if($do_captcha == false && $login_captcha->type == 1)
+		if($login_captcha->type == 1)
 		{
-			if($login_captcha->validate_captcha() == true)
-			{
-				$correct = true;
-				$captcha = $login_captcha->build_hidden_captcha();
-			}
-		}
-
-		if(!$correct)
-		{
-			if($login_captcha->type == 1)
+			if(!$correct)
 			{
 				$login_captcha->build_captcha();
 			}
-			elseif($login_captcha->type == 2)
+			else
 			{
-				$login_captcha->build_recaptcha();
-			}
-
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
+				$captcha = $login_captcha->build_hidden_captcha();
 			}
 		}
-		elseif($correct && $login_captcha->type == 2)
+		elseif($login_captcha->type == 2)
 		{
 			$login_captcha->build_recaptcha();
+		}
+		elseif($login_captcha->type == 3)
+		{
+			$login_captcha->build_ayah();
+		}
 
-			if($login_captcha->html)
-			{
-				$captcha = $login_captcha->html;
-			}
+		if($login_captcha->html)
+		{
+			$captcha = $login_captcha->html;
 		}
 	}
 
@@ -1472,7 +1596,7 @@ if($mybb->input['action'] == "profile")
 	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
 
 	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
-	$avatar = "<img src=\"{$useravatar['image']}\" alt=\"\" {$useravatar['width_height']} />";
+	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
 
 	$sendemail = '';
 	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
@@ -1490,7 +1614,8 @@ if($mybb->input['action'] == "profile")
 		"icq",
 		"aim",
 		"yahoo",
-		"msn",
+		"skype",
+		"google",
 	);
 
 	$bgcolors = array();
@@ -1503,7 +1628,7 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['website'])
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		$website = "<a href=\"{$memprofile['website']}\" target=\"_blank\">{$memprofile['website']}</a>";
+		eval("\$website = \"".$templates->get("member_profile_website")."\";");
 	}
 
 	$signature = '';
@@ -1523,6 +1648,11 @@ if($mybb->input['action'] == "profile")
 			$sig_parser['nofollow_on'] = 1;
 		}
 
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
+
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
 	}
@@ -1534,27 +1664,54 @@ if($mybb->input['action'] == "profile")
 		$daysreg = 1;
 	}
 
+	$stats = $cache->read("stats");
+
+	// Format post count, per day count and percent of total
 	$ppd = $memprofile['postnum'] / $daysreg;
 	$ppd = round($ppd, 2);
 	if($ppd > $memprofile['postnum'])
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$stats = $cache->read("stats");
+
 	$numposts = $stats['numposts'];
 	if($numposts == 0)
 	{
-		$percent = "0";
+		$post_percent = "0";
 	}
 	else
 	{
-		$percent = $memprofile['postnum']*100/$numposts;
-		$percent = round($percent, 2);
+		$post_percent = $memprofile['postnum']*100/$numposts;
+		$post_percent = round($post_percent, 2);
 	}
 
-	if($percent > 100)
+	if($post_percent > 100)
 	{
-		$percent = 100;
+		$post_percent = 100;
+	}
+
+	// Format thread count, per day count and percent of total
+	$tpd = $memprofile['threadnum'] / $daysreg;
+	$tpd = round($tpd, 2);
+	if($tpd > $memprofile['threadnum'])
+	{
+		$tpd = $memprofile['threadnum'];
+	}
+
+	$numthreads = $stats['numthreads'];
+	if($numthreads == 0)
+	{
+		$thread_percent = "0";
+	}
+	else
+	{
+		$thread_percent = $memprofile['threadnum']*100/$numthreads;
+		$thread_percent = round($thread_percent, 2);
+	}
+
+	if($thread_percent > 100)
+	{
+		$thread_percent = 100;
 	}
 
 	if(!empty($memprofile['icq']))
@@ -1845,20 +2002,23 @@ if($mybb->input['action'] == "profile")
 		// User is offline
 		else
 		{
-			$memlastvisitsep = '';
-			$memlastvisittime = '';
-			$memlastvisitdate = $lang->lastvisit_never;
-
-			if($memprofile['lastactive'])
-			{
-				// We have had at least some active time, hide it instead
-				$memlastvisitdate = $lang->lastvisit_hidden;
-			}
-
-			$timeonline = $lang->timeonline_hidden;
-
 			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
 		}
+	}
+
+	if($memprofile['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $memprofile['uid'] != $mybb->user['uid'])
+	{
+		$memlastvisitsep = '';
+		$memlastvisittime = '';
+		$memlastvisitdate = $lang->lastvisit_never;
+
+		if($memprofile['lastactive'])
+		{
+			// We have had at least some active time, hide it instead
+			$memlastvisitdate = $lang->lastvisit_hidden;
+		}
+
+		$timeonline = $lang->timeonline_hidden;
 	}
 
 	// Build Referral
@@ -1887,7 +2047,7 @@ if($mybb->input['action'] == "profile")
 		$vote_link = '';
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 		{
-			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
+			eval("\$vote_link = \"".$templates->get("member_profile_reputation_vote")."\";");
 		}
 
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
@@ -1982,16 +2142,12 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
-	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
+	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $post_percent);
+
+	$memprofile['threadnum'] = my_number_format($memprofile['threadnum']);
+	$lang->tpd_percent_total = $lang->sprintf($lang->tpd_percent_total, my_number_format($tpd), $thread_percent);
+
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
-	if($memprofile['timeonline'] > 0)
-	{
-		$timeonline = nice_time($memprofile['timeonline']);
-	}
-	else
-	{
-		$timeonline = $lang->none_registered;
-	}
 
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
@@ -2049,10 +2205,7 @@ if($mybb->input['action'] == "profile")
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
-			// This is cheating; override the class to add onclick
-			$onclick = "\" onclick=\"MyBB.popupWindow(this.href, 'reportProfile', 400, 300); return false;";
-
-			$add_remove_options = array('url' => "report.php?type=profile&amp;pid={$memprofile['uid']}", 'class' => 'report_user_button'.$onclick, 'lang' => $lang->report_user);
+			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
 			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
 		}
 	}
@@ -2100,7 +2253,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	{
 		error($lang->error_hideemail);
 	}
-	
+
 	$errors = array();
 
 	if(empty($mybb->input['subject']))

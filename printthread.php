@@ -125,7 +125,7 @@ else
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
-if(is_moderator($forum['fid']))
+if(is_moderator($forum['fid'], "canviewunapprove"))
 {
     $visible = "AND (p.visible='0' OR p.visible='1')";
 }
@@ -163,6 +163,16 @@ while($postrow = $db->fetch_array($query))
 	if($postrow['smilieoff'] == 1)
 	{
 		$parser_options['allow_smilies'] = 0;
+	}
+
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_videocode'] = 0;
 	}
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);

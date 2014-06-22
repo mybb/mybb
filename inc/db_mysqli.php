@@ -389,13 +389,13 @@ class DB_MySQLi
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
+				"<td><strong>Table</strong></td>\n".
+				"<td><strong>Type</strong></td>\n".
+				"<td><strong>Possible Keys</strong></td>\n".
+				"<td><strong>Key</strong></td>\n".
+				"<td><strong>Key Length</strong></td>\n".
+				"<td><strong>Ref</strong></td>\n".
+				"<td><strong>Rows</strong></td>\n".
 				"<td><strong>Extra</strong></td>\n".
 				"</tr>\n";
 
@@ -865,7 +865,14 @@ class DB_MySQLi
 			}
 			else
 			{
-				$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				if(is_numeric($value))
+				{
+					$query .= $comma."`".$field."`={$value}";
+				}
+				else
+				{
+					$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
+				}
 			}
 			$comma = ', ';
 		}
@@ -1180,6 +1187,27 @@ class DB_MySQLi
 		{
 			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
+	}
+
+	/**
+	 * Renames a table
+	 *
+	 * @param string The old table name
+	 * @param string the new table name
+	 * @param boolean use table prefix
+	 */
+	function rename_table($old_table, $new_table, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
+		return $this->write_query("RENAME TABLE {$table_prefix}{$old_table} TO {$table_prefix}{$new_table}");
 	}
 
 	/**

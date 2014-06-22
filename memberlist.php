@@ -42,13 +42,13 @@ if($mybb->get_input('action') == "search")
 }
 else
 {
-	$colspan = 5;
+	$colspan = 6;
 	$search_url = '';
 
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
-		$colspan = 6;
+		$colspan = 7;
 		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
 	}
 
@@ -84,6 +84,9 @@ else
 			break;
 		case "postnum":
 			$sort_field = "u.postnum";
+			break;
+		case "threadnum":
+			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
 			$sort_field = "u.referrals";
@@ -197,12 +200,20 @@ else
 		$search_url .= "&icq=".urlencode($mybb->input['icq']);
 	}
 
-	// MSN/Windows Live Messenger address
-	$mybb->input['msn'] = trim($mybb->get_input('msn'));
-	if($mybb->input['msn'])
+	// Google Talk address
+	$mybb->input['google'] = trim($mybb->get_input('google'));
+	if($mybb->input['google'])
 	{
-		$search_query .= " AND u.msn LIKE '%".$db->escape_string_like($mybb->input['msn'])."%'";
-		$search_url .= "&msn=".urlencode($mybb->input['msn']);
+		$search_query .= " AND u.google LIKE '%".$db->escape_string_like($mybb->input['google'])."%'";
+		$search_url .= "&google=".urlencode($mybb->input['google']);
+	}
+
+	// Skype address
+	$mybb->input['skype'] = trim($mybb->get_input('skype'));
+	if($mybb->input['skype'])
+	{
+		$search_query .= " AND u.skype LIKE '%".$db->escape_string_like($mybb->input['skype'])."%'";
+		$search_url .= "&skype=".urlencode($mybb->input['skype']);
 	}
 
 	// Yahoo! Messenger address
@@ -365,9 +376,24 @@ else
 		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
 		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			$user['lastvisit'] = $lang->lastvisit_never;
+
+			if($user['lastvisit'])
+			{
+				// We have had at least some active time, hide it instead
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+		}
+		else
+		{
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
+		}
+
 		$user['regdate'] = my_date('relative', $user['regdate']);
-		$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
+		$user['threadnum'] = my_number_format($user['threadnum']);
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
 	}
 

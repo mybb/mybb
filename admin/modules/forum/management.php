@@ -307,14 +307,28 @@ if($mybb->input['action'] == "editmod")
 			$update_array = array(
 				'fid' => intval($fid),
 				'caneditposts' => intval($mybb->input['caneditposts']),
+				'cansoftdeleteposts' => intval($mybb->input['cansoftdeleteposts']),
+				'canrestoreposts' => intval($mybb->input['canrestoreposts']),
 				'candeleteposts' => intval($mybb->input['candeleteposts']),
+				'cansoftdeletethreads' => intval($mybb->input['cansoftdeletethreads']),
+				'canrestorethreads' => intval($mybb->input['canrestorethreads']),
+				'candeletethreads' => intval($mybb->input['candeletethreads']),
 				'canviewips' => intval($mybb->input['canviewips']),
+				'canviewunapprove' => intval($mybb->input['canviewunapprove']),
+				'canviewdeleted' => intval($mybb->input['canviewdeleted']),
 				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
+				'canstickunstickthreads' => intval($mybb->input['canstickunstickthreads']),
+				'canapproveunapprovethreads' => intval($mybb->input['canapproveunapprovethreads']),
+				'canapproveunapproveposts' => intval($mybb->input['canapproveunapproveposts']),
+				'canapproveunapproveattachs' => intval($mybb->input['canapproveunapproveattachs']),
 				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
+				'canmanagepolls' => intval($mybb->input['canmanagepolls']),
+				'canpostclosedthreads' => intval($mybb->input['canpostclosedthreads']),
 				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
 				'canusecustomtools' => intval($mybb->input['canusecustomtools']),
-				'cansoftdelete' => intval($mybb->input['cansoftdelete']),
-				'canrestore' => intval($mybb->input['canrestore'])
+				'canmanageannouncements' => intval($mybb->input['canmanageannouncements']),
+				'canmanagereportedposts' => intval($mybb->input['canmanagereportedposts']),
+				'canviewmodlog' => intval($mybb->input['canviewmodlog'])
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 
@@ -368,17 +382,34 @@ if($mybb->input['action'] == "editmod")
 
 	$moderator_permissions = array(
 		$form->generate_check_box('caneditposts', 1, $lang->can_edit_posts, array('checked' => $mod_data['caneditposts'], 'id' => 'caneditposts')),
+		$form->generate_check_box('cansoftdeleteposts', 1, $lang->can_soft_delete_posts, array('checked' => $mod_data['cansoftdeleteposts'], 'id' => 'cansoftdeleteposts')),
+		$form->generate_check_box('canrestoreposts', 1, $lang->can_restore_posts, array('checked' => $mod_data['canrestoreposts'], 'id' => 'canrestoreposts')),
 		$form->generate_check_box('candeleteposts', 1, $lang->can_delete_posts, array('checked' => $mod_data['candeleteposts'], 'id' => 'candeleteposts')),
+		$form->generate_check_box('cansoftdeletethreads', 1, $lang->can_soft_delete_threads, array('checked' => $mod_data['cansoftdeletethreads'], 'id' => 'cansoftdeletethreads')),
+		$form->generate_check_box('canrestorethreads', 1, $lang->can_restore_threads, array('checked' => $mod_data['canrestorethreads'], 'id' => 'canrestorethreads')),
+		$form->generate_check_box('candeletethreads', 1, $lang->can_delete_threads, array('checked' => $mod_data['candeletethreads'], 'id' => 'candeletethreads')),
 		$form->generate_check_box('canviewips', 1, $lang->can_view_ips, array('checked' => $mod_data['canviewips'], 'id' => 'canviewips')),
+		$form->generate_check_box('canviewunapprove', 1, $lang->can_view_unapprove, array('checked' => $mod_data['canviewunapprove'], 'id' => 'canviewunapprove')),
+		$form->generate_check_box('canviewdeleted', 1, $lang->can_view_deleted, array('checked' => $mod_data['canviewdeleted'], 'id' => 'canviewdeleted')),
 		$form->generate_check_box('canopenclosethreads', 1, $lang->can_open_close_threads, array('checked' => $mod_data['canopenclosethreads'], 'id' => 'canopenclosethreads')),
+		$form->generate_check_box('canstickunstickthreads', 1, $lang->can_stick_unstick_threads, array('checked' => $mod_data['canstickunstickthreads'], 'id' => 'canstickunstickthreads')),
+		$form->generate_check_box('canapproveunapprovethreads', 1, $lang->can_approve_unapprove_threads, array('checked' => $mod_data['canapproveunapprovethreads'], 'id' => 'canapproveunapprovethreads')),
+		$form->generate_check_box('canapproveunapproveposts', 1, $lang->can_approve_unapprove_posts, array('checked' => $mod_data['canapproveunapproveposts'], 'id' => 'canapproveunapproveposts')),
+		$form->generate_check_box('canapproveunapproveattachs', 1, $lang->can_approve_unapprove_attachments, array('checked' => $mod_data['canapproveunapproveattachs'], 'id' => 'canapproveunapproveattachs')),
 		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
+		$form->generate_check_box('canmanagepolls', 1, $lang->can_manage_polls, array('checked' => $mod_data['canmanagepolls'], 'id' => 'canmanagepolls')),
+		$form->generate_check_box('canpostclosedthreads', 1, $lang->can_post_closed_threads, array('checked' => $mod_data['canpostclosedthreads'], 'id' => 'canpostclosedthreads')),
 		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum')),
-		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools')),
-		$form->generate_check_box('cansoftdelete', 1, $lang->can_soft_delete, array('checked' => $mod_data['cansoftdelete'], 'id' => 'cansoftdelete')),
-		$form->generate_check_box('canrestore', 1, $lang->can_restore, array('checked' => $mod_data['canrestore'], 'id' => 'canrestore'))
+		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools'))
 	);
-
 	$form_container->output_row($lang->moderator_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_permissions)."</div>");
+
+	$moderator_cp_permissions = array(
+		$form->generate_check_box('canmanageannouncements', 1, $lang->can_manage_announcements, array('checked' => $mod_data['canmanageannouncements'], 'id' => 'canmanageannouncements')),
+		$form->generate_check_box('canmanagereportedposts', 1, $lang->can_manage_reported_posts, array('checked' => $mod_data['canmanagereportedposts'], 'id' => 'canmanagereportedposts')),
+		$form->generate_check_box('canviewmodlog', 1, $lang->can_view_mod_log, array('checked' => $mod_data['canviewmodlog'], 'id' => 'canviewmodlog'))
+	);
+	$form_container->output_row($lang->moderator_cp_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_cp_permissions)."</div>");
 
 	$form_container->end();
 
@@ -450,6 +481,7 @@ if($mybb->input['action'] == "permissions")
 			$result = $db->fetch_array($query);
 			$fid = $result['fid'];
 			$gid = $result['gid'];
+			$forum = get_forum($fid);
 		}
 
 		$field_list = array();
@@ -504,7 +536,7 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<script type=\"text/javascript\">$('row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
+			echo json_encode("<script type=\"text/javascript\">$('#row_{$gid}').html('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>");
 			die;
 		}
 		else
@@ -548,7 +580,35 @@ if($mybb->input['action'] == "permissions")
 	}
 	else
 	{
-		echo "<div id=\"ModalContentContainer\"><div class=\"ModalTitle\">{$lang->forum_permissions}<a href=\"javascript:;\" id=\"modalClose\" class=\"float_right modalClose\">&nbsp;</a></div><div class=\"ModalContent\">";
+		echo "
+		<div class=\"modal\" style=\"width: auto\">
+		<script src=\"jscripts/tabs.js\" type=\"text/javascript\"></script>\n
+		<script type=\"text/javascript\">
+<!--
+$(document).ready(function() {
+	$(\"#modal_form\").on(\"click\", \"#savePermissions\", function(e) {
+		e.preventDefault();
+		
+		var datastring = $(\"#modal_form\").serialize();
+		$.ajax({
+			type: \"POST\",
+			url: $(\"#modal_form\").attr('action'),
+			data: datastring,
+			dataType: \"json\",
+			success: function(data) {
+				$(data).filter(\"script\").each(function(e) {
+					eval($(this).text());
+				});
+				$.modal.close();
+			},
+			error: function(){
+			}
+		});
+	});
+});
+// -->
+		</script>
+		<div style=\"overflow-y: auto; max-height: 400px\">";
 	}
 
 	if($mybb->input['pid'] || ($mybb->input['gid'] && $mybb->input['fid']))
@@ -559,7 +619,7 @@ if($mybb->input['action'] == "permissions")
 		}
 		else
 		{
-			$form = new Form("#", "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)intval($mybb->input['gid'])."&amp;fid=".(int)intval($mybb->input['gid']), "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 
@@ -646,6 +706,7 @@ if($mybb->input['action'] == "permissions")
 
 			'canpostthreads' => 'posting_rating',
 			'canpostreplys' => 'posting_rating',
+			'canonlyreplyownthreads' => 'posting_rating',
 			'canpostattachments' => 'posting_rating',
 			'canratethreads' => 'posting_rating',
 
@@ -712,12 +773,11 @@ if($mybb->input['action'] == "permissions")
 
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "</div><div class=\"ModalButtonRow\">";
-			$buttons[] = $form->generate_submit_button($lang->cancel, array('id' => 'modalCancel'));
-			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'modalSubmit'));
+			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close();'));
+			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'savePermissions'));
 			$form->output_submit_wrapper($buttons);
-			echo "</div>";
 			$form->end();
+			echo "</div>";
 			echo "</div>";
 		}
 		else
@@ -778,6 +838,7 @@ if($mybb->input['action'] == "add")
 				"allowpicons" => intval($mybb->input['allowpicons']),
 				"allowtratings" => intval($mybb->input['allowtratings']),
 				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
 				"modposts" => intval($mybb->input['modposts']),
@@ -905,6 +966,7 @@ if($mybb->input['action'] == "add")
 		$forum_data['allowtratings'] = 1;
 		$forum_data['showinjump'] = 1;
 		$forum_data['usepostcounts'] = 1;
+		$forum_data['usethreadcounts'] = 1;
 	}
 
 	$types = array(
@@ -937,9 +999,9 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
-	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
+	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
 	echo "<div id=\"additional_options\" style=\"display: none;\">";
-	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
+	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
 	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $forum_data['linkto'], array('id' => 'linkto')), 'linkto');
 	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
 
@@ -1038,7 +1100,8 @@ if($mybb->input['action'] == "add")
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
 		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
-		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts'))
+		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
+		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts'))
 	);
 
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
@@ -1224,7 +1287,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+		echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -1293,6 +1356,15 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
+		if(!empty($mybb->input['linkto']) && empty($forum_data['linkto']))
+		{
+			$query = $db->simple_select('threads', 'COUNT(tid) as num_threads', "fid = '{$fid}'", array("limit" => 1));
+			if($db->fetch_field($query, "num_threads") > 0)
+			{
+				$errors[] = $lang->error_forum_link_not_empty;
+			}
+		}
+
 		if(!$errors)
 		{
 			if($pid < 0)
@@ -1316,6 +1388,7 @@ if($mybb->input['action'] == "edit")
 				"allowpicons" => intval($mybb->input['allowpicons']),
 				"allowtratings" => intval($mybb->input['allowtratings']),
 				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
 				"modposts" => intval($mybb->input['modposts']),
@@ -1418,8 +1491,6 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	$page->add_breadcrumb_item($lang->edit_forum);
 	$page->output_header($lang->edit_forum);
@@ -1580,7 +1651,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box('allowpicons', 1, $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
 		$form->generate_check_box('allowtratings', 1, $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
 		$form->generate_check_box('showinjump', 1, $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
-		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts'))
+		$form->generate_check_box('usepostcounts', 1, $lang->use_postcounts, array('checked' => $forum_data['usepostcounts'], 'id' => 'usepostcounts')),
+		$form->generate_check_box('usethreadcounts', 1, $lang->use_threadcounts, array('checked' => $forum_data['usethreadcounts'], 'id' => 'usethreadcounts'))
 	);
 
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
@@ -1765,16 +1837,17 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$field_select .= "<noscript>".$form->generate_select_box('fields_'.$usergroup['gid'].'[]', $field_options, $field_selected, array('id' => 'fields_'.$usergroup['gid'].'[]', 'multiple' => true))."</noscript>\n";
 		$form_container->output_cell($field_select, array('colspan' => 2));
-
+		
 		if(!$default_checked)
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 		}
 		else
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+			$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 		}
+		
 		$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
 
 		$ids[] = $usergroup['gid'];
@@ -1789,7 +1862,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	echo "<script type=\"text/javascript\">\n<!--\n";
 	foreach($ids as $id)
 	{
-		echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id."); });\n";
+		echo "$(function() { QuickPermEditor.init(".$id."); });\n";
 	}
 	echo "// -->\n</script>\n";
 
@@ -2131,14 +2204,28 @@ if(!$mybb->input['action'])
 						"id" => $newmod['id'],
 						"isgroup" => $isgroup,
 						"caneditposts" => 1,
+						"cansoftdeleteposts" => 1,
+						"canrestoreposts" => 1,
 						"candeleteposts" => 1,
+						"cansoftdeletethreads" => 1,
+						"canrestorethreads" => 1,
+						"candeletethreads" => 1,
 						"canviewips" => 1,
+						"canviewunapprove" => 1,
+						"canviewdeleted" => 1,
 						"canopenclosethreads" => 1,
+						"canstickunstickthreads" => 1,
+						"canapproveunapprovethreads" => 1,
+						"canapproveunapproveposts" => 1,
+						"canapproveunapproveattachs" => 1,
 						"canmanagethreads" => 1,
+						"canmanagepolls" => 1,
+						"canpostclosedthreads" => 1,
 						"canmovetononmodforum" => 1,
 						"canusecustomtools" => 1,
-						"cansoftdelete" => 1,
-						"canrestore" => 1
+						"canmanageannouncements" => 1,
+						"canmanagereportedposts" => 1,
+						"canviewmodlog" => 1
 					);
 
 					$mid = $db->insert_query("moderators", $new_mod);
@@ -2192,8 +2279,6 @@ if(!$mybb->input['action'])
 	}
 
 	$page->extra_header .=  "<script src=\"jscripts/quick_perm_editor.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<script src=\"jscripts/imodal.js\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .=  "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles/default/imodal.css\" />\n";
 
 	if($fid)
 	{
@@ -2445,12 +2530,12 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 			}
 			$form_container->construct_row(array('id' => 'row_'.$usergroup['gid']));
 
@@ -2468,7 +2553,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo "<script type=\"text/javascript\">\n<!--\n";
 		foreach($ids as $id)
 		{
-			echo "Event.observe(window, 'load', function(){ QuickPermEditor.init(".$id.") });\n";
+			echo "$(function() { QuickPermEditor.init(".$id.") });\n";
 		}
 		echo "// -->\n</script>\n";
 
@@ -2557,19 +2642,40 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		// Autocompletion for usernames
 		echo '
-		<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
+		<link rel="stylesheet" href="../jscripts/select2/select2.css">
+		<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
 		<script type="text/javascript">
 		<!--
-	        $("#username").typeahead({
-	            name: \'username\',
-	            remote: {
-	            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-	                filter: function(response){
-	                	return response.users;
-	                },
-	            },
-	            limit: 10
-	        });
+		$("#username").select2({
+			placeholder: "Search for a user",
+			minimumInputLength: 3,
+			maximumSelectionSize: 3,
+			multiple: false,
+			ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+				url: "../xmlhttp.php?action=get_users",
+				dataType: \'json\',
+				data: function (term, page) {
+					return {
+						query: term, // search term
+					};
+				},
+				results: function (data, page) { // parse the results into the format expected by Select2.
+					// since we are using custom formatting functions we do not need to alter remote JSON data
+					return {results: data};
+				}
+			},
+			initSelection: function(element, callback) {
+				var query = $(element).val();
+				if (query !== "") {
+					$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+						data: {
+							query: query
+						},
+						dataType: "json"
+					}).done(function(data) { callback(data); });
+				}
+			},
+		});
 		// -->
 		</script>';
 
@@ -2578,6 +2684,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form->end();
 
 		echo "</div>\n";
+
+		$plugins->run_hooks("admin_forum_management_start_graph");
 	}
 
 	$page->output_footer();
@@ -2828,12 +2936,12 @@ function retrieve_single_permissions_row($gid, $fid)
 
 	if(!$default_checked)
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1'}); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;pid={$perms['pid']}\" onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&pid={$perms['pid']}&ajax=1', null, true); return false;\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=clear_permission&amp;pid={$perms['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_clear_custom_permission}')\">{$lang->clear_custom_perms}</a>", array("class" => "align_center"));
 	}
 	else
 	{
-		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"modal = new MyModal({type: 'ajax', url: 'index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1'}); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
+		$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\"  onclick=\"MyBB.popupWindow('index.php?module=forum-management&action=permissions&gid={$usergroup['gid']}&fid={$fid}&ajax=1', null, true); return false;\">{$lang->set_custom_perms}</a>", array("class" => "align_center", "colspan" => 2));
 	}
 	$form_container->construct_row();
 	return $form_container->output_row_cells(0, true);

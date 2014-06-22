@@ -59,7 +59,7 @@ $l['admin_log_config_calendars_add'] = "Added calendar #{1} ({2})";
 $l['admin_log_config_calendars_permissions'] = "Modified permissions for calendar #{1} ({2})";
 $l['admin_log_config_calendars_edit'] = "Edited calendar #{1} ({2})";
 $l['admin_log_config_calendars_delete'] = "Deleted calendar #{1} ({2})";
-$l['admin_log_config_calendars_update_orders'] = "Updated calendar display order";
+$l['admin_log_config_calendars_update_order'] = "Updated calendar display order";
 
 $l['admin_log_config_help_documents_add_section'] = "Added help section #{1} ({2})";
 $l['admin_log_config_help_documents_add_document'] = "Added help document #{1} ({2})";
@@ -201,6 +201,7 @@ $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
 $l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
+$l['admin_log_tools_cache_reload'] = "Reload cache ({1})";
 $l['admin_log_tools_cache_rebuild_all'] = "Rebuilt & reloaded all caches";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
@@ -215,11 +216,15 @@ $l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1})";
 $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
+$l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
+$l['admin_log_tools_recount_rebuild_userthreads'] = "Recounted and rebuilt user thread counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
 $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
+$l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
+$l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
@@ -228,7 +233,8 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
-$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";
@@ -252,8 +258,8 @@ $l['admin_log_user_groups_add'] = "Added usergroup #{1} ({2})";
 $l['admin_log_user_groups_edit'] = "Edited usergroup #{1} ({2})";
 $l['admin_log_user_groups_delete'] = "Deleted usergroup #{1} ({2})";
 $l['admin_log_user_groups_disporder'] = "Updated usergroup display orders";
-$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{1} ({2})";
-$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{1} ({2})";
+$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{3} ({2})";
+$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{3} ({2})";
 
 $l['admin_log_user_titles_add'] = "Added default user title #{1} ({2}) at {3} posts";
 $l['admin_log_user_titles_edit'] = "Edited default user title #{1} ({2}) at {3} posts";

@@ -107,7 +107,7 @@ var Thread = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error fetching the posts. '+message);
+					$.jGrowl(lang.post_fetch_error + ' ' + message);
 				});
 				return false;
 			}
@@ -169,17 +169,51 @@ var Thread = {
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
-				submit: "Save Changes",
-				cancel: "Cancel Edit",
+				submit: lang.save_changes,
+				cancel: lang.cancel_edit,
 				event: "edit" + pid, // Triggered by the event "edit_[pid]",
 				onblur: "ignore",
+				dataType: "json",
+				submitdata: function (values, settings)
+				{
+					id = $(this).attr('id');
+					pid = id.replace( /[^\d.]/g, '');
+					return {
+						editreason: $("#quickedit_" + pid + "_editreason").val()
+					}
+				},
 				callback: function(values, settings)
 				{
-					values = JSON.parse(values);
+					id = $(this).attr('id');
+					pid = id.replace( /[^\d.]/g, '');
+					
+					var json = $.parseJSON(values);
+					if(typeof json == 'object')
+					{
+						if(json.hasOwnProperty("errors"))
+						{
+							$("div.jGrowl").jGrowl("close");
 
-					// Change html content
-					$('#pid_' + pid).html(values.message);
-					$('#edited_by_' + pid).html(values.editedmsg);
+							$.each(json.errors, function(i, message)
+							{
+								$.jGrowl(lang.quick_edit_update_error + ' ' + message);
+							});
+							$(this).html($('#pid_' + pid + '_temp').html());
+						}
+						else
+						{
+							// Change html content
+							$(this).html(json.message);
+							$('#edited_by_' + pid).html(json.editedmsg);
+						}
+					}
+					else
+					{
+						// Change html content
+						$(this).html(json.message);
+						$('#edited_by_' + pid).html(json.editedmsg);
+					}
+					$('#pid_' + pid + '_temp').remove();
 				}
 			});
         });
@@ -194,9 +228,18 @@ var Thread = {
 				id = $(this).attr('id');
 				pid = id.replace( /[^\d.]/g, '');
 
+				// Create a copy of the post
+				$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
+
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
 
+				// Edit Reason
+				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
+				if(allowEditReason == 1)
+				{
+					$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="50" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
+				}
 			});
         });
 
@@ -226,8 +269,6 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
 
-		$.jGrowl("Posting...", { openDuration: 'fast' });
-
 		$.ajax(
 		{
 			url: 'newreply.php?ajax=1',
@@ -256,7 +297,7 @@ var Thread = {
 
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl('There was an error posting your reply: '+message);
+					$.jGrowl(lang.quick_reply_post_error + ' ' + message);
 				});
 				return false;
 			}
@@ -341,69 +382,126 @@ var Thread = {
 
 	deletePost: function(pid)
 	{
-		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true)
-		{
-			$.ajax(
-			{
-				url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
-				type: 'post',
-				complete: function (request, status)
+		$.prompt(quickdelete_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
 				{
-					var json = $.parseJSON(request.responseText);
-					if(json.hasOwnProperty("errors"))
+					$.ajax(
 					{
-						$.each(json.errors, function(i, message)
+						url: 'editpost.php?ajax=1&action=deletepost&delete=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
 						{
-							$.jGrowl('There was an error posting your reply: '+message);
-						});
-					}
-					else
-					{
-						// Do we have a "window.location" in our response message?
-						// If so, we were successful
-						if(request.responseText.indexOf("window.location") != -1)
-						{
-							$('#post_'+pid).slideToggle("slow");
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl(lang.quick_delete_error + ' ' + message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Soft deleted
+								if(json.data == 1)
+								{
+									// Change CSS class of div 'pid_[pid]'
+									$("#post_"+pid).addClass("unapproved_post");
+									$("#post_"+pid).addClass("deleted_post");
 
-							$.jGrowl('The post was deleted successfully.');
+									$("#quick_delete_" + pid).hide();
+									$("#quick_restore_" + pid).show();
+
+									$.jGrowl(lang.quick_delete_success);
+								}
+								else if(json.data == 2)
+								{
+									// Actually deleted
+									$('#post_'+pid).slideToggle("slow");
+									
+									$.jGrowl(lang.quick_delete_success);
+								} else if(json.data == 3) 
+								{
+									// deleted thread --> redirect
+									
+									if(!json.hasOwnProperty("url")) 
+									{
+										$.jGrowl(lang.unknown_error);
+									}
+									
+									// set timeout for redirect
+									window.setTimeout(function() 
+									{
+ 										window.location = json.url;
+									}, 3000);
+									
+									// print success message
+									$.jGrowl(lang.quick_delete_thread_success);
+								}
+							}
+							else
+							{
+								$.jGrowl(lang.unknown_error);
+							}
 						}
-						else
-						{
-							$.jGrowl('An unknown error has occurred.');
-						}
-					}
+					});
 				}
-			});
-		}
-	},
-
-	reportPost: function(pid)
-	{
-		MyBB.popupWindow("/report.php?pid="+pid);
-	},
-
-	submitReport: function(pid)
-	{
-		// Get form, serialize it and send it
-		var datastring = $(".reportPost_"+pid).serialize();
-		$.ajax({
-			type: "POST",
-			url: "report.php",
-			data: datastring,
-			dataType: "html",
-			success: function(data) {
-				// Replace modal HTML
-				$('.modal_'+pid).fadeOut('slow', function() {
-					$('.modal_'+pid).html(data);
-					$('.modal_'+pid).fadeIn('slow');
-				});
-			},
-			error: function(){
-				  alert('An unknown error has occurred.');
 			}
 		});
+		
+		return false;
+	},
 
+
+	restorePost: function(pid)
+	{
+		$.prompt(quickrestore_confirm, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					$.ajax(
+					{
+						url: 'editpost.php?ajax=1&action=restorepost&restore=1&my_post_key='+my_post_key+'&pid='+pid,
+						type: 'post',
+						complete: function (request, status)
+						{
+							var json = $.parseJSON(request.responseText);
+							if(json.hasOwnProperty("errors"))
+							{
+								$.each(json.errors, function(i, message)
+								{
+									$.jGrowl(lang.quick_restore_error + ' ' + message);
+								});
+							}
+							else if(json.hasOwnProperty("data"))
+							{
+								// Change CSS class of div 'pid_[pid]'
+								$("#post_"+pid).removeClass("unapproved_post");
+								$("#post_"+pid).removeClass("deleted_post");
+
+								$("#quick_delete_" + pid).show();
+								$("#quick_restore_" + pid).hide();
+
+								$.jGrowl(lang.quick_restore_success);
+							}
+							else
+							{
+								$.jGrowl(lang.unknown_error);
+							}
+						}
+					});
+				}
+			}
+		});
+		
 		return false;
 	}
 };

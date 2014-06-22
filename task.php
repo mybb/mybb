@@ -55,6 +55,10 @@ else
 {
 	// Send our fake gif image (clear 1x1 transparent image)
 	header("Content-type: image/gif");
+	header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
+	header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+	header("Cache-Control: no-cache, must-revalidate");
+	header("Pragma: no-cache");
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.

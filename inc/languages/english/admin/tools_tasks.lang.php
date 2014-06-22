@@ -52,8 +52,6 @@ $l['disable_task'] = "Disable Task";
 $l['run_task'] = "Run Task";
 $l['enable_task'] = "Enable Task";
 $l['delete_task'] = "Delete Task";
-$l['alt_enabled'] = "Enabled";
-$l['alt_disabled'] = "Disabled";
 
 $l['error_invalid_task'] = "The specified task does not exist.";
 $l['error_missing_title'] = "You did not enter a title for this scheduled task";
@@ -74,5 +72,6 @@ $l['success_task_run'] = "The selected task has been run successfully.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
 $l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via cron (Please see the <a href=\"http://docs.mybb.com/Help-Task_System.html\" target=\"_blank\">MyBB Docs</a> for more information). Continue?";
+$l['no_tasks'] = "There are no tasks on your forum at this time.";
 
 ?>

@@ -17,7 +17,8 @@ function task_dailycleanup($task)
 	$time = array(
 		'sessionstime' => TIME_NOW-60*60*24,
 		'threadreadcut' => TIME_NOW-(((int)$mybb->settings['threadreadcut'])*60*60*24),
-		'privatemessages' => TIME_NOW-(60*60*24*7)
+		'privatemessages' => TIME_NOW-(60*60*24*7),
+		'deleteinvite' => TIME_NOW-(((int)$mybb->settings['deleteinvites'])*60*60*24)
 	);
 
 	if(is_object($plugins))
@@ -45,6 +46,12 @@ function task_dailycleanup($task)
 	{
 		$user_update[$pm['uid']] = 1;
 		$pm_update[] = $pm['pmid'];
+	}
+
+	// Delete old group invites
+	if($mybb->settings['deleteinvites'] > 0)
+	{
+		$db->delete_query("joinrequests", "dateline < '".(int)$time['deleteinvite']."' AND invite='1'");
 	}
 
 	if(is_object($plugins))
