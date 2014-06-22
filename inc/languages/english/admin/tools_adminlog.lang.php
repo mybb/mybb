@@ -233,7 +233,8 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
-$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";
