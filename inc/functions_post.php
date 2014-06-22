@@ -622,7 +622,7 @@ function build_postbit($post, $post_type=0)
 	}
 	elseif($post_type == 3) // announcement
 	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid, "canmanageannouncements"))
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanageannounce'] == 1 && is_moderator($fid, "canmanageannouncements"))
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");

@@ -8390,7 +8390,8 @@ if(use_xmlhttprequest == "1")
 <td align="center" class="trow2">{$online_time}</td>
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
-		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="modcp.php?action=ipsearch&amp;ipaddress={$user['ip']}&amp;search_users=1">{$lang->lookup}</a></span>]]></template>
+		<template name="online_row_ip" version="1800"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} {$lookup}</span>]]></template>
+		<template name="online_row_ip_lookup" version="1800"><![CDATA[<a href="modcp.php?action=ipsearch&amp;ipaddress={$user['ip']}&amp;search_users=1">{$lang->lookup}</a>]]></template>
 		<template name="online_today" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->online_today}</title>

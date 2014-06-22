@@ -1147,11 +1147,17 @@ function build_wol_row($user)
 	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
 		$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
+
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
+		{
+			eval("\$lookup = \"".$templates->get("online_row_ip_lookup")."\";");
+		}
+
 		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
 	}
 	else
 	{
-		$user_ip = $user['ip'] = '';
+		$user_ip = $lookup = $user['ip'] = '';
 	}
 
 	// And finally if we have permission to view this user, return the completed online row

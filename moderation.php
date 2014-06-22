@@ -1062,7 +1062,7 @@ switch($mybb->input['action'])
 
 		// Moderator options
 		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1)
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $post['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
@@ -1101,7 +1101,7 @@ switch($mybb->input['action'])
 
 		// Moderator options
 		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1)
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $pm['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
