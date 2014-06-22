@@ -45,6 +45,7 @@ $l['search_icq'] = "ICQ Number";
 $l['search_options'] = "Search Options";
 $l['per_page'] = "Results Per Page";
 $l['search'] = "Search";
+$l['search_user'] = "Search for a user";
 
 $l['error_no_members'] = "<p>There were no members found with the search criteria you entered.</p><p>Please enter a different search term and try again.</p>";
 

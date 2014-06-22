@@ -389,6 +389,7 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
+$l['search_user'] = "Search for a user";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
 ?>
