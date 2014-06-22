@@ -397,6 +397,97 @@ function upgrade30_dbchanges4()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->field_exists('canmanageannounce', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canmanageannounce");
+	}
+
+	if($db->field_exists('canmanagemodqueue', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canmanagemodqueue");
+	}
+
+	if($db->field_exists('canmanagereportedcontent', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canmanagereportedcontent");
+	}
+
+	if($db->field_exists('canviewmodlogs', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canviewmodlogs");
+	}
+
+	if($db->field_exists('caneditprofiles', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "caneditprofiles");
+	}
+
+	if($db->field_exists('canbanusers', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canbanusers");
+	}
+
+	if($db->field_exists('canviewwarnlogs', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canviewwarnlogs");
+	}
+
+	if($db->field_exists('canuseipsearch', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canuseipsearch");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("usergroups", "canmanageannounce", "smallint NOT NULL default '0' AFTER showmemberlist");
+			$db->add_column("usergroups", "canmanagemodqueue", "smallint NOT NULL default '0' AFTER canmanageannounce");
+			$db->add_column("usergroups", "canmanagereportedcontent", "smallint NOT NULL default '0' AFTER canmanagemodqueue");
+			$db->add_column("usergroups", "canviewmodlogs", "smallint NOT NULL default '0' AFTER canmanagereportedcontent");
+			$db->add_column("usergroups", "caneditprofiles", "smallint NOT NULL default '0' AFTER canviewmodlogs");
+			$db->add_column("usergroups", "canbanusers", "smallint NOT NULL default '0' AFTER caneditprofiles");			
+			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
+			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
+			break;
+		default:
+			$db->add_column("usergroups", "canmanageannounce", "tinyint(1) NOT NULL default '0' AFTER showmemberlist");
+			$db->add_column("usergroups", "canmanagemodqueue", "tinyint(1) NOT NULL default '0' AFTER canmanageannounce");
+			$db->add_column("usergroups", "canmanagereportedcontent", "tinyint(1) NOT NULL default '0' AFTER canmanagemodqueue");
+			$db->add_column("usergroups", "canviewmodlogs", "tinyint(1) NOT NULL default '0' AFTER canmanagereportedcontent");
+			$db->add_column("usergroups", "caneditprofiles", "tinyint(1) NOT NULL default '0' AFTER canviewmodlogs");
+			$db->add_column("usergroups", "canbanusers", "tinyint(1) NOT NULL default '0' AFTER caneditprofiles");
+			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
+			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
+			break;
+	}
+
+	$update_array = array(
+		"canmanageannounce" => 1,
+		"canmanagemodqueue" => 1,
+		"canmanagereportedcontent" => 1,
+		"canviewmodlogs" => 1,
+		"caneditprofiles" => 1,
+		"canbanusers" => 1,
+		"canviewwarnlogs" => 1,
+		"canuseipsearch" => 1
+	);
+	$db->update_query("usergroups", $update_array, "canmodcp= '1'");
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges5");
+}
+
+function upgrade30_dbchanges5()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
 
 	if($db->field_exists('msn', 'users'))
 	{

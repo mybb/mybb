@@ -922,6 +922,14 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   edittimelimit smallint NOT NULL default '0',
   maxposts smallint NOT NULL default '0',
   showmemberlist smallint NOT NULL default '1',
+  canmanageannounce smallint NOT NULL default '0',
+  canmanagemodqueue smallint NOT NULL default '0',
+  canmanagereportedcontent smallint NOT NULL default '0',
+  canviewmodlogs smallint NOT NULL default '0',
+  caneditprofiles smallint NOT NULL default '0',
+  canbanusers smallint NOT NULL default '0',
+  canviewwarnlogs smallint NOT NULL default '0',
+  canuseipsearch smallint NOT NULL default '0',
   PRIMARY KEY (gid)
 );";
 
