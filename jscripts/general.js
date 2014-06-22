@@ -155,6 +155,11 @@ var MyBB = {
 		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid);
 	},
 
+	viewNotes: function(uid)
+	{
+		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid);
+	},
+
 	deleteReputation: function(uid, rid)
 	{
 		$.prompt(delete_reputation_confirm, {

@@ -4605,27 +4605,30 @@ if(use_xmlhttprequest == "1")
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
 		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
-		<template name="member_profile_modoptions" version="1800"><![CDATA[
-<br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
+		<template name="member_profile_modoptions" version="1800"><![CDATA[<br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->mod_options}</strong></td>
 </tr>
-<tr>
-<td class="trow1">
-<ul>
-<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_in_mcp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->ban_in_mcp}</a></li>
-</ul>
-</td>
-</tr>
+{$manageuser}
 <tr>
 <td class="trow2">
 {$memprofile['usernotes']}<br />
-<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}#usernotes">{$lang->edit_usernotes}</a>
+{$editnotes}
 </td>
 </tr>
-</table>
-]]></template>
+</table>]]></template>
+		<template name="member_profile_modoptions_banuser" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->ban_in_mcp}</a></li>]]></template>
+		<template name="member_profile_modoptions_editnotes" version="1800"><![CDATA[<a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}#usernotes">{$lang->edit_usernotes}</a>]]></template>
+		<template name="member_profile_modoptions_editprofile" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_in_mcp}</a></li>]]></template>
+		<template name="member_profile_modoptions_manageuser" version="1800"><![CDATA[<tr>
+<td class="trow1">
+<ul>
+{$editprofile}
+{$banuser}
+</ul>
+</td>
+</tr>]]></template>
+		<template name="member_profile_modoptions_viewnotes" version="1800"><![CDATA[[<a href="javascript:MyBB.viewNotes({$memprofile['uid']});">{$lang->view_all_notes}</a>]]]></template>
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_referrals" version="1600"><![CDATA[<tr>
@@ -5160,6 +5163,18 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_viewnotes" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->view_notes_for}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$user['usernotes']}</td>
+</tr>
+</table>
+</div>
+</div>]]></template>
 		<template name="memberlist" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
