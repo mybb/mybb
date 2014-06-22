@@ -94,7 +94,7 @@ switch($action)
 
 		if($thread['visible'] != 1)
 		{
-			if(is_moderator($forum['fid'], "canviewunapprove"))
+			if(is_moderator($forum['fid']))
 			{
 				archive_error($lang->sprintf($lang->error_unapproved_thread, $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page)));
 			}
@@ -155,7 +155,7 @@ switch($action)
 
 		$pids = implode(",", $pids);
 
-		if($pids && $mybb->settings['enableattachments'] == 1)
+		if($pids)
 		{
 			// Build attachments cache
 			$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
@@ -199,7 +199,7 @@ switch($action)
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 			// Is there an attachment in this post?
-			if($mybb->settings['enableattachments'] == 1 && isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
+			if(isset($acache[$post['pid']]) && is_array($acache[$post['pid']]))
 			{
 				foreach($acache[$post['pid']] as $aid => $attachment)
 				{

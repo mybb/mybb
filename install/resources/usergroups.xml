@@ -72,14 +72,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[0]]></showmemberlist>
-		<canmanageannounce><![CDATA[0]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[0]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[0]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[0]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[0]]></caneditprofiles>
-		<canbanusers><![CDATA[0]]></canbanusers>
-		<canviewwarnlogs><![CDATA[0]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[0]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -153,14 +145,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[0]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[0]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[0]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[0]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[0]]></caneditprofiles>
-		<canbanusers><![CDATA[0]]></canbanusers>
-		<canviewwarnlogs><![CDATA[0]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[0]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -234,14 +218,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[1]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[1]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[1]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[1]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[1]]></caneditprofiles>
-		<canbanusers><![CDATA[1]]></canbanusers>
-		<canviewwarnlogs><![CDATA[1]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[1]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -259,7 +235,6 @@
 		<canviewthreads><![CDATA[1]]></canviewthreads>
 		<canviewprofiles><![CDATA[1]]></canviewprofiles>
 		<candlattachments><![CDATA[1]]></candlattachments>
-		<canviewboardclosed><![CDATA[1]]></canviewboardclosed>
 		<canpostthreads><![CDATA[1]]></canpostthreads>
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
@@ -316,14 +291,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[1]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[1]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[1]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[1]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[1]]></caneditprofiles>
-		<canbanusers><![CDATA[1]]></canbanusers>
-		<canviewwarnlogs><![CDATA[1]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[1]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -397,14 +364,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[0]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[0]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[0]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[0]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[0]]></caneditprofiles>
-		<canbanusers><![CDATA[0]]></canbanusers>
-		<canviewwarnlogs><![CDATA[0]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[0]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -478,14 +437,6 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[1]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[1]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[1]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[1]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[1]]></caneditprofiles>
-		<canbanusers><![CDATA[1]]></canbanusers>
-		<canviewwarnlogs><![CDATA[1]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[1]]></canuseipsearch>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -559,13 +510,5 @@
 		<edittimelimit><![CDATA[0]]></edittimelimit>
 		<maxposts><![CDATA[0]]></maxposts>
 		<showmemberlist><![CDATA[1]]></showmemberlist>
-		<canmanageannounce><![CDATA[0]]></canmanageannounce>
-		<canmanagemodqueue><![CDATA[0]]></canmanagemodqueue>
-		<canmanagereportedcontent><![CDATA[0]]></canmanagereportedcontent>
-		<canviewmodlogs><![CDATA[0]]></canviewmodlogs>
-		<caneditprofiles><![CDATA[0]]></caneditprofiles>
-		<canbanusers><![CDATA[0]]></canbanusers>
-		<canviewwarnlogs><![CDATA[0]]></canviewwarnlogs>
-		<canuseipsearch><![CDATA[0]]></canuseipsearch>
 	</usergroup>
 </usergroups>

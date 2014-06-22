@@ -11,6 +11,7 @@ $(document).ready(function($) {
 	 ***********************/
 	$('<style type="text/css">' +
 		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' :'left') + '; }' +
+		'.sceditor-container .sceditor-button-video div {background-image:url(\'images/icons/video.png\');}' +
 	'</style>').appendTo('body');
 
 
@@ -241,7 +242,6 @@ $(document).ready(function($) {
 				html = {
 					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
-					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					youtube: '<iframe width="560" height="315" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>'
 				};
@@ -257,10 +257,6 @@ $(document).ready(function($) {
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
 						url     = matches ? 'http://www.metacafe.com/embed/' + matches[1] : false;
-						break;
-					case 'veoh':
-						matches = content.match(/veoh\.com\/watch\/([^\/]+)/);
-						url     = matches ? '//www.veoh.com/swf/webplayer/WebPlayer.swf?videoAutoPlay=0&permalinkId=' + matches[1] : false;
 						break;
 					case 'vimeo':
 						matches = content.match(/vimeo.com\/(\d+)($|\/)/);
@@ -296,7 +292,6 @@ $(document).ready(function($) {
 					'<select id="videotype">' +
 						'<option value="dailymotion">Dailymotion</option>' +
 						'<option value="metacafe">MetaCafe</option>' +
-						'<option value="veoh">Veoh</option>' +
 						'<option value="vimeo">Vimeo</option>' +
 						'<option value="youtube">Youtube</option>' +
 					'</select>'+

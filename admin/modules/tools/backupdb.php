@@ -140,7 +140,7 @@ if($mybb->input['action'] == "backup")
 
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
 
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -150,11 +150,11 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?module=tools-backupdb&action=backup");
 				}
 
-				$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
+				$fp = gzopen($file.'.sql.gz', 'w9');
 			}
 			else
 			{
-				$fp = fopen($file.'.incomplete.sql', 'w');
+				$fp = fopen($file.'.sql', 'w');
 			}
 		}
 		else
@@ -214,15 +214,7 @@ if($mybb->input['action'] == "backup")
 
 			if($mybb->input['contents'] != 'structure')
 			{
-				if($db->engine == 'mysqli')
-				{
-					$query = mysqli_query($db->read_link, "SELECT * FROM {$db->table_prefix}{$table}", MYSQLI_USE_RESULT);
-				}
-				else
-				{
-					$query = $db->simple_select($table);
-				}
-
+				$query = $db->simple_select($table);
 				while($row = $db->fetch_array($query))
 				{
 					$insert = "INSERT INTO {$table} ($fields) VALUES (";
@@ -232,10 +224,6 @@ if($mybb->input['action'] == "backup")
 						if(!isset($row[$field]) || is_null($row[$field]))
 						{
 							$insert .= $comma."NULL";
-						}
-						else if($db->engine == 'mysqli')
-						{
-							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
 						}
 						else
 						{
@@ -247,7 +235,6 @@ if($mybb->input['action'] == "backup")
 					$contents .= $insert;
 					clear_overflow($fp, $contents);
 				}
-				$db->free_result($query);
 			}
 		}
 
@@ -259,13 +246,11 @@ if($mybb->input['action'] == "backup")
 			{
 				gzwrite($fp, $contents);
 				gzclose($fp);
-				rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 			}
 			else
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
-				rename($file.'.incomplete.sql', $file.'.sql');
 			}
 
 			if($mybb->input['filetype'] == 'gzip')
@@ -417,25 +402,20 @@ if(!$mybb->input['action'])
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
-
-	if($handle !== false)
+	while(($file = readdir($handle)) !== false)
 	{
-		while(($file = readdir($handle)) !== false)
+		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 		{
-			if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+			$ext = get_extension($file);
+			if($ext == 'gz' || $ext == 'sql')
 			{
-				$ext = get_extension($file);
-				if($ext == 'gz' || $ext == 'sql')
-				{
-					$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
-						"file" => $file,
-						"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
-						"type" => $ext
-					);
-				}
+				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
+					"file" => $file,
+					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+					"type" => $ext
+				);
 			}
 		}
-		closedir($handle);
 	}
 
 	$count = count($backups);

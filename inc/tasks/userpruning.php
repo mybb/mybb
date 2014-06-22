@@ -72,12 +72,65 @@ function task_userpruning($task)
 
 	if(!empty($users))
 	{
-		// Set up user handler.
-		require_once MYBB_ROOT.'inc/datahandlers/user.php';
-		$userhandler = new UserDataHandler('delete');
+		$uid_list = $db->escape_string(implode(',', $users));
 
-		// Delete the prunned users
-		$userhandler->delete_user($users, $mybb->settings['prunethreads']);
+		// Delete the user
+		$db->delete_query("userfields", "ufid IN({$uid_list})");
+		$db->delete_query("privatemessages", "uid IN({$uid_list})");
+		$db->delete_query("events", "uid IN({$uid_list})");
+		$db->delete_query("moderators", "id IN({$uid_list}) AND isgroup='0'");
+		$db->delete_query("forumsubscriptions", "uid IN({$uid_list})");
+		$db->delete_query("threadsubscriptions", "uid IN({$uid_list})");
+		$db->delete_query("sessions", "uid IN({$uid_list})");
+		$db->delete_query("banned", "uid IN({$uid_list})");
+		$db->delete_query("threadratings", "uid IN({$uid_list})");
+		$db->delete_query("joinrequests", "uid IN({$uid_list})");
+		$db->delete_query("awaitingactivation", "uid IN({$uid_list})");
+		$query = $db->delete_query("users", "uid IN({$uid_list})");
+		$num_deleted = $db->affected_rows($query);
+
+		// Remove any of the user(s) uploaded avatars
+		$query = $db->simple_select("users", "avatar", "uid IN ({$uid_list}) AND avatartype = 'upload'");
+		if($db->num_rows($query))
+		{
+			while($avatar = $db->fetch_field($query, "avatar"))
+			{
+				$avatar = substr($avatar, 2, -20);
+				@unlink(MYBB_ROOT.$avatar);
+			}
+		}
+
+		// Are we removing the posts/threads of a user?
+		if($mybb->settings['prunethreads'] == 1)
+		{
+			require_once MYBB_ROOT."inc/class_moderation.php";
+			$moderation = new Moderation();
+
+			// Threads
+			$query = $db->simple_select("threads", "tid", "uid IN({$uid_list})");
+			while($thread = $db->fetch_array($query))
+			{
+				$moderation->delete_thread($thread['tid']);
+			}
+
+			// Posts
+			$query = $db->simple_select("posts", "pid", "uid IN({$uid_list})");
+			while($post = $db->fetch_array($query))
+			{
+				$moderation->delete_post($post['pid']);
+			}
+		}
+		else
+		{
+			// We're just updating the UID
+			$db->update_query("posts", array('uid' => 0), "uid IN({$uid_list})");
+		}
+
+		// Update forum stats
+		update_stats(array('numusers' => '-'.intval($num_deleted)));
+
+		$cache->update_moderators();
+		$cache->update_banned();
 	}
 
 	add_task_log($task, $lang->task_userpruning_ran);

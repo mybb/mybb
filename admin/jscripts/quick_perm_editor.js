@@ -2,62 +2,51 @@ var QuickPermEditor = {
 
 	init: function(id)
 	{
-		if(!$('#fields_enabled_'+id) || !$('#fields_disabled_'+id))
+		if(!$('fields_enabled_'+id) || !$('fields_disabled_'+id))
 		{
 			return;
 		}
-		if(!$('#fields_'+id))
+		if(!$('fields_'+id))
 		{
 			return;
 		}
-		
-		$("#fields_enabled_"+id).sortable({
-			connectWith: "#fields_disabled_"+id,
-			dropOnEmpty: true,
-			update: function(event, ui) {
-				QuickPermEditor.buildFieldsList(id);
-			}
-		}).disableSelection();
-		
-		$("#fields_disabled_"+id).sortable({
-			connectWith: "#fields_enabled_"+id,
-			dropOnEmpty: true,
-			update: function(event, ui) {
-				QuickPermEditor.buildFieldsList(id);
-			}
-		}).disableSelection();
+
+		Sortable.create("fields_enabled_"+id, {dropOnEmpty: true, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: false, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
+		Sortable.create("fields_disabled_"+id, {dropOnEmpty: true, containment:["fields_enabled_"+id,"fields_disabled_"+id], constraint: false, onUpdate: function() { QuickPermEditor.buildFieldsList(id)}});
 	},
 
 	buildFieldsList: function(id)
 	{
 		new_input = '';
-
-		$('#fields_enabled_'+id).children().each(function() {
-			var textid = $(this).attr('id').split("-");
-		
-			if(textid[1])
-			{
-				if(new_input)
-				{
-					new_input += ",";
-				}
-				new_input += textid[1];
-			}
-		});
-		
-		if($('#fields_'+id).val() != new_input)
+		var length = $('fields_enabled_'+id).childNodes.length;
+		for(var i=0; i <= length; i++)
 		{
-			if($('#default_permissions_'+id))
+			if($('fields_enabled_'+id).childNodes[i] && $('fields_enabled_'+id).childNodes[i].id)
 			{
-				$('#default_permissions_'+id).attr('checked', false);
+				var split_id = $('fields_enabled_'+id).childNodes[i].id.split("-");
+				
+				if(split_id[1])
+				{
+					if(new_input)
+					{
+						new_input += ",";
+					}
+					new_input += split_id[1];
+				}
 			}
 		}
-		
-		$('#fields_'+id).val(new_input);
-
-		if($('#fields_inherit_'+id))
+		if($('fields_'+id).value != new_input)
 		{
-			$('#fields_inherit_'+id).val(0);
+			if($('default_permissions_'+id))
+			{
+				$('default_permissions_'+id).checked = false;
+			}
+		}
+		$('fields_'+id).value = new_input;
+
+		if($('fields_inherit_'+id))
+		{
+			$('fields_inherit_'+id).value = 0;
 		}
 	},
 };

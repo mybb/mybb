@@ -576,7 +576,7 @@ function buildcaches()
 	$cache->update_moderators();
 	$cache->update_forums();
 	$cache->update_usertitles();
-	$cache->update_reportedcontent();
+	$cache->update_reportedposts();
 	$cache->update_mycode();
 	$cache->update_posticons();
 	$cache->update_update_check();

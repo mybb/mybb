@@ -60,7 +60,7 @@ var Post = {
 			{
 				$.each(json.errors, function(i, message)
 				{
-					$.jGrowl(lang.post_fetch_error + ' ' + message);
+					$.jGrowl('There was an error fetching the posts. '+message);
 				});
 				return false;
 			}
@@ -89,31 +89,20 @@ var Post = {
 		$('#multiquote_unloaded').hide();
 		$.removeCookie('multiquote');
 	},
-	
+
 	removeAttachment: function(aid)
 	{
-		$.prompt(removeattach_confirm, {
-			buttons:[
-					{title: yes_confirm, value: true},
-					{title: no_confirm, value: false}
-			],
-			submit: function(e,v,m,f){
-				if(v == true)
-				{
-					document.input.attachmentaid.value = aid;
-					document.input.attachmentact.value = "remove";
-					
-					$("form#editpost").submit();
-				}
-				else
-				{
-					document.input.attachmentaid.value = 0;
-					document.input.attachmentact.value = "";
-				}
-			}
-		});
-		
-		return false;
+		if(confirm(removeattach_confirm) == true)
+		{
+			document.input.attachmentaid.value = aid;
+			document.input.attachmentact.value = "remove";
+		}
+		else
+		{
+			document.input.attachmentaid.value = 0;
+			document.input.attachmentact.value = "";
+			return false;
+		}
 	},
 
 	attachmentAction: function(aid,action)

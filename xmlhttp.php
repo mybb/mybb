@@ -136,15 +136,6 @@ if($mybb->input['action'] == "get_users")
 		exit;
 	}
 
-	if($mybb->get_input('getone', 1) == 1)
-	{
-		$limit = 1;
-	}
-	else
-	{
-		$limit = 15;
-	}
-
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
 
@@ -153,24 +144,15 @@ if($mybb->input['action'] == "get_users")
 		"order_by" => "username",
 		"order_dir" => "asc",
 		"limit_start" => 0,
-		"limit" => $limit
+		"limit" => 15
 	);
 
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
-	if($limit == 1)
+	$data = array();
+	while($user = $db->fetch_array($query))
 	{
-		$user = $db->fetch_array($query);
 		$user['username'] = htmlspecialchars_uni($user['username']);
-		$data = array('id' => $user['username'], 'text' => $user['username']);
-	}
-	else
-	{
-		$data = array();
-		while($user = $db->fetch_array($query))
-		{
-			$user['username'] = htmlspecialchars_uni($user['username']);
-			$data[] = array('id' => $user['username'], 'text' => $user['username']);
-		}
+		$data[] = array('id' => $user['username'], 'text' => $user['username']);
 	}
 
 	echo json_encode($data);
@@ -412,23 +394,19 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		$message = $mybb->get_input('value');
-		$editreason = $mybb->get_input('editreason');
 		if(my_strtolower($charset) != "utf-8")
 		{
 			if(function_exists("iconv"))
 			{
 				$message = iconv($charset, "UTF-8//IGNORE", $message);
-				$editreason = iconv($charset, "UTF-8//IGNORE", $editreason);
 			}
 			else if(function_exists("mb_convert_encoding"))
 			{
 				$message = @mb_convert_encoding($message, $charset, "UTF-8");
-				$editreason = @mb_convert_encoding($editreason, $charset, "UTF-8");
 			}
 			else if(my_strtolower($charset) == "iso-8859-1")
 			{
 				$message = utf8_decode($message);
-				$editreason = utf8_decode($editreason);
 			}
 		}
 
@@ -441,7 +419,6 @@ else if($mybb->input['action'] == "edit_post")
 		$updatepost = array(
 			"pid" => $post['pid'],
 			"message" => $message,
-			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
 		$posthandler->set_data($updatepost);
@@ -457,7 +434,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$postinfo = $posthandler->update_post();
 			$visible = $postinfo['visible'];
-			if($visible == 0 && !is_moderator($post['fid'], "canviewunapprove"))
+			if($visible == 0 && !is_moderator($post['fid']))
 			{
 				echo json_encode(array("failed" => $lang->post_moderation));
 				exit;
@@ -482,31 +459,18 @@ else if($mybb->input['action'] == "edit_post")
 			$parser_options['allow_smilies'] = 0;
 		}
 
-		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
-		{
-			$parser_options['allow_imgcode'] = 0;
-		}
-
-		if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
-		{
-			$parser_options['allow_videocode'] = 0;
-		}
-
 		$post['message'] = $parser->parse_message($message, $parser_options);
 
 		// Now lets fetch all of the attachments for these posts.
-		if($mybb->settings['enableattachments'] != 0)
+		$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
+		while($attachment = $db->fetch_array($query))
 		{
-			$query = $db->simple_select("attachments", "*", "pid='{$post['pid']}'");
-			while($attachment = $db->fetch_array($query))
-			{
-				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
-			}
-
-			require_once MYBB_ROOT."inc/functions_post.php";
-
-			get_post_attachments($post['pid'], $post);
+			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 		}
+
+		require_once MYBB_ROOT."inc/functions_post.php";
+
+		get_post_attachments($post['pid'], $post);
 
 		// Figure out if we need to show an "edited by" message
 		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
@@ -515,14 +479,6 @@ else if($mybb->input['action'] == "edit_post")
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
-			$post['editreason'] = $editreason;
-			$editreason = "";
-			if($post['editreason'] != "")
-			{
-				$post['editreason'] = $parser->parse_badwords($post['editreason']);
-				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
-			}
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
 
@@ -599,7 +555,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
-		if(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0)
+		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
 		{
 			continue;
 		}
@@ -649,32 +605,31 @@ else if($mybb->input['action'] == "validate_captcha")
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
 
-	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
+	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('value')))
 	{
-		//echo json_encode(array("success" => $lang->captcha_matches));
-		echo json_encode("true");
+		echo json_encode(array("success" => $lang->captcha_matches));
 		exit;
 	}
 	else
 	{
-		echo json_encode($lang->captcha_does_not_match);
+		echo json_encode(array("fail" => $lang->captcha_does_not_match));
 		exit;
 	}
 }
 else if($mybb->input['action'] == "complex_password")
 {
-	$password = trim($mybb->get_input('password'));
+	$password = trim($mybb->get_input('value'));
 	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
 	header("Content-type: application/json; charset={$charset}");
 	if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $password))
 	{
-		echo json_encode($lang->complex_password_fails);
+		echo json_encode(array("fail" => $lang->complex_password_fails));
 	}
 	else
 	{
 		// Return nothing but an OK password if passes regex
-		echo json_encode("true");
+		echo json_encode(array("success" => 1));
 	}
 
 	exit;
@@ -687,7 +642,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	require_once MYBB_ROOT."inc/functions_user.php";
-	$username = $mybb->get_input('username');
+	$username = $mybb->get_input('value');
 
 	// Fix bad characters
 	$username = trim($username);
@@ -700,7 +655,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	if(empty($username))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;
 	}
 
@@ -708,14 +663,14 @@ else if($mybb->input['action'] == "username_availability")
 	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
-		echo $lang->banned_username;
+		echo json_encode(array("fail" => $lang->banned_username));
 		exit;
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
 	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || !validate_utf8_string($username, false, false))
 	{
-		echo $lang->banned_characters_username;
+		echo json_encode(array("fail" => $lang->banned_characters_username));
 		exit;
 	}
 
@@ -726,13 +681,13 @@ else if($mybb->input['action'] == "username_availability")
 	if($user['uid'])
 	{
 		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
-		echo json_encode($lang->username_taken);
+		echo json_encode(array("fail" => $lang->username_taken));
 		exit;
 	}
 	else
 	{
-		//$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
-		echo json_encode("true");
+		$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
+		echo json_encode(array("success" => $lang->username_available));
 		exit;
 	}
 }

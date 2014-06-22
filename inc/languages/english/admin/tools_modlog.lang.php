@@ -23,7 +23,6 @@ $l['forum'] = "Forum:";
 $l['thread'] = "Thread:";
 $l['post'] = "Post:";
 $l['user_info'] = "User:";
-$l['announcement'] = "Announcement:";
 
 $l['filter_moderator_logs'] = "Filter Moderator Logs";
 $l['forum_moderator'] = "Forum Moderator:";
@@ -44,6 +43,7 @@ $l['days'] = "days";
 
 $l['prune_moderator_logs'] = "Prune Moderator Logs";
 $l['date_range'] = "Date range:";
+$l['all_forums'] = "All Forums";
 
 $l['success_pruned_mod_logs'] = "The moderator logs have been pruned successfully.";
 $l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";

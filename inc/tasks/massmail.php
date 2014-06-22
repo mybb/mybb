@@ -30,7 +30,7 @@ function task_massmail($task)
 				'task' => &$task,
 				'mass_email' => &$mass_email
 			);
-			$plugins->run_hooks('task_massmail', $args);
+			$plugins->run_hooks('task_promotions', $args);
 		}
 
 		if($mass_email['status'] == 1)

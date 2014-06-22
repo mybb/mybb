@@ -551,7 +551,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "canstickunstickthreads"))
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -602,7 +602,7 @@ switch($mybb->input['action'])
 
 		add_breadcrumb($lang->nav_deletethread);
 
-		if(!is_moderator($fid, "candeletethreads"))
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -622,7 +622,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "candeletethreads"))
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -649,7 +649,7 @@ switch($mybb->input['action'])
 	case "deletepoll":
 		add_breadcrumb($lang->nav_deletepoll);
 
-		if(!is_moderator($fid, "canmanagepolls"))
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -680,7 +680,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->redirect_pollnotdeleted);
 		}
-		if(!is_moderator($fid, "canmanagepolls"))
+		if(!is_moderator($fid, "candeleteposts"))
 		{
 			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
@@ -710,7 +710,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "canapproveunapprovethreads"))
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -732,7 +732,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "canapproveunapprovethreads"))
+		if(!is_moderator($fid, "canopenclosethreads"))
 		{
 			error_no_permission();
 		}
@@ -754,7 +754,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "canrestorethreads"))
+		if(!is_moderator($fid, "canrestore"))
 		{
 			error_no_permission();
 		}
@@ -776,7 +776,7 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		if(!is_moderator($fid, "cansoftdeletethreads"))
+		if(!is_moderator($fid, "cansoftdelete"))
 		{
 			error_no_permission();
 		}
@@ -875,47 +875,43 @@ switch($mybb->input['action'])
 		}
 		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
 		$trow = alt_trow(1);
-
-		if(is_moderator($fid, "canviewmodlog"))
+		$query = $db->query("
+			SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+			FROM ".TABLE_PREFIX."moderatorlog l
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+			WHERE t.tid='$tid'
+			ORDER BY l.dateline DESC
+			LIMIT  0, 20
+		");
+		$modactions = '';
+		while($modaction = $db->fetch_array($query))
 		{
-			$query = $db->query("
-				SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
-				FROM ".TABLE_PREFIX."moderatorlog l
-				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
-				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
-				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
-				WHERE t.tid='$tid'
-				ORDER BY l.dateline DESC
-				LIMIT  0, 20
-			");
-			$modactions = '';
-			while($modaction = $db->fetch_array($query))
+			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
+			$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
+			$modaction['action'] = htmlspecialchars_uni($modaction['action']);
+			$info = '';
+			if($modaction['tsubject'])
 			{
-				$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
-				$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
-				$modaction['action'] = htmlspecialchars_uni($modaction['action']);
-				$info = '';
-				if($modaction['tsubject'])
-				{
-					$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
-				}
-				if($modaction['fname'])
-				{
-					$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
-				}
-				if($modaction['psubject'])
-				{
-					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
-				}
+				$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
+			}
+			if($modaction['fname'])
+			{
+				$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
+			}
+			if($modaction['psubject'])
+			{
+				$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
+			}
 
-				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
-				$trow = alt_trow();
-			}
-			if(!$modactions)
-			{
-				eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
-			}
+			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
+			$trow = alt_trow();
+		}
+		if(!$modactions)
+		{
+			eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
 		}
 
 		$actions = array(
@@ -1363,7 +1359,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'candeletethreads'))
+			if(!is_moderator_by_tids($threads, 'candeleteposts'))
 			{
 				error_no_permission();
 			}
@@ -1371,7 +1367,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'candeletethreads'))
+			if(!is_moderator($fid, 'candeleteposts'))
 			{
 				error_no_permission();
 			}
@@ -1402,7 +1398,7 @@ switch($mybb->input['action'])
 		verify_post_check($mybb->get_input('my_post_key'));
 
 		$threadlist = explode("|", $mybb->get_input('threads'));
-		if(!is_moderator_by_tids($threadlist, "candeletethreads"))
+		if(!is_moderator_by_tids($threadlist, "candeleteposts"))
 		{
 			error_no_permission();
 		}
@@ -1478,7 +1474,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1486,7 +1482,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canopenclosethreads'))
+			if(!is_moderator($fid, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1520,7 +1516,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canapproveunapprovethreads'))
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1528,7 +1524,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canapproveunapprovethreads'))
+			if(!is_moderator($fid, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1563,7 +1559,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canapproveunapprovethreads'))
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1571,7 +1567,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canapproveunapprovethreads'))
+			if(!is_moderator($fid, 'canmanagethreads'))
 			{
 				error_no_permission();
 			}
@@ -1606,7 +1602,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canrestorethreads'))
+			if(!is_moderator_by_tids($threads, 'canrestore'))
 			{
 				error_no_permission();
 			}
@@ -1614,7 +1610,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canrestorethreads'))
+			if(!is_moderator($fid, 'canrestore'))
 			{
 				error_no_permission();
 			}
@@ -1649,7 +1645,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'cansoftdeletethreads'))
+			if(!is_moderator_by_tids($threads, 'cansoftdelete'))
 			{
 				error_no_permission();
 			}
@@ -1657,7 +1653,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'cansoftdeletethreads'))
+			if(!is_moderator($fid, 'cansoftdelete'))
 			{
 				error_no_permission();
 			}
@@ -1692,7 +1688,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canstickunstickthreads'))
+			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
 			{
 				error_no_permission();
 			}
@@ -1700,7 +1696,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canstickunstickthreads'))
+			if(!is_moderator($fid, 'canopenclosethreads'))
 			{
 				error_no_permission();
 			}
@@ -1734,7 +1730,7 @@ switch($mybb->input['action'])
 		{
 			// From search page
 			$threads = getids($mybb->get_input('searchid'), 'search');
-			if(!is_moderator_by_tids($threads, 'canstickunstickthreads'))
+			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
 			{
 				error_no_permission();
 			}
@@ -1742,7 +1738,7 @@ switch($mybb->input['action'])
 		else
 		{
 			$threads = getids($fid, 'forum');
-			if(!is_moderator($fid, 'canstickunstickthreads'))
+			if(!is_moderator($fid, 'canopenclosethreads'))
 			{
 				error_no_permission();
 			}
@@ -2508,7 +2504,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nopostsselected);
 		}
 
-		if(!is_moderator_by_pids($posts, "canapproveunapproveposts"))
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -2554,7 +2550,7 @@ switch($mybb->input['action'])
 		}
 		$pids = array();
 
-		if(!is_moderator_by_pids($posts, "canapproveunapproveposts"))
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
@@ -2596,7 +2592,7 @@ switch($mybb->input['action'])
 			error($lang->error_inline_nopostsselected);
 		}
 
-		if(!is_moderator_by_pids($posts, "canrestoreposts"))
+		if(!is_moderator_by_pids($posts, "canrestore"))
 		{
 			error_no_permission();
 		}
@@ -2642,7 +2638,7 @@ switch($mybb->input['action'])
 		}
 		$pids = array();
 
-		if(!is_moderator_by_pids($posts, "cansoftdeleteposts"))
+		if(!is_moderator_by_pids($posts, "cansoftdelete"))
 		{
 			error_no_permission();
 		}
@@ -2687,7 +2683,7 @@ switch($mybb->input['action'])
 				{
 					error($lang->error_inline_nopostsselected);
 				}
-				if(!is_moderator_by_tids($tids, "canusecustomtools"))
+				if(!is_moderator_by_tids($tids))
 				{
 					error_no_permission();
 				}
@@ -2718,7 +2714,7 @@ switch($mybb->input['action'])
 			}
 			elseif($tool['type'] == 't' && $mybb->get_input('modtype') == 'thread')
 			{
-				if(!is_moderator_by_tids($tid, "canusecustomtools"))
+				if(!is_moderator_by_tids($tid))
 				{
 					error_no_permission();
 				}
@@ -2759,7 +2755,7 @@ switch($mybb->input['action'])
 				{
 					error($lang->error_inline_nopostsselected);
 				}
-				if(!is_moderator_by_pids($pids, "canusecustomtools"))
+				if(!is_moderator_by_pids($pids))
 				{
 					error_no_permission();
 				}

@@ -32,8 +32,6 @@ $l['select'] = "Selection Box";
 $l['radio'] = "Radio Buttons";
 $l['checkbox'] = "Checkboxes";
 $l['language_selection_box'] = "Language Selection Box";
-$l['forum_selection_box'] = "Forum Selection Box";
-$l['group_selection_box'] = "Group Selection Box";
 $l['adminlanguage'] = "Administration Language Selection Box";
 $l['cpstyle'] = "Control Panel Style Selection Box";
 $l['php'] = "Evaluated PHP";
@@ -92,9 +90,4 @@ $l['success_setting_group_added'] = "The setting group has been created successf
 $l['success_setting_group_updated'] = "The setting group has been updated successfully.";
 $l['success_setting_group_deleted'] = "The selected setting group has been deleted successfully.";
 $l['success_duplicate_settings_deleted'] = "All duplicate setting groups have been deleted successfully.";
-
-$l['searching'] = 'Searching...';
-$l['search_error'] = 'There was an error fetching your search results:';
-$l['search_done'] = 'Done!';
-
 ?>

@@ -93,7 +93,7 @@ if($mybb->input['action'] == "prune")
 		{
 			$moderation->delete_post($post['pid']);
 		}
-		$cache->update_reportedcontent();
+		$cache->update_reportedposts();
 
 		$plugins->run_hooks("admin_user_banning_prune_commit");
 
@@ -431,7 +431,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
-		ORDER BY dateline DESC
+		ORDER BY lifted ASC
 		LIMIT {$start}, {$per_page}
 	");
 
@@ -534,40 +534,19 @@ if(!$mybb->input['action'])
 
 	// Autocompletion for usernames
 	echo '
-	<link rel="stylesheet" href="../jscripts/select2/select2.css">
-	<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
 	<script type="text/javascript">
 	<!--
-	$("#username").select2({
-		placeholder: "Search for a user",
-		minimumInputLength: 3,
-		maximumSelectionSize: 3,
-		multiple: false,
-		ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
-			url: "../xmlhttp.php?action=get_users",
-			dataType: \'json\',
-			data: function (term, page) {
-				return {
-					query: term, // search term
-				};
-			},
-			results: function (data, page) { // parse the results into the format expected by Select2.
-				// since we are using custom formatting functions we do not need to alter remote JSON data
-				return {results: data};
-			}
-		},
-		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
-			}
-		},
-	});
+        $("#username").typeahead({
+        	name: \'username\',
+            remote: {
+            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
+                filter: function(response){
+                	return response.users;
+                },
+            },
+            limit: 10
+        });
 	// -->
 	</script>';
 

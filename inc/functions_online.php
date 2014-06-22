@@ -109,9 +109,6 @@ function fetch_wol_activity($location, $nopermission=false)
 				$user_activity['activity'] = "calendar";
 			}
 			break;
-		case "contact":
-			$user_activity['activity'] = "contact";
-			break;
 		case "editpost":
 			$user_activity['activity'] = "editpost";
 			break;
@@ -752,9 +749,6 @@ function build_friendly_wol_location($user_activity)
 			break;
 		case "calendar_editevent":
 			$location_name = $lang->editing_event;
-			break;
-		case "contact":
-			$location_name = $lang->viewing_contact_us;
 			break;
 		// editpost.php functions
 		case "editpost":

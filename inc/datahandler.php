@@ -64,7 +64,7 @@ class DataHandler
 	 */
 	function __construct($method="insert")
 	{
-		if($method != "update" && $method != "insert" && $method != "get" && $method != "delete")
+		if($method != "update" && $method != "insert" && $method != "get")
 		{
 			die("A valid method was not supplied to the data handler.");
 		}

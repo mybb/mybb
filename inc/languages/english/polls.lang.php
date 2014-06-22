@@ -34,7 +34,7 @@ $l['post_new_poll'] = "Post New Poll";
 $l['days'] = "days";
 $l['poll_results'] = "Poll Results";
 $l['poll_total'] = "Total:";
-$l['poll_votes'] = "vote(s)";
+$l['poll_votes'] = "votes";
 
 $l['redirect_pollposted'] = "Your poll has been posted.<br />You will now be returned to the thread.";
 $l['redirect_pollpostedmoderated'] = "Your poll has been posted, but your thread is still pending moderation.<br />You will be returned to the forum.";
@@ -51,7 +51,6 @@ $l['error_alreadyvoted'] = "You have already voted in this poll.";
 $l['error_notvoted'] = "You haven't voted in this poll.";
 $l['error_invalidpoll'] = "The specified poll is invalid or does not exist.";
 $l['error_pollclosed'] = "You cannot vote in a poll that has been closed.";
-$l['poll_time_limit'] = "Sorry but you cannot add a poll to your thread. The Administrator has set it so that polls can only be added within {1} hours of posting.";
 
 $l['poll_deleted'] = "Deleted Poll";
 $l['poll_edited'] = "Edited Poll";

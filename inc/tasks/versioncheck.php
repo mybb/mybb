@@ -45,7 +45,7 @@ function task_versioncheck($task)
 
 	$latest_code = $tree['mybb']['version_code']['value'];
 	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
-	if($latest_code > $mybb->version_code)
+	if($latest_code > 1604)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
 		$version_warn = 1;

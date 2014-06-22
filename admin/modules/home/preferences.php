@@ -30,7 +30,6 @@ if(!$mybb->input['action'])
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['notes']),
 			"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
-			"cplanguage" => $db->escape_string($mybb->input['cplanguage']),
 			"permissions" => $db->escape_string($adminopts['permissions']),
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid'],
@@ -55,7 +54,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');
 
-	$query = $db->simple_select("adminoptions", "notes, cpstyle, cplanguage, codepress", "uid='".$mybb->user['uid']."'", array('limit' => 1));
+	$query = $db->simple_select("adminoptions", "notes, cpstyle, codepress", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 
 	$form = new Form("index.php?module=home-preferences", "post");
@@ -73,16 +72,10 @@ if(!$mybb->input['action'])
 	ksort($folders);
 	$setting_code = $form->generate_select_box("cpstyle", $folders, $admin_options['cpstyle']);
 
-	$languages = $lang->get_languages(1);
-	$language_code = $form->generate_select_box("cplanguage", $languages, $admin_options['cplanguage']);
-
 	$table = new Table;
 	$table->construct_header($lang->global_preferences);
 
 	$table->construct_cell("<strong>{$lang->acp_theme}</strong><br /><small>{$lang->select_acp_theme}</small><br /><br />{$setting_code}");
-	$table->construct_row();
-
-	$table->construct_cell("<strong>{$lang->acp_language}</strong><br /><small>{$lang->select_acp_language}</small><br /><br />{$language_code}");
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->codemirror}</strong><br /><small>{$lang->use_codemirror_desc}</small><br /><br />".$form->generate_on_off_radio('codepress', $admin_options['codepress']));

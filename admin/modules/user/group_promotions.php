@@ -62,11 +62,11 @@ if($mybb->input['action'] == "disable")
 
 	if($mybb->request_method == "post")
 	{
-		$update_promotion = array(
+		$promotion = array(
 			"enabled" => 0
 		);
 
-		$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+		$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
 
 		$plugins->run_hooks("admin_user_group_promotions_disable_commit");
 
@@ -149,11 +149,11 @@ if($mybb->input['action'] == "enable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$update_promotion = array(
+	$promotion = array(
 		"enabled" => 1
 	);
 
-	$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
 
 	$plugins->run_hooks("admin_user_group_promotions_enable_commit");
 
@@ -660,16 +660,7 @@ if(!$mybb->input['action'])
 	{
 		$promotion['title'] = htmlspecialchars_uni($promotion['title']);
 		$promotion['description'] = htmlspecialchars_uni($promotion['description']);
-		if($promotion['enabled'] == 1)
-		{
-			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
-		}
-		else
-		{
-			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.png\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}\"  style=\"vertical-align: middle;\" /> ";
-		}
-
-		$table->construct_cell("<div>{$icon}<strong><a href=\"index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
+		$table->construct_cell("<div><strong><a href=\"index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
 
 		$popup = new PopupMenu("promotion_{$promotion['pid']}", $lang->options);
 		$popup->add_item($lang->edit_promotion, "index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");

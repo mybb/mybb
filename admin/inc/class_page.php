@@ -88,7 +88,6 @@ class DefaultPage
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
-		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/modal.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
 		if(file_exists(MYBB_ADMIN_DIR."styles/{$this->style}/{$this->active_module}.css"))
@@ -101,9 +100,6 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
-		
-		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
-		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
@@ -120,9 +116,6 @@ var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
-
-lang.unknown_error = \"{$lang->unknown_error}\";
-lang.saved = \"{$lang->saved}\";
 //]]>
 </script>\n";
 		echo $this->extra_header;
@@ -659,6 +652,20 @@ EOF;
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
+		echo "<script type=\"text/javascript\">\n";
+		if($observe_onload)
+		{
+			echo "Event.observe(window,'load',function(){\n";
+		}
+		echo "	\$\$('#{$id}').each(function(tabs)\n";
+		echo "	{\n";
+		echo "		new Control.Tabs(tabs);\n";
+		echo "	});\n";
+		if($observe_onload)
+		{
+			echo "});\n";
+		}
+		echo "</script>\n";
 		echo "<ul class=\"tabs\" id=\"{$id}\">\n";
 		$tab_count = count($tabs);
 		$done = 1;
@@ -763,106 +770,19 @@ EOF;
 	 */
 	function build_codebuttons_editor($bind, $editor_language)
 	{
-		global $lang, $mybb;
-
-		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
-
-		if($mybb->settings['allowbasicmycode'] == 1)
+		global $lang;
+		if($bind == "signature")
 		{
-			$basic1 = "bold,italic,underline,strike|";
-			$basic2 = "horizontalrule,";
+			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
 		}
-
-		if($mybb->settings['allowalignmycode'] == 1)
-		{
-			$align = "left,center,right,justify|";
-		}
-
-		if($mybb->settings['allowfontmycode'] == 1)
-		{
-			$font = "font,";
-		}
-
-		if($mybb->settings['allowsizemycode'] == 1)
-		{
-			$size = "size,";
-		}
-
-		if($mybb->settings['allowcolormycode'] == 1)
-		{
-			$color = "color,";
-		}
-
-		if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
-		{
-			$removeformat = "removeformat|";
-		}
-
-		if($mybb->settings['allowemailmycode'] == 1)
-		{
-			$email = "email,";
-		}
-
-		if($mybb->settings['allowlinkmycode'] == 1)
-		{
-			$link = "link,unlink";
-		}
-
-		if($mybb->settings['allowlistmycode'] == 1)
-		{
-			$list = "bulletlist,orderedlist|";
-		}
-
-		if($mybb->settings['allowcodemycode'] == 1)
-		{
-			$code = "code,";
-		}
-
-		return <<<EOF
-
-<script type="text/javascript">
-$(function() {
-	$("#{$bind}").sceditor({
-		plugins: "bbcode",
-		style: "../jscripts/sceditor/editor_themes/mybb.css",
-		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
-		emoticons: {
-			// Emoticons to be included in the dropdown
-			dropdown: {
-				":s": "../images/smilies/confused.png",
-				":-/": "../images/smilies/undecided.png",
-				":)": "../images/smilies/smile.png",
-				";)": "../images/smilies/wink.png",
-				":D": "../images/smilies/biggrin.png",
-				":P": "../images/smilies/tongue.png",
-				":(": "../images/smilies/sad.png",
-				":@": "../images/smilies/angry.png",
-				":blush:": "../images/smilies/blush.png",
-			},
-			// Emoticons to be included in the more section
-			more: {
-				":angel:": "../images/smilies/angel.png",
-				":dodgy:": "../images/smilies/dodgy.png",
-				":exclamation:": "../images/smilies/exclamation.png",
-				":heart:": "../images/smilies/heart.png",
-				":huh:": "../images/smilies/huh.png",
-				":idea:": "../images/smilies/lightbulb.png",
-				":sleepy:": "../images/smilies/sleepy.png",
-				":cool:": "../images/smilies/cool.png",
-				":rolleyes:": "../images/smilies/rolleyes.png",
-				":shy:": "../images/smilies/shy.png",
-				":at:": "../images/smilies/at.png"
-			}
-		},
-		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video,emoticon|{$list}{$code}quote|maximize,source",
-	});
-      
-	MyBBEditor = $("#{$bind}").sceditor("instance");
-});
-</script>
-EOF;
+		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
+				"<script type=\"text/javascript\">\n".
+				"//<![CDATA[\n".
+				"	{$editor_language}".
+				"	{$tabs_js}".
+				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
+				"//]]>".
+				"</script>";
 	}
 }
 

@@ -33,14 +33,11 @@ require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-if(!isset($cp_language))
+if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
 {
-	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
-	{
-		$mybb->settings['cplanguage'] = "english";
-	}
-	$lang->set_language($mybb->settings['cplanguage'], "admin");
+	$mybb->settings['cplanguage'] = "english";
 }
+$lang->set_language($mybb->settings['cplanguage'], "admin");
 
 // Load global language phrases
 $lang->load("global");
@@ -152,6 +149,8 @@ elseif($mybb->input['do'] == "login")
 {
 	require_once MYBB_ROOT."inc/datahandlers/login.php";
 	$loginhandler = new LoginDataHandler("get");
+
+	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
 
 	// Validate PIN first
 	if(!empty($config['secret_pin']) && (empty($mybb->input['pin']) || $mybb->input['pin'] != $config['secret_pin']))
@@ -406,12 +405,6 @@ if(!empty($mybb->user['uid']))
 {
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
-
-	if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
-	{
-		$cp_language = $admin_options['cplanguage'];
-		$lang->set_language($cp_language, "admin");
-	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
 	{

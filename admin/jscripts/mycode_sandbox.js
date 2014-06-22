@@ -42,10 +42,10 @@ MyCodeSandbox.prototype.onComplete = function(request)
 
 		if(!message[1])
 		{
-			message[1] = lang.unknown_error;
+			message[1] = "An unknown error occurred.";
 		}
 
-		alert(lang.mycode_sandbox_test_error + '\n\n' + message[1]);
+		alert('There was an error fetching the test results.\n\n'+message[1]);
 	}
 	else if(request.responseText)
 	{

@@ -21,33 +21,15 @@ var inlineEditor = {
 				type: "text",
 				submit: '',
 				cancel: '',
-				tooltip: lang.inline_edit_description,
+				tooltip: "(Click and hold to edit)",
 				onblur: "submit",
 				event: "hold"+tid,
 				callback: function(values, settings)
 				{
-					id = $(this).attr('id');
-					tid = id.replace( /[^\d.]/g, '');
-
 					values = JSON.parse(values);
-					if(typeof values == 'object')
-					{
-						if(values.hasOwnProperty("errors"))
-						{
-							$.each(values.errors, function(i, message)
-							{
-								$.jGrowl(lang.post_fetch_error + ' ' + message);
-							});
-							$(this).html($('#tid_' + tid + '_temp').html());
-						}
-						else
-						{
-							// Change subject
-							$(this).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
-						}
-					}
-					
-					$('#tid_' + tid + '_temp').remove();
+
+					// Change subject
+					$('#tid_' + tid).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
 				},
 				data: function(value, settings)
 				{
@@ -61,12 +43,12 @@ var inlineEditor = {
 				// Take tid out of the id attribute
 				id = $(this).attr('id');
 				tid = id.replace( /[^\d.]/g, '');
-				
-				// We may click again in the textbox and we'd be adding a new (invalid) clone - we don't want that!
-				if(!$('#tid_' + tid + '_temp').length)
-					$(this).clone().attr('id','tid_' + tid + '_temp').css('display','none').appendTo("body");
-	
-				setTimeout(inlineEditor.jeditableTimeout, 700, tid);
+
+				setTimeout(function()
+				{
+					$('#tid_' + tid).trigger("hold" + tid);
+					$('#tid_' + tid + ' input').width('98%');
+				}, 700);
 			});
 
 			$(this).bind('mouseup mouseleave', function()
@@ -82,12 +64,6 @@ var inlineEditor = {
         });
 
 		return false;
-	},
-	
-	jeditableTimeout : function(tid)
-	{
-		$('#tid_' + tid).trigger("hold" + tid);
-		$('#tid_' + tid + ' input').width('98%');
 	}
 };
 

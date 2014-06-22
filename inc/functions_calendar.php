@@ -284,12 +284,7 @@ function get_calendar_permissions($cid=0)
 }
 
 /**
- * Fetch the calendar permissions
  *
- * @param int Calendar ID
- * @param mixed User group ID
- * @return array Array of permissions for this calendar and group
- * @return array Array of current permissions
  */
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
@@ -642,7 +637,7 @@ function fetch_weekday_structure($week_start)
  *
  * @param int The weekday number
  * @param boolean True to fetch the short name ('S'), false to fetch full name
- * @return string The weekday name
+ * @param string The weekday name
  */
 function fetch_weekday_name($weekday, $short=false)
 {

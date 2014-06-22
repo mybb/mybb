@@ -160,12 +160,12 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$forum = get_forum($thread['fid']);
 			$forumpermissions = forum_permissions($forum['fid']);
 			// Post doesn't belong to that user or isn't visible
-			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $post['visible'] < 0)
+			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid)) || $post['visible'] < 0)
 			{
 				$mybb->input['pid'] = 0;
 			}
 			// Thread isn't visible
-			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'], "canviewunapprove")) || $thread['visible'] < 0)
+			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'])) || $thread['visible'] < 0)
 			{
 				$mybb->input['pid'] = 0;
 			}
@@ -568,15 +568,16 @@ if(!$mybb->input['action'])
 		error_no_permission();
 	}
 
-	// Set display group to their user group if they don't have a display group.
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
-	}
-
 	// Fetch display group properties.
 	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
-	$display_group = usergroup_displaygroup($user['displaygroup']);
+	if($user['displaygroup'] == 0)
+	{
+		$display_group = usergroup_displaygroup($user['usergroup']);
+	}
+	else
+	{
+		$display_group = usergroup_displaygroup($user['displaygroup']);
+	}
 
 	if($user_permissions['usereputationsystem'] != 1 || $display_group['title'] && $display_group['usereputationsystem'] == 0)
 	{

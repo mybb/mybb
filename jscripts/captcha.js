@@ -26,7 +26,7 @@ var captcha = {
 		{
 			$.each(json.errors[0], function(i, error)
 			{
-			  	$.jGrowl(lang.captcha_fetch_failure + ' ' + error);
+			  	$.jGrowl('There was an error fetching the new captcha. ' + error);
 			});
 		}
 		else if(json.imagehash)

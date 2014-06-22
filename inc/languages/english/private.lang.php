@@ -25,6 +25,7 @@ $l['private_messaging'] = "Private Messaging";
 $l['inbox'] = "Inbox";
 $l['compose_message2'] = "Compose Message";
 $l['manage_folders'] = "Manage Folders";
+$l['pms_in_folder'] = "Private Messages in folder <em>{1}</em>";
 $l['pm_search_results'] = "Private Message Search Results";
 $l['message_title'] = "Message Title";
 $l['sender'] = "Sender";
@@ -158,7 +159,6 @@ $l['ascending_order'] = "Ascending Order";
 $l['descending_order'] = "Descending Order";
 $l['search_private_messages'] = "Search Private Messages";
 $l['check_all'] = "Check All";
-$l['search_user'] = "Search for a user";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
@@ -188,13 +188,5 @@ $l['redirect_pmsent'] = "Thank you, your private message has successfully been s
 $l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders have successfully been updated.<br />You will now be returned to your private message Inbox.";
 $l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
-
-$l['quick_reply'] = "Quick Reply";
-$l['message_note'] = "Type your reply to this message here.";
-$l['send_reply'] = "Send Reply";
-$l['quickreply_signature'] = "Signature";
-$l['quickreply_disable_smilies'] = "Disable Smilies";
-$l['quickreply_save_copy'] = "Save a Copy";
-$l['quickreply_read_receipt'] = "<strong>Request Read Receipt</strong>";
 
 ?>

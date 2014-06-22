@@ -515,7 +515,7 @@ if($mybb->input['action'] == "results")
 			$threadpages = '';
 			$morelink = '';
 			$thread['posts'] = $thread['replies'] + 1;
-			if(is_moderator($thread['fid'], "canviewunapprove"))
+			if(is_moderator($thread['fid']))
 			{
 				$thread['posts'] += $thread['unapprovedposts'];
 			}
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "results")
 			$load_inline_edit_js = 1;
 
 			// If this thread has 1 or more attachments show the papperclip
-			if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
+			if($thread['attachmentcount'] > 0)
 			{
 				if($thread['attachmentcount'] > 1)
 				{

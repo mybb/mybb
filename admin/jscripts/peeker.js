@@ -1,101 +1,101 @@
 /**
- * Peeker controls the visibility of an element based on the value of an input
+ * Peeker is a simple class which controls the visibility of something based on a value of a select form
  *
- * @example
- *
- * var peeker = new Peeker($('#myController'), $('#myDomain'), /1/, false);
- * var peeker = new Peeker($('.myControllerNode'), $('#myDomain'), /1/, true);
+ * Usage:
+ * var peeker = new Peeker( <id of the controlling select menu>, <id of the thing to show/hide>, <matching regexp to show the thing>);
  */
 
-var Peeker = (function() {
+var Peeker = Class.create();
+Peeker.prototype = {
+	
+    controller: null,
+    domain: null,
+    match: null,
+    is_nodelist: null,
+	
+    /**
+     * Checks the controller and shows/hide
+     */
+	check: function()
+	{
+		// Array
+		if(this.is_nodelist)
+		{
+            // Find a match (if found show domain)
+            for(i = 0; i < this.controller.length; i++)
+            {
+                if(this.controller[i].checked && this.controller[i].value.match(this.match))
+                {
+                    Element.show(this.domain);
+                    return;
+                }
+            }
+            // Nothing found
+            Element.hide(this.domain);
+		}
+		else
+		{
+		    type = this.controller.value;
+    		this.domain.style.display = (type.match(this.match)) ? '' : 'none';
+		}
+	},
+	
 	/**
 	 * Constructor
-	 *
 	 * @param string ID of the controlling select menu
 	 * @param string ID of the thing to show/hide
 	 * @param regexp If this regexp matches value of the select menu, then the 'thing' will be shown
 	 * @param boolean Should be set to true for radio/checkboxes
 	 */
-	function Peeker(controller, domain, match, isNodelist) {
-		var fn;
-
-		// verify input
-		if (!controller ||
-		    (isNodelist && controller.length <= 0) ||
-			!domain) {
-			return;
+	initialize: function(controller, domain, match, is_nodelist)
+	{
+        // Ugly code to differentiate initialization between nodelist and element
+		if(is_nodelist)
+		{
+		    if(controller.length > 0 && domain)
+		    {
+    		    this.controller = controller;
+                this.domain = domain;
+                this.match = match;
+                this.is_nodelist = is_nodelist;
+                
+                for(i = 0; i < controller.length; i++)
+                {
+           			if(controller[i].getAttribute("id") != null)
+           			{
+               			Event.observe(controller[i], "change", this.check.bindAsEventListener(this));
+              			Event.observe(controller[i], "click", this.check.bindAsEventListener(this));
+           			}
+                }
+                this.check();
+		    }
 		}
-		this.controller = controller;
-		this.domain = domain;
-		this.match = match;
-		this.isNodelist = isNodelist;
-
-		// create a context-bound copy of the function
-		fn = $.proxy(this.check, this);
-
-		if (isNodelist) {
-			// attach event handlers to the inputs in the node list
-			this.controller.each(function(i, el) {
-				el = $(el);
-				if (el.attr('id') == null) {
-					return;
-				}
-				el.on('change', fn);
-				el.click(fn);
-			});
-		} else {
-			this.controller.on('change', fn);
-		}
-		this.check();
-	}
-
-	/**
-	 * Checks the controller and shows/hide
-	 *
-	 * @return void
-	 */
-	function check() {
-		var type = '', show = false, regex = this.match;
-
-		if (this.isNodelist) {
-			this.controller.each(function(i, el) {
-				if (el.checked &&
-				    el.value.match(regex)) {
-					show = true;
-					return false;
-				}
-			});
-			this.domain[show ? 'show' : 'hide']();
-		} else {
-			type = this.controller.val() || '';
-			this.domain[(type.match(regex)) ? 'show' : 'hide']();
+	    else if(controller && domain)
+		{
+            this.controller = controller;
+            this.domain = domain;
+            this.match = match;
+            this.is_nodelist = is_nodelist;
+            
+            Event.observe(controller, "change", this.check.bindAsEventListener(this));
+            this.check();
 		}
 	}
-
-	Peeker.prototype = {
-		controller: null,
-		domain: null,
-		match: null,
-		isNodelist: null,
-		check: check,
-	};
-
-	return Peeker;
-})();
+};
 
 /**
  * Add a "required" asterisk to a FormContainer row
  * @param string ID of the row
  */
-function add_star(id) {
-	if (!$('#' + id)) {
-		return;
+var add_star = function(id)
+{
+	if($(id))
+	{
+		cell = $(id).getElementsByTagName("td")[0];
+		label = cell.getElementsByTagName("label")[0];
+		star = document.createElement("em");
+		starText = document.createTextNode(" *");
+		star.appendChild(starText);
+		label.appendChild(star);
 	}
-
-	cell = $('#' + id).children('td')[0];
-	label = $(cell).children('label')[0];
-	star = $(document.createElement('em'));
-	starText = $(document.createTextNode(' *'));
-	star.append(starText);
-	$(label).append(star);
 }

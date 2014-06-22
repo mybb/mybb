@@ -1825,7 +1825,7 @@ function configure()
 		}
 
 		// IP addresses and hostnames are not valid
-		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) === false || strpos($cookiedomain, '.') !== false)
+		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
 		{
 			$cookiedomain = '';
 		}
@@ -2158,8 +2158,7 @@ function install_done()
 		'icq' => '',
 		'aim' => '',
 		'yahoo' => '',
-		'skype' =>'',
-		'google' =>'',
+		'msn' =>'',
 		'birthday' => '',
 		'signature' => '',
 		'allownotices' => 1,
@@ -2168,8 +2167,6 @@ function install_done()
 		'receivepms' => 1,
 		'pmnotice' => 1,
 		'pmnotify' => 1,
-		'showimages' => 1,
-		'showvideos' => 1,
 		'showsigs' => 1,
 		'showavatars' => 1,
 		'showquickreply' => 1,
@@ -2266,9 +2263,11 @@ function install_done()
 	$cache->update_forums();
 	$cache->update_moderators();
 	$cache->update_usertitles();
-	$cache->update_reportedcontent();
+	$cache->update_reportedposts();
 	$cache->update_mycode();
 	$cache->update_posticons();
+	$cache->update_update_check();
+	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
 	$cache->update_banned();
@@ -2293,12 +2292,9 @@ function install_done()
 	sort($version_history, SORT_NUMERIC);
 	$cache->update("version_history", $version_history);
 
-	// Schedule an update check so it occurs an hour ago.  Gotta stay up to date!
-	$update['nextrun'] = TIME_NOW - 3600;
-	$db->update_query("tasks", $update, "tid='12'");
-
-	$cache->update_update_check();
-	$cache->update_tasks();
+	// Attempt to run an update check
+	require_once MYBB_ROOT.'inc/functions_task.php';
+	run_task(12);
 
 	echo $lang->done . '</p>';
 

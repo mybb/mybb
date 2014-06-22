@@ -76,7 +76,7 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		if($user['imagestring'] || $mybb->settings['captchaimage'] != 1)
+		if($user['imagestring'])
 		{
 			// Check their current captcha input - if correct, hide the captcha input area
 			require_once MYBB_ROOT.'inc/class_captcha.php';
@@ -84,6 +84,9 @@ class LoginDataHandler extends DataHandler
 
 			if($this->captcha->validate_captcha() == false)
 			{
+				$correct = true;
+				$do_captcha = true;
+				
 				// CAPTCHA validation failed
 				foreach($this->captcha->get_errors() as $error)
 				{
@@ -205,12 +208,6 @@ class LoginDataHandler extends DataHandler
 	function invalid_combination($show_login_attempts = false)
 	{
 		global $db, $lang, $mybb;
-
-		// Don't show an error when the captcha was wrong!
-		if(!$this->captcha_verified)
-		{
-			return;
-		}
 
 		$login_text = '';
 		if($show_login_attempts)

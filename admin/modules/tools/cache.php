@@ -97,32 +97,6 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 		flash_message($lang->success_cache_reloaded, 'success');
 		admin_redirect("index.php?module=tools-cache");
 	}
-	elseif(function_exists("update_{$mybb->input['title']}"))
-	{
-		$func = "update_{$mybb->input['title']}";
-		$func();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_rebuilt, 'success');
-		admin_redirect("index.php?module=tools-cache");
-	}
-	elseif(function_exists("reload_{$mybb->input['title']}"))
-	{
-		$func = "reload_{$mybb->input['title']}";
-		$func();
-
-		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
-
-		// Log admin action
-		log_admin_action($mybb->input['title']);
-
-		flash_message($lang->success_cache_reloaded, 'success');
-		admin_redirect("index.php?module=tools-cache");
-	}
 	else
 	{
 		flash_message($lang->error_cannot_rebuild, 'error');
@@ -151,17 +125,8 @@ if($mybb->input['action'] == "rebuild_all")
 		elseif(method_exists($cache, "reload_{$cacheitem['title']}"))
 		{
 			$func = "reload_{$cacheitem['title']}";
+
 			$cache->$func();
-		}
-		elseif(function_exists("update_{$cacheitem['title']}"))
-		{
-			$func = "update_{$cacheitem['title']}";
-			$func();
-		}
-		elseif(function_exists("reload_{$cacheitem['title']}"))
-		{
-			$func = "reload_{$cacheitem['title']}";
-			$func();
 		}
 	}
 
@@ -204,14 +169,6 @@ if(!$mybb->input['action'])
 			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
 		}
 		elseif(method_exists($cache, "reload_".$cacheitem['title']))
-		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
-		}
-		elseif(function_exists("update_".$cacheitem['title']))
-		{
-			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
-		}
-		elseif(function_exists("reload_".$cacheitem['title']))
 		{
 			$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
 		}

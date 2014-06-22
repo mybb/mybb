@@ -480,20 +480,7 @@ function get_admin_log_action($logitem)
 			}
 			break;
 		// == USERS ==
-		case 'admin_log_user_admin_permissions_edit': // editing default/group/user admin permissions
-			if($logitem['data'][0] > 0)
-			{
-				// User
-				$lang_string .= '_user';
-			}
-			elseif($logitem['data'][0] < 0)
-			{
-				// Group
-				$logitem['data'][0] = abs($logitem['data'][0]);
-				$lang_string .= '_group';
-			}
-			break;
-		case 'admin_log_user_admin_permissions_delete': // deleting group/user admin permissions
+		case 'admin_log_user_admin_permissions_edit': // default/group/user admin permissions
 			if($logitem['data'][0] > 0)
 			{
 				// User
@@ -515,16 +502,6 @@ function get_admin_log_action($logitem)
 			{
 				$logitem['data'][2] = my_date($mybb->settings['dateformat'], $logitem['data'][2]);
 				$lang_string = 'admin_log_user_banning_add_temporary';
-			}
-			break;
-		case 'admin_log_user_groups_join_requests':
-			if($logitem['data'][0] == 'approve')
-			{
-				$lang_string = 'admin_log_user_groups_join_requests_approve';
-			}
-			else
-			{
-				$lang_string = 'admin_log_user_groups_join_requests_deny';
 			}
 			break;
 		case 'admin_log_user_users_inline_banned':

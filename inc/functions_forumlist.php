@@ -96,7 +96,7 @@ function build_forumbits($pid=0, $depth=1)
 					if(!empty($fids))
 					{
 						$fids = implode(',', $fids);
-						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids}) AND visible != '-2'", array("order_by" => "lastpost", "order_dir" => "desc"));
+						$query = $db->simple_select("threads", "tid, fid, subject, lastpost, lastposter, lastposteruid", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids})", array("order_by" => "lastpost", "order_dir" => "desc"));
 
 						while($thread = $db->fetch_array($query))
 						{
@@ -412,13 +412,11 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				$expcolimage = "collapse_collapsed.png";
 				$expdisplay = "display: none;";
-				$expthead = " thead_collapsed";
 				$expaltext = "[+]";
 			}
 			else
 			{
 				$expcolimage = "collapse.png";
-				$expthead = "";
 				$expaltext = "[-]";
 			}
 
@@ -429,12 +427,12 @@ function build_forumbits($pid=0, $depth=1)
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
 	}
-
+	
 	if(!isset($parent_lastpost))
 	{
 		$parent_lastpost = 0;
 	}
-
+	
 	if(!isset($lightbulb))
 	{
 		$lightbulb = '';
@@ -454,21 +452,14 @@ function build_forumbits($pid=0, $depth=1)
  *
  * @param array Array of information about the forum
  * @param array Array of information about the lastpost date
- * @param int Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
-	// This forum is a redirect, so override the folder icon with the "offlink" icon.
-	if($forum['linkto'] != '')
-	{
-		$folder = "offlink";
-		$altonoff = $lang->forum_redirect;
-	}
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	elseif($forum['open'] == 0 || $locked)
+	if($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;
@@ -542,7 +533,7 @@ function get_forum_unapproved($forum)
 	$unapproved_threads = $unapproved_posts = '';
 
 	// If the user is a moderator we need to fetch the count
-	if(is_moderator($forum['fid'], "canviewunapprove"))
+	if(is_moderator($forum['fid']))
 	{
 		// Forum has one or more unaproved posts, format language string accordingly
 		if($forum['unapprovedposts'])

@@ -10,12 +10,10 @@ $l['nav_smilies'] = "Smilie Listing";
 $l['nav_syndication'] = "Latest Thread Syndication (RSS)";
 
 $l['aol_im'] = "AOL IM";
-$l['skype'] = "Skype";
+$l['msn'] = "MSN Messenger";
 $l['yahoo_im'] = "Yahoo IM";
-$l['skype_center'] = "Skype Center";
-$l['skype_status'] = "Skype Status";
-$l['chat_on_skype'] = "Chat with {1} on Skype";
-$l['call_on_skype'] = "Call {1} on Skype";
+$l['msn_messenger_center'] = "MSN Messenger Center";
+$l['msn_address_is'] = "{1}'s MSN Address is:";
 $l['yahoo_center'] = "Yahoo! Center";
 $l['send_y_message'] = "Send {1} a Yahoo! Message.";
 $l['view_y_profile'] = "View {1}'s Yahoo! Profile.";
@@ -40,19 +38,6 @@ $l['close'] = "Close";
 $l['no_buddies'] = "<em>Your buddy list is currently empty. Use your User CP or visit a user profile to add users to your buddy list.</em>";
 
 $l['help_docs'] = "Help Documents";
-
-$l['search_help_documents'] = "Search Help Documents";
-$l['search_by_name'] = "Search by Name";
-$l['search_by_document'] = "Search by Document";
-$l['enter_keywords'] = "Enter Keywords";
-$l['search'] = "Search";
-$l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
-$l['search_results'] = "Search Results";
-$l['help_doc_results'] = "Help Document Results";
-$l['document'] = "Document";
-$l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
-$l['no_help_results'] = "Sorry, but no results were returned using the query information you provided.";
-$l['error_helpsearchdisabled'] = "The ability to search the help documents has been disabled by the Administrator.";
 
 $l['smilies_listing'] = "Smilies Listing";
 $l['name'] = "Name";

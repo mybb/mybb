@@ -20,7 +20,6 @@ function output_page($contents)
 
 	$contents = parse_page($contents);
 	$totaltime = format_time_duration($maintimer->stop());
-	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->usergroup['cancp'] == 1 || $mybb->dev_mode == 1)
 	{
@@ -85,6 +84,7 @@ function output_page($contents)
 	}
 
 	$contents = str_replace("<debugstuff>", "", $contents);
+	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
 	if($mybb->settings['gzipoutput'] == 1)
 	{
@@ -425,29 +425,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 				$relative['prefix'] = $lang->rel_less_than;
 			}
 
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
-		}
-		elseif($ty != 2 && (TIME_NOW - $stamp) >= 3600 && (TIME_NOW - $stamp) < 43200)
-		{
-			$diff = TIME_NOW - $stamp;
-			$relative = array('prefix' => '', 'hour' => 0, 'plural' => $lang->rel_hours_plural, 'suffix' => $lang->rel_ago);
-
-			if($diff < 0)
-			{
-				$diff = abs($diff);
-				$relative['suffix'] = '';
-				$relative['prefix'] = $lang->rel_in;
-			}
-
-			$relative['hour'] = floor($diff / 3600);
-
-			if($relative['hour'] <= 1)
-			{
-				$relative['hour'] = 1;
-				$relative['plural'] = $lang->rel_hours_single;
-			}
-
-			$date = $lang->sprintf($lang->rel_time, $relative['prefix'], $relative['hour'], $relative['plural'], $relative['suffix']);
+			$date = $lang->sprintf($lang->rel_minute, $relative['prefix'], $relative['minute'], $relative['plural'], $relative['suffix']);
 		}
 		else
 		{
@@ -891,10 +869,8 @@ function error_no_permission()
  *
  * @param string The URL to redirect the user to
  * @param string The redirection message to be shown
- * @param string The title of the redirection page
- * @param boolean Force the redirect page regardless of settings
  */
-function redirect($url, $message="", $title="", $force_redirect=false)
+function redirect($url, $message="", $title="")
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
@@ -936,8 +912,8 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 		$title = $mybb->settings['bbname'];
 	}
 
-	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest, or they are forced.
-	if($force_redirect == true || ($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid'])))
+	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
+	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] == 1 || !$mybb->user['uid']))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
@@ -972,7 +948,6 @@ function redirect($url, $message="", $title="", $force_redirect=false)
  * @param int The number of items to be shown per page
  * @param int The current page number
  * @param string The URL to have page numbers tacked on to (If {page} is specified, the value will be replaced with the page #)
- * @param boolean Whether or not the multipage is being shown in the navigation breadcrumb
  * @return string The generated pagination
  */
 function multipage($count, $perpage, $page, $url, $breadcrumb=false)
@@ -1570,9 +1545,9 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	$mod_cache = $cache->read("moderators");
 
-	foreach($mod_cache as $forumid => $forum)
+	foreach($mod_cache as $fid => $forum)
 	{
-		if(!is_array($forum) || !in_array($forumid, $parentslist))
+		if(!is_array($forum) || !in_array($fid, $parentslist))
 		{
 			// No perms or we're not after this forum
 			continue;
@@ -1865,7 +1840,6 @@ function my_get_array_cookie($name, $id)
  * @param string The cookie identifier.
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
- * @param int The timestamp of the expiry date.
  */
 function my_set_array_cookie($name, $id, $value, $expires="")
 {
@@ -2006,12 +1980,6 @@ function update_stats($changes=array(), $force=false)
 
 	if(empty($stats_changes))
 	{
-		// Update stats after all changes are done
-		add_shutdown('update_stats', array(array(), true));
-	}
-
-	if(empty($stats_changes) || $stats_changes['inserted'])
-	{
 		$stats_changes = array(
 			'numthreads' => '+0',
 			'numposts' => '+0',
@@ -2019,19 +1987,15 @@ function update_stats($changes=array(), $force=false)
 			'numunapprovedthreads' => '+0',
 			'numunapprovedposts' => '+0',
 			'numdeletedposts' => '+0',
-			'numdeletedthreads' => '+0',
-			'inserted' => false // Reset after changes are inserted into cache
+			'numdeletedthreads' => '+0'
 		);
+		add_shutdown('update_stats', array(array(), true));
 		$stats = $stats_changes;
 	}
 
-	if($force) // Force writing to cache?
+	if($force)
 	{
-		if(!empty($changes))
-		{
-			// Calculate before writing to cache
-			update_stats($changes);
-		}
+		update_stats($changes);
 		$stats = $cache->read("stats");
 		$changes = $stats_changes;
 	}
@@ -2040,8 +2004,8 @@ function update_stats($changes=array(), $force=false)
 		$stats = $stats_changes;
 	}
 
-	$new_stats = array();
 	$counters = array('numthreads', 'numunapprovedthreads', 'numposts', 'numunapprovedposts', 'numusers', 'numdeletedposts', 'numdeletedthreads');
+	$new_stats = array();
 	foreach($counters as $counter)
 	{
 		if(array_key_exists($counter, $changes))
@@ -2052,36 +2016,27 @@ function update_stats($changes=array(), $force=false)
 				if(intval($changes[$counter]) != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
-					if(!$force && (substr($stats[$counter], 0, 1) == "+" || substr($stats[$counter], 0, 1) == "-"))
+					if(!$force && $new_stats[$counter] > 0)
 					{
-						// We had relative values? Then it is still relative
-						if($new_stats[$counter] >= 0)
-						{
-							$new_stats[$counter] = "+{$new_stats[$counter]}";
-						}
-					}
-					// Less than 0? That's bad
-					elseif($new_stats[$counter] < 0)
-					{
-						$new_stats[$counter] = 0;
+						$new_stats[$counter] = "+{$new_stats[$counter]}";
 					}
 				}
 			}
 			else
 			{
 				$new_stats[$counter] = $changes[$counter];
-				// Less than 0? That's bad
-				if($new_stats[$counter] < 0)
-				{
-					$new_stats[$counter] = 0;
-				}
+			}
+			// Less than 0? That's bad
+			if(isset($new_stats[$counter]) && $new_stats[$counter] < 0)
+			{
+				$new_stats[$counter] = 0;
 			}
 		}
 	}
 
 	if(!$force)
 	{
-		$stats_changes = array_merge($stats, $new_stats); // Overwrite changed values
+		$stats_changes = array_merge($stats, $new_stats);
 		return;
 	}
 
@@ -2098,7 +2053,7 @@ function update_stats($changes=array(), $force=false)
 	{
 		if(is_array($stats))
 		{
-			$stats = array_merge($stats, $new_stats); // Overwrite changed values
+			$stats = array_merge($stats, $new_stats);
 		}
 		else
 		{
@@ -2116,7 +2071,6 @@ function update_stats($changes=array(), $force=false)
 	$db->replace_query("stats", $todays_stats, "dateline");
 
 	$cache->update("stats", $stats, "dateline");
-	$stats_changes['inserted'] = true;
 }
 
 /**
@@ -2416,7 +2370,7 @@ function update_thread_data($tid)
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The user ID
- * @param array Array of items being updated (postnum, threadnum) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (postnum) and their value (ex, 1, +1, -1)
  */
 function update_user_counters($uid, $changes=array())
 {
@@ -2424,7 +2378,7 @@ function update_user_counters($uid, $changes=array())
 
 	$update_query = array();
 
-	$counters = array('postnum', 'threadnum');
+	$counters = array('postnum');
 	$uid = intval($uid);
 
 	// Fetch above counters for this user
@@ -2826,59 +2780,6 @@ function build_mycode_inserter($bind="message")
 		}
 		else
 		{
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
-
-			if($mybb->settings['allowbasicmycode'] == 1)
-			{
-				$basic1 = "bold,italic,underline,strike|";
-				$basic2 = "horizontalrule,";
-			}
-
-			if($mybb->settings['allowalignmycode'] == 1)
-			{
-				$align = "left,center,right,justify|";
-			}
-
-			if($mybb->settings['allowfontmycode'] == 1)
-			{
-				$font = "font,";
-			}
-
-			if($mybb->settings['allowsizemycode'] == 1)
-			{
-				$size = "size,";
-			}
-
-			if($mybb->settings['allowcolormycode'] == 1)
-			{
-				$color = "color,";
-			}
-
-			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
-			{
-				$removeformat = "removeformat|";
-			}
-
-			if($mybb->settings['allowemailmycode'] == 1)
-			{
-				$email = "email,";
-			}
-
-			if($mybb->settings['allowlinkmycode'] == 1)
-			{
-				$link = "link,unlink";
-			}
-
-			if($mybb->settings['allowlistmycode'] == 1)
-			{
-				$list = "bulletlist,orderedlist|";
-			}
-
-			if($mybb->settings['allowcodemycode'] == 1)
-			{
-				$code = "code,";
-			}
-
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
 		}
 	}
@@ -3039,7 +2940,6 @@ function build_prefixes($pid=0)
  *
  *  @param mixed The forum ID (integer ID or string all)
  *  @param mixed The selected prefix ID (integer ID or string any)
- *  @param int Allow multiple prefix selection
  *  @return string The thread prefix selection menu
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
@@ -3110,14 +3010,13 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	}
 
 	$prefixselect = "";
+	$multipleselect = "";
 	if($multiple != 0)
 	{
-		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
+		$multipleselect = " multiple=\"multiple\" size=\"5\"";
 	}
-	else
-	{
-		$prefixselect = "<select name=\"threadprefix\">\n";
-	}
+
+	$prefixselect = "<select name=\"threadprefix\"{$multipleselect}>\n";
 
 	if($multiple == 1)
 	{
@@ -3356,7 +3255,7 @@ function get_ip()
 			{
 				$val = trim($val);
 				// Validate IP address and exclude private addresses
-				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
+				if(my_inet_ntop(my_inet_pton($val)) == $val && !preg_match("#^(10\.|172\.(1[6-9]|2[0-9]|3[0-2])\.|192\.168\.|fe80:|fe[c-f][0-f]:|f[c-d][0-f]{2}:)#", $val))
 				{
 					$ip = $val;
 					break;
@@ -3516,7 +3415,7 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
@@ -4017,34 +3916,34 @@ function mark_reports($id, $type="post")
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedcontent", array('reportstatus' => 1), "id IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "pid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "post":
-			$db->update_query("reportedcontent", array('reportstatus' => 1), "id='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "pid='$id' AND reportstatus='0'");
 			break;
 		case "threads":
 			if(is_array($id))
 			{
 				$rids = implode($id, "','");
 				$rids = "'0','$rids'";
-				$db->update_query("reportedcontent", array('reportstatus' => 1), "id2 IN($rids) AND reportstatus='0' AND (type = 'post' OR type = '')");
+				$db->update_query("reportedposts", array('reportstatus' => 1), "tid IN($rids) AND reportstatus='0'");
 			}
 			break;
 		case "thread":
-			$db->update_query("reportedcontent", array('reportstatus' => 1), "id2='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "tid='$id' AND reportstatus='0'");
 			break;
 		case "forum":
-			$db->update_query("reportedcontent", array('reportstatus' => 1), "id3='$id' AND reportstatus='0' AND (type = 'post' OR type = '')");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "fid='$id' AND reportstatus='0'");
 			break;
 		case "all":
-			$db->update_query("reportedcontent", array('reportstatus' => 1), "reportstatus='0' AND (type = 'post' OR type = '')");
+			$db->update_query("reportedposts", array('reportstatus' => 1), "reportstatus='0'");
 			break;
 	}
 
 	$arguments = array('id' => $id, 'type' => $type);
 	$plugins->run_hooks("mark_reports", $arguments);
-	$cache->update_reportedcontent();
+	$cache->update_reportedposts();
 }
 
 /**
@@ -4431,32 +4330,22 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The ID of the parent theme to select from
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
- * @param boolean Whether or not theme select is in the footer (true if it is)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
 
 	if($tid == 0)
 	{
-		if($footer == true)
+		if(!isset($lang->use_default))
 		{
-			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
-			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
-			$tid = 1;
+			$lang->use_default = $lang->lang_select_default;
 		}
-		else
-		{
-			if(!isset($lang->use_default))
-			{
-				$lang->use_default = $lang->lang_select_default;
-			}
-			$themeselect = "<select name=\"$name\">";
-			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-			$themeselect .= "<option value=\"0\">-----------</option>\n";
-			$tid = 1;
-		}
+		$themeselect = "<select name=\"$name\">";
+		$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
+		$themeselect .= "<option value=\"0\">-----------</option>\n";
+		$tid = 1;
 	}
 
 	if(!is_array($tcache))
@@ -4507,13 +4396,13 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
+					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>";
 					$depthit = $depth."--";
 				}
 
 				if(array_key_exists($theme['tid'], $tcache))
 				{
-					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override, $footer);
+					build_theme_select($name, $selected, $theme['tid'], $depthit, $usergroup_override);
 				}
 			}
 		}
@@ -4521,11 +4410,6 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 	if($tid == 1)
 	{
-		if($footer == true)
-		{
-			$themeselect .= "</optgroup>\n";
-		}
-
 		$themeselect .= "</select>";
 	}
 
@@ -4583,13 +4467,6 @@ function my_number_format($number)
 	}
 }
 
-/**
- * Converts a string of text to or from UTF-8.
- *
- * @param string The string of text to convert
- * @param boolean Whether or not the string is being converted to or from UTF-8 (true if converting to)
- * @return string The converted string
- */
 function convert_through_utf8($str, $to=true)
 {
 	global $lang;
@@ -5029,7 +4906,7 @@ function my_substr($string, $start, $length="", $handle_entities = false)
 }
 
 /**
- * Lowers the case of a string, mb strings accounted for
+ * lowers the case of a string, mb strings accounted for
  *
  * @param string The string to lower.
  * @return int The lowered string.
@@ -5076,7 +4953,7 @@ function my_strpos($haystack, $needle, $offset=0)
 }
 
 /**
- * Ups the case of a string, mb strings accounted for
+ * ups the case of a string, mb strings accounted for
  *
  * @param string The string to up.
  * @return int The uped string.
@@ -5309,7 +5186,6 @@ function get_thread_link($tid, $page=0, $action='')
  *
  * @param int The post ID of the post
  * @param int The thread id of the post.
- * @return string The url to the post.
  */
 function get_post_link($pid, $tid=0)
 {
@@ -6057,7 +5933,6 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"-12" => $lang->timezone_gmt_minus_1200,
 		"-11" => $lang->timezone_gmt_minus_1100,
 		"-10" => $lang->timezone_gmt_minus_1000,
-		"-9.5" => $lang->timezone_gmt_minus_950,
 		"-9" => $lang->timezone_gmt_minus_900,
 		"-8" => $lang->timezone_gmt_minus_800,
 		"-7" => $lang->timezone_gmt_minus_700,
@@ -6078,21 +5953,14 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"4.5" => $lang->timezone_gmt_450,
 		"5" => $lang->timezone_gmt_500,
 		"5.5" => $lang->timezone_gmt_550,
-		"5.75" => $lang->timezone_gmt_575,
 		"6" => $lang->timezone_gmt_600,
-		"6.5" => $lang->timezone_gmt_650,
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
-		"10.5" => $lang->timezone_gmt_1050,
 		"11" => $lang->timezone_gmt_1100,
-		"11.5" => $lang->timezone_gmt_1150,
-		"12" => $lang->timezone_gmt_1200,
-		"12.75" => $lang->timezone_gmt_1275,
-		"13" => $lang->timezone_gmt_1300,
-		"14" => $lang->timezone_gmt_1400
+		"12" => $lang->timezone_gmt_1200
 	);
 
 	$selected = str_replace("+", "", $selected);
@@ -6118,7 +5986,6 @@ function build_timezone_select($name, $selected=0, $short=false)
 				{
 					$label = str_replace(".", ":", $label);
 					$label = str_replace(":5", ":30", $label);
-					$label = str_replace(":75", ":45", $label);
 				}
 				else
 				{
@@ -6138,7 +6005,6 @@ function build_timezone_select($name, $selected=0, $short=false)
  * Fetch the contents of a remote fle.
  *
  * @param string The URL of the remote file
- * @param array The array of post data
  * @return string The remote file contents.
  */
 function fetch_remote_file($url, $post_data=array())
@@ -6888,7 +6754,6 @@ function get_execution_time()
  * Processes a checksum list on MyBB files and returns a result set
  *
  * @param array The array of checksums and their corresponding files
- * @param int The count of files
  * @return array The bad files
  */
 function verify_files($path=MYBB_ROOT, $count=0)
@@ -7007,54 +6872,12 @@ function signed($int)
 function secure_seed_rng($count=8)
 {
 	$output = '';
-	// DIRECTORY_SEPARATOR checks if running windows
-	if(DIRECTORY_SEPARATOR != '\\')
+
+	// Try the unix/linux method
+	if(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
 	{
-		// Unix/Linux
-		// Use OpenSSL when available
-		if(function_exists('openssl_random_pseudo_bytes'))
-		{
-			$output = openssl_random_pseudo_bytes($count);
-		}
-		// Try mcrypt
-		elseif(function_exists('mcrypt_create_iv'))
-		{
-			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
-		}
-		// Try /dev/urandom
-		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
-		{
-			$output = @fread($handle, $count);
-			@fclose($handle);
-		}
-	}
-	else
-	{
-		// Windows
-		// Use OpenSSL when available
-		// PHP <5.3.4 had a bug which makes that function unusable on Windows
-		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
-		{
-			$output = openssl_random_pseudo_bytes($count);
-		}
-		// Try mcrypt
-		elseif(function_exists('mcrypt_create_iv'))
-		{
-			$output = mcrypt_create_iv($count, MCRYPT_RAND);
-		}
-		// Try Windows CAPICOM before using our own generator
-		elseif(class_exists('COM'))
-		{
-			try
-			{
-				$CAPI_Util = new COM('CAPICOM.Utilities.1');
-				if(is_callable(array($CAPI_Util, 'GetRandom')))
-				{
-					$output = $CAPI_Util->GetRandom($count, 0);
-				}
-			} catch (Exception $e) {
-			}
-		}
+		$output = @fread($handle, $count);
+		@fclose($handle);
 	}
 
 	// Didn't work? Do we still not have enough bytes? Use our own (less secure) rng generator
@@ -7248,15 +7071,6 @@ function trim_blank_chrs($string, $charlist=false)
 	return $string;
 }
 
-/**
- * Match a sequence
- *
- * @param string The string to match from
- * @param array The array to match from
- * @param int Number in the string
- * @param int Number of matches
- * @return int The number matched
- */
 function match_sequence($string, $array, $i=0, $n=0)
 {
 	if($string === "")

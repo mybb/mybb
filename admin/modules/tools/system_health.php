@@ -764,12 +764,6 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 
-	if($table->num_rows() == 0)
-	{
-		$table->construct_cell($lang->no_tasks, array('colspan' => 2));
-		$table->construct_row();
-	}
-
 	$table->output($lang->next_3_tasks);
 
 	if(isset($mybb->admin['permissions']['tools']['backupdb']) && $mybb->admin['permissions']['tools']['backupdb'] == 1)

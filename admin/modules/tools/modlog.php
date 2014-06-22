@@ -254,11 +254,7 @@ if(!$mybb->input['action'])
 			$data = unserialize($logitem['data']);
 			if($data['uid'])
 			{
-				$information = "<strong>{$lang->user_info}</strong> <a href=\"../".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";
-			}
-			if($data['aid'])
-			{
-				$information = "<strong>{$lang->announcement}</strong> <a href=\"../".get_announcement_link($data['aid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['subject'])."</a>";
+				$information = $lang->user_info." <a href=\"../".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";
 			}
 		}
 

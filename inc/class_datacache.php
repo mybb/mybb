@@ -822,21 +822,21 @@ class datacache
 	}
 
 	/**
-	 * Update reported content cache.
+	 * Update reported posts cache.
 	 *
 	 */
-	function update_reportedcontent()
+	function update_reportedposts()
 	{
 		global $db, $mybb;
 
 		$reports = array();
-		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
+		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
+		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
 		$reasons = array();
@@ -860,7 +860,7 @@ class datacache
 			"reasons" => $reasons
 		);
 
-		$this->update("reportedcontent", $reports);
+		$this->update("reportedposts", $reports);
 	}
 
 	/**
@@ -1203,27 +1203,6 @@ class datacache
 
 		$query = $db->simple_select("datacache", "title,cache", "title='version_history'");
 		$this->update("version_history", @unserialize($db->fetch_field($query, "cache")));
-	}
-
-	function reload_modnotes()
-	{
-		global $db;
-
-		$query = $db->simple_select("datacache", "title,cache", "title='modnotes'");
-		$this->update("modnotes", @unserialize($db->fetch_field($query, "cache")));
-	}
-
-	function reload_adminnotes()
-	{
-		global $db;
-
-		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
-		$this->update("adminnotes", @unserialize($db->fetch_field($query, "cache")));
-	}
-
-	function reload_mybb_credits()
-	{
-		admin_redirect('index.php?module=home-credits&amp;fetch_new=-2');
 	}
 }
 ?>

@@ -103,7 +103,7 @@ $l['group_header'] = "Header";
 $l['group_managegroup'] = "Manage Group";
 $l['group_misc'] = "Miscellaneous";
 $l['group_modcp'] = "Moderator Control Panel";
-$l['group_announcement'] = "Announcement";
+$l['group_php'] = "PHP";
 $l['group_polls'] = "Poll";
 $l['group_post'] = "Post";
 $l['group_printthread'] = "Print Thread";
@@ -112,7 +112,6 @@ $l['group_smilieinsert'] = "Smilie Inserter";
 $l['group_stats'] = "Statistics";
 $l['group_xmlhttp'] = "XMLHTTP";
 $l['group_footer'] = "Footer";
-$l['group_video'] = "Video MyCode";
 
 $l['expand'] = "Expand";
 $l['collapse'] = "Collapse";

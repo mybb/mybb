@@ -33,7 +33,6 @@ $plugins->run_hooks("stats_start");
 
 $repliesperthread = my_number_format(round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2));
 $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers']), 2));
-$threadspermember = my_number_format(round(($stats['numthreads'] / $stats['numusers']), 2));
 
 // Get number of days since board start (might need improvement)
 $query = $db->simple_select("users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));

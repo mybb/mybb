@@ -1,53 +1,41 @@
 var ViewManager = {
 	init: function()
 	{
-		if(!$('#fields_enabled') || !$('#fields_disabled'))
+		if(!$('fields_enabled') || !$('fields_disabled'))
 		{
 			return;
 		}
 
-		if(!$('#fields_js'))
+		if(!$('fields_js'))
 		{
 			return;
 		}
-		
-		$("#fields_enabled").sortable({
-			connectWith: "#fields_disabled",
-			dropOnEmpty: true,
-			update: function(event, ui) {
-				ViewManager.buildFieldsList();
-			}
-		}).disableSelection();
-		
-		$("#fields_disabled").sortable({
-			connectWith: "#fields_enabled",
-			dropOnEmpty: true,
-			update: function(event, ui) {
-				ViewManager.buildFieldsList();
-			}
-		}).disableSelection();
+
+		Sortable.create("fields_enabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
+		Sortable.create("fields_disabled", {dropOnEmpty: true, containment:["fields_enabled","fields_disabled"], constraint: false, onChange: ViewManager.buildFieldsList});
 	},
 
 	buildFieldsList: function()
 	{
 		new_input = '';
-		$('#fields_enabled').children().each(function() {
-			id = $(this).attr('id').split("-");
-		
-			if(id[1])
+		for(var i=0; i <= $('fields_enabled').childNodes.length; i++)
+		{
+			if($('fields_enabled').childNodes[i] && $('fields_enabled').childNodes[i].id)
 			{
-				if(new_input)
+				id = $('fields_enabled').childNodes[i].id.split("-");
+				
+				if(id[1])
 				{
-					new_input += ",";
+					if(new_input)
+					{
+						new_input += ",";
+					}
+					new_input += id[1];
 				}
-				new_input += id[1];
 			}
-		});
-		$('#fields_js').val(new_input);
+		}
+		$('fields_js').value = new_input;
 	}
 };
 
-$(function()
-{
-	ViewManager.init();
-});
+Event.observe(window, 'load', ViewManager.init);

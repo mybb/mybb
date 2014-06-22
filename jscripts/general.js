@@ -12,18 +12,6 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
-		
-		/* Create the Check All feature */
-		$('[name="allbox"]').each(function(key, value) {
-			$(this).change(function() {
-				var checkboxes = $(this).closest('form').find(':checkbox');
-				if($(this).is(':checked')) {
-					checkboxes.prop('checked', true);
-				} else {
-					checkboxes.removeAttr('checked');
-				}
-			});
-		});
 
 		// Initialise "initial focus" field if we have one
 		var initialfocus = $("input.initial_focus");
@@ -38,7 +26,7 @@ var MyBB = {
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
-				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || element.attr("src").match("offlink.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
+				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
 				element.click(function()
 				{
@@ -70,13 +58,10 @@ var MyBB = {
 		}
 	},
 
-	popupWindow: function(url, options, root)
+	popupWindow: function(url, options)
 	{
-		if(!options) options = { fadeDuration: 250, zIndex: 5 }
-		if(root != true)
-			url = rootpath + url;
-		
-		$.get(url, function(html)
+		if(!options) options = { fadeDuration: 250 }
+		$.get(rootpath + url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
 		});
@@ -84,65 +69,59 @@ var MyBB = {
 
 	deleteEvent: function(eid)
 	{
-		$.prompt(deleteevent_confirm, {
-			buttons:[
-					{title: yes_confirm, value: true},
-					{title: no_confirm, value: false}
-			],
-			submit: function(e,v,m,f){
-				if(v == true)
+		confirmReturn = confirm(deleteevent_confirm);
+
+		if(confirmReturn == true)
+		{
+			var form = $("<form />",
+			           {
+					   		method: "post",
+			             	action: "calendar.php",
+			             	style: "display: none;"
+			           });
+
+			form.append(
+			    $("<input />",
 				{
-					var form = $("<form />",
-							   {
-									method: "post",
-									action: "calendar.php",
-									style: "display: none;"
-							   });
+					name: "action",
+					type: "hidden",
+					value: "do_editevent"
+				})
+			);
 
-					form.append(
-						$("<input />",
-						{
-							name: "action",
-							type: "hidden",
-							value: "do_editevent"
-						})
-					);
-
-					if(my_post_key)
+			if(my_post_key)
+			{
+				form.append(
+				    $("<input />",
 					{
-						form.append(
-							$("<input />",
-							{
-								name: "my_post_key",
-								type: "hidden",
-								value: my_post_key
-							})
-						);
-					}
-
-					form.append(
-						$("<input />",
-						{
-							name: "eid",
-							type: "hidden",
-							value: eid
-						})
-					);
-
-					form.append(
-						$("<input />",
-						{
-							name: "delete",
-							type: "hidden",
-							value: 1
-						})
-					);
-
-					$("body").append(form);
-					form.submit();
-				}
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				);
 			}
-		});
+
+			form.append(
+			    $("<input />",
+				{
+					name: "eid",
+					type: "hidden",
+					value: eid
+				})
+			);
+
+			form.append(
+			    $("<input />",
+				{
+					name: "delete",
+					type: "hidden",
+					value: 1
+				})
+			);
+
+			$("body").append(form);
+			form.submit();
+		}
 	},
 
 	reputation: function(uid, pid)
@@ -157,63 +136,50 @@ var MyBB = {
 
 	deleteReputation: function(uid, rid)
 	{
-		$.prompt(delete_reputation_confirm, {
-			buttons:[
-					{title: yes_confirm, value: true},
-					{title: no_confirm, value: false}
-			],
-			submit: function(e,v,m,f){
-				if(v == true)
+		var confirmReturn = confirm(delete_reputation_confirm);
+
+		if(confirmReturn == true)
+		{
+			var form = $("<form />",
+			           {
+			           		method: "post",
+			           		action: "reputation.php?action=delete",
+			           		style: "display: none;"
+			           });
+
+			form.append(
+			    $("<input />",
 				{
-					var form = $("<form />",
+					name: "rid",
+					type: "hidden",
+					value: rid
+				})
+			);
+
+			if(my_post_key)
+			{
+				form.append(
+				    $("<input />",
 					{
-						method: "post",
-						action: "reputation.php?action=delete",
-						style: "display: none;"
-					});
-
-					form.append(
-						$("<input />",
-						{
-							name: "rid",
-							type: "hidden",
-							value: rid
-						})
-					);
-
-					if(my_post_key)
-					{
-						form.append(
-							$("<input />",
-							{
-								name: "my_post_key",
-								type: "hidden",
-								value: my_post_key
-							})
-						);
-					}
-
-					form.append(
-						$("<input />",
-						{
-							name: "uid",
-							type: "hidden",
-							value: uid
-						})
-					);
-
-					$("body").append(form);
-					form.submit();
-				}
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				);
 			}
-		});
-		
-		return false;
-	},
 
-	whoPosted: function(tid)
-	{
-		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid);
+			form.append(
+				$("<input />",
+				{
+					name: "uid",
+					type: "hidden",
+					value: uid
+				})
+			);
+
+			$("body").append(form);
+			form.submit();
+		}
 	},
 
 	markForumRead: function(event)
@@ -272,16 +238,6 @@ var MyBB = {
 	changeLanguage: function()
 	{
 		form = $("#lang_select");
-		if(!form)
-		{
-			return false;
-		}
-		form.submit();
-	},
-
-	changeTheme: function()
-	{
-		form = $("#theme_select");
 		if(!form)
 		{
 			return false;
@@ -373,25 +329,7 @@ var MyBB = {
 				});
 			},
 			error: function(){
-				  alert(lang.unknown_error);
-			}
-		});
-
-		return false;
-	},
-	
-	deleteAnnouncement: function(data)
-	{
-		$.prompt(announcement_quickdelete_confirm, {
-			buttons:[
-					{title: yes_confirm, value: true},
-					{title: no_confirm, value: false}
-			],
-			submit: function(e,v,m,f){
-				if(v == true)
-				{
-					window.location=data.href.replace('action=delete_announcement','action=do_delete_announcement');
-				}
+				  alert('An unknown error has occurred.');
 			}
 		});
 
@@ -445,14 +383,12 @@ var expandables = {
 
 		if(expandedItem.length && collapsedItem.length)
 		{
-			// Expanding
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
 				collapsedItem.toggle("fast");
 				this.saveCollapsed(controls);
 			}
-			// Collapsing
 			else
 			{
 				expandedItem.toggle("fast");
@@ -462,24 +398,20 @@ var expandables = {
 		}
 		else if(expandedItem.length && !collapsedItem.length)
 		{
-			// Expanding
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
-				element.parent().parent('.thead').removeClass('thead_collapsed');
 				this.saveCollapsed(controls);
 			}
-			// Collapsing
 			else
 			{
 				expandedItem.toggle("fast");
 				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
-				element.parent().parent('.thead').addClass('thead_collapsed');
 				this.saveCollapsed(controls, 1);
 			}
 		}
