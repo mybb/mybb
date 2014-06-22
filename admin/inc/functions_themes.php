@@ -386,6 +386,17 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	$filename = str_replace('/', '', $filename);
 	$tid = intval($tid);
+	$cache_themes_dir = MYBB_ROOT."cache/themes/theme{$tid}";
+
+	$cdn_path = '';
+
+	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	{
+		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
+		$cache_themes_dir = $cdn_path.'/'."cache/themes/theme{$tid}";
+	}
+
+	$cache_themes_dir = realpath($cache_themes_dir);
 
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
@@ -395,26 +406,27 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	}
 	// Does our theme directory exist? Try and create it.
 	elseif(!is_dir(MYBB_ROOT."cache/themes/theme{$tid}"))
+	elseif(!is_dir($cache_themes_dir))
 	{
-		if(!@mkdir(MYBB_ROOT."cache/themes/theme{$tid}"))
+		if(!@mkdir($cache_themes_dir))
 		{
 			$theme_directory = "cache/themes";
-			$filename = $tid."_".$filename;
+			$filename        = $tid."_".$filename;
 		}
 		else
 		{
 			// Add in empty index.html!
-			$fp = @fopen(MYBB_ROOT."cache/themes/theme{$tid}/index.html", "w");
+			$fp = @fopen($cache_themes_dir."/index.html", "w");
 			@fwrite($fp, "");
 			@fclose($fp);
 
-			$theme_directory = "cache/themes/theme{$tid}";
+			$theme_directory = $cache_themes_dir;
 		}
 	}
 	// Seems like we're all good
 	else
 	{
-		$theme_directory = "cache/themes/theme{$tid}";
+		$theme_directory = $cache_themes_dir;
 	}
 
 	$theme_vars = array(
@@ -444,6 +456,15 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	@fwrite($fp, $stylesheet);
 	@fclose($fp);
+	if(strpos($theme_directory, MYBB_ROOT) == 0)
+	{
+		$theme_directory = str_replace(MYBB_ROOT.'/', '', $theme_directory);
+	}
+	else
+	{
+		$theme_directory = str_replace($cdn_path.'/', '', $theme_directory);
+	}
+
 	return "{$theme_directory}/{$filename}";
 }
 
@@ -930,10 +951,28 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		foreach($parent_list as $theme_id)
 		{
-			if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}") && filemtime(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}") >= $stylesheet['lastmodified'])
+			if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 			{
-				$css_url = "cache/themes/theme{$theme_id}/{$stylesheet['name']}";
-				break;
+				$cdnpath = rtrim($mybb->settings['cdnpath'], '/\\').'/';
+				if(file_exists($cdnpath."cache/themes/theme{$theme_id}/{$stylesheet['name']}") && filemtime(
+						$cdnpath."cache/themes/theme{$theme_id}/{$stylesheet['name']}"
+					) >= $stylesheet['lastmodified']
+				)
+				{
+					$css_url = "cache/themes/theme{$theme_id}/{$stylesheet['name']}";
+					break;
+				}
+			}
+			else
+			{
+				if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}") && filemtime(
+						MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['name']}"
+					) >= $stylesheet['lastmodified']
+				)
+				{
+					$css_url = "cache/themes/theme{$theme_id}/{$stylesheet['name']}";
+					break;
+				}
 			}
 		}
 

@@ -164,6 +164,20 @@ class MyBB {
 	);
 
 	/**
+	 * The cache instance to use.
+	 *
+	 * @var datacache
+	 */
+	public $cache;
+
+	/**
+	 * The base URL to assets.
+	 *
+	 * @var string
+	 */
+	public $asset_url = null;
+
+	/**
 	 * Constructor of class.
 	 *
 	 * @return MyBB
@@ -416,6 +430,39 @@ class MyBB {
 					return '';
 				}
 				return $this->input[$name];
+		}
+	}
+
+	/**
+	 * Get the path to an asset using the CDN URL if configured.
+	 *
+	 * @param string $path    The path to the file.
+	 * @param bool   $use_cdn Whether to use the configured CDN options.
+	 *
+	 * @return string The complete URL to the asset.
+	 */
+	public function get_asset_url($path = '', $use_cdn = true)
+	{
+		$path = (string) $path;
+		$path = ltrim($path, '/');
+
+		$base_path = '';
+		if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
+		{
+			$base_path = rtrim($this->settings['cdnurl'], '/');
+		}
+		else
+		{
+			$base_path = rtrim($this->settings['bburl'], '/');
+		}
+
+		if(!empty($path))
+		{
+			return $base_path.'/'.$path;
+		}
+		else
+		{
+			return $base_path;
 		}
 	}
 
