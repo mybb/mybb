@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'printthread.php');
 
-$templatelist = "printthread,printthread_post,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "printthread,printthread_post,forumdisplay_password_wrongpass,forumdisplay_password,printthread_multipage,printthread_multipage_page,printthread_multipage_page_current";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -222,9 +222,9 @@ function makeprintablenav($pid="0", $depth="--")
  * @param int The current page.
  * @param string The URL base.
 */
-function printthread_multipage($count, $perpage, $page, $url)
+function printthread_multipage($count, $perpage, $current_page, $url)
 {
-	global $lang;
+	global $lang, $templates;
 	$multipage = "";
 	if($count > $perpage)
 	{
@@ -232,18 +232,19 @@ function printthread_multipage($count, $perpage, $page, $url)
 		$pages = ceil($pages);
 
 		$mppage = null;
-		for($i = 1; $i <= $pages; ++$i)
+		for($page = 1; $page <= $pages; ++$page)
 		{
-			if($i == $page)
+			if($page == $current_page)
 			{
-				$mppage .= "<strong>{$i}</strong> ";
+				eval("\$mppage .= \"".$templates->get("printthread_multipage_page_current")."\";");
 			}
 			else
 			{
-				$mppage .= "<a href=\"{$url}&amp;page={$i}\">$i</a> ";
+				eval("\$mppage .= \"".$templates->get("printthread_multipage_page")."\";");
 			}
 		}
-		$multipage = "<div class=\"multipage\">{$lang->pages} <strong>".$lang->archive_pages."</strong> {$mppage}</div>";
+
+		eval("\$multipage = \"".$templates->get("printthread_multipage")."\";");
 	}
 	return $multipage;
 }
