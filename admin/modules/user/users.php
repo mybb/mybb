@@ -1685,7 +1685,6 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("sessions", "uid='{$user['uid']}'");
 		$db->delete_query("banned", "uid='{$user['uid']}'");
-		$db->delete_query("threadratings", "uid='{$user['uid']}'");
 		$db->delete_query("users", "uid='{$user['uid']}'");
 		$db->delete_query("joinrequests", "uid='{$user['uid']}'");
 		$db->delete_query("warnings", "uid='{$user['uid']}'");
@@ -1693,6 +1692,24 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
 		$db->delete_query("posts", "uid = '{$user['uid']}' AND visible = '-2'");
 		$db->delete_query("threads", "uid = '{$user['uid']}' AND visible = '-2'");
+
+		// Update thread ratings
+		$query = $db->query("
+			SELECT r.*, t.numratings, t.totalratings
+			FROM ".TABLE_PREFIX."threadratings r
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
+			WHERE r.uid='{$user['uid']}'
+		");
+		while($rating = $db->fetch_array($query))
+		{
+			$update_thread = array(
+				"numratings" => $rating['numratings'] - 1,
+				"totalratings" => $rating['totalratings'] - $rating['rating']
+			);
+			$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
+		}
+
+		$db->delete_query("threadratings", "uid='{$user['uid']}'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
@@ -2599,10 +2616,27 @@ if($mybb->input['action'] == "inline_edit")
 								$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
 								$db->delete_query("sessions", "uid='{$user['uid']}'");
 								$db->delete_query("banned", "uid='{$user['uid']}'");
-								$db->delete_query("threadratings", "uid='{$user['uid']}'");
 								$db->delete_query("users", "uid='{$user['uid']}'");
 								$db->delete_query("joinrequests", "uid='{$user['uid']}'");
 								$db->delete_query("warnings", "uid='{$user['uid']}'");
+
+								// Update thread ratings
+								$query = $db->query("
+									SELECT r.*, t.numratings, t.totalratings
+									FROM ".TABLE_PREFIX."threadratings r
+									LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
+									WHERE r.uid='{$user['uid']}'
+								");
+								while($rating = $db->fetch_array($query))
+								{
+									$update_thread = array(
+										"numratings" => $rating['numratings'] - 1,
+										"totalratings" => $rating['totalratings'] - $rating['rating']
+									);
+									$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
+								}
+
+								$db->delete_query("threadratings", "uid='{$user['uid']}'");
 							}
 						}
 						// Update forum stats, remove the cookie and redirect the user
