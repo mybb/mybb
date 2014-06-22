@@ -3533,7 +3533,7 @@ a.button {
 </tr>
 ]]></template>
 		<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -4107,8 +4107,8 @@ a.button {
   <td class="trow1"><input type="text" id="username" class="textbox" name="username" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4163,8 +4163,8 @@ if(use_xmlhttprequest == "1")
   <td class="trow1"><input type="text" id="inviteusername" class="textbox" name="inviteusername" size="40" maxlength="{$mybb->settings['maxnamelength']}" style="width: 210px" /></td>
 </tr>
 </table>
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -4458,7 +4458,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -4656,7 +4656,7 @@ if(use_xmlhttprequest == "1")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
-<script src="jscripts/validate/jquery.validate.min.js"></script>
+<script src="{$mybb->asset_url}/jscripts/validate/jquery.validate.min.js"></script>
 </head>
 <body>
 {$header}
@@ -5002,8 +5002,8 @@ $().ready(function() {
 </td>
 </tr></table>
 </fieldset>
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5261,8 +5261,8 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -5404,8 +5404,8 @@ if(use_xmlhttprequest == "1")
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -6256,8 +6256,8 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -6750,8 +6750,8 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 {$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css" />
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css" />
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -7473,8 +7473,8 @@ if(use_xmlhttprequest == "1")
 		</tr>
 	</table>
 	{$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -9678,8 +9678,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -9969,7 +9969,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
 </head>
 <body>
 {$header}
@@ -10230,8 +10230,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<link rel="stylesheet" href="jscripts/select2/select2.css">
-<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
 if(use_xmlhttprequest == "1")
@@ -10335,7 +10335,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_posts_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="search_results_posts_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -10425,7 +10425,7 @@ if(use_xmlhttprequest == "1")
 		</body>
 		</html>]]></template>
 		<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="search_results_threads_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
@@ -10564,7 +10564,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script type="text/javascript" src="jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1800"></script>
 </head>
@@ -10648,7 +10648,7 @@ if(use_xmlhttprequest == "1")
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1800"></script>
+		<template name="showthread_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -11331,8 +11331,8 @@ if(use_xmlhttprequest == "1")
       	lang.buddylist_error = '{$lang->buddylist_error}';
 	</script>
 
-  <link rel="stylesheet" href="jscripts/select2/select2.css">
-	<script type="text/javascript" src="jscripts/select2/select2.min.js"></script>
+  <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
+	<script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 
 </head>
 <body>
@@ -12980,8 +12980,8 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
-		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
-<link rel="stylesheet" href="jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
+		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
+<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
@@ -12989,7 +12989,7 @@ if(use_xmlhttprequest == "1")
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
-		style: "jscripts/sceditor/editor_themes/{$theme['editortheme']}",
+		style: "{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
 		emoticons: {
@@ -13069,9 +13069,9 @@ $(function() {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/jquery.plugins.min.js?ver=1800"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/jquery.plugins.min.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/general.js?ver=1800"></script>
 
 {$stylesheets}
 <script type="text/javascript">
