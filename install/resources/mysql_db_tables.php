@@ -145,6 +145,16 @@ $tables[] = "CREATE TABLE mybb_banned (
   KEY dateline (dateline)
 ) ENGINE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_buddyrequests (
+ id int(10) UNSIGNED NOT NULL auto_increment,
+ uid bigint(30) UNSIGNED NOT NULL,
+ touid bigint(30) UNSIGNED NOT NULL,
+ date int(11) UNSIGNED NOT NULL,
+ KEY (uid),
+ KEY (touid),
+ PRIMARY KEY (id)
+) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_calendars (
   cid int unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',

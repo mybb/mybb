@@ -392,4 +392,15 @@ $l['icon_lock'] = " Locked thread.";
 $l['search_user'] = "Search for a user";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
+
+$l['buddyrequests_sent'] = 'Buddy Requests Sent';
+$l['buddyrequests_received'] = 'Buddy Requests Received';
+$l['from'] = 'From';
+$l['to'] = 'To';
+$l['date'] = 'Date';
+$l['options'] = 'Options';
+$l['accept'] = 'Accept';
+$l['decline'] = 'Decline';
+$l['cancel'] = 'Cancel';
+$l['no_requests'] = 'No requests found.';
 ?>

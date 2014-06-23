@@ -2476,7 +2476,47 @@ if($mybb->input['action'] == "editlists")
 		}
 		exit;
 	}
-
+	
+	$received_rows = '';
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM `".TABLE_PREFIX."buddyrequests` r
+		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.uid)
+		WHERE r.touid=".(int)$mybb->user['uid']."
+	");
+	while($request = $db->fetch_array($query))
+	{
+		$bgcolor = alt_trow();
+		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
+		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
+	}
+	
+	if($rows == '')
+	{
+		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+	}
+	
+	$sent_rows = '';
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM `".TABLE_PREFIX."buddyrequests` r
+		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.uid)
+		WHERE r.uid=".(int)$mybb->user['uid']."
+	");
+	while($request = $db->fetch_array($query))
+	{
+		$bgcolor = alt_trow();
+		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
+		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
+	}
+	
+	if($rows == '')
+	{
+		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+	}
+	
 	$plugins->run_hooks("usercp_editlists_end");
 
 	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");

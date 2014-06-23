@@ -489,6 +489,18 @@ function upgrade30_dbchanges5()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$collation = $db->build_create_table_collation();
+
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+		 id int(10) UNSIGNED NOT NULL auto_increment,
+		 uid bigint(30) UNSIGNED NOT NULL,
+		 touid bigint(30) UNSIGNED NOT NULL,
+		 date int(11) UNSIGNED NOT NULL,
+		 KEY (uid),
+		 KEY (touid),
+		 PRIMARY KEY (id)
+	) ENGINE=MyISAM{$collation};");
+	
 	if($db->field_exists('msn', 'users'))
 	{
 		$db->drop_column("users", "msn");
