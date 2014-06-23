@@ -719,6 +719,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"daysprune" => $mybb->get_input('daysprune', 1),
 		"showcodebuttons" => $mybb->get_input('showcodebuttons', 1),
 		"pmnotify" => $mybb->get_input('pmnotify', 1),
+		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', 1),
+		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', 1),
 		"showredirect" => $mybb->get_input('showredirect', 1),
 		"classicpostbit" => $mybb->get_input('classicpostbit', 1)
 	);
@@ -934,7 +936,24 @@ if($mybb->input['action'] == "options")
 	{
 		$pmnotifycheck = '';
 	}
+	
+	if(isset($user['buddyrequestspm']) && $user['buddyrequestspm'] != 0)
+	{
+		$buddyrequestspmcheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$buddyrequestspmcheck = '';
+	}
 
+	if(isset($user['buddyrequestsauto']) && $user['buddyrequestsauto'] != 0)
+	{
+		$buddyrequestsautocheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$buddyrequestsautocheck = '';
+	}
 
 	if(!isset($user['threadmode']) || ($user['threadmode'] != "threaded" && $user['threadmode'] != "linear"))
 	{
