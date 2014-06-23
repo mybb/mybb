@@ -390,7 +390,9 @@ else
 }
 $mybb->usergroup = usergroup_permissions($mybbgroups);
 
-if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
+$is_super_admin = is_super_admin($mybb->user['uid']);
+
+if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
@@ -481,8 +483,6 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 $page->add_breadcrumb_item($lang->home, "index.php");
 
 // Begin dealing with the modules
-$is_super_admin = is_super_admin($mybb->user['uid']);
-
 $modules_dir = MYBB_ADMIN_DIR."modules";
 $dir = opendir($modules_dir);
 while(($module = readdir($dir)) !== false)
