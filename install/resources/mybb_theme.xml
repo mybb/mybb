@@ -10314,6 +10314,7 @@ if(use_xmlhttprequest == "1")
 	<td colspan="9" class="selectall">{$lang->all_selected} <a href="#" onclick='inlineModeration.clearChecked();'>{$lang->clear_selection}</a></td>
 </tr>
 ]]></template>
+		<template name="search_results_icon" version="1800"><![CDATA[<img src="{$posticon['path']}" alt="{$posticon['name']}" title="{$posticon['name']}" />]]></template>
 		<template name="search_results_inlinemodcol" version="1408"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
 		<template name="search_results_posts" version="1600"><![CDATA[<html>
 <head>
@@ -10858,7 +10859,9 @@ if(use_xmlhttprequest == "1")
 		</tbody>
 	</table>
 </form>]]></template>
+		<template name="showthread_quickreply_options_close" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closelinkch} />&nbsp;<strong>{$lang->close_thread}</strong></label>]]></template>
 		<template name="showthread_quickreply_options_signature" version="1800"><![CDATA[<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />]]></template>
+		<template name="showthread_quickreply_options_stick" version="1800"><![CDATA[<br /><label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickch} />&nbsp;<strong>{$lang->stick_thread}</strong></label>]]></template>
 		<template name="showthread_ratethread" version="1800"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript">
 		<!--
