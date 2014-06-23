@@ -491,15 +491,37 @@ function upgrade30_dbchanges5()
 
 	$collation = $db->build_create_table_collation();
 
-	$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
-		 id int(10) UNSIGNED NOT NULL auto_increment,
-		 uid bigint(30) UNSIGNED NOT NULL,
-		 touid bigint(30) UNSIGNED NOT NULL,
-		 date int(11) UNSIGNED NOT NULL,
-		 KEY (uid),
-		 KEY (touid),
-		 PRIMARY KEY (id)
-	) ENGINE=MyISAM{$collation};");
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id serial,
+				 uid int NOT NULL,
+				 touid int NOT NULL,
+				 date int NOT NULL,
+				 PRIMARY KEY (id)
+			);");
+		break;
+		case "sqlite":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id INTEGER PRIMARY KEY,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL
+			);");
+		break;
+		default:
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id int(10) UNSIGNED NOT NULL auto_increment,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL,
+				 KEY (uid),
+				 KEY (touid),
+				 PRIMARY KEY (id)
+			) ENGINE=MyISAM{$collation};");
+		break;
+	}
 	
 	if($db->field_exists('msn', 'users'))
 	{
