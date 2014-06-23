@@ -410,4 +410,8 @@ $l['buddyrequest_received'] = 'Buddy request received';
 $l['buddyrequest_new_buddy'] = 'You have a new buddy';
 $l['buddyrequest_new_buddy_message'] = "Hi,\nI have been automatically added to your buddy list.";
 $l['buddyrequest_received_message'] = "I have just sent you a buddy request.\nYou can view your pending requests from User Control Panel -> Buddy/Ignore List.";
+
+$l['users_already_sent_request'] = "You have already sent a buddy request to this user.";
+$l['users_already_sent_request_alt'] = "You have sent a friend request to one of the users you added. Please cancel the friend request before adding the user to the ignore list.";
+
 ?>

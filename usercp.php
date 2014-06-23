@@ -2227,6 +2227,14 @@ if($mybb->input['action'] == "do_editlists")
 			}
 			$users[$key] = $db->escape_string($username);
 		}
+		
+		// Get the requests we have sent that are still pending
+		$query = $db->simple_select('buddyrequests', 'touid', 'uid='.(int)$mybb->user['uid']);
+		$requests = array();
+		while($req = $db->fetch_array($query))
+		{
+			$requests[$req['touid']] = true;
+		}
 
 		// Fetch out new users
 		if(count($users) > 0)
@@ -2256,6 +2264,19 @@ if($mybb->input['action'] == "do_editlists")
 					}
 
 					$error_message = $lang->$string;
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
+				
+				if(isset($requests[$user['uid']]) && $mybb->get_input('manage') != "ignored")
+				{
+					$error_message = $lang->users_already_sent_request;
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
+				elseif(isset($requests[$user['uid']]) && $mybb->get_input('manage') == "ignored")
+				{
+					$error_message = $lang->users_already_sent_request_alt;
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
