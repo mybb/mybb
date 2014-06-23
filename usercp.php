@@ -2260,7 +2260,34 @@ if($mybb->input['action'] == "do_editlists")
 					continue;
 				}
 
-				$existing_users[] = $user['uid'];
+				// Do we have auto approval set to On?
+				if($mybb->user['buddyrequestsauto'] == 1)
+				{
+					$existing_users[] = $user['uid'];
+					
+					$pm = array(
+						'touid' => $user['uid'],
+						'subject' => $lang->buddyrequest_new_buddy,
+						'message' => $lang->buddyrequest_new_buddy_message,
+						'receivepms' => $mybb->user['buddyrequestspm']
+					);
+					
+					send_pm($pm);
+				}
+				else
+				{
+					// Send request
+					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
+					
+					$pm = array(
+						'touid' => $user['uid'],
+						'subject' => $lang->buddyrequest_received,
+						'message' => $lang->buddyrequest_received_message,
+						'receivepms' => $mybb->user['buddyrequestspm']
+					);
+					
+					send_pm($pm);
+				}
 			}
 		}
 
@@ -2511,7 +2538,7 @@ if($mybb->input['action'] == "editlists")
 		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
 	}
 	
-	if($rows == '')
+	if($received_rows == '')
 	{
 		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
@@ -2531,7 +2558,7 @@ if($mybb->input['action'] == "editlists")
 		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
 	}
 	
-	if($rows == '')
+	if($sent_rows == '')
 	{
 		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}

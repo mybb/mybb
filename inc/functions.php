@@ -7452,12 +7452,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	if (!is_array($pm))
+	if(!is_array($pm))
 	{
 		return false;
 	}
 
-	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
@@ -7473,7 +7473,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$toid = $pm['touid'];
 
 	// Our recipients
-	if (is_array($toid))
+	if(is_array($toid))
 	{
 		$recipients_to = $toid;
 	}
@@ -7485,11 +7485,11 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$recipients_bcc = array();
 
 	// Determine user ID
-	if ((int)$fromid == 0)
+	if((int)$fromid == 0)
 	{
 		$fromid = (int)$mybb->user['uid'];
 	}
-	elseif ((int)$fromid < 0)
+	elseif((int)$fromid < 0)
 	{
 		$fromid = 0;
 	}

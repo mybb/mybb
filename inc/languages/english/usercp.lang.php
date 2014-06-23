@@ -403,4 +403,11 @@ $l['accept'] = 'Accept';
 $l['decline'] = 'Decline';
 $l['cancel'] = 'Cancel';
 $l['no_requests'] = 'No requests found.';
+
+$l['buddyrequests_pm'] = 'Receive PM notifications for new buddy requests.';
+$l['buddyrequests_auto'] = 'Automatically accept buddy requests (if the above checkbox is ticked, a PM is sent informing of the new buddy connection)';
+$l['buddyrequest_received'] = 'Buddy request received';
+$l['buddyrequest_new_buddy'] = 'You have a new buddy';
+$l['buddyrequest_new_buddy_message'] = "Hi,\nI have been automatically added to your buddy list.";
+$l['buddyrequest_received_message'] = "I have just sent you a buddy request.\nYou can view your pending requests from User Control Panel -> Buddy/Ignore List.";
 ?>
