@@ -1015,6 +1015,8 @@ $tables[] = "CREATE TABLE mybb_users (
   receivefrombuddy tinyint(1) NOT NULL default '0',
   pmnotice tinyint(1) NOT NULL default '0',
   pmnotify tinyint(1) NOT NULL default '0',
+  buddyrequestspm tinyint(1) NOT NULL default '1',
+  buddyrequestsauto tinyint(1) NOT NULL default '0',
   threadmode varchar(8) NOT NULL default '',
   showimages tinyint(1) NOT NULL default '0',
   showvideos tinyint(1) NOT NULL default '0',

@@ -565,6 +565,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "smallint NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "smallint NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "smallint NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "smallint NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "smallint NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "smallint NOT NULL default '0' AFTER required");
@@ -577,6 +579,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "tinyint(1) NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "tinyint(1) NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "tinyint(1) NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "tinyint(1) NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "tinyint(1) NOT NULL default '0' AFTER required");
