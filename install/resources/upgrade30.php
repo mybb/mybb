@@ -732,7 +732,79 @@ function upgrade30_dbchanges5()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_optimize1");
+	$output->print_footer("30_threadcount");
+}
+
+function upgrade30_threadcount()
+{
+	global $db, $output;
+
+	$output->print_header("Counting user thread count");
+
+	if(!$_POST['theadspage'])
+	{
+		$threads = 500;
+	}
+	else
+	{
+		$threads = $_POST['theadspage'];
+	}
+
+	if($_POST['threadstart'])
+	{
+		$startat = $_POST['threadstart'];
+		$upper = $startat+$threads;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $threads;
+		$lower = 0;
+	}
+
+	$query = $db->simple_select("users", "COUNT(uid) AS usercount");
+	$cnt = $db->fetch_array($query);
+
+	if($upper > $cnt['usercount'])
+	{
+		$upper = $cnt['usercount'];
+	}
+
+	echo "<p>Counting thread count of user #{$lower} to #{$upper} ({$cnt['usercount']} Total)</p>";
+	flush();
+
+	$threadnum = false;
+
+	$query = $db->simple_select("users", "threadnum, uid", "", array('limit_start' => $lower, 'limit' => $threads));
+	while($thread = $db->fetch_array($query))
+	{
+		$query2 = $db->simple_select("threads", "COUNT(tid) AS thread_count", "uid='{$thread['uid']}' AND visible = 1");
+		$num_threads = $db->fetch_field($query2, "thread_count");
+
+		$db->update_query("users", array('threadnum' => $num_threads), "uid = '{$thread['uid']}'");
+
+		$threadnum = true;
+	}
+
+	$remaining = $upper-$cnt['usercount'];
+	if($remaining && $threadnum)
+	{
+		$nextact = "30_threadcount";
+		$startat = $startat+$threads;
+		$contents = "<p><input type=\"hidden\" name=\"theadspage\" value=\"$threads\" /><input type=\"hidden\" name=\"threadstart\" value=\"$startat\" />Done. Click Next to move on to the next set of thread counts.</p>";
+	}
+	else
+	{
+		$nextact = "30_dbchanges_optimize1";
+		$contents = "<p>Done</p><p>All users have had their thread count counted. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_footer($nextact);
 }
 
 function upgrade30_dbchanges_optimize1()
