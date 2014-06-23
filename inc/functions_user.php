@@ -678,4 +678,48 @@ function get_pm_folder_name($fid, $name="")
 			return $lang->folder_untitled;
 	}
 }
+
+/**
+ * Generates a security question for registration.
+ *
+ * @return string The question session id.
+ */
+function generate_question()
+{
+	global $db;
+
+	$query = $db->query("
+		SELECT qid, shown
+		FROM ".TABLE_PREFIX."questions
+		WHERE active='1'
+		ORDER BY RAND()
+		LIMIT 1
+	");
+	$question = $db->fetch_array($query);
+
+	if(!$db->num_rows($query))
+	{
+		// No active questions exist
+		return false;
+	}
+	else
+	{
+		$sessionid = random_str(32);
+
+		$sql_array = array(
+			"sid" => $sessionid,
+			"qid" => $question['qid'],
+			"dateline" => TIME_NOW
+		);
+		$db->insert_query("questionsessions", $sql_array);
+
+		$update_question = array(
+			"shown" => $question['shown'] + 1
+		);
+		$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
+
+		return $sessionid;
+	}
+}
+
 ?>
