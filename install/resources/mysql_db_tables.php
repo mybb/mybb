@@ -607,6 +607,24 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY (plid)
 ) ENGINE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_questions (
+  qid int unsigned NOT NULL auto_increment,
+  question varchar(200) NOT NULL default '',
+  answer varchar(150) NOT NULL default '',
+  shown int unsigned NOT NULL default 0,
+  correct int unsigned NOT NULL default 0,
+  incorrect int unsigned NOT NULL default 0,
+  active tinyint(1) NOT NULL default '0',
+  PRIMARY KEY (qid)
+) ENGINE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_questionsessions (
+  sid varchar(32) NOT NULL default '',
+  qid int unsigned NOT NULL default '0',
+  dateline int unsigned NOT NULL default '0',
+  PRIMARY KEY (sid)
+) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_reportedcontent (
   rid int unsigned NOT NULL auto_increment,
   id int unsigned NOT NULL default '0',
