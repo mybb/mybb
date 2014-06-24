@@ -53,7 +53,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		flash_message($lang->succuss_view_set_as_default, 'success');
 		admin_redirect($base_url."&action=views");
 	}
-	
+
 	if($mybb->input['do'] == "add")
 	{
 		if($mybb->request_method == "post")
@@ -123,14 +123,14 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 				"perpage" => 20,
 			);
 		}
-		
+
 		// Write in our JS based field selector
 		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 
 		$page->add_breadcrumb_item($lang->create_new_view);
 		$page->output_header($lang->create_new_view);
-			
+
 		$form = new Form($base_url."&amp;action=views&amp;do=add", "post");
 
 		$page->output_nav_tabs($sub_tabs, 'create_view');
@@ -206,18 +206,18 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$field_select .= $form->generate_hidden_field("fields_js", @implode(",", @array_keys($active)), array('id' => 'fields_js'));
 		$field_select = str_replace("'", "\\'", $field_select);
 		$field_select = str_replace("\n", "", $field_select);
-		
+
 		$field_select = "<script type=\"text/javascript\">
 //<![CDATA[
 document.write('".str_replace("/", "\/", $field_select)."');
 //]]>
 </script>\n";
-		
+
 		foreach($fields as $key => $field)
 		{
 			$field_options[$key] = $field['title'];
 		}
-		
+
 		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
@@ -227,7 +227,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		// Build the search conditions
 		if(function_exists($conditions_callback))
 		{
-			$conditions_callback($mybb->input, $form); 
+			$conditions_callback($mybb->input, $form);
 		}
 
 		$buttons[] = $form->generate_submit_button($lang->save_view);
@@ -240,7 +240,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	{
 		$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
-		
+
 		// Does the view not exist?
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
@@ -309,14 +309,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				admin_redirect($base_url."&vid={$admin_view['vid']}");
 			}
 		}
-		
+
 		// Write in our JS based field selector
 		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 
 		$page->add_breadcrumb_item($lang->edit_view);
 		$page->output_header($lang->edit_view);
-			
+
 		$form = new Form($base_url."&amp;action=views&amp;do=edit&amp;vid={$admin_view['vid']}", "post");
 
 		$sub_tabs = array();
@@ -386,7 +386,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 
 		$form_container->end();
-		
+
 		$field_select .= "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
 		if(is_array($mybb->input['fields']))
@@ -417,17 +417,17 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$field_select .= $form->generate_hidden_field("fields_js", @implode(",", @array_keys($active)), array('id' => 'fields_js'));
 		$field_select = str_replace("'", "\\'", $field_select);
 		$field_select = str_replace("\n", "", $field_select);
-		
+
 		$field_select = "<script type=\"text/javascript\">
 //<![CDATA[
 document.write('".str_replace("/", "\/", $field_select)."');
 //]]></script>\n";
-		
+
 		foreach($fields as $key => $field)
 		{
 			$field_options[$key] = $field['title'];
 		}
-		
+
 		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
@@ -450,30 +450,30 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 	else if($mybb->input['do'] == "delete")
 	{
-		if($mybb->input['no']) 
-		{ 
-			admin_redirect($base_url."&action=views"); 
+		if($mybb->input['no'])
+		{
+			admin_redirect($base_url."&action=views");
 		}
-		
+
 		$query = $db->simple_select("adminviews", "COUNT(vid) as views");
 		$views = $db->fetch_field($query, "views");
-		
+
 		if($views == 0)
 		{
 			flash_message($lang->error_cannot_delete_view, 'error');
 			admin_redirect($base_url."&action=views");
 		}
-		
+
 		$vid = intval($mybb->input['vid']);
 		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid = '{$vid}'");
 		$admin_view = $db->fetch_array($query);
-		
+
 		if($vid == 1 || !$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
 			flash_message($lang->error_invalid_view_delete, 'error');
 			admin_redirect($base_url."&action=views");
 		}
-		
+
 		if($mybb->request_method == "post")
 		{
 			$db->delete_query("adminviews", "vid='{$admin_view['vid']}'");
@@ -482,7 +482,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 		else
 		{
-			$page->output_confirm_action($base_url."&amp;action=views&amp;do=delete&amp;vid={$admin_view['vid']}", $lang->confirm_view_deletion); 
+			$page->output_confirm_action($base_url."&amp;action=views&amp;do=delete&amp;vid={$admin_view['vid']}", $lang->confirm_view_deletion);
 		}
 	}
 
@@ -502,6 +502,12 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			$fields = unserialize($admin_view['fields']);
 			$conditions = unserialize($admin_view['conditions']);
+
+			$admin_view['title'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['title']);
+			$admin_view['sortby'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortby']);
+			$admin_view['sortorder'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortorder']);
+			$admin_view['view_type'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['view_type']);
+
 			$xml .= "\t<view vid=\"{$admin_view['vid']}\" uid=\"{$admin_view['uid']}\" type=\"{$admin_view['type']}\" visibility=\"{$admin_view['visibility']}\">\n";
 			$xml .= "\t\t<title><![CDATA[{$admin_view['title']}]]></title>\n";
 			$xml .= "\t\t<fields>\n";
@@ -519,6 +525,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 					$condition = serialize($condition);
 					$is_serialized = " is_serialized=\"1\"";
 				}
+				$condition = str_replace(']]>', ']]]]><![CDATA[>', $condition);
 				$xml .= "\t\t\t<condition name=\"{$name}\"{$is_serialized}><![CDATA[{$condition}]]></condition>\n";
 			}
 			$xml .= "\t\t</conditions>\n";
@@ -536,14 +543,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		header("Pragma: no-cache");
 		header("Expires: 0");
 		echo $xml;
-		exit;	
+		exit;
 	}
 
 	// Generate a listing of all current views
 	else
 	{
 		$page->output_header($lang->view_manager);
-		
+
 		$page->output_nav_tabs($sub_tabs, 'views');
 
 		$table = new Table;
@@ -551,10 +558,10 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
 		$default_view = fetch_default_view($type);
-		
+
 		$query = $db->simple_select("adminviews", "COUNT(vid) as views");
 		$views = $db->fetch_field($query, "views");
-		
+
 		$query = $db->query("
 			SELECT v.*, u.username
 			FROM ".TABLE_PREFIX."adminviews v
@@ -588,24 +595,24 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				$default_add = " ({$lang->default})";
 			}
-			
+
 
 			$title_string = "view_title_{$view['vid']}";
-			
+
 			if($lang->$title_string)
 			{
 				$view['title'] = $lang->$title_string;
 			}
 
 			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$view_type}.gif\" title=\"".$lang->sprintf($lang->this_is_a_view, $view_type)."\" alt=\"{$view_type}\" /></div><div class=\"{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
-			
+
 			$popup = new PopupMenu("view_{$view['vid']}", $lang->options);
 			$popup->add_item($lang->edit_view, "{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}");
 			if($view['vid'] != $default_view)
 			{
 				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
 			}
-			
+
 			if($views > 1 && $view['vid'] != 1)
 			{
 				$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
@@ -614,9 +621,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$table->construct_cell($controls, array("class" => "align_center"));
 			$table->construct_row();
 		}
-		
+
 		$table->output($lang->view);
-		
+
 		echo <<<LEGEND
 <br />
 <fieldset>
@@ -625,7 +632,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 <img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->public}" style="vertical-align: middle;" /> {$lang->public_view_desc}<br />
 <img src="styles/{$page->style}/images/icons/user.gif" alt="{$lang->private}" style="vertical-align: middle;" /> {$lang->private_view_desc}</fieldset>
 LEGEND;
-		$page->output_footer();	
+		$page->output_footer();
 	}
 }
 
