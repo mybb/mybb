@@ -2250,10 +2250,8 @@ a.button {
 							{$yearsel}
 						</select>
 						{$gobutton}
-						<br /><br />
-						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						<br />
 						{$calendar_jump}
-						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -2282,14 +2280,7 @@ a.button {
 			<td width="20%" class="trow1"><strong>{$lang->event_name}</strong></td>
 			<td class="trow1"><input type="text" class="textbox" size="50" name="name" maxlength="120" value="{$name}"/></td>
 		</tr>
-		<tr>
-			<td width="20%" class="trow1"><strong>{$lang->select_calendar}</strong></td>
-			<td class="trow1">
-				<select name="calendar">
-					{$calendar_select}
-				</select>
-			</td>
-		</tr>
+		{$calendar_select}
 		<tr>
 			<td class="trow2" style="vertical-align: top;"><strong>{$lang->event_date}</strong></td>
 			<td class="trow1">
@@ -2568,6 +2559,14 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
+		<template name="calendar_addevent_calendarselect" version="1800"><![CDATA[		<tr>
+			<td width="20%" class="trow1"><strong>{$lang->select_calendar}</strong></td>
+			<td class="trow1">
+				<select name="calendar">
+					{$select_calendar}
+				</select>
+			</td>
+		</tr>]]></template>
 		<template name="calendar_addeventlink" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a> | <a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
 		<template name="calendar_addprivateevent" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
 		<template name="calendar_addpublicevent" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a>]]></template>
@@ -2613,10 +2612,8 @@ a.button {
 							{$yearsel}
 						</select>
 						{$gobutton}
-						<br /><br />
-						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						<br />
 						{$calendar_jump}
-						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -3055,10 +3052,8 @@ a.button {
 							{$yearsel}
 						</select>
 						{$gobutton}
-						<br /><br />
-						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						<br />
 						{$calendar_jump}
-						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -3085,9 +3080,12 @@ a.button {
 				</form>
 				<br />]]></template>
 		<template name="calendar_eventbit" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
-		<template name="calendar_jump" version="1800"><![CDATA[<select name="calendar">
+		<template name="calendar_jump" version="1800"><![CDATA[<br />
+<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+<select name="calendar">
 {$jump_options}
-</select>]]></template>
+</select>
+{$gobutton}]]></template>
 		<template name="calendar_jump_option" version="1800"><![CDATA[<option value="{$calendar['cid']}" {$sel}>{$calendar['name']}</option>]]></template>
 		<template name="calendar_mini" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="width: 180px;">
 	<thead>
@@ -3234,10 +3232,8 @@ a.button {
 								{$yearsel}
 							</select>
 							{$gobutton}
-							<br /><br />
-							<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+							<br />
 							{$calendar_jump}
-							{$gobutton}
 							</td>
 						</tr>
 					</table>

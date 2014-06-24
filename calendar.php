@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'calendar.php');
 $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
 $templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview,calendar_eventbit";
 $templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
-$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink";
+$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_calendar.php";
@@ -57,7 +57,13 @@ $plugins->run_hooks("calendar_start");
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 $mybb->input['calendar'] = $mybb->get_input('calendar', 1);
-$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+$calendars = cache_calendars();
+
+$calendar_jump = '';
+if(count($calendars) > 1)
+{
+	$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+}
 
 $mybb->input['action'] = $mybb->get_input('action');
 // Add an event
@@ -501,7 +507,8 @@ if($mybb->input['action'] == "addevent")
 		$privatecheck = '';
 	}
 
-	$calendar_select = '';
+	$select_calendar = $calendar_select = '';
+	$calendarcount = 0;
 
 	// Build calendar select
 	$calendar_permissions = get_calendar_permissions();
@@ -520,8 +527,14 @@ if($mybb->input['action'] == "addevent")
 				$selected = "";
 			}
 
-			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
+			++$calendarcount;
+			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
 		}
+	}
+
+	if($calendarcount > 1)
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
 	}
 
 	$event_errors = '';
