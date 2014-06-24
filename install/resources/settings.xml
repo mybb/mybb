@@ -1817,97 +1817,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mycode" title="MyCode Settings" description="This section allows you to control the default MyCodes." disporder="22" isdefault="1">
-		<setting name="allowbasicmycode">
-			<title>Allow Basic MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowcolormycode">
-			<title>Allow Color MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowsizemycode">
-			<title>Allow Size MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
-			<disporder>3</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowfontmycode">
-			<title>Allow Font MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
-			<disporder>4</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowlinkmycode">
-			<title>Allow Link MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowemailmycode">
-			<title>Allow Email MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowalignmycode">
-			<title>Allow Alignment MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
-			<disporder>7</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowlistmycode">
-			<title>Allow List MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
-			<disporder>8</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowcodemycode">
-			<title>Allow Code MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
-			<disporder>9</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowsymbolmycode">
-			<title>Allow Symbol MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
-			<disporder>10</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowmemycode">
-			<title>Allow Me MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
-			<disporder>11</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="23" isdefault="1">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears and control the default MyCodes." disporder="22" isdefault="1">
 		<setting name="bbcodeinserter">
 			<title>Clickable MyCode Editor</title>
 			<description><![CDATA[Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.]]></description>
@@ -1940,8 +1850,96 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowbasicmycode">
+			<title>Allow Basic MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcolormycode">
+			<title>Allow Color MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsizemycode">
+			<title>Allow Size MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowfontmycode">
+			<title>Allow Font MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlinkmycode">
+			<title>Allow Link MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowemailmycode">
+			<title>Allow Email MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowalignmycode">
+			<title>Allow Alignment MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlistmycode">
+			<title>Allow List MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
+			<disporder>12</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcodemycode">
+			<title>Allow Code MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
+			<disporder>13</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsymbolmycode">
+			<title>Allow Symbol MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
+			<disporder>14</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowmemycode">
+			<title>Allow Me MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
-	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="24" isdefault="1">
+	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="23" isdefault="1">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -1975,7 +1973,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="25" isdefault="1">
+	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="24" isdefault="1">
 		<setting name="mail_handler">
 			<title>Mail handler</title>
 			<description><![CDATA[The medium through which MyBB will send outgoing emails.]]></description>
@@ -2057,7 +2055,7 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="26" isdefault="1">
+	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
 			<title>Enable Contact Page</title>
 			<description><![CDATA[Setting this to yes will allow access to the contact page.]]></description>
