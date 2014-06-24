@@ -9262,6 +9262,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
+		<template name="private_advanced_search_folders" version="1800"><![CDATA[<select multiple="multiple" name="folder[]" id="folder">
+<option selected="selected">{$lang->all_folders}</option>
+{$foldersearch_folder}
+</select>]]></template>
 		<template name="private_archive" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->archive_messages}</title>
@@ -9319,6 +9323,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$pmsdownload}]]></template>
 		<template name="private_archive_csv_message" version="1400"><![CDATA[{$senddate},"{$foldername}","{$message['subject']}","{$message['tousername']}","{$message['fromusername']}","{$message['message']}"
 ]]></template>
+		<template name="private_archive_folders" version="1800"><![CDATA[<select name="exportfolders[]" multiple="multiple">
+<option value="all" selected="selected">{$lang->all_folders}</option>
+{$folderlist_folder}
+</select>]]></template>
+		<template name="private_archive_folders_folder" version="1800"><![CDATA[<option value="{$folder_id}">{$folder_name}</option>]]></template>
 		<template name="private_archive_html" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messages_for}</title>
@@ -9470,6 +9479,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
+		<template name="private_jump_folders" version="1800"><![CDATA[<select name="jumpto">
+{$folderjump_folder}
+</select>]]></template>
+		<template name="private_jump_folders_folder" version="1800"><![CDATA[<option value="{$folder_id}"{$sel}>{$folder_name}</option>]]></template>
 		<template name="private_limitwarning" version="1800"><![CDATA[<div class="red_alert">
 	<strong>{$lang->reached_warning}</strong><br />
 	{$lang->reached_warning2}
@@ -9483,10 +9496,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
+		<template name="private_messagebit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" align="center" valign="middle" />]]></template>
 		<template name="private_messagebit_sep" version="120"><![CDATA[<tr>
 <td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt=""/></td>
 </tr>
     ]]></template>
+		<template name="private_move" version="1800"><![CDATA[<input type="hidden" value="{$mybb->input['fid']}" name="fromfid" />
+<select name="fid">
+{$folderoplist_folder}
+</select>]]></template>
 		<template name="private_multiple_recipients" version="1800"><![CDATA[<a href="private.php?action=read&amp;pmid={$message['pmid']}" id="private_message_{$message['pmid']}">{$lang->multiple_recipients}</a>
 		<div id="private_message_{$message['pmid']}_popup" class="popup_menu" style="display: none;"><div class="tcat"><strong>{$lang->to}</strong></div>{$to_users}{$bcc_users}</div>
 <script type="text/javascript">
