@@ -11843,6 +11843,7 @@ if(use_xmlhttprequest == "1")
 </tbody>
 ]]></template>
 		<template name="usercp_nav_messenger_compose" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=send" class="usercp_nav_item usercp_nav_composepm">{$lang->ucp_nav_compose}</a></td></tr>]]></template>
+		<template name="usercp_nav_messenger_folder" version="1800"><![CDATA[<div><a href="private.php?fid={$folder_id}" class="usercp_nav_item {$class}">{$folder_name}</a></div>]]></template>
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>

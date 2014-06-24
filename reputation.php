@@ -11,8 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
-$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end";
-$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted";
+$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end,reputation_vote_delete";
+$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
