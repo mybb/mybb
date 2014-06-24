@@ -2753,7 +2753,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  */
 function build_mycode_inserter($bind="message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $smiliecount, $cache;
+	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -2833,11 +2833,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			{
 				$emoticon = ",emoticon";
 				$emoticons_enabled = "true";
-				if(!$smiliecount)
-				{
-					$smilie_cache = $cache->read("smilies");
-					$smiliecount = count($smilie_cache);
-				}
 
 				if(!$smiliecache)
 				{
@@ -2859,15 +2854,6 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				if(is_array($smiliecache))
 				{
 					reset($smiliecache);
-
-					if($mybb->settings['smilieinsertertot'] >= $smiliecount)
-					{
-						$mybb->settings['smilieinsertertot'] = $smiliecount;
-					}
-					else if($mybb->settings['smilieinsertertot'] < $smiliecount)
-					{
-						$smiliecount = $mybb->settings['smilieinsertertot'];
-					}
 
 					$dropdownsmilies = "";
 					$moresmilies = "";
