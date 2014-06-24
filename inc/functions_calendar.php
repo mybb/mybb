@@ -333,7 +333,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb;
+	global $db, $mybb, $templates;
 
 	$calendar_permissions = get_calendar_permissions();
 
@@ -358,9 +358,12 @@ function build_calendar_jump($selected=0)
 		{
 			$sel = "selected=\"selected\"";
 		}
-		$jump_options .= "<option value=\"{$calendar['cid']}\" $sel>{$calendar['name']}</option>\n";
+
+		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
 	}
-	return "<select name=\"calendar\">\n{$jump_options}</select>";
+
+	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
+	return $calendar_jump;
 }
 
 /**

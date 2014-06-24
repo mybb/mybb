@@ -3059,6 +3059,10 @@ a.button {
 				</form>
 				<br />]]></template>
 		<template name="calendar_eventbit" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
+		<template name="calendar_jump" version="1800"><![CDATA[<select name="calendar">
+{$jump_options}
+</select>]]></template>
+		<template name="calendar_jump_option" version="1800"><![CDATA[<option value="{$calendar['cid']}" {$sel}>{$calendar['name']}</option>]]></template>
 		<template name="calendar_mini" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="width: 180px;">
 	<thead>
 		<tr>
