@@ -11534,7 +11534,21 @@ if(use_xmlhttprequest == "1")
           <br />
           <table border="0" style="width: 100%">
 			<tr>
-				<td style="width: 50%; vertical-align: top">
+				<td style="width: 50%; vertical-align: top" id="receivedrequests">
+					{$received_requests}
+				</td>
+				<td style="width: 50%; vertical-align: top" id="sentrequests">
+					{$sent_requests}
+				</td>
+            </tr>
+          </table>
+		</td>
+	</tr>
+	</table>
+	{$footer}
+</body>
+</html>]]></template>
+		<template name="usercp_editlists_received_requests" version="1800"><![CDATA[
 					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
 						<thead>
 							<tr>
@@ -11550,8 +11564,8 @@ if(use_xmlhttprequest == "1")
 							{$received_rows}
 						</tbody>
 					</table>
-				</td>
-				<td style="width: 50%; vertical-align: top">
+		]]></template>
+		<template name="usercp_editlists_sent_requests" version="1800"><![CDATA[
 					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
 						<thead>
 							<tr>
@@ -11567,15 +11581,7 @@ if(use_xmlhttprequest == "1")
 							{$sent_rows}
 						</tbody>
 					</table>
-				</td>
-            </tr>
-          </table>
-		</td>
-	</tr>
-	</table>
-	{$footer}
-</body>
-</html>]]></template>
+		]]></template>
 		<template name="usercp_editlists_user" version="1800"><![CDATA[<li style="width: 33%; float: left; list-style: none; margin-bottom: 4px;" id="{$type}_{$user['uid']}">
 	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.png" title="[{$lang->delete}]"  alt="{$lang->remove_from_list}" style="vertical-align: middle;" /></a>
 	<img src="{$theme['imgdir']}/buddy_{$status}.png" title="{$lang->$status}" alt="" style="vertical-align: middle;" />
