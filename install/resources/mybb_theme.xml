@@ -10113,6 +10113,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
   </div>
 </div>]]></template>
+		<template name="reputation_add_delete" version="1800"><![CDATA[<input type="button" class="button" name="delete" value="{$lang->delete_vote}" onclick="javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);" />]]></template>
 		<template name="reputation_add_error" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
       <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -10133,6 +10134,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</td>
 	</tr>
 </table>]]></template>
+		<template name="reputation_add_negative" version="1800"><![CDATA[					<option value="{$neg_value}" class="reputation_negative" onclick="$('#reputation').attr('class', 'reputation_negative')"{$vote_check[$neg_value]}>{$negative_title}</option>]]></template>
+		<template name="reputation_add_neutral" version="1800"><![CDATA[					<option value="0" class="reputation_neutral" onclick="$('#reputation').attr('class', 'reputation_neutral')"{$vote_check[0]}>{$lang->power_neutral}</option>]]></template>
+		<template name="reputation_add_positive" version="1800"><![CDATA[					<option value="{$value}" class="reputation_positive" onclick="$('#reputation').attr('class', 'reputation_positive')"{$vote_check[$value]}>{$positive_title}</option>
+{$positive_power}]]></template>
 		<template name="reputation_added" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1" style="padding: 20px">
