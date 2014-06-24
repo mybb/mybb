@@ -2166,6 +2166,32 @@ a.button {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
+		<template name="announcement" version="1800"><![CDATA[<html>
+<head>
+<title>{$lang->forum_announcement}</title>
+{$headerinclude}
+  <script type="text/javascript">
+<!--
+	var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
+// -->
+</script>
+</head>
+<body>
+{$header}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+<tr>
+<td class="thead" colspan="3"><strong>{$lang->forum_announcement}</strong></td>
+<tr><td id="posts_container">
+	<div id="posts">
+	{$announcement}
+	</div>
+</td></tr>
+</table>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
+		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="calendar" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
@@ -9031,6 +9057,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_forward_pm" version="1800"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward" title="{$lang->forward_title}" class="postbit_forward_pm"><span>{$lang->postbit_button_forward}</span></a>]]></template>
 		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
 		<template name="postbit_groupimage" version="120"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
+		<template name="postbit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" style="vertical-align: middle;" />&nbsp;]]></template>
 		<template name="postbit_ignored" version="1800"><![CDATA[<div class="ignored_post" id="ignored_post_{$post['pid']}">
 	<div class="ignored_post_author"><strong><span class="largetext">{$post['profilelink']}</span></strong></div>
 	<div class="ignored_post_message">
@@ -9060,6 +9087,10 @@ if(use_xmlhttprequest == "1")
 {$post['inlinecheck']}
 </div>]]></template>
 		<template name="postbit_profilefield" version="1800"><![CDATA[<br />{$post['fieldname']}: {$post['fieldvalue']}]]></template>
+		<template name="postbit_profilefield_multiselect" version="1800"><![CDATA[<ul style="margin: 0; padding-left: 15px;">
+{$post['fieldvalue_option']}
+</ul>]]></template>
+		<template name="postbit_profilefield_multiselect_value" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
 		<template name="postbit_quickdelete" version="1800"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}" title="{$postbit_qdelete}" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>
 <script type="text/javascript">
 // <!--
@@ -13127,32 +13158,6 @@ if(use_xmlhttprequest == "1")
 				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" tabindex="1001" />
 			</div>
 		</div>]]></template>
-		<template name="announcement" version="1800"><![CDATA[<html>
-<head>
-<title>{$lang->forum_announcement}</title>
-{$headerinclude}
-  <script type="text/javascript">
-<!--
-	var announcement_quickdelete_confirm = "{$lang->announcement_quickdelete_confirm}";
-// -->
-</script>
-</head>
-<body>
-{$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
-<tr>
-<td class="thead" colspan="3"><strong>{$lang->forum_announcement}</strong></td>
-<tr><td id="posts_container">
-	<div id="posts">
-	{$announcement}
-	</div>
-</td></tr>
-</table>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
-		<template name="announcement_quickdelete" version="1800"><![CDATA[<a href="modcp.php?action=delete_announcement&amp;aid={$post['aid']}&amp;my_post_key={$mybb->post_code}" onclick="MyBB.deleteAnnouncement(this); return false;" class="postbit_qdelete"><span>{$lang->postbit_button_qdelete}</span></a>]]></template>
 		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
