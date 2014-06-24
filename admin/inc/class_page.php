@@ -821,12 +821,13 @@ EOF;
 		return <<<EOF
 
 <script type="text/javascript">
+{$editor_language}
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
 		style: "../jscripts/sceditor/editor_themes/mybb.css",
 		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
+        locale: "mybblang",
 		emoticons: {
 			// Emoticons to be included in the dropdown
 			dropdown: {

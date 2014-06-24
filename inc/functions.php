@@ -2758,58 +2758,76 @@ function build_mycode_inserter($bind="message")
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(
-			"editor_title_bold",
-			"editor_title_italic",
-			"editor_title_underline",
-			"editor_title_left",
-			"editor_title_center",
-			"editor_title_right",
-			"editor_title_justify",
-			"editor_title_numlist",
-			"editor_title_bulletlist",
-			"editor_title_image",
-			"editor_title_hyperlink",
-			"editor_title_email",
-			"editor_title_quote",
-			"editor_title_code",
-			"editor_title_php",
-			"editor_title_close_tags",
-			"editor_enter_list_item",
-			"editor_enter_url",
-			"editor_enter_url_title",
-			"editor_enter_email",
-			"editor_enter_email_title",
-			"editor_enter_image",
-			"editor_enter_video_url",
-			"editor_video_dailymotion",
-			"editor_video_metacafe",
-			"editor_video_myspacetv",
-			"editor_video_vimeo",
-			"editor_video_yahoo",
-			"editor_video_youtube",
-			"editor_size_xx_small",
-			"editor_size_x_small",
-			"editor_size_small",
-			"editor_size_medium",
-			"editor_size_large",
-			"editor_size_x_large",
-			"editor_size_xx_large",
-			"editor_font",
-			"editor_size",
-			"editor_color"
+			"Bold" => "editor_bold",
+			"Italic" => "editor_italic",
+			"Underline" => "editor_underline",
+			"Strikethrough" => "editor_strikethrough",
+			"Subscript" => "editor_subscript",
+			"Superscript" => "editor_superscript",
+			"Align left" => "editor_alignleft",
+			"Center" => "editor_center",
+			"Align right" => "editor_alignright",
+			"Justify" => "editor_justify",
+			"Font Name" => "editor_fontname",
+			"Font Size" => "editor_fontsize",
+			"Font Color" => "editor_fontcolor",
+			"Remove Formatting" => "editor_removeformatting",
+			"Cut" => "editor_cut",
+			"Your browser does not allow the cut command. Please use the keyboard shortcut Ctrl/Cmd-X" => "editor_cutnosupport",
+			"Copy" => "editor_copy",
+			"Your browser does not allow the copy command. Please use the keyboard shortcut Ctrl/Cmd-C" => "editor_copynosupport",
+			"Paste" => "editor_paste",
+			"Your browser does not allow the paste command. Please use the keyboard shortcut Ctrl/Cmd-V" => "editor_pastenosupport",
+			"Paste your text inside the following box:" => "editor_pasteentertext",
+			"PasteText" => "editor_pastetext",
+			"Numbered list" => "editor_numlist",
+			"Bullet list" => "editor_bullist",
+			"Undo" => "editor_undo",
+			"Redo" => "editor_redo",
+			"Rows:" => "editor_rows",
+			"Cols:" => "editor_cols",
+			"Insert a table" => "editor_inserttable",
+			"Insert a horizontal rule" => "editor_inserthr",
+			"Code" => "editor_code",
+			"Width (optional):" => "editor_width",
+			"Height (optional):" => "editor_height",
+			"Insert an image" => "editor_insertimg",
+			"E-mail:" => "editor_email",
+			"Insert an email" => "editor_insertemail",
+			"URL:" => "editor_url",
+			"Insert a link" => "editor_insertlink",
+			"Unlink" => "editor_unlink",
+			"More" => "editor_more",
+			"Insert an emoticon" => "editor_insertemoticon",
+			"Video URL:" => "editor_videourl",
+			"Video Type:" => "editor_videotype",
+			"Insert" => "editor_insert",
+			"Insert a YouTube video" => "editor_insertyoutubevideo",
+			"Insert current date" => "editor_currentdate",
+			"Insert current time" => "editor_currenttime",
+			"Print" => "editor_print",
+			"View source" => "editor_viewsource",
+			"Description (optional):" => "editor_description",
+			"Enter the image URL:" => "editor_enterimgurl",
+			"Enter the e-mail address:" => "editor_enteremail",
+			"Enter the displayed text:" => "editor_enterdisplayedtext",
+			"Enter URL:" => "editor_enterurl",
+			"Enter the YouTube video URL or ID:" => "editor_enteryoutubeurl",
+			"Insert a Quote" => "editor_insertquote",
+			"Invalid YouTube video" => "editor_invalidyoutube"
 		);
-		$editor_language = "var editor_language = {\n";
+		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
 		$editor_lang_strings = $plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
-
+		$i = 0;
 		foreach($editor_lang_strings as $key => $lang_string)
 		{
-			// Strip initial editor_ off language string if it exists - ensure case sensitivity does not matter.
-			$js_lang_string = preg_replace("#^editor_#i", "", $lang_string);
+			$i++;
+			$js_lang_string = str_replace("\"", "\\\"", $key);
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
-			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
+			$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
 
-			if(isset($editor_lang_strings[$key+1]))
+			if($i < count($editor_lang_strings))
 			{
 				$editor_language .= ",";
 			}
@@ -2817,7 +2835,8 @@ function build_mycode_inserter($bind="message")
 			$editor_language .= "\n";
 		}
 
-		$editor_language .= "};";
+		$editor_language .= "}})(jQuery);";
+
 
 		if(defined("IN_ADMINCP"))
 		{
