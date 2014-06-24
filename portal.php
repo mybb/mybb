@@ -32,7 +32,7 @@ if(!@chdir($forumdir) && !empty($forumdir))
 }
 
 $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
-$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_announcement_avatar";
+$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_announcement_avatar,portal_announcement_send_item,portal_announcement_icon";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -507,7 +507,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
 			{
 				$icon = $icon_cache[$announcement['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
 			}
 			else
 			{
@@ -529,6 +529,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				$lastcomment = '';
 			}
 
+			$senditem = '';
+			if($mybb->user['uid'] > 0 && $mybb->usergroup['cansendemail'] == 1)
+			{
+				eval("\$senditem = \"".$templates->get("portal_announcement_send_item")."\";");
+			}
+
 			$plugins->run_hooks("portal_announcement");
 
 			$parser_options = array(
@@ -542,6 +548,16 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			if($announcement['smilieoff'] == 1)
 			{
 				$parser_options['allow_smilies'] = 0;
+			}
+
+			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$parser_options['allow_imgcode'] = 0;
+			}
+
+			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$parser_options['allow_videocode'] = 0;
 			}
 
 			$message = $parser->parse_message($announcement['message'], $parser_options);

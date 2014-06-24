@@ -412,19 +412,23 @@ else if($mybb->input['action'] == "edit_post")
 		}
 
 		$message = $mybb->get_input('value');
+		$editreason = $mybb->get_input('editreason');
 		if(my_strtolower($charset) != "utf-8")
 		{
 			if(function_exists("iconv"))
 			{
 				$message = iconv($charset, "UTF-8//IGNORE", $message);
+				$editreason = iconv($charset, "UTF-8//IGNORE", $editreason);
 			}
 			else if(function_exists("mb_convert_encoding"))
 			{
 				$message = @mb_convert_encoding($message, $charset, "UTF-8");
+				$editreason = @mb_convert_encoding($editreason, $charset, "UTF-8");
 			}
 			else if(my_strtolower($charset) == "iso-8859-1")
 			{
 				$message = utf8_decode($message);
+				$editreason = utf8_decode($editreason);
 			}
 		}
 
@@ -437,6 +441,7 @@ else if($mybb->input['action'] == "edit_post")
 		$updatepost = array(
 			"pid" => $post['pid'],
 			"message" => $message,
+			"editreason" => $editreason,
 			"edit_uid" => $mybb->user['uid']
 		);
 		$posthandler->set_data($updatepost);
@@ -452,7 +457,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$postinfo = $posthandler->update_post();
 			$visible = $postinfo['visible'];
-			if($visible == 0 && !is_moderator($post['fid']))
+			if($visible == 0 && !is_moderator($post['fid'], "canviewunapprove"))
 			{
 				echo json_encode(array("failed" => $lang->post_moderation));
 				exit;
@@ -475,6 +480,16 @@ else if($mybb->input['action'] == "edit_post")
 		if($post['smilieoff'] == 1)
 		{
 			$parser_options['allow_smilies'] = 0;
+		}
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_imgcode'] = 0;
+		}
+
+		if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$parser_options['allow_videocode'] = 0;
 		}
 
 		$post['message'] = $parser->parse_message($message, $parser_options);
@@ -500,6 +515,14 @@ else if($mybb->input['action'] == "edit_post")
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
+			$post['editreason'] = $editreason;
+			$editreason = "";
+			if($post['editreason'] != "")
+			{
+				$post['editreason'] = $parser->parse_badwords($post['editreason']);
+				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
+				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+			}
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
 
@@ -576,7 +599,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
-		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
+		if(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0)
 		{
 			continue;
 		}

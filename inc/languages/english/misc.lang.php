@@ -41,6 +41,19 @@ $l['no_buddies'] = "<em>Your buddy list is currently empty. Use your User CP or 
 
 $l['help_docs'] = "Help Documents";
 
+$l['search_help_documents'] = "Search Help Documents";
+$l['search_by_name'] = "Search by Name";
+$l['search_by_document'] = "Search by Document";
+$l['enter_keywords'] = "Enter Keywords";
+$l['search'] = "Search";
+$l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
+$l['search_results'] = "Search Results";
+$l['help_doc_results'] = "Help Document Results";
+$l['document'] = "Document";
+$l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
+$l['no_help_results'] = "Sorry, but no results were returned using the query information you provided.";
+$l['error_helpsearchdisabled'] = "The ability to search the help documents has been disabled by the Administrator.";
+
 $l['smilies_listing'] = "Smilies Listing";
 $l['name'] = "Name";
 $l['abbreviation'] = "Abbreviation";

@@ -763,8 +763,61 @@ EOF;
 	 */
 	function build_codebuttons_editor($bind, $editor_language)
 	{
-		global $lang;
-		
+		global $lang, $mybb;
+
+		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+
+		if($mybb->settings['allowbasicmycode'] == 1)
+		{
+			$basic1 = "bold,italic,underline,strike|";
+			$basic2 = "horizontalrule,";
+		}
+
+		if($mybb->settings['allowalignmycode'] == 1)
+		{
+			$align = "left,center,right,justify|";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$font = "font,";
+		}
+
+		if($mybb->settings['allowsizemycode'] == 1)
+		{
+			$size = "size,";
+		}
+
+		if($mybb->settings['allowcolormycode'] == 1)
+		{
+			$color = "color,";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
+		{
+			$removeformat = "removeformat|";
+		}
+
+		if($mybb->settings['allowemailmycode'] == 1)
+		{
+			$email = "email,";
+		}
+
+		if($mybb->settings['allowlinkmycode'] == 1)
+		{
+			$link = "link,unlink";
+		}
+
+		if($mybb->settings['allowlistmycode'] == 1)
+		{
+			$list = "bulletlist,orderedlist|";
+		}
+
+		if($mybb->settings['allowcodemycode'] == 1)
+		{
+			$code = "code,";
+		}
+
 		return <<<EOF
 
 <script type="text/javascript">
@@ -802,7 +855,8 @@ $(function() {
 				":at:": "../images/smilies/at.png"
 			}
 		},
-        toolbar: "bold,italic,underline,strike|left,center,right,justify|font,size,color,removeformat|horizontalrule,image,email,link,unlink|video,emoticon|bulletlist,orderedlist|code,quote|maximize,source",
+		emoticonsCompat: true,
+        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video,emoticon|{$list}{$code}quote|maximize,source",
 	});
       
 	MyBBEditor = $("#{$bind}").sceditor("instance");

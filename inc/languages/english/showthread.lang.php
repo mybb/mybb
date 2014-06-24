@@ -43,7 +43,7 @@ $l['edit_poll'] = "Edit poll";
 $l['public_note'] = "<b>Note:</b> This is a public poll, other users will be able to see what you voted for.";
 $l['total'] = "Total";
 $l['vote'] = "Vote!";
-$l['total_votes'] = "{1} votes";
+$l['total_votes'] = "{1} vote(s)";
 $l['you_voted'] = "* You voted for this item.";
 $l['poll_closed'] = "This poll is closed.";
 $l['already_voted'] = "You have already voted on this poll.";
@@ -59,7 +59,7 @@ $l['new_reply'] = "New Reply";
 $l['search_button'] = 'Search';
 $l['post_thread'] = "Post Thread";
 $l['preview_post'] = "Preview Post";
-$l['rating_average'] = "{1} Votes - {2} Average";
+$l['rating_average'] = "{1} Vote(s) - {2} Average";
 $l['rate_thread'] = "Rate This Thread:";
 $l['thread_rating'] = "Thread Rating:";
 $l['similar_threads'] = "Possibly Related Threads...";
@@ -104,5 +104,8 @@ $l['quick_edit_update_error'] = 'There was an error editing your reply:';
 $l['quick_reply_post_error'] = 'There was an error posting your reply:';
 $l['quick_delete_error'] = 'There was an error deleting your reply:';
 $l['quick_delete_success'] = 'The post was deleted successfully.';
+$l['quick_delete_thread_success'] = 'The thread was deleted successfully.';
+$l['quick_restore_error'] = 'There was an error restoring your reply:';
+$l['quick_restore_success'] = 'The post was restored successfully.';
 
 ?>

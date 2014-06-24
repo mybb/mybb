@@ -9,11 +9,13 @@
  */
 
 define("IN_MYBB", 1);
+define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
-$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
@@ -158,6 +160,203 @@ elseif($mybb->input['action'] == "rules")
 	}
 
 }
+elseif($mybb->input['action'] == "do_helpsearch" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("misc_do_helpsearch_start");
+
+	if($mybb->settings['helpsearch'] != 1)
+	{
+		error($lang->error_helpsearchdisabled);
+	}
+
+	// Check if search flood checking is enabled and user is not admin
+	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 1)
+	{
+		// Fetch the time this user last searched
+		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
+		$query = $db->simple_select("searchlog", "*", "uid='{$mybb->user['uid']}' AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$last_search = $db->fetch_array($query);
+		// Users last search was within the flood time, show the error
+		if($last_search['sid'])
+		{
+			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
+			if($remaining_time == 1)
+			{
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+			}
+			else
+			{
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			}
+			error($lang->error_searchflooding);
+		}
+	}
+
+	if($mybb->get_input('name', 1) != 1 && $mybb->get_input('document', 1) != 1)
+	{
+		error($lang->error_nosearchresults);
+	}
+
+	if($mybb->get_input('document', 1) == 1)
+	{
+		$resulttype = "helpdoc";
+	}
+	else
+	{
+		$resulttype = "helpname";
+	}
+
+	$search_data = array(
+		"keywords" => $mybb->get_input('keywords'),
+		"name" => $mybb->get_input('name', 1),
+		"document" => $mybb->get_input('document', 1),
+	);
+
+	if($db->can_search == true)
+	{
+		require_once MYBB_ROOT."inc/functions_search.php";
+
+		$search_results = helpdocument_perform_search_mysql($search_data);
+	}
+	else
+	{
+		error($lang->error_no_search_support);
+	}
+	$sid = md5(uniqid(microtime(), true));
+	$searcharray = array(
+		"sid" => $db->escape_string($sid),
+		"uid" => $mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"ipaddress" => $db->escape_binary($session->packedip),
+		"threads" => '',
+		"posts" => '',
+		"resulttype" => $resulttype,
+		"querycache" => $search_results['querycache'],
+		"keywords" => $db->escape_string($mybb->get_input('keywords')),
+	);
+	$plugins->run_hooks("misc_do_helpsearch_process");
+
+	$db->insert_query("searchlog", $searcharray);
+
+	$plugins->run_hooks("misc_do_helpsearch_end");
+	redirect("misc.php?action=helpresults&sid={$sid}", $lang->redirect_searchresults);
+}
+elseif($mybb->input['action'] == "helpresults")
+{
+	if($mybb->settings['helpsearch'] != 1)
+	{
+		error($lang->error_helpsearchdisabled);
+	}
+
+	$sid = $mybb->get_input('sid');
+	$query = $db->simple_select("searchlog", "*", "sid='".$db->escape_string($sid)."' AND uid='{$mybb->user['uid']}'");
+	$search = $db->fetch_array($query);
+
+	if(!$search)
+	{
+		error($lang->error_invalidsearch);
+	}
+
+	$plugins->run_hooks("misc_helpresults_start");
+
+	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
+	add_breadcrumb($lang->search_results, "misc.php?action=helpresults&sid={$sid}");
+
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+
+	// Work out pagination, which page we're at, as well as the limits.
+	$perpage = $mybb->settings['threadsperpage'];
+	$page = $mybb->get_input('page', 1);
+	if($page > 0)
+	{
+		$start = ($page-1) * $perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	$end = $start + $perpage;
+	$lower = $start+1;
+	$upper = $end;
+
+	// Work out if we have terms to highlight
+	$highlight = "";
+	if($search['keywords'])
+	{
+		$highlight = "&amp;highlight=".urlencode($search['keywords']);
+	}
+
+	// Do Multi Pages
+	$query = $db->simple_select("helpdocs", "COUNT(*) AS total", "hid IN(".$db->escape_string($search['querycache']).")");
+	$helpcount = $db->fetch_array($query);
+
+	if($upper > $helpcount)
+	{
+		$upper = $helpcount;
+	}
+	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
+	$helpdoclist = '';
+
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser();
+
+	$query = $db->query("
+		SELECT h.*, s.enabled
+		FROM ".TABLE_PREFIX."helpdocs h
+		LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
+		WHERE h.hid IN(".$db->escape_string($search['querycache']).") AND h.enabled='1' AND s.enabled='1'
+		LIMIT {$start}, {$perpage}
+	");
+	while($helpdoc = $db->fetch_array($query))
+	{
+		$bgcolor = alt_trow();
+
+		if(my_strlen($helpdoc['name']) > 50)
+		{
+			$helpdoc['name'] = htmlspecialchars_uni(my_substr($helpdoc['name'], 0, 50)."...");
+		}
+		else
+		{
+			$helpdoc['name'] = htmlspecialchars_uni($helpdoc['name']);
+		}
+
+		$parser_options = array(
+			'allow_html' => 1,
+			'allow_mycode' => 0,
+			'allow_smilies' => 0,
+			'allow_imgcode' => 0,
+			'filter_badwords' => 1
+		);
+		$helpdoc['helpdoc'] = strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+
+		if(my_strlen($helpdoc['helpdoc']) > 350)
+		{
+			$prev = my_substr($helpdoc['helpdoc'], 0, 350)."...";
+		}
+		else
+		{
+			$prev = $helpdoc['helpdoc'];
+		}
+
+		$plugins->run_hooks("misc_helpresults_bit");
+
+		eval("\$helpdoclist .= \"".$templates->get("misc_helpresults_bit")."\";");
+	}
+
+	if($db->num_rows($query) == 0)
+	{
+		eval("\$helpdoclist = \"".$templates->get("misc_helpresults_noresults")."\";");
+	}
+
+	$plugins->run_hooks("misc_helpresults_end");
+
+	eval("\$helpresults = \"".$templates->get("misc_helpresults")."\";");
+	output_page($helpresults);
+}
 elseif($mybb->input['action'] == "help")
 {
 	$lang->load("helpdocs");
@@ -181,6 +380,17 @@ elseif($mybb->input['action'] == "help")
 		if($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
 		{
 			$plugins->run_hooks("misc_help_helpdoc_start");
+
+			// If we have incoming search terms to highlight - get it done (only if not using translation).
+			if(!empty($mybb->input['highlight']) && $helpdoc['usetranslation'] != 1)
+			{
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser();
+
+				$highlight = $mybb->input['highlight'];
+				$helpdoc['name'] = $parser->highlight_message($helpdoc['name'], $highlight);
+				$helpdoc['document'] = $parser->highlight_message($helpdoc['document'], $highlight);
+			}
 
 			if($helpdoc['usetranslation'] == 1)
 			{
@@ -286,6 +496,11 @@ elseif($mybb->input['action'] == "help")
 				}
 				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
 			}
+		}
+
+		if($mybb->settings['helpsearch'] == 1)
+		{
+			eval("\$search = \"".$templates->get("misc_help_search")."\";");
 		}
 
 		$plugins->run_hooks("misc_help_section_end");
@@ -409,7 +624,7 @@ elseif($mybb->input['action'] == "whoposted")
 		error($lang->error_invalidthread);
 	}
 
-	if(is_moderator($thread['fid']))
+	if(is_moderator($thread['fid'], "canviewunapprove"))
 	{
 		$ismod = true;
 		$show_posts = "(p.visible = '1' OR p.visible = '0')";
@@ -705,7 +920,7 @@ elseif($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $templates;
 	static $unviewableforums;
 
 	$pid = intval($pid);
@@ -778,8 +993,10 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 		{
 			$addsel = '';
 		}
-		$forumlist = "<select name=\"forums[]\" size=\"10\" multiple=\"multiple\">\n<option value=\"all\" $addsel>$lang->syndicate_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+
+		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");
 	}
+
 	return $forumlist;
 }
 ?>

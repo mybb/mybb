@@ -79,7 +79,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 				continue;
 			}
 
-			if($forum['active'] == 0 || !is_moderator($forum['fid']))
+			if($forum['active'] == 0 || !is_moderator($forum['fid'], "canmanageannouncements"))
 			{
 				// Check if this forum is a parent of a moderated forum
 				if(in_array($forum['fid'], $parent_forums))

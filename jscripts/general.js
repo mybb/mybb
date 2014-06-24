@@ -14,7 +14,7 @@ var MyBB = {
 		expandables.init();
 		
 		/* Create the Check All feature */
-		$('[name="checkall"]').each(function(key, value) {
+		$('[name="allbox"]').each(function(key, value) {
 			$(this).change(function() {
 				var checkboxes = $(this).closest('form').find(':checkbox');
 				if($(this).is(':checked')) {
@@ -72,7 +72,7 @@ var MyBB = {
 
 	popupWindow: function(url, options, root)
 	{
-		if(!options) options = { fadeDuration: 250 }
+		if(!options) options = { fadeDuration: 250, zIndex: 5 }
 		if(root != true)
 			url = rootpath + url;
 		
@@ -153,6 +153,11 @@ var MyBB = {
 		}
 
 		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid);
+	},
+
+	viewNotes: function(uid)
+	{
+		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid);
 	},
 
 	deleteReputation: function(uid, rid)

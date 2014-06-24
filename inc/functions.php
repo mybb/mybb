@@ -2416,7 +2416,7 @@ function update_thread_data($tid)
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The user ID
- * @param array Array of items being updated (postnum) and their value (ex, 1, +1, -1)
+ * @param array Array of items being updated (postnum, threadnum) and their value (ex, 1, +1, -1)
  */
 function update_user_counters($uid, $changes=array())
 {
@@ -2424,7 +2424,7 @@ function update_user_counters($uid, $changes=array())
 
 	$update_query = array();
 
-	$counters = array('postnum');
+	$counters = array('postnum', 'threadnum');
 	$uid = intval($uid);
 
 	// Fetch above counters for this user
@@ -2826,6 +2826,59 @@ function build_mycode_inserter($bind="message")
 		}
 		else
 		{
+			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+
+			if($mybb->settings['allowbasicmycode'] == 1)
+			{
+				$basic1 = "bold,italic,underline,strike|";
+				$basic2 = "horizontalrule,";
+			}
+
+			if($mybb->settings['allowalignmycode'] == 1)
+			{
+				$align = "left,center,right,justify|";
+			}
+
+			if($mybb->settings['allowfontmycode'] == 1)
+			{
+				$font = "font,";
+			}
+
+			if($mybb->settings['allowsizemycode'] == 1)
+			{
+				$size = "size,";
+			}
+
+			if($mybb->settings['allowcolormycode'] == 1)
+			{
+				$color = "color,";
+			}
+
+			if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
+			{
+				$removeformat = "removeformat|";
+			}
+
+			if($mybb->settings['allowemailmycode'] == 1)
+			{
+				$email = "email,";
+			}
+
+			if($mybb->settings['allowlinkmycode'] == 1)
+			{
+				$link = "link,unlink";
+			}
+
+			if($mybb->settings['allowlistmycode'] == 1)
+			{
+				$list = "bulletlist,orderedlist|";
+			}
+
+			if($mybb->settings['allowcodemycode'] == 1)
+			{
+				$code = "code,";
+			}
+
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
 		}
 	}
@@ -3057,13 +3110,14 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	}
 
 	$prefixselect = "";
-	$multipleselect = "";
 	if($multiple != 0)
 	{
-		$multipleselect = " multiple=\"multiple\" size=\"5\"";
+		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
 	}
-
-	$prefixselect = "<select name=\"threadprefix\"{$multipleselect}>\n";
+	else
+	{
+		$prefixselect = "<select name=\"threadprefix\">\n";
+	}
 
 	if($multiple == 1)
 	{
@@ -6003,6 +6057,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"-12" => $lang->timezone_gmt_minus_1200,
 		"-11" => $lang->timezone_gmt_minus_1100,
 		"-10" => $lang->timezone_gmt_minus_1000,
+		"-9.5" => $lang->timezone_gmt_minus_950,
 		"-9" => $lang->timezone_gmt_minus_900,
 		"-8" => $lang->timezone_gmt_minus_800,
 		"-7" => $lang->timezone_gmt_minus_700,
@@ -6023,14 +6078,21 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"4.5" => $lang->timezone_gmt_450,
 		"5" => $lang->timezone_gmt_500,
 		"5.5" => $lang->timezone_gmt_550,
+		"5.75" => $lang->timezone_gmt_575,
 		"6" => $lang->timezone_gmt_600,
+		"6.5" => $lang->timezone_gmt_650,
 		"7" => $lang->timezone_gmt_700,
 		"8" => $lang->timezone_gmt_800,
 		"9" => $lang->timezone_gmt_900,
 		"9.5" => $lang->timezone_gmt_950,
 		"10" => $lang->timezone_gmt_1000,
+		"10.5" => $lang->timezone_gmt_1050,
 		"11" => $lang->timezone_gmt_1100,
-		"12" => $lang->timezone_gmt_1200
+		"11.5" => $lang->timezone_gmt_1150,
+		"12" => $lang->timezone_gmt_1200,
+		"12.75" => $lang->timezone_gmt_1275,
+		"13" => $lang->timezone_gmt_1300,
+		"14" => $lang->timezone_gmt_1400
 	);
 
 	$selected = str_replace("+", "", $selected);
@@ -6056,6 +6118,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 				{
 					$label = str_replace(".", ":", $label);
 					$label = str_replace(":5", ":30", $label);
+					$label = str_replace(":75", ":45", $label);
 				}
 				else
 				{
@@ -6944,27 +7007,53 @@ function signed($int)
 function secure_seed_rng($count=8)
 {
 	$output = '';
-
-	// Use OpenSSL when available
-	// PHP <5.3.4 had a bug which makes that function unusable on Windows
-	if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+	// DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR != '\\')
 	{
-		$output = openssl_random_pseudo_bytes($count);
-	}
-	// Try the unix/linux method
-	elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
-	{
-		$output = @fread($handle, $count);
-		@fclose($handle);
-	}
-	// Try Windows CAPICOM before using our own generator
-	elseif(class_exists('COM'))
-	{
-		try
+		// Unix/Linux
+		// Use OpenSSL when available
+		if(function_exists('openssl_random_pseudo_bytes'))
 		{
-			$CAPI_Util = new COM('CAPICOM.Utilities.1');
-			$output = $CAPI_Util->GetRandom($count, 0);
-		} catch (Exception $ex) {
+			$output = openssl_random_pseudo_bytes($count);
+		}
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
+		{
+			$output = mcrypt_create_iv($count, MCRYPT_DEV_URANDOM);
+		}
+		// Try /dev/urandom
+		elseif(@is_readable('/dev/urandom') && ($handle = @fopen('/dev/urandom', 'rb')))
+		{
+			$output = @fread($handle, $count);
+			@fclose($handle);
+		}
+	}
+	else
+	{
+		// Windows
+		// Use OpenSSL when available
+		// PHP <5.3.4 had a bug which makes that function unusable on Windows
+		if(function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>='))
+		{
+			$output = openssl_random_pseudo_bytes($count);
+		}
+		// Try mcrypt
+		elseif(function_exists('mcrypt_create_iv'))
+		{
+			$output = mcrypt_create_iv($count, MCRYPT_RAND);
+		}
+		// Try Windows CAPICOM before using our own generator
+		elseif(class_exists('COM'))
+		{
+			try
+			{
+				$CAPI_Util = new COM('CAPICOM.Utilities.1');
+				if(is_callable(array($CAPI_Util, 'GetRandom')))
+				{
+					$output = $CAPI_Util->GetRandom($count, 0);
+				}
+			} catch (Exception $e) {
+			}
 		}
 	}
 
@@ -7363,12 +7452,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	if (!is_array($pm))
+	if(!is_array($pm))
 	{
 		return false;
 	}
 
-	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
@@ -7384,7 +7473,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$toid = $pm['touid'];
 
 	// Our recipients
-	if (is_array($toid))
+	if(is_array($toid))
 	{
 		$recipients_to = $toid;
 	}
@@ -7396,11 +7485,11 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$recipients_bcc = array();
 
 	// Determine user ID
-	if ((int)$fromid == 0)
+	if((int)$fromid == 0)
 	{
 		$fromid = (int)$mybb->user['uid'];
 	}
-	elseif ((int)$fromid < 0)
+	elseif((int)$fromid < 0)
 	{
 		$fromid = 0;
 	}

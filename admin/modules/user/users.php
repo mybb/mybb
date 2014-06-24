@@ -94,6 +94,12 @@ $user_view_fields = array(
 		"align" => "center"
 	),
 
+	"threadnum" => array(
+		"title" => $lang->thread_count,
+		"width" => "",
+		"align" => "center"
+	),
+
 	"reputation" => array(
 		"title" => $lang->reputation,
 		"width" => "",
@@ -495,6 +501,7 @@ if($mybb->input['action'] == "edit")
 			"additionalgroups" => $additionalgroups,
 			"displaygroup" => $mybb->input['displaygroup'],
 			"postnum" => $mybb->input['postnum'],
+			"threadnum" => $mybb->input['threadnum'],
 			"usertitle" => $mybb->input['usertitle'],
 			"timezone" => $mybb->input['timezone'],
 			"language" => $mybb->input['language'],
@@ -546,6 +553,8 @@ if($mybb->input['action'] == "edit")
 			"dstcorrection" => $mybb->input['dstcorrection'],
 			"threadmode" => $mybb->input['threadmode'],
 			"classicpostbit" => $mybb->input['classicpostbit'],
+			"showimages" => $mybb->input['showimages'],
+			"showvideos" => $mybb->input['showvideos'],
 			"showsigs" => $mybb->input['showsigs'],
 			"showavatars" => $mybb->input['showavatars'],
 			"showquickreply" => $mybb->input['showquickreply'],
@@ -902,6 +911,7 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
 	<script type="text/javascript" src="../jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
@@ -1105,6 +1115,7 @@ EOF;
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_text_box('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -1281,6 +1292,8 @@ EOF;
 
 	$thread_options = array(
 		$form->generate_check_box("classicpostbit", 1, $lang->show_classic_postbit, array("checked" => $mybb->input['classicpostbit'])),
+		$form->generate_check_box("showimages", 1, $lang->display_images, array("checked" => $mybb->input['showimages'])),
+		$form->generate_check_box("showvideos", 1, $lang->display_videos, array("checked" => $mybb->input['showvideos'])),
 		$form->generate_check_box("showsigs", 1, $lang->display_users_sigs, array("checked" => $mybb->input['showsigs'])),
 		$form->generate_check_box("showavatars", 1, $lang->display_users_avatars, array("checked" => $mybb->input['showavatars'])),
 		$form->generate_check_box("showquickreply", 1, $lang->show_quick_reply, array("checked" => $mybb->input['showquickreply'])),
@@ -1305,7 +1318,7 @@ EOF;
 	//
 	// SIGNATURE EDITOR
 	//
-	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
+	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'height: 250px; width: 95%'));
 	$sig_smilies = $lang->off;
 	if($mybb->settings['sigsmilies'] == 1)
 	{
@@ -2013,13 +2026,19 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
+			// Update user thread count
+			$query = $db->simple_select("threads", "COUNT(*) AS threadnum", "uid='".$destination_user['uid']."' {$fids_not_in}");
+			$num = $db->fetch_array($query);
+			$updated_count = array(
+				"threadnum" => $num['threadnum']
+			);
+			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
+
 			// Use the earliest registration date
 			if($destination_user['regdate'] > $source_user['regdate'])
 			{
 				$db->update_query("users", array('regdate' => $source_user['regdate']), "uid='{$destination_user['uid']}'");
 			}
-
-			update_stats(array('numusers' => '-1'));
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
@@ -2078,7 +2097,7 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
@@ -2108,7 +2127,7 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
@@ -3140,7 +3159,7 @@ function build_users_view($view)
 	}
 
 	// LESS THAN or GREATER THAN
-	$direction_fields = array("postnum");
+	$direction_fields = array("postnum", "threadnum");
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
@@ -3378,6 +3397,9 @@ function build_users_view($view)
 				break;
 			case "numposts":
 				$view['sortby'] = "postnum";
+				break;
+			case "numthreads":
+				$view['sortby'] = "threadnum";
 				break;
 			case "warninglevel":
 				$view['sortby'] = "warningpoints";
@@ -3734,7 +3756,7 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" /> {$user['view']['username']}</legend>\n";
+	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
@@ -3784,7 +3806,7 @@ function build_user_view_table($user, $view, &$table)
 		$table->construct_cell($value, $field_options);
 	}
 
-	$table->construct_cell("<input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" />");
+	$table->construct_cell("<input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" />");
 
 	$table->construct_row();
 }
@@ -4000,6 +4022,7 @@ function user_search_conditions($input=array(), &$form)
 		"less_than" => $lang->less_than
 	);
 	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');

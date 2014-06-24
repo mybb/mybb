@@ -227,22 +227,38 @@ class Moderation
 				$num_approved_posts++;
 
 				// Count the post counts for each user to be subtracted
-				if(!isset($userposts[$post['uid']]))
+				if($forum['usepostcounts'] != 0)
 				{
-					$userposts[$post['uid']] = 0;
+					if(!isset($userposts[$post['uid']]['num_posts']))
+					{
+						$userposts[$post['uid']]['num_posts'] = 0;
+					}
+					++$userposts[$post['uid']]['num_posts'];
 				}
-				++$userposts[$post['uid']];
 			}
 		}
 
+		if($forum['usethreadcounts'] != 0)
+		{
+			if(!isset($userposts[$thread['uid']]['num_threads']))
+			{
+				$userposts[$thread['uid']]['num_threads'] = 0;
+			}
+			++$userposts[$thread['uid']]['num_threads'];
+		}
+
 		// Remove post count from users
-		if($forum['usepostcounts'] != 0 && $thread['visible'] == 1)
+		if($thread['visible'] == 1)
 		{
 			if(!empty($userposts))
 			{
 				foreach($userposts as $uid => $subtract)
 				{
-					update_user_counters($uid, array('postnum' => "-{$subtract}"));
+					$update_array = array(
+						"postnum" => "-{$subtract['num_posts']}",
+						"threadnum" => "-{$subtract['num_threads']}",
+					);
+					update_user_counters($uid, $update_array);
 				}
 			}
 		}
@@ -286,7 +302,7 @@ class Moderation
 		{
 			$updated_counters['unapprovedthreads'] = -1;
 		}
-		
+
 		if(strpos($thread['closed'], 'moved|') !== false)
 		{
 			// Redirect
@@ -388,6 +404,14 @@ class Moderation
 				);
 			}
 
+			if(!isset($user_counters[$thread['uid']]))
+			{
+				$user_counters[$thread['uid']] = array(
+					'num_posts' => 0,
+					'num_threads' => 0
+				);
+			}
+
 			++$forum_counters[$forum['fid']]['num_threads'];
 			$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
 			$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['deletedposts'];
@@ -399,13 +423,15 @@ class Moderation
 				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
-					if(!isset($user_counters[$counter['uid']]))
-					{
-						$user_counters[$counter['uid']] = 0;
-					}
-					$user_counters[$counter['uid']] += $counter['posts'];
+					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 				}
 			}
+
+			if($forum['usethreadcounts'] != 0)
+			{
+				++$user_counters[$thread['uid']]['num_threads'];
+			}
+
 			$posts_to_approve[] = $thread['firstpost'];
 		}
 
@@ -460,9 +486,13 @@ class Moderation
 			
 			if(!empty($user_counters))
 			{
-				foreach($user_counters as $uid => $counter)
+				foreach($user_counters as $uid => $counters)
 				{
-					update_user_counters($uid, array('postnum' => "+{$counter}"));
+					$update_array = array(
+						"postnum" => "+{$counters['num_posts']}",
+						"threadnum" => "+{$counters['num_threads']}",
+					);
+					update_user_counters($uid, $update_array);
 				}
 			}
 		}
@@ -522,6 +552,14 @@ class Moderation
 					);
 				}
 
+				if(!isset($user_counters[$thread['uid']]))
+				{
+					$user_counters[$thread['uid']] = array(
+						'num_posts' => 0,
+						'num_threads' => 0
+					);
+				}
+
 				++$forum_counters[$forum['fid']]['num_unapprovedthreads'];
 				$forum_counters[$forum['fid']]['num_unapprovedposts'] += $thread['replies']+$thread['deletedposts']+1;
 
@@ -544,13 +582,15 @@ class Moderation
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
-						if(!isset($user_counters[$counter['uid']]))
-						{
-							$user_counters[$counter['uid']] = 0;
-						}
-						$user_counters[$counter['uid']] -= $counter['posts'];
+						$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 					}
 				}
+
+				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0)
+				{
+					++$user_counters[$thread['uid']]['num_threads'];
+				}
+
 			}
 			$posts_to_unapprove[] = $thread['firstpost'];
 		}
@@ -597,9 +637,13 @@ class Moderation
 
 		if(!empty($user_counters))
 		{
-			foreach($user_counters as $uid => $counter)
+			foreach($user_counters as $uid => $counters)
 			{
-				update_user_counters($uid, array('postnum' => "{$counter}"));
+				$update_array = array(
+					"postnum" => "-{$counters['num_posts']}",
+					"threadnum" => "-{$counters['num_threads']}",
+				);
+				update_user_counters($uid, $update_array);
 			}
 		}
 
@@ -1220,7 +1264,7 @@ class Moderation
 				break;
 		}
 
-		// Do post count changes if changing between countable and non-countable forums
+		// Do post and thread count changes if changing between countable and non-countable forums
 		$query = $db->query("
 			SELECT COUNT(p.pid) AS posts, u.uid, p.visible
 			FROM ".TABLE_PREFIX."posts p
@@ -1249,6 +1293,15 @@ class Moderation
 			{
 				update_user_counters($posters['uid'], array('postnum' => $pcount));
 			}
+		}
+
+		if($forum['usethreadcounts'] == 1 && $newforum['usethreadcounts'] == 0 && $thread['visible'] == 1)
+		{
+			update_user_counters($thread['uid'], array('threadnum' => "-1"));
+		}
+		elseif(($forum['usethreadcounts'] == 0 || $method == 'copy') && $newforum['usethreadcounts'] == 1 && $thread['visible'] == 1)
+		{
+			update_user_counters($thread['uid'], array('threadnum' => "+1"));
 		}
 
 		// Update forum counts
@@ -1366,7 +1419,7 @@ class Moderation
 		");
 		while($post = $db->fetch_array($query))
 		{
-			$user_posts[$post['uid']] = $post['postnum'];
+			$user_posts[$post['uid']]['postnum'] = $post['postnum'];
 		}
 
 		$sqlarray = array(
@@ -1460,12 +1513,19 @@ class Moderation
 			$db->update_query("posts", array('visible' => $thread['visible']), "pid='{$new_firstpost['pid']}'");
 			if($new_firstpost['visible'] == 1)
 			{
-				--$user_posts[$post['uid']];
+				--$user_posts[$post['uid']]['postnum'];
 			}
 			elseif($thread['visible'] == 1)
 			{
-				++$user_posts[$post['uid']];
+				++$user_posts[$post['uid']]['postnum'];
 			}
+		}
+
+		// Update thread count if thread has a new firstpost and is visible
+		++$user_posts[$mergethread['uid']]['threadnum'];
+		if($thread['uid'] != $new_firstpost['uid'] && $new_firstpost['visible'] == 1)
+		{
+			++$user_posts[$new_firstpost['uid']]['threadnum'];
 		}
 
 		// Thread is not in current forum
@@ -1632,15 +1692,23 @@ class Moderation
 			{
 				foreach($user_posts as $uid => $user_counter)
 				{
-					update_user_counters($uid, array('postnum' => "+{$user_counter}"));
+					update_user_counters($uid, array('postnum' => "+{$user_counter['postnum']}"));
 				}
 			}
 			elseif($mergethread['visible'] == 1)
 			{
 				foreach($user_posts as $uid => $user_counter)
 				{
-					update_user_counters($uid, array('postnum' => "-{$user_counter}"));
+					update_user_counters($uid, array('postnum' => "-{$user_counter['postnum']}"));
 				}
+			}
+		}
+
+		if($mergethread['visible'] == 1)
+		{
+			foreach($user_posts as $uid => $user_counter)
+			{
+				update_user_counters($uid, array('threadnum' => "-{$user_counter['threadnum']}"));
 			}
 		}
 
@@ -1763,7 +1831,6 @@ class Moderation
 		);
 		$db->update_query("posts", $sqlarray, "pid IN ($pids_list)");
 
-		$user_counters = array();
 		$thread_counters[$newtid] = array(
 			'replies' => 0,
 			'unapprovedposts' => 0,
@@ -1795,18 +1862,28 @@ class Moderation
 			{
 				if(!isset($user_counters[$post['uid']]))
 				{
-					$user_counters[$post['uid']] = 0;
+					$user_counters[$post['uid']] = array(
+						'postnum' => 0,
+						'threadnum' => 0
+					);
 				}
 				// Modify users' post counts
 				if($post['threadvisible'] == 1 && $forum_cache[$post['fid']]['usepostcounts'] == 1 && ($forum_cache[$moveto]['usepostcounts'] == 0 || $newthread['visible'] != 1))
 				{
 					// Moving into a forum that doesn't count post counts
-					--$user_counters[$post['uid']];
+					--$user_counters[$post['uid']]['postnum'];
 				}
 				elseif($newthread['visible'] == 1 && ($forum_cache[$post['fid']]['usepostcounts'] == 0 || $post['threadvisible'] != 1) && $forum_cache[$moveto]['usepostcounts'] == 1)
 				{
 					// Moving into a forum that does count post counts
-					++$user_counters[$post['uid']];
+					++$user_counters[$post['uid']]['postnum'];
+				}
+
+				// Modify users' thread counts
+				if($post_info['uid'] == $post['uid'] && $forum_cache[$moveto]['usethreadcounts'] == 1 && $newthread['visible'] == 1)
+				{
+					// Moving into a forum that does count thread counts
+					++$user_counters[$post['uid']]['threadnum'];
 				}
 
 				// Subtract 1 from the old thread's replies
@@ -1927,13 +2004,16 @@ class Moderation
 		// Update user post counts
 		if(!empty($user_counters))
 		{
-			foreach($user_counters as $uid => $change)
+			foreach($user_counters as $uid => $counters)
 			{
-				if($change >= 0)
+				foreach($counters as $key => $counter)
 				{
-					$change = '+'.$change; // add the addition operator for query
+					if($counter >= 0)
+					{
+						$counters[$key] = "+{$counter}"; // add the addition operator for query
+					}
 				}
-				update_user_counters($uid, array('postnum' => $change));
+				update_user_counters($uid, $counters);
 			}
 		}
 
@@ -2031,7 +2111,7 @@ class Moderation
 
 		$total_posts = $total_unapproved_posts = $total_deleted_posts = $total_threads = $total_unapproved_threads = $total_deleted_threads = 0;
 		$forum_counters = $user_counters = array();
-		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, deletedposts, tid", "tid IN ($tid_list)");
+		$query = $db->simple_select("threads", "fid, visible, replies, unapprovedposts, deletedposts, tid, uid", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			$forum = get_forum($thread['fid']);
@@ -2048,6 +2128,11 @@ class Moderation
 				);
 			}
 
+			if(!isset($user_counters[$thread['uid']]['num_threads']))
+			{
+				$user_counters[$thread['uid']]['num_threads'] = 0;
+			}
+
 			if($thread['visible'] == 1)
 			{
 				$total_posts += $thread['replies']+1;
@@ -2060,6 +2145,15 @@ class Moderation
 				$forum_counters[$thread['fid']]['threads']++;
 				++$total_threads;
 
+				if($newforum['usethreadcounts'] == 1 && $forum['usethreadcounts'] == 0)
+				{
+					++$user_counters[$thread['uid']]['num_threads'];
+				}
+				else if($newforum['usethreadcounts'] == 0 && $forum['usethreadcounts'] == 1)
+				{
+					--$user_counters[$thread['uid']]['num_threads'];
+				}
+
 				$query1 = $db->query("
 					SELECT COUNT(p.pid) AS posts, p.visible, u.uid
 					FROM ".TABLE_PREFIX."posts p
@@ -2070,18 +2164,18 @@ class Moderation
 				");
 				while($posters = $db->fetch_array($query1))
 				{
-					if(!isset($user_counters[$posters['uid']]))
+					if(!isset($user_counters[$posters['uid']]['num_posts']))
 					{
-						$user_counters[$posters['uid']] = 0;
+						$user_counters[$posters['uid']]['num_posts'] = 0;
 					}
 
 					if($newforum['usepostcounts'] != 0 && $forum['usepostcounts'] == 0 && $posters['visible'] == 1)
 					{
-						$user_counters[$posters['uid']] += $posters['posts'];
+						$user_counters[$posters['uid']]['num_posts'] += $posters['posts'];
 					}
 					else if($newforum['usepostcounts'] == 0 && $forum['usepostcounts'] != 0 && $posters['visible'] == 1)
 					{
-						$user_counters[$posters['uid']] -= $posters['posts'];
+						$user_counters[$posters['uid']]['num_posts'] -= $posters['posts'];
 					}
 				}
 			}
@@ -2145,13 +2239,13 @@ class Moderation
 		
 		if(!empty($user_counters))
 		{
-			foreach($user_counters as $uid => $counter)
+			foreach($user_counters as $uid => $counters)
 			{
-				if($counter >= 0)
-				{
-					$counter = "+{$counter}";
-				}
-				update_user_counters($uid, array('postnum' => $counter));
+				$update_array = array(
+					"postnum" => "+{$counters['num_posts']}",
+					"threadnum" => "+{$counters['num_threads']}",
+				);
+				update_user_counters($uid, $update_array);
 			}
 		}
 
@@ -3284,6 +3378,14 @@ class Moderation
 				);
 			}
 
+			if(!isset($user_counters[$thread['uid']]))
+			{
+				$user_counters[$thread['uid']] = array(
+					'num_posts' => 0,
+					'num_threads' => 0
+				);
+			}
+
 			++$forum_counters[$forum['fid']]['num_threads'];
 			$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
 			$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['replies']+$thread['unapprovedposts']+1;
@@ -3295,13 +3397,19 @@ class Moderation
 				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
 				{
-					if(!isset($user_counters[$counter['uid']]))
+					if(!isset($user_counters[$counter['uid']]['num_posts']))
 					{
-						$user_counters[$counter['uid']] = 0;
+						$user_counters[$counter['uid']]['num_posts'] = 0;
 					}
-					$user_counters[$counter['uid']] += $counter['posts'];
+					$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 				}
 			}
+
+			if($forum['usethreadcounts'] != 0)
+			{
+				++$user_counters[$thread['uid']]['num_threads'];
+			}
+
 			$posts_to_restore[] = $thread['firstpost'];
 		}
 
@@ -3356,9 +3464,13 @@ class Moderation
 
 			if(!empty($user_counters))
 			{
-				foreach($user_counters as $uid => $counter)
+				foreach($user_counters as $uid => $counters)
 				{
-					update_user_counters($uid, array('postnum' => "+{$counter}"));
+					$update_array = array(
+						"postnum" => "+{$counters['num_posts']}",
+						"threadnum" => "+{$counters['num_threads']}",
+					);
+					update_user_counters($uid, $update_array);
 				}
 			}
 		}
@@ -3418,6 +3530,14 @@ class Moderation
 					);
 				}
 
+				if(!isset($user_counters[$thread['uid']]))
+				{
+					$user_counters[$thread['uid']] = array(
+						'num_posts' => 0,
+						'num_threads' => 0
+					);
+				}
+
 				++$forum_counters[$forum['fid']]['num_deleted_threads'];
 				$forum_counters[$forum['fid']]['num_deleted_posts'] += $thread['replies']+$thread['unapprovedposts']+1;
 
@@ -3440,12 +3560,17 @@ class Moderation
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
-						if(!isset($user_counters[$counter['uid']]))
+						if(!isset($user_counters[$counter['uid']]['num_posts']))
 						{
-							$user_counters[$counter['uid']] = 0;
+							$user_counters[$counter['uid']]['num_posts'] = 0;
 						}
-						$user_counters[$counter['uid']] -= $counter['posts'];
+						$user_counters[$counter['uid']]['num_posts'] += $counter['posts'];
 					}
+				}
+
+				if($thread['visible'] == 1 && $forum['usethreadcounts'] != 0)
+				{
+					++$user_counters[$thread['uid']]['num_threads'];
 				}
 			}
 			$posts_to_delete[] = $thread['firstpost'];
@@ -3493,9 +3618,13 @@ class Moderation
 
 		if(!empty($user_counters))
 		{
-			foreach($user_counters as $uid => $counter)
+			foreach($user_counters as $uid => $counters)
 			{
-				update_user_counters($uid, array('postnum' => "{$counter}"));
+				$update_array = array(
+					"postnum" => "-{$counters['num_posts']}",
+					"threadnum" => "-{$counters['num_threads']}",
+				);
+				update_user_counters($uid, $update_array);
 			}
 		}
 

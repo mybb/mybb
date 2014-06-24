@@ -12,12 +12,12 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments";
+$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients";
-$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc";
+$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
 $templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,usercp_nav_messenger_tracking,multipage_prevpage";
 
 require_once "./global.php";
@@ -602,9 +602,13 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 
 	$pm['options'] = array();
-	if(isset($mybb->input['options']['signature']))
+	if(isset($mybb->input['options']['signature']) && $mybb->input['options']['signature'] == 1)
 	{
-		$pm['options']['signature'] = $mybb->input['options']['signature'];
+		$pm['options']['signature'] = 1;
+	}
+	else
+	{
+		$pm['options']['signature'] = 0;
 	}
 	if(isset($mybb->input['options']['disablesmilies']))
 	{
@@ -845,6 +849,13 @@ if($mybb->input['action'] == "send")
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
+
+			require_once MYBB_ROOT."inc/functions_posting.php";
+
+			if($mybb->settings['maxpmquotedepth'] != '0')
+			{
+				$message = remove_message_quotes($message, $mybb->settings['maxpmquotedepth']);
+			}
 
 			if($mybb->input['do'] == 'forward')
 			{
@@ -1159,6 +1170,11 @@ if($mybb->input['action'] == "read")
 			'quote_is_pm' => true
 		);
 		$quoted_message = parse_quoted_message($quoted_message);
+
+		if($mybb->settings['maxpmquotedepth'] != '0')
+		{
+			$quoted_message = remove_message_quotes($quoted_message, $mybb->settings['maxpmquotedepth']);
+		}
 
 		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 		$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
@@ -2376,6 +2392,12 @@ if(!$mybb->input['action'])
 		}
 
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
+	}
+
+	$composelink = '';
+	if($mybb->usergroup['cansendpms'] == 1)
+	{
+		eval("\$composelink = \"".$templates->get("private_composelink")."\";");
 	}
 
 	$limitwarning = '';

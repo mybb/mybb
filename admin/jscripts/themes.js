@@ -46,9 +46,9 @@ var ThemeSelector = (function() {
 		this.font_style = $("#css_bits\\[font_style\\]").val();
 		this.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$(window).unload($.proxy(this, 'saveCheck', false));
-		$("#save").click($.proxy(this, 'save', true));
-		$("#save_close").click($.proxy(this, 'saveClose', true));
+		$(window).unload($.proxy(this, 'saveCheck', event, false));
+		$("#save").click($.proxy(this, 'save', event, true));
+		$("#save_close").click($.proxy(this, 'saveClose', event));
 		this.selector.on("change", $.proxy(this, 'updateSelector'));
 		this.selectorForm.on("submit", $.proxy(this, 'updateSelector'));
     }
@@ -204,7 +204,7 @@ var ThemeSelector = (function() {
 
 		if (isAjax == true) {
 			completeMethod = 'onSaveComplete';
-			$.jGrowl('saving...');
+			$.jGrowl(lang.saving);
 		}
 
 		$.ajax({
@@ -213,6 +213,7 @@ var ThemeSelector = (function() {
 			data: postData,
 			complete: $.proxy(this, completeMethod),
 		});
+		return !isAjax;
 	}
 
 	/**

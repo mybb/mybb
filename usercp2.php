@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp2.php');
 define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
-$templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav,usercp_addsubscription_thread,usercp_nav_messenger_tracking,usercp_nav_editsignature,usercp_nav_attachments';
+$templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav,usercp_addsubscription_thread,usercp_nav_messenger_tracking,usercp_nav_editsignature,usercp_nav_attachments,usercp_nav_messenger_compose';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -147,14 +147,18 @@ if($mybb->input['action'] == "addsubscription")
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
 
-		$notification_none_checked = $notification_instant_checked = '';
+		$notification_none_checked = $notification_email_checked = $notification_pm_checked = '';
 		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
 		{
 			$notification_none_checked = "checked=\"checked\"";
 		}
 		else if($mybb->user['subscriptionmethod'] == 2)
 		{
-			$notification_instant_checked = "checked=\"checked\"";
+			$notification_email_checked = "checked=\"checked\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 3)
+		{
+			$notification_pm_checked = "checked=\"checked\"";
 		}
 		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
 		output_page($add_subscription);

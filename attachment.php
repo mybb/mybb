@@ -72,7 +72,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 	}
 
 	// Error if attachment is invalid or not visible
-	if(!$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
+	if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
 	{
 		error($lang->error_invalidattachment);
 	}

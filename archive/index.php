@@ -94,7 +94,7 @@ switch($action)
 
 		if($thread['visible'] != 1)
 		{
-			if(is_moderator($forum['fid']))
+			if(is_moderator($forum['fid'], "canviewunapprove"))
 			{
 				archive_error($lang->sprintf($lang->error_unapproved_thread, $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page)));
 			}
