@@ -3079,6 +3079,7 @@ a.button {
 					{$gobutton}
 				</form>
 				<br />]]></template>
+		<template name="calendar_event_userstar" version="1800"><![CDATA[<img src="{$event['starimage']}" border="0" alt="*" />]]></template>
 		<template name="calendar_eventbit" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
 		<template name="calendar_jump" version="1800"><![CDATA[<br />
 <span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
@@ -3156,6 +3157,7 @@ a.button {
 					</div>
 				</td>
 ]]></template>
+		<template name="calendar_weekrow_day_birthdays" version="1800"><![CDATA[<div style="margin-bottom: 4px;"><a href="{$calendar['link']}" class="smalltext">{$bday_count} {$birthday_lang}</a></div>]]></template>
 		<template name="calendar_weekrow_day_external" version="1400"><![CDATA[				<td class="calendar_daybit_external">
 					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
 					<div>
@@ -3251,6 +3253,7 @@ a.button {
 				<td class="trow2{$day_shaded}" style="text-align: center; padding: 8px;"><span class="largetext">{$weekday_day}</span></td>
 				<td class="trow1" width="100%">{$day_birthdays}{$day_events}</td>
 			</tr>]]></template>
+		<template name="calendar_weekview_day_birthdays" version="1800"><![CDATA[<a href="{$calendar_link}">{$bday_count} {$birthday_lang}</a><br />]]></template>
 		<template name="calendar_weekview_day_event" version="1400"><![CDATA[<a href="{$event['eventlink']}" class="{$event_class}" title="{$event['fullname']}">{$event['fullname']}</a>{$event_time}<br />]]></template>
 		<template name="calendar_weekview_day_event_time" version="1800"><![CDATA[<span class="smalltext"> ({$time_period})</span>]]></template>
 		<template name="calendar_weekview_month" version="1400"><![CDATA[			<tr>
@@ -3258,6 +3261,7 @@ a.button {
 			</tr>
 			{$days}]]></template>
 		<template name="calendar_year" version="1800"><![CDATA[<option value="{$year}" {$selected}>{$year}</option>]]></template>
+		<template name="calendar_year_sel" version="1800"><![CDATA[<option value="{$year_sel}">{$year_sel}</option>]]></template>
 		<template name="editpost" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
