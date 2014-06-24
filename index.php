@@ -11,11 +11,11 @@
 define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
-$templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators,forumbit_subforums";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
+$templatelist = "index,index_whosonline,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,forumbit_moderators";
+$templatelist .= ",index_birthdays_birthday,index_birthdays,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_viewers";
+$templatelist .= ",forumbit_depth2_forum_moderators_group,forumbit_depth2_forum_moderators_user,forumbit_depth2_forum_lastpost_hidden,forumbit_subforums,forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads";
 
 require_once './global.php';
-
 require_once MYBB_ROOT.'inc/functions_forumlist.php';
 require_once MYBB_ROOT.'inc/class_parser.php';
 $parser = new postParser;

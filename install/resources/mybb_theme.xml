@@ -3486,6 +3486,13 @@ a.button {
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
+		<template name="forumbit_depth2_forum_lastpost_hidden" version="1800"><![CDATA[<div style="text-align: center;">-</div>]]></template>
+		<template name="forumbit_depth2_forum_lastpost_never" version="1800"><![CDATA[<div style="text-align: center;">{$lang->lastpost_never}</div>]]></template>
+		<template name="forumbit_depth2_forum_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
+		<template name="forumbit_depth2_forum_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
+		<template name="forumbit_depth2_forum_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$forum['unapprovedposts']})</span>]]></template>
+		<template name="forumbit_depth2_forum_unapproved_threads" version="1800"><![CDATA[ <span title="{$unapproved_threads_count}">{$forum['unapprovedthreads']}</span>]]></template>
+		<template name="forumbit_depth2_forum_viewers" version="1800"><![CDATA[<span class="smalltext">{$forum_viewers_text}</span>]]></template>
 		<template name="forumbit_depth3" version="1404"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
