@@ -5926,11 +5926,14 @@ if(use_xmlhttprequest == "1")
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
+		<template name="modcp_announcements_announcement_active" version="1800"><![CDATA[<img src="{$theme['imgdir']}/minion.png" alt="({$lang->active})" title="{$lang->active_announcement}"  style="vertical-align: middle;" />]]></template>
+		<template name="modcp_announcements_announcement_expired" version="1800"><![CDATA[<img src="{$theme['imgdir']}/minioff.png" alt="({$lang->expired})" title="{$lang->expired_announcement}"  style="vertical-align: middle;" />]]></template>
 		<template name="modcp_announcements_announcement_global" version="1400"><![CDATA[					<tr>
 						<td class="{$trow}">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
+		<template name="modcp_announcements_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
 		<template name="modcp_announcements_delete" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_announcement}</title>
@@ -6070,6 +6073,30 @@ if(use_xmlhttprequest == "1")
 					{$announcements_global}
 				</table>
 				<br />]]></template>
+		<template name="modcp_announcements_month_end" version="1800"><![CDATA[<option value="01" {$endmonthsel['01']}>{$lang->january}</option>
+<option value="02" {$endmonthsel['02']}>{$lang->february}</option>
+<option value="03" {$endmonthsel['03']}>{$lang->march}</option>
+<option value="04" {$endmonthsel['04']}>{$lang->april}</option>
+<option value="05" {$endmonthsel['05']}>{$lang->may}</option>
+<option value="06" {$endmonthsel['06']}>{$lang->june}</option>
+<option value="07" {$endmonthsel['07']}>{$lang->july}</option>
+<option value="08" {$endmonthsel['08']}>{$lang->august}</option>
+<option value="09" {$endmonthsel['09']}>{$lang->september}</option>
+<option value="10" {$endmonthsel['10']}>{$lang->october}</option>
+<option value="11" {$endmonthsel['11']}>{$lang->november}</option>
+<option value="12" {$endmonthsel['12']}>{$lang->december}</option>]]></template>
+		<template name="modcp_announcements_month_start" version="1800"><![CDATA[<option value="01" {$startmonthsel['01']}>{$lang->january}</option>
+<option value="02" {$startmonthsel['02']}>{$lang->february}</option>
+<option value="03" {$startmonthsel['03']}>{$lang->march}</option>
+<option value="04" {$startmonthsel['04']}>{$lang->april}</option>
+<option value="05" {$startmonthsel['05']}>{$lang->may}</option>
+<option value="06" {$startmonthsel['06']}>{$lang->june}</option>
+<option value="07" {$startmonthsel['07']}>{$lang->july}</option>
+<option value="08" {$startmonthsel['08']}>{$lang->august}</option>
+<option value="09" {$startmonthsel['09']}>{$lang->september}</option>
+<option value="10" {$startmonthsel['10']}>{$lang->october}</option>
+<option value="11" {$startmonthsel['11']}>{$lang->november}</option>
+<option value="12" {$startmonthsel['12']}>{$lang->december}</option>]]></template>
 		<template name="modcp_announcements_new" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
@@ -6889,6 +6916,9 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}">{$subject}</td>
 </tr>
 ]]></template>
+		<template name="modcp_ipsearch_result_lastip" version="1800"><![CDATA[<strong>{$lang->ipresult_lastip}</strong> {$profile_link}]]></template>
+		<template name="modcp_ipsearch_result_post" version="1800"><![CDATA[<strong>{$lang->ipresult_post}</strong> <a href="{$ipaddress['postlink']}">{$ipaddress['subject']}</a> {$lang->by} {$ipaddress['profilelink']}]]></template>
+		<template name="modcp_ipsearch_result_regip" version="1800"><![CDATA[<strong>{$lang->ipresult_regip}</strong> {$profile_link}]]></template>
 		<template name="modcp_ipsearch_results" version="1600"><![CDATA[					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 						<tr>
 							<td class="thead" align="center" colspan="2">
@@ -6903,6 +6933,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					{$multipage}
 					<br />]]></template>
+		<template name="modcp_ipsearch_results_information" version="1800"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}'); return false;">{$lang->info_on_ip}</a>)</div>]]></template>
 		<template name="modcp_lastattachment" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']}<br />{$lang->by} {$attachment['profilelink']}</span>
@@ -7114,6 +7145,8 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="modcp_modqueue_link_forum" version="1800"><![CDATA[<strong>{$lang->meta_forum} <a href="{$thread['forumlink']}">{$forum_name}</a></strong><br />]]></template>
+		<template name="modcp_modqueue_link_thread" version="1800"><![CDATA[<strong>{$lang->meta_thread} <a href="{$post['threadlink']}">{$post['threadsubject']}</a></strong>]]></template>
 		<template name="modcp_modqueue_masscontrols" version="1800"><![CDATA[<ul class="modqueue_mass">
   <li><a href="#" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false">{$lang->mark_all_ignored}</a></li>
 	<li><a href="#" class="mass_delete" onclick="$('input.radio_delete').each(function(){ $(this).prop('checked', true); }); return false;">{$lang->mark_all_deletion}</a></li>
@@ -12445,6 +12478,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </fieldset>
 <br />]]></template>
+		<template name="usercp_profile_day" version="1800"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="usercp_profile_profilefields" version="120"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->additional_information}</strong></legend>
