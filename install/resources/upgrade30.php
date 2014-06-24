@@ -489,6 +489,40 @@ function upgrade30_dbchanges5()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$collation = $db->build_create_table_collation();
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id serial,
+				 uid int NOT NULL,
+				 touid int NOT NULL,
+				 date int NOT NULL,
+				 PRIMARY KEY (id)
+			);");
+		break;
+		case "sqlite":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id INTEGER PRIMARY KEY,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL
+			);");
+		break;
+		default:
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id int(10) UNSIGNED NOT NULL auto_increment,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL,
+				 KEY (uid),
+				 KEY (touid),
+				 PRIMARY KEY (id)
+			) ENGINE=MyISAM{$collation};");
+		break;
+	}
+	
 	if($db->field_exists('msn', 'users'))
 	{
 		$db->drop_column("users", "msn");
@@ -553,6 +587,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "smallint NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "smallint NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "smallint NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "smallint NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "smallint NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "smallint NOT NULL default '0' AFTER required");
@@ -565,6 +601,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "tinyint(1) NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "tinyint(1) NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "tinyint(1) NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "tinyint(1) NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "tinyint(1) NOT NULL default '0' AFTER required");

@@ -11341,6 +11341,33 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_drafts_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
+		<template name="usercp_editlists_received_request" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolor}">
+		{$request['username']}
+	</td>
+	<td class="{$bgcolor}">
+		{$request['date']}
+	</td>
+	<td class="{$bgcolor}">
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=acceptrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->accept}</a> - <a href="{$mybb->settings['bburl']}/usercp.php?action=declinerequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->decline}</a>
+	</td>
+</tr>]]></template>
+		<template name="usercp_editlists_sent_request" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolor}">
+		{$request['username']}
+	</td>
+	<td class="{$bgcolor}">
+		{$request['date']}
+	</td>
+	<td class="{$bgcolor}">
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a> 
+	</td>
+</tr>]]></template>
+		<template name="usercp_editlists_no_requests" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolor}" colspan="3">
+		{$lang->no_requests}
+	</td>
+</tr>]]></template>
 		<template name="usercp_editlists" version="1800"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
@@ -11495,6 +11522,45 @@ if(use_xmlhttprequest == "1")
 				</tr>
 			</table>
 		</form>
+          <br />
+          <table border="0" style="width: 100%">
+			<tr>
+				<td style="width: 50%; vertical-align: top">
+					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
+						<thead>
+							<tr>
+								<td class="thead" colspan="3"><strong>{$lang->buddyrequests_received}</strong></td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="tcat" width="33%"><strong>{$lang->from}</strong></td>
+								<td class="tcat" width="33%"><strong>{$lang->date}</strong></td>
+								<td class="tcat" width="33%"><strong>{$lang->options}</strong></td>
+							</tr>
+							{$received_rows}
+						</tbody>
+					</table>
+				</td>
+				<td style="width: 50%; vertical-align: top">
+					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
+						<thead>
+							<tr>
+								<td class="thead" colspan="3"><strong>{$lang->buddyrequests_sent}</strong></td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="tcat" width="33%"><strong>{$lang->to}</strong></td>
+								<td class="tcat" width="33%"><strong>{$lang->date}</strong></td>
+								<td class="tcat" width="33%"><strong>{$lang->options}</strong></td>
+							</tr>
+							{$sent_rows}
+						</tbody>
+					</table>
+				</td>
+            </tr>
+          </table>
 		</td>
 	</tr>
 	</table>
@@ -11881,6 +11947,14 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="1" {$pmnotifycheck} /></td>
 <td><span class="smalltext"><label for="pmnotify">{$lang->pm_notify}</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestspm" id="buddyrequestspm" value="1" {$buddyrequestspmcheck} /></td>
+<td><span class="smalltext"><label for="buddyrequestspm">{$lang->buddyrequests_pm}</label></span></td>
+</tr>
+<tr>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="buddyrequestsauto" id="buddyrequestsauto" value="1" {$buddyrequestsautocheck} /></td>
+<td><span class="smalltext"><label for="buddyrequestsauto">{$lang->buddyrequests_auto}</label></span></td>
 </tr>
 <tr>
 <td colspan="2"><span class="smalltext"><label for="subscriptionmethod">{$lang->subscription_method}</label></span></td>
