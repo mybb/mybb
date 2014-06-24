@@ -8593,6 +8593,8 @@ if(use_xmlhttprequest == "1")
 		<template name="portal" version="127"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
+<link rel="alternate" type="application/rss+xml" title="{$lang->latest_announcements} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_announcements} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1&type=atom1.0" />
 {$headerinclude}
 </head>
 <body>
@@ -8621,7 +8623,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} - {$lang->forum} <a href="{$mybb->settings['bburl']}/{$announcement['forumlink']}">{$announcement['forumname']}</a> {$numcomments}</span>
 </td>
 </tr>
 <tr>
@@ -8664,6 +8666,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
+{$lang->forum} <a href="{$thread['forumlink']}">{$thread['forumname']}</a><br />
 <a href="{$thread['lastpostlink']}">{$lang->latest_threads_lastpost}</a> {$lastposterlink}<br />
 {$lastpostdate}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
