@@ -10359,6 +10359,12 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>
 ]]></template>
+		<template name="search_forumlist" version="1800"><![CDATA[<select name="forums[]" size="20" multiple="multiple">
+<option value="all" selected="selected">{$lang->search_all_forums}</option>
+<option value="all">----------------------</option>
+{$forumlistbits}
+</select>]]></template>
+		<template name="search_forumlist_forum" version="1800"><![CDATA[<option value="{$forum['fid']}">{$depth} {$forum['name']}</option>]]></template>
 		<template name="search_moderator_options" version="1800"><![CDATA[<tr>
 <td class="tcat"><strong>{$lang->mod_options}</strong></td>
 </tr>
