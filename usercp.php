@@ -2431,35 +2431,39 @@ if($mybb->input['action'] == "do_editlists")
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
+
+				if(isset($requests[$user['uid']]))
+				{
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_sent_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_sent_request_alt;
+					}
+					
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
 				
-				if(isset($requests[$user['uid']]) && $mybb->get_input('manage') != "ignored")
+				if(isset($requests_rec[$user['uid']]))
 				{
-					$error_message = $lang->users_already_sent_request;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				elseif(isset($requests[$user['uid']]) && $mybb->get_input('manage') == "ignored")
-				{
-					$error_message = $lang->users_already_sent_request_alt;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				
-				if(isset($requests_rec[$user['uid']]) && $mybb->get_input('manage') != "ignored")
-				{
-					$error_message = $lang->users_already_rec_request;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				elseif(isset($requests_rec[$user['uid']]) && $mybb->get_input('manage') == "ignored")
-				{
-					$error_message = $lang->users_already_rec_request_alt;
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_rec_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_rec_request_alt;
+					}
+					
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
 
 				// Do we have auto approval set to On?
-				if($user['buddyrequestsauto'] == 1)
+				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
 				{
 					$existing_users[] = $user['uid'];
 					
@@ -2472,7 +2476,7 @@ if($mybb->input['action'] == "do_editlists")
 					
 					send_pm($pm);
 				}
-				else
+				elseif($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored")
 				{
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
@@ -2487,6 +2491,10 @@ if($mybb->input['action'] == "do_editlists")
 					send_pm($pm);
 					
 					$sent = true;
+				}
+				elseif($mybb->get_input('manage') == "ignored")
+				{
+					$existing_users[] = $user['uid'];
 				}
 			}
 		}
@@ -2758,8 +2766,38 @@ if($mybb->input['action'] == "editlists")
 		}
 		else
 		{
-			echo $buddy_list;
-			echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			if(isset($sent) && $sent === true)
+			{
+				$sent_rows = '';
+				$query = $db->query("
+					SELECT r.*, u.username
+					FROM `".TABLE_PREFIX."buddyrequests` r
+					LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
+					WHERE r.uid=".(int)$mybb->user['uid']."
+				");
+				while($request = $db->fetch_array($query))
+				{
+					$bgcolor = alt_trow();
+					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
+					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
+				}
+				
+				if($sent_rows == '')
+				{
+					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
+				}
+				
+				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
+			
+				echo $sentrequests;
+				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
+			}
+			else
+			{
+				echo $buddy_list;
+				echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			}
 		}
 		exit;
 	}
@@ -2784,6 +2822,8 @@ if($mybb->input['action'] == "editlists")
 		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
 	
+	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
+	
 	$sent_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
@@ -2803,6 +2843,8 @@ if($mybb->input['action'] == "editlists")
 	{
 		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
+	
+	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
 	
 	$plugins->run_hooks("usercp_editlists_end");
 
