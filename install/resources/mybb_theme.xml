@@ -4699,6 +4699,7 @@ if(use_xmlhttprequest == "1")
 {$customfields}
 {$referrer}
 {$regimage}
+{$questionbox}
 </td>
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
@@ -4992,6 +4993,25 @@ $().ready(function() {
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>
 ]]></template>
+		<template name="member_register_question" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong>{$lang->security_question}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->question_note}</span></td>
+</tr>
+<tr>
+<td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{$question['question']}</span></td>
+</tr>
+<tr>
+<td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
+<input type="hidden" name="question_id" value="{$sid}" id="question_id" /></td>
+</tr>
+<tr>
+	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
+</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
