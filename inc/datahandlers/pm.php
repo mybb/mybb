@@ -606,6 +606,8 @@ class PMDataHandler extends DataHandler
 			);
 		}
 
+		$this->pmid = array();
+
 		// Save a copy of the PM for each of our recipients
 		foreach($pm['recipients'] as $recipient)
 		{
@@ -669,7 +671,7 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
 			$plugins->run_hooks("datahandler_pm_insert", $this);
-			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
+			$this->pmid[] = $db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If PM noices/alerts are on, show!
 			if($recipient['pmnotice'] == 1)
