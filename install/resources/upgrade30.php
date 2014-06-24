@@ -1553,7 +1553,14 @@ function upgrade30_updatetheme()
 	}
 
 	$output->print_header("Updating Themes");
-	$contents = "<p>Updating the Default theme... ";
+
+	$contents = '<p>Re-caching and minifying existing stylesheets...</p>';
+
+	$num_re_cached = recache_existing_styles();
+
+	$contents .= "Done. {$num_re_cached} stylesheets re-cached.";
+
+	$contents .= "<p>Updating the Default theme... ";
 
 	$db->delete_query("templates", "sid = '1'");
 	$query = $db->simple_select("themes", "tid", "tid = '2'");
@@ -1653,5 +1660,29 @@ function upgrade30_updatetheme()
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_done");
+}
+
+/**
+ * Re-cache the existing stylesheets so that they get minified.
+ *
+ * @return int The number of re-cached stylesheets.
+ */
+function recache_existing_styles()
+{
+	global $db;
+
+	$query = $db->simple_select('themestylesheets', '*');
+
+	$num_updated = 0;
+
+	while($stylesheet = $db->fetch_array($query))
+	{
+		if (cache_stylesheet((int) $stylesheet['tid'], $stylesheet['name'], $stylesheet['stylesheet']))
+		{
+			++$num_updated;
+		}
+	}
+
+	return $num_updated;
 }
 ?>
