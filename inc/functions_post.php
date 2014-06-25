@@ -279,7 +279,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
+				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
 			}
 
 			$post['userstars'] .= "<br />";
@@ -415,12 +415,12 @@ function build_postbit($post, $post_type=0)
 						{
 							if($val != '')
 							{
-								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
+								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
 							}
 						}
-						if($post['fieldvalue'] != '')
+						if($post['fieldvalue_option'] != '')
 						{
-							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
+							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
 						}
 					}
 					else
@@ -622,7 +622,7 @@ function build_postbit($post, $post_type=0)
 	}
 	elseif($post_type == 3) // announcement
 	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid, "canmanageannouncements"))
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanageannounce'] == 1 && is_moderator($fid, "canmanageannouncements"))
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
@@ -725,7 +725,7 @@ function build_postbit($post, $post_type=0)
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
+		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
 	}
 	else
 	{

@@ -145,6 +145,16 @@ $tables[] = "CREATE TABLE mybb_banned (
   KEY dateline (dateline)
 ) ENGINE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_buddyrequests (
+ id int(10) UNSIGNED NOT NULL auto_increment,
+ uid bigint(30) UNSIGNED NOT NULL,
+ touid bigint(30) UNSIGNED NOT NULL,
+ date int(11) UNSIGNED NOT NULL,
+ KEY (uid),
+ KEY (touid),
+ PRIMARY KEY (id)
+) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_calendars (
   cid int unsigned NOT NULL auto_increment,
   name varchar(100) NOT NULL default '',
@@ -461,6 +471,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL,
 	forums text NOT NULL,
+	groups text NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL,
 	threadoptions text NOT NULL,
@@ -1005,6 +1016,8 @@ $tables[] = "CREATE TABLE mybb_users (
   receivefrombuddy tinyint(1) NOT NULL default '0',
   pmnotice tinyint(1) NOT NULL default '0',
   pmnotify tinyint(1) NOT NULL default '0',
+  buddyrequestspm tinyint(1) NOT NULL default '1',
+  buddyrequestsauto tinyint(1) NOT NULL default '0',
   threadmode varchar(8) NOT NULL default '',
   showimages tinyint(1) NOT NULL default '0',
   showvideos tinyint(1) NOT NULL default '0',

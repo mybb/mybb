@@ -381,9 +381,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option";
+$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist,usercp_themeselector_option";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -513,7 +513,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
+if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)
 {
 	// Read the reported content cache
 	$reported = $cache->read('reportedcontent');
@@ -706,8 +706,11 @@ if($mybb->settings['showthemeselect'] != 0)
 {
 	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-	$theme_redirect_url = get_current_location(true, 'theme');
-	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	if(!empty($theme_options))
+	{
+		$theme_redirect_url = get_current_location(true, 'theme');
+		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	}
 }
 
 // DST Auto detection enabled?

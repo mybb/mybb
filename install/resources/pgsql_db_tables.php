@@ -143,6 +143,14 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default ''
 );";
 
+$tables[] = "CREATE TABLE mybb_buddyrequests (
+ id serial,
+ uid int NOT NULL,
+ touid int NOT NULL,
+ date int NOT NULL,
+ PRIMARY KEY (id)
+);";
+
 $tables[] = "CREATE TABLE mybb_calendars (
   cid serial,
   name varchar(100) NOT NULL default '',
@@ -446,6 +454,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL default '',
 	forums text NOT NULL default '',
+	groups text NOT NULL default '',
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL default '',
 	threadoptions text NOT NULL default '',
@@ -970,6 +979,8 @@ $tables[] = "CREATE TABLE mybb_users (
   receivefrombuddy smallint NOT NULL default '0',
   pmnotice smallint NOT NULL default '0',
   pmnotify smallint NOT NULL default '0',
+  buddyrequestspm smallint NOT NULL default '1',
+  buddyrequestsauto smallint NOT NULL default '0',
   threadmode varchar(8) NOT NULL default '',
   showimages smallint NOT NULL default '0',
   showvideos smallint NOT NULL default '0',

@@ -10,13 +10,14 @@
 
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'member.php');
-define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword");
+define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
 $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
-$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions";
+$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
+$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_viewnotes,member_profile_modoptions_editnotes";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -124,7 +125,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
-	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->get_input('coppa', 1) == 1)
+	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', 1) == 1)
 	{
 		$usergroup = 5;
 	}
@@ -1541,6 +1542,31 @@ if($mybb->input['action'] == "logout")
 	redirect("index.php", $lang->redirect_loggedout);
 }
 
+if($mybb->input['action'] == "viewnotes")
+{
+	$uid = $mybb->get_input('uid', 1);
+	$user = get_user($uid);
+
+	// Make sure we are looking at a real user here.
+	if(!$user)
+	{
+		error($lang->error_nomember);
+	}
+
+	if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
+	{
+		error_no_permission();
+	}
+
+	$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $user['username']);
+
+	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
+
+	eval("\$viewnotes = \"".$templates->get("member_viewnotes", 1, 0)."\";");
+	echo $viewnotes;
+	exit;
+}
+
 if($mybb->input['action'] == "profile")
 {
 	$plugins->run_hooks("member_profile_start");
@@ -2155,7 +2181,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
 
-	$modoptions = '';
+	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageuser = '';
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
@@ -2164,12 +2190,29 @@ if($mybb->input['action'] == "profile")
 		{
 			if(strlen($memprofile['usernotes']) > 100)
 			{
-				$memprofile['usernotes'] = my_substr($memprofile['usernotes'], 0, 100).'...';
+				eval("\$viewnotes = \"".$templates->get("member_profile_modoptions_viewnotes")."\";");
+				$memprofile['usernotes'] = my_substr($memprofile['usernotes'], 0, 100)."... {$viewnotes}";
 			}
 		}
 		else
 		{
 			$memprofile['usernotes'] = $lang->no_usernotes;
+		}
+
+		if($mybb->usergroup['caneditprofiles'] == 1)
+		{
+			eval("\$editprofile = \"".$templates->get("member_profile_modoptions_editprofile")."\";");
+			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
+		}
+
+		if($mybb->usergroup['canbanusers'] == 1)
+		{
+			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
+		}
+
+		if(!empty($editprofile) || !empty($banuser))
+		{
+			eval("\$manageuser = \"".$templates->get("member_profile_modoptions_manageuser")."\";");
 		}
 
 		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");

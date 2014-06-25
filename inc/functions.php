@@ -1733,13 +1733,15 @@ function get_post_icons()
 
 		if($icon == $dbicon['iid'])
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
-			$no_icons_checked = "";
+			$checked = " checked=\"checked\"";
+			$no_icons_checked = '';
 		}
 		else
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
+			$checked = '';
 		}
+
+		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 
 		++$listed;
 		if($listed == 10)
@@ -3044,7 +3046,7 @@ function build_prefixes($pid=0)
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
-	global $cache, $db, $lang, $mybb;
+	global $cache, $db, $lang, $mybb, $templates;
 
 	if($fid != 'all')
 	{
@@ -3109,15 +3111,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		return false;
 	}
 
-	$prefixselect = "";
-	if($multiple != 0)
-	{
-		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
-	}
-	else
-	{
-		$prefixselect = "<select name=\"threadprefix\">\n";
-	}
+	$prefixselect = $prefixselect_prefix = '';
 
 	if($multiple == 1)
 	{
@@ -3126,8 +3120,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		{
 			$any_selected = " selected=\"selected\"";
 		}
-
-		$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
 	}
 
 	$default_selected = "";
@@ -3135,8 +3127,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	{
 		$default_selected = " selected=\"selected\"";
 	}
-
-	$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
 
 	foreach($prefixes as $prefix)
 	{
@@ -3146,10 +3136,18 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			$selected = " selected=\"selected\"";
 		}
 
-		$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
 	}
 
-	$prefixselect .= "</select>\n&nbsp;";
+	if($multiple != 0)
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
+	}
+	else
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
+	}
 
 	return $prefixselect;
 }
@@ -3488,7 +3486,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme;
+	global $cache, $attachtypes, $theme, $templates, $lang;
 
 	if(!$attachtypes)
 	{
@@ -3516,7 +3514,8 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
+
+		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
 	{
@@ -3530,8 +3529,12 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
+		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+		$name = $lang->unknown;
 	}
+
+	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
+	return $attachment_icon;
 }
 
 /**
@@ -3668,7 +3671,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.png\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
+						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
@@ -4436,26 +4439,17 @@ function get_current_location($fields=false, $ignore=array())
  */
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
 	if($tid == 0)
 	{
-		if($footer == true)
+		$tid = 1;
+		$num_themes = 0;
+		$themeselect_option = '';
+
+		if(!isset($lang->use_default))
 		{
-			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
-			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
-			$tid = 1;
-		}
-		else
-		{
-			if(!isset($lang->use_default))
-			{
-				$lang->use_default = $lang->lang_select_default;
-			}
-			$themeselect = "<select name=\"$name\">";
-			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-			$themeselect .= "<option value=\"0\">-----------</option>\n";
-			$tid = 1;
+			$lang->use_default = $lang->lang_select_default;
 		}
 	}
 
@@ -4507,7 +4501,9 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
+					$theme['name'] = htmlspecialchars_uni($theme['name']);
+					eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+					++$num_themes;
 					$depthit = $depth."--";
 				}
 
@@ -4519,17 +4515,23 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 1)
+	if($tid == 1 && $num_themes > 1)
 	{
 		if($footer == true)
 		{
-			$themeselect .= "</optgroup>\n";
+			eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
+		}
+		else
+		{
+			eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
 		}
 
-		$themeselect .= "</select>";
+		return $themeselect;
 	}
-
-	return $themeselect;
+	else
+	{
+		return false;
+	}
 }
 
 /**
@@ -7452,12 +7454,12 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	if (!is_array($pm))
+	if(!is_array($pm))
 	{
 		return false;
 	}
 
-	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
@@ -7473,7 +7475,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$toid = $pm['touid'];
 
 	// Our recipients
-	if (is_array($toid))
+	if(is_array($toid))
 	{
 		$recipients_to = $toid;
 	}
@@ -7485,11 +7487,11 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$recipients_bcc = array();
 
 	// Determine user ID
-	if ((int)$fromid == 0)
+	if((int)$fromid == 0)
 	{
 		$fromid = (int)$mybb->user['uid'];
 	}
-	elseif ((int)$fromid < 0)
+	elseif((int)$fromid < 0)
 	{
 		$fromid = 0;
 	}

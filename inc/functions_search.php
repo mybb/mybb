@@ -67,7 +67,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if(empty($forum['password']) || $pwverified == 1)
 					{
-						$forumlistbits .= "<option value=\"{$forum['fid']}\">$depth {$forum['name']}</option>\n";
+						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
 					}
 					if(!empty($pforumcache[$forum['fid']]))
 					{
@@ -80,7 +80,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 	}
 	if($addselect)
 	{
-		$forumlist = "<select name=\"forums[]\" size=\"20\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+		eval("\$forumlist = \"".$templates->get("search_forumlist")."\";");
 	}
 	return $forumlist;
 }

@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp2.php');
 define("ALLOWABLE_PAGE", "removesubscription,removesubscriptions");
 
-$templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav,usercp_addsubscription_thread,usercp_nav_messenger_tracking,usercp_nav_editsignature,usercp_nav_attachments,usercp_nav_messenger_compose';
+$templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav,usercp_addsubscription_thread,usercp_nav_messenger_tracking,usercp_nav_editsignature,usercp_nav_attachments,usercp_nav_messenger_compose,usercp_nav_messenger_folder';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";

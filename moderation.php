@@ -1062,7 +1062,7 @@ switch($mybb->input['action'])
 
 		// Moderator options
 		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1)
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $post['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
@@ -1101,7 +1101,7 @@ switch($mybb->input['action'])
 
 		// Moderator options
 		$modoptions = "";
-		if($mybb->usergroup['canmodcp'] == 1)
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $pm['ipaddress'];
 			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
@@ -2673,6 +2673,11 @@ switch($mybb->input['action'])
 			// Verify incoming POST request
 			verify_post_check($mybb->get_input('my_post_key'));
 
+
+			if(!empty($tool['groups']) && !is_member($tool['groups']))
+			{
+				error_no_permission();
+			}
 			if($tool['type'] == 't' && $mybb->get_input('modtype') == 'inlinethread')
 			{
 				if($mybb->get_input('inlinetype') == 'search')

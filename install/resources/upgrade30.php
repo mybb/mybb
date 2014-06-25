@@ -489,6 +489,40 @@ function upgrade30_dbchanges5()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	$collation = $db->build_create_table_collation();
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id serial,
+				 uid int NOT NULL,
+				 touid int NOT NULL,
+				 date int NOT NULL,
+				 PRIMARY KEY (id)
+			);");
+		break;
+		case "sqlite":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id INTEGER PRIMARY KEY,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL
+			);");
+		break;
+		default:
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
+				 id int(10) UNSIGNED NOT NULL auto_increment,
+				 uid bigint(30) UNSIGNED NOT NULL,
+				 touid bigint(30) UNSIGNED NOT NULL,
+				 date int(11) UNSIGNED NOT NULL,
+				 KEY (uid),
+				 KEY (touid),
+				 PRIMARY KEY (id)
+			) ENGINE=MyISAM{$collation};");
+		break;
+	}
+	
 	if($db->field_exists('msn', 'users'))
 	{
 		$db->drop_column("users", "msn");
@@ -553,6 +587,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "smallint NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "smallint NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "smallint NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "smallint NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "smallint NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "smallint NOT NULL default '0' AFTER required");
@@ -565,6 +601,8 @@ function upgrade30_dbchanges5()
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
 			$db->add_column("users", "showimages", "tinyint(1) NOT NULL default '1' AFTER threadmode");
 			$db->add_column("users", "showvideos", "tinyint(1) NOT NULL default '1' AFTER showimages");
+			$db->add_column("users", "buddyrequestspm", "tinyint(1) NOT NULL default '1' AFTER pmnotify");
+			$db->add_column("users", "buddyrequestsauto", "tinyint(1) NOT NULL default '0' AFTER buddyrequestspm");
 			$db->add_column("groupleaders", "caninvitemembers", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("joinrequests", "invite", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "registration", "tinyint(1) NOT NULL default '0' AFTER required");
@@ -608,6 +646,12 @@ function upgrade30_dbchanges5()
 	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
+	if($db->fetch_field($query, "numexists") != 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
@@ -732,7 +776,79 @@ function upgrade30_dbchanges5()
 	echo "<p>Added {$added_tasks} new tasks.</p>";
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("30_dbchanges_optimize1");
+	$output->print_footer("30_threadcount");
+}
+
+function upgrade30_threadcount()
+{
+	global $db, $output;
+
+	$output->print_header("Counting user thread count");
+
+	if(!$_POST['theadspage'])
+	{
+		$threads = 500;
+	}
+	else
+	{
+		$threads = $_POST['theadspage'];
+	}
+
+	if($_POST['threadstart'])
+	{
+		$startat = $_POST['threadstart'];
+		$upper = $startat+$threads;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $threads;
+		$lower = 0;
+	}
+
+	$query = $db->simple_select("users", "COUNT(uid) AS usercount");
+	$cnt = $db->fetch_array($query);
+
+	if($upper > $cnt['usercount'])
+	{
+		$upper = $cnt['usercount'];
+	}
+
+	echo "<p>Counting thread count of user #{$lower} to #{$upper} ({$cnt['usercount']} Total)</p>";
+	flush();
+
+	$threadnum = false;
+
+	$query = $db->simple_select("users", "threadnum, uid", "", array('limit_start' => $lower, 'limit' => $threads));
+	while($thread = $db->fetch_array($query))
+	{
+		$query2 = $db->simple_select("threads", "COUNT(tid) AS thread_count", "uid='{$thread['uid']}' AND visible = 1");
+		$num_threads = $db->fetch_field($query2, "thread_count");
+
+		$db->update_query("users", array('threadnum' => $num_threads), "uid = '{$thread['uid']}'");
+
+		$threadnum = true;
+	}
+
+	$remaining = $upper-$cnt['usercount'];
+	if($remaining && $threadnum)
+	{
+		$nextact = "30_threadcount";
+		$startat = $startat+$threads;
+		$contents = "<p><input type=\"hidden\" name=\"theadspage\" value=\"$threads\" /><input type=\"hidden\" name=\"threadstart\" value=\"$startat\" />Done. Click Next to move on to the next set of thread counts.</p>";
+	}
+	else
+	{
+		$nextact = "30_dbchanges_optimize1";
+		$contents = "<p>Done</p><p>All users have had their thread count counted. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_footer($nextact);
 }
 
 function upgrade30_dbchanges_optimize1()
