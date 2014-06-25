@@ -664,7 +664,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
 		if($mybb->settings['pmsallowsmilies'] != 0)
 		{
 			$smilieinserter = build_clickable_smilies();
