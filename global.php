@@ -289,15 +289,16 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
+
+                $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+
 				if($mybb->settings['minifycss'])
 				{
-					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
+                    $stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
 				}
-				else
-				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
-				}
+
+				$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+
 				$already_loaded[$page_stylesheet] = 1;
 			}
 		}
@@ -340,35 +341,45 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-	if(!@is_dir($theme['imgdir']))
-	{
-		$theme['imgdir'] = 'images';
-	}
+    $img_directory = $theme['imgdir'];
 
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
+    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+    {
+        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+    }
+
+    if(!@is_dir($img_directory))
+    {
+        $theme['imgdir'] = 'images';
+    }
+
+    // If a language directory for the current language exists within the theme - we use it
+    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+    {
+        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+    }
+    else
+    {
+        // Check if a custom language directory exists for this theme
+        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+        {
+            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+        }
+        // Otherwise, the image language directory is the same as the language directory for the theme
+        else
+        {
+            $theme['imglangdir'] = $theme['imgdir'];
+        }
+    }
+
+    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
 if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
-	$theme['logo'] = $mybb->settings['bburl'].'/'.$theme['logo'];
+	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
 // Load Main Templates and Cached Templates
