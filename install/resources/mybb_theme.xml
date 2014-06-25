@@ -3333,6 +3333,7 @@ a.button {
 <br />]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="editpost_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
 		<template name="editpost_reason" version="1800"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->editreason}</strong></td>
 <td class="trow1"><input type="text" class="textbox" name="editreason" size="50" maxlength="150" value="{$editreason}" tabindex="5" /></td>
@@ -8337,6 +8338,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newreply_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
 		<template name="newreply_modoptions" version="1400"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2"><span class="smalltext">
@@ -8424,6 +8426,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+		<template name="newthread_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
 		<template name="newthread_multiquote_external" version="1400"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
 <td class="{$bgcolor2}" valign="top">
@@ -9134,6 +9137,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_userstar" version="1800"><![CDATA[<img src="{$post['starimage']}" border="0" alt="*" />]]></template>
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
+		<template name="postbit_warninglevel_formatted" version="1800"><![CDATA[<span class="{$warning_class}">{$level}%</span>]]></template>
 		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
 		<template name="posticons" version="1410"><![CDATA[<tr>
 <td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>

@@ -3300,22 +3300,28 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
+	global $templates;
+
+	$warning_class = '';
 	if($level >= 80)
 	{
-		return "<span class=\"high_warning\">{$level}%</span>";
+		$warning_class = "high_warning";
 	}
 	else if($level >= 50)
 	{
-		return "<span class=\"moderate_warning\">{$level}%</span>";
+		$warning_class = "moderate_warning";
 	}
 	else if($level >= 25)
 	{
-		return "<span class=\"low_warning\">{$level}%</span>";
+		$warning_class = "low_warning";
 	}
 	else
 	{
-		return $level."%";
+		$warning_class = "normal_warning";
 	}
+
+	eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
+	return $level;
 }
 
 /**
