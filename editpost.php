@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'editpost.php');
 
 $templatelist = "editpost,previewpost,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_unapprove,post_attachments_attachment";
-$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,post_subscription_method,post_attachments_add";
+$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,post_subscription_method,post_attachments_add,postbit_reputation_formatted_link";
 $templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_new,post_attachments,attachment_icon";
 
 require_once "./global.php";

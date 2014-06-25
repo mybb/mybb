@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'calendar.php');
 $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
 $templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview";
 $templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
-$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink";
+$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect_hidden";
 $templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event";
 
 require_once "./global.php";
@@ -536,6 +536,10 @@ if($mybb->input['action'] == "addevent")
 	if($calendarcount > 1)
 	{
 		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
+	}
+	else
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
 	$event_errors = '';

@@ -3264,35 +3264,29 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-	global $theme;
+	global $theme, $templates;
 
-	$display_reputation = '';
-
-	if($uid != 0)
-	{
-		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
-	}
-
-	$display_reputation .= "<strong class=\"";
-
+	$display_reputation = $reputation_class = '';
 	if($reputation < 0)
 	{
-		$display_reputation .= "reputation_negative";
+		$reputation_class = "reputation_negative";
 	}
 	elseif($reputation > 0)
 	{
-		$display_reputation .= "reputation_positive";
+		$reputation_class = "reputation_positive";
 	}
 	else
 	{
-		$display_reputation .= "reputation_neutral";
+		$reputation_class = "reputation_neutral";
 	}
-
-	$display_reputation .= "\">{$reputation}</strong>";
 
 	if($uid != 0)
 	{
-		$display_reputation .= "</a>";
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+	}
+	else
+	{
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
 	}
 
 	return $display_reputation;
@@ -6053,7 +6047,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
  */
 function build_timezone_select($name, $selected=0, $short=false)
 {
-	global $mybb, $lang;
+	global $mybb, $lang, $templates;
 
 	$timezones = array(
 		"-12" => $lang->timezone_gmt_minus_1200,
@@ -6098,7 +6092,6 @@ function build_timezone_select($name, $selected=0, $short=false)
 	);
 
 	$selected = str_replace("+", "", $selected);
-	$select = "<select name=\"{$name}\" id=\"{$name}\">\n";
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
@@ -6130,9 +6123,11 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
-		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";
+
+		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
-	$select .= "</select>";
+
+	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
 	return $select;
 }
 
