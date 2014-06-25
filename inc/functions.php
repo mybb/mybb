@@ -4439,26 +4439,17 @@ function get_current_location($fields=false, $ignore=array())
  */
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
 	if($tid == 0)
 	{
-		if($footer == true)
+		$tid = 1;
+		$num_themes = 0;
+		$themeselect_option = '';
+
+		if(!isset($lang->use_default))
 		{
-			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
-			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
-			$tid = 1;
-		}
-		else
-		{
-			if(!isset($lang->use_default))
-			{
-				$lang->use_default = $lang->lang_select_default;
-			}
-			$themeselect = "<select name=\"$name\">";
-			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-			$themeselect .= "<option value=\"0\">-----------</option>\n";
-			$tid = 1;
+			$lang->use_default = $lang->lang_select_default;
 		}
 	}
 
@@ -4510,7 +4501,9 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
+					$theme['name'] = htmlspecialchars_uni($theme['name']);
+					eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+					++$num_themes;
 					$depthit = $depth."--";
 				}
 
@@ -4522,17 +4515,23 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 1)
+	if($tid == 1 && $num_themes > 1)
 	{
 		if($footer == true)
 		{
-			$themeselect .= "</optgroup>\n";
+			eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
+		}
+		else
+		{
+			eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
 		}
 
-		$themeselect .= "</select>";
+		return $themeselect;
 	}
-
-	return $themeselect;
+	else
+	{
+		return false;
+	}
 }
 
 /**

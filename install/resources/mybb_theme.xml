@@ -3464,6 +3464,11 @@ a.button {
 	{$gobutton}
 </form>
 </div>]]></template>
+		<template name="footer_themeselector" version="1800"><![CDATA[<select name="{$name}" onchange="MyBB.changeTheme();">
+<optgroup label="{$lang->select_theme}">
+{$themeselect_option}
+</optgroup>
+</select>]]></template>
 		<template name="forumbit_depth1_cat" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
@@ -12220,12 +12225,7 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showcodebuttons" id="showcodebuttons" value="1" {$showcodebuttonscheck} /></td>
 <td><span class="smalltext"><label for="showcodebuttons">{$lang->show_codebuttons}</label></span></td>
 </tr>
-<tr>
-<td colspan="2"><span class="smalltext">{$lang->style}</span></td>
-</tr>
-<tr>
-<td colspan="2">{$stylelist}</td>
-</tr>
+{$board_style}
 <tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}</span></td>
 </tr>
@@ -12264,7 +12264,12 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
-		<template name="usercp_options_stylebit" version="120"><![CDATA[<option value="{$style['sid']}" {$selected}>{$style['name']}</option>]]></template>
+		<template name="usercp_options_style" version="1800"><![CDATA[<tr>
+<td colspan="2"><span class="smalltext">{$lang->style}</span></td>
+</tr>
+<tr>
+<td colspan="2">{$stylelist}</td>
+</tr>]]></template>
 		<template name="usercp_options_tppselect" version="120"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->tpp}</span></td>
 </tr>
@@ -12656,6 +12661,12 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="check[{$thread['tid']}]" value="{$thread['tid']}" /></td>
 </tr>]]></template>
+		<template name="usercp_themeselector" version="1800"><![CDATA[<select name="{$name}">
+<option value="0">{$lang->use_default}</option>
+<option value="0">-----------</option>
+{$themeselect_option}
+</select>]]></template>
+		<template name="usercp_themeselector_option" version="1800"><![CDATA[<option value="{$theme['tid']}"{$sel}>{$depth}{$theme['name']}</option>]]></template>
 		<template name="usercp_usergroups" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->group_memberships}</title>
