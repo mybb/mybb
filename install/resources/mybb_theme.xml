@@ -8263,6 +8263,7 @@ if(use_xmlhttprequest == "1")
 </div>]]></template>
 		<template name="nav_bit" version="120"><![CDATA[<a href="{$navbit['url']}">{$navbit['name']}</a>{$sep}]]></template>
 		<template name="nav_bit_active" version="120"><![CDATA[<span class="active">{$navbit['name']}</span>]]></template>
+		<template name="nav_dropdown" version="1800"><![CDATA[ <img src="{$theme['imgdir']}/arrow_down.png" alt="v" title="" class="pagination_breadcrumb_link" id="breadcrumb_multipage" />{$multipage}]]></template>
 		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.png" alt="" />]]></template>
 		<template name="newreply" version="1800"><![CDATA[<html>
@@ -8919,6 +8920,16 @@ if(use_xmlhttprequest == "1")
 </table>
 </td>
 </tr>]]></template>
+		<template name="post_prefixselect_multiple" version="1800"><![CDATA[<select name="threadprefix[]" multiple="multiple" size="5">
+<option value="any"{$any_selected}>{$lang->any_prefix}</option>
+<option value="0"{$default_selected}>{$lang->no_prefix}</option>
+{$prefixselect_prefix}
+</select>]]></template>
+		<template name="post_prefixselect_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$prefix['prefix']}</option>]]></template>
+		<template name="post_prefixselect_single" version="1800"><![CDATA[<select name="threadprefix">
+<option value="0"{$default_selected}>{$lang->no_prefix}</option>
+{$prefixselect_prefix}
+</select>]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
 		<template name="post_subscription_method" version="1800"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->thread_subscription_method}</strong><br />
@@ -9116,6 +9127,11 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_warn" version="1800"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}" title="{$lang->postbit_warn}" class="postbit_warn"><span>{$lang->postbit_button_warn}</span></a>]]></template>
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
 		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
+		<template name="posticons" version="1410"><![CDATA[<tr>
+<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
+<td class="trow1" valign="top">{$iconlist}</td>
+</tr>]]></template>
+		<template name="posticons_icon" version="1800"><![CDATA[<label><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
 		<template name="printthread" version="1600"><![CDATA[<html>
 <head>
 <title>{$thread['threadprefix']} {$thread['subject']} - {$lang->printable_version}</title>
@@ -13168,6 +13184,7 @@ if(use_xmlhttprequest == "1")
 				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" tabindex="1001" />
 			</div>
 		</div>]]></template>
+		<template name="attachment_icon" version="1800"><![CDATA[<img src="{$icon}" title="{$name}" border="0" alt=".{$ext}" />]]></template>
 		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
@@ -13292,11 +13309,6 @@ $(function() {
 		<template name="loginbox" version="1609"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
 <td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}" /></td>
-</tr>
-]]></template>
-		<template name="posticons" version="1410"><![CDATA[<tr>
-<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
-<td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
 		<template name="previewpost" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">

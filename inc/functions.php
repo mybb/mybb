@@ -1733,13 +1733,15 @@ function get_post_icons()
 
 		if($icon == $dbicon['iid'])
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
-			$no_icons_checked = "";
+			$checked = " checked=\"checked\"";
+			$no_icons_checked = '';
 		}
 		else
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
+			$checked = '';
 		}
+
+		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 
 		++$listed;
 		if($listed == 10)
@@ -3044,7 +3046,7 @@ function build_prefixes($pid=0)
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
-	global $cache, $db, $lang, $mybb;
+	global $cache, $db, $lang, $mybb, $templates;
 
 	if($fid != 'all')
 	{
@@ -3109,15 +3111,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		return false;
 	}
 
-	$prefixselect = "";
-	if($multiple != 0)
-	{
-		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
-	}
-	else
-	{
-		$prefixselect = "<select name=\"threadprefix\">\n";
-	}
+	$prefixselect = $prefixselect_prefix = '';
 
 	if($multiple == 1)
 	{
@@ -3126,8 +3120,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		{
 			$any_selected = " selected=\"selected\"";
 		}
-
-		$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
 	}
 
 	$default_selected = "";
@@ -3135,8 +3127,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	{
 		$default_selected = " selected=\"selected\"";
 	}
-
-	$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
 
 	foreach($prefixes as $prefix)
 	{
@@ -3146,10 +3136,18 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			$selected = " selected=\"selected\"";
 		}
 
-		$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
 	}
 
-	$prefixselect .= "</select>\n&nbsp;";
+	if($multiple != 0)
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
+	}
+	else
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
+	}
 
 	return $prefixselect;
 }
@@ -3488,7 +3486,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme;
+	global $cache, $attachtypes, $theme, $templates, $lang;
 
 	if(!$attachtypes)
 	{
@@ -3516,7 +3514,8 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
+
+		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
 	{
@@ -3530,8 +3529,12 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
+		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+		$name = $lang->unknown;
 	}
+
+	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
+	return $attachment_icon;
 }
 
 /**
@@ -3668,7 +3671,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.png\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
+						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
