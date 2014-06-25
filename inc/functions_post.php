@@ -279,7 +279,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
+				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
 			}
 
 			$post['userstars'] .= "<br />";
