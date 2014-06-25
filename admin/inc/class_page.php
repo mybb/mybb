@@ -763,7 +763,7 @@ EOF;
 	 */
 	function build_codebuttons_editor($bind, $editor_language, $smilies)
 	{
-		global $lang, $mybb, $smiliecache, $smiliecount, $cache;
+		global $lang, $mybb, $smiliecache, $cache;
 
 		// Smilies		
 		$emoticon = "";
@@ -799,15 +799,6 @@ EOF;
 			{
 				reset($smiliecache);
 
-				if($mybb->settings['smilieinsertertot'] >= $smiliecount)
-				{
-					$mybb->settings['smilieinsertertot'] = $smiliecount;
-				}
-				else if($mybb->settings['smilieinsertertot'] < $smiliecount)
-				{
-					$smiliecount = $mybb->settings['smilieinsertertot'];
-				}
-
 				$dropdownsmilies = "";
 				$moresmilies = "";
 				$i = 0;
@@ -816,6 +807,10 @@ EOF;
 				{
 					$find = htmlspecialchars_uni($find);
 					$image = htmlspecialchars_uni($image);
+					if(substr($image, 0, 4) != "http")
+					{
+						$image = $mybb->settings['bburl']."/".$image;
+					}
 					if($i < $mybb->settings['smilieinsertertot'])
 					{
 						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -891,36 +886,19 @@ $(function() {
 		style: "../jscripts/sceditor/editor_themes/mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
+		emoticonsEnabled: {$emoticons_enabled},
 		emoticons: {
 			// Emoticons to be included in the dropdown
 			dropdown: {
-				":s": "../images/smilies/confused.png",
-				":-/": "../images/smilies/undecided.png",
-				":)": "../images/smilies/smile.png",
-				";)": "../images/smilies/wink.png",
-				":D": "../images/smilies/biggrin.png",
-				":P": "../images/smilies/tongue.png",
-				":(": "../images/smilies/sad.png",
-				":@": "../images/smilies/angry.png",
-				":blush:": "../images/smilies/blush.png",
+				{$dropdownsmilies}
 			},
 			// Emoticons to be included in the more section
 			more: {
-				":angel:": "../images/smilies/angel.png",
-				":dodgy:": "../images/smilies/dodgy.png",
-				":exclamation:": "../images/smilies/exclamation.png",
-				":heart:": "../images/smilies/heart.png",
-				":huh:": "../images/smilies/huh.png",
-				":idea:": "../images/smilies/lightbulb.png",
-				":sleepy:": "../images/smilies/sleepy.png",
-				":cool:": "../images/smilies/cool.png",
-				":rolleyes:": "../images/smilies/rolleyes.png",
-				":shy:": "../images/smilies/shy.png",
-				":at:": "../images/smilies/at.png"
+				{$moresmilies}
 			}
 		},
 		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video,emoticon|{$list}{$code}quote|maximize,source",
+        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
 	});
       
 	MyBBEditor = $("#{$bind}").sceditor("instance");
