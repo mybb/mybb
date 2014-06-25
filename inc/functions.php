@@ -2741,7 +2741,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	}
 
 	$avatars[$avatar] = array(
-		'image' => $avatar,
+		'image' => $mybb->get_asset_url($avatar),
 		'width_height' => $avatar_width_height
 	);
 

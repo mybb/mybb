@@ -515,11 +515,7 @@ class postParser
 		{
 			foreach($smilies as $sid => $smilie)
 			{
-				if(defined("IN_ARCHIVE") && substr($smilie['image'], 0, 4) != "http")
-				{
-					// We're in the archive and not using an outside image, add in our address
-					$smilie['image'] = $mybb->settings['bburl']."/".$smilie['image'];
-				}
+                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
 				$this->smilies_cache[$smilie['find']] = "<img src=\"{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
 			}
