@@ -12226,12 +12226,7 @@ if(use_xmlhttprequest == "1")
 <td><span class="smalltext"><label for="showcodebuttons">{$lang->show_codebuttons}</label></span></td>
 </tr>
 {$board_style}
-<tr>
-<td colspan="2"><span class="smalltext">{$lang->board_language}</span></td>
-</tr>
-<tr>
-<td colspan="2"><select name="language"><option value="">{$lang->use_default}</option><option value="0">-----------</option>{$langoptions}</select></td>
-</tr>
+{$board_language}
 </table>
 </fieldset>
 </td>
@@ -12249,6 +12244,19 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_option_language" version="1800"><![CDATA[<tr>
+<td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>
+</tr>
+<tr>
+<td colspan="2">
+<select name="language">
+<option value="">{$lang->use_default}</option>
+<option value="0">-----------</option>
+{$langoptions}
+</select>
+</td>
+</tr>]]></template>
+		<template name="usercp_option_language_option" version="1800"><![CDATA[<option value="{$name}"{$sel}>{$language}</option>]]></template>
 		<template name="usercp_options_pms_from_buddys" version="1600"><![CDATA[<tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivefrombuddy" id="receivefrombuddy" value="1" {$receivefrombuddycheck} /></td>
 <td><span class="smalltext"><label for="receivefrombuddy">{$lang->receive_from_buddy}</label></span></td>
