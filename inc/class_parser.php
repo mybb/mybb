@@ -18,6 +18,7 @@ options = array(
 	me_username
 	shorten_urls
 	highlight
+	filter_cdata
 )
 */
 
@@ -91,7 +92,7 @@ class postParser
 	 * Parses a message with the specified options.
 	 *
 	 * @param string The message to be parsed.
-	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username.
+	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options=array())
@@ -121,6 +122,12 @@ class postParser
 		if(!empty($this->options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
+		}
+
+		// Filter CDATA tags if requested (syndication.php).
+		if(!empty($this->options['filter_cdata']))
+		{
+			$message = $this->parse_cdata($message);
 		}
 
 		if(empty($this->options['allow_html']))
@@ -644,7 +651,20 @@ class postParser
 	}
 
 	/**
-	 * Attempts to move any javascript references in the specified message.
+	 * Resolves nested CDATA tags in the specified message.
+	 *
+	 * @param string The message to be parsed.
+	 * @return string The parsed message.
+	 */
+	function parse_cdata($message)
+	{
+		$message = str_replace(']]>', ']]]]><![CDATA[>', $message);
+
+		return $message;
+	}
+
+	/**
+ 	 * Attempts to move any javascript references in the specified message.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
@@ -1569,7 +1589,7 @@ class postParser
 
 	/**
 	 * Strips smilies from a string
- 	 *
+	 *
 	 * @param string The message for smilies to be stripped from
 	 * @return string The message with smilies stripped
 	 */
@@ -1588,7 +1608,7 @@ class postParser
 
 	/**
 	 * Highlights a string
- 	 *
+	 *
 	 * @param string The message to be highligted
 	 * @param string The highlight keywords
 	 * @return string The message with highlight bbcodes
