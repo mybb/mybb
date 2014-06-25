@@ -11362,7 +11362,7 @@ if(use_xmlhttprequest == "1")
 		<div align="center">
 			<input type="hidden" name="action" value="do_avatar" />
 			<input type="submit" class="button" name="submit" value="{$lang->change_avatar}" />
-			<input type="submit" class="button" name="remove" value="{$lang->remove_avatar}" />
+			{$removeavatar}
 		</div>
 	</td>
 </tr>
@@ -11372,6 +11372,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="usercp_avatar_current" version="1800"><![CDATA[<td width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
+		<template name="usercp_avatar_remove" version="1800"><![CDATA[<input type="submit" class="button" name="remove" value="{$lang->remove_avatar}" />]]></template>
 		<template name="usercp_avatar_upload" version="1800"><![CDATA[			<tr>
 				<td class="trow1" width="40%">
 					<strong>{$lang->avatar_upload}</strong>
