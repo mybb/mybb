@@ -60,6 +60,7 @@ if($mybb->input['action'] == "add")
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
+				"registration" => $db->escape_string($mybb->input['registration']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
@@ -105,6 +106,7 @@ if($mybb->input['action'] == "add")
 	{
 		$mybb->input['fieldtype'] = 'textbox';
 		$mybb->input['required'] = 0;
+		$mybb->input['registration'] = 0;
 		$mybb->input['editable'] = 1;
 		$mybb->input['hidden'] = 0;
 		$mybb->input['postbit'] = 0;
@@ -127,6 +129,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
+	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$editable_list = array(
 		"0" => $lang->no,
 		"1" => $lang->yes,
@@ -206,6 +209,7 @@ if($mybb->input['action'] == "edit")
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
+				"registration" => $db->escape_string($mybb->input['registration']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
@@ -269,6 +273,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
+	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$editable_list = array(
 		"0" => $lang->no,
 		"1" => $lang->yes,
@@ -363,8 +368,8 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->name);
-	$table->construct_header($lang->id, array("class" => "align_center"));
 	$table->construct_header($lang->required, array("class" => "align_center"));
+	$table->construct_header($lang->registration, array("class" => "align_center"));
 	$table->construct_header($lang->editable, array("class" => "align_center"));
 	$table->construct_header($lang->hidden, array("class" => "align_center"));
 	$table->construct_header($lang->postbit, array("class" => "align_center"));
@@ -382,13 +387,22 @@ if(!$mybb->input['action'])
 			$required = $lang->no;
 		}
 
+		if($field['registration'])
+		{
+			$registration = $lang->yes;
+		}
+		else
+		{
+			$registration = $lang->no;
+		}
+
 		if($field['editable'] == 1)
 		{
 			$editable = $lang->yes;
 		}
 		elseif($field['editable'] == 2)
 		{
-			$editable = $lang->registration;
+			$editable = $lang->registration_editable;
 		}
 		else
 		{
@@ -413,9 +427,9 @@ if(!$mybb->input['action'])
 			$postbit = $lang->no;
 		}
 
-		$table->construct_cell("<strong><a href=\"index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}\">".htmlspecialchars_uni($field['name'])."</a></strong><br /><small>".htmlspecialchars_uni($field['description'])."</small>", array('width' => '45%'));
-		$table->construct_cell($field['fid'], array("class" => "align_center", 'width' => '5%'));
+		$table->construct_cell("<strong><a href=\"index.php?module=config-profile_fields&amp;action=edit&amp;fid={$field['fid']}\">".htmlspecialchars_uni($field['name'])."</a></strong><br /><small>".htmlspecialchars_uni($field['description'])."</small>", array('width' => '35%'));
 		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
+		$table->construct_cell($registration, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($hidden, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%')); 

@@ -158,6 +158,7 @@ $l['ascending_order'] = "Ascending Order";
 $l['descending_order'] = "Descending Order";
 $l['search_private_messages'] = "Search Private Messages";
 $l['check_all'] = "Check All";
+$l['search_user'] = "Search for a user";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";

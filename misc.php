@@ -13,8 +13,9 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
-$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search";
+$templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
 $templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 
@@ -300,6 +301,9 @@ elseif($mybb->input['action'] == "helpresults")
 	$multipage = multipage($helpcount['total'], $perpage, $page, "misc.php?action=helpresults&amp;sid='".htmlspecialchars_uni($mybb->get_input('sid'))."'");
 	$helpdoclist = '';
 
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser();
+
 	$query = $db->query("
 		SELECT h.*, s.enabled
 		FROM ".TABLE_PREFIX."helpdocs h
@@ -320,10 +324,18 @@ elseif($mybb->input['action'] == "helpresults")
 			$helpdoc['name'] = htmlspecialchars_uni($helpdoc['name']);
 		}
 
-		$helpdoc['helpdoc'] = strip_tags(htmlspecialchars_uni($helpdoc['document']));
-		if(my_strlen($helpdoc['helpdoc']) > 300)
+		$parser_options = array(
+			'allow_html' => 1,
+			'allow_mycode' => 0,
+			'allow_smilies' => 0,
+			'allow_imgcode' => 0,
+			'filter_badwords' => 1
+		);
+		$helpdoc['helpdoc'] = strip_tags($parser->parse_message($helpdoc['document'], $parser_options));
+
+		if(my_strlen($helpdoc['helpdoc']) > 350)
 		{
-			$prev = my_substr($helpdoc['helpdoc'], 0, 300)."...";
+			$prev = my_substr($helpdoc['helpdoc'], 0, 350)."...";
 		}
 		else
 		{
@@ -612,7 +624,7 @@ elseif($mybb->input['action'] == "whoposted")
 		error($lang->error_invalidthread);
 	}
 
-	if(is_moderator($thread['fid']))
+	if(is_moderator($thread['fid'], "canviewunapprove"))
 	{
 		$ismod = true;
 		$show_posts = "(p.visible = '1' OR p.visible = '0')";
@@ -908,7 +920,7 @@ elseif($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $templates;
 	static $unviewableforums;
 
 	$pid = intval($pid);
@@ -981,8 +993,10 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 		{
 			$addsel = '';
 		}
-		$forumlist = "<select name=\"forums[]\" size=\"10\" multiple=\"multiple\">\n<option value=\"all\" $addsel>$lang->syndicate_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+
+		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");
 	}
+
 	return $forumlist;
 }
 ?>

@@ -15,6 +15,7 @@ $l['username'] = "Username";
 $l['joined'] = "Joined";
 $l['lastvisit'] = "Last Visit";
 $l['posts'] = "Post Count";
+$l['threads'] = "Thread Count";
 $l['referrals'] = "Referrals";
 $l['search_members'] = "Search Member List";
 $l['website'] = "Website";
@@ -24,6 +25,7 @@ $l['sort_by_username'] = "Sort by: Username";
 $l['sort_by_regdate'] = "Sort by: Registration date";
 $l['sort_by_lastvisit'] = "Sort by: Last visit";
 $l['sort_by_posts'] = "Sort by: Post count";
+$l['sort_by_threads'] = "Sort by: Thread count";
 $l['sort_by_referrals'] = "Sort by: Members referred";
 $l['order_asc'] = "ascending order";
 $l['order_desc'] = "descending order";
@@ -43,6 +45,7 @@ $l['search_icq'] = "ICQ Number";
 $l['search_options'] = "Search Options";
 $l['per_page'] = "Results Per Page";
 $l['search'] = "Search";
+$l['search_user'] = "Search for a user";
 
 $l['error_no_members'] = "<p>There were no members found with the search criteria you entered.</p><p>Please enter a different search term and try again.</p>";
 

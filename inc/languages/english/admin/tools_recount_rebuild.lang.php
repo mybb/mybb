@@ -29,13 +29,16 @@ $l['rebuild_poll_counters'] = "Rebuild Poll Counters";
 $l['rebuild_poll_counters_desc'] = "When this is run, the vote counters and total number of votes of each poll will be updated to reflect the correct values.";
 $l['recount_user_posts'] = "Recount User Post Counts";
 $l['recount_user_posts_desc'] = "When this is run, the post count for each user will be updated to reflect its current live value based on the posts in the database, and forums that have post count disabled.";
+$l['recount_user_threads'] = "Recount User Thread Counts";
+$l['recount_user_threads_desc'] = "When this is run, the thread count for each user will be updated to reflect its current live value based on the threads in the database, and forums that have thread count disabled.";
 $l['rebuild_attachment_thumbs'] = "Rebuild Attachment Thumbnails";
 $l['rebuild_attachment_thumbs_desc'] = "This will rebuild attachment thumbnails to ensure they're using the current width and height dimensions and will also rebuild missing thumbnails.";
 
 $l['success_rebuilt_forum_counters'] = "The forum counters have been rebuilt successfully.";
 $l['success_rebuilt_thread_counters'] = "The thread counters have been rebuilt successfully.";
 $l['success_rebuilt_poll_counters'] = "The poll counters have been rebuilt successfully.";
-$l['success_rebuilt_user_counters'] = "The user posts count have been recounted successfully.";
+$l['success_rebuilt_user_post_counters'] = "The user posts count have been recounted successfully.";
+$l['success_rebuilt_user_thread_counters'] = "The user threads count have been recounted successfully.";
 $l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have been rebuilt successfully.";
 $l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
 $l['success_rebuilt_reputation'] = "The user reputation has been rebuilt successfully.";

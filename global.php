@@ -289,15 +289,23 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
+
+                if(strpos($page_stylesheet, 'css.php') !== false)
+                {
+                    $stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
+                }
+                else
+                {
+                    $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+                }
+
 				if($mybb->settings['minifycss'])
 				{
-					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
+                    $stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
 				}
-				else
-				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
-				}
+
+				$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+
 				$already_loaded[$page_stylesheet] = 1;
 			}
 		}
@@ -340,35 +348,45 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-	if(!@is_dir($theme['imgdir']))
-	{
-		$theme['imgdir'] = 'images';
-	}
+    $img_directory = $theme['imgdir'];
 
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
+    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+    {
+        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+    }
+
+    if(!@is_dir($img_directory))
+    {
+        $theme['imgdir'] = 'images';
+    }
+
+    // If a language directory for the current language exists within the theme - we use it
+    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+    {
+        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+    }
+    else
+    {
+        // Check if a custom language directory exists for this theme
+        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+        {
+            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+        }
+        // Otherwise, the image language directory is the same as the language directory for the theme
+        else
+        {
+            $theme['imglangdir'] = $theme['imgdir'];
+        }
+    }
+
+    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
 if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
-	$theme['logo'] = $mybb->settings['bburl'].'/'.$theme['logo'];
+	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
 // Load Main Templates and Cached Templates
@@ -381,9 +399,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,error';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option";
+$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist,usercp_themeselector_option";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -455,6 +473,24 @@ else
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
 }
 
+// Display menu links and quick search if user has permission
+$menu_search = $menu_memberlist = $menu_calendar = $quicksearch = '';
+if($mybb->usergroup['cansearch'] == 1)
+{
+	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
+	eval('$quicksearch = "'.$templates->get('header_quicksearch').'";');
+}
+
+if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberlist'] == 1)
+{
+	eval('$menu_memberlist = "'.$templates->get('header_menu_memberlist').'";');
+}
+
+if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
+{
+	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
+}
+
 // See if there are any pending join requests for group leaders
 $pending_joinrequests = '';
 $groupleaders = $cache->read('groupleaders');
@@ -474,7 +510,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 		$gids .= ",'{$user['gid']}'";
 	}
 
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids})");
+	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids}) AND invite='0'");
 	$total_joinrequests = $db->fetch_field($query, 'total');
 
 	if($total_joinrequests > 0)
@@ -495,7 +531,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
+if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)
 {
 	// Read the reported content cache
 	$reported = $cache->read('reportedcontent');
@@ -515,7 +551,7 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 
 			while($fid = $db->fetch_field($query, 'id3'))
 			{
-				if(is_moderator($fid))
+				if(is_moderator($fid, "canmanagereportedposts"))
 				{
 					++$unread;
 				}
@@ -667,12 +703,14 @@ if($mybb->settings['showlanguageselect'] != 0)
 			// Current language matches
 			if($lang->language == $key)
 			{
-				$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = " selected=\"selected\"";
 			}
 			else
 			{
-				$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+				$selected = '';
 			}
+
+			eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
 		}
 
 		$lang_redirect_url = get_current_location(true, 'language');
@@ -686,8 +724,11 @@ if($mybb->settings['showthemeselect'] != 0)
 {
 	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-	$theme_redirect_url = get_current_location(true, 'theme');
-	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	if(!empty($theme_options))
+	{
+		$theme_redirect_url = get_current_location(true, 'theme');
+		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	}
 }
 
 // DST Auto detection enabled?

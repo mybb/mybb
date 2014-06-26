@@ -284,7 +284,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
+				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
 			}
 
 			$post['userstars'] .= "<br />";
@@ -292,6 +292,7 @@ function build_postbit($post, $post_type=0)
 
 		$postnum = $post['postnum'];
 		$post['postnum'] = my_number_format($post['postnum']);
+		$post['threadnum'] = my_number_format($post['threadnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -424,12 +425,12 @@ function build_postbit($post, $post_type=0)
 						{
 							if($val != '')
 							{
-								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
+								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
 							}
 						}
-						if($post['fieldvalue'] != '')
+						if($post['fieldvalue_option'] != '')
 						{
-							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
+							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
 						}
 					}
 					else
@@ -474,6 +475,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
+	$post['button_quickrestore'] = '';
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
@@ -522,22 +524,66 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Quick Delete button
-		$can_delete = 0;
+		$can_delete_thread = $can_delete_post = 0;
 		if($mybb->user['uid'] == $post['uid'])
 		{
 			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{
-				$can_delete = 1;
+				$can_delete_thread = 1;
 			}
 			else if($forumpermissions['candeleteposts'] == 1 && $postcounter != 1)
 			{
-				$can_delete = 1;
+				$can_delete_post = 1;
 			}
 		}
 
-		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
+		$postbit_qdelete = '';
+		if($mybb->user['uid'] != 0)
 		{
-			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			if((is_moderator($fid, "candeleteposts") || $can_delete_post == 1) && $postcounter != 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_post;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid, "canrestoreposts"))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					$postbit_qrestore = $lang->postbit_qrestore_post;
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
+			}
+			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_thread;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
+				$postbit_qrestore = $lang->postbit_qrestore_thread;
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid, "canrestoreposts"))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
+			}
 		}
 
 		// Inline moderation stuff
@@ -569,12 +615,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -586,7 +632,7 @@ function build_postbit($post, $post_type=0)
 	}
 	elseif($post_type == 3) // announcement
 	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid))
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanageannounce'] == 1 && is_moderator($fid, "canmanageannouncements"))
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
@@ -689,7 +735,7 @@ function build_postbit($post, $post_type=0)
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
+		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
 	}
 	else
 	{
@@ -823,7 +869,7 @@ function get_post_attachments($id, &$post)
 				$validationcount++;
 			}
 		}
-		if($validationcount > 0 && is_moderator($post['fid']))
+		if($validationcount > 0 && is_moderator($post['fid'], "canviewunapprove"))
 		{
 			if($validationcount == 1)
 			{

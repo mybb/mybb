@@ -222,7 +222,7 @@ if($mybb->input['action'] == "permissions")
 		{
 			if($usergroup[$calendar_permission] == 1)
 			{
-				$value = "true";
+				$value = "this.checked";
 			}
 			else
 			{
@@ -240,11 +240,11 @@ if($mybb->input['action'] == "permissions")
 			{
 				$perms_checked[$calendar_permission] = 0;
 			}
-			$all_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = \$('permissions_{$usergroup['gid']}_all').checked;\n";
-			$perm_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = $value;\n";
+			$all_check .= "\$('#permissions_{$usergroup['gid']}_{$calendar_permission}').prop('checked', this.checked);\n";
+			$perm_check .= "\$('#permissions_{$usergroup['gid']}_{$calendar_permission}').prop('checked', $value);\n";
 		}
-		$default_click = "if(this.checked == true) { $perm_check }";
-		$reset_default = "\$('default_permissions_{$usergroup['gid']}').checked = false; if(this.checked == false) { \$('permissions_{$usergroup['gid']}_all').checked = false; }\n";
+		$default_click = "if(\$(this).is(':checked')) { $perm_check }";
+		$reset_default = "if(!\$(this).is(':checked')) { \$('#permissions_{$usergroup['gid']}_all').prop('checked', false); }\n";
 		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
 		$table->construct_cell("<strong>{$usergroup['title']}</strong><br /><small style=\"vertical-align: middle;\">".$form->generate_check_box("default_permissions[{$usergroup['gid']}];", 1, "", array("id" => "default_permissions_{$usergroup['gid']}", "checked" => $default_checked, "onclick" => $default_click))." <label for=\"default_permissions_{$usergroup['gid']}\">{$lang->permissions_use_group_default}</label></small>");
 		$table->construct_cell($form->generate_check_box("permissions[{$usergroup['gid']}][canviewcalendar]", 1, "", array("id" => "permissions_{$usergroup['gid']}_canviewcalendar", "checked" => $perms_checked['canviewcalendar'], "onclick" => $reset_default)), array('class' => 'align_center'));

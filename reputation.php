@@ -11,9 +11,10 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
-$templatelist = 'reputation_addlink,reputation_no_votes,reputation,reputation_add_error,reputation_add_error_nomodal,reputation_deleted,reputation_added,reputation_add,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end';
-require_once "./global.php";
+$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end,reputation_vote_delete";
+$templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report";
 
+require_once "./global.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -160,12 +161,12 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$forum = get_forum($thread['fid']);
 			$forumpermissions = forum_permissions($forum['fid']);
 			// Post doesn't belong to that user or isn't visible
-			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid)) || $post['visible'] < 0)
+			if($uid != $post['uid'] || ($post['visible'] == 0 && !is_moderator($fid, "canviewunapprove")) || $post['visible'] < 0)
 			{
 				$mybb->input['pid'] = 0;
 			}
 			// Thread isn't visible
-			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'])) || $thread['visible'] < 0)
+			elseif(($thread['visible'] == 0 && !is_moderator($forum['fid'], "canviewunapprove")) || $thread['visible'] < 0)
 			{
 				$mybb->input['pid'] = 0;
 			}
@@ -438,7 +439,8 @@ if($mybb->input['action'] == "add")
 		{
 			$comments = htmlspecialchars_uni($existing_post_reputation['comments']);
 		}
-		$delete_button = "<input type=\"button\" class=\"button\" name=\"delete\" value=\"{$lang->delete_vote}\" onclick=\"javascript: return MyBB.submitReputation({$user['uid']}, {$mybb->input['pid']}, 1);\" />";
+
+		eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
 	}
 	// Otherwise we're adding an entirely new reputation for this user.
 	else
@@ -481,21 +483,22 @@ if($mybb->input['action'] == "add")
 		if($mybb->settings['neurep'])
 		{
 			$neutral_title = $lang->power_neutral;
-			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"\$('#reputation').attr('class', 'reputation_neutral')\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
+			eval("\$neutral_power = \"".$templates->get("reputation_add_neutral")."\";");
 		}
 
-		for($i = 1; $i <= $reputationpower; ++$i)
+		for($value = 1; $value <= $reputationpower; ++$value)
 		{
 			if($mybb->settings['posrep'])
 			{
-				$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
-				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"\$('#reputation').attr('class', 'reputation_positive')\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
+				$positive_title = $lang->sprintf($lang->power_positive, "+".$value);
+				eval("\$positive_power = \"".$templates->get("reputation_add_positive")."\";");
 			}
 
 			if($mybb->settings['negrep'])
 			{
-				$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
-				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"\$('#reputation').attr('class', 'reputation_negative')\"{$vote_check[-$i]}>{$negative_title}</option>\n";
+				$negative_title = $lang->sprintf($lang->power_negative, "-".$value);
+				$neg_value = "-{$value}";
+				eval("\$negative_power .= \"".$templates->get("reputation_add_negative")."\";");
 			}
 		}
 

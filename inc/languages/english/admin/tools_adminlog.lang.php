@@ -218,6 +218,7 @@ $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum count
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
 $l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
+$l['admin_log_tools_recount_rebuild_userthreads'] = "Recounted and rebuilt user thread counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
@@ -232,7 +233,8 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
-$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";

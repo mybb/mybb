@@ -417,20 +417,25 @@ if(!$mybb->input['action'])
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
-	while(($file = readdir($handle)) !== false)
+
+	if($handle !== false)
 	{
-		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+		while(($file = readdir($handle)) !== false)
 		{
-			$ext = get_extension($file);
-			if($ext == 'gz' || $ext == 'sql')
+			if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 			{
-				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
-					"file" => $file,
-					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
-					"type" => $ext
-				);
+				$ext = get_extension($file);
+				if($ext == 'gz' || $ext == 'sql')
+				{
+					$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
+						"file" => $file,
+						"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+						"type" => $ext
+					);
+				}
 			}
 		}
+		closedir($handle);
 	}
 
 	$count = count($backups);

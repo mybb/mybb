@@ -457,7 +457,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$postinfo = $posthandler->update_post();
 			$visible = $postinfo['visible'];
-			if($visible == 0 && !is_moderator($post['fid']))
+			if($visible == 0 && !is_moderator($post['fid'], "canviewunapprove"))
 			{
 				echo json_encode(array("failed" => $lang->post_moderation));
 				exit;
@@ -599,7 +599,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	");
 	while($quoted_post = $db->fetch_array($query))
 	{
-		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
+		if(!is_moderator($quoted_post['fid'], "canviewunapprove") && $quoted_post['visible'] == 0)
 		{
 			continue;
 		}

@@ -774,7 +774,10 @@ class PostDataHandler extends DataHandler
 			{
 				switch($post['options']['subscriptionmethod'])
 				{
-					case "instant":
+					case "pm":
+						$notification = 2;
+						break;
+					case "email":
 						$notification = 1;
 						break;
 					default:
@@ -1029,10 +1032,10 @@ class PostDataHandler extends DataHandler
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.subscriptionkey
+				SELECT u.username, u.email, u.uid, u.language, u.loginkey, u.salt, u.regdate, s.subscriptionkey, s.notification
 				FROM ".TABLE_PREFIX."threadsubscriptions s
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
-				WHERE s.notification='1' AND s.tid='{$post['tid']}'
+				WHERE (s.notification='1' OR s.notification='2') AND s.tid='{$post['tid']}'
 				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
@@ -1071,38 +1074,82 @@ class PostDataHandler extends DataHandler
 
 				if($uselang == $mybb->settings['bblanguage'])
 				{
-					$emailsubject = $lang->emailsubject_subscription;
-					$emailmessage = $lang->email_subscription;
+					if($subscribedmember['notification'] == 1)
+					{
+						$emailsubject = $lang->emailsubject_subscription;
+						$emailmessage = $lang->email_subscription;
+					}
+					elseif($subscribedmember['notification'] == 2)
+					{
+						$pmsubject = $lang->pmsubject_subscription;
+						$pmmessage = $lang->pm_subscription;
+					}
 				}
 				else
 				{
-					if(!isset($langcache[$uselang]['emailsubject_subscription']))
+					if($subscribedmember['notification'] == 1)
 					{
-						$userlang = new MyLanguage;
-						$userlang->set_path(MYBB_ROOT."inc/languages");
-						$userlang->set_language($uselang);
-						$userlang->load("messages");
-						$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
-						$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
-						unset($userlang);
+						if(!isset($langcache[$uselang]['emailsubject_subscription']))
+						{
+							$userlang = new MyLanguage;
+							$userlang->set_path(MYBB_ROOT."inc/languages");
+							$userlang->set_language($uselang);
+							$userlang->load("messages");
+							$langcache[$uselang]['emailsubject_subscription'] = $userlang->emailsubject_subscription;
+							$langcache[$uselang]['email_subscription'] = $userlang->email_subscription;
+							unset($userlang);
+						}
+						$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
+						$emailmessage = $langcache[$uselang]['email_subscription'];
 					}
-					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
-					$emailmessage = $langcache[$uselang]['email_subscription'];
+					elseif($subscribedmember['notification'] == 2)
+					{
+						if(!isset($langcache[$uselang]['pmsubject_subscription']))
+						{
+							$userlang = new MyLanguage;
+							$userlang->set_path(MYBB_ROOT."inc/languages");
+							$userlang->set_language($uselang);
+							$userlang->load("messages");
+							$langcache[$uselang]['pmsubject_subscription'] = $userlang->pmsubject_subscription;
+							$langcache[$uselang]['pm_subscription'] = $userlang->pm_subscription;
+							unset($userlang);
+						}
+						$pmsubject = $langcache[$uselang]['pmsubject_subscription'];
+						$pmmessage = $langcache[$uselang]['pm_subscription'];
+					}
 				}
-				$emailsubject = $lang->sprintf($emailsubject, $subject);
 
-				$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
-				$new_email = array(
-					"mailto" => $db->escape_string($subscribedmember['email']),
-					"mailfrom" => '',
-					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage),
-					"headers" => ''
-				);
-				$db->insert_query("mailqueue", $new_email);
-				unset($userlang);
-				$queued_email = 1;
+				if($subscribedmember['notification'] == 1)
+				{
+					$emailsubject = $lang->sprintf($emailsubject, $subject);
+
+					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
+					$new_email = array(
+						"mailto" => $db->escape_string($subscribedmember['email']),
+						"mailfrom" => '',
+						"subject" => $db->escape_string($emailsubject),
+						"message" => $db->escape_string($emailmessage),
+						"headers" => ''
+					);
+					$db->insert_query("mailqueue", $new_email);
+					unset($userlang);
+					$queued_email = 1;
+				}
+				elseif($subscribedmember['notification'] == 2)
+				{
+					$pmsubject = $lang->sprintf($pmsubject, $subject);
+
+					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
+					$pmmessage = $lang->sprintf($pmmessage, $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
+					$pm = array(
+						'subject' => $pmsubject,
+						'message' => $pmmessage,
+						'touid' => $subscribedmember['uid']
+					);
+					send_pm($pm, -1, true);
+					unset($userlang);
+				}
 			}
 			// Have one or more emails been queued? Update the queue count
 			if(isset($queued_email) && $queued_email == 1)
@@ -1378,7 +1425,10 @@ class PostDataHandler extends DataHandler
 			{
 				switch($thread['options']['subscriptionmethod'])
 				{
-					case "instant":
+					case "pm":
+						$notification = 2;
+						break;
+					case "email":
 						$notification = 1;
 						break;
 					default:
@@ -1452,6 +1502,10 @@ class PostDataHandler extends DataHandler
 					if($forum['usepostcounts'] != 0)
 					{
 						$update_query['postnum'] = "postnum+1";
+					}
+					if($forum['usethreadcounts'] != 0)
+					{
+						$update_query['threadnum'] = 'threadnum+1';
 					}
 
 					// Only update the table if we need to.
@@ -1630,47 +1684,57 @@ class PostDataHandler extends DataHandler
 
 		// Decide on the visibility of this post.
 		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
-        {
-            if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
-            {
-                if($existing_post['visible'] == 1)
-                {
-                    update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
-                    update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
+		{
+			if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+			{
+				if($existing_post['visible'] == 1)
+				{
+					update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
+					update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
 
-                    // Subtract from the users post count
-                    // Update the post count if this forum allows post counts to be tracked
-                    if($forum['usepostcounts'] != 0)
-                    {
-                        $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
-                    }
-                }
-                $visible = 0;
-            }
-            else
-            {
-                if($existing_post['visible'] == 0)
-                {
-                    update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
-                    update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
+					// Subtract from the users post and thread counts
+					// Update the post count if this forum allows post counts to be tracked
+					if($forum['usepostcounts'] != 0)
+					{
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
+					}
 
-                    // Update the post count if this forum allows post counts to be tracked
-                    if($forum['usepostcounts'] != 0)
-                    {
-                        $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
-                    }
-                }
-                $visible = 1;
-            }
-        }
-        else
-        {
+					if($forum['usethreadcounts'] != 0)
+					{
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET threadnum=threadnum-1 WHERE uid='{$existing_post['uid']}'");
+					}
+				}
+				$visible = 0;
+			}
+			else
+			{
+				if($existing_post['visible'] == 0)
+				{
+					update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
+					update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
+
+					// Update the post count if this forum allows post counts to be tracked
+					if($forum['usepostcounts'] != 0)
+					{
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
+					}
+
+					if($forum['usethreadcounts'] != 0)
+					{
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET threadnum=threadnum+1 WHERE uid='{$existing_post['uid']}'");
+					}
+				}
+				$visible = 1;
+			}
+		}
+		else
+		{
 			$visible = 0;
 			if($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
 			{
 				$visible = 1;
 			}
-        }
+		}
 
 		// Check if this is the first post in a thread.
 		$options = array(
@@ -1783,7 +1847,10 @@ class PostDataHandler extends DataHandler
 		{
 			switch($post['options']['subscriptionmethod'])
 			{
-				case "instant":
+				case "pm":
+					$notification = 2;
+					break;
+				case "email":
 					$notification = 1;
 					break;
 				default:

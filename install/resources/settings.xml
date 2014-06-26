@@ -260,10 +260,18 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="deleteinvites">
+			<title>Expire Old Group Invites</title>
+			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[180]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="guestimages">
 			<title>Show Posted Images To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -271,7 +279,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestvideos">
 			<title>Show Posted Videos To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -434,6 +442,34 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="usecdn">
+			<title>Use a CDN?</title>
+			<description><![CDATA[You can utilise a CDN (Content Delivery Network) to offload the loading of static files such as Stylesheets, JavaScript and Images. Do you wish to enable this functionality?]]></description>
+			<disporder>19</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnurl">
+			<title>URL to use for static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please enter the base URL to serve static content from. This should be a valid URL without a trailing slash.]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnpath">
+			<title>Path to store static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please optionally enter a full path to store static files. This is only useful for "Push" type CDNs or local sub-domain setups. This path should not have a trailing slash.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="5" isdefault="1">
@@ -478,6 +514,7 @@ none=Hide Errors and Warnings
 <option value=\"-12\" ".($setting['value'] == -12?"selected=\"selected\"":"").">GMT -12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -12).")</option>
 <option value=\"-11\" ".($setting['value'] == -11?"selected=\"selected\"":"").">GMT -11:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -11).")</option>
 <option value=\"-10\" ".($setting['value'] == -10?"selected=\"selected\"":"").">GMT -10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -10).")</option>
+<option value=\"-9.5\" ".($setting['value'] == -9.5?"selected=\"selected\"":"").">GMT -9:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -9.5).")</option>
 <option value=\"-9\" ".($setting['value'] == -9?"selected=\"selected\"":"").">GMT -9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -9).")</option>
 <option value=\"-8\" ".($setting['value'] == -8?"selected=\"selected\"":"").">GMT -8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -8).")</option>
 <option value=\"-7\" ".($setting['value'] == -7?"selected=\"selected\"":"").">GMT -7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -7).")</option>
@@ -498,7 +535,8 @@ none=Hide Errors and Warnings
 <option value=\"+5\" ".($setting['value'] == 5?"selected=\"selected\"":"").">GMT +5:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5).")</option>
 <option value=\"+5.5\" ".($setting['value'] == 5.5?"selected=\"selected\"":"").">GMT +5:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5.5).")</option>
 <option value=\"+5.75\" ".($setting['value'] == 5.75?"selected=\"selected\"":"").">GMT +5:45 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 5.75).")</option>
-<option value=\"+6\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6).")</option>
+<option value=\"+6\" ".($setting['value'] == 6?"selected=\"selected\"":"").">GMT +6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6).")</option>
+<option value=\"+6.5\" ".($setting['value'] == 6.5?"selected=\"selected\"":"").">GMT +6:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 6.5).")</option>
 <option value=\"+7\" ".($setting['value'] == 7?"selected=\"selected\"":"").">GMT +7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 7).")</option>
 <option value=\"+8\" ".($setting['value'] == 8?"selected=\"selected\"":"").">GMT +8:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 8).")</option>
 <option value=\"+9\" ".($setting['value'] == 9?"selected=\"selected\"":"").">GMT +9:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 9).")</option>
@@ -506,9 +544,13 @@ none=Hide Errors and Warnings
 <option value=\"+10\" ".($setting['value'] == 10?"selected=\"selected\"":"").">GMT +10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10).")</option>
 <option value=\"+10.5\" ".($setting['value'] == 10.5?"selected=\"selected\"":"").">GMT +10:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 10.5).")</option>
 <option value=\"+11\" ".($setting['value'] == 11?"selected=\"selected\"":"").">GMT +11:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 11).")</option>
+<option value=\"+11.5\" ".($setting['value'] == 11.5?"selected=\"selected\"":"").">GMT +11:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 11.5).")</option>
 <option value=\"+12\" ".($setting['value'] == 12?"selected=\"selected\"":"").">GMT +12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 12).")</option>
+<option value=\"+12.75\" ".($setting['value'] == 12.75?"selected=\"selected\"":"").">GMT +12:45 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 12.75).")</option>
+<option value=\"+13\" ".($setting['value'] == 13?"selected=\"selected\"":"").">GMT +13:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 13).")</option>
+<option value=\"+14\" ".($setting['value'] == 14?"selected=\"selected\"":"").">GMT +14:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 14).")</option>
 </select>]]></optionscode>
-			<settingvalue><![CDATA[+10]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="dstcorrection">
@@ -809,7 +851,8 @@ classic=Display posts using the classic layout]]></optionscode>
 instant=Instant Activation
 verify=Send Email Verification
 randompass=Send Random Password
-admin=Administrator Activation]]></optionscode>
+admin=Administrator Activation
+both=Email Verification & Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1302,6 +1345,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="alloweditreason">
+			<title>Allow Edit Reason</title>
+			<description><![CDATA[Do you want to allow users the ability to add an optional reason why they've edited their post?]]></description>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="attachments" title="Attachments" description="Various options related to the attachment system can be managed and set here." disporder="12" isdefault="1">
 		<setting name="enableattachments">
@@ -1580,6 +1631,14 @@ show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="maxpmquotedepth">
+			<title>Maximum PM Nested Quote Tags</title>
+			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a PM, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect PMs already sent. Set to 0 to disable.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar (calendar.php)." disporder="17" isdefault="1">
 		<setting name="enablecalendar">
@@ -1786,7 +1845,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="22" isdefault="1">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears and control the default MyCodes." disporder="22" isdefault="1">
 		<setting name="bbcodeinserter">
 			<title>Clickable MyCode Editor</title>
 			<description><![CDATA[Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.]]></description>
@@ -1817,6 +1876,94 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowbasicmycode">
+			<title>Allow Basic MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcolormycode">
+			<title>Allow Color MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsizemycode">
+			<title>Allow Size MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowfontmycode">
+			<title>Allow Font MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlinkmycode">
+			<title>Allow Link MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowemailmycode">
+			<title>Allow Email MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowalignmycode">
+			<title>Allow Alignment MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlistmycode">
+			<title>Allow List MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
+			<disporder>12</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcodemycode">
+			<title>Allow Code MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
+			<disporder>13</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsymbolmycode">
+			<title>Allow Symbol MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
+			<disporder>14</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowmemycode">
+			<title>Allow Me MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>

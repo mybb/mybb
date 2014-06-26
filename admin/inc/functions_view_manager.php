@@ -498,6 +498,12 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			$fields = unserialize($admin_view['fields']);
 			$conditions = unserialize($admin_view['conditions']);
+
+			$admin_view['title'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['title']);
+			$admin_view['sortby'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortby']);
+			$admin_view['sortorder'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortorder']);
+			$admin_view['view_type'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['view_type']);
+
 			$xml .= "\t<view vid=\"{$admin_view['vid']}\" uid=\"{$admin_view['uid']}\" type=\"{$admin_view['type']}\" visibility=\"{$admin_view['visibility']}\">\n";
 			$xml .= "\t\t<title><![CDATA[{$admin_view['title']}]]></title>\n";
 			$xml .= "\t\t<fields>\n";
@@ -515,6 +521,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 					$condition = serialize($condition);
 					$is_serialized = " is_serialized=\"1\"";
 				}
+				$condition = str_replace(']]>', ']]]]><![CDATA[>', $condition);
 				$xml .= "\t\t\t<condition name=\"{$name}\"{$is_serialized}><![CDATA[{$condition}]]></condition>\n";
 			}
 			$xml .= "\t\t</conditions>\n";

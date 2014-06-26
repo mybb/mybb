@@ -109,6 +109,9 @@ function fetch_wol_activity($location, $nopermission=false)
 				$user_activity['activity'] = "calendar";
 			}
 			break;
+		case "contact":
+			$user_activity['activity'] = "contact";
+			break;
 		case "editpost":
 			$user_activity['activity'] = "editpost";
 			break;
@@ -750,6 +753,9 @@ function build_friendly_wol_location($user_activity)
 		case "calendar_editevent":
 			$location_name = $lang->editing_event;
 			break;
+		case "contact":
+			$location_name = $lang->viewing_contact_us;
+			break;
 		// editpost.php functions
 		case "editpost":
 			$location_name = $lang->editing_post;
@@ -1141,11 +1147,17 @@ function build_wol_row($user)
 	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
 		$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
+
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
+		{
+			eval("\$lookup = \"".$templates->get("online_row_ip_lookup")."\";");
+		}
+
 		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
 	}
 	else
 	{
-		$user_ip = $user['ip'] = '';
+		$user_ip = $lookup = $user['ip'] = '';
 	}
 
 	// And finally if we have permission to view this user, return the completed online row

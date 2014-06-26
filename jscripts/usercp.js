@@ -202,7 +202,15 @@ var UserCP = {
 			async: false,
 	        complete: function (request)
 	        {
-		        $("#"+list+"_list").html(request.responseText);
+				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
+				{
+					 $("#"+list+"_list").html(request.responseText);
+				}
+				else
+				{
+					$("#sentrequests").html(request.responseText);
+				}
+				
 		        type_submit.removeAttr("disabled");
 		        type_add_username.removeAttr("disabled");
 		        type_submit.attr("value", old_value);

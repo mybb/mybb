@@ -23,6 +23,7 @@ $l['forum'] = "Forum:";
 $l['thread'] = "Thread:";
 $l['post'] = "Post:";
 $l['user_info'] = "User:";
+$l['announcement'] = "Announcement:";
 
 $l['filter_moderator_logs'] = "Filter Moderator Logs";
 $l['forum_moderator'] = "Forum Moderator:";
