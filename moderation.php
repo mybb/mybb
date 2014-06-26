@@ -2717,18 +2717,20 @@ switch($mybb->input['action'])
 						break;
 					case "clearprofile":
 						$db->delete_query("userfields", "ufid = '{$uid}'");
-						$update['website'] = "";
-						$update['birthday'] = "";
-						$update['icq'] = "";
-						$update['aim'] = "";
-						$update['yahoo'] = "";
-						$update['skype'] = "";
-						$update['google'] = "";
-						$update['usertitle'] = "";
-						$update['away'] = 0;
-						$update['awaydate'] = 0;
-						$update['returndate'] = "";
-						$update['awayreason'] = "";
+						$update = array(
+							"website" => "",
+							"birthday" => "",
+							"icq" => "",
+							"aim" => "",
+							"yahoo" => "",
+							"skype" => "",
+							"google" => "",
+							"usertitle" => "",
+							"away" => 0,
+							"awaydate" => 0,
+							"returndate" => "",
+							"awayreason" => "",
+						);
 						break;
 					case "deletepms":
 						$query = $db->simple_select("privatemessages", "pmid, uid, toid", "uid='{$uid}' OR fromid='{$uid}'");
