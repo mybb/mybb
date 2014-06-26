@@ -12530,9 +12530,8 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td>{$code}</td>
-</tr>
-]]></template>
-		<template name="usercp_profile_customtitle" version="120"><![CDATA[<fieldset class="trow2">
+</tr>]]></template>
+		<template name="usercp_profile_customtitle" version="1800"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->custom_usertitle}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -12544,24 +12543,26 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td><span class="smalltext"><strong>{$defaulttitle}</strong></span></td>
 </tr>
-<tr>
-<td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
-</tr>
-<tr>
-<td><span class="smalltext"><strong>{$user['usertitle']}</strong></span></td>
-</tr>
+{$currentcustom}
 <tr>
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
 <td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$mybb->settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
-<tr>
-<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
-</tr>
+{$reverttitle}
 </table>
 </fieldset>
 <br />]]></template>
+		<template name="usercp_profile_customtitle_currentcustom" version="1800"><![CDATA[<tr>
+<td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
+</tr>
+<tr>
+<td><span class="smalltext"><strong>{$user['usertitle']}</strong></span></td>
+</tr>]]></template>
+		<template name="usercp_profile_customtitle_reverttitle" version="1800"><![CDATA[<tr>
+<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
+</tr>]]></template>
 		<template name="usercp_profile_day" version="1800"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="usercp_profile_profilefields" version="120"><![CDATA[<br />
 <fieldset class="trow2">

@@ -12,10 +12,10 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
 $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_options";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove";
-$templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none";
-$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options,usercp_themeselector";
+$templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
+$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle";
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
@@ -668,6 +668,18 @@ if($mybb->input['action'] == "profile")
 				$user['usertitle'] = $mybb->user['usertitle'];
 			}
 		}
+
+		$currentcustom = $reverttitle = '';
+		if(!empty($mybb->user['usertitle']))
+		{
+			eval("\$currentcustom = \"".$templates->get("usercp_profile_customtitle_currentcustom")."\";");
+
+			if($mybb->user['usertitle'] != $mybb->usergroup['usertitle'])
+			{
+				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
+			}
+		}
+
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else
