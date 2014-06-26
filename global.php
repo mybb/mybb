@@ -290,21 +290,33 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					continue;
 				}
 
-                if(strpos($page_stylesheet, 'css.php') !== false)
-                {
-                    $stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
-                }
-                else
-                {
-                    $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
-                }
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					$stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
+				}
+				else
+				{
+					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+				}
 
 				if($mybb->settings['minifycss'])
 				{
-                    $stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
+					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
 				}
 
-				$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					// We need some modification to get it working with the displayorder
+					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
+					$id = (int) my_substr($query_string, 11);
+					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
+					$real_name = $db->fetch_field($query, "name");
+					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+				else
+				{
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
 
 				$already_loaded[$page_stylesheet] = 1;
 			}
