@@ -454,6 +454,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL default '',
 	forums text NOT NULL default '',
+	groups text NOT NULL default '',
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL default '',
 	threadoptions text NOT NULL default '',

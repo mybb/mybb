@@ -13,12 +13,14 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
-$templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";
-$templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html,posticons_icon";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature";
+$templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online";
+$templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
 $templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
-$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,usercp_nav_messenger_tracking,multipage_prevpage";
+$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,multipage_prevpage";
+$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
+$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -58,12 +60,7 @@ if($rand == 5)
 
 $mybb->input['fid'] = $mybb->get_input('fid', 1);
 
-$foldersearch = "<select multiple=\"multiple\" name=\"folder[]\" id=\"folder\">\n";
-$foldersearch .= "<option selected=\"selected\">{$lang->all_folders}</option>\n";
-$folderjump = "<select name=\"jumpto\">\n";
-$folderoplist = "<input type=\"hidden\" value=\"{$mybb->input['fid']}\" name=\"fromfid\" />\n<select name=\"fid\">\n";
-$folderjump2 = "<select name=\"jumpto2\">\n";
-$folderlinks = '';
+$folder_id = $folder_name = '';
 
 $foldernames = array();
 $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -80,16 +77,18 @@ foreach($foldersexploded as $key => $folders)
 	}
 	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 	$foldernames[$folderinfo[0]] = $folderinfo[1];
-	$folderjump .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderjump2 .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderoplist .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$foldersearch .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderlinks .= "&#149;&nbsp;<a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a><br />\n";
+
+	$folder_id = $folderinfo[0];
+	$folder_name = $folderinfo[1];
+
+	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 }
-$folderjump .= "</select>\n";
-$folderjump2 .= "</select>\n";
-$folderoplist .= "</select>\n";
-$foldersearch .= "</select>\n";
+
+eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
+eval("\$folderoplist = \"".$templates->get("private_move")."\";");
+eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
 
 usercp_menu();
 
@@ -445,7 +444,7 @@ if($mybb->input['action'] == "results")
 		if($message['icon'] > 0 && $icon_cache[$message['icon']])
 		{
 			$icon = $icon_cache[$message['icon']];
-			$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" valign=\"middle\" />";
+			eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 		}
 		else
 		{
@@ -665,7 +664,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
 		if($mybb->settings['pmsallowsmilies'] != 0)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -1728,16 +1727,20 @@ if($mybb->input['action'] == "export")
 {
 	$plugins->run_hooks("private_export_start");
 
-	$folderlist = "<select name=\"exportfolders[]\" multiple=\"multiple\">\n";
-	$folderlist .= "<option value=\"all\" selected=\"selected\">$lang->all_folders</option>";
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+	$folder_name = $folder_id = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-		$folderlist .= "<option value=\"$folderinfo[0]\">$folderinfo[1]</option>\n";
+
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlist_folder .= \"".$templates->get("private_archive_folders_folder")."\";");
 	}
-	$folderlist .= "</select>\n";
+
+	eval("\$folderlist = \"".$templates->get("private_archive_folders")."\";");
 
 	$plugins->run_hooks("private_export_end");
 
@@ -2310,7 +2313,7 @@ if(!$mybb->input['action'])
 			if($message['icon'] > 0 && $icon_cache[$message['icon']])
 			{
 				$icon = $icon_cache[$message['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" valign=\"middle\" />";
+				eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 			}
 			else
 			{

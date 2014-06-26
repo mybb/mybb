@@ -1733,13 +1733,15 @@ function get_post_icons()
 
 		if($icon == $dbicon['iid'])
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
-			$no_icons_checked = "";
+			$checked = " checked=\"checked\"";
+			$no_icons_checked = '';
 		}
 		else
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
+			$checked = '';
 		}
+
+		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 
 		++$listed;
 		if($listed == 10)
@@ -2739,7 +2741,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	}
 
 	$avatars[$avatar] = array(
-		'image' => $avatar,
+		'image' => $mybb->get_asset_url($avatar),
 		'width_height' => $avatar_width_height
 	);
 
@@ -2751,9 +2753,9 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message")
+function build_mycode_inserter($bind="message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins;
+	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -2822,10 +2824,60 @@ function build_mycode_inserter($bind="message")
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
 		}
 		else
 		{
+			// Smilies		
+			$emoticon = "";
+			$emoticons_enabled = "false";
+			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{
+				$emoticon = ",emoticon";
+				$emoticons_enabled = "true";
+
+				if(!$smiliecache)
+				{
+					if(!is_array($smilie_cache))
+					{
+						$smilie_cache = $cache->read("smilies");
+					}
+					foreach($smilie_cache as $smilie)
+					{
+						if($smilie['showclickable'] != 0)
+						{
+							$smiliecache[$smilie['find']] = $smilie['image'];
+						}
+					}
+				}
+
+				unset($smilie);
+
+				if(is_array($smiliecache))
+				{
+					reset($smiliecache);
+
+					$dropdownsmilies = "";
+					$moresmilies = "";
+					$i = 0;
+
+					foreach($smiliecache as $find => $image)
+					{
+						$find = htmlspecialchars_uni($find);
+						$image = htmlspecialchars_uni($image);
+						if($i < $mybb->settings['smilieinsertertot'])
+						{
+							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						else
+						{
+							$moresmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						++$i;
+					}
+				}
+			}
+
 			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
 
 			if($mybb->settings['allowbasicmycode'] == 1)
@@ -3044,7 +3096,7 @@ function build_prefixes($pid=0)
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
-	global $cache, $db, $lang, $mybb;
+	global $cache, $db, $lang, $mybb, $templates;
 
 	if($fid != 'all')
 	{
@@ -3109,15 +3161,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		return false;
 	}
 
-	$prefixselect = "";
-	if($multiple != 0)
-	{
-		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
-	}
-	else
-	{
-		$prefixselect = "<select name=\"threadprefix\">\n";
-	}
+	$prefixselect = $prefixselect_prefix = '';
 
 	if($multiple == 1)
 	{
@@ -3126,8 +3170,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		{
 			$any_selected = " selected=\"selected\"";
 		}
-
-		$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
 	}
 
 	$default_selected = "";
@@ -3135,8 +3177,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	{
 		$default_selected = " selected=\"selected\"";
 	}
-
-	$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
 
 	foreach($prefixes as $prefix)
 	{
@@ -3146,10 +3186,18 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			$selected = " selected=\"selected\"";
 		}
 
-		$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
 	}
 
-	$prefixselect .= "</select>\n&nbsp;";
+	if($multiple != 0)
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
+	}
+	else
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
+	}
 
 	return $prefixselect;
 }
@@ -3266,35 +3314,29 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-	global $theme;
+	global $theme, $templates;
 
-	$display_reputation = '';
-
-	if($uid != 0)
-	{
-		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
-	}
-
-	$display_reputation .= "<strong class=\"";
-
+	$display_reputation = $reputation_class = '';
 	if($reputation < 0)
 	{
-		$display_reputation .= "reputation_negative";
+		$reputation_class = "reputation_negative";
 	}
 	elseif($reputation > 0)
 	{
-		$display_reputation .= "reputation_positive";
+		$reputation_class = "reputation_positive";
 	}
 	else
 	{
-		$display_reputation .= "reputation_neutral";
+		$reputation_class = "reputation_neutral";
 	}
-
-	$display_reputation .= "\">{$reputation}</strong>";
 
 	if($uid != 0)
 	{
-		$display_reputation .= "</a>";
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+	}
+	else
+	{
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
 	}
 
 	return $display_reputation;
@@ -3308,22 +3350,28 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
+	global $templates;
+
+	$warning_class = '';
 	if($level >= 80)
 	{
-		return "<span class=\"high_warning\">{$level}%</span>";
+		$warning_class = "high_warning";
 	}
 	else if($level >= 50)
 	{
-		return "<span class=\"moderate_warning\">{$level}%</span>";
+		$warning_class = "moderate_warning";
 	}
 	else if($level >= 25)
 	{
-		return "<span class=\"low_warning\">{$level}%</span>";
+		$warning_class = "low_warning";
 	}
 	else
 	{
-		return $level."%";
+		$warning_class = "normal_warning";
 	}
+
+	eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
+	return $level;
 }
 
 /**
@@ -3488,7 +3536,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme;
+	global $cache, $attachtypes, $theme, $templates, $lang;
 
 	if(!$attachtypes)
 	{
@@ -3516,7 +3564,8 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
+
+		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
 	{
@@ -3530,8 +3579,12 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
+		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+		$name = $lang->unknown;
 	}
+
+	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
+	return $attachment_icon;
 }
 
 /**
@@ -3668,7 +3721,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.png\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
+						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
@@ -4436,26 +4489,17 @@ function get_current_location($fields=false, $ignore=array())
  */
 function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
 	if($tid == 0)
 	{
-		if($footer == true)
+		$tid = 1;
+		$num_themes = 0;
+		$themeselect_option = '';
+
+		if(!isset($lang->use_default))
 		{
-			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
-			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
-			$tid = 1;
-		}
-		else
-		{
-			if(!isset($lang->use_default))
-			{
-				$lang->use_default = $lang->lang_select_default;
-			}
-			$themeselect = "<select name=\"$name\">";
-			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-			$themeselect .= "<option value=\"0\">-----------</option>\n";
-			$tid = 1;
+			$lang->use_default = $lang->lang_select_default;
 		}
 	}
 
@@ -4507,7 +4551,9 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
+					$theme['name'] = htmlspecialchars_uni($theme['name']);
+					eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+					++$num_themes;
 					$depthit = $depth."--";
 				}
 
@@ -4519,17 +4565,23 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 1)
+	if($tid == 1 && $num_themes > 1)
 	{
 		if($footer == true)
 		{
-			$themeselect .= "</optgroup>\n";
+			eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
+		}
+		else
+		{
+			eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
 		}
 
-		$themeselect .= "</select>";
+		return $themeselect;
 	}
-
-	return $themeselect;
+	else
+	{
+		return false;
+	}
 }
 
 /**
@@ -6051,7 +6103,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
  */
 function build_timezone_select($name, $selected=0, $short=false)
 {
-	global $mybb, $lang;
+	global $mybb, $lang, $templates;
 
 	$timezones = array(
 		"-12" => $lang->timezone_gmt_minus_1200,
@@ -6096,7 +6148,6 @@ function build_timezone_select($name, $selected=0, $short=false)
 	);
 
 	$selected = str_replace("+", "", $selected);
-	$select = "<select name=\"{$name}\" id=\"{$name}\">\n";
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
@@ -6128,9 +6179,11 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
-		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";
+
+		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
-	$select .= "</select>";
+
+	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
 	return $select;
 }
 

@@ -11,8 +11,10 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'editpost.php');
 
-$templatelist = "editpost,previewpost,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment";
-$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,editpost_disablesmilies,post_subscription_method,post_attachments_add,newthread_postpoll,post_attachments_new,post_attachments";
+$templatelist = "editpost,previewpost,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_unapprove";
+$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,post_subscription_method";
+$templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_new";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_disablesmilies_hidden,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,posticons";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -95,7 +97,7 @@ $forumpermissions = forum_permissions($fid);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 {
-	$codebuttons = build_mycode_inserter();
+	$codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
 }
 if($mybb->settings['smilieinserter'] != 0)
 {
@@ -878,13 +880,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Can we disable smilies or are they disabled already?
+	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
 	}
 	else
 	{
-		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
+		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies_hidden")."\";");
 	}
 
 	$plugins->run_hooks("editpost_end");

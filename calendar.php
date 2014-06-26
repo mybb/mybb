@@ -11,12 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'calendar.php');
 
-$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time,calendar_dayview_noevents";
-$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview,calendar_eventbit,calendar_addeventlink";
-$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays";
+$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
+$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview";
+$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
+$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect_hidden";
+$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event";
 
 require_once "./global.php";
-
 require_once MYBB_ROOT."inc/functions_calendar.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -57,7 +58,13 @@ $plugins->run_hooks("calendar_start");
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 $mybb->input['calendar'] = $mybb->get_input('calendar', 1);
-$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+$calendars = cache_calendars();
+
+$calendar_jump = '';
+if(count($calendars) > 1)
+{
+	$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+}
 
 $mybb->input['action'] = $mybb->get_input('action');
 // Add an event
@@ -239,7 +246,7 @@ if($mybb->input['action'] == "addevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -501,7 +508,8 @@ if($mybb->input['action'] == "addevent")
 		$privatecheck = '';
 	}
 
-	$calendar_select = '';
+	$select_calendar = $calendar_select = '';
+	$calendarcount = 0;
 
 	// Build calendar select
 	$calendar_permissions = get_calendar_permissions();
@@ -520,8 +528,18 @@ if($mybb->input['action'] == "addevent")
 				$selected = "";
 			}
 
-			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
+			++$calendarcount;
+			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
 		}
+	}
+
+	if($calendarcount > 1)
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
+	}
+	else
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
 	$event_errors = '';
@@ -744,7 +762,7 @@ if($mybb->input['action'] == "editevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -1439,7 +1457,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 		for($i = 0; $i < $event['stars']; ++$i)
 		{
-			$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
+			eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
 		}
 
 		if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1552,9 +1570,9 @@ if($mybb->input['action'] == "event")
 	$month = my_date("n");
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';
@@ -1781,7 +1799,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 				for($i = 0; $i < $event['stars']; ++$i)
 				{
-					$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
+					eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
 				}
 
 				if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1892,9 +1910,9 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';
@@ -1948,9 +1966,9 @@ if($mybb->input['action'] == "weekview")
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	// No incoming week, show THIS week
@@ -2125,18 +2143,21 @@ if($mybb->input['action'] == "weekview")
 		}
 
 		// Birthdays on this day?
-		$day_birthdays = "";
+		$day_birthdays = $calendar_link = $birthday_lang = '';
 		if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays))
 		{
 			$bday_count = count($birthdays["$weekday_day-$weekday_month"]);
 			if($bday_count > 1)
 			{
-				$day_birthdays = "<a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\">{$bday_count} {$lang->birthdays}</a><br />\n";
+				$birthday_lang = $lang->birthdays;
 			}
 			else
 			{
-				$day_birthdays = "<a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\">1 {$lang->birthday}</a><br />\n";
+				$birthday_lang = $lang->birthday;
 			}
+
+			$calendar_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
+			eval("\$day_birthdays = \"".$templates->get("calendar_weekview_day_birthdays")."\";");
 		}
 
 		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
@@ -2398,18 +2419,21 @@ if(!$mybb->input['action'])
 			}
 
 			// Birthdays on this day?
-			$day_birthdays = "";
+			$day_birthdays = $birthday_lang = '';
 			if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("$day-$calendar_month", $birthdays))
 			{
 				$bday_count = count($birthdays["$day-$calendar_month"]);
 				if($bday_count > 1)
 				{
-					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$bday_count} {$lang->birthdays}</a></div>\n";
+					$birthday_lang = $lang->birthdays;
 				}
 				else
 				{
-					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">1 {$lang->birthday}</a></div>\n";
+					$birthday_lang = $lang->birthday;
 				}
+
+				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+				eval("\$day_birthdays = \"".$templates->get("calendar_weekrow_day_birthdays")."\";");
 			}
 
 			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
@@ -2441,9 +2465,9 @@ if(!$mybb->input['action'])
 	}
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';

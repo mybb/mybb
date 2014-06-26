@@ -11,16 +11,16 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
-$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
+$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none";
-$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options";
-$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove";
-$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current";
-$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload";
-$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end";
-$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose";
+$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options,usercp_themeselector";
+$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder";
+$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
+$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
+$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_option_language";
+$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_option_language_option";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -766,16 +766,25 @@ if($mybb->input['action'] == "options")
 	{
 		$user = $mybb->user;
 	}
+
 	$languages = $lang->get_languages();
-	$langoptions = '';
-	foreach($languages as $lname => $language)
+	$board_language = $langoptions = '';
+	if(count($languages) > 1)
 	{
-		$sel = "";
-		if(isset($user['language']) && $user['language'] == $lname)
+		foreach($languages as $name => $language)
 		{
-			$sel = " selected=\"selected\"";
+			$language = htmlspecialchars_uni($language);
+
+			$sel = "";
+			if(isset($user['language']) && $user['language'] == $name)
+			{
+				$sel = " selected=\"selected\"";
+			}
+
+			eval('$langoptions .= "'.$templates->get('usercp_option_language_option').'";');
 		}
-		$langoptions .= "<option value=\"$lname\"$sel>".htmlspecialchars_uni($language)."</option>\n";
+
+		eval('$board_language = "'.$templates->get('usercp_option_language').'";');
 	}
 
 	// Lets work out which options the user has selected and check the boxes
@@ -1018,7 +1027,15 @@ if($mybb->input['action'] == "options")
 	{
 		$user['style'] = '';
 	}
+
+	$board_style = $stylelist = '';
 	$stylelist = build_theme_select("style", $user['style']);
+
+	if(!empty($stylelist))
+	{
+		eval('$board_style = "'.$templates->get('usercp_options_style').'";');
+	}
+
 	$tppselect = $pppselect = '';
 	if($mybb->settings['usertppoptions'])
 	{
@@ -2152,6 +2169,12 @@ if($mybb->input['action'] == "avatar")
 		eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
 	}
 
+	$removeavatar = '';
+	if(!empty($mybb->user['avatar']))
+	{
+		eval("\$removeavatar = \"".$templates->get("usercp_avatar_remove")."\";");
+	}
+
 	$plugins->run_hooks("usercp_avatar_end");
 
 	if(!isset($avatar_error))
@@ -2431,35 +2454,39 @@ if($mybb->input['action'] == "do_editlists")
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
+
+				if(isset($requests[$user['uid']]))
+				{
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_sent_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_sent_request_alt;
+					}
+					
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
 				
-				if(isset($requests[$user['uid']]) && $mybb->get_input('manage') != "ignored")
+				if(isset($requests_rec[$user['uid']]))
 				{
-					$error_message = $lang->users_already_sent_request;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				elseif(isset($requests[$user['uid']]) && $mybb->get_input('manage') == "ignored")
-				{
-					$error_message = $lang->users_already_sent_request_alt;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				
-				if(isset($requests_rec[$user['uid']]) && $mybb->get_input('manage') != "ignored")
-				{
-					$error_message = $lang->users_already_rec_request;
-					array_pop($users); // To maintain a proper count when we call count($users)
-					continue;
-				}
-				elseif(isset($requests_rec[$user['uid']]) && $mybb->get_input('manage') == "ignored")
-				{
-					$error_message = $lang->users_already_rec_request_alt;
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_rec_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_rec_request_alt;
+					}
+					
 					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
 
 				// Do we have auto approval set to On?
-				if($user['buddyrequestsauto'] == 1)
+				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
 				{
 					$existing_users[] = $user['uid'];
 					
@@ -2472,7 +2499,7 @@ if($mybb->input['action'] == "do_editlists")
 					
 					send_pm($pm);
 				}
-				else
+				elseif($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored")
 				{
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
@@ -2487,6 +2514,10 @@ if($mybb->input['action'] == "do_editlists")
 					send_pm($pm);
 					
 					$sent = true;
+				}
+				elseif($mybb->get_input('manage') == "ignored")
+				{
+					$existing_users[] = $user['uid'];
 				}
 			}
 		}
@@ -2758,8 +2789,38 @@ if($mybb->input['action'] == "editlists")
 		}
 		else
 		{
-			echo $buddy_list;
-			echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			if(isset($sent) && $sent === true)
+			{
+				$sent_rows = '';
+				$query = $db->query("
+					SELECT r.*, u.username
+					FROM `".TABLE_PREFIX."buddyrequests` r
+					LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
+					WHERE r.uid=".(int)$mybb->user['uid']."
+				");
+				while($request = $db->fetch_array($query))
+				{
+					$bgcolor = alt_trow();
+					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
+					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
+				}
+				
+				if($sent_rows == '')
+				{
+					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
+				}
+				
+				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
+			
+				echo $sentrequests;
+				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
+			}
+			else
+			{
+				echo $buddy_list;
+				echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			}
 		}
 		exit;
 	}
@@ -2784,6 +2845,8 @@ if($mybb->input['action'] == "editlists")
 		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
 	
+	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
+	
 	$sent_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
@@ -2803,6 +2866,8 @@ if($mybb->input['action'] == "editlists")
 	{
 		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
 	}
+	
+	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
 	
 	$plugins->run_hooks("usercp_editlists_end");
 

@@ -729,6 +729,12 @@ function upgrade30_dbchanges6()
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
 
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
+	if($db->fetch_field($query, "numexists") != 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
+	}
+
 	// Sync usergroups with canbereported; no moderators or banned groups
 	echo "<p>Updating usergroup permissions...</p>";
 	$groups = array();

@@ -442,6 +442,34 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="usecdn">
+			<title>Use a CDN?</title>
+			<description><![CDATA[You can utilise a CDN (Content Delivery Network) to offload the loading of static files such as Stylesheets, JavaScript and Images. Do you wish to enable this functionality?]]></description>
+			<disporder>19</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnurl">
+			<title>URL to use for static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please enter the base URL to serve static content from. This should be a valid URL without a trailing slash.]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnpath">
+			<title>Path to store static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please optionally enter a full path to store static files. This is only useful for "Push" type CDNs or local sub-domain setups. This path should not have a trailing slash.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="5" isdefault="1">
