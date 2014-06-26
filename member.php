@@ -2229,6 +2229,8 @@ if($mybb->input['action'] == "profile")
 	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
+		$ignore_list = explode(',', $mybb->user['ignorelist']);
+
 		if(in_array($uid, $buddy_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_buddy_button', 'lang' => $lang->remove_from_buddy_list);
@@ -2238,9 +2240,11 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_buddy_button', 'lang' => $lang->add_to_buddy_list);
 		}
 
-		eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		if(!in_array($uid, $ignore_list))
+		{
+			eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		}
 
-		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		if(in_array($uid, $ignore_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_ignore_button', 'lang' => $lang->remove_from_ignore_list);
@@ -2250,7 +2254,10 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_ignore_button', 'lang' => $lang->add_to_ignore_list);
 		}
 
-		eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		if(!in_array($uid, $buddy_list))
+		{
+			eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		}
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
