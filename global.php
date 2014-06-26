@@ -290,7 +290,14 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					continue;
 				}
 
-                $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+                if(strpos($page_stylesheet, 'css.php') !== false)
+                {
+                    $stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
+                }
+                else
+                {
+                    $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+                }
 
 				if($mybb->settings['minifycss'])
 				{
