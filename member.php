@@ -927,14 +927,14 @@ if($mybb->input['action'] == "register")
 		if(count($languages) > 1)
 		{
 			foreach($languages as $name => $language)
-		{
-			$language = htmlspecialchars_uni($language);
+			{
+				$language = htmlspecialchars_uni($language);
 
 				$sel = '';
 				if($mybb->get_input('language') == $name)
-			{
+				{
 					$sel = " selected=\"selected\"";
-			}
+				}
 
 				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
 			}
@@ -1028,7 +1028,7 @@ if($mybb->input['action'] == "activate")
 		{
 			$newemail = array(
 				"email" => $db->escape_string($activation['misc']),
-				);
+			);
 			$db->update_query("users", $newemail, "uid='".$user['uid']."'");
 			$plugins->run_hooks("member_activate_emailupdated");
 
@@ -2221,7 +2221,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
 		}
 
-    	if(!empty($editprofile) || !empty($banuser) || !empty($purgespammer))
+		if(!empty($editprofile) || !empty($banuser) || !empty($purgespammer))
 		{
 			eval("\$manageuser = \"".$templates->get("member_profile_modoptions_manageuser")."\";");
 		}
