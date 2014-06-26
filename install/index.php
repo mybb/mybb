@@ -1811,23 +1811,27 @@ function configure()
 		if($_SERVER['HTTP_HOST'])
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
-			$cookiedomain = '.'.$_SERVER['HTTP_HOST'];
+			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
 		elseif($_SERVER['SERVER_NAME'])
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
-			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
+			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 5) == ".www.")
+		if(substr($cookiedomain, 0, 4) == "www.")
 		{
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
-		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) === false || strpos($cookiedomain, '.') !== false)
+		if(my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
 		{
 			$cookiedomain = '';
+		}
+		else
+		{
+			$cookiedomain = ".{$cookiedomain}";
 		}
 
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
