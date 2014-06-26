@@ -4485,9 +4485,10 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
  * @param boolean Whether or not theme select is in the footer (true if it is)
+ * @param boolean Whether or not to override output based on theme count (true to override)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
 {
 	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
@@ -4565,7 +4566,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 1 && $num_themes > 1)
+	if($tid == 1 && ($num_themes > 1 || $count_override == true))
 	{
 		if($footer == true)
 		{
