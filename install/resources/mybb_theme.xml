@@ -9936,9 +9936,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="tcat" align="center" width="1%"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
 </tr>
 {$readmessages}
-<tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
-</tr>
+{$stoptrackingread}
 </table>
 </form>
 <br />
@@ -9957,9 +9955,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
 </tr>
 {$unreadmessages}
-<tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
-</tr>
+{$stoptrackingunread}
 </table>
 </form>
 </td></tr></table>
@@ -9976,12 +9972,18 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow2" align="right"><span class="smalltext">{$readdate}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
 </tr>]]></template>
+		<template name="private_tracking_readmessage_stop" version="1800"><![CDATA[<tr>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
+</tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="1800"><![CDATA[<tr>
 <td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/new_pm.png" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1" align="center">{$unreadmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="1" /></td>
+</tr>]]></template>
+		<template name="private_tracking_unreadmessage_stop" version="1800"><![CDATA[<tr>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
 		<template name="redirect" version="120"><![CDATA[<html>
 <head>

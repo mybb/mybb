@@ -12,9 +12,9 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html,posticons_icon";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature";
+$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose,private_tracking_readmessage_stop";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html,private_tracking_unreadmessage_stop";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,posticons_icon";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online";
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
 $templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
@@ -1269,6 +1269,12 @@ if($mybb->input['action'] == "tracking")
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
 
+	$stoptrackingread = '';
+	if(!empty($readmessages))
+	{
+		eval("\$stoptrackingread = \"".$templates->get("private_tracking_readmessage_stop")."\";");
+	}
+
 	if(!$readmessages)
 	{
 		eval("\$readmessages = \"".$templates->get("private_tracking_nomessage")."\";");
@@ -1317,6 +1323,12 @@ if($mybb->input['action'] == "tracking")
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$senddate = my_date('relative', $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
+	}
+
+	$stoptrackingunread = '';
+	if(!empty($unreadmessages))
+	{
+		eval("\$stoptrackingunread = \"".$templates->get("private_tracking_unreadmessage_stop")."\";");
 	}
 
 	if(!$unreadmessages)
