@@ -16,11 +16,12 @@ $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_member
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle";
-$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder";
+$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
 $templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language";
 $templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -518,13 +519,15 @@ if($mybb->input['action'] == "profile")
 					{
 						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\"$sel>$val</option>\n";
+
+					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 				}
 				if(!$profilefield['length'])
 				{
 					$profilefield['length'] = 3;
 				}
-				$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 			}
 		}
 		elseif($type == "select")
@@ -541,13 +544,15 @@ if($mybb->input['action'] == "profile")
 					{
 						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\"$sel>$val</option>";
+
+					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 				}
 				if(!$profilefield['length'])
 				{
 					$profilefield['length'] = 1;
 				}
-				$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 			}
 		}
 		elseif($type == "radio")
@@ -562,7 +567,8 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+
+					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
 				}
 			}
 		}
@@ -593,14 +599,15 @@ if($mybb->input['action'] == "profile")
 					{
 						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+
+					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
 				}
 			}
 		}
 		elseif($type == "textarea")
 		{
 			$value = htmlspecialchars_uni($userfield);
-			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+			eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 		}
 		else
 		{
@@ -610,8 +617,10 @@ if($mybb->input['action'] == "profile")
 			{
 				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 			}
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+
+			eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 		}
+
 		if($profilefield['required'] == 1)
 		{
 			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");

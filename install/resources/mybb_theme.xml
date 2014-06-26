@@ -12573,6 +12573,19 @@ if(use_xmlhttprequest == "1")
 {$customfields}
 </table>
 </fieldset>]]></template>
+		<template name="usercp_profile_profilefields_checkbox" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="profile_fields[$field][]" value="{$val}"{$checked} />
+<span class="smalltext">{$val}</span><br />]]></template>
+		<template name="usercp_profile_profilefields_multiselect" version="1800"><![CDATA[<select name="profile_fields[$field][]" size="{$profilefield['length']}" multiple="multiple">
+{$select}
+</select>]]></template>
+		<template name="usercp_profile_profilefields_radio" version="1800"><![CDATA[<input type="radio" class="radio" name="profile_fields[$field]" value="{$val}"{$checked} />
+<span class="smalltext">{$val}</span><br />]]></template>
+		<template name="usercp_profile_profilefields_select" version="1800"><![CDATA[<select name="profile_fields[$field]" size="{$profilefield['length']}">
+{$select}
+</select>]]></template>
+		<template name="usercp_profile_profilefields_select_option" version="1800"><![CDATA[<option value="{$val}"{$sel}>{$val}</option>]]></template>
+		<template name="usercp_profile_profilefields_text" version="1800"><![CDATA[<input type="text" name="profile_fields[$field]" class="textbox" size="{$profilefield['length']}"{$maxlength} value="{$value}" />]]></template>
+		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>

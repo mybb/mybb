@@ -24,7 +24,8 @@ $templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipa
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
 $templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_bangroups_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
 $templatelist .= ",modcp_nav_warninglogs,modcp_nav_ipsearch,modcp_nav_users,modcp_announcements_day,modcp_announcements_month_start,modcp_announcements_month_end,modcp_announcements_announcement_expired,modcp_announcements_announcement_active";
-$templatelist .= ",modcp_modqueue_link_forum,modcp_modqueue_link_thread,usercp_profile_day,usercp_profile_away,modcp_ipsearch_result_regip,modcp_ipsearch_result_lastip,modcp_ipsearch_result_post,modcp_ipsearch_results_information";
+$templatelist .= ",modcp_modqueue_link_forum,modcp_modqueue_link_thread,usercp_profile_day,usercp_profile_away,modcp_ipsearch_result_regip,modcp_ipsearch_result_lastip,modcp_ipsearch_result_post,modcp_ipsearch_results_information,usercp_profile_profilefields_text";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -2865,13 +2866,15 @@ if($mybb->input['action'] == "editprofile")
 					{
 						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\"$sel>$val</option>\n";
+
+					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 				}
 				if(!$profilefield['length'])
 				{
 					$profilefield['length'] = 3;
 				}
-				$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 			}
 		}
 		elseif($type == "select")
@@ -2888,13 +2891,15 @@ if($mybb->input['action'] == "editprofile")
 					{
 						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\"$sel>$val</option>";
+
+					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 				}
 				if(!$profilefield['length'])
 				{
 					$profilefield['length'] = 1;
 				}
-				$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 			}
 		}
 		elseif($type == "radio")
@@ -2909,7 +2914,8 @@ if($mybb->input['action'] == "editprofile")
 					{
 						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+
+					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
 				}
 			}
 		}
@@ -2940,14 +2946,15 @@ if($mybb->input['action'] == "editprofile")
 					{
 						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+
+					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
 				}
 			}
 		}
 		elseif($type == "textarea")
 		{
 			$value = htmlspecialchars_uni($userfield);
-			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+			eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 		}
 		else
 		{
@@ -2957,8 +2964,10 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 			}
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+
+			eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 		}
+
 		if($profilefield['required'] == 1)
 		{
 			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");

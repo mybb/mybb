@@ -18,6 +18,7 @@ $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_aw
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text";
 $templatelist .= ",usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language";
 
 require_once "./global.php";
@@ -659,15 +660,17 @@ if($mybb->input['action'] == "register")
 						$sel = "";
 						if($val == $seloptions[$val])
 						{
-							$sel = "selected=\"selected\"";
+							$sel = " selected=\"selected\"";
 						}
-						$select .= "<option value=\"$val\" $sel>$val</option>\n";
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 3;
 					}
-					$code = "<select name=\"profile_fields[$field][]\" id=\"{$field}\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 				}
 			}
 			elseif($type == "select")
@@ -682,15 +685,17 @@ if($mybb->input['action'] == "register")
 						$sel = "";
 						if($val == $userfield)
 						{
-							$sel = "selected=\"selected\"";
+							$sel = " selected=\"selected\"";
 						}
-						$select .= "<option value=\"$val\" $sel>$val</option>";
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 1;
 					}
-					$code = "<select name=\"profile_fields[$field]\" id=\"{$field}\" size=\"{$profilefield['length']}\">$select</select>";
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 				}
 			}
 			elseif($type == "radio")
@@ -705,7 +710,8 @@ if($mybb->input['action'] == "register")
 						{
 							$checked = "checked=\"checked\"";
 						}
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
 					}
 				}
 			}
@@ -736,14 +742,15 @@ if($mybb->input['action'] == "register")
 						{
 							$checked = "checked=\"checked\"";
 						}
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
 					}
 				}
 			}
 			elseif($type == "textarea")
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<textarea name=\"profile_fields[$field]\" id=\"{$field}\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 			}
 			else
 			{
@@ -753,8 +760,10 @@ if($mybb->input['action'] == "register")
 				{
 					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 				}
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 			}
+
 			if($profilefield['required'] == 1)
 			{
 				// JS validator extra
