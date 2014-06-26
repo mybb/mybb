@@ -9,6 +9,7 @@
  */
 
 define("IN_MYBB", 1);
+define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
@@ -16,8 +17,8 @@ $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
 $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
-$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,postbit_warninglevel_formatted";
+$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_viewnotes,member_profile_modoptions_editnotes,member_register_question,postbit_reputation_formatted";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -205,6 +206,53 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			{
 				$errors[] = $error;
 			}
+		}
+	}
+
+	// If we have a security question, check to see if answer is correct
+	if($mybb->settings['securityquestion'])
+	{
+		$question_id = $mybb->get_input('question_id');
+		$answer = $db->escape_string($mybb->get_input('answer'));
+
+		$query = $db->query("
+			SELECT q.*, s.sid
+			FROM ".TABLE_PREFIX."questionsessions s
+			LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+			WHERE q.active='1' AND s.sid='{$question_id}'
+		");
+		if($db->num_rows($query) > 0)
+		{
+			$question = $db->fetch_array($query);
+			$valid_answers = explode("|", $question['answer']);
+			$validated = 0;
+
+			foreach($valid_answers as $answers)
+			{
+				if(my_strtolower($answers) == my_strtolower($answer))
+				{
+					$validated = 1;
+				}
+			}
+
+			if($validated != 1)
+			{
+				$update_question = array(
+					"incorrect" => $question['incorrect'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+
+				$errors[] = $lang->error_question_wrong;
+			}
+			else
+			{
+				$update_question = array(
+					"correct" => $question['correct'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+			}
+
+			$db->delete_query("questionsessions", "sid='{$sid}'");
 		}
 	}
 
@@ -503,7 +551,7 @@ if($mybb->input['action'] == "register")
 		}
 	}
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
+	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post")
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
@@ -846,6 +894,24 @@ if($mybb->input['action'] == "register")
 						}
 					});\n";
 				}
+			}
+		}
+
+		// Security Question
+		$questionbox = '';
+		if($mybb->settings['securityquestion'])
+		{
+			$sid = generate_question();
+			$query = $db->query("
+				SELECT q.question, s.sid
+				FROM ".TABLE_PREFIX."questionsessions s
+				LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+				WHERE q.active='1' AND s.sid='{$sid}'
+			");
+			if($db->num_rows($query) > 0)
+			{
+				$question = $db->fetch_array($query);
+				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
 		}
 

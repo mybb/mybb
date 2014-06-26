@@ -222,6 +222,10 @@ $l['js_validator_username_length'] = "Usernames must be between {1} and {2} char
 $l['js_validator_checking_referrer'] = "Checking if referrer username exists.";
 $l['js_validator_captcha_valid'] = "Checking whether or not you entered the correct image verification code.";
 
+$l['security_question'] = "Security Question";
+$l['question_note'] = "Please answer the question provided. This process is used to prevent automated processes.";
+$l['error_question_wrong'] = "The answer you provided for the security question is wrong. Please try again.";
+
 $l['subscription_method'] = "Default Thread Subscription Mode:";
 $l['no_auto_subscribe'] = "Do not subscribe";
 $l['no_subscribe'] = "No notification";
