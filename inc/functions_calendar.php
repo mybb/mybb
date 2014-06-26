@@ -333,7 +333,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb, $templates;
+	global $db, $mybb, $templates, $lang, $gobutton;
 
 	$calendar_permissions = get_calendar_permissions();
 

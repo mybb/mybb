@@ -370,9 +370,9 @@ function build_forumbits($pid=0, $depth=1)
 										continue;
 									}
 
-									$moderator['username'] = htmlspecialchars_uni($moderator['username']);
+									$moderator['title'] = htmlspecialchars_uni($moderator['title']);
 
-									eval("\$moderators .= \"".$templates->get("forumbit_depth2_forum_moderators_group", 1, 0)."\";");
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
 									$done_moderators['groups'][] = $moderator['id'];
 								}
 								else
@@ -385,7 +385,7 @@ function build_forumbits($pid=0, $depth=1)
 									$moderator['profilelink'] = get_profile_link($moderator['id']);
 									$moderator['username'] = htmlspecialchars_uni($moderator['username']);
 
-									eval("\$moderators .= \"".$templates->get("forumbit_depth2_forum_moderators_user", 1, 0)."\";");
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
 									$done_moderators['users'][] = $moderator['id'];
 								}
 								$comma = $lang->comma;

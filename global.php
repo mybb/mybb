@@ -289,15 +289,35 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
-				if($mybb->settings['minifycss'])
+
+				if(strpos($page_stylesheet, 'css.php') !== false)
 				{
-					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
+					$stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
 				}
 				else
 				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
 				}
+
+				if($mybb->settings['minifycss'])
+				{
+					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
+				}
+
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					// We need some modification to get it working with the displayorder
+					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
+					$id = (int) my_substr($query_string, 11);
+					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
+					$real_name = $db->fetch_field($query, "name");
+					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+				else
+				{
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+
 				$already_loaded[$page_stylesheet] = 1;
 			}
 		}
@@ -340,35 +360,45 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-	if(!@is_dir($theme['imgdir']))
-	{
-		$theme['imgdir'] = 'images';
-	}
+    $img_directory = $theme['imgdir'];
 
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
+    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+    {
+        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+    }
+
+    if(!@is_dir($img_directory))
+    {
+        $theme['imgdir'] = 'images';
+    }
+
+    // If a language directory for the current language exists within the theme - we use it
+    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+    {
+        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+    }
+    else
+    {
+        // Check if a custom language directory exists for this theme
+        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+        {
+            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+        }
+        // Otherwise, the image language directory is the same as the language directory for the theme
+        else
+        {
+            $theme['imglangdir'] = $theme['imgdir'];
+        }
+    }
+
+    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
 if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
-	$theme['logo'] = $mybb->settings['bburl'].'/'.$theme['logo'];
+	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
 // Load Main Templates and Cached Templates
@@ -381,9 +411,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option";
+$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist,usercp_themeselector_option";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -706,8 +736,11 @@ if($mybb->settings['showthemeselect'] != 0)
 {
 	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-	$theme_redirect_url = get_current_location(true, 'theme');
-	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	if(!empty($theme_options))
+	{
+		$theme_redirect_url = get_current_location(true, 'theme');
+		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	}
 }
 
 // DST Auto detection enabled?

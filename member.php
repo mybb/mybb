@@ -15,9 +15,10 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
 $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
-$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online";
+$templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
-$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_viewnotes,member_profile_modoptions_editnotes";
+$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
+$templatelist .= ",usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -922,18 +923,23 @@ if($mybb->input['action'] == "register")
 		}
 
 		$languages = $lang->get_languages();
-		$langoptions = '';
-		foreach($languages as $lname => $language)
+		$langoptions = $boardlanguage = '';
+		if(count($languages) > 1)
 		{
-			$language = htmlspecialchars_uni($language);
-			if($mybb->get_input('language') == $lname)
+			foreach($languages as $name => $language)
 			{
-				$langoptions .= "<option value=\"$lname\" selected=\"selected\">$language</option>\n";
+				$language = htmlspecialchars_uni($language);
+
+				$sel = '';
+				if($mybb->get_input('language') == $name)
+				{
+					$sel = " selected=\"selected\"";
+				}
+
+				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
 			}
-			else
-			{
-				$langoptions .= "<option value=\"$lname\">$language</option>\n";
-			}
+
+			eval('$boardlanguage = "'.$templates->get('member_register_language').'";');
 		}
 
 		// Set the time so we can find automated signups
@@ -2223,6 +2229,8 @@ if($mybb->input['action'] == "profile")
 	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
+		$ignore_list = explode(',', $mybb->user['ignorelist']);
+
 		if(in_array($uid, $buddy_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_buddy_button', 'lang' => $lang->remove_from_buddy_list);
@@ -2232,9 +2240,11 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_buddy_button', 'lang' => $lang->add_to_buddy_list);
 		}
 
-		eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		if(!in_array($uid, $ignore_list))
+		{
+			eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		}
 
-		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		if(in_array($uid, $ignore_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_ignore_button', 'lang' => $lang->remove_from_ignore_list);
@@ -2244,7 +2254,10 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_ignore_button', 'lang' => $lang->add_to_ignore_list);
 		}
 
-		eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		if(!in_array($uid, $buddy_list))
+		{
+			eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		}
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
