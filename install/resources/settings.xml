@@ -1014,6 +1014,14 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="securityquestion">
+			<title>Show Security Question</title>
+			<description><![CDATA[Do you wish to show a question that users must answer when registering?]]></description>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="10" isdefault="1">
 		<setting name="sigmycode">
