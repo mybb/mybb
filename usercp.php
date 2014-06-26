@@ -19,9 +19,10 @@ $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_su
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
-$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language";
+$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language,usercp_options_date_format";
 $templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
+$templatelist .= ",usercp_options_time_format,usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -999,31 +1000,30 @@ if($mybb->input['action'] == "options")
 		$classicpostbitcheck = '';
 	}
 
-
-	$date_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	$date_format_options = $dateformat = '';
 	foreach($date_formats as $key => $format)
 	{
+		$selected = '';
 		if(isset($user['dateformat']) && $user['dateformat'] == $key)
 		{
-			$date_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$date_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
-		}
+
+		$dateformat = my_date($format, TIME_NOW, "", 0);
+		eval("\$date_format_options .= \"".$templates->get("usercp_options_date_format")."\";");
 	}
 
-	$time_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	$time_format_options = $timeformat = '';
 	foreach($time_formats as $key => $format)
 	{
+		$selected = '';
 		if(isset($user['timeformat']) && $user['timeformat'] == $key)
 		{
-			$time_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$time_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
-		}
+
+		$timeformat = my_date($format, TIME_NOW, "", 0);
+		eval("\$time_format_options .= \"".$templates->get("usercp_options_time_format")."\";");
 	}
 
 	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
@@ -1061,7 +1061,7 @@ if($mybb->input['action'] == "options")
 	if($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-		$tppoptions = '';
+		$tppoptions = $tpp_option = '';
 		if(is_array($explodedtpp))
 		{
 			foreach($explodedtpp as $key => $val)
@@ -1070,17 +1070,20 @@ if($mybb->input['action'] == "options")
 				$selected = "";
 				if(isset($user['tpp']) && $user['tpp'] == $val)
 				{
-					$selected = "selected=\"selected\"";
+					$selected = " selected=\"selected\"";
 				}
-				$tppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
+
+				$tpp_option = $lang->sprintf($lang->tpp_option, $val);
+				eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
 			}
 		}
 		eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
 	}
+
 	if($mybb->settings['userpppoptions'])
 	{
 		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-		$pppoptions = '';
+		$pppoptions = $ppp_option = '';
 		if(is_array($explodedppp))
 		{
 			foreach($explodedppp as $key => $val)
@@ -1089,9 +1092,11 @@ if($mybb->input['action'] == "options")
 				$selected = "";
 				if(isset($user['ppp']) && $user['ppp'] == $val)
 				{
-					$selected = "selected=\"selected\"";
+					$selected = " selected=\"selected\"";
 				}
-				$pppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
+
+				$ppp_option = $lang->sprintf($lang->ppp_option, $val);
+				eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
 			}
 		}
 		eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -1175,8 +1180,8 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	}
 	if(count($errors) > 0)
 	{
-			$mybb->input['action'] = "email";
-			$errors = inline_error($errors);
+		$mybb->input['action'] = "email";
+		$errors = inline_error($errors);
 	}
 }
 
@@ -1786,12 +1791,12 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 		{
-			$lastpost = "<div align=\"center\">{$lang->never}</div>";
+			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 		}
 		// Hide last post
 		elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid'])
 		{
-			$lastpost = "<div align=\"center\">{$lang->na}</div>";
+			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 		}
 		else
 		{
@@ -1862,7 +1867,6 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	$db->update_query("users", $new_signature, "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_editsig_end");
 	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
-
 }
 
 if($mybb->input['action'] == "editsig")
@@ -2175,13 +2179,15 @@ if($mybb->input['action'] == "avatar")
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
 
+	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
-		$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
+		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
+		$auto_resize = "\n";
 	}
 	else if($mybb->settings['avatarresizing'] == "user")
 	{
-		$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
+		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_user")."\";");
 	}
 
 	$avatarupload = '';

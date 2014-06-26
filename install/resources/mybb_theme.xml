@@ -11353,6 +11353,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_avatar_auto_resize_auto" version="1800"><![CDATA[<br /><span class="smalltext">{$lang->avatar_auto_resize_note}</span>]]></template>
+		<template name="usercp_avatar_auto_resize_user" version="1800"><![CDATA[<br /><span class="smalltext">
+<input type="checkbox" name="auto_resize" value="1" checked="checked" id="auto_resize" />
+<label for="auto_resize">{$lang->avatar_auto_resize_option}</label>
+</span>]]></template>
 		<template name="usercp_avatar_current" version="1800"><![CDATA[<td width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
 		<template name="usercp_avatar_remove" version="1800"><![CDATA[<input type="submit" class="button" name="remove" value="{$lang->remove_avatar}" />]]></template>
 		<template name="usercp_avatar_upload" version="1800"><![CDATA[			<tr>
@@ -12105,6 +12110,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>
 <select name="dateformat">
+<option value="0">{$lang->use_default}</option>
 {$date_format_options}
 </select>
 </td>
@@ -12115,6 +12121,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>
 <select name="timeformat">
+<option value="0">{$lang->use_default}</option>
 {$time_format_options}
 </select>
 </td>
@@ -12234,6 +12241,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_options_date_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$dateformat}</option>]]></template>
 		<template name="usercp_options_language" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>
 </tr>
@@ -12262,12 +12270,14 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
+		<template name="usercp_options_pppselect_option" version="1800"><![CDATA[<option value="{$val}"{$selected}>{$ppp_option}</option>]]></template>
 		<template name="usercp_options_style" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->style}</span></td>
 </tr>
 <tr>
 <td colspan="2">{$stylelist}</td>
 </tr>]]></template>
+		<template name="usercp_options_time_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$timeformat}</option>]]></template>
 		<template name="usercp_options_timezone" version="1800"><![CDATA[<select name="{$name}" id="{$name}">
 {$timezone_option}
 </select>]]></template>
@@ -12283,6 +12293,7 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
+		<template name="usercp_options_tppselect_option" version="1800"><![CDATA[<option value="{$val}"{$selected}>{$tpp_option}</option>]]></template>
 		<template name="usercp_password" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_password}</title>
