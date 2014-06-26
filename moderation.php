@@ -2687,6 +2687,9 @@ switch($mybb->input['action'])
 
 			$user_deleted = false;
 
+			// Run the hooks first to avoid any issues when we delete the user
+			$plugins->run_hooks("moderation_purgespammer_purge");
+
 			// loop through what was submitted
 			foreach($mybb->get_input('actions', 2) as $action => $value)
 			{
@@ -2722,6 +2725,10 @@ switch($mybb->input['action'])
 						$update['skype'] = "";
 						$update['google'] = "";
 						$update['usertitle'] = "";
+						$update['away'] = 0;
+						$update['awaydate'] = 0;
+						$update['returndate'] = "";
+						$update['awayreason'] = "";
 						break;
 					case "deletepms":
 						$query = $db->simple_select("privatemessages", "pmid, uid, toid", "uid='{$uid}' OR fromid='{$uid}'");
@@ -2763,7 +2770,7 @@ switch($mybb->input['action'])
 						}
 						break;
 					case "deletereportedcontent":
-						$db->delete_query("reportedcontent", "uid = '{$uid}'");
+						$db->delete_query("reportedcontent", "uid = '{$uid}' OR rid = '{$uid}'");
 						break;
 					case "deleteevents":
 						$db->delete_query("events", "uid = '{$uid}'");
@@ -2935,7 +2942,7 @@ switch($mybb->input['action'])
 						}
 						if(!$used)
 						{
-							if(!empty($user['website']) || !empty($user['birthday']) || !empty($user['icq']) || !empty($user['aim']) || !empty($user['yahoo']) || !empty($user['msn']) || !empty($user['usertitle']))
+							if(!empty($user['website']) || !empty($user['birthday']) || !empty($user['icq']) || !empty($user['aim']) || !empty($user['yahoo']) || !empty($user['msn']) || !empty($user['usertitle']) || $user['away'])
 							{
 								$used = true;
 							}
@@ -2967,7 +2974,7 @@ switch($mybb->input['action'])
 						}
 						break;
 					case "deletereportedcontent":
-						$query = $db->simple_select("reportedcontent", "rid", "uid = '{$uid}'");
+						$query = $db->simple_select("reportedcontent", "rid", "uid = '{$uid}' OR rid = '{$uid}'");
 						$reportedcontent = $db->num_rows($query);
 						if($reportedcontent > 0)
 						{
@@ -3018,6 +3025,8 @@ switch($mybb->input['action'])
 						break;
 				}
 			}
+
+			$plugins->run_hooks("moderation_purgespammer_show");
 
 			add_breadcrumb($lang->purgespammer);
 			$lang->purgespammer_actionstotake = $lang->sprintf($lang->purgespammer_actionstotake, $user['username']);
