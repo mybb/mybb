@@ -6327,11 +6327,7 @@ if(use_xmlhttprequest == "1")
 								<td class="trow2" width="25%"><strong>{$lang->ban_reason}</strong></td>
 								<td class="trow2" width="75%"><textarea name="banreason" cols="60" rows="4" maxlength="255">{$banreason}</textarea></td>
 							</tr>
-							<tr>
-								<td class="trow1" width="25%"><strong>{$lang->ban_movegroup}</strong></td>
-								<td class="trow1" width="75%"><select name="usergroup">{$bangroups}</select>
-							</td>
-							</tr>
+							{$bangroups}
 							<tr>
 								<td class="trow2" width="25%"><strong>{$lang->ban_liftafter}</strong></td>
 								<td class="trow2" width="75%"><select name="liftafter">{$liftlist}</select></td>
@@ -6391,12 +6387,18 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%"><input type="text" class="textbox" name="username" id="username" value="{$username}" size="25" /></td>
 </tr>]]></template>
+		<template name="modcp_banuser_bangroups" version="1800"><![CDATA[							<tr>
+								<td class="trow1" width="25%"><strong>{$lang->ban_movegroup}</strong></td>
+								<td class="trow1" width="75%"><select name="usergroup">{$bangroup_option}</select></td>
+							</tr>]]></template>
+		<template name="modcp_banuser_bangroups_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
+		<template name="modcp_banuser_bangroups_hidden" version="1800"><![CDATA[<input type="hidden" name="usergroup" value="{$group['gid']}" />]]></template>
 		<template name="modcp_banuser_editusername" version="1400"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
-		<template name="modcp_banuser_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
 		<template name="modcp_banuser_lift" version="1800"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
+		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
 		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
