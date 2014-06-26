@@ -18,6 +18,7 @@ $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_aw
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
+$templatelist .= ",usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -922,18 +923,23 @@ if($mybb->input['action'] == "register")
 		}
 
 		$languages = $lang->get_languages();
-		$langoptions = '';
-		foreach($languages as $lname => $language)
+		$langoptions = $boardlanguage = '';
+		if(count($languages) > 1)
 		{
-			$language = htmlspecialchars_uni($language);
-			if($mybb->get_input('language') == $lname)
+			foreach($languages as $name => $language)
 			{
-				$langoptions .= "<option value=\"$lname\" selected=\"selected\">$language</option>\n";
+				$language = htmlspecialchars_uni($language);
+
+				$sel = '';
+				if($mybb->get_input('language') == $name)
+				{
+					$sel = " selected=\"selected\"";
+				}
+
+				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
 			}
-			else
-			{
-				$langoptions .= "<option value=\"$lname\">$language</option>\n";
-			}
+
+			eval('$boardlanguage = "'.$templates->get('member_register_language').'";');
 		}
 
 		// Set the time so we can find automated signups

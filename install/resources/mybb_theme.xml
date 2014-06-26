@@ -4785,7 +4785,6 @@ if(use_xmlhttprequest == "1")
 	</select>
 </td>
 </tr>
-
 </table>
 </fieldset>
 <br />
@@ -4812,18 +4811,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </fieldset>
-<br />
-<fieldset class="trow2">
-<legend><strong><label for="language">{$lang->lang_select}</label></strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
-<tr>
-<td colspan="2"><span class="smalltext">{$lang->lang_select_desc}</span></td>
-</tr>
-<tr>
-<td><select name="language" id="language"><option value="">{$lang->lang_select_default}</option><option value="">-----------</option>{$langoptions}</select></td>
-</tr>
-</table>
-</fieldset>
+{$boardlanguage}
 </td>
 </tr>
 </table>
@@ -5024,6 +5012,22 @@ $().ready(function() {
 		<template name="member_register_hiddencaptcha" version="1605"><![CDATA[<tr style="display: none;">
 	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
+		<template name="member_register_language" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong><label for="language">{$lang->lang_select}</label></strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->lang_select_desc}</span></td>
+</tr>
+<tr>
+<td><select name="language" id="language">
+<option value="">{$lang->lang_select_default}</option>
+<option value="">-----------</option>
+{$langoptions}
+</select></td>
+</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_password" version="1400"><![CDATA[<tr>
 <td width="50%" valign="top"><span class="smalltext">{$lang->password}</span></td>
 <td width="50%" valign="top"><span class="smalltext">{$lang->confirm_password}</span></td>
@@ -9985,32 +9989,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<template name="private_tracking_unreadmessage_stop" version="1800"><![CDATA[<tr>
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->delete}" /> {$lang->selected_messages}</strong></td>
 </tr>]]></template>
-		<template name="redirect" version="120"><![CDATA[<html>
-<head>
-<title>{$title}</title>
-<meta http-equiv="refresh" content="2;URL={$url}" />
-{$headerinclude}
-</head>
-<body>
-<br />
-<br />
-<br />
-<br />
-<div style="margin: auto auto; width: {$lang->redirect_width}" align="center">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$title}</strong></td>
-</tr>
-<tr>
-<td class="trow1" align="center"><p>{$message}</p></td>
-</tr>
-<tr>
-<td class="trow2" align="right"><a href="{$url}"><span class="smalltext">{$lang->click_no_wait}</span></a></td>
-</tr>
-</table>
-</div>
-</body>
-</html>]]></template>
 		<template name="report" version="1800"><![CDATA[<div class="modal">
   <div style="overflow-y: auto; max-height: 400px;" class="modal_{$id}">
   <form action="report.php" method="post" class="reportData_{$id}" onsubmit="javascript: return Report.submitReport({$id});">
@@ -12254,7 +12232,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_option_language" version="1800"><![CDATA[<tr>
+		<template name="usercp_options_language" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>
 </tr>
 <tr>
@@ -12266,7 +12244,7 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
-		<template name="usercp_option_language_option" version="1800"><![CDATA[<option value="{$name}"{$sel}>{$language}</option>]]></template>
+		<template name="usercp_options_language_option" version="1800"><![CDATA[<option value="{$name}"{$sel}>{$language}</option>]]></template>
 		<template name="usercp_options_pms_from_buddys" version="1600"><![CDATA[<tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivefrombuddy" id="receivefrombuddy" value="1" {$receivefrombuddycheck} /></td>
 <td><span class="smalltext"><label for="receivefrombuddy">{$lang->receive_from_buddy}</label></span></td>
@@ -13341,6 +13319,32 @@ $(function() {
 </table>
 <br />
 ]]></template>
+		<template name="redirect" version="120"><![CDATA[<html>
+<head>
+<title>{$title}</title>
+<meta http-equiv="refresh" content="2;URL={$url}" />
+{$headerinclude}
+</head>
+<body>
+<br />
+<br />
+<br />
+<br />
+<div style="margin: auto auto; width: {$lang->redirect_width}" align="center">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$title}</strong></td>
+</tr>
+<tr>
+<td class="trow1" align="center"><p>{$message}</p></td>
+</tr>
+<tr>
+<td class="trow2" align="right"><a href="{$url}"><span class="smalltext">{$lang->click_no_wait}</span></a></td>
+</tr>
+</table>
+</div>
+</body>
+</html>]]></template>
 		<template name="sendthread" version="1800"><![CDATA[<html>
 <head>
 <title>{$threadprefix['prefix']} {$thread['subject']} - {$lang->send_thread}</title>

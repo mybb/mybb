@@ -19,8 +19,8 @@ $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_su
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
-$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_option_language";
-$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_option_language_option";
+$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language";
+$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -775,16 +775,16 @@ if($mybb->input['action'] == "options")
 		{
 			$language = htmlspecialchars_uni($language);
 
-			$sel = "";
+			$sel = '';
 			if(isset($user['language']) && $user['language'] == $name)
 			{
 				$sel = " selected=\"selected\"";
 			}
 
-			eval('$langoptions .= "'.$templates->get('usercp_option_language_option').'";');
+			eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
 		}
 
-		eval('$board_language = "'.$templates->get('usercp_option_language').'";');
+		eval('$board_language = "'.$templates->get('usercp_options_language').'";');
 	}
 
 	// Lets work out which options the user has selected and check the boxes
