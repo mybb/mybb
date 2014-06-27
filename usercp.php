@@ -20,9 +20,11 @@ $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,user
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
 $templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language,usercp_options_date_format";
-$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option";
+$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 $templatelist .= ",usercp_options_time_format,usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user";
+$templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_editlists_user,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
+$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2774,7 +2776,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_buddies = $lang->sprintf($lang->current_buddies, $buddy_count);
 	if(!$buddy_list)
 	{
-		$buddy_list = "<li>{$lang->buddy_list_empty}</li>";
+		eval("\$buddy_list = \"".$templates->get("usercp_editlists_no_buddies")."\";");
 	}
 
 	// Fetch out ignore list users
@@ -2803,7 +2805,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_ignored_users = $lang->sprintf($lang->current_ignored_users, $ignore_count);
 	if(!$ignore_list)
 	{
-		$ignore_list = "<li>{$lang->ignore_list_empty}</li>";
+		eval("\$ignore_list = \"".$templates->get("usercp_editlists_no_ignored")."\";");
 	}
 
 	// If an AJAX request from buddy management, echo out whatever the new list is.
@@ -2926,17 +2928,22 @@ if($mybb->input['action'] == "drafts")
 
 		while($draft = $db->fetch_array($query))
 		{
+			$detail = '';
 			$trow = alt_trow();
 			if($draft['threadvisible'] == 1) // We're looking at a draft post
 			{
-				$detail = $lang->thread." <a href=\"".get_thread_link($draft['tid'])."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
+				$draft['threadlink'] = get_thread_link($draft['tid']);
+				$draft['threadsubject'] = htmlspecialchars_uni($draft['threadsubject']);
+				eval("\$detail = \"".$templates->get("usercp_drafts_draft_thread")."\";");
 				$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 				$id = $draft['pid'];
 				$type = "post";
 			}
 			elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 			{
-				$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
+				$draft['forumlink'] = get_forum_link($draft['fid']);
+				$draft['forumname'] = htmlspecialchars_uni($draft['forumname']);
+				eval("\$detail = \"".$templates->get("usercp_drafts_draft_forum")."\";");
 				$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 				$id = $draft['tid'];
 				$type = "thread";
@@ -3006,6 +3013,7 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_drafts_end");
 	redirect("usercp.php?action=drafts", $lang->selected_drafts_deleted);
 }
+
 if($mybb->input['action'] == "usergroups")
 {
 	$plugins->run_hooks("usercp_usergroups_start");
@@ -3210,14 +3218,14 @@ if($mybb->input['action'] == "usergroups")
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';
-		$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
+		eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
 		}
 		if($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == 1)
 		{
-			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}\">{$lang->view_requests}</a>]";
+			eval("\$moderaterequestslink = \"".$templates->get("usercp_usergroups_leader_usergroup_moderaterequests")."\";");
 		}
 		$groupleader[$usergroup['gid']] = 1;
 		$trow = alt_trow();

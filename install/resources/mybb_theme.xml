@@ -11459,6 +11459,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
+		<template name="usercp_drafts_draft_forum" version="1800"><![CDATA[{$lang->forum}: <a href="{$draft['forumlink']}">{$draft['forumname']}</a>]]></template>
+		<template name="usercp_drafts_draft_thread" version="1800"><![CDATA[{$lang->thread}: <a href="{$draft['threadlink']}">{$draft['threadsubject']}</a>]]></template>
 		<template name="usercp_drafts_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
@@ -11660,6 +11662,8 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_editlists_no_buddies" version="1800"><![CDATA[<li>{$lang->buddy_list_empty}</li>]]></template>
+		<template name="usercp_editlists_no_ignored" version="1800"><![CDATA[<li>{$lang->ignore_list_empty}</li>]]></template>
 		<template name="usercp_editlists_received_requests" version="1800"><![CDATA[
 					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
 						<thead>
@@ -12791,6 +12795,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_leader_usergroup_memberlist" version="1800"><![CDATA[ [<a href="managegroup.php?gid={$usergroup['gid']}">{$lang->view_members}</a>]]]></template>
+		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]></template>
 		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
