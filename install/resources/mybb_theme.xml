@@ -3418,7 +3418,7 @@ a.button {
 			{$lang_select}
 			{$theme_select}
 			<ul class="menu bottom_links">
-				<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>
+				{$contact_us}
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
 				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
 				<li><a href="<archive_url>">{$lang->bottomlinks_litemode}</a></li>
@@ -3445,6 +3445,7 @@ a.button {
 <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
 {$auto_dst_detection}
 </div>]]></template>
+		<template name="footer_contactus" version="1800"><![CDATA[<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>]]></template>
 		<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
 <form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
 	{$lang_redirect_url['form_html']}
