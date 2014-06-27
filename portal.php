@@ -57,6 +57,7 @@ $unviewable = get_unviewable_forums(true);
 if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
+	$tunviewwhere = " AND t.fid NOT IN ($unviewable)";
 }
 
 // get inactive forums
@@ -64,6 +65,7 @@ $inactive = get_inactive_forums(true);
 if($inactive)
 {
 	$inactivewhere = " AND fid NOT IN ($inactive)";
+	$tinactivewhere = " AND t.fid NOT IN ($inactive)";
 }
 
 // If user is known, welcome them
@@ -75,7 +77,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' {$unviewwhere}{$inactivewhere}");
 		$newposts = $db->fetch_field($query, "newposts");
 		if($newposts)
-		{ 
+		{
 			// If there aren't any new posts, there is no point in wasting two more queries
 			$query = $db->simple_select("threads", "COUNT(tid) AS newthreads", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' {$unviewwhere}{$inactivewhere}");
 			$newthreads = $db->fetch_field($query, "newthreads");
@@ -87,9 +89,9 @@ if($mybb->settings['portal_showwelcome'] != 0)
 				{
 					foreach($announcementsfids as $fid)
 					{
-						$fid_array[] = intval($fid);	
+						$fid_array[] = intval($fid);
 					}
-					
+
 					$announcementsfids = implode(',', $fid_array);
 					$query = $db->simple_select("threads", "COUNT(tid) AS newann", "visible=1 AND dateline>'".$mybb->user['lastvisit']."' AND fid IN (".$announcementsfids.") {$unviewwhere}{$inactivewhere}");
 					$newann = $db->fetch_field($query, "newann");
@@ -180,7 +182,7 @@ if($mybb->settings['portal_showpms'] != 0)
 			case "pgsql":
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='".$mybb->user['uid']."'");
 				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
-				
+
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
 				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
 				break;
@@ -188,7 +190,7 @@ if($mybb->settings['portal_showpms'] != 0)
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
 				$messages = $db->fetch_array($query);
 		}
-		
+
 		// the SUM() thing returns "" instead of 0
 		if($messages['pms_unread'] == "")
 		{
@@ -239,10 +241,10 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	");
 	while($user = $db->fetch_array($query))
 	{
-	
+
 		// Create a key to test if this user is a search bot.
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
-		
+
 		if($user['uid'] == "0")
 		{
 			++$guestcount;
@@ -259,15 +261,15 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				++$membercount;
-				
+
 				$doneusers[$user['uid']] = $user['time'];
-				
+
 				// If the user is logged in anonymously, update the count for that.
 				if($user['invisible'] == 1)
 				{
 					++$anoncount;
 				}
-				
+
 				if($user['invisible'] == 1)
 				{
 					$invisiblemark = "*";
@@ -276,7 +278,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				{
 					$invisiblemark = '';
 				}
-				
+
 				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -287,15 +289,15 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 			}
 		}
 	}
-	
+
 	$onlinecount = $membercount + $guestcount + $botcount;
-	
+
 	// If we can see invisible users add them to the count
 	if($mybb->usergroup['canviewwolinvis'] == 1)
 	{
 		$onlinecount += $anoncount;
 	}
-	
+
 	// If we can't see invisible users but the user is an invisible user incriment the count by one
 	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
 	{
@@ -336,8 +338,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		SELECT t.*, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
-		ORDER BY t.lastpost DESC 
+		WHERE 1=1 {$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
 	while($thread = $db->fetch_array($query))
@@ -372,7 +374,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$altbg = alt_trow();
 	}
 	if($threadlist)
-	{ 
+	{
 		// Show the table only if there are threads
 		eval("\$latestthreads = \"".$templates->get("portal_latestthreads")."\";");
 	}
@@ -415,8 +417,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		SELECT p.pid, p.message, p.tid, p.smilieoff
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
-		ORDER BY t.dateline DESC 
+		WHERE t.fid IN (".$announcementsfids."){$tunviewwhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+		ORDER BY t.dateline DESC
 		LIMIT 0, {$numannouncements}"
 	);
 	while($getid = $db->fetch_array($query))
@@ -465,7 +467,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
-			
+
 			if($announcement['uid'] == 0)
 			{
 				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
@@ -474,7 +476,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
 			}
-			
+
 			if(!$announcement['username'])
 			{
 				$announcement['username'] = $announcement['threadusername'];
@@ -499,7 +501,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				if (!stristr($announcement['avatar'], 'http://'))
 				{
 					$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
-				}		
+				}
+				$announcement['avatar'] = htmlspecialchars_uni($announcement['avatar']);
 				$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"\" {$avatar_width_height} /></td>";
 			}
 			else
@@ -518,7 +521,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
 				$lastcomment = '';
 			}
-			
+
 			$plugins->run_hooks("portal_announcement");
 
 			$parser_options = array(
@@ -535,7 +538,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			}
 
 			$message = $parser->parse_message($announcement['message'], $parser_options);
-			
+
 			if(is_array($attachcache[$announcement['pid']]))
 			{ // This post has 1 or more attachments
 				$validationcount = 0;

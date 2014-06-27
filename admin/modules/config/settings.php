@@ -346,6 +346,10 @@ if($mybb->input['action'] == "add")
 				$options_code = $mybb->input['type'];
 			}
 
+			$mybb->input['name'] = str_replace("\\", '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
+
 			$new_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
@@ -521,6 +525,11 @@ if($mybb->input['action'] == "edit")
 			{
 				$options_code = $mybb->input['type'];
 			}
+
+			$mybb->input['name'] = str_replace("\\", '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
+
 			$updated_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
@@ -991,10 +1000,10 @@ if($mybb->input['action'] == "change")
 		}
 
 		if(!$db->num_rows($query))
-        {
-            flash_message($lang->error_no_settings_found, 'error');
-            admin_redirect("index.php?module=config-settings");
-        }
+		{
+			flash_message($lang->error_no_settings_found, 'error');
+			admin_redirect("index.php?module=config-settings");
+		}
 
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
 		if(isset($lang->$group_lang_var))
@@ -1052,15 +1061,15 @@ if($mybb->input['action'] == "change")
 		$form_container = new FormContainer($groupinfo['title']);
 
 		if(empty($cache_settings[$groupinfo['gid']]))
-        {
-            $form_container->output_cell($lang->error_no_settings_found);
-            $form_container->construct_row();
+		{
+			$form_container->output_cell($lang->error_no_settings_found);
+			$form_container->construct_row();
 
-            $form_container->end();
-            echo '<br />';
+			$form_container->end();
+			echo '<br />';
 
-            continue;
-        }
+			continue;
+		}
 
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{
@@ -1340,9 +1349,9 @@ SettingSearch.prototype = {
 			this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
 			pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
 			new Ajax.Request("index.php", {
-			    method: "get",
+				method: "get",
 				parameters: pars,
-			    onComplete: this.onComplete.bind(this)
+				onComplete: this.onComplete.bind(this)
 			});
 		}
 	},

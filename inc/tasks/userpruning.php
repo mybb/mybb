@@ -12,18 +12,18 @@
 function task_userpruning($task)
 {
 	global $db, $lang, $mybb, $cache;
-	
+
 	if($mybb->settings['enablepruning'] != 1)
 	{
 		return;
 	}
-	
+
 	// Are we pruning by posts?
 	if($mybb->settings['enableprunebyposts'] == 1)
 	{
 		$in_usergroups = array();
 		$users = array();
-		
+
 		$usergroups = $cache->read("usergroups");
 		foreach($usergroups as $gid => $usergroup)
 		{
@@ -34,22 +34,24 @@ function task_userpruning($task)
 			}
 			$in_usergroups[] = $gid;
 		}
-		
+
 		// If we're not pruning unactivated users, then remove them from the criteria
 		if($mybb->settings['pruneunactived'] == 0)
 		{
 			$key = array_search('5', $in_usergroups);
 			unset($in_usergroups[$key]);
 		}
-		
+
+		// Exclude super admins
+		$exclude_super_admins = not_super_admins(true);
 		$regdate = TIME_NOW-(intval($mybb->settings['dayspruneregistered'])*24*60*60);
-		$query = $db->simple_select("users", "uid", "regdate <= ".intval($regdate)." AND postnum <= ".intval($mybb->settings['prunepostcount'])." AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")");
+		$query = $db->simple_select("users", "uid", "regdate <= ".intval($regdate)." AND postnum <= ".intval($mybb->settings['prunepostcount'])." AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")".$exclude_super_admins);
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['uid']] = $user['uid'];
 		}
 	}
-	
+
 	// Are we pruning unactivated users?
 	if($mybb->settings['pruneunactived'] == 1)
 	{
@@ -60,11 +62,11 @@ function task_userpruning($task)
 			$users[$user['uid']] = $user['uid'];
 		}
 	}
-	
+
 	if(!empty($users))
 	{
 		$uid_list = $db->escape_string(implode(',', $users));
-		
+
 		// Delete the user
 		$db->delete_query("userfields", "ufid IN({$uid_list})");
 		$db->delete_query("privatemessages", "uid IN({$uid_list})");
@@ -120,11 +122,11 @@ function task_userpruning($task)
 
 		// Update forum stats
 		update_stats(array('numusers' => '-'.intval($num_deleted)));
-		
+
 		$cache->update_moderators();
 		$cache->update_banned();
 	}
-	
+
 	add_task_log($task, $lang->task_userpruning_ran);
 }
 ?>

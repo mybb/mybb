@@ -1549,6 +1549,15 @@ function is_moderator($fid="0", $action="", $uid="0")
 	$user_perms = user_permissions($uid);
 	if($user_perms['issupermod'] == 1)
 	{
+		if($fid)
+		{
+			$forumpermissions = forum_permissions($fid);
+			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			{
+				return true;
+			}
+			return false;
+		}
 		return true;
 	}
 	else
@@ -5732,10 +5741,15 @@ function fetch_remote_file($url, $post_data=array())
  */
 function is_super_admin($uid)
 {
-	global $mybb;
+	static $super_admins;
 
-	$mybb->config['super_admins'] = str_replace(" ", "", $mybb->config['super_admins']);
-	if(my_strpos(",{$mybb->config['super_admins']},", ",{$uid},") === false)
+	if(!isset($super_admins))
+	{
+		global $mybb;
+		$super_admins = str_replace(" ", "", $mybb->config['super_admins']);
+	}
+
+	if(my_strpos(",{$super_admins},", ",{$uid},") === false)
 	{
 		return false;
 	}
@@ -5743,6 +5757,43 @@ function is_super_admin($uid)
 	{
 		return true;
 	}
+}
+
+/**
+ * Prevents super administrators being selected in a SELECT.
+ *
+ * @param boolean Prefix with an AND?
+ * @param string The prefix to add to uid when used in a JOIN (e.g. SELECTing users u would mean using 'u' in this argument).
+ * @return string An addition to the WHERE statement
+ */
+function not_super_admins($use_and = false, $uid_prefix = '')
+{
+	static $super_admins;
+
+	if(!isset($super_admins))
+	{
+		global $mybb, $db;
+		$super_admins = $db->escape_string(str_replace(" ", "", $mybb->config['super_admins']));
+	}
+
+	if($super_admins)
+	{
+		$sql_where = '';
+		if($use_and)
+		{
+			$sql_where .= ' AND ';
+		}
+
+		if($uid_prefix != '')
+		{
+			$sql_where .= $uid_prefix.'.';
+		}
+
+		$sql_where .= "uid NOT IN({$super_admins})";
+
+		return $sql_where;
+	}
+	return '';
 }
 
 /**
