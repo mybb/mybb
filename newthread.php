@@ -27,7 +27,6 @@ require_once MYBB_ROOT."inc/functions_user.php";
 $lang->load("newthread");
 
 $tid = $pid = 0;
-$subject = $message = '';
 $mybb->input['action'] = $mybb->get_input('action');
 $mybb->input['tid'] = $mybb->get_input('tid', 1);
 $mybb->input['pid'] = $mybb->get_input('pid', 1);
@@ -465,6 +464,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$multiquote_external = $quoted_ids = '';
 
+	$subject = $message = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(empty($mybb->input['previewpost']) && !$thread_errors && $mybb->input['action'] != "editdraft")
 	{
