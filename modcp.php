@@ -493,14 +493,13 @@ if($mybb->input['action'] == "reports")
 
 			// Report Information
 			$report_data = array();
-			$string = "report_info_{$report['type']}";
 
 			switch($report['type'])
 			{
 				case 'post':
 					$post = get_post_link($report['id'])."#pid{$report['id']}";
 					$user = build_profile_link($postcache[$report['id']]['username'], $postcache[$report['id']]['uid']);
-					$report_data['content'] = $lang->sprintf($lang->$string, $post, $user);
+					$report_data['content'] = $lang->sprintf($lang->report_info_post, $post, $user);
 
 					$thread_link = get_thread_link($postcache[$report['id']]['tid']);
 					$thread_subject = htmlspecialchars_uni($postcache[$report['id']]['subject']);
@@ -512,7 +511,7 @@ if($mybb->input['action'] == "reports")
 					$report_data['content'] = $lang->sprintf($lang->report_info_profile, $user);
 					break;
 				case 'reputation':
-					$reputation_link = "reputation.php?uid={$usercache[$report['id2']]['uid']}#rid{$report['id']}";
+					$reputation_link = "reputation.php?uid={$usercache[$report['id3']]['uid']}#rid{$report['id']}";
 					$bad_user = build_profile_link($usercache[$report['id2']]['username'], $usercache[$report['id2']]['uid']);
 					$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $bad_user);
 
