@@ -12735,6 +12735,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}"><span class="smalltext">{$conditions}</span><br /><span class="smalltext">{$usergroupleaders}</span></td>
 <td class="{$trow}" align="center">{$joinlink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_joinable_usergroup_description" version="1800"><![CDATA[<br /><span class="smalltext">{$usergroup['description']}</span>]]></template>
+		<template name="usercp_usergroups_joinable_usergroup_join" version="1800"><![CDATA[<a href="usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->join_group}</a>]]></template>
 		<template name="usercp_usergroups_joingroup" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
@@ -12810,10 +12812,17 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="usercp_usergroups_memberof_usergroup" version="1800"><![CDATA[<tr>
-<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}</td>
+<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}{$description}</td>
 <td class="{$trow}" align="center">{$usergroup['usertitle']}</td>
 <td class="{$trow}">{$leavelink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_description" version="1800"><![CDATA[<br /><span class="smalltext">{$usergroup['description']}</span>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_display" version="1800"><![CDATA[ ({$lang->display_group})]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leave" version="1800"><![CDATA[<div style="text-align: center;"><a href="usercp.php?action=usergroups&amp;leavegroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->usergroup_leave}</a></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveleader" version="1800"><![CDATA[<div style="text-align: center;"><span class="smalltext">{$lang->usergroup_leave_leader}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveother" version="1800"><![CDATA[<div style="text-align: center;"><span class="smalltext">{$lang->usergroup_cannot_leave}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveprimary" version="1800"><![CDATA[<div style="text-align:center;"><span class="smalltext">{$lang->usergroup_leave_primary}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_setdisplay" version="1800"><![CDATA[ (<a href="usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->set_as_display_group}</a>)]]></template>
 		<template name="usercp_warnings" version="1400"><![CDATA[	<br />
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>

@@ -17,14 +17,15 @@ $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle";
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
-$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option";
-$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone";
+$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts";
+$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
 $templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language,usercp_options_date_format";
 $templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 $templatelist .= ",usercp_options_time_format,usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user";
 $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_editlists_user,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
-$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests";
+$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_usergroups_memberof_usergroup_setdisplay";
+$templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_usergroups_memberof_usergroup_description";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -3240,15 +3241,15 @@ if($mybb->input['action'] == "usergroups")
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$usergroup = $usergroups[$mybb->user['usergroup']];
-	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
+	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 	{
-		$displaycode = " ({$lang->display_group})";
+		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
 	}
 	elseif($usergroup['candisplaygroup'] == 1)
 	{
-		$displaycode = " (<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
+		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
 	}
 	else
 	{
@@ -3266,24 +3267,23 @@ if($mybb->input['action'] == "usergroups")
 
 			if(isset($groupleader[$usergroup['gid']]))
 			{
-				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveleader")."\";");
 			}
 			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 			{
-				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveother")."\";");
 			}
 			else
 			{
-				$leavelink = "<div style=\"text-align: center;\"><a href=\"usercp.php?action=usergroups&amp;leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leave")."\";");
 			}
+
+			$description = '';
 			if($usergroup['description'])
 			{
-				$description = "<br /><span class=\"smalltext\">".$usergroup['description']."</span>";
+				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
-			else
-			{
-				$description = '';
-			}
+
 			if(!$usergroup['usertitle'])
 			{
 				// fetch title here
@@ -3291,11 +3291,11 @@ if($mybb->input['action'] == "usergroups")
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
-				$displaycode = " ({$lang->display_group})";
+				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
 			}
 			elseif($usergroup['candisplaygroup'] == 1)
 			{
-				$displaycode = "(<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
+				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
 			}
 			else
 			{
@@ -3325,16 +3325,14 @@ if($mybb->input['action'] == "usergroups")
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
+
+		$description = '';
 		if($usergroup['description'])
 		{
-			$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
-		}
-		else
-		{
-			$description = '';
+			eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
 		}
 
-		 // Moderating join requests?
+		// Moderating join requests?
 		if($usergroup['type'] == 4)
 		{
 			$conditions = $lang->usergroup_joins_moderated;
@@ -3363,7 +3361,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		else
 		{
-			$joinlink = "<a href=\"usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->join_group}</a>";
+			eval("\$joinlink = \"".$templates->get("usercp_usergroups_joinable_usergroup_join")."\";");
 		}
 
 		$usergroupleaders = '';
@@ -3396,6 +3394,7 @@ if($mybb->input['action'] == "usergroups")
 	eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
 	output_page($groupmemberships);
 }
+
 if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
