@@ -11,9 +11,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
-$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_options";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove";
+$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted,usercp_subscriptions_thread_icon";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_options,usercp_warnings_warning_post";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove,usercp_resendactivation";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
 $templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle";
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
@@ -1560,7 +1560,7 @@ if($mybb->input['action'] == "subscriptions")
 			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
 				$icon = $icon_cache[$thread['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 			}
 			else
 			{
@@ -3579,7 +3579,7 @@ if(!$mybb->input['action'])
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
-		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
+		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
 	}
 	// Make reputations row
 	$reputations = '';
@@ -3627,7 +3627,8 @@ if(!$mybb->input['action'])
 				{
 					$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-					$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
+					$warning['postlink'] = get_post_link($warning['pid']);
+					eval("\$post_link .= \"".$templates->get("usercp_warnings_warning_post")."\";");
 				}
 				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 				$date_issued = my_date('relative', $warning['dateline']);
@@ -3788,7 +3789,7 @@ if(!$mybb->input['action'])
 						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 						{
 							$icon = $icon_cache[$thread['icon']];
-							$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 						}
 						else
 						{
@@ -3968,7 +3969,7 @@ if(!$mybb->input['action'])
 				if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 				{
 					$icon = $icon_cache[$thread['icon']];
-					$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 				}
 				else
 				{

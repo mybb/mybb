@@ -12604,6 +12604,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
+		<template name="usercp_resendactivation" version="1800"><![CDATA[<br />(<a href="member.php?action=resendactivation">{$lang->resend_activation}</a>)]]></template>
 		<template name="usercp_subscriptions" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
@@ -12692,6 +12693,7 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="check[{$thread['tid']}]" value="{$thread['tid']}" /></td>
 </tr>]]></template>
+		<template name="usercp_subscriptions_thread_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" />]]></template>
 		<template name="usercp_themeselector" version="1800"><![CDATA[<select name="{$name}">
 <option value="0">{$lang->use_default}</option>
 <option value="0">-----------</option>
@@ -12850,6 +12852,7 @@ if(use_xmlhttprequest == "1")
 				<td class="{$alt_bg}" align="center">{$expires}</td>
 				<td class="{$alt_bg}" align="center">{$issuedby}</td>
 	</tr>]]></template>
+		<template name="usercp_warnings_warning_post" version="1800"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['postlink']}">{$warning['post_subject']}</a></small>]]></template>
 		<template name="video_metacafe_embed" version="1600"><![CDATA[<embed src="http://www.metacafe.com/fplayer/{$id}/{$title}.swf" width="400" height="345" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_{$id}" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"></embed>]]></template>
 		<template name="video_dailymotion_embed" version="1610"><![CDATA[<iframe frameborder="0" width="480" height="270" src="http://www.dailymotion.com/embed/video/{$id}"></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
