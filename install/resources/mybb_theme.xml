@@ -5536,6 +5536,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$alt_bg}" align="center">{$user['threadnum']}</td>
 	{$referral_bit}
 </tr>]]></template>
+		<template name="memberlist_user_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="memberlist_error" version="1800"><![CDATA[<tr>
 <td colspan="{$colspan}" align="center" class="trow1">{$lang->error_no_members}</td>
 </tr>]]></template>
