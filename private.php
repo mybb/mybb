@@ -613,9 +613,13 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		$pm['options']['disablesmilies'] = $mybb->input['options']['disablesmilies'];
 	}
-	if(isset($mybb->input['options']['savecopy']))
+	if(isset($mybb->input['options']['savecopy']) && $mybb->input['options']['savecopy'] == 1)
 	{
-		$pm['options']['savecopy'] = $mybb->input['options']['savecopy'];
+		$pm['options']['savecopy'] = 1;
+	}
+	else
+	{
+		$pm['options']['savecopy'] = 0;
 	}
 	if(isset($mybb->input['options']['readreceipt']))
 	{

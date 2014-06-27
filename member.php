@@ -17,10 +17,10 @@ $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
 $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
-$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text";
-$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
+$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -484,19 +484,18 @@ if($mybb->input['action'] == "register")
 	$bdaysel = '';
 	if($mybb->settings['coppa'] == "disabled")
 	{
-		$bdaysel = $bday2blank = "<option value=\"\">&nbsp;</option>";
+		$bdaysel = $bday2blank = '';
 	}
 	$mybb->input['bday1'] = $mybb->get_input('bday1', 1);
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($mybb->input['bday1'] == $i)
+		$selected = '';
+		if($mybb->input['bday1'] == $day)
 		{
-			$bdaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$bdaysel .= "<option value=\"$i\">$i</option>\n";
-		}
+
+		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
 	}
 
 	$mybb->input['bday2'] = $mybb->get_input('bday2', 1);
@@ -599,7 +598,8 @@ if($mybb->input['action'] == "register")
 				foreach($explodedtpp as $val)
 				{
 					$val = trim($val);
-					$tppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
+					$tpp_option = $lang->sprintf($lang->tpp_option, $val);
+					eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
 				}
 			}
 			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
@@ -613,7 +613,8 @@ if($mybb->input['action'] == "register")
 				foreach($explodedppp as $val)
 				{
 					$val = trim($val);
-					$pppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
+					$ppp_option = $lang->sprintf($lang->ppp_option, $val);
+					eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
 				}
 			}
 			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -2068,7 +2069,7 @@ if($mybb->input['action'] == "profile")
 		$userstars = '';
 		for($i = 0; $i < $stars; ++$i)
 		{
-			$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
+			eval("\$userstars .= \"".$templates->get("member_profile_userstar", 1, 0)."\";");
 		}
 	}
 
@@ -2202,7 +2203,7 @@ if($mybb->input['action'] == "profile")
 		$thing = explode("\n", $customfield['type'], "2");
 		$type = trim($thing[0]);
 
-		$customfieldval = '';
+		$customfieldval = $customfield_val = '';
 		$field = "fid{$customfield['fid']}";
 
 		if(isset($userfields[$field]))
@@ -2215,12 +2216,12 @@ if($mybb->input['action'] == "profile")
 				{
 					if($val != '')
 					{
-						$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
+						eval("\$customfield_val .= \"".$templates->get("member_profile_customfields_field_multi_item")."\";");
 					}
 				}
-				if($customfieldval != '')
+				if($customfield_val != '')
 				{
-					$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
+					eval("\$customfieldval = \"".$templates->get("member_profile_customfields_field_multi")."\";");
 				}
 			}
 			else

@@ -1018,6 +1018,7 @@ class PostDataHandler extends DataHandler
 			$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}' AND pid='0'");
 		}
 
+		$thread_updated = array();
 		if($visible == 1 && $thread['visible'] == 1)
 		{
 			$thread = get_thread($post['tid']);

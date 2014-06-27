@@ -1367,11 +1367,11 @@ if(!$mybb->input['action'])
 		}
 
 		$join_requests = '';
-		if($joinrequests[$usergroup['gid']] > 1)
+		if($joinrequests[$usergroup['gid']] > 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
-		else if($joinrequests[$usergroup['gid']] == 1)
+		else if($joinrequests[$usergroup['gid']] == 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
@@ -1399,7 +1399,7 @@ if(!$mybb->input['action'])
 		$popup = new PopupMenu("usergroup_{$usergroup['gid']}", $lang->options);
 		$popup->add_item($lang->edit_group, "index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}");
 		$popup->add_item($lang->list_users, "index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
-		if($joinrequests[$usergroup['gid']] > 0)
+		if($joinrequests[$usergroup['gid']] > 0 && $usergroup['type'] == 4)
 		{
 			$popup->add_item($lang->join_requests, "index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
 		}

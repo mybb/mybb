@@ -464,10 +464,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$multiquote_external = $quoted_ids = '';
 
+	$subject = $message = '';
 	// If this isn't a preview and we're not editing a draft, then handle quoted posts
 	if(empty($mybb->input['previewpost']) && !$thread_errors && $mybb->input['action'] != "editdraft")
 	{
-		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
 		if(isset($mybb->cookies['multiquote']) && $mybb->settings['multiquote'] != 0)
@@ -812,10 +812,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
-	}
-	else
-	{
-		$subject = $message = '';
 	}
 
 	// Generate thread prefix selector
