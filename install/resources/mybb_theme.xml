@@ -13267,6 +13267,7 @@ $(function() {
 		style: "{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
+		width: "100%",
 		emoticonsEnabled: {$emoticons_enabled},
 		emoticons: {
 			// Emoticons to be included in the dropdown
