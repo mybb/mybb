@@ -12394,7 +12394,9 @@ if(use_xmlhttprequest == "1")
 <td>
 <select name="bday1">
 <option value="">&nbsp;</option>
-{$bdaydaysel}
+<option value="all"{$allselected}>{$lang->birthdayprivacyall}</option>
+<option value="none"{$noneselected}>{$lang->birthdayprivacynone}</option>
+<option value="age"{$ageselected}>{$lang->birthdayprivacyage}</option>
 </select>
 </td>
 <td>

@@ -15,7 +15,7 @@ $templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email
 $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_options,usercp_warnings_warning_post";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove,usercp_resendactivation";
 $templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
-$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle";
+$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle,usercp_profile_day";
 $templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
 $templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts";
 $templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
@@ -256,7 +256,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"skype" => $mybb->get_input('skype'),
 		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
-		"birthdayprivacy" => $mybb->get_input('birthdayprivacy', 1),
+		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', 2)
 	);
@@ -323,17 +323,20 @@ if($mybb->input['action'] == "profile")
 	$plugins->run_hooks("usercp_profile_start");
 
 	$bdaydaysel = '';
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($bday[0] == $i)
+		if($bday[0] == $day)
 		{
-			$bdaydaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = "selected=\"selected\"";
 		}
 		else
 		{
-			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
 		}
+
+		eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
 	}
+
 	$bdaymonthsel = array();
 	foreach(range(1, 12) as $month)
 	{
@@ -341,24 +344,18 @@ if($mybb->input['action'] == "profile")
 	}
 	$bdaymonthsel[$bday[1]] = 'selected="selected"';
 
-	$bdayprivacysel = '';
+	$allselected = $noneselected = $ageselected = '';
 	if($user['birthdayprivacy'] == 'all' || !$user['birthdayprivacy'])
 	{
-		$bdayprivacysel .= "<option value=\"all\" selected=\"selected\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+		$allselected = " selected=\"selected\"";
 	}
 	else if($user['birthdayprivacy'] == 'none')
 	{
-		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\" selected=\"selected\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+		$noneselected = " selected=\"selected\"";
 	}
 	else if($user['birthdayprivacy'] == 'age')
 	{
-		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
+		$ageselected = " selected=\"selected\"";
 	}
 
 	if($user['website'] == "" || $user['website'] == "http://")
@@ -387,6 +384,7 @@ if($mybb->input['action'] == "profile")
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
+
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$awaycheck = array('', '');
@@ -430,18 +428,22 @@ if($mybb->input['action'] == "profile")
 				$returndate[2] = '';
 			}
 		}
+
 		$returndatesel = '';
-		for($i = 1; $i <= 31; ++$i)
+		for($day = 1; $day <= 31; ++$day)
 		{
-			if($returndate[0] == $i)
+			if($returndate[0] == $day)
 			{
-				$returndatesel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+				$selected = "selected=\"selected\"";
 			}
 			else
 			{
-				$returndatesel .= "<option value=\"$i\">$i</option>\n";
+				$selected = '';
 			}
+
+			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
+
 		$returndatemonthsel = array();
 		foreach(range(1, 12) as $month)
 		{
@@ -451,6 +453,7 @@ if($mybb->input['action'] == "profile")
 
 		eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
 	}
+
 	// Custom profile fields baby!
 	$altbg = "trow1";
 	$requiredfields = '';
