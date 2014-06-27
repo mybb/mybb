@@ -4644,6 +4644,10 @@ if(use_xmlhttprequest == "1")
 <td class="{$bgcolor}" width="60%">{$customfieldval}</td>
 </tr>
 ]]></template>
+		<template name="member_profile_customfields_field_multi" version="1800"><![CDATA[<ul style="margin: 0; padding-left: 15px;">
+{$customfield_val}
+</ul>]]></template>
+		<template name="member_profile_customfields_field_multi_item" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
 		<template name="member_profile_email" version="120"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->email}</strong></td>
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
@@ -4693,6 +4697,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$memprofile['signature']}</td>
 </tr>
 </table>]]></template>
+		<template name="member_profile_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="member_profile_warn" version="1400"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
 		<template name="member_profile_warninglevel" version="1600"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
@@ -5009,6 +5014,7 @@ $().ready(function() {
 <tr>
 <td>{$code}</td>
 </tr>]]></template>
+		<template name="member_register_day" version="1800"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="member_register_hiddencaptcha" version="1605"><![CDATA[<tr style="display: none;">
 	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
@@ -12600,7 +12606,7 @@ if(use_xmlhttprequest == "1")
 </select>]]></template>
 		<template name="usercp_profile_profilefields_select_option" version="1800"><![CDATA[<option value="{$val}"{$sel}>{$val}</option>]]></template>
 		<template name="usercp_profile_profilefields_text" version="1800"><![CDATA[<input type="text" name="profile_fields[$field]" class="textbox" size="{$profilefield['length']}"{$maxlength} value="{$value}" />]]></template>
-		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
+		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
