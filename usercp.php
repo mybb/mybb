@@ -2186,7 +2186,6 @@ if($mybb->input['action'] == "avatar")
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
 		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
-		$auto_resize = "\n";
 	}
 	else if($mybb->settings['avatarresizing'] == "user")
 	{
