@@ -144,4 +144,16 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+    <task>
+        <title>Stylesheet Re-Cache</title>
+        <description><![CDATA[Re-caches all stylesheets to the filesystem, including minifying the styles.]]></description>
+        <file>recachestylesheets</file>
+        <minute>0</minute>
+        <hour>0</hour>
+        <day>1</day>
+        <weekday>0</weekday>
+        <month>0</month>
+        <enabled>0</enabled>
+        <logging>1</logging>
+    </task>
 </tasks>
