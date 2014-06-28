@@ -753,8 +753,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		if(!$post['uid'])
 		{
-			$query = $db->simple_select('posts', 'username', "pid='{$pid}'");
-			$postinfo['username'] = $db->fetch_field($query, 'username');
+			$query = $db->simple_select('posts', 'username, dateline', "pid='{$pid}'");
+			$postinfo = $db->fetch_array($query);
 		}
 		else
 		{
