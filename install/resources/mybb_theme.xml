@@ -10896,6 +10896,9 @@ if(use_xmlhttprequest == "1")
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
 </tr>
 <tr>
+<td colspan="2"><span class="smalltext">{$closeon}</span></td>
+</tr>
+<tr>
 <td colspan="2"><span class="smalltext">{$publicnote}</span></td>
 </tr>
 </table>
