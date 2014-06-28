@@ -324,6 +324,13 @@ if(!$mybb->input['action'])
 			{
 				$errors[] = $lang->error_already_banned;
 			}
+			
+			// Get PRIMARY usergroup information
+			$usergroups = $cache->read("usergroups");
+			if(!empty($usergroups[$user['usergroup']]) && $usergroups[$user['usergroup']]['isbannedgroup'] == 1)
+			{
+				$errors[] = $lang->error_already_banned;
+			}
 		}
 
 		if($user['uid'] == $mybb->user['uid'])
