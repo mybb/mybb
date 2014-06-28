@@ -2,8 +2,8 @@
 html, body, p, code:before, table {
 	margin: 0;
 	padding: 0;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 13px;
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
+	font-size: 14px;
 	color: #111;
 }
 html {
@@ -40,17 +40,22 @@ code:before {
 	content: 'Code:';
 	display: block;
 	border-bottom: 1px solid #ccc;
-	padding: 4px 0 2px;
-	margin: 0 0 4px;
+	padding: 4px 0 3px 0;
+	margin-bottom: 10px;
 }
 code {
 	font-family: Monaco, Consolas, Courier, monospace;
-	padding: 4px;
+	font-size: 13px !important;
+	padding: 10px;
 	position: relative;
 	background: white;
+	margin: .25em .05em 0 0;
 	border: 1px solid #ccc;
 	white-space: pre;
 	display: block;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 .ie6 code, .ie7 code {margin-top: 0;}
 code:before, code {
@@ -61,9 +66,12 @@ code:before, code {
 blockquote {
 	position: relative;
 	background: white;
-	margin: .25em 0;
+	margin: .25em .05em 0 0;
 	border: 1px solid #ccc;
-	padding: 4px;
+	padding: 10px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 blockquote cite {
 	font-weight: bold;
@@ -71,7 +79,8 @@ blockquote cite {
 	display: block;
 	font-size: 1em;
 	border-bottom: 1px solid #ccc;
-	margin: 4px 0;
+	margin-bottom: 10px;
+	padding-bottom: 3px;
 }
 
 /* prevent divs from being collapsed */
