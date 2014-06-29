@@ -403,7 +403,6 @@ class datacache
 		$this->calllist[$this->call_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Select the size of the cache
 	 *
@@ -880,6 +879,7 @@ class datacache
 
 		$this->update("mycode", $mycodes);
 	}
+
 	/**
 	 * Update the mailqueue cache
 	 *
@@ -954,7 +954,6 @@ class datacache
 
 		$this->update("tasks", $task_cache);
 	}
-
 
 	/**
 	 * Updates the banned IPs cache
@@ -1162,6 +1161,24 @@ class datacache
 		}
 
 		$this->update("forumsdisplay", $fd_statistics);
+	}
+
+	/**
+	 * Update profile fields cache.
+	 *
+	 */
+	function update_profilefields()
+	{
+		global $db;
+
+		$fields = array();
+		$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
+		while($field = $db->fetch_array($query))
+		{
+			$fields[] = $field;
+		}
+
+		$this->update("profilefields", $fields);
 	}
 
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */

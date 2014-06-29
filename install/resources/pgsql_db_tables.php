@@ -546,14 +546,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   description text NOT NULL default '',
   disporder smallint NOT NULL default '0',
   type text NOT NULL default '',
+  regex text NOT NULL default '',
   length smallint NOT NULL default '0',
   maxlength smallint NOT NULL default '0',
   required smallint NOT NULL default '0',
   registration smallint NOT NULL default '0',
-  editable smallint NOT NULL default '0',
-  hidden smallint NOT NULL default '0',
+  profile smallint NOT NULL default '0',
   postbit smallint NOT NULL default '0',
+  viewableby text NOT NULL default '-1',
+  editableby text NOT NULL default '-1',
   postnum smallint NOT NULL default '0',
+  allowhtml smallint NOT NULL default '0',
+  allowmycode smallint NOT NULL default '0',
+  allowsmilies smallint NOT NULL default '0',
+  allowimgcode smallint NOT NULL default '0',
+  allowvideocode smallint NOT NULL default '0',
   PRIMARY KEY (fid)
 );";
 

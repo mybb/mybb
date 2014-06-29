@@ -2802,187 +2802,192 @@ if($mybb->input['action'] == "editprofile")
 	$requiredfields = '';
 	$customfields = '';
 	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
-	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
-	while($profilefield = $db->fetch_array($query))
+
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
 	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = $thing[0];
-		if(isset($thing[1]))
+		foreach($pfcache as $profilefield)
 		{
-			$options = $thing[1];
-		}
-		else
-		{
-			$options = '';
-		}
-		$field = "fid{$profilefield['fid']}";
-		$select = '';
-		if($errors)
-		{
-			if(isset($mybb->input['profile_fields'][$field]))
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
+			$thing = explode("\n", $profilefield['type'], "2");
+			$type = $thing[0];
+			if(isset($thing[1]))
 			{
-				$userfield = $mybb->input['profile_fields'][$field];
+				$options = $thing[1];
 			}
 			else
 			{
-				$userfield = '';
+				$options = '';
 			}
-		}
-		else
-		{
-			$userfield = $user_fields[$field];
-		}
-		$code = '';
-		if($type == "multiselect")
-		{
+			$field = "fid{$profilefield['fid']}";
+			$select = '';
 			if($errors)
 			{
-				$useropts = $userfield;
+				if(isset($mybb->input['profile_fields'][$field]))
+				{
+					$userfield = $mybb->input['profile_fields'][$field];
+				}
+				else
+				{
+					$userfield = '';
+				}
 			}
 			else
 			{
-				$useropts = explode("\n", $userfield);
+				$userfield = $user_fields[$field];
 			}
-			if(is_array($useropts))
+			$code = '';
+			if($type == "multiselect")
 			{
-				foreach($useropts as $key => $val)
+				if($errors)
 				{
-					$seloptions[$val] = $val;
+					$useropts = $userfield;
 				}
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
+				else
 				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-
-					$sel = "";
-					if($val == $seloptions[$val])
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
 					{
-						$sel = " selected=\"selected\"";
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+
+						$sel = "";
+						if($val == $seloptions[$val])
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 3;
 					}
 
-					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 3;
-				}
-
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 			}
-		}
-		elseif($type == "select")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			elseif($type == "select")
 			{
-				foreach($expoptions as $key => $val)
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
 				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					$sel = "";
-					if($val == $userfield)
+					foreach($expoptions as $key => $val)
 					{
-						$sel = " selected=\"selected\"";
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+						$sel = "";
+						if($val == $userfield)
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 1;
 					}
 
-					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 1;
-				}
-
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 			}
-		}
-		elseif($type == "radio")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			elseif($type == "radio")
 			{
-				foreach($expoptions as $key => $val)
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
 				{
-					$checked = "";
-					if($val == $userfield)
+					foreach($expoptions as $key => $val)
 					{
-						$checked = " checked=\"checked\"";
-					}
+						$checked = "";
+						if($val == $userfield)
+						{
+							$checked = " checked=\"checked\"";
+						}
 
-					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+					}
 				}
 			}
-		}
-		elseif($type == "checkbox")
-		{
-			if($errors)
+			elseif($type == "checkbox")
 			{
-				$useropts = $userfield;
+				if($errors)
+				{
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
+					{
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $seloptions[$val])
+						{
+							$checked = " checked=\"checked\"";
+						}
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+					}
+				}
+			}
+			elseif($type == "textarea")
+			{
+				$value = htmlspecialchars_uni($userfield);
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 			}
 			else
 			{
-				$useropts = explode("\n", $userfield);
-			}
-			if(is_array($useropts))
-			{
-				foreach($useropts as $key => $val)
+				$value = htmlspecialchars_uni($userfield);
+				$maxlength = "";
+				if($profilefield['maxlength'] > 0)
 				{
-					$seloptions[$val] = $val;
+					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 				}
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+
+			if($profilefield['required'] == 1)
 			{
-				foreach($expoptions as $key => $val)
-				{
-					$checked = "";
-					if($val == $seloptions[$val])
-					{
-						$checked = " checked=\"checked\"";
-					}
-
-					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-				}
+				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
-		}
-		elseif($type == "textarea")
-		{
-			$value = htmlspecialchars_uni($userfield);
-			eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$maxlength = "";
-			if($profilefield['maxlength'] > 0)
+			else
 			{
-				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
-
-			eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+			$altbg = alt_trow();
+			$code = "";
+			$select = "";
+			$val = "";
+			$options = "";
+			$expoptions = "";
+			$useropts = "";
+			$seloptions = "";
 		}
-
-		if($profilefield['required'] == 1)
-		{
-			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		else
-		{
-			eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		$altbg = alt_trow();
-		$code = "";
-		$select = "";
-		$val = "";
-		$options = "";
-		$expoptions = "";
-		$useropts = "";
-		$seloptions = "";
 	}
 	if($customfields)
 	{
