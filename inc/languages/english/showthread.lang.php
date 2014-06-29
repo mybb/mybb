@@ -46,6 +46,7 @@ $l['vote'] = "Vote!";
 $l['total_votes'] = "{1} vote(s)";
 $l['you_voted'] = "* You voted for this item.";
 $l['poll_closed'] = "This poll is closed.";
+$l['poll_closes'] = "This poll will close on: {1}";
 $l['already_voted'] = "You have already voted on this poll.";
 $l['undo_vote'] = "Undo vote";
 $l['quick_reply'] = "Quick Reply";
