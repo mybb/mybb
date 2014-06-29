@@ -57,7 +57,7 @@ $l['error_invalid_uid'] = "The user id you entered is invalid.";
 $l['error_invalid_token'] = "The activation code you entered is invalid.";
 
 $l['success_logged_out'] = "You have been logged out successfully.";
-$l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
+$l['error_invalid_username_password'] = "The {1} and password combination you entered is invalid.";
 
 // Action Confirmation
 $l['confirm_action'] = "Are you sure you wish to perform this action?";
