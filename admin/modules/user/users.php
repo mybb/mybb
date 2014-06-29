@@ -385,7 +385,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array_merge(array('usergroup' => 2), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array('usergroup' => 2));
 	}
 
 	$form_container = new FormContainer($lang->required_profile_info);
@@ -1300,7 +1300,7 @@ EOF;
 	);
 	$form_container->output_row($lang->thread_view_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
-	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages());
+	$languages = array_merge($lang->get_languages(), array('' => $lang->use_default));
 
 	$other_options = array(
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),

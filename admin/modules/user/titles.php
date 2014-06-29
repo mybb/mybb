@@ -78,10 +78,11 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array_merge(array(
-			'stars' => '1',
-			'starimage' => '{theme}/star.png',
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				'stars' => '1',
+				'starimage' => '{theme}/star.png',
+			)
+		);
 	}
 
 	$page->add_breadcrumb_item($lang->add_new_user_title);

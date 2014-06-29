@@ -453,11 +453,12 @@ if($mybb->input['action'] == "leaders")
 	}
 	else
 	{
-		$mybb->input = array_merge(array(
-			"canmanagemembers" => 1,
-			"canmanagerequests" => 1,
-			"caninvitemembers" => 1
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				"canmanagemembers" => 1,
+				"canmanagerequests" => 1,
+				"caninvitemembers" => 1
+			)
+		);
 	}
 
 	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
@@ -694,9 +695,10 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array_merge(array(
-			"namestyle" => "{username}"
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				"namestyle" => "{username}"
+			)
+		);
 	}
 
 	$form_container = new FormContainer($lang->add_user_group);
