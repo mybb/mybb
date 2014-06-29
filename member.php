@@ -159,7 +159,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"regip" => $session->packedip,
 		"coppa_user" => $coppauser,
 		"regcheck1" => $mybb->get_input('regcheck1'),
-		"regcheck2" => $mybb->get_input('regcheck2')
+		"regcheck2" => $mybb->get_input('regcheck2'),
+		"registration" => true
 	);
 
 	// Do we have a saved COPPA DOB?
@@ -613,183 +614,203 @@ if($mybb->input['action'] == "register")
 		// Custom profile fields baby!
 		$altbg = "trow1";
 		$requiredfields = $customfields = '';
-		$query = $db->simple_select("profilefields", "*", "(required='1' OR registration='1') AND editable !='0'", array('order_by' => 'disporder'));
-		while($profilefield = $db->fetch_array($query))
+
+		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', 1) == 1)
 		{
-			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-			$thing = explode("\n", $profilefield['type'], "2");
-			$type = trim($thing[0]);
-			$options = $thing[1];
-			$select = '';
-			$field = "fid{$profilefield['fid']}";
-			if($errors && isset($mybb->input['profile_fields'][$field]))
-			{
-				$userfield = $mybb->input['profile_fields'][$field];
-			}
-			else
-			{
-				$userfield = '';
-			}
-			if($type == "multiselect")
-			{
-				if($errors)
-				{
-					$useropts = $userfield;
-				}
-				else
-				{
-					$useropts = explode("\n", $userfield);
-				}
-				if(is_array($useropts))
-				{
-					foreach($useropts as $key => $val)
-					{
-						$seloptions[$val] = $val;
-					}
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
-					{
-						$val = trim($val);
-						$val = str_replace("\n", "\\n", $val);
-
-						$sel = "";
-						if($val == $seloptions[$val])
-						{
-							$sel = "selected=\"selected\"";
-						}
-						$select .= "<option value=\"$val\" $sel>$val</option>\n";
-					}
-					if(!$profilefield['length'])
-					{
-						$profilefield['length'] = 3;
-					}
-					$code = "<select name=\"profile_fields[$field][]\" id=\"{$field}\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
-				}
-			}
-			elseif($type == "select")
-			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
-					{
-						$val = trim($val);
-						$val = str_replace("\n", "\\n", $val);
-						$sel = "";
-						if($val == $userfield)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						$select .= "<option value=\"$val\" $sel>$val</option>";
-					}
-					if(!$profilefield['length'])
-					{
-						$profilefield['length'] = 1;
-					}
-					$code = "<select name=\"profile_fields[$field]\" id=\"{$field}\" size=\"{$profilefield['length']}\">$select</select>";
-				}
-			}
-			elseif($type == "radio")
-			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
-					{
-						$checked = "";
-						if($val == $userfield)
-						{
-							$checked = "checked=\"checked\"";
-						}
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
-					}
-				}
-			}
-			elseif($type == "checkbox")
-			{
-				if($errors)
-				{
-					$useropts = $userfield;
-				}
-				else
-				{
-					$useropts = explode("\n", $userfield);
-				}
-				if(is_array($useropts))
-				{
-					foreach($useropts as $key => $val)
-					{
-						$seloptions[$val] = $val;
-					}
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
-					{
-						$checked = "";
-						if($val == $seloptions[$val])
-						{
-							$checked = "checked=\"checked\"";
-						}
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
-					}
-				}
-			}
-			elseif($type == "textarea")
-			{
-				$value = htmlspecialchars_uni($userfield);
-				$code = "<textarea name=\"profile_fields[$field]\" id=\"{$field}\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
-			}
-			else
-			{
-				$value = htmlspecialchars_uni($userfield);
-				$maxlength = "";
-				if($profilefield['maxlength'] > 0)
-				{
-					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
-				}
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
-			}
-			if($profilefield['required'] == 1)
-			{
-				// JS validator extra
-				if($type == "checkbox" || $type == "radio")
-				{
-					$id = "{$field}0";
-				}
-				else
-				{
-					$id = "fid{$profilefield['fid']}";
-				}
-				
-				$validator_extra .= "
-				$(\"#{$id}\").rules(\"add\", {
-					required: true,
-					minlength: 1,
-					messages: {
-						required: \"{$lang->js_validator_not_empty}\"
-					}
-				});\n";
-
-				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
-			}
-			else
-			{
-				eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
-			}
-
-			$code = '';
-			$select = '';
-			$val = '';
-			$options = '';
-			$expoptions = '';
-			$useropts = '';
-			$seloptions = '';
+			$usergroup = 5;
 		}
+		else
+		{
+			$usergroup = 2;
+		}
+
+		$pfcache = $cache->read('profilefields');
+
+		if(is_array($pfcache))
+		{
+			foreach($pfcache as $profilefield)
+			{
+				if(!(($profilefield['required'] == 1 || $profilefield['registration'] == 1 || $profilefield['editableby'] == -1) || ($profilefield['editableby'] != '' && is_member($profilefield['editableby'], array('usergroup' => $usergroup, 'additionalgroups' => '')))))
+				{
+					continue;
+				}
+
+				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$thing = explode("\n", $profilefield['type'], "2");
+				$type = trim($thing[0]);
+				$options = $thing[1];
+				$select = '';
+				$field = "fid{$profilefield['fid']}";
+				if($errors && isset($mybb->input['profile_fields'][$field]))
+				{
+					$userfield = $mybb->input['profile_fields'][$field];
+				}
+				else
+				{
+					$userfield = '';
+				}
+				if($type == "multiselect")
+				{
+					if($errors)
+					{
+						$useropts = $userfield;
+					}
+					else
+					{
+						$useropts = explode("\n", $userfield);
+					}
+					if(is_array($useropts))
+					{
+						foreach($useropts as $key => $val)
+						{
+							$seloptions[$val] = $val;
+						}
+					}
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$val = trim($val);
+							$val = str_replace("\n", "\\n", $val);
+
+							$sel = "";
+							if($val == $seloptions[$val])
+							{
+								$sel = "selected=\"selected\"";
+							}
+							$select .= "<option value=\"$val\" $sel>$val</option>\n";
+						}
+						if(!$profilefield['length'])
+						{
+							$profilefield['length'] = 3;
+						}
+						$code = "<select name=\"profile_fields[$field][]\" id=\"{$field}\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
+					}
+				}
+				elseif($type == "select")
+				{
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$val = trim($val);
+							$val = str_replace("\n", "\\n", $val);
+							$sel = "";
+							if($val == $userfield)
+							{
+								$sel = "selected=\"selected\"";
+							}
+							$select .= "<option value=\"$val\" $sel>$val</option>";
+						}
+						if(!$profilefield['length'])
+						{
+							$profilefield['length'] = 1;
+						}
+						$code = "<select name=\"profile_fields[$field]\" id=\"{$field}\" size=\"{$profilefield['length']}\">$select</select>";
+					}
+				}
+				elseif($type == "radio")
+				{
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$checked = "";
+							if($val == $userfield)
+							{
+								$checked = "checked=\"checked\"";
+							}
+							$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+						}
+					}
+				}
+				elseif($type == "checkbox")
+				{
+					if($errors)
+					{
+						$useropts = $userfield;
+					}
+					else
+					{
+						$useropts = explode("\n", $userfield);
+					}
+					if(is_array($useropts))
+					{
+						foreach($useropts as $key => $val)
+						{
+							$seloptions[$val] = $val;
+						}
+					}
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$checked = "";
+							if($val == $seloptions[$val])
+							{
+								$checked = "checked=\"checked\"";
+							}
+							$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+						}
+					}
+				}
+				elseif($type == "textarea")
+				{
+					$value = htmlspecialchars_uni($userfield);
+					$code = "<textarea name=\"profile_fields[$field]\" id=\"{$field}\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+				}
+				else
+				{
+					$value = htmlspecialchars_uni($userfield);
+					$maxlength = "";
+					if($profilefield['maxlength'] > 0)
+					{
+						$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+					}
+					$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+				}
+				if($profilefield['required'] == 1)
+				{
+					// JS validator extra
+					if($type == "checkbox" || $type == "radio")
+					{
+						$id = "{$field}0";
+					}
+					else
+					{
+						$id = "fid{$profilefield['fid']}";
+					}
+					
+					$validator_extra .= "
+					$(\"#{$id}\").rules(\"add\", {
+						required: true,
+						minlength: 1,
+						messages: {
+							required: \"{$lang->js_validator_not_empty}\"
+						}
+					});\n";
+
+					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+				}
+				else
+				{
+					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+				}
+
+				$code = '';
+				$select = '';
+				$val = '';
+				$options = '';
+				$expoptions = '';
+				$useropts = '';
+				$seloptions = '';
+			}
+		}
+
 		if(!empty($requiredfields))
 		{
 			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
@@ -2109,57 +2130,75 @@ if($mybb->input['action'] == "profile")
 	$userfields = $db->fetch_array($query);
 
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
-	$field_hidden = 'hidden=0';
-	if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['canmodcp'] == 1)
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
 	{
-		$field_hidden = '1=1';
-	}
-
-	$query = $db->simple_select("profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
-	while($customfield = $db->fetch_array($query))
-	{
-		$thing = explode("\n", $customfield['type'], "2");
-		$type = trim($thing[0]);
-
-		$customfieldval = '';
-		$field = "fid{$customfield['fid']}";
-
-		if(isset($userfields[$field]))
+		foreach($pfcache as $customfield)
 		{
-			$useropts = explode("\n", $userfields[$field]);
-			$customfieldval = $comma = '';
-			if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
+			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && ($customfield['viewableby'] == '' || ($customfield['viewableby'] != -1 && !is_member($customfield['viewableby']))))
 			{
-				foreach($useropts as $val)
-				{
-					if($val != '')
-					{
-						$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
-					}
-				}
-				if($customfieldval != '')
-				{
-					$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
-				}
+				continue;
 			}
-			else
-			{
-				$userfields[$field] = $parser->parse_badwords($userfields[$field]);
 
-				if($customfield['type'] == "textarea")
+			$thing = explode("\n", $customfield['type'], "2");
+			$type = trim($thing[0]);
+
+			$customfieldval = '';
+			$field = "fid{$customfield['fid']}";
+
+			if(isset($userfields[$field]))
+			{
+				$useropts = explode("\n", $userfields[$field]);
+				$customfieldval = $comma = '';
+				if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 				{
-					$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+					foreach($useropts as $val)
+					{
+						if($val != '')
+						{
+							$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
+						}
+					}
+					if($customfieldval != '')
+					{
+						$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
+					}
 				}
 				else
 				{
-					$customfieldval = htmlspecialchars_uni($userfields[$field]);
+					$parser_options = array(
+						"allow_html" => $customfield['allowhtml'],
+						"allow_mycode" => $customfield['allowmycode'],
+						"allow_smilies" => $customfield['allowsmilies'],
+						"allow_imgcode" => $customfield['allowimgcode'],
+						"allow_videocode" => $customfield['allowvideocode'],
+						#"nofollow_on" => 1,
+						"filter_badwords" => 1
+					);
+
+					if($customfield['type'] == "textarea")
+					{
+						$parser_options['me_username'] = $memprofile['username'];
+					}
+					else
+					{
+						$parser_options['nl2br'] = 0;
+					}
+
+					if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+					{
+						$parser_options['allow_imgcode'] = 0;
+					}
+
+					$customfieldval = $parser->parse_message($userfields[$field], $parser_options);
 				}
 			}
-		}
 
-		$customfield['name'] = htmlspecialchars_uni($customfield['name']);
-		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
-		$bgcolor = alt_trow();
+			$customfield['name'] = htmlspecialchars_uni($customfield['name']);
+			eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
+			$bgcolor = alt_trow();
+		}
 	}
 
 	if($customfields)

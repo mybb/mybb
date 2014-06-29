@@ -747,11 +747,19 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Fetch profile fields to display on postbit
-	$profile_fields = array();
-	$query = $db->simple_select("profilefields", "*", "postbit='1' AND hidden != '1'", array('order_by' => 'disporder'));
-	while($profilefield = $db->fetch_array($query))
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
 	{
-		$profile_fields[$profilefield['fid']] = $profilefield;
+		foreach($pfcache as $profilefield)
+		{
+			if($profilefield['postbit'] != 1)
+			{
+				continue;
+			}
+
+			$profile_fields[$profilefield['fid']] = $profilefield;
+		}
 	}
 
 	// Which thread mode is our user using by default?
