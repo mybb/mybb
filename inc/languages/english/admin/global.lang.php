@@ -30,7 +30,10 @@ $l['logout'] = "Log Out";
 $l['generated_in'] = "Generated in {1} with <a href=\"{2}\" target=\"_blank\">{3} queries</a>. Memory Usage: {4}";
 
 // Login page
-$l['enter_username_and_password'] = "Please enter your username and password to continue.";
+$l['enter_username_and_password'] = "Please enter your {1} and password to continue.";
+$l['login_username'] = 'username';
+$l['login_email'] = 'email';
+$l['login_username_and_password'] = 'username/email';
 $l['mybb_admin_login'] = "MyBB Control Panel - Login";
 $l['return_to_forum'] = "Return to forum";
 $l['please_login'] = "Please Login";
