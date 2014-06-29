@@ -117,7 +117,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 		else
 		{
-			$mybb->input = array_merge(array('perpage' => 20, $mybb->input));
+			$mybb->input = array_merge($mybb->input, array('perpage' => 20));
 		}
 
 		// Write in our JS based field selector

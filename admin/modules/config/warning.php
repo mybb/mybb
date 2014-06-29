@@ -281,9 +281,10 @@ if($mybb->input['action'] == "edit_level")
 	}
 	else
 	{
-		$mybb->input = array_merge(array(
-			"percentage" => $level['percentage'],
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				"percentage" => $level['percentage'],
+			)
+		);
 		$action = unserialize($level['action']);
 		if($action['type'] == 1)
 		{
@@ -469,11 +470,12 @@ if($mybb->input['action'] == "add_type")
 	}
 	else
 	{
-		$mybb->input = array_merge(array(
-			"points" => "2",
-			"expire_time" => 1,
-			"expire_period" => "days"
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				"points" => "2",
+				"expire_time" => 1,
+				"expire_period" => "days"
+			)
+		);
 	}
 
 	$page->add_breadcrumb_item($lang->add_warning_type);
@@ -557,12 +559,13 @@ if($mybb->input['action'] == "edit_type")
 	else
 	{
 		$expiration = fetch_friendly_expiration($type['expirationtime']);
-		$mybb->input = array_merge(array(
-			"title" => $type['title'],
-			"points" => $type['points'],
-			"expire_time" => $expiration['time'],
-			"expire_period" => $expiration['period']
-		), $mybb->input);
+		$mybb->input = array_merge($mybb->input, array(
+				"title" => $type['title'],
+				"points" => $type['points'],
+				"expire_time" => $expiration['time'],
+				"expire_period" => $expiration['period']
+			)
+		);
 	}
 
 	$page->add_breadcrumb_item($lang->edit_warning_type);
