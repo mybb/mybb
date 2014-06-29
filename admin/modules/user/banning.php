@@ -262,7 +262,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $ban;
+		$mybb->input = array_merge($mybb->input, $ban);
 	}
 
 	$form_container = new FormContainer($lang->edit_ban);

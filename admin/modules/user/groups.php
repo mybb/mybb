@@ -453,11 +453,11 @@ if($mybb->input['action'] == "leaders")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			"canmanagemembers" => 1,
 			"canmanagerequests" => 1,
 			"caninvitemembers" => 1
-		);
+		), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
@@ -565,7 +565,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	if(!$errors)
 	{
-		$mybb->input = $leader;
+		$mybb->input = array_merge($mybb->input, $leader);
 	}
 
 	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -694,9 +694,9 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			"namestyle" => "{username}"
-		);
+		), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->add_user_group);
@@ -939,7 +939,7 @@ if($mybb->input['action'] == "edit")
 			$usergroup['moderate'] = 0;
 			$usergroup['invite'] = 0;
 		}
-		$mybb->input = $usergroup;
+		$mybb->input = array_merge($mybb->input, $usergroup);
 	}
 	$tabs = array(
 		"general" => $lang->general,

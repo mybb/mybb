@@ -183,26 +183,26 @@ if($mybb->input['action'] == 'iplookup')
 
 	?>
 	<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
+		<div style="overflow-y: auto; max-height: 400px;">
 
-	<?php
+			<?php
 
-	$table = new Table();
+			$table = new Table();
 
-	$table->construct_cell($lang->ipaddress_host_name.":");
-	$table->construct_cell($ipaddress_host_name);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_host_name.":");
+			$table->construct_cell($ipaddress_host_name);
+			$table->construct_row();
 
-	$table->construct_cell($lang->ipaddress_location.":");
-	$table->construct_cell($ipaddress_location);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_location.":");
+			$table->construct_cell($ipaddress_location);
+			$table->construct_row();
 
-	$table->output($lang->ipaddress_misc_info);
+			$table->output($lang->ipaddress_misc_info);
 
-	?>
-</div>
-</div>
-	<?php
+			?>
+		</div>
+	</div>
+<?php
 }
 
 if($mybb->input['action'] == "activate_user")
@@ -385,9 +385,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"usergroup" => 2
-		);
+		$mybb->input = array_merge(array('usergroup' => 2), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->required_profile_info);
@@ -836,7 +834,7 @@ if($mybb->input['action'] == "edit")
 	if(!$errors)
 	{
 		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
-		$mybb->input = $user;
+		$mybb->input = array_merge($mybb->input, $user);
 
 		$options = array(
 			'bday1', 'bday2', 'bday3',
@@ -847,7 +845,7 @@ if($mybb->input['action'] == "edit")
 
 		foreach($options as $option)
 		{
-			if(!isset($mybb->input[$option]))
+			if(!isset($input_user[$option]))
 			{
 				$mybb->input[$option] = '';
 			}
@@ -1569,7 +1567,7 @@ EOF;
 
 	$form->end();
 
-echo '<script type="text/javascript">
+	echo '<script type="text/javascript">
 <!--
 
 function toggleBox(action)
@@ -1765,7 +1763,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
@@ -2086,7 +2084,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2104,7 +2102,7 @@ if($mybb->input['action'] == "merge")
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	$("#destination_username").select2({
 		placeholder: "Search for a user",
@@ -2116,7 +2114,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2134,7 +2132,7 @@ if($mybb->input['action'] == "merge")
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	// -->
 	</script>';
@@ -3313,6 +3311,8 @@ function build_users_view($view)
 				continue;
 			}
 
+			$additional_sql = '';
+
 			switch($db->type)
 			{
 				case "pgsql":
@@ -3915,6 +3915,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$radio_options[''] = $lang->na;
 				}
 				$radio_options += explode("\n", $options);
+				$code = '';
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
@@ -3940,6 +3941,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$select_options[''] = $lang->na;
 				}
 				$select_options += explode("\n", $options);
+				$code = '';
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
@@ -4071,7 +4073,7 @@ $("#username").select2({
 		dataType: \'json\',
 		data: function (term, page) {
 			return {
-				query: term, // search term
+				query: term // search term
 			};
 		},
 		results: function (data, page) { // parse the results into the format expected by Select2.
@@ -4089,7 +4091,7 @@ $("#username").select2({
 				dataType: "json"
 			}).done(function(data) { callback(data); });
 		}
-	},
+	}
 });
 // -->
 </script>';

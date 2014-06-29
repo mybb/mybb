@@ -78,10 +78,10 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			'stars' => '1',
 			'starimage' => '{theme}/star.png',
-		);
+		), $mybb->input);
 	}
 
 	$page->add_breadcrumb_item($lang->add_new_user_title);
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $usertitle;
+		$mybb->input = array_merge($mybb->input, $usertitle);
 	}
 
 	$form_container = new FormContainer($lang->edit_user_title);

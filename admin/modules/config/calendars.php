@@ -76,12 +76,12 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			"allowhtml" => 0,
 			"eventlimit" => 4,
 			"disporder" => 1,
 			"moderation" => 0
-		);
+		), $mybb->input);
 	}
 
 	$page->add_breadcrumb_item($lang->add_calendar);
