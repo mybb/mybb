@@ -9232,7 +9232,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$usercpnav}
 <td valign="top">
 <fieldset>
-  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a>{$emptyexportlink}</span>
 </fieldset>
 <br />
 {$limitwarning}
@@ -9522,6 +9522,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" align="center">{$foldercount}</td>
 <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="1" /></td>
 </tr>]]></template>
+		<template name="private_emptyexportlink" version="1800"><![CDATA[ | <a href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a>]]></template>
 		<template name="private_folders" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
