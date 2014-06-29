@@ -10880,7 +10880,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>&nbsp;]]></template>
-		<template name="showthread_poll" version="1604"><![CDATA[<form action="polls.php" method="post">
+		<template name="showthread_poll" version="1800"><![CDATA[<form action="polls.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
