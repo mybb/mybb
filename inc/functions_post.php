@@ -279,7 +279,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
+				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
 			}
 
 			$post['userstars'] .= "<br />";
@@ -403,29 +403,47 @@ function build_postbit($post, $post_type=0)
 					$type = trim($thing[0]);
 					$useropts = explode("\n", $post[$fieldfid]);
 
-					// Skip over texa area fields, as they might break layout
-					if($type == "textarea")
-					{
-						continue;
-					}
-
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
 						foreach($useropts as $val)
 						{
 							if($val != '')
 							{
-								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
+								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
 							}
 						}
-						if($post['fieldvalue_option'] != '')
+						if($post['fieldvalue'] != '')
 						{
-							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
+							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
 						}
 					}
 					else
 					{
-						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
+						$parser_options = array(
+							"allow_html" => $field['allowhtml'],
+							"allow_mycode" => $field['allowmycode'],
+							"allow_smilies" => $field['allowsmilies'],
+							"allow_imgcode" => $field['allowimgcode'],
+							"allow_videocode" => $field['allowvideocode'],
+							#"nofollow_on" => 1,
+							"filter_badwords" => 1
+						);
+
+						if($customfield['type'] == "textarea")
+						{
+							$parser_options['me_username'] = $post['username'];
+						}
+						else
+						{
+							$parser_options['nl2br'] = 0;
+						}
+
+						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						{
+							$parser_options['allow_imgcode'] = 0;
+						}
+
+						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $parser_options);
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
@@ -725,7 +743,7 @@ function build_postbit($post, $post_type=0)
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
+		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
 	}
 	else
 	{

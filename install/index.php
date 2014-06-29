@@ -64,7 +64,7 @@ $done_shutdown = 1;
 
 // Include the necessary contants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
+$groupzerogreater = array('pmquota', 'maxreputationsday', 'attachquota');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
@@ -1811,27 +1811,23 @@ function configure()
 		if($_SERVER['HTTP_HOST'])
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
-			$cookiedomain = $_SERVER['HTTP_HOST'];
+			$cookiedomain = '.'.$_SERVER['HTTP_HOST'];
 		}
 		elseif($_SERVER['SERVER_NAME'])
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
-			$cookiedomain = $_SERVER['SERVER_NAME'];
+			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 4) == "www.")
+		if(substr($cookiedomain, 0, 5) == ".www.")
 		{
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
-		if(my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
+		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) === false || strpos($cookiedomain, '.') !== false)
 		{
 			$cookiedomain = '';
-		}
-		else
-		{
-			$cookiedomain = ".{$cookiedomain}";
 		}
 
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
@@ -2272,6 +2268,7 @@ function install_done()
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
 	$cache->update_mycode();
+	$cache->update_profilefields();
 	$cache->update_posticons();
 	$cache->update_spiders();
 	$cache->update_bannedips();

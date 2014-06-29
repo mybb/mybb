@@ -67,9 +67,9 @@ $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(18, 'Thumbs Down',
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(19, 'Thumbs Up', 'images/icons/thumbsup.png');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(20, 'Video', 'images/icons/video.png');";
 
-$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editable, hidden, postbit, postnum) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 0, 0, 1, 0, 0, 0);";
-$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editable, hidden, postbit, postnum) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 0, 0, 1, 0, 0, 0);";
-$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editable, hidden, postbit, postnum) VALUES (3, 'Sex', 'Please select your sex from the list below.', 3, 'select\nUndisclosed\nMale\nFemale\nOther', 0, 0, 0, 0, 1, 0, 0, 0);";
+$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editableby, profile, postbit, postnum) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 0, 0, -1, 1, 0, 0);";
+$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editableby, profile, postbit, postnum) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 0, 0, -1, 1, 0, 0);";
+$inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, registration, editableby, profile, postbit, postnum) VALUES (3, 'Sex', 'Please select your sex from the list below.', 3, 'select\nUndisclosed\nMale\nFemale\nOther', 0, 0, 0, 0, -1, 1, 0, 0);";
 
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(1, 'Smile', ':)', 'images/smilies/smile.png', 1, 1);";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(2, 'Wink', ';)', 'images/smilies/wink.png', 2, 1);";
@@ -115,7 +115,7 @@ $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUE
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('10','private','<lang:group_private>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('11','portal','<lang:group_portal>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('12','postbit','<lang:group_postbit>','1');";
-$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('13','posticons','<lang:group_posticons>','1');";
+$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('13','redirect','<lang:group_redirect>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('14','showthread','<lang:group_showthread>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('15','usercp','<lang:group_usercp>','1');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title,isdefault) VALUES ('16','online','<lang:group_online>','1');";

@@ -471,7 +471,6 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL,
 	forums text NOT NULL,
-	groups text NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL,
 	threadoptions text NOT NULL,
@@ -573,14 +572,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   description text NOT NULL,
   disporder smallint unsigned NOT NULL default '0',
   type text NOT NULL,
+  regex text NOT NULL,
   length smallint unsigned NOT NULL default '0',
   maxlength smallint unsigned NOT NULL default '0',
   required tinyint(1) NOT NULL default '0',
   registration tinyint(1) NOT NULL default '0',
-  editable tinyint(1) NOT NULL default '0',
-  hidden tinyint(1) NOT NULL default '0',
+  profile tinyint(1) NOT NULL default '0',
   postbit tinyint(1) NOT NULL default '0',
+  viewableby text NOT NULL,
+  editableby text NOT NULL,
   postnum smallint unsigned NOT NULL default '0',
+  allowhtml tinyint(1) NOT NULL default '0',
+  allowmycode tinyint(1) NOT NULL default '0',
+  allowsmilies tinyint(1) NOT NULL default '0',
+  allowimgcode tinyint(1) NOT NULL default '0',
+  allowvideocode tinyint(1) NOT NULL default '0',
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM;";
 
@@ -616,24 +622,6 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   dateline int unsigned NOT NULL default '0',
   type varchar(9) NOT NULL default 'primary',
   PRIMARY KEY (plid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_questions (
-  qid int unsigned NOT NULL auto_increment,
-  question varchar(200) NOT NULL default '',
-  answer varchar(150) NOT NULL default '',
-  shown int unsigned NOT NULL default 0,
-  correct int unsigned NOT NULL default 0,
-  incorrect int unsigned NOT NULL default 0,
-  active tinyint(1) NOT NULL default '0',
-  PRIMARY KEY (qid)
-) ENGINE=MyISAM;";
-
-$tables[] = "CREATE TABLE mybb_questionsessions (
-  sid varchar(32) NOT NULL default '',
-  qid int unsigned NOT NULL default '0',
-  dateline int unsigned NOT NULL default '0',
-  PRIMARY KEY (sid)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reportedcontent (

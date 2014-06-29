@@ -454,7 +454,6 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL default '',
 	forums text NOT NULL default '',
-	groups text NOT NULL default '',
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL default '',
 	threadoptions text NOT NULL default '',
@@ -546,14 +545,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   description text NOT NULL default '',
   disporder smallint NOT NULL default '0',
   type text NOT NULL default '',
+  regex text NOT NULL default '',
   length smallint NOT NULL default '0',
   maxlength smallint NOT NULL default '0',
   required smallint NOT NULL default '0',
   registration smallint NOT NULL default '0',
-  editable smallint NOT NULL default '0',
-  hidden smallint NOT NULL default '0',
+  profile smallint NOT NULL default '0',
   postbit smallint NOT NULL default '0',
+  viewableby text NOT NULL default '-1',
+  editableby text NOT NULL default '-1',
   postnum smallint NOT NULL default '0',
+  allowhtml smallint NOT NULL default '0',
+  allowmycode smallint NOT NULL default '0',
+  allowsmilies smallint NOT NULL default '0',
+  allowimgcode smallint NOT NULL default '0',
+  allowvideocode smallint NOT NULL default '0',
   PRIMARY KEY (fid)
 );";
 
@@ -589,24 +595,6 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   dateline int NOT NULL default '0',
   type varchar(9) NOT NULL default 'primary',
   PRIMARY KEY(plid)
-);";
-
-$tables[] = "CREATE TABLE mybb_questions (
-  qid serial,
-  question varchar(200) NOT NULL default '',
-  answer varchar(150) NOT NULL default '',
-  shown int unsigned NOT NULL default 0,
-  correct int unsigned NOT NULL default 0,
-  incorrect int unsigned NOT NULL default 0,
-  active smallint NOT NULL default '0',
-  PRIMARY KEY (qid)
-);";
-
-$tables[] = "CREATE TABLE mybb_questionsessions (
-  sid varchar(32) NOT NULL default '',
-  qid int unsigned NOT NULL default '0',
-  dateline int unsigned NOT NULL default '0',
-  UNIQUE (sid)
 );";
 
 $tables[] = "CREATE TABLE mybb_reportedcontent (

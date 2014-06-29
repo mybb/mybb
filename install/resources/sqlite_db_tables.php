@@ -421,7 +421,6 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL default '',
 	description TEXT NOT NULL,
 	forums TEXT NOT NULL,
-	groups TEXT NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions TEXT NOT NULL,
 	threadoptions TEXT NOT NULL
@@ -507,14 +506,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	description TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
 	type TEXT NOT NULL,
+	regex TEXT NOT NULL,
 	length smallint NOT NULL default '0',
 	maxlength smallint NOT NULL default '0',
 	required tinyint(1) NOT NULL default '0',
 	registration tinyint(1) NOT NULL default '0',
-	editable tinyint(1) NOT NULL default '0',
-	hidden tinyint(1) NOT NULL default '0',
+	profile tinyint(1) NOT NULL default '0',
 	postbit tinyint(1) NOT NULL default '0',
+	viewableby TEXT NOT NULL,
+	editableby TEXT NOT NULL,
 	postnum smallint NOT NULL default '0'
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0',
+	allowimgcode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_promotions (
@@ -547,22 +553,6 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
 	newusergroup smallint NOT NULL default '0',
 	dateline int unsigned NOT NULL default '0',
 	type varchar(9) NOT NULL default 'primary'
-);";
-
-$tables[] = "CREATE TABLE mybb_questions (
-	qid INTEGER PRIMARY KEY,
-	question varchar(200) NOT NULL default '',
-	answer varchar(150) NOT NULL default '',
-	shown int unsigned NOT NULL default 0,
-	correct int unsigned NOT NULL default 0,
-	incorrect int unsigned NOT NULL default 0,
-	active tinyint(1) NOT NULL default '0'
-);";
-
-$tables[] = "CREATE TABLE mybb_questionsessions (
-	sid varchar(32) NOT NULL default '',
-	qid int unsigned NOT NULL default '0',
-	dateline int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_reportedcontent (

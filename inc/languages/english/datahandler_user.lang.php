@@ -34,6 +34,7 @@ $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Plea
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please select an existing language.';
 $l['userdata_missing_returndate'] = 'The Return Date you specified is missing one or more fields. Please make sure you have filled in the day, month, and year fields.';
 $l['userdata_missing_required_profile_field'] = 'You did not enter an option for the "{1}" field. Please fill in or select a value for this field.';
+$l['userdata_bad_profile_field_value'] = 'You did not enter a valid value for the "{1}" field. Please enter a valid value before continuing.';
 $l['userdata_bad_profile_field_values'] = 'You did not select a valid option for the "{1}" field. Please select a value from the presented choices.';
 $l['userdata_max_limit_reached'] = 'You entered an invalid number of characters for the "{1}" field. Please fill in this field with no more than {2} characters.';
 $l['userdata_invalid_checkfield'] = "It has been detected that this form has been submitted by a spam bot. If this is in error, please contact the administrator.";
