@@ -1191,12 +1191,12 @@ if($mybb->input['action'] == "edit")
 		$query = $db->simple_select("themestylesheets", "*", "", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
 		while($theme_stylesheet = $db->fetch_array($query))
 		{
-			if(!isset($theme_stylesheets[$theme_stylesheet['cachefile']]) && in_array($theme_stylesheet['tid'], $inherited_load))
+			if(!isset($theme_stylesheets[$theme_stylesheet['name']]) && in_array($theme_stylesheet['tid'], $inherited_load))
 			{
-				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+				$theme_stylesheets[$theme_stylesheet['name']] = $theme_stylesheet;
 			}
 
-			$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
+			$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['name'];
 		}
 	}
 
