@@ -506,14 +506,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	description TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
 	type TEXT NOT NULL,
+	regex TEXT NOT NULL,
 	length smallint NOT NULL default '0',
 	maxlength smallint NOT NULL default '0',
 	required tinyint(1) NOT NULL default '0',
 	registration tinyint(1) NOT NULL default '0',
-	editable tinyint(1) NOT NULL default '0',
-	hidden tinyint(1) NOT NULL default '0',
+	profile tinyint(1) NOT NULL default '0',
 	postbit tinyint(1) NOT NULL default '0',
+	viewableby TEXT NOT NULL,
+	editableby TEXT NOT NULL,
 	postnum smallint NOT NULL default '0'
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0',
+	allowimgcode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_promotions (

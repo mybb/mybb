@@ -578,6 +578,7 @@ function buildcaches()
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
 	$cache->update_mycode();
+	$cache->update_profilefields();
 	$cache->update_posticons();
 	$cache->update_update_check();
 	$cache->update_tasks();

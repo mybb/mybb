@@ -1200,6 +1200,7 @@ function usergroup_permissions($gid=0)
 	$groups = explode(",", $gid);
 
 
+	#_dump($groupscache[$gid]);
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];

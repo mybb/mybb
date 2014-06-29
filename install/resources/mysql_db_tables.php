@@ -572,14 +572,21 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   description text NOT NULL,
   disporder smallint unsigned NOT NULL default '0',
   type text NOT NULL,
+  regex text NOT NULL,
   length smallint unsigned NOT NULL default '0',
   maxlength smallint unsigned NOT NULL default '0',
   required tinyint(1) NOT NULL default '0',
   registration tinyint(1) NOT NULL default '0',
-  editable tinyint(1) NOT NULL default '0',
-  hidden tinyint(1) NOT NULL default '0',
+  profile tinyint(1) NOT NULL default '0',
   postbit tinyint(1) NOT NULL default '0',
+  viewableby text NOT NULL,
+  editableby text NOT NULL,
   postnum smallint unsigned NOT NULL default '0',
+  allowhtml tinyint(1) NOT NULL default '0',
+  allowmycode tinyint(1) NOT NULL default '0',
+  allowsmilies tinyint(1) NOT NULL default '0',
+  allowimgcode tinyint(1) NOT NULL default '0',
+  allowvideocode tinyint(1) NOT NULL default '0',
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM;";
 
