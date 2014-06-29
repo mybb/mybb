@@ -251,7 +251,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$type = explode("\n", $profile_field['type'], "2");
 
-		$mybb->input = $profile_field;
+		$mybb->input = array_merge($mybb->input, $profile_field);
 		$mybb->input['fieldtype'] = $type[0];
 		$mybb->input['options'] = $type[1];
 	}

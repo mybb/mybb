@@ -287,7 +287,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $mycode;
+		$mybb->input = array_merge($mybb->input, $mycode);
 	}
 
 	$form_container = new FormContainer($lang->edit_mycode);

@@ -216,7 +216,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $attachment_type;
+		$mybb->input = array_merge($mybb->input, $attachment_type);
 	}
 
 	// PHP settings
