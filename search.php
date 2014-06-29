@@ -12,11 +12,11 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
 
-$templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon";
+$templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon,search_forumlist_forum,search_forumlist";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
 $templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,multipage_prevpage";
+$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,multipage_prevpage,post_prefixselect_prefix,post_prefixselect_multiple";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";

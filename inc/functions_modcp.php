@@ -111,11 +111,11 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
-							$icon = "<img src=\"{$theme['imgdir']}/minioff.png\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 						}
 						else
 						{
-							$icon = "<img src=\"{$theme['imgdir']}/minion.png\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 						}
 
 						$subject = htmlspecialchars_uni($announcement['subject']);

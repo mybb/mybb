@@ -449,7 +449,7 @@ function usercp_menu_messenger()
 		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
 	}
 
-	$folderlinks = '';
+	$folderlinks = $folder_id = $folder_name = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -468,7 +468,10 @@ function usercp_menu_messenger()
 			$class = "usercp_nav_pmfolder";
 		}
 
-		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
 	}
 
 	if(!isset($collapsedimg['usercppms']))

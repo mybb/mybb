@@ -13,11 +13,12 @@ define('THIS_SCRIPT', 'forumdisplay.php');
 
 $templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_threadlist_inlineedit_js,forumdisplay_orderarrow";
-$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit";
-$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom,forumbit_subforums,forumbit_moderators";
+$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers";
+$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom,forumbit_subforums,forumbit_moderators,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden";
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating";
-$templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove,forumdisplay_inlinemoderation_standard";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
+$templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove";
+$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -228,7 +229,10 @@ foreach($parentlistexploded as $mfid)
 					{
 						continue;
 					}
-					$moderators .= $comma.htmlspecialchars_uni($moderator['title']);
+
+					$moderator['title'] = htmlspecialchars_uni($moderator['title']);
+
+					eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
 					$done_moderators['groups'][] = $moderator['id'];
 				}
 				else
@@ -237,7 +241,11 @@ foreach($parentlistexploded as $mfid)
 					{
 						continue;
 					}
-					$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup'])."</a>";
+
+					$moderator['profilelink'] = get_profile_link($moderator['id']);
+					$moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
+
+					eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
 					$done_moderators['users'][] = $moderator['id'];
 				}
 				$comma = $lang->comma;
@@ -1272,14 +1280,29 @@ if(!empty($threadcache) && is_array($threadcache))
 	{
 		if(is_moderator($fid, "canusecustomtools") && $has_modtools == true)
 		{
+			$gids = explode(',', $mybb->user['additionalgroups']);
+			$gids[] = $mybb->user['usergroup'];
+			$gids = array_filter(array_unique($gids));
+
+			$gidswhere = '';
 			switch($db->type)
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups=''{$gidswhere}) AND type = 't'");
 					break;
 				default:
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups=''{$gidswhere}) AND type = 't'");
 			}
 
 			while($tool = $db->fetch_array($query))
