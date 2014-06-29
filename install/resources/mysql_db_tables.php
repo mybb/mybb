@@ -471,6 +471,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL,
 	description text NOT NULL,
 	forums text NOT NULL,
+	groups text NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions text NOT NULL,
 	threadoptions text NOT NULL,
@@ -622,6 +623,24 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   dateline int unsigned NOT NULL default '0',
   type varchar(9) NOT NULL default 'primary',
   PRIMARY KEY (plid)
+) ENGINE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_questions (
+  qid int unsigned NOT NULL auto_increment,
+  question varchar(200) NOT NULL default '',
+  answer varchar(150) NOT NULL default '',
+  shown int unsigned NOT NULL default 0,
+  correct int unsigned NOT NULL default 0,
+  incorrect int unsigned NOT NULL default 0,
+  active tinyint(1) NOT NULL default '0',
+  PRIMARY KEY (qid)
+) ENGINE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_questionsessions (
+  sid varchar(32) NOT NULL default '',
+  qid int unsigned NOT NULL default '0',
+  dateline int unsigned NOT NULL default '0',
+  PRIMARY KEY (sid)
 ) ENGINE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reportedcontent (

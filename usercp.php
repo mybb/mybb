@@ -462,40 +462,6 @@ if($mybb->input['action'] == "profile")
 	$requiredfields = $customfields = '';
 	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
 
-	$sqlwhere = '(editableby=\'-1\' AND editableby!=\'\')';
-	$gids = array();
-	if(isset($user['additionalgroups']))
-	{
-		$gids = explode(',', $user['additionalgroups']);
-	}
-	if(isset($user['usergroup']))
-	{
-		$gids[] = $user['usergroup'];
-	}
-	$gids = array_filter(array_unique($gids));
-
-	if($gids)
-	{
-		switch($db->type)
-		{
-			case "pgsql":
-			case "sqlite":
-				foreach($gids as $gid)
-				{
-					$gid = (int)$gid;
-					$sqlwhere .= " OR ','||editableby||',' LIKE '%,{$gid},%'";
-				}
-				break;
-			default:
-				foreach($gids as $gid)
-				{
-					$gid = (int)$gid;
-					$sqlwhere .= " OR CONCAT(',',editableby,',') LIKE '%,{$gid},%'";
-				}
-				break;
-		}
-	}
-
 	$pfcache = $cache->read('profilefields');
 
 	if(is_array($pfcache))
@@ -557,8 +523,6 @@ if($mybb->input['action'] == "profile")
 						$val = htmlspecialchars_uni($val);
 						$seloptions[$val] = $val;
 					}
-
-					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 				}
 				$expoptions = explode("\n", $options);
 				if(is_array($expoptions))
@@ -573,16 +537,16 @@ if($mybb->input['action'] == "profile")
 						{
 							$sel = " selected=\"selected\"";
 						}
-						$select .= "<option value=\"$val\"$sel>$val</option>\n";
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 3;
 					}
-					$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
-				}
 
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
+				}
 			}
 			elseif($type == "select")
 			{
@@ -598,14 +562,15 @@ if($mybb->input['action'] == "profile")
 						{
 							$sel = " selected=\"selected\"";
 						}
-						$select .= "<option value=\"$val\"$sel>$val</option>";
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 1;
 					}
 
-					eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 				}
 			}
 			elseif($type == "radio")
@@ -620,11 +585,10 @@ if($mybb->input['action'] == "profile")
 						{
 							$checked = " checked=\"checked\"";
 						}
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
 					}
 				}
-
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
 			}
 			elseif($type == "checkbox")
 			{
@@ -653,16 +617,15 @@ if($mybb->input['action'] == "profile")
 						{
 							$checked = " checked=\"checked\"";
 						}
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
-					}
 
-					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+					}
 				}
 			}
 			elseif($type == "textarea")
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 			}
 			else
 			{
@@ -672,49 +635,28 @@ if($mybb->input['action'] == "profile")
 				{
 					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 				}
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 			}
+
 			if($profilefield['required'] == 1)
 			{
-				foreach($expoptions as $key => $val)
-				{
-					$checked = "";
-					if($val == $seloptions[$val])
-					{
-						$checked = " checked=\"checked\"";
-					}
-
-					eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
-				}
+				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
-		}
-		elseif($type == "textarea")
-		{
-			$value = htmlspecialchars_uni($userfield);
-			eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$maxlength = "";
-			if($profilefield['maxlength'] > 0)
+			else
 			{
 				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
-
-			eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
-		}
-
-		if($profilefield['required'] == 1)
-		{
-			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		else
-		{
-			eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+			$altbg = alt_trow();
+			$code = "";
+			$select = "";
+			$val = "";
+			$options = "";
+			$expoptions = "";
+			$useropts = "";
+			$seloptions = "";
 		}
 	}
-
 	if($customfields)
 	{
 		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");

@@ -311,7 +311,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "smallint NOT NULL default '1'");
-			$db->add_column("usergroups", "canviewboardclosed", "smallint NOT NULL default '0' AFTER candlattachments");			
+			$db->add_column("usergroups", "canviewboardclosed", "smallint NOT NULL default '0' AFTER candlattachments");
 			$db->add_column("threads", "deletedposts", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("captcha", "used", "smallint NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
@@ -439,7 +439,7 @@ function upgrade30_dbchanges3()
 			$db->add_column("moderators", "cansoftdeletethreads", "smallint NOT NULL default '0' AFTER candeleteposts");
 			$db->add_column("moderators", "canrestorethreads", "smallint NOT NULL default '0' AFTER cansoftdeletethreads");
 			$db->add_column("moderators", "candeletethreads", "smallint NOT NULL default '0' AFTER canrestorethreads");
-			$db->add_column("moderators", "canviewunapprove", "smallint NOT NULL default '0' AFTER canviewips");			
+			$db->add_column("moderators", "canviewunapprove", "smallint NOT NULL default '0' AFTER canviewips");
 			$db->add_column("moderators", "canviewdeleted", "smallint NOT NULL default '0' AFTER canviewunapprove");
 			$db->add_column("moderators", "canstickunstickthreads", "smallint NOT NULL default '0' AFTER canopenclosethreads");
 			$db->add_column("moderators", "canapproveunapprovethreads", "smallint NOT NULL default '0' AFTER canstickunstickthreads");
@@ -535,7 +535,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canmanagereportedcontent", "smallint NOT NULL default '0' AFTER canmanagemodqueue");
 			$db->add_column("usergroups", "canviewmodlogs", "smallint NOT NULL default '0' AFTER canmanagereportedcontent");
 			$db->add_column("usergroups", "caneditprofiles", "smallint NOT NULL default '0' AFTER canviewmodlogs");
-			$db->add_column("usergroups", "canbanusers", "smallint NOT NULL default '0' AFTER caneditprofiles");			
+			$db->add_column("usergroups", "canbanusers", "smallint NOT NULL default '0' AFTER caneditprofiles");
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			break;
@@ -579,6 +579,87 @@ function upgrade30_dbchanges5()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->table_exists("questions"))
+	{
+		$db->drop_table("questions");
+	}
+
+	if($db->table_exists("questionsessions"))
+	{
+		$db->drop_table("questionsessions");
+	}
+
+	switch($db->type)
+	{
+		case "sqlite":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid INTEGER PRIMARY KEY,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active tinyint(1) NOT NULL default '0'
+			);");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0'
+			);");
+			break;
+		case "pgsql":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid serial,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active smallint NOT NULL default '0',
+				PRIMARY KEY (qid)
+			);");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0',
+				UNIQUE (sid)
+			);");
+			break;
+		default:
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid int unsigned NOT NULL auto_increment,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active tinyint(1) NOT NULL default '0',
+				PRIMARY KEY (qid)
+			) ENGINE=MyISAM;");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0',
+				PRIMARY KEY (sid)
+			) ENGINE=MyISAM;");
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges6");
+}
+
+function upgrade30_dbchanges6()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
 	$collation = $db->build_create_table_collation();
 
 	switch($db->type)
@@ -612,7 +693,7 @@ function upgrade30_dbchanges5()
 			) ENGINE=MyISAM{$collation};");
 		break;
 	}
-	
+
 	if($db->field_exists('msn', 'users'))
 	{
 		$db->drop_column("users", "msn");
@@ -671,7 +752,7 @@ function upgrade30_dbchanges5()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER profile");
+			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
@@ -685,7 +766,7 @@ function upgrade30_dbchanges5()
 			$db->add_column("awaitingactivation", "validated", "smallint NOT NULL default '0' AFTER type");
 			break;
 		default:
-			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER profile");
+			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER hidden");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
@@ -736,6 +817,12 @@ function upgrade30_dbchanges5()
 	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
+	}
+
+	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
+	if($db->fetch_field($query, "numexists") != 0)
+	{
+		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
@@ -1643,7 +1730,19 @@ function upgrade30_updatetheme()
 	}
 
 	$output->print_header("Updating Themes");
-	$contents = "<p>Updating the Default theme... ";
+
+	// New default user star
+	$contents = "<p>Updating the Default user star image... ";
+	$db->update_query("usergroups", array('starimage' => 'images/star.png'), "starimage='images/star.gif'");
+	$contents .= "done.</p>";
+
+	$contents .= '<p>Re-caching and minifying existing stylesheets...</p>';
+
+	$num_re_cached = recache_existing_styles();
+
+	$contents .= "Done. {$num_re_cached} stylesheets re-cached.";
+
+	$contents .= "<p>Updating the Default theme... ";
 
 	$db->delete_query("templates", "sid = '1'");
 	$query = $db->simple_select("themes", "tid", "tid = '2'");
@@ -1743,5 +1842,29 @@ function upgrade30_updatetheme()
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_done");
+}
+
+/**
+ * Re-cache the existing stylesheets so that they get minified.
+ *
+ * @return int The number of re-cached stylesheets.
+ */
+function recache_existing_styles()
+{
+	global $db;
+
+	$query = $db->simple_select('themestylesheets', '*');
+
+	$num_updated = 0;
+
+	while($stylesheet = $db->fetch_array($query))
+	{
+		if (cache_stylesheet((int) $stylesheet['tid'], $stylesheet['name'], $stylesheet['stylesheet']))
+		{
+			++$num_updated;
+		}
+	}
+
+	return $num_updated;
 }
 ?>

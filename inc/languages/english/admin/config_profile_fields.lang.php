@@ -66,10 +66,6 @@ $l['no_profile_fields'] = "There are no custom profile fields on your forum at t
 
 $l['error_missing_name'] = "You did not enter a title for this custom profile field";
 $l['error_missing_description'] = "You did not enter a description for this custom profile field";
-$l['error_missing_filetype'] = "You did not enter a field type for this custom profile field";
-$l['error_missing_required'] = "You did not select Yes or No for the \"Required?\" option";
-$l['error_missing_editable'] = "You did not select Yes or No for the \"Editable by user?\" option";
-$l['error_missing_hidden'] = "You did not select Yes or No for the \"Display on profile?\" option";
 $l['error_invalid_fid'] = "The selected profile field does not exist.";
 
 $l['success_profile_field_added'] = "The custom profile field has been created successfully.";
