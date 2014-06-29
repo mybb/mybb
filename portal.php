@@ -394,6 +394,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	// Get latest news announcements
 	// Build where clause
 	$annfidswhere = '';
+	$announcementcount = 0;
 	if($mybb->settings['portal_announcementsfid'] != -1)
 	{
 		// First validate announcement fids:
@@ -420,13 +421,38 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$forum[$fid] = $f;
 		}
 	}
+	
+	if($announcementcount == 0)
+	{
+		$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
+		$announcementcount = $db->fetch_field($query, "threads");
+	}
+	
 
 	$numannouncements = intval($mybb->settings['portal_numannouncements']);
 	if(!$numannouncements)
 	{
 		$numannouncements = 10; // Default back to 10
 	}
+	if($mybb->input['page'] > 0)
+	{
+		$page = $mybb->input['page'];
+		$start = ($page-1) * $numannouncements;
+		$pages = $announcementcount / $numannouncements;
+		$pages = ceil($numannouncements);
+		if($page > $numannouncements || $page <= 0)
+		{
+			$start = 0;
+			$page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
 
+	$multipage = multipage($announcementcount, $numannouncements, $page, 'portal.php');
 	$pids = '';
 	$tids = '';
 	$comma = '';
@@ -438,7 +464,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 		ORDER BY t.dateline DESC
-		LIMIT 0, {$numannouncements}"
+		LIMIT {$start}, {$numannouncements}"
 	);
 	while($getid = $db->fetch_array($query))
 	{

@@ -8727,6 +8727,7 @@ if(use_xmlhttprequest == "1")
 <td>&nbsp;</td>
 <td valign="top">
 {$announcements}
+{$multipage}
 </td>
 </tr>
 </table>
