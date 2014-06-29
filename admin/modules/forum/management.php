@@ -409,7 +409,7 @@ if($mybb->input['action'] == "editmod")
 		$form->generate_check_box('canmanagereportedposts', 1, $lang->can_manage_reported_posts, array('checked' => $mod_data['canmanagereportedposts'], 'id' => 'canmanagereportedposts')),
 		$form->generate_check_box('canviewmodlog', 1, $lang->can_view_mod_log, array('checked' => $mod_data['canviewmodlog'], 'id' => 'canviewmodlog'))
 	);
-	$form_container->output_row($lang->moderator_cp_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_cp_permissions)."</div>");
+	$form_container->output_row($lang->moderator_cp_permissions, $lang->moderator_cp_permissions_desc, "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_cp_permissions)."</div>");
 
 	$form_container->end();
 
