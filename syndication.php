@@ -29,7 +29,7 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Find out the thread limit.
-if($mybb->get_input('portal'))
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 {
 	$thread_limit = $mybb->settings['portal_numannouncements'];
 }
@@ -48,7 +48,7 @@ else if(!$thread_limit || $thread_limit < 0)
 }
 
 // Syndicate a specific forum or all viewable?
-if($mybb->get_input('portal'))
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 {
 	if($mybb->settings['portal_announcementsfid'] != '-1')
 	{
@@ -101,7 +101,7 @@ $query = $db->simple_select("forums", "name, fid, allowhtml, allowmycode, allows
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {
-	if(!$mybb->get_input('portal'))
+	if(!$mybb->get_input('portal') || $mybb->settings['portal'] == 0)
 	{
 		$title .= $comma.$forum['name'];
 		$comma = $lang->comma;
@@ -109,7 +109,7 @@ while($forum = $db->fetch_array($query))
 	$forumcache[$forum['fid']] = $forum;
 }
 
-if($mybb->get_input('portal'))
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 {
 		$title .= $comma.$lang->portal;
 }
@@ -117,7 +117,7 @@ if($mybb->get_input('portal'))
 // If syndicating all forums then cut the title back to "All Forums"
 if(isset($all_forums))
 {
-	if($mybb->get_input('portal'))
+	if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
 	{
 		$title = $mybb->settings['bbname']." - ".$lang->portal;
 	}

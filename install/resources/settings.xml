@@ -1745,10 +1745,18 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 	</settinggroup>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="20" isdefault="1">
+		<setting name="portal">
+			<title>Enable Portal</title>
+			<description><![CDATA[If you wish to disable the portal on your board, set this option to no.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1756,7 +1764,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_numannouncements">
 			<title>Number of announcements to show</title>
 			<description><![CDATA[Please enter the number of announcements to show on the main page.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1764,7 +1772,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showwelcome">
 			<title>Show the Welcome box</title>
 			<description><![CDATA[Do you want to show the welcome box to visitors / users.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1772,7 +1780,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showpms">
 			<title>Show the number of PMs to users</title>
 			<description><![CDATA[Do you want to show the number of private messages the current user has in their pm system.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1780,7 +1788,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showstats">
 			<title>Show forum statistics</title>
 			<description><![CDATA[Do you want to show the total number of posts, threads, members and the last registered member on the portal page?]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1788,7 +1796,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showwol">
 			<title>Show Who's Online</title>
 			<description><![CDATA[Do you want to show the 'Who's online' information to users when they visit the portal page?]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1796,7 +1804,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showsearch">
 			<title>Show Search Box</title>
 			<description><![CDATA[Do you want to show the search box, allowing users to quickly search the forums on the portal?]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1804,7 +1812,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showdiscussions">
 			<title>Show Latest Discussions</title>
 			<description><![CDATA[Do you wish to show the current forum discussions on the portal page?]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1812,7 +1820,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showdiscussionsnum">
 			<title>Number of latest discussions to show</title>
 			<description><![CDATA[Please enter the number of current forum discussions to show on the portal page.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
