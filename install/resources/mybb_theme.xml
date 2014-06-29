@@ -4749,6 +4749,7 @@ if(use_xmlhttprequest == "1")
 {$customfields}
 {$referrer}
 {$regimage}
+{$questionbox}
 </td>
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
@@ -5047,6 +5048,25 @@ $().ready(function() {
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>
 ]]></template>
+		<template name="member_register_question" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong>{$lang->security_question}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->question_note}</span></td>
+</tr>
+<tr>
+<td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{$question['question']}</span></td>
+</tr>
+<tr>
+<td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
+<input type="hidden" name="question_id" value="{$sid}" id="question_id" /></td>
+</tr>
+<tr>
+	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
+</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
@@ -9212,7 +9232,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$usercpnav}
 <td valign="top">
 <fieldset>
-  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a>{$emptyexportlink}</span>
 </fieldset>
 <br />
 {$limitwarning}
@@ -9502,6 +9522,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" align="center">{$foldercount}</td>
 <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="1" /></td>
 </tr>]]></template>
+		<template name="private_emptyexportlink" version="1800"><![CDATA[ | <a href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a>]]></template>
 		<template name="private_folders" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
@@ -10880,7 +10901,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>&nbsp;]]></template>
-		<template name="showthread_poll" version="1604"><![CDATA[<form action="polls.php" method="post">
+		<template name="showthread_poll" version="1800"><![CDATA[<form action="polls.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
@@ -10894,6 +10915,9 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
+</tr>
+<tr>
+<td colspan="2"><span class="smalltext">{$closeon}</span></td>
 </tr>
 <tr>
 <td colspan="2"><span class="smalltext">{$publicnote}</span></td>
@@ -13196,6 +13220,7 @@ if(use_xmlhttprequest == "1")
 						<div style="padding-left: 10px; font-weight: bold; float: left;">{$new_warning_level}%</div><br style="clear: left;" />
 						{$result}
 					</dd>]]></template>
+		<template name="warnings_warn_type_result" version="1800"><![CDATA[<div class="smalltext" style="clear: left; padding-top: 4px;">{$lang->result}<br />{$new_level['friendly_action']}</div>]]></template>
 		<template name="warnings_warning" version="1400"><![CDATA[			<tr>
 				<td class="{$alt_bg}">{$warning_type} {$points}{$post_link}</td>
 				<td class="{$alt_bg}" align="center">{$date_issued}</td>

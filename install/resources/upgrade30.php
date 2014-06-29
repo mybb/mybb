@@ -33,6 +33,13 @@ function upgrade30_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
 
+	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
+
+	// Avoid complex convert coding...
+	$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
+	$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
+	$db->update_query('profilefields', array('hidden' => 0), 'hidden=2');
+
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		if($db->index_exists('posts', 'tiddate'))
@@ -41,6 +48,51 @@ function upgrade30_dbchanges()
 		}
 
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
+	}
+
+	if($db->field_exists('regex', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "regex");
+	}
+
+	if($db->field_exists('allowhtml', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "allowhtml");
+	}
+
+	if($db->field_exists('allowmycode', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "allowmycode");
+	}
+
+	if($db->field_exists('allowsmilies', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "allowsmilies");
+	}
+
+	if($db->field_exists('allowimgcode', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "allowimgcode");
+	}
+
+	if($db->field_exists('allowvideocode', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "allowvideocode");
+	}
+
+	if($db->field_exists('viewableby', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "viewableby");
+	}
+
+	if($db->field_exists('editable`', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "editable");
+	}
+
+	if($db->field_exists('editableby', 'profilefields'))
+	{
+		$db->drop_column("profilefields", "editableby");
 	}
 
 	if($db->field_exists('oldgroup', 'awaitingactivation'))
@@ -111,7 +163,14 @@ function upgrade30_dbchanges()
 	switch($db->type)
 	{
 		case "pgsql":
-		case "sqlite":
+			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
+			$db->add_column("profilefields", "allowhtml", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "allowmycode", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "allowsmilies", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "allowimgcode", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "allowvideocode", "smallint NOT NULL default '0'");
+			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
+			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "smallint NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
@@ -122,8 +181,38 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
+			$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'")
+			break;
+		case "sqlite":
+			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
+			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowsmilies", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowimgcode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowvideocode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "viewableby", "text NOT NULL");
+			$db->add_column("profilefields", "editableby", "text NOT NULL");
+			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
+			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
+			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
+			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
+			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'")
 			break;
 		default:
+			$db->add_column("profilefields", "regex", "text NOT NULL");
+			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowsmilies", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowimgcode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "allowvideocode", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("profilefields", "viewableby", "text NOT NULL");
+			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
@@ -134,6 +223,7 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
+			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'")
 			break;
 	}
 
@@ -481,6 +571,87 @@ function upgrade30_dbchanges4()
 }
 
 function upgrade30_dbchanges5()
+{
+	global $cache, $output, $mybb, $db;
+
+	$output->print_header("Updating Database");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+	if($db->table_exists("questions"))
+	{
+		$db->drop_table("questions");
+	}
+
+	if($db->table_exists("questionsessions"))
+	{
+		$db->drop_table("questionsessions");
+	}
+
+	switch($db->type)
+	{
+		case "sqlite":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid INTEGER PRIMARY KEY,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active tinyint(1) NOT NULL default '0'
+			);");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0'
+			);");
+			break;
+		case "pgsql":
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid serial,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active smallint NOT NULL default '0',
+				PRIMARY KEY (qid)
+			);");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0',
+				UNIQUE (sid)
+			);");
+			break;
+		default:
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
+				qid int unsigned NOT NULL auto_increment,
+				question varchar(200) NOT NULL default '',
+				answer varchar(150) NOT NULL default '',
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
+				active tinyint(1) NOT NULL default '0',
+				PRIMARY KEY (qid)
+			) ENGINE=MyISAM;");
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
+				sid varchar(32) NOT NULL default '',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0',
+				PRIMARY KEY (sid)
+			) ENGINE=MyISAM;");
+	}
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges6");
+}
+
+function upgrade30_dbchanges6()
 {
 	global $cache, $output, $mybb, $db;
 
@@ -1026,7 +1197,7 @@ function upgrade30_dbchanges_optimize3()
 		"polls" => array("closed", "multiple", "public"),
 		"posts" => array("includesig", "smilieoff", "visible"),
 		"privatemessages" => array("status", "includesig", "smilieoff", "receipt"),
-		"profilefields" => array("required", "editable", "hidden"),
+		"profilefields" => array("required"),
 		"reportedcontent" => array("reportstatus"),
 		"sessions" => array("anonymous", "nopermission"),
 		"settinggroups" => array("isdefault"),

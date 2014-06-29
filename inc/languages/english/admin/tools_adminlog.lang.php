@@ -100,6 +100,12 @@ $l['admin_log_config_profile_fields_add'] = "Added custom profile field #{1} ({2
 $l['admin_log_config_profile_fields_edit'] = "Edited custom profile field #{1} ({2})";
 $l['admin_log_config_profile_fields_delete'] = "Deleted custom profile field #{1} ({2})";
 
+$l['admin_log_config_questions_add'] = "Added question #{1} ({2})";
+$l['admin_log_config_questions_edit'] = "Edited question #{1} ({2})";
+$l['admin_log_config_questions_delete'] = "Deleted question #{1} ({2})";
+$l['admin_log_config_questions_enable'] = "Enabled question #{1} ({2})";
+$l['admin_log_config_questions_disable'] = "Disabled question #{1} ({2})";
+
 $l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
 $l['admin_log_config_settings_addgroup'] = "Added setting group #{1} ({2}) properties ";
 $l['admin_log_config_settings_editgroup'] = "Edited setting group #{1} ({2}) properties ";

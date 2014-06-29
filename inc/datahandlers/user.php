@@ -478,7 +478,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_profile_fields()
 	{
-		global $db;
+		global $db, $cache;
 
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
@@ -486,99 +486,99 @@ class UserDataHandler extends DataHandler
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
-		$editable = '';
-
-		if(empty($this->data['profile_fields_editable']))
-		{
-			$editable = "editable !='0'";
-		}
 
 		// Fetch all profile fields first.
-		$options = array(
-			'order_by' => 'disporder'
-		);
-		$query = $db->simple_select('profilefields', 'name, postnum, type, fid, required, maxlength', $editable, $options);
+		$pfcache = $cache->read('profilefields');
 
-		// Then loop through the profile fields.
-		while($profilefield = $db->fetch_array($query))
+		if(is_array($pfcache))
 		{
-			// Does this field have a minimum post count?
-			if(!$this->data['profile_fields_editable'] && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+			// Then loop through the profile fields.
+			foreach($pfcache as $profilefield)
 			{
-				continue;
-			}
+				if(isset($this->data['profile_fields_editable']) || isset($this->data['registration']) && ($profilefield['required'] == 1 || $profilefield['registration'] == 1))
+				{
+					$profilefield['editableby'] = -1;
+				}
 
-			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-			$thing = explode("\n", $profilefield['type'], "2");
-			$type = trim($thing[0]);
-			$field = "fid{$profilefield['fid']}";
+				if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups']))))
+				{
+					continue;
+				}
 
-			if(!isset($profile_fields[$field]))
-			{
-				$profile_fields[$field] = '';
-			}
+				// Does this field have a minimum post count?
+				if(!isset($this->data['profile_fields_editable']) && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+				{
+					continue;
+				}
 
-			// If the profile field is required, but not filled in, present error.
-			if($type != "multiselect" && $type != "checkbox")
-			{
-				if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$thing = explode("\n", $profilefield['type'], "2");
+				$type = trim($thing[0]);
+				$field = "fid{$profilefield['fid']}";
+
+				if(!isset($profile_fields[$field]))
+				{
+					$profile_fields[$field] = '';
+				}
+
+				// If the profile field is required, but not filled in, present error.
+				if($type != "multiselect" && $type != "checkbox")
+				{
+					if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+					{
+						$this->set_error('missing_required_profile_field', array($profilefield['name']));
+					}
+				}
+				elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
 				{
 					$this->set_error('missing_required_profile_field', array($profilefield['name']));
 				}
-			}
-			elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
-			{
-				$this->set_error('missing_required_profile_field', array($profilefield['name']));
-			}
 
-			// Sort out multiselect/checkbox profile fields.
-			$options = '';
-			if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				foreach($profile_fields[$field] as $value)
+				// Sort out multiselect/checkbox profile fields.
+				$options = '';
+				if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
 				{
-					if(!in_array(htmlspecialchars_uni($value), $expoptions))
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					foreach($profile_fields[$field] as $value)
+					{
+						if(!in_array(htmlspecialchars_uni($value), $expoptions))
+						{
+							$this->set_error('bad_profile_field_values', array($profilefield['name']));
+						}
+						if($options)
+						{
+							$options .= "\n";
+						}
+						$options .= $db->escape_string($value);
+					}
+				}
+				elseif($type == "select" || $type == "radio")
+				{
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
 					{
 						$this->set_error('bad_profile_field_values', array($profilefield['name']));
 					}
-					if($options)
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				else
+				{
+					if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
 					{
-						$options .= "\n";
+						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
-					$options .= $db->escape_string($value);
-				}
-			}
-			elseif($type == "select" || $type == "radio")
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
-				{
-					$this->set_error('bad_profile_field_values', array($profilefield['name']));
-				}
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			elseif($type == "textarea")
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
 
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			else
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
+					if(!empty($profilefield['regex']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					{
+						$this->set_error('bad_profile_field_value', array($profilefield['name']));
+					}
 
-				$options = $db->escape_string($profile_fields[$field]);
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				$user['user_fields'][$field] = $options;
 			}
-			$user['user_fields'][$field] = $options;
 		}
 
 		return true;
@@ -1125,14 +1125,18 @@ class UserDataHandler extends DataHandler
 
 		$user['user_fields']['ufid'] = $this->uid;
 
-		$query = $db->simple_select("profilefields", "fid");
-		while($profile_field = $db->fetch_array($query))
+		$pfcache = $cache->read('profilefields');
+
+		if(is_array($pfcache))
 		{
-			if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+			foreach($pfcache as $profile_field)
 			{
-				continue;
+				if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+				{
+					continue;
+				}
+				$user['user_fields']["fid{$profile_field['fid']}"] = '';
 			}
-			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
 		$db->insert_query("userfields", $user['user_fields'], false);
