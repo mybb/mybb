@@ -371,6 +371,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+		$thread['forumlink'] = get_thread_link($thread['fid']);
+		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
@@ -489,6 +491,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
+			$announcement['forumlink'] = get_forum_link($announcement['fid']);
+			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
 			if($announcement['uid'] == 0)
 			{
