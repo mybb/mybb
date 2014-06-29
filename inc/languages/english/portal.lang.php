@@ -7,6 +7,7 @@
 
 $l['nav_portal'] = "Portal";
 $l['posted_by'] = "Posted by:";
+$l['forum'] = "Forum:";
 $l['replies'] = "Replies";
 $l['no_replies'] = "No Replies";
 $l['latest_threads'] = "Latest Threads";
@@ -47,4 +48,5 @@ $l['online_users'] = "There are currently <b>{1}</b> online users.";
 $l['online_counts'] = "<b>{1}</b> Member(s) | <b>{2}</b> Guest(s)";
 $l['print_this_item'] = "Print this item";
 $l['send_to_friend'] = "Send this item to a friend";
+$l['latest_announcements'] = "Latest Announcements";
 ?>
