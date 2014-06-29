@@ -105,6 +105,10 @@ a:hover, a:active {
 	background-position: 0 -60px;
 }
 
+#logo ul.top_links a.portal {
+	background-position: 0 -180px;
+}
+
 #panel .upper a.logout {
 	font-weight: bold;
 	background: url(images/headerlinks_sprite.png) right -80px no-repeat;
@@ -3927,6 +3931,7 @@ a.button {
 				<div class="wrapper">
 					<a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a>
 					<ul class="menu top_links">
+						{$menu_portal}
 						{$menu_search}
 						{$menu_memberlist}
 						{$menu_calendar}
@@ -3954,6 +3959,7 @@ a.button {
 				<br />]]></template>
 		<template name="header_menu_calendar" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>]]></template>
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
+		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
 		<template name="header_quicksearch" version="1800"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
 						<fieldset id="search">
