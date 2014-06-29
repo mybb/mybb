@@ -13220,6 +13220,7 @@ if(use_xmlhttprequest == "1")
 						<div style="padding-left: 10px; font-weight: bold; float: left;">{$new_warning_level}%</div><br style="clear: left;" />
 						{$result}
 					</dd>]]></template>
+		<template name="warnings_warn_type_result" version="1800"><![CDATA[<div class="smalltext" style="clear: left; padding-top: 4px;">{$lang->result}<br />{$new_level['friendly_action']}</div>]]></template>
 		<template name="warnings_warning" version="1400"><![CDATA[			<tr>
 				<td class="{$alt_bg}">{$warning_type} {$points}{$post_link}</td>
 				<td class="{$alt_bg}" align="center">{$date_issued}</td>
