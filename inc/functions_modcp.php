@@ -12,7 +12,6 @@
  * Check if the current user has permission to perform a ModCP action on another user
  *
  * @param int The user ID to perform the action on.
- * @param int the moderators user ID
  * @return boolean True if the user has necessary permissions
  */
 function modcp_can_manage_user($uid)
@@ -34,6 +33,12 @@ function modcp_can_manage_user($uid)
 	return true;
 }
 
+/**
+ * Fetch forums the moderator can manage announcements to
+ *
+ * @param int (Optional) The parent forum ID
+ * @param int (Optional) The depth from parent forum the moderator can manage to
+ */
 function fetch_forum_announcements($pid=0, $depth=1)
 {
 	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
@@ -74,7 +79,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 				continue;
 			}
 
-			if($forum['active'] == 0 || !is_moderator($forum['fid']))
+			if($forum['active'] == 0 || !is_moderator($forum['fid'], "canmanageannouncements"))
 			{
 				// Check if this forum is a parent of a moderated forum
 				if(in_array($forum['fid'], $parent_forums))
@@ -106,11 +111,11 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
-							$icon = "<img src=\"{$theme['imgdir']}/minioff.png\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 						}
 						else
 						{
-							$icon = "<img src=\"{$theme['imgdir']}/minion.png\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 						}
 
 						$subject = htmlspecialchars_uni($announcement['subject']);
@@ -129,6 +134,12 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	}
 }
 
+/**
+ * Send reported content to moderators
+ *
+ * @param array Array of reported content
+ * @return bool True if PM sent
+ */
 function send_report($report)
 {
 	global $db, $lang, $forum, $mybb, $post, $thread;
@@ -216,14 +227,21 @@ function send_report($report)
 	return false;
 }
 
+/**
+ * Add a report
+ *
+ * @param array Array of reported content
+ * @param string Type of content being reported
+ * @return int Report ID
+ */
 function add_report($report, $type = 'post')
 {
 	global $cache, $db, $mybb;
 
 	$insert_array = array(
-		'pid' => (int)$report['pid'],
-		'tid' => (int)$report['tid'],
-		'fid' => (int)$report['fid'],
+		'id' => (int)$report['id'],
+		'id2' => (int)$report['id2'],
+		'id3' => (int)$report['id3'],
 		'uid' => (int)$report['uid'],
 		'reportstatus' => 0,
 		'reason' => $db->escape_string($report['reason']),
@@ -239,12 +257,18 @@ function add_report($report, $type = 'post')
 		return send_report($report);
 	}
 
-	$rid = $db->insert_query("reportedposts", $insert_array);
-	$cache->update_reportedposts();
+	$rid = $db->insert_query("reportedcontent", $insert_array);
+	$cache->update_reportedcontent();
 
 	return $rid;
 }
 
+/**
+ * Update an existing report
+ *
+ * @param array Array of reported content
+ * @return bool
+ */
 function update_report($report)
 {
 	global $db;
@@ -255,7 +279,7 @@ function update_report($report)
 		'reporters' => $db->escape_string(serialize($report['reporters']))
 	);
 
-	$db->update_query("reportedposts", $update_array, "rid = '{$report['rid']}'");
+	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");
 	return true;
 }
 ?>

@@ -11,7 +11,7 @@
 $tables[] = "CREATE TABLE mybb_adminlog (
 	uid int unsigned NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	module varchar(50) NOT NULL default '',
 	action varchar(50) NOT NULL default '',
 	data TEXT NOT NULL
@@ -20,11 +20,12 @@ $tables[] = "CREATE TABLE mybb_adminlog (
 $tables[] = "CREATE TABLE mybb_adminoptions (
 	uid int unsigned NOT NULL default '0',
 	cpstyle varchar(50) NOT NULL default '',
-	codepress int(1) NOT NULL default '1',
+	cplanguage varchar(50) NOT NULL default '',
+	codepress tinyint(1) NOT NULL default '1',
 	notes TEXT NOT NULL,
 	permissions TEXT NOT NULL,
 	defaultviews TEXT NOT NULL,
-	loginattempts int unsigned NOT NULL default '0',
+	loginattempts smallint unsigned NOT NULL default '0',
 	loginlockoutexpiry int unsigned NOT NULL default '0'
  );";
 
@@ -33,8 +34,8 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	uid int NOT NULL default '0',
 	loginkey varchar(50) NOT NULL default '',
 	ip blob(16) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
-	lastactive bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
+	lastactive int unsigned NOT NULL default '0',
 	data TEXT NOT NULL,
 	useragent varchar(100) NOT NULL default ''
 );";
@@ -44,27 +45,27 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	uid int(10) NOT NULL default '0',
 	title varchar(100) NOT NULL default '',
 	type varchar(6) NOT NULL default '',
-	visibility int(1) NOT NULL default '0',
+	visibility tinyint(1) NOT NULL default '0',
 	fields TEXT NOT NULL,
 	conditions TEXT NOT NULL,
 	custom_profile_fields TEXT NOT NULL,
 	sortby varchar(20) NOT NULL default '',
 	sortorder varchar(4) NOT NULL default '',
-	perpage int(4) NOT NULL default '0',
+	perpage smallint(4) NOT NULL default '0',
 	view_type varchar(6) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
 	aid INTEGER PRIMARY KEY,
-	fid int(10) NOT NULL default '0',
+	fid smallint NOT NULL default '0',
 	uid int NOT NULL default '0',
 	subject varchar(120) NOT NULL default '',
 	message TEXT NOT NULL,
-	startdate bigint(30) NOT NULL default '0',
-	enddate bigint(30) NOT NULL default '0',
-	allowhtml int(1) NOT NULL default '0',
-	allowmycode int(1) NOT NULL default '0',
-	allowsmilies int(1) NOT NULL default '0'
+	startdate int unsigned NOT NULL default '0',
+	enddate int unsigned NOT NULL default '0',
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_attachments (
@@ -77,8 +78,8 @@ $tables[] = "CREATE TABLE mybb_attachments (
 	filesize int(10) NOT NULL default '0',
 	attachname varchar(120) NOT NULL default '',
 	downloads int NOT NULL default '0',
-	dateuploaded bigint(30) NOT NULL default '0',
-	visible int(1) NOT NULL default '0',
+	dateuploaded int unsigned NOT NULL default '0',
+	visible tinyint(1) NOT NULL default '0',
 	thumbnail varchar(120) NOT NULL default ''
 );";
 
@@ -94,10 +95,10 @@ $tables[] = "CREATE TABLE mybb_attachtypes (
 $tables[] = "CREATE TABLE mybb_awaitingactivation (
 	aid INTEGER PRIMARY KEY,
 	uid int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	code varchar(100) NOT NULL default '',
 	type char(1) NOT NULL default '',
-	oldgroup bigint(30) NOT NULL default '0',
+	validated tinyint(1) NOT NULL default '0',
 	misc varchar(255) NOT NULL default ''
 );";
 
@@ -110,9 +111,9 @@ $tables[] = "CREATE TABLE mybb_badwords (
 $tables[] = "CREATE TABLE mybb_banfilters (
 	fid INTEGER PRIMARY KEY,
 	filter varchar(200) NOT NULL default '',
-	type int(1) NOT NULL default '0',
-	lastuse bigint(30) NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0'
+	type tinyint(1) NOT NULL default '0',
+	lastuse int unsigned NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_banned (
@@ -122,41 +123,48 @@ $tables[] = "CREATE TABLE mybb_banned (
 	oldadditionalgroups TEXT NOT NULL,
 	olddisplaygroup int NOT NULL default '0',
 	admin int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	bantime varchar(50) NOT NULL default '',
-	lifted bigint(30) NOT NULL default '0',
+	lifted int unsigned NOT NULL default '0',
 	reason varchar(255) NOT NULL default ''
+);";
+
+$tables[] = "CREATE TABLE mybb_buddyrequests (
+ id INTEGER PRIMARY KEY,
+ uid bigint(30) UNSIGNED NOT NULL,
+ touid bigint(30) UNSIGNED NOT NULL,
+ date int(11) UNSIGNED NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_calendars (
 	cid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',
-	disporder int NOT NULL default '0',
-	startofweek int(1) NOT NULL default '0',
-	showbirthdays int(1) NOT NULL default '0',
-	eventlimit int(3) NOT NULL default '0',
-	moderation int(1) NOT NULL default '0',
-	allowhtml int(1) NOT NULL default '0',
-	allowmycode int(1) NOT NULL default '0',
-	allowimgcode int(1) NOT NULL default '0',
-	allowvideocode int(1) NOT NULL default '0',
-	allowsmilies int(1) NOT NULL default '0'
+	disporder smallint NOT NULL default '0',
+	startofweek tinyint(1) NOT NULL default '0',
+	showbirthdays tinyint(1) NOT NULL default '0',
+	eventlimit smallint(3) NOT NULL default '0',
+	moderation tinyint(1) NOT NULL default '0',
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowimgcode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_calendarpermissions (
 	cid int NOT NULL default '0',
 	gid int NOT NULL default '0',
-	canviewcalendar int(1) NOT NULL default '0',
-	canaddevents int(1) NOT NULL default '0',
-	canbypasseventmod int(1) NOT NULL default '0',
-	canmoderateevents int(1) NOT NULL default '0'
+	canviewcalendar tinyint(1) NOT NULL default '0',
+	canaddevents tinyint(1) NOT NULL default '0',
+	canbypasseventmod tinyint(1) NOT NULL default '0',
+	canmoderateevents tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_captcha (
 	imagehash varchar(32) NOT NULL default '',
 	imagestring varchar(8) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
-	used int(1) NOT NULL default '0'
+	dateline int unsigned NOT NULL default '0',
+	used tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_datacache (
@@ -167,11 +175,11 @@ $tables[] = "CREATE TABLE mybb_datacache (
 $tables[] = "CREATE TABLE mybb_delayedmoderation (
 	did integer PRIMARY KEY,
 	type varchar(30) NOT NULL default '',
-	delaydateline bigint(30) NOT NULL default '0',
+	delaydateline int unsigned NOT NULL default '0',
 	uid int(10) NOT NULL default '0',
 	fid smallint(5) NOT NULL default '0',
 	tids text NOT NULL,
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	inputs text NOT NULL
 );";
 
@@ -181,14 +189,14 @@ $tables[] = "CREATE TABLE mybb_events (
 	uid int NOT NULL default '0',
 	name varchar(120) NOT NULL default '',
 	description TEXT NOT NULL,
-	visible int(1) NOT NULL default '0',
-	private int(1) NOT NULL default '0',
+	visible tinyint(1) NOT NULL default '0',
+	private tinyint(1) NOT NULL default '0',
 	dateline int(10) NOT NULL default '0',
 	starttime int(10) NOT NULL default '0',
 	endtime int(10) NOT NULL default '0',
-	timezone varchar(4) NOT NULL default '0',
-	ignoretimezone int(1) NOT NULL default '0',
-	usingtime int(1) NOT NULL default '0',
+	timezone varchar(5) NOT NULL default '',
+	ignoretimezone tinyint(1) NOT NULL default '0',
+	usingtime tinyint(1) NOT NULL default '0',
 	repeats TEXT NOT NULL
 );";
 
@@ -196,22 +204,22 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
 	pid INTEGER PRIMARY KEY,
 	fid int NOT NULL default '0',
 	gid int NOT NULL default '0',
-	canview int(1) NOT NULL default '0',
-	canviewthreads int(1) NOT NULL default '0',
-	canonlyviewownthreads int(1) NOT NULL default '0',
-	candlattachments int(1) NOT NULL default '0',
-	canpostthreads int(1) NOT NULL default '0',
-	canpostreplys int(1) NOT NULL default '0',
-	canonlyreplyownthreads int(1) NOT NULL default '0',
-	canpostattachments int(1) NOT NULL default '0',
-	canratethreads int(1) NOT NULL default '0',
-	caneditposts int(1) NOT NULL default '0',
-	candeleteposts int(1) NOT NULL default '0',
-	candeletethreads int(1) NOT NULL default '0',
-	caneditattachments int(1) NOT NULL default '0',
-	canpostpolls int(1) NOT NULL default '0',
-	canvotepolls int(1) NOT NULL default '0',
-	cansearch int(1) NOT NULL default '0'
+	canview tinyint(1) NOT NULL default '0',
+	canviewthreads tinyint(1) NOT NULL default '0',
+	canonlyviewownthreads tinyint(1) NOT NULL default '0',
+	candlattachments tinyint(1) NOT NULL default '0',
+	canpostthreads tinyint(1) NOT NULL default '0',
+	canpostreplys tinyint(1) NOT NULL default '0',
+	canonlyreplyownthreads tinyint(1) NOT NULL default '0',
+	canpostattachments tinyint(1) NOT NULL default '0',
+	canratethreads tinyint(1) NOT NULL default '0',
+	caneditposts tinyint(1) NOT NULL default '0',
+	candeleteposts tinyint(1) NOT NULL default '0',
+	candeletethreads tinyint(1) NOT NULL default '0',
+	caneditattachments tinyint(1) NOT NULL default '0',
+	canpostpolls tinyint(1) NOT NULL default '0',
+	canvotepolls tinyint(1) NOT NULL default '0',
+	cansearch tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_forums (
@@ -223,8 +231,8 @@ $tables[] = "CREATE TABLE mybb_forums (
 	pid smallint NOT NULL default '0',
 	parentlist TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
-	active int(1) NOT NULL default '0',
-	open int(1) NOT NULL default '0',
+	active tinyint(1) NOT NULL default '0',
+	open tinyint(1) NOT NULL default '0',
 	threads int NOT NULL default '0',
 	posts int NOT NULL default '0',
 	lastpost int(10) NOT NULL default '0',
@@ -232,24 +240,24 @@ $tables[] = "CREATE TABLE mybb_forums (
 	lastposteruid int(10) NOT NULL default '0',
 	lastposttid int(10) NOT NULL default '0',
 	lastpostsubject varchar(120) NOT NULL default '',
-	allowhtml int(1) NOT NULL default '0',
-	allowmycode int(1) NOT NULL default '0',
-	allowsmilies int(1) NOT NULL default '0',
-	allowimgcode int(1) NOT NULL default '0',
-	allowvideocode int(1) NOT NULL default '0',
-	allowpicons int(1) NOT NULL default '0',
-	allowtratings int(1) NOT NULL default '0',
-	status int(4) NOT NULL default '1',
-	usepostcounts int(1) NOT NULL default '0',
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0',
+	allowimgcode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0',
+	allowpicons tinyint(1) NOT NULL default '0',
+	allowtratings tinyint(1) NOT NULL default '0',
+	usepostcounts tinyint(1) NOT NULL default '0',
+	usethreadcounts tinyint(1) NOT NULL default '0',
 	password varchar(50) NOT NULL default '',
-	showinjump int(1) NOT NULL default '0',
-	modposts int(1) NOT NULL default '0',
-	modthreads int(1) NOT NULL default '0',
-	mod_edit_posts int(1) NOT NULL default '0',
-	modattachments int(1) NOT NULL default '0',
+	showinjump tinyint(1) NOT NULL default '0',
+	modposts tinyint(1) NOT NULL default '0',
+	modthreads tinyint(1) NOT NULL default '0',
+	mod_edit_posts tinyint(1) NOT NULL default '0',
+	modattachments tinyint(1) NOT NULL default '0',
 	style smallint NOT NULL default '0',
-	overridestyle int(1) NOT NULL default '0',
-	rulestype smallint(1) NOT NULL default '0',
+	overridestyle tinyint(1) NOT NULL default '0',
+	rulestype tinyint(1) NOT NULL default '0',
 	rulestitle varchar(200) NOT NULL default '',
 	rules TEXT NOT NULL,
 	unapprovedthreads int(10) NOT NULL default '0',
@@ -277,8 +285,9 @@ $tables[] = "CREATE TABLE mybb_groupleaders (
 	lid INTEGER PRIMARY KEY,
 	gid smallint NOT NULL default '0',
 	uid int NOT NULL default '0',
-	canmanagemembers int(1) NOT NULL default '0',
-	canmanagerequests int(1) NOT NULL default '0'
+	canmanagemembers tinyint(1) NOT NULL default '0',
+	canmanagerequests tinyint(1) NOT NULL default '0'
+	caninvitemembers tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_helpdocs (
@@ -287,21 +296,19 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
 	name varchar(120) NOT NULL default '',
 	description TEXT NOT NULL,
 	document TEXT NOT NULL,
-	usetranslation int(1) NOT NULL default '0',
-	enabled int(1) NOT NULL default '0',
+	usetranslation tinyint(1) NOT NULL default '0',
+	enabled tinyint(1) NOT NULL default '0',
 	disporder smallint NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_helpsections (
 	sid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
 	description TEXT NOT NULL,
-	usetranslation int(1) NOT NULL default '0',
-	enabled int(1) NOT NULL default '0',
+	usetranslation tinyint(1) NOT NULL default '0',
+	enabled tinyint(1) NOT NULL default '0',
 	disporder smallint NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_icons (
 	iid INTEGER PRIMARY KEY,
@@ -309,13 +316,13 @@ $tables[] = "CREATE TABLE mybb_icons (
 	path varchar(220) NOT NULL default ''
 );";
 
-
 $tables[] = "CREATE TABLE mybb_joinrequests (
 	rid INTEGER PRIMARY KEY,
 	uid int NOT NULL default '0',
 	gid smallint NOT NULL default '0',
 	reason varchar(250) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0'
+	dateline int unsigned NOT NULL default '0'
+	invite tinyint(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_massemails (
@@ -326,8 +333,8 @@ $tables[] = "CREATE TABLE mybb_massemails (
 	htmlmessage text NOT NULL,
 	type tinyint(1) NOT NULL default '0',
 	format tinyint(1) NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
-	senddate bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
+	senddate int unsigned NOT NULL default '0',
 	status tinyint(1) NOT NULL default '0',
 	sentcount int NOT NULL default '0',
 	totalcount int NOT NULL default '0',
@@ -341,20 +348,20 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
 	message TEXT NOT NULL,
 	toaddress varchar(150) NOT NULL default '',
 	fromaddress varchar(150) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	error TEXT NOT NULL,
 	smtperror varchar(200) NOT NULL default '',
-	smtpcode int(5) NOT NULL default '0'
+	smtpcode smallint(5) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_maillogs (
 	mid INTEGER PRIMARY KEY,
 	subject varchar(200) not null default '',
 	message TEXT NOT NULL,
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	fromuid int NOT NULL default '0',
 	fromemail varchar(200) not null default '',
-	touid bigint(30) NOT NULL default '0',
+	touid int unsigned NOT NULL default '0',
 	toemail varchar(200) NOT NULL default '',
 	tid int NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default ''
@@ -370,7 +377,7 @@ $tables[] = "CREATE TABLE mybb_mailqueue (
 
 $tables[] = "CREATE TABLE mybb_moderatorlog (
 	uid int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	fid smallint NOT NULL default '0',
 	tid int NOT NULL default '0',
 	pid int NOT NULL default '0',
@@ -383,16 +390,30 @@ $tables[] = "CREATE TABLE mybb_moderators (
 	mid INTEGER PRIMARY KEY,
 	fid smallint NOT NULL default '0',
 	id int NOT NULL default '0',
-	isgroup int(1) NOT NULL default '0',
-	caneditposts int(1) NOT NULL default '0',
-	candeleteposts int(1) NOT NULL default '0',
-	canviewips int(1) NOT NULL default '0',
-	canopenclosethreads int(1) NOT NULL default '0',
-	canmanagethreads int(1) NOT NULL default '0',
-	canmovetononmodforum int(1) NOT NULL default '0',
-	canusecustomtools int(1) NOT NULL default '0',
-	cansoftdelete int(1) NOT NULL default '0',
-	canrestore int(1) NOT NULL default '0'
+	isgroup tinyint(1) NOT NULL default '0',
+	caneditposts tinyint(1) NOT NULL default '0',
+	cansoftdeleteposts tinyint(1) NOT NULL default '0',
+	canrestoreposts tinyint(1) NOT NULL default '0',
+	candeleteposts tinyint(1) NOT NULL default '0',
+	cansoftdeletethreads tinyint(1) NOT NULL default '0',
+	canrestorethreads tinyint(1) NOT NULL default '0',
+	candeletethreads tinyint(1) NOT NULL default '0',
+	canviewips tinyint(1) NOT NULL default '0',
+	canviewunapprove tinyint(1) NOT NULL default '0',
+	canviewdeleted tinyint(1) NOT NULL default '0',
+	canopenclosethreads tinyint(1) NOT NULL default '0',
+	canstickunstickthreads tinyint(1) NOT NULL default '0',
+	canapproveunapprovethreads tinyint(1) NOT NULL default '0',
+	canapproveunapproveposts tinyint(1) NOT NULL default '0',
+	canapproveunapproveattachs tinyint(1) NOT NULL default '0',
+	canmanagethreads tinyint(1) NOT NULL default '0',
+	canmanagepolls tinyint(1) NOT NULL default '0',
+	canpostclosedthreads tinyint(1) NOT NULL default '0',
+	canmovetononmodforum tinyint(1) NOT NULL default '0',
+	canusecustomtools tinyint(1) NOT NULL default '0',
+	canmanageannouncements tinyint(1) NOT NULL default '0',
+	canmanagereportedposts tinyint(1) NOT NULL default '0',
+	canviewmodlog tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_modtools (
@@ -400,6 +421,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	name varchar(200) NOT NULL default '',
 	description TEXT NOT NULL,
 	forums TEXT NOT NULL,
+	groups TEXT NOT NULL,
 	type char(1) NOT NULL default '',
 	postoptions TEXT NOT NULL,
 	threadoptions TEXT NOT NULL
@@ -411,7 +433,7 @@ $tables[] = "CREATE TABLE mybb_mycode (
 	description TEXT NOT NULL,
 	regex TEXT NOT NULL,
 	replacement TEXT NOT NULL,
-	active int(1) NOT NULL default '0',
+	active tinyint(1) NOT NULL default '0',
 	parseorder smallint NOT NULL default '0'
 );";
 
@@ -419,15 +441,15 @@ $tables[] = "CREATE TABLE mybb_polls (
 	pid INTEGER PRIMARY KEY,
 	tid int NOT NULL default '0',
 	question varchar(200) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	options TEXT NOT NULL,
 	votes TEXT NOT NULL,
 	numoptions smallint NOT NULL default '0',
-	numvotes TEXT NOT NULL,
-	timeout bigint(30) NOT NULL default '0',
-	closed int(1) NOT NULL default '0',
-	multiple int(1) NOT NULL default '0',
-	public int(1) NOT NULL default '0'
+	numvotes int NOT NULL default '0',
+	timeout int unsigned NOT NULL default '0',
+	closed tinyint(1) NOT NULL default '0',
+	multiple tinyint(1) NOT NULL default '0',
+	public tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_pollvotes (
@@ -435,7 +457,7 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
 	pid int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	voteoption smallint NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0'
+	dateline int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_posts (
@@ -447,16 +469,16 @@ $tables[] = "CREATE TABLE mybb_posts (
 	icon smallint NOT NULL default '0',
 	uid int NOT NULL default '0',
 	username varchar(80) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	message TEXT NOT NULL,
 	ipaddress blob(16) NOT NULL default '',
-	includesig int(1) NOT NULL default '0',
-	smilieoff int(1) NOT NULL default '0',
+	includesig tinyint(1) NOT NULL default '0',
+	smilieoff tinyint(1) NOT NULL default '0',
 	edituid int NOT NULL default '0',
 	edittime int(10) NOT NULL default '0',
-	visible int(1) NOT NULL default '0'
+	editreason varchar(150) NOT NULL default '',
+	visible tinyint(1) NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_privatemessages (
 	pmid INTEGER PRIMARY KEY,
@@ -468,17 +490,16 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
 	subject varchar(120) NOT NULL default '',
 	icon smallint NOT NULL default '0',
 	message TEXT NOT NULL,
-	dateline bigint(30) NOT NULL default '0',
-	deletetime bigint(30) NOT NULL default '0',
-	status int(1) NOT NULL default '0',
-	statustime bigint(30) NOT NULL default '0',
-	includesig int(1) NOT NULL default '0',
-	smilieoff int(1) NOT NULL default '0',
-	receipt int(1) NOT NULL default '0',
-	readtime bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
+	deletetime int unsigned NOT NULL default '0',
+	status tinyint(1) NOT NULL default '0',
+	statustime int unsigned NOT NULL default '0',
+	includesig tinyint(1) NOT NULL default '0',
+	smilieoff tinyint(1) NOT NULL default '0',
+	receipt tinyint(1) NOT NULL default '0',
+	readtime int unsigned NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default ''
 );";
-
 
 $tables[] = "CREATE TABLE mybb_profilefields (
 	fid INTEGER PRIMARY KEY,
@@ -486,22 +507,29 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	description TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
 	type TEXT NOT NULL,
+	regex TEXT NOT NULL,
 	length smallint NOT NULL default '0',
 	maxlength smallint NOT NULL default '0',
-	required int(1) NOT NULL default '0',
-	editable int(1) NOT NULL default '0',
-	hidden int(1) NOT NULL default '0',
-	postbit int(1) NOT NULL default '0',
-	postnum bigint(30) NOT NULL default '0'
+	required tinyint(1) NOT NULL default '0',
+	registration tinyint(1) NOT NULL default '0',
+	profile tinyint(1) NOT NULL default '0',
+	postbit tinyint(1) NOT NULL default '0',
+	viewableby TEXT NOT NULL,
+	editableby TEXT NOT NULL,
+	postnum smallint NOT NULL default '0'
+	allowhtml tinyint(1) NOT NULL default '0',
+	allowmycode tinyint(1) NOT NULL default '0',
+	allowsmilies tinyint(1) NOT NULL default '0',
+	allowimgcode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0',
 );";
-
 
 $tables[] = "CREATE TABLE mybb_promotions (
 	pid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
 	description TEXT NOT NULL,
-	enabled int(1) NOT NULL default '1',
-	logging int(1) NOT NULL default '0',
+	enabled tinyint(1) NOT NULL default '1',
+	logging tinyint(1) NOT NULL default '0',
 	posts int NOT NULL default '0',
 	posttype varchar(2) NOT NULL default '',
 	registered int NOT NULL default '0',
@@ -524,23 +552,39 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
 	uid int NOT NULL default '0',
 	oldusergroup varchar(200) NOT NULL default '0',
 	newusergroup smallint NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	type varchar(9) NOT NULL default 'primary'
 );";
 
-$tables[] = "CREATE TABLE mybb_reportedposts (
+$tables[] = "CREATE TABLE mybb_questions (
+	qid INTEGER PRIMARY KEY,
+	question varchar(200) NOT NULL default '',
+	answer varchar(150) NOT NULL default '',
+	shown int unsigned NOT NULL default 0,
+	correct int unsigned NOT NULL default 0,
+	incorrect int unsigned NOT NULL default 0,
+	active tinyint(1) NOT NULL default '0'
+);";
+
+$tables[] = "CREATE TABLE mybb_questionsessions (
+	sid varchar(32) NOT NULL default '',
+	qid int unsigned NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0'
+);";
+
+$tables[] = "CREATE TABLE mybb_reportedcontent (
 	rid INTEGER PRIMARY KEY,
-	pid int NOT NULL default '0',
-	tid int NOT NULL default '0',
-	fid int NOT NULL default '0',
+	id int NOT NULL default '0',
+	id2 int NOT NULL default '0',
+	id3 int NOT NULL default '0',
 	uid int NOT NULL default '0',
-	reportstatus int(1) NOT NULL default '0',
+	reportstatus tinyint(1) NOT NULL default '0',
 	reason varchar(250) NOT NULL default '',
 	type varchar(50) NOT NULL default '',
 	reports int NOT NULL default '0',
 	reporters text NOT NULL,
-	dateline bigint(30) NOT NULL default '0',
-	lastreport bigint(30) NOT NULL default '0'
+	dateline int unsigned NOT NULL default '0',
+	lastreport int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_reputation (
@@ -548,15 +592,15 @@ $tables[] = "CREATE TABLE mybb_reputation (
 	uid int NOT NULL default '0',
 	adduid int NOT NULL default '0',
 	pid int NOT NULL default '0',
-	reputation bigint(30) NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	reputation smallint NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	comments TEXT NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_searchlog (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	ipaddress blob(16) NOT NULL default '',
 	threads LONGTEXT NOT NULL,
 	posts LONGTEXT NOT NULL,
@@ -569,11 +613,11 @@ $tables[] = "CREATE TABLE mybb_sessions (
 	sid varchar(32) NOT NULL default '',
 	uid int NOT NULL default '0',
 	ip blob(16) NOT NULL default '',
-	time bigint(30) NOT NULL default '0',
+	time int unsigned NOT NULL default '0',
 	location varchar(150) NOT NULL default '',
 	useragent varchar(100) NOT NULL default '',
-	anonymous int(1) NOT NULL default '0',
-	nopermission int(1) NOT NULL default '0',
+	anonymous tinyint(1) NOT NULL default '0',
+	nopermission tinyint(1) NOT NULL default '0',
 	location1 int(10) NOT NULL default '0',
 	location2 int(10) NOT NULL default '0'
 );";
@@ -584,9 +628,8 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
 	title varchar(220) NOT NULL default '',
 	description TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
-	isdefault int(1) NOT NULL default '0'
+	isdefault tinyint(1) NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_settings (
 	sid INTEGER PRIMARY KEY,
@@ -597,9 +640,8 @@ $tables[] = "CREATE TABLE mybb_settings (
 	value TEXT NOT NULL,
 	disporder smallint NOT NULL default '0',
 	gid smallint NOT NULL default '0',
-	isdefault int(1) NOT NULL default '0'
+	isdefault tinyint(1) NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_smilies (
 	sid INTEGER PRIMARY KEY,
@@ -607,21 +649,21 @@ $tables[] = "CREATE TABLE mybb_smilies (
 	find varchar(120) NOT NULL default '',
 	image varchar(220) NOT NULL default '',
 	disporder smallint NOT NULL default '0',
-	showclickable int(1) NOT NULL default '0'
+	showclickable tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',
-	theme int NOT NULL default '0',
+	theme smallint NOT NULL default '0',
 	language varchar(20) NOT NULL default '',
-	usergroup int NOT NULL default '0',
+	usergroup smallint NOT NULL default '0',
 	useragent varchar(200) NOT NULL default '',
-	lastvisit bigint(30) NOT NULL default '0'
+	lastvisit int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_stats (
-	dateline bigint(30) NOT NULL default '0' PRIMARY KEY,
+	dateline int unsigned NOT NULL default '0' PRIMARY KEY,
 	numusers int unsigned NOT NULL default '0',
 	numthreads int unsigned NOT NULL default '0',
 	numposts int unsigned NOT NULL default '0'
@@ -637,17 +679,17 @@ $tables[] = "CREATE TABLE mybb_tasks (
 	day varchar(100) NOT NULL default '',
 	month varchar(30) NOT NULL default '',
 	weekday varchar(15) NOT NULL default '',
-	nextrun bigint(30) NOT NULL default '0',
-	lastrun bigint(30) NOT NULL default '0',
-	enabled int(1) NOT NULL default '1',
-	logging int(1) NOT NULL default '0',
-	locked bigint(30) NOT NULL default '0'
+	nextrun int unsigned NOT NULL default '0',
+	lastrun int unsigned NOT NULL default '0',
+	enabled tinyint(1) NOT NULL default '1',
+	logging tinyint(1) NOT NULL default '0',
+	locked int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_tasklog (
 	lid INTEGER PRIMARY KEY,
 	tid int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	data TEXT NOT NULL
 );";
 
@@ -655,14 +697,14 @@ $tables[] = "CREATE TABLE mybb_templategroups (
 	gid INTEGER PRIMARY KEY,
 	prefix varchar(50) NOT NULL default '',
 	title varchar(100) NOT NULL default '',
-	isdefault int(1) NOT NULL default '0'
+	isdefault tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_templates (
 	tid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
 	template TEXT NOT NULL,
-	sid int(10) NOT NULL default '0',
+	sid smallint NOT NULL default '0',
 	version varchar(20) NOT NULL default '0',
 	status varchar(10) NOT NULL default '',
 	dateline int(10) NOT NULL default '0'
@@ -673,12 +715,11 @@ $tables[] = "CREATE TABLE mybb_templatesets (
 	title varchar(120) NOT NULL default ''
 );";
 
-
 $tables[] = "CREATE TABLE mybb_themes (
 	tid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',
 	pid smallint NOT NULL default '0',
-	def smallint(1) NOT NULL default '0',
+	def tinyint(1) NOT NULL default '0',
 	properties TEXT NOT NULL,
 	stylesheets TEXT NOT NULL,
 	allowedgroups TEXT NOT NULL
@@ -687,11 +728,11 @@ $tables[] = "CREATE TABLE mybb_themes (
 $tables[] = "CREATE TABLE mybb_themestylesheets(
 	sid INTEGER PRIMARY KEY,
 	name varchar(30) NOT NULL default '',
-	tid int unsigned NOT NULL default '0',
+	tid smallint unsigned NOT NULL default '0',
 	attachedto TEXT NOT NULL,
-	stylesheet TEXT NOT NULL,
+	stylesheet LONGTEXT NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
-	lastmodified bigint(30) NOT NULL default '0'
+	lastmodified int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_threadprefixes (
@@ -723,19 +764,19 @@ $tables[] = "CREATE TABLE mybb_threads (
 	poll int NOT NULL default '0',
 	uid int NOT NULL default '0',
 	username varchar(80) NOT NULL default '',
-	dateline bigint(30) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	firstpost int NOT NULL default '0',
-	lastpost bigint(30) NOT NULL default '0',
+	lastpost int unsigned NOT NULL default '0',
 	lastposter varchar(120) NOT NULL default '',
 	lastposteruid int NOT NULL default '0',
 	views int(100) NOT NULL default '0',
 	replies int(100) NOT NULL default '0',
 	closed varchar(30) NOT NULL default '',
-	sticky int(1) NOT NULL default '0',
+	sticky tinyint(1) NOT NULL default '0',
 	numratings smallint NOT NULL default '0',
 	totalratings smallint NOT NULL default '0',
 	notes TEXT NOT NULL,
-	visible int(1) NOT NULL default '0',
+	visible tinyint(1) NOT NULL default '0',
 	unapprovedposts int(10) NOT NULL default '0',
 	deletedposts int(10) NOT NULL default '0',
 	attachmentcount int(10) NOT NULL default '0',
@@ -752,8 +793,8 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
 	sid INTEGER PRIMARY KEY,
 	uid int NOT NULL default '0',
 	tid int NOT NULL default '0',
-	notification int(1) NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	notification tinyint(1) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	subscriptionkey varchar(32) NOT NULL default ''
 );";
 
@@ -775,72 +816,79 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	starimage varchar(120) NOT NULL default '',
 	image varchar(120) NOT NULL default '',
 	disporder smallint(6) NOT NULL default '0',
-	isbannedgroup int(1) NOT NULL default '0',
-	canview int(1) NOT NULL default '0',
-	canviewthreads int(1) NOT NULL default '0',
-	canviewprofiles int(1) NOT NULL default '0',
-	candlattachments int(1) NOT NULL default '0',
-	canviewboardclosed int(1) NOT NULL default '0',
-	canpostthreads int(1) NOT NULL default '0',
-	canpostreplys int(1) NOT NULL default '0',
-	canpostattachments int(1) NOT NULL default '0',
-	canratethreads int(1) NOT NULL default '0',
-	caneditposts int(1) NOT NULL default '0',
-	candeleteposts int(1) NOT NULL default '0',
-	candeletethreads int(1) NOT NULL default '0',
-	caneditattachments int(1) NOT NULL default '0',
-	canpostpolls int(1) NOT NULL default '0',
-	canvotepolls int(1) NOT NULL default '0',
-	canundovotes int(1) NOT NULL default '0',
-	canusepms int(1) NOT NULL default '0',
-	cansendpms int(1) NOT NULL default '0',
-	cantrackpms int(1) NOT NULL default '0',
-	candenypmreceipts int(1) NOT NULL default '0',
+	isbannedgroup tinyint(1) NOT NULL default '0',
+	canview tinyint(1) NOT NULL default '0',
+	canviewthreads tinyint(1) NOT NULL default '0',
+	canviewprofiles tinyint(1) NOT NULL default '0',
+	candlattachments tinyint(1) NOT NULL default '0',
+	canviewboardclosed tinyint(1) NOT NULL default '0',
+	canpostthreads tinyint(1) NOT NULL default '0',
+	canpostreplys tinyint(1) NOT NULL default '0',
+	canpostattachments tinyint(1) NOT NULL default '0',
+	canratethreads tinyint(1) NOT NULL default '0',
+	caneditposts tinyint(1) NOT NULL default '0',
+	candeleteposts tinyint(1) NOT NULL default '0',
+	candeletethreads tinyint(1) NOT NULL default '0',
+	caneditattachments tinyint(1) NOT NULL default '0',
+	canpostpolls tinyint(1) NOT NULL default '0',
+	canvotepolls tinyint(1) NOT NULL default '0',
+	canundovotes tinyint(1) NOT NULL default '0',
+	canusepms tinyint(1) NOT NULL default '0',
+	cansendpms tinyint(1) NOT NULL default '0',
+	cantrackpms tinyint(1) NOT NULL default '0',
+	candenypmreceipts tinyint(1) NOT NULL default '0',
 	pmquota int(3) NOT NULL default '0',
 	maxpmrecipients int(4) NOT NULL default '5',
-	cansendemail int(1) NOT NULL default '0',
-	cansendemailoverride int(1) NOT NULL default '0',
+	cansendemail tinyint(1) NOT NULL default '0',
+	cansendemailoverride tinyint(1) NOT NULL default '0',
 	maxemails int(3) NOT NULL default '5',
-	canviewmemberlist int(1) NOT NULL default '0',
-	canviewcalendar int(1) NOT NULL default '0',
-	canaddevents int(1) NOT NULL default '0',
-	canbypasseventmod int(1) NOT NULL default '0',
-	canmoderateevents int(1) NOT NULL default '0',
-	canviewonline int(1) NOT NULL default '0',
-	canviewwolinvis int(1) NOT NULL default '0',
-	canviewonlineips int(1) NOT NULL default '0',
-	cancp int(1) NOT NULL default '0',
-	issupermod int(1) NOT NULL default '0',
-	cansearch int(1) NOT NULL default '0',
-	canusercp int(1) NOT NULL default '0',
-	canuploadavatars int(1) NOT NULL default '0',
-	canratemembers int(1) NOT NULL default '0',
-	canchangename int(1) NOT NULL default '0',
-	canbereported int(1) NOT NULL default '0',
-	showforumteam int(1) NOT NULL default '0',
-	usereputationsystem int(1) NOT NULL default '0',
-	cangivereputations int(1) NOT NULL default '0',
-	reputationpower bigint(30) NOT NULL default '0',
-	maxreputationsday bigint(30) NOT NULL default '0',
-	maxreputationsperuser bigint(30) NOT NULL default '0',
-	maxreputationsperthread bigint(30) NOT NULL default '0',
-	candisplaygroup int(1) NOT NULL default '0',
-	attachquota bigint(30) NOT NULL default '0',
-	cancustomtitle int(1) NOT NULL default '0',
-	canwarnusers int(1) NOT NULL default '0',
-	canreceivewarnings int(1) NOT NULL default '0',
+	canviewmemberlist tinyint(1) NOT NULL default '0',
+	canviewcalendar tinyint(1) NOT NULL default '0',
+	canaddevents tinyint(1) NOT NULL default '0',
+	canbypasseventmod tinyint(1) NOT NULL default '0',
+	canmoderateevents tinyint(1) NOT NULL default '0',
+	canviewonline tinyint(1) NOT NULL default '0',
+	canviewwolinvis tinyint(1) NOT NULL default '0',
+	canviewonlineips tinyint(1) NOT NULL default '0',
+	cancp tinyint(1) NOT NULL default '0',
+	issupermod tinyint(1) NOT NULL default '0',
+	cansearch tinyint(1) NOT NULL default '0',
+	canusercp tinyint(1) NOT NULL default '0',
+	canuploadavatars tinyint(1) NOT NULL default '0',
+	canratemembers tinyint(1) NOT NULL default '0',
+	canchangename tinyint(1) NOT NULL default '0',
+	canbereported tinyint(1) NOT NULL default '0',
+	showforumteam tinyint(1) NOT NULL default '0',
+	usereputationsystem tinyint(1) NOT NULL default '0',
+	cangivereputations tinyint(1) NOT NULL default '0',
+	reputationpower int unsigned NOT NULL default '0',
+	maxreputationsday int unsigned NOT NULL default '0',
+	maxreputationsperuser int unsigned NOT NULL default '0',
+	maxreputationsperthread int unsigned NOT NULL default '0',
+	candisplaygroup tinyint(1) NOT NULL default '0',
+	attachquota int unsigned NOT NULL default '0',
+	cancustomtitle tinyint(1) NOT NULL default '0',
+	canwarnusers tinyint(1) NOT NULL default '0',
+	canreceivewarnings tinyint(1) NOT NULL default '0',
 	maxwarningsday int NOT NULL default '3',
-	canmodcp int(1) NOT NULL default '0',
-	showinbirthdaylist int(1) NOT NULL default '0',
-	canoverridepm int(1) NOT NULL default '0',
-	canusesig int(1) NOT NULL default '0',
-	canusesigxposts bigint(30) NOT NULL default '0',
-	signofollow int(1) NOT NULL default '0',
+	canmodcp tinyint(1) NOT NULL default '0',
+	showinbirthdaylist tinyint(1) NOT NULL default '0',
+	canoverridepm tinyint(1) NOT NULL default '0',
+	canusesig tinyint(1) NOT NULL default '0',
+	canusesigxposts int unsigned NOT NULL default '0',
+	signofollow tinyint(1) NOT NULL default '0',
 	edittimelimit int(4) NOT NULL default '0',
 	maxposts int(4) NOT NULL default '0',
-	showmemberlist int(1) NOT NULL default '1'
+	showmemberlist tinyint(1) NOT NULL default '1',
+	canmanageannounce tinyint(1) NOT NULL default '0',
+	canmanagemodqueue tinyint(1) NOT NULL default '0',
+	canmanagereportedcontent tinyint(1) NOT NULL default '0',
+	canviewmodlogs tinyint(1) NOT NULL default '0',
+	caneditprofiles tinyint(1) NOT NULL default '0',
+	canbanusers tinyint(1) NOT NULL default '0',
+	canviewwarnlogs tinyint(1) NOT NULL default '0',
+	canuseipsearch tinyint(1) NOT NULL default '0'
 );";
-
 
 $tables[] = "CREATE TABLE mybb_users (
 	uid INTEGER PRIMARY KEY,
@@ -850,6 +898,7 @@ $tables[] = "CREATE TABLE mybb_users (
 	loginkey varchar(50) NOT NULL default '',
 	email varchar(220) NOT NULL default '',
 	postnum int(10) NOT NULL default '0',
+	threadnum int(10) NOT NULL default '0',
 	avatar varchar(200) NOT NULL default '',
 	avatardimensions varchar(10) NOT NULL default '',
 	avatartype varchar(10) NOT NULL default '0',
@@ -857,43 +906,48 @@ $tables[] = "CREATE TABLE mybb_users (
 	additionalgroups varchar(200) NOT NULL default '',
 	displaygroup smallint NOT NULL default '0',
 	usertitle varchar(250) NOT NULL default '',
-	regdate bigint(30) NOT NULL default '0',
-	lastactive bigint(30) NOT NULL default '0',
-	lastvisit bigint(30) NOT NULL default '0',
-	lastpost bigint(30) NOT NULL default '0',
+	regdate int unsigned NOT NULL default '0',
+	lastactive int unsigned NOT NULL default '0',
+	lastvisit int unsigned NOT NULL default '0',
+	lastpost int unsigned NOT NULL default '0',
 	website varchar(200) NOT NULL default '',
 	icq varchar(10) NOT NULL default '',
 	aim varchar(50) NOT NULL default '',
 	yahoo varchar(50) NOT NULL default '',
-	msn varchar(75) NOT NULL default '',
+	skype varchar(75) NOT NULL default '',
+	google varchar(75) NOT NULL default '',
 	birthday varchar(15) NOT NULL default '',
 	birthdayprivacy varchar(4) NOT NULL default 'all',
 	signature TEXT NOT NULL,
-	allownotices int(1) NOT NULL default '0',
-	hideemail int(1) NOT NULL default '0',
-	subscriptionmethod int(1) NOT NULL default '0',
-	invisible int(1) NOT NULL default '0',
-	receivepms int(1) NOT NULL default '0',
-	receivefrombuddy int(1) NOT NULL default '0',
-	pmnotice int(1) NOT NULL default '0',
-	pmnotify int(1) NOT NULL default '0',
+	allownotices tinyint(1) NOT NULL default '0',
+	hideemail tinyint(1) NOT NULL default '0',
+	subscriptionmethod tinyint(1) NOT NULL default '0',
+	invisible tinyint(1) NOT NULL default '0',
+	receivepms tinyint(1) NOT NULL default '0',
+	receivefrombuddy tinyint(1) NOT NULL default '0',
+	pmnotice tinyint(1) NOT NULL default '0',
+	pmnotify tinyint(1) NOT NULL default '0',
+	buddyrequestspm tinyint(1) NOT NULL default '1',
+	buddyrequestsauto tinyint(1) NOT NULL default '0',
 	threadmode varchar(8) NOT NULL default '',
-	showsigs int(1) NOT NULL default '0',
-	showavatars int(1) NOT NULL default '0',
-	showquickreply int(1) NOT NULL default '0',
-	showredirect int(1) NOT NULL default '0',
+	showimages tinyint(1) NOT NULL default '0',
+	showvideos tinyint(1) NOT NULL default '0',
+	showsigs tinyint(1) NOT NULL default '0',
+	showavatars tinyint(1) NOT NULL default '0',
+	showquickreply tinyint(1) NOT NULL default '0',
+	showredirect tinyint(1) NOT NULL default '0',
 	ppp smallint(6) NOT NULL default '0',
 	tpp smallint(6) NOT NULL default '0',
 	daysprune smallint(6) NOT NULL default '0',
 	dateformat varchar(4) NOT NULL default '',
 	timeformat varchar(4) NOT NULL default '',
-	timezone varchar(4) NOT NULL default '',
-	dst int(1) NOT NULL default '0',
-	dstcorrection int(1) NOT NULL default '0',
+	timezone varchar(5) NOT NULL default '',
+	dst tinyint(1) NOT NULL default '0',
+	dstcorrection tinyint(1) NOT NULL default '0',
 	buddylist TEXT NOT NULL,
 	ignorelist TEXT NOT NULL,
 	style smallint NOT NULL default '0',
-	away int(1) NOT NULL default '0',
+	away tinyint(1) NOT NULL default '0',
 	awaydate int(10) NOT NULL default '0',
 	returndate varchar(15) NOT NULL default '',
 	awayreason varchar(200) NOT NULL default '',
@@ -901,27 +955,26 @@ $tables[] = "CREATE TABLE mybb_users (
 	notepad TEXT NOT NULL,
 	referrer int NOT NULL default '0',
 	referrals int NOT NULL default '0',
-	reputation bigint(30) NOT NULL default '0',
+	reputation int unsigned NOT NULL default '0',
 	regip blob(16) NOT NULL default '',
 	lastip blob(16) NOT NULL default '',
 	language varchar(50) NOT NULL default '',
-	timeonline bigint(30) NOT NULL default '0',
-	showcodebuttons int(1) NOT NULL default '1',
+	timeonline int unsigned NOT NULL default '0',
+	showcodebuttons tinyint(1) NOT NULL default '1',
 	totalpms int(10) NOT NULL default '0',
 	unreadpms int(10) NOT NULL default '0',
 	warningpoints int(3) NOT NULL default '0',
-	moderateposts int(1) NOT NULL default '0',
-	moderationtime bigint(30) NOT NULL default '0',
-	suspendposting int(1) NOT NULL default '0',
-	suspensiontime bigint(30) NOT NULL default '0',
-	suspendsignature int(1) NOT NULL default '0',
-	suspendsigtime bigint(30) NOT NULL default '0',
-	coppauser int(1) NOT NULL default '0',
-	classicpostbit int(1) NOT NULL default '0',
+	moderateposts tinyint(1) NOT NULL default '0',
+	moderationtime int unsigned NOT NULL default '0',
+	suspendposting tinyint(1) NOT NULL default '0',
+	suspensiontime int unsigned NOT NULL default '0',
+	suspendsignature tinyint(1) NOT NULL default '0',
+	suspendsigtime int unsigned NOT NULL default '0',
+	coppauser tinyint(1) NOT NULL default '0',
+	classicpostbit tinyint(1) NOT NULL default '0',
 	loginattempts tinyint(2) NOT NULL default '1',
 	usernotes TEXT NOT NULL
 );";
-
 
 $tables[] = "CREATE TABLE mybb_usertitles (
 	utid INTEGER PRIMARY KEY,
@@ -933,15 +986,15 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid INTEGER PRIMARY KEY,
-	percentage int(2) NOT NULL default '0',
+	percentage smallint(3) NOT NULL default '0',
 	action TEXT NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid INTEGER PRIMARY KEY,
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
-	expirationtime bigint(30) NOT NULL default '0'
+	points smallint NOT NULL default '0',
+	expirationtime int unsigned NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_warnings (
@@ -950,14 +1003,15 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	tid int NOT NULL default '0',
 	pid int NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
-	points int NOT NULL default '0',
-	dateline bigint(30) NOT NULL default '0',
+	points smallint NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
 	issuedby int NOT NULL default '0',
-	expires bigint(30) NOT NULL default '0',
-	expired int(1) NOT NULL default '0',
-	daterevoked bigint(30) NOT NULL default '0',
+	expires int unsigned NOT NULL default '0',
+	expired tinyint(1) NOT NULL default '0',
+	daterevoked int unsigned NOT NULL default '0',
 	revokedby int NOT NULL default '0',
 	revokereason TEXT NOT NULL,
 	notes TEXT NOT NULL
 );";
+
 ?>

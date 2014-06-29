@@ -90,6 +90,7 @@ $l['page_selected'] = "All <strong>{1}</strong> results on this page are selecte
 $l['all_selected'] = "All <strong>{1}</strong> results in this search are selected.";
 $l['select_all'] = "Select all <strong>{1}</strong> results in this search.";
 $l['clear_selection'] = "Clear Selection.";
+$l['search_user'] = "Search for a user";
 
 $l['results'] = "results";
 $l['mod_options'] = "Moderator Options";

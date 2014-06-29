@@ -18,6 +18,7 @@ $l['ppd'] = "Posts per day:";
 $l['tpd'] = "Threads per day:";
 $l['mpd'] = "Members per day:";
 $l['ppm'] = "Posts per member:";
+$l['tpm'] = "Threads per member:";
 $l['rpt'] = "Replies per thread:";
 $l['no_posts'] = "No";
 $l['general'] = "General";

@@ -91,4 +91,7 @@ $l['select_all'] = "Select all <strong>{1}</strong> threads in this forum.";
 $l['clear_selection'] = "Clear Selection.";
 
 $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing does not contain any child forums.";
+
+$l['inline_edit_description'] = '(Click and hold to edit)';
+
 ?>

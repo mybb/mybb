@@ -206,6 +206,7 @@ if(!$settings['internal']['encryption_key'])
 $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
+$mybb->asset_url = $mybb->get_asset_url();
 
 if($mybb->use_shutdown == true)
 {
@@ -284,7 +285,9 @@ $date_formats = array(
 	9 => "F jS, Y",
 	10 => "l, F jS, Y",
 	11 => "jS F, Y",
-	12 => "l, jS F, Y"
+	12 => "l, jS F, Y",
+	// ISO 8601
+	13 => "Y-d-m"
 );
 
 // An array of valid time formats (Used for user selections etc)

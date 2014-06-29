@@ -460,6 +460,18 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
+	// Check to see how many attachments exist for this post already
+	if($mybb->settings['maxattachments'] > 0 && $update_attachment == false)
+	{
+		$query = $db->simple_select("attachments", "COUNT(aid) AS numattachs", $uploaded_query);
+		$attachcount = $db->fetch_field($query, "numattachs");
+		if($attachcount >= $mybb->settings['maxattachments'])
+		{
+			$ret['error'] = $lang->sprintf($lang->error_maxattachpost, $mybb->settings['maxattachments']);
+			return $ret;
+		}
+	}
+
 	$month_dir = '';
 	if($mybb->safemode == false)
 	{
@@ -597,7 +609,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "", $mybb->user['uid']))
+	if($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "canviewunapprove", $mybb->user['uid']))
 	{
 		$attacharray['visible'] = 0;
 	}
@@ -612,6 +624,25 @@ function upload_attachment($attachment, $update_attachment=false)
 	{
 		unset($attacharray['downloads']); // Keep our download count if we're updating an attachment
 		$db->update_query("attachments", $attacharray, "aid='".$db->escape_string($prevattach['aid'])."'");
+
+		// Remove old attachment file
+		// Check if this attachment is referenced in any other posts. If it isn't, then we are safe to delete the actual file.
+		$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($prevattach['attachname'])."'");
+		if($db->fetch_field($query, "numreferences") == 0)
+		{
+			@unlink($mybb->settings['uploadspath']."/".$prevattach['attachname']);
+			if($prevattach['thumbnail'])
+			{
+				@unlink($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
+			}
+
+			$date_directory = explode('/', $prevattach['attachname']);
+			if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+			{
+				@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+			}
+		}
+
 		$aid = $prevattach['aid'];
 	}
 	else
@@ -632,6 +663,7 @@ function upload_attachment($attachment, $update_attachment=false)
  * @param array The PHP $_FILE array for the file
  * @param string The path to save the file in
  * @param string The filename for the file (if blank, current is used)
+ * @return array The uploaded file
  */
 function upload_file($file, $path, $filename="")
 {

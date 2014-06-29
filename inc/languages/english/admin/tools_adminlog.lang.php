@@ -100,6 +100,12 @@ $l['admin_log_config_profile_fields_add'] = "Added custom profile field #{1} ({2
 $l['admin_log_config_profile_fields_edit'] = "Edited custom profile field #{1} ({2})";
 $l['admin_log_config_profile_fields_delete'] = "Deleted custom profile field #{1} ({2})";
 
+$l['admin_log_config_questions_add'] = "Added question #{1} ({2})";
+$l['admin_log_config_questions_edit'] = "Edited question #{1} ({2})";
+$l['admin_log_config_questions_delete'] = "Deleted question #{1} ({2})";
+$l['admin_log_config_questions_enable'] = "Enabled question #{1} ({2})";
+$l['admin_log_config_questions_disable'] = "Disabled question #{1} ({2})";
+
 $l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
 $l['admin_log_config_settings_addgroup'] = "Added setting group #{1} ({2}) properties ";
 $l['admin_log_config_settings_editgroup'] = "Edited setting group #{1} ({2}) properties ";
@@ -216,11 +222,15 @@ $l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1})";
 $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
+$l['admin_log_tools_recount_rebuild_poll'] = "Recounted and rebuilt poll votes";
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
+$l['admin_log_tools_recount_rebuild_userthreads'] = "Recounted and rebuilt user thread counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails";
 $l['admin_log_tools_recount_rebuild_reputation'] = "Recounted and rebuilt user reputation";
 $l['admin_log_tools_recount_rebuild_warning'] = "Recounted and rebuilt warning points";
 $l['admin_log_tools_recount_rebuild_privatemessages'] = "Recounted and rebuilt private messages";
+$l['admin_log_tools_recount_rebuild_referral'] = "Recounted and rebuilt user referral count";
+$l['admin_log_tools_recount_rebuild_threadrating'] = "Recounted and rebuilt thread ratings";
 
 $l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
 $l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
@@ -229,7 +239,8 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
-$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_user'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_delete_group'] = "Deleted group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
 $l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";

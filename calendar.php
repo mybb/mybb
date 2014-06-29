@@ -11,12 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'calendar.php');
 
-$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move";
-$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview,calendar_eventbit,calendar_addeventlink";
-$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents";
+$templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar,calendar_addevent,calendar_move,calendar_year,calendar_day,calendar_select,calendar_repeats,calendar_weekview_day_event_time";
+$templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview";
+$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty";
+$templatelist .= ",calendar_jump,calendar_jump_option,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_addeventlink,calendar_addevent_calendarselect_hidden";
+$templatelist .= ",calendar_weekrow_day_birthdays,calendar_weekview_day_birthdays,calendar_year_sel,calendar_event_userstar,calendar_addevent_calendarselect,calendar_eventbit,calendar_event";
 
 require_once "./global.php";
-
 require_once MYBB_ROOT."inc/functions_calendar.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -57,7 +58,13 @@ $plugins->run_hooks("calendar_start");
 add_breadcrumb($lang->nav_calendar, "calendar.php");
 
 $mybb->input['calendar'] = $mybb->get_input('calendar', 1);
-$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+$calendars = cache_calendars();
+
+$calendar_jump = '';
+if(count($calendars) > 1)
+{
+	$calendar_jump = build_calendar_jump($mybb->input['calendar']);
+}
 
 $mybb->input['action'] = $mybb->get_input('action');
 // Add an event
@@ -239,7 +246,7 @@ if($mybb->input['action'] == "addevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -406,62 +413,78 @@ if($mybb->input['action'] == "addevent")
 	$single_years = $start_years = $end_years = '';
 
 	// Construct option list for years
-	for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
+	for($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year)
 	{
-		if($i == $single_year)
+		if($year == $single_year)
 		{
-			$single_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
 		}
 		else
 		{
-			$single_years .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
 		}
-		if($i == $start_year)
+
+		if($year == $start_year)
 		{
-			$start_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
-		}
-		else
-		{
-			$start_years .= "<option value=\"{$i}\">{$i}</option>\n";
-		}
-		if($i == $end_year)
-		{
-			$end_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
 		}
 		else
 		{
-			$end_years .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+		}
+
+		if($year == $end_year)
+		{
+			$selected = "selected=\"selected\"";
+			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+		}
+		else
+		{
+			$selected = "";
+			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
 		}
 	}
 
 	$single_days = $start_days = $end_days = '';
 
 	// Construct option list for days
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($i == $single_day)
+		if($day == $single_day)
 		{
-			$single_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
 		}
 		else
 		{
-			$single_days .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
 		}
-		if($i == $start_day)
+
+		if($day == $start_day)
 		{
-			$start_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
-		}
-		else
-		{
-			$start_days .= "<option value=\"{$i}\">{$i}</option>\n";
-		}
-		if($i == $end_day)
-		{
-			$end_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
 		}
 		else
 		{
-			$end_days .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+		}
+
+		if($day == $end_day)
+		{
+			$selected = "selected=\"selected\"";
+			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+		}
+		else
+		{
+			$selected = "";
+			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
 		}
 	}
 
@@ -485,7 +508,8 @@ if($mybb->input['action'] == "addevent")
 		$privatecheck = '';
 	}
 
-	$calendar_select = '';
+	$select_calendar = $calendar_select = '';
+	$calendarcount = 0;
 
 	// Build calendar select
 	$calendar_permissions = get_calendar_permissions();
@@ -497,13 +521,25 @@ if($mybb->input['action'] == "addevent")
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
 			if($calendar_option['cid'] == $mybb->input['calendar'])
 			{
-				$calendar_select .= "<option value=\"{$calendar_option['cid']}\" selected=\"selected\">{$calendar_option['name']}</option>\n";
+				$selected = " selected=\"selected\"";
 			}
 			else
 			{
-				$calendar_select .= "<option value=\"{$calendar_option['cid']}\">{$calendar_option['name']}</option>\n";
+				$selected = "";
 			}
+
+			++$calendarcount;
+			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
 		}
+	}
+
+	if($calendarcount > 1)
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
+	}
+	else
+	{
+		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
 	}
 
 	$event_errors = '';
@@ -726,7 +762,7 @@ if($mybb->input['action'] == "editevent")
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
 	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $calendar['allowsmilies']);
 		if($calendar['allowsmilies'] == 1)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -1002,62 +1038,78 @@ if($mybb->input['action'] == "editevent")
 	$single_years = $start_years = $end_years = '';
 
 	// Construct option list for years
-	for($i = my_date('Y'); $i < (my_date('Y') + 5); ++$i)
+	for($year = my_date('Y'); $year < (my_date('Y') + 5); ++$year)
 	{
-		if($i == $single_year)
+		if($year == $single_year)
 		{
-			$single_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
 		}
 		else
 		{
-			$single_years .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
 		}
-		if($i == $start_year)
+
+		if($year == $start_year)
 		{
-			$start_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
-		}
-		else
-		{
-			$start_years .= "<option value=\"{$i}\">{$i}</option>\n";
-		}
-		if($i == $end_year)
-		{
-			$end_years .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
 		}
 		else
 		{
-			$end_years .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+		}
+
+		if($year == $end_year)
+		{
+			$selected = "selected=\"selected\"";
+			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+		}
+		else
+		{
+			$selected = "";
+			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
 		}
 	}
 
 	$single_days = $start_days = $end_days = '';
 
 	// Construct option list for days
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($i == $single_day)
+		if($day == $single_day)
 		{
-			$single_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
 		}
 		else
 		{
-			$single_days .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
 		}
-		if($i == $start_day)
+
+		if($day == $start_day)
 		{
-			$start_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
-		}
-		else
-		{
-			$start_days .= "<option value=\"{$i}\">{$i}</option>\n";
-		}
-		if($i == $end_day)
-		{
-			$end_days .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
+			$selected = "selected=\"selected\"";
+			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
 		}
 		else
 		{
-			$end_days .= "<option value=\"{$i}\">{$i}</option>\n";
+			$selected = "";
+			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+		}
+
+		if($day == $end_day)
+		{
+			$selected = "selected=\"selected\"";
+			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+		}
+		else
+		{
+			$selected = "";
+			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
 		}
 	}
 
@@ -1109,7 +1161,7 @@ if($mybb->input['action'] == "move")
 
 	$plugins->run_hooks("calendar_move_start");
 
-	$calendar_select = '';
+	$calendar_select = $selected = '';
 
 	// Build calendar select
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
@@ -1118,7 +1170,7 @@ if($mybb->input['action'] == "move")
 		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
 		{
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			$calendar_select .= "<option value=\"{$calendar_option['cid']}\">{$calendar_option['name']}</option>\n";
+			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
 		}
 	}
 
@@ -1330,6 +1382,16 @@ if($mybb->input['action'] == "event")
 		"allow_videocode" => $calendar['allowvideocode']
 	);
 
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$event_parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$event_parser_options['allow_videocode'] = 0;
+	}
+
 	$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 	// Get the usergroup
@@ -1395,7 +1457,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 		for($i = 0; $i < $event['stars']; ++$i)
 		{
-			$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
+			eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
 		}
 
 		if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1477,7 +1539,7 @@ if($mybb->input['action'] == "event")
 	$repeats = fetch_friendly_repetition($event);
 	if($repeats)
 	{
-		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
+		eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
 	}
 
 	$event_class = '';
@@ -1508,9 +1570,9 @@ if($mybb->input['action'] == "event")
 	$month = my_date("n");
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';
@@ -1663,6 +1725,16 @@ if($mybb->input['action'] == "dayview")
 				"allow_videocode" => $calendar['allowvideocode']
 			);
 
+			if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$event_parser_options['allow_imgcode'] = 0;
+			}
+
+			if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+			{
+				$event_parser_options['allow_videocode'] = 0;
+			}
+
 			$event['description'] = $parser->parse_message($event['description'], $event_parser_options);
 
 			// Get the usergroup
@@ -1727,7 +1799,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 				for($i = 0; $i < $event['stars']; ++$i)
 				{
-					$event['userstars'] .= "<img src=\"".$event['starimage']."\" border=\"0\" alt=\"*\" />";
+					eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
 				}
 
 				if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1807,7 +1879,7 @@ if($mybb->input['action'] == "dayview")
 			$repeats = fetch_friendly_repetition($event);
 			if($repeats)
 			{
-				$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
+				eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
 			}
 
 			$edit_event = $moderator_options = $event_class = "";
@@ -1838,9 +1910,9 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';
@@ -1894,9 +1966,9 @@ if($mybb->input['action'] == "weekview")
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	// No incoming week, show THIS week
@@ -2052,7 +2124,7 @@ if($mybb->input['action'] == "weekview")
 				$event_time = '';
 				if($time_period)
 				{
-					$event_time = "<span class=\"smalltext\"> ({$time_period})</span>";
+					eval("\$event_time = \"".$templates->get("calendar_weekview_day_event_time")."\";");
 				}
 				if($event['private'] == 1)
 				{
@@ -2071,18 +2143,21 @@ if($mybb->input['action'] == "weekview")
 		}
 
 		// Birthdays on this day?
-		$day_birthdays = "";
+		$day_birthdays = $calendar_link = $birthday_lang = '';
 		if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("{$weekday_day}-{$weekday_month}", $birthdays))
 		{
 			$bday_count = count($birthdays["$weekday_day-$weekday_month"]);
 			if($bday_count > 1)
 			{
-				$day_birthdays = "<a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\">{$bday_count} {$lang->birthdays}</a><br />\n";
+				$birthday_lang = $lang->birthdays;
 			}
 			else
 			{
-				$day_birthdays = "<a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\">1 {$lang->birthday}</a><br />\n";
+				$birthday_lang = $lang->birthday;
 			}
+
+			$calendar_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
+			eval("\$day_birthdays = \"".$templates->get("calendar_weekview_day_birthdays")."\";");
 		}
 
 		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
@@ -2344,18 +2419,21 @@ if(!$mybb->input['action'])
 			}
 
 			// Birthdays on this day?
-			$day_birthdays = "";
+			$day_birthdays = $birthday_lang = '';
 			if($calendar['showbirthdays'] && is_array($birthdays) && array_key_exists("$day-$calendar_month", $birthdays))
 			{
 				$bday_count = count($birthdays["$day-$calendar_month"]);
 				if($bday_count > 1)
 				{
-					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$bday_count} {$lang->birthdays}</a></div>\n";
+					$birthday_lang = $lang->birthdays;
 				}
 				else
 				{
-					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">1 {$lang->birthday}</a></div>\n";
+					$birthday_lang = $lang->birthday;
 				}
+
+				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
+				eval("\$day_birthdays = \"".$templates->get("calendar_weekrow_day_birthdays")."\";");
 			}
 
 			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
@@ -2387,9 +2465,9 @@ if(!$mybb->input['action'])
 	}
 
 	$yearsel = '';
-	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
+	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		$yearsel .= "<option value=\"$i\">$i</option>\n";
+		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
 	}
 
 	$addevent = '';

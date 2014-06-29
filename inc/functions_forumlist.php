@@ -285,7 +285,7 @@ function build_forumbits($pid=0, $depth=1)
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
-					$lastpost = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+					eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 				}
 				elseif($hideinfo != true)
 				{
@@ -321,7 +321,7 @@ function build_forumbits($pid=0, $depth=1)
 						$forum_viewers_text = $lang->sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
 					$forum_viewers_text_plain = $forum_viewers_text;
-					$forum_viewers_text = "<span class=\"smalltext\">{$forum_viewers_text}</span>";
+					eval("\$forum_viewers_text = \"".$templates->get("forumbit_depth2_forum_viewers")."\";");
 				}
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set counters to "-"
@@ -340,7 +340,7 @@ function build_forumbits($pid=0, $depth=1)
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost to "-"
 			if($forum['linkto'] != '' || $hideinfo == true || $hidelastpostinfo == true)
 			{
-				$lastpost = "<div style=\"text-align: center;\">-</div>";
+				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 			}
 
 			// Moderator column is not off
@@ -369,7 +369,10 @@ function build_forumbits($pid=0, $depth=1)
 									{
 										continue;
 									}
-									$moderators .= $comma.htmlspecialchars_uni($moderator['title']);
+
+									$moderator['title'] = htmlspecialchars_uni($moderator['title']);
+
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
 									$done_moderators['groups'][] = $moderator['id'];
 								}
 								else
@@ -378,7 +381,11 @@ function build_forumbits($pid=0, $depth=1)
 									{
 										continue;
 									}
-									$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
+
+									$moderator['profilelink'] = get_profile_link($moderator['id']);
+									$moderator['username'] = htmlspecialchars_uni($moderator['username']);
+
+									eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
 									$done_moderators['users'][] = $moderator['id'];
 								}
 								$comma = $lang->comma;
@@ -454,14 +461,21 @@ function build_forumbits($pid=0, $depth=1)
  *
  * @param array Array of information about the forum
  * @param array Array of information about the lastpost date
+ * @param int Whether or not this forum is locked or not
  * @return array Array of the folder image to be shown and the alt text
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
 
+	// This forum is a redirect, so override the folder icon with the "offlink" icon.
+	if($forum['linkto'] != '')
+	{
+		$folder = "offlink";
+		$altonoff = $lang->forum_redirect;
+	}
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == 0 || $locked)
+	elseif($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;
@@ -535,7 +549,7 @@ function get_forum_unapproved($forum)
 	$unapproved_threads = $unapproved_posts = '';
 
 	// If the user is a moderator we need to fetch the count
-	if(is_moderator($forum['fid']))
+	if(is_moderator($forum['fid'], "canviewunapprove"))
 	{
 		// Forum has one or more unaproved posts, format language string accordingly
 		if($forum['unapprovedposts'])
@@ -548,7 +562,9 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_posts_count = $lang->sprintf($lang->forum_unapproved_post_count, 1);
 			}
-			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($forum['unapprovedposts']).")</span>";
+
+			$forum['unapprovedposts'] = my_number_format($forum['unapprovedposts']);
+			eval("\$unapproved_posts = \"".$templates->get("forumbit_depth2_forum_unapproved_posts")."\";");
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -561,7 +577,9 @@ function get_forum_unapproved($forum)
 			{
 				$unapproved_threads_count = $lang->sprintf($lang->forum_unapproved_thread_count, 1);
 			}
-			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".my_number_format($forum['unapprovedthreads']).")</span>";
+
+			$forum['unapprovedthreads'] = my_number_format($forum['unapprovedthreads']);
+			eval("\$unapproved_threads = \"".$templates->get("forumbit_depth2_forum_unapproved_threads")."\";");
 		}
 	}
 	return array(

@@ -263,7 +263,7 @@ function update_loginkey($uid)
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
- * @param int (Optional) The type of notification to receive for replies (0=none, 1=instant)
+ * @param int (Optional) The type of notification to receive for replies (0=none, 1=email, 2=pm)
  * @param int (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
@@ -442,7 +442,14 @@ function usercp_menu_messenger()
 	}
 	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
-	$folderlinks = '';
+	// Hide compose link if no permission
+	$ucp_nav_compose = '';
+	if($mybb->usergroup['cansendpms'] == 1)
+	{
+		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
+	}
+
+	$folderlinks = $folder_id = $folder_name = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -461,7 +468,10 @@ function usercp_menu_messenger()
 			$class = "usercp_nav_pmfolder";
 		}
 
-		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
 	}
 
 	if(!isset($collapsedimg['usercppms']))
@@ -530,6 +540,11 @@ function usercp_menu_misc()
 	if($count > 0)
 	{
 		$draftcount = $lang->sprintf($lang->ucp_nav_drafts_active, my_number_format($count));
+	}
+
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		eval("\$attachmentop = \"".$templates->get("usercp_nav_attachments")."\";");
 	}
 
 	if(!isset($collapsedimg['usercpmisc']))
@@ -666,4 +681,48 @@ function get_pm_folder_name($fid, $name="")
 			return $lang->folder_untitled;
 	}
 }
+
+/**
+ * Generates a security question for registration.
+ *
+ * @return string The question session id.
+ */
+function generate_question()
+{
+	global $db;
+
+	$query = $db->query("
+		SELECT qid, shown
+		FROM ".TABLE_PREFIX."questions
+		WHERE active='1'
+		ORDER BY RAND()
+		LIMIT 1
+	");
+	$question = $db->fetch_array($query);
+
+	if(!$db->num_rows($query))
+	{
+		// No active questions exist
+		return false;
+	}
+	else
+	{
+		$sessionid = random_str(32);
+
+		$sql_array = array(
+			"sid" => $sessionid,
+			"qid" => $question['qid'],
+			"dateline" => TIME_NOW
+		);
+		$db->insert_query("questionsessions", $sql_array);
+
+		$update_question = array(
+			"shown" => $question['shown'] + 1
+		);
+		$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
+
+		return $sessionid;
+	}
+}
+
 ?>

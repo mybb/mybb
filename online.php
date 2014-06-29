@@ -11,12 +11,14 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row";
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup";
+
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_online.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
+
 // Load global language phrases
 $lang->load("online");
 

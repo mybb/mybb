@@ -328,23 +328,6 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if an MSN Messenger address is valid or not.
-	 *
-	 * @return boolean True when valid, false when invalid.
-	 */
-	function verify_msn()
-	{
-		$msn = &$this->data['msn'];
-
-		if($msn != '' && validate_email_format($msn) == false)
-		{
-			$this->set_error("invalid_msn_address");
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	* Verifies if a birthday is valid or not.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -471,13 +454,31 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	* Verifies if the thread count field is filled in correctly.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
+	function verify_threadnum()
+	{
+		$user = &$this->data;
+
+		if(isset($user['threadnum']) && $user['threadnum'] < 0)
+		{
+			$this->set_error("invalid_threadnum");
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
 	* @return boolean True when valid, false when invalid.
 	*/
 	function verify_profile_fields()
 	{
-		global $db;
+		global $db, $cache;
 
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
@@ -485,93 +486,99 @@ class UserDataHandler extends DataHandler
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
-		$editable = '';
-
-		if(empty($this->data['profile_fields_editable']))
-		{
-			$editable = "editable !='0'";
-		}
 
 		// Fetch all profile fields first.
-		$options = array(
-			'order_by' => 'disporder'
-		);
-		$query = $db->simple_select('profilefields', 'name, type, fid, required, maxlength', $editable, $options);
+		$pfcache = $cache->read('profilefields');
 
-		// Then loop through the profile fields.
-		while($profilefield = $db->fetch_array($query))
+		if(is_array($pfcache))
 		{
-			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-			$thing = explode("\n", $profilefield['type'], "2");
-			$type = trim($thing[0]);
-			$field = "fid{$profilefield['fid']}";
-
-			if(!isset($profile_fields[$field]))
+			// Then loop through the profile fields.
+			foreach($pfcache as $profilefield)
 			{
-				$profile_fields[$field] = '';
-			}
+				if(isset($this->data['profile_fields_editable']) || isset($this->data['registration']) && ($profilefield['required'] == 1 || $profilefield['registration'] == 1))
+				{
+					$profilefield['editableby'] = -1;
+				}
 
-			// If the profile field is required, but not filled in, present error.
-			if($type != "multiselect" && $type != "checkbox")
-			{
-				if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+				if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups']))))
+				{
+					continue;
+				}
+
+				// Does this field have a minimum post count?
+				if(!isset($this->data['profile_fields_editable']) && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+				{
+					continue;
+				}
+
+				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$thing = explode("\n", $profilefield['type'], "2");
+				$type = trim($thing[0]);
+				$field = "fid{$profilefield['fid']}";
+
+				if(!isset($profile_fields[$field]))
+				{
+					$profile_fields[$field] = '';
+				}
+
+				// If the profile field is required, but not filled in, present error.
+				if($type != "multiselect" && $type != "checkbox")
+				{
+					if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+					{
+						$this->set_error('missing_required_profile_field', array($profilefield['name']));
+					}
+				}
+				elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
 				{
 					$this->set_error('missing_required_profile_field', array($profilefield['name']));
 				}
-			}
-			elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
-			{
-				$this->set_error('missing_required_profile_field', array($profilefield['name']));
-			}
 
-			// Sort out multiselect/checkbox profile fields.
-			$options = '';
-			if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				foreach($profile_fields[$field] as $value)
+				// Sort out multiselect/checkbox profile fields.
+				$options = '';
+				if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
 				{
-					if(!in_array(htmlspecialchars_uni($value), $expoptions))
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					foreach($profile_fields[$field] as $value)
+					{
+						if(!in_array(htmlspecialchars_uni($value), $expoptions))
+						{
+							$this->set_error('bad_profile_field_values', array($profilefield['name']));
+						}
+						if($options)
+						{
+							$options .= "\n";
+						}
+						$options .= $db->escape_string($value);
+					}
+				}
+				elseif($type == "select" || $type == "radio")
+				{
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
 					{
 						$this->set_error('bad_profile_field_values', array($profilefield['name']));
 					}
-					if($options)
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				else
+				{
+					if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
 					{
-						$options .= "\n";
+						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
-					$options .= $db->escape_string($value);
-				}
-			}
-			elseif($type == "select" || $type == "radio")
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
-				{
-					$this->set_error('bad_profile_field_values', array($profilefield['name']));
-				}
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			elseif($type == "textarea")
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
 
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			else
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
+					if(!empty($profilefield['regex']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					{
+						$this->set_error('bad_profile_field_value', array($profilefield['name']));
+					}
 
-				$options = $db->escape_string($profile_fields[$field]);
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				$user['user_fields'][$field] = $options;
 			}
-			$user['user_fields'][$field] = $options;
 		}
 
 		return true;
@@ -622,12 +629,13 @@ class UserDataHandler extends DataHandler
 		// Verify yes/no options.
 		$this->verify_yesno_option($options, 'allownotices', 1);
 		$this->verify_yesno_option($options, 'hideemail', 0);
-		$this->verify_yesno_option($options, 'emailpmnotify', 0);
 		$this->verify_yesno_option($options, 'receivepms', 1);
 		$this->verify_yesno_option($options, 'receivefrombuddy', 0);
 		$this->verify_yesno_option($options, 'pmnotice', 1);
 		$this->verify_yesno_option($options, 'pmnotify', 1);
 		$this->verify_yesno_option($options, 'invisible', 0);
+		$this->verify_yesno_option($options, 'showimages', 1);
+		$this->verify_yesno_option($options, 'showvideos', 1);
 		$this->verify_yesno_option($options, 'showsigs', 1);
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
@@ -934,10 +942,6 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_icq();
 		}
-		if($this->method == "insert" || array_key_exists('msn', $user))
-		{
-			$this->verify_msn();
-		}
 		if($this->method == "insert" || (isset($user['birthday']) && is_array($user['birthday'])))
 		{
 			$this->verify_birthday();
@@ -945,6 +949,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('postnum', $user))
 		{
 			$this->verify_postnum();
+		}
+		if($this->method == "insert" || array_key_exists('threadnum', $user))
+		{
+			$this->verify_threadnum();
 		}
 		if($this->method == "insert" || array_key_exists('profile_fields', $user))
 		{
@@ -1020,8 +1028,8 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
-			'yahoo', 'msn', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
+			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1037,6 +1045,7 @@ class UserDataHandler extends DataHandler
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
 			"postnum" => intval($user['postnum']),
+			"threadnum" => intval($user['threadnum']),
 			"avatar" => $db->escape_string($user['avatar']),
 			"avatartype" => $db->escape_string($user['avatartype']),
 			"usergroup" => intval($user['usergroup']),
@@ -1050,7 +1059,8 @@ class UserDataHandler extends DataHandler
 			"icq" => intval($user['icq']),
 			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
 			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"msn" => $db->escape_string(htmlspecialchars($user['msn'])),
+			"skype" => $db->escape_string(htmlspecialchars($user['skype'])),
+			"google" => $db->escape_string(htmlspecialchars($user['google'])),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1059,7 +1069,9 @@ class UserDataHandler extends DataHandler
 			"receivepms" => $user['options']['receivepms'],
 			"receivefrombuddy" => $user['options']['receivefrombuddy'],
 			"pmnotice" => $user['options']['pmnotice'],
-			"pmnotify" => $user['options']['emailpmnotify'],
+			"pmnotify" => $user['options']['pmnotify'],
+			"showimages" => $user['options']['showimages'],
+			"showvideos" => $user['options']['showvideos'],
 			"showsigs" => $user['options']['showsigs'],
 			"showavatars" => $user['options']['showavatars'],
 			"showquickreply" => $user['options']['showquickreply'],
@@ -1113,14 +1125,18 @@ class UserDataHandler extends DataHandler
 
 		$user['user_fields']['ufid'] = $this->uid;
 
-		$query = $db->simple_select("profilefields", "fid");
-		while($profile_field = $db->fetch_array($query))
+		$pfcache = $cache->read('profilefields');
+
+		if(is_array($pfcache))
 		{
-			if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+			foreach($pfcache as $profile_field)
 			{
-				continue;
+				if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+				{
+					continue;
+				}
+				$user['user_fields']["fid{$profile_field['fid']}"] = '';
 			}
-			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
 		$db->insert_query("userfields", $user['user_fields'], false);
@@ -1187,6 +1203,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['postnum'] = intval($user['postnum']);
 		}
+		if(isset($user['threadnum']))
+		{
+			$this->user_update_data['threadnum'] = intval($user['threadnum']);
+		}
 		if(isset($user['avatar']))
 		{
 			$this->user_update_data['avatar'] = $db->escape_string($user['avatar']);
@@ -1240,9 +1260,13 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
 		}
-		if(isset($user['msn']))
+		if(isset($user['skype']))
 		{
-			$this->user_update_data['msn'] = $db->escape_string(htmlspecialchars_uni($user['msn']));
+			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
+		}
+		if(isset($user['google']))
+		{
+			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
 		}
 		if(isset($user['bday']))
 		{
@@ -1377,6 +1401,126 @@ class UserDataHandler extends DataHandler
 				update_stats(array("numusers" => "+0"));
 			}
 		}
+	}
+
+	/**
+	 * Provides a method to completely delete a user.
+	 *
+	 * @param array Array of user information
+	 * @param integer Whether if delete threads/posts or not
+	 * @return boolean True when successful, false if fails
+	 */
+	function delete_user($delete_uids, $prunecontent=0)
+	{
+		global $db, $plugins, $mybb, $cache;
+
+		// Yes, validating is required.
+		if(count($this->get_errors()) > 0)
+		{
+			die('The user is not valid.');
+		}
+
+		$this->delete_uids = array_map('intval', (array)$delete_uids);
+
+		foreach($this->delete_uids as $key => $uid)
+		{
+			if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+			{
+				// Remove super admins
+				unset($this->delete_uids[$key]);
+			}
+		}
+
+		$plugins->run_hooks('datahandler_user_delete_start', $this);
+
+		$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+
+		// Delete the user
+		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
+		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+		$db->delete_query('forumsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('reputation', 'uid IN('.$this->delete_uids.') OR adduid IN('.$this->delete_uids.')');
+		$db->delete_query('posts', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+
+		// Remove any of the user(s) uploaded avatars
+		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
+		while($avatar = $db->fetch_field($query, 'avatar'))
+		{
+			$avatar = substr($avatar, 2, -20);
+			@unlink(MYBB_ROOT.$avatar);
+		}
+
+		$query = $db->delete_query('users', 'uid IN('.$this->delete_uids.')');
+		$this->deleted_users = (int)$db->affected_rows($query);
+
+		// Are we removing the posts/threads of a user?
+		if((int)$prunecontent == 1)
+		{
+			require_once MYBB_ROOT.'inc/class_moderation.php';
+			$moderation = new Moderation();
+
+			// Threads
+			$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
+			while($tid = $db->fetch_field($query, 'tid'))
+			{
+				$moderation->delete_thread($tid);
+			}
+
+			// Posts
+			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
+			while($pid = $db->fetch_field($query, 'pid'))
+			{
+				$moderation->delete_post($pid);
+			}
+		}
+		else
+		{
+			// We're just updating the UID
+			$db->update_query('posts', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+			$db->update_query('threads', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+		}
+
+		// Update thread ratings
+		$query = $db->query("
+			SELECT r.*, t.numratings, t.totalratings
+			FROM ".TABLE_PREFIX."threadratings r
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
+			WHERE r.uid IN({$this->delete_uids})
+		");
+		while($rating = $db->fetch_array($query))
+		{
+			$update_thread = array(
+				"numratings" => $rating['numratings'] - 1,
+				"totalratings" => $rating['totalratings'] - $rating['rating']
+			);
+			$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
+		}
+
+		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
+
+		// Update forums & threads if user is the lastposter
+		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
+		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
+
+		$plugins->run_hooks('datahandler_user_delete_end', $this);
+
+		$cache->update_banned();
+		$cache->update_moderators();
+
+		// Update forum stats
+		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
+
+		return $this->deleted_users;
 	}
 }
 ?>

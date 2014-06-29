@@ -13,6 +13,11 @@ define('THIS_SCRIPT', 'attachment.php');
 
 require_once "./global.php";
 
+if($mybb->settings['enableattachments'] != 1)
+{
+	error($lang->attachments_disabled);
+}
+
 // Find the AID we're looking for
 if(isset($mybb->input['thumbnail']))
 {
@@ -67,7 +72,7 @@ if($pid || $attachment['uid'] != $mybb->user['uid'])
 	}
 
 	// Error if attachment is invalid or not visible
-	if(!$attachment['attachname'] || (!is_moderator($fid) && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
+	if(!$attachment['attachname'] || (!is_moderator($fid, "canviewunapprove") && ($attachment['visible'] != 1 || $thread['visible'] != 1 || $post['visible'] != 1)))
 	{
 		error($lang->error_invalidattachment);
 	}

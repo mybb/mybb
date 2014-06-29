@@ -11,13 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'warnings.php');
 
-$templatelist = 'warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm';
-$templatelist .= ',warnings_warn,warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,warnings_view,warnings_no_warnings,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert';
-$templatelist .= ',multipage_prevpage,multipage_start,multipage_end,multipage_nextpage,multipage,multipage_page_current';
+$templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm";
+$templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,warnings_warn_type_result";
+$templatelist .= ",multipage_prevpage,multipage_start,multipage_end,multipage_nextpage,multipage,multipage_page_current,warnings_no_warnings,codebuttons,warnings_warn,warnings_view";
+
 require_once "./global.php";
 require_once MYBB_ROOT."/inc/functions_warnings.php";
 require_once MYBB_ROOT."inc/functions_modcp.php";
-
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -746,7 +746,7 @@ if($mybb->input['action'] == "warn")
 		$result = '';
 		if(!empty($new_level['friendly_action']))
 		{
-			$result = "<div class=\"smalltext\" style=\"clear: left; padding-top: 4px;\">{$lang->result}<br />".$new_level['friendly_action']."</div>";
+			eval("\$result = \"".$templates->get("warnings_warn_type_result")."\";");
 		}
 		eval("\$types .= \"".$templates->get("warnings_warn_type")."\";");
 		unset($new_level);
@@ -757,6 +757,11 @@ if($mybb->input['action'] == "warn")
 
 	if($mybb->settings['allowcustomwarnings'] != 0)
 	{
+		if(empty($types) && empty($warn_errors))
+		{
+			$type_checked['custom'] = "checked=\"checked\"";
+		}
+
 		eval("\$custom_warning = \"".$templates->get("warnings_warn_custom")."\";");
 	}
 
@@ -768,7 +773,7 @@ if($mybb->input['action'] == "warn")
 
 		if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
-			$codebuttons = build_mycode_inserter();
+			$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
 			if($mybb->settings['pmsallowsmilies'] != 0)
 			{
 				$smilieinserter = build_clickable_smilies();

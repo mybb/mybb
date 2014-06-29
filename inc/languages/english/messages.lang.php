@@ -72,6 +72,7 @@ $l['error_too_many_images3'] = "<b>Note:</b> The maximum amount of images per po
 $l['error_attach_file'] = "Error Attaching File";
 $l['please_correct_errors'] = "Please correct the following errors before continuing:";
 $l['error_reachedattachquota'] = "Sorry, but you cannot attach this file because you have reached your attachment quota of {1}";
+$l['error_maxattachpost'] = "Sorry but you cannot attach this file because you have reached the maximum number of attachments allowed per post of {1}";
 $l['error_invaliduser'] = "The specified user is invalid or does not exist.";
 $l['error_invalidaction'] = "Invalid action";
 $l['error_messagelength'] = "Sorry, your message is too long and cannot be posted. Please try shortening your message and try again.";
@@ -79,6 +80,7 @@ $l['error_message_too_short'] = "Sorry, your message is too short and cannot be 
 $l['failed_login_wait'] = "You have failed to login within the required number of attempts. You must now wait {1}h {2}m {3}s before you can login again.";
 $l['failed_login_again'] = "<br />You have <strong>{1}</strong> more login attempts.";
 $l['error_max_emails_day'] = "You cannot use the 'Send Thread to a Friend' or the 'Email User' features because you've already used up your allocated quota of sending {1} messages in the past 24 hours.";
+$l['attachments_disabled'] = "You cannot use the attachment system as it has been disabled by the Administrator.";
 
 $l['emailsubject_lostpw'] = "Password Reset at {1}";
 $l['emailsubject_passwordreset'] = "New password at {1}";
@@ -436,4 +438,33 @@ To accept or decline this request, go to
 
 Thank you,
 {4} Staff";
+
+$l['email_contact_subject'] = "Contact: {1}";
+$l['email_contact'] = "Forum profile: {1}
+IP Address: {2}
+Message:
+{3}";
+
+$l['pmsubject_subscription'] = "New Reply to {1}";
+$l['pm_subscription'] = "{1},
+
+{2} has just replied to a thread which you have subscribed to. This thread is titled {3}.
+
+Here is an excerpt of the message:
+------------------------------------------
+{4}
+------------------------------------------
+
+To view the thread, you can go to the following URL:
+[url]{5}/{6}[/url]
+
+There may also be other replies to this thread but you will not receive anymore notifications until you visit the thread again.
+
+------------------------------------------
+Unsubscription Information:
+
+If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
+[url]{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}[/url]
+
+------------------------------------------";
 ?>

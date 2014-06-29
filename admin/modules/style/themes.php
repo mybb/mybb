@@ -26,6 +26,9 @@ var globally_lang_string = '{$lang->globally}';
 var specific_actions_lang_string = '{$lang->specific_actions}';
 var specific_actions_desc_lang_string = '{$lang->specific_actions_desc}';
 var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
+
+lang.theme_info_fetch_error = \"{$lang->theme_info_fetch_error}\";
+lang.theme_info_save_error = \"{$lang->theme_info_save_error}\";
 //]]>
 </script>";
 
@@ -251,10 +254,10 @@ if($mybb->input['action'] == "browse")
 		});
 
 		// fix the styling used if we have a different default value
-        if(search.val() != '{$lang->search_for_themes}')
-        {
-            search.removeClass('search_default');
-        }
+		if(search.val() != '{$lang->search_for_themes}')
+		{
+			search.removeClass('search_default');
+		}
 		</script>\n";
 	echo "</div>\n";
 	echo $search->end();
@@ -520,6 +523,8 @@ if($mybb->input['action'] == "export")
 				$value = serialize($value);
 			}
 
+			$value = str_replace(']]>', ']]]]><![CDATA[>', $value);
+
 			$xml .= "\t\t<{$property}><![CDATA[{$value}]]></{$property}>\r\n";
 		}
 		$xml .= "\t</properties>\r\n";
@@ -611,6 +616,7 @@ if($mybb->input['action'] == "export")
 
 			$attachedto = $theme_stylesheets[$filename]['attachedto'];
 			$stylesheet = $theme_stylesheets[$filename]['stylesheet'];
+			$stylesheet = str_replace(']]>', ']]]]><![CDATA[>', $stylesheet);
 
 			if($attachedto)
 			{
@@ -630,6 +636,7 @@ if($mybb->input['action'] == "export")
 			$query = $db->simple_select("templates", "*", "sid='".$properties['templateset']."'");
 			while($template = $db->fetch_array($query))
 			{
+				$template['template'] = str_replace(']]>', ']]]]><![CDATA[>', $template['template']);
 				$xml .= "\t\t<template name=\"{$template['title']}\" version=\"{$template['version']}\"><![CDATA[{$template['template']}]]></template>\r\n";
 			}
 			$xml .= "\t</templates>\r\n";
@@ -724,7 +731,7 @@ if($mybb->input['action'] == "duplicate")
 		{
 			$errors[] = $lang->error_missing_name;
 		}
-	
+
 		if(!$errors)
 		{
 			$properties = my_unserialize($theme['properties']);
@@ -733,7 +740,7 @@ if($mybb->input['action'] == "duplicate")
 			if($mybb->input['duplicate_templates'])
 			{
 				$nsid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['name'])." Templates"));
-				
+
 				// Copy all old Templates to our new templateset
 				$query = $db->simple_select("templates", "*", "sid='{$sid}'");
 				while($template = $db->fetch_array($query))
@@ -745,16 +752,16 @@ if($mybb->input['action'] == "duplicate")
 						"version" => $db->escape_string($template['version']),
 						"dateline" => TIME_NOW
 					);
-					
+
 					if($db->engine == "pgsql")
 					{
 						echo " ";
 						flush();
 					}
-					
+
 					$db->insert_query("templates", $insert);
 				}
-				
+
 				// We need to change the templateset so we need to work out the others properties too
 				foreach($properties as $property => $value)
 				{
@@ -776,9 +783,9 @@ if($mybb->input['action'] == "duplicate")
 				$nprops['templateset'] = $nsid;
 			}
 			$tid = build_new_theme($mybb->input['name'], $nprops, $theme['tid']);
-			
+
 			update_theme_stylesheet_list($tid);
-		
+
 			$plugins->run_hooks("admin_style_themes_duplicate_commit");
 
 			// Log admin action
@@ -1928,15 +1935,15 @@ if($mybb->input['action'] == "stylesheet_properties")
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
-	echo '<script type="text/javascript">
+	echo <<<EOF
 
-Event.observe(window, "load", function() {
-//<![CDATA[
-    new ThemeSelector(\''.$count.'\');
-});
-//]]>
-</script>';
+	<script type="text/javascript" src="./jscripts/theme_properties.js"></script>
+	<script type="text/javascript">
+	<!---
+	themeProperties.setup('{$count}');
+	// -->
+	</script>
+EOF;
 
 	$form->end();
 
@@ -2195,9 +2202,10 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">
 
-$(function() {
+$(document).ready(function() {
 //<![CDATA[
-    new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
+	new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
+	lang.saving = "'.$lang->saving.'";
 });
 //]]>
 </script>';
@@ -2832,6 +2840,7 @@ if($mybb->input['action'] == "add_stylesheet")
 $(function() {
 //<![CDATA[
 	checkAction(\'add\');
+	lang.saving = "'.$lang->saving.'";
 });
 //]]>
 </script>';

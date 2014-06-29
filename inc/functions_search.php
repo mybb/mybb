@@ -67,7 +67,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if(empty($forum['password']) || $pwverified == 1)
 					{
-						$forumlistbits .= "<option value=\"{$forum['fid']}\">$depth {$forum['name']}</option>\n";
+						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
 					}
 					if(!empty($pforumcache[$forum['fid']]))
 					{
@@ -80,7 +80,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 	}
 	if($addselect)
 	{
-		$forumlist = "<select name=\"forums[]\" size=\"20\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+		eval("\$forumlist = \"".$templates->get("search_forumlist")."\";");
 	}
 	return $forumlist;
 }
@@ -267,81 +267,139 @@ function clean_keywords_ft($keywords)
 	$keywords = str_replace("%", "\\%", $keywords);
 	$keywords = preg_replace("#\*{2,}#s", "*", $keywords);
 	$keywords = preg_replace("#([\[\]\|\.\,:])#s", " ", $keywords);
+	// Separate braces for further processing
+	$keywords = preg_replace("#((\+|-|<|>|~)?\(|\))#s", " $1 ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
 
-	$words = array();
+	$words = array(array());
 
-	if(my_strpos($keywords, "\"") !== false)
+	// Fulltext search syntax validation: http://dev.mysql.com/doc/refman/5.6/en/fulltext-boolean.html
+	// Search for phrases
+	$keywords = explode("\"", $keywords);
+	$boolean = array('+');
+	// Brace depth
+	$depth = 0;
+	$phrase_operator = '+';
+	foreach($keywords as $phrase)
 	{
-		$inquote = false;
-		$keywords = explode("\"", $keywords);
-		foreach($keywords as $phrase)
+		$phrase = trim($phrase);
+		if($phrase != '')
 		{
-			if($phrase != '')
+			if($inquote)
 			{
-				if($inquote)
+				if($phrase_operator)
 				{
-					$words[] = "\"".trim($phrase)."\"";
+					$boolean[$depth] = $phrase_operator;
 				}
-				else
+				// Phrases do not need further processing
+				$words[$depth][] = "{$boolean[$depth]}\"{$phrase}\"";
+				$boolean[$depth] = $phrase_operator = '+';
+			}
+			else
+			{
+				// Split words
+				$split_words = preg_split("#\s{1,}#", $phrase, -1);
+				if(!is_array($split_words))
 				{
-					$split_words = preg_split("#\s{1,}#", $phrase, -1);
-					if(!is_array($split_words))
+					continue;
+				}
+				if(!$inquote)
+				{
+					// Save possible operator in front of phrase
+					$last_char = substr($phrase, -1);
+					if($last_char == '+' || $last_char == '-' || $last_char == '<' || $last_char == '>' || $last_char == '~')
 					{
-						continue;
+						$phrase_operator = $last_char;
 					}
-					foreach($split_words as $word)
+				}
+				foreach($split_words as $word)
+				{
+					$word = trim($word);
+					if($word == "or")
 					{
-						if(!$word)
+						$boolean[$depth] = '';
+						// Remove "and" operator from previous element
+						$last = array_pop($words[$depth]);
+						if($last)
+						{
+							if(substr($last, 0, 1) == '+')
+							{
+								$last = substr($last, 1);
+							}
+							$words[$depth][] = $last;
+						}
+					}
+					elseif($word == "and")
+					{
+						$boolean[$depth] = "+";
+					}
+					elseif($word == "not")
+					{
+						$boolean[$depth] = "-";
+					}
+					// Closing braces
+					elseif($word == ")")
+					{
+						// Ignore when no brace was opened
+						if($depth > 0)
+						{
+							$words[$depth-1][] = $boolean[$depth-1].'('.implode(' ', $words[$depth]).')';
+							--$depth;
+						}
+					}
+					// Valid operators for opening braces
+					elseif($word == '+(' || $word == '-(' || $word == '<(' || $word == '>(' || $word == '~(' || $word == '(')
+					{
+						if(strlen($word) == 2)
+						{
+							$boolean[$depth] = substr($word, 0, 1);
+						}
+						$words[++$depth] = array();
+						$boolean[$depth] = '+';
+					}
+					else
+					{
+						$operator = substr($word, 0, 1);
+						switch($operator)
+						{
+							// Allowed operators
+							case '-':
+							case '+':
+							case '>':
+							case '<':
+							case '~':
+								$word = substr($word, 1);
+								break;
+							default:
+								$operator = $boolean[$depth];
+								break;
+						}
+						// Removed operators that are only allowed at the beginning
+						$word = preg_replace("#(-|\+|<|>|~|@)#s", '', $word);
+						// Removing wildcards at the beginning http://bugs.mysql.com/bug.php?id=72605
+						$word = preg_replace("#^\*#s", '', $word);
+						$word = $operator.$word;
+						if(strlen($word) <= 1)
 						{
 							continue;
 						}
-						$words[] = trim($word);
+						$words[$depth][] = $word;
+						$boolean[$depth] = '+';
 					}
 				}
 			}
-			$inquote = !$inquote;
 		}
+		$inquote = !$inquote;
 	}
-	else
-	{
-		$split_words = preg_split("#\s{1,}#", $keywords, -1);
-		if(!is_array($split_words))
-		{
-			continue;
-		}
-		foreach($split_words as $word)
-		{
-			if(!$word)
-			{
-				continue;
-			}
-			$words[] = trim($word);
-		}
 
-	}
-	$keywords = '';
-	foreach($words as $word)
+	// Close mismatching braces
+	while($depth > 0)
 	{
-		if($word == "or")
-		{
-			$boolean = '';
-		}
-		elseif($word == "and")
-		{
-			$boolean = "+";
-		}
-		elseif($word == "not")
-		{
-			$boolean = "-";
-		}
-		else
-		{
-			$keywords .= " ".$boolean.$word;
-			$boolean = '';
-		}
+		$words[$depth-1][] = $boolean[$depth-1].'('.implode(' ', $words[$depth]).')';
+		--$depth;
 	}
-	$keywords = "+".trim($keywords);
+
+	$keywords = implode(' ', $words[0]);
 	return $keywords;
 }
 
@@ -631,6 +689,220 @@ function privatemessage_perform_search_mysql($search)
 }
 
 /**
+ * Perform a help document search under MySQL or MySQLi
+ *
+ * @param array Array of search data
+ * @return array Array of search data with results mixed in
+ */
+function helpdocument_perform_search_mysql($search)
+{
+	global $mybb, $db, $lang;
+
+	$keywords = clean_keywords($search['keywords']);
+	if(!$keywords && !$search['sender'])
+	{
+		error($lang->error_nosearchterms);
+	}
+
+	if($mybb->settings['minsearchword'] < 1)
+	{
+		$mybb->settings['minsearchword'] = 3;
+	}
+
+	$name_lookin = "";
+	$document_lookin = "";
+	$searchsql = "enabled='1'";
+
+	if($keywords)
+	{
+		// Complex search
+		$keywords = " {$keywords} ";
+		if(preg_match("# and|or #", $keywords))
+		{
+			$string = "AND";
+			if($search['name'] == 1)
+			{
+				$string = "OR";
+				$name_lookin = " AND (";
+			}
+
+			if($search['document'] == 1)
+			{
+				$document_lookin = " {$string} (";
+			}
+
+			// Expand the string by double quotes
+			$keywords_exp = explode("\"", $keywords);
+			$inquote = false;
+
+			foreach($keywords_exp as $phrase)
+			{
+				// If we're not in a double quoted section
+				if(!$inquote)
+				{
+					// Expand out based on search operators (and, or)
+					$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $phrase, -1, PREG_SPLIT_DELIM_CAPTURE);
+					$count_matches = count($matches);
+
+					for($i=0; $i < $count_matches; ++$i)
+					{
+						$word = trim($matches[$i]);
+						if(empty($word))
+						{
+							continue;
+						}
+						// If this word is a search operator set the boolean
+						if($i % 2 && ($word == "and" || $word == "or"))
+						{
+							if($i <= 1)
+							{
+								if($search['name'] && $search['document'] && $name_lookin == " AND (")
+								{
+									// We're looking for anything, check for a name lookin
+									continue;
+								}
+								elseif($search['name'] && !$search['document'] && $name_lookin == " AND (")
+								{
+									// Just in a name?
+									continue;
+								}
+								elseif(!$search['name'] && $search['document'] && $document_lookin == " {$string} (")
+								{
+									// Just in a document?
+									continue;
+								}
+							}
+
+							$boolean = $word;
+						}
+						// Otherwise check the length of the word as it is a normal search term
+						else
+						{
+							$word = trim($word);
+							// Word is too short - show error message
+							if(my_strlen($word) < $mybb->settings['minsearchword'])
+							{
+								$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+								error($lang->error_minsearchlength);
+							}
+							// Add terms to search query
+							if($search['name'] == 1)
+							{
+								$name_lookin .= " $boolean LOWER(name) LIKE '%{$word}%'";
+							}
+							if($search['document'] == 1)
+							{
+								$document_lookin .= " $boolean LOWER(document) LIKE '%{$word}%'";
+							}
+						}
+					}
+				}
+				// In the middle of a quote (phrase)
+				else
+				{
+					$phrase = str_replace(array("+", "-", "*"), '', trim($phrase));
+					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
+					{
+						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
+					}
+					// Add phrase to search query
+					$name_lookin .= " $boolean LOWER(name) LIKE '%{$phrase}%'";
+					if($search['document'] == 1)
+					{
+						$document_lookin .= " $boolean LOWER(document) LIKE '%{$phrase}%'";
+					}
+				}
+
+				// Check to see if we have any search terms and not a malformed SQL string
+				$error = false;
+				if($search['name'] && $search['document'] && $name_lookin == " AND (")
+				{
+					// We're looking for anything, check for a name lookin
+					$error = true;
+				}
+				elseif($search['name'] && !$search['document'] && $name_lookin == " AND (")
+				{
+					// Just in a name?
+					$error = true;
+				}
+				elseif(!$search['name'] && $search['document'] && $document_lookin == " {$string} (")
+				{
+					// Just in a document?
+					$error = true;
+				}
+
+				if($error == true)
+				{
+					// There are no search keywords to look for
+					$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+					error($lang->error_minsearchlength);
+				}
+
+				$inquote = !$inquote;
+			}
+
+			if($search['name'] == 1)
+			{
+				$name_lookin .= ")";
+			}
+
+			if($search['document'] == 1)
+			{
+				$document_lookin .= ")";
+			}
+
+			$searchsql .= "{$name_lookin} {$document_lookin}";
+		}
+		else
+		{
+			$keywords = str_replace("\"", '', trim($keywords));
+			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
+			{
+				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+				error($lang->error_minsearchlength);
+			}
+
+			// If we're looking in both, then find matches in either the name or the document
+			if($search['name'] == 1 && $search['document'] == 1)
+			{
+				$searchsql .= " AND (LOWER(name) LIKE '%{$keywords}%' OR LOWER(document) LIKE '%{$keywords}%')";
+			}
+			else
+			{
+				if($search['name'] == 1)
+				{
+					$searchsql .= " AND LOWER(name) LIKE '%{$keywords}%'";
+				}
+
+				if($search['document'] == 1)
+				{
+					$searchsql .= " AND LOWER(document) LIKE '%{$keywords}%'";
+				}
+			}
+		}
+	}
+
+	// Run the search
+	$helpdocs = array();
+	$query = $db->simple_select("helpdocs", "hid", $searchsql);
+	while($help = $db->fetch_array($query))
+	{
+		$helpdocs[$help['hid']] = $help['hid'];
+	}
+
+	if(count($helpdocs) < 1)
+	{
+		error($lang->error_nosearchresults);
+	}
+	$helpdocs = implode(',', $helpdocs);
+
+	return array(
+		"querycache" => $helpdocs
+	);
+}
+
+/**
  * Perform a thread and post search under MySQL or MySQLi
  *
  * @param array Array of search data
@@ -815,9 +1087,25 @@ function perform_search_mysql($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';
@@ -1203,9 +1491,25 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';

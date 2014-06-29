@@ -30,7 +30,10 @@ $l['logout'] = "Log Out";
 $l['generated_in'] = "Generated in {1} with <a href=\"{2}\" target=\"_blank\">{3} queries</a>. Memory Usage: {4}";
 
 // Login page
-$l['enter_username_and_password'] = "Please enter your username and password to continue.";
+$l['enter_username_and_password'] = "Please enter your {1} and password to continue.";
+$l['login_username'] = 'username';
+$l['login_email'] = 'email';
+$l['login_username_and_password'] = 'username/email';
 $l['mybb_admin_login'] = "MyBB Control Panel - Login";
 $l['return_to_forum'] = "Return to forum";
 $l['please_login'] = "Please Login";
@@ -54,7 +57,7 @@ $l['error_invalid_uid'] = "The user id you entered is invalid.";
 $l['error_invalid_token'] = "The activation code you entered is invalid.";
 
 $l['success_logged_out'] = "You have been logged out successfully.";
-$l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
+$l['error_invalid_username_password'] = "The {1} and password combination you entered is invalid.";
 
 // Action Confirmation
 $l['confirm_action'] = "Are you sure you wish to perform this action?";
@@ -112,6 +115,12 @@ $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
 $l['all_forums'] = "All Forums";
+$l['all_groups'] = "All groups";
+$l['select_forums'] = "Select forums";
+$l['select_groups'] = "Select groups";
+$l['forums_colon'] = "Forums:";
+$l['groups_colon'] = "Groups:";
+$l['none'] = "None";
 $l['mybb_acp'] = "MyBB ACP";
 $l['pages'] = "Pages";
 $l['previous'] = "Previous";
@@ -122,13 +131,18 @@ $l['reset'] = "Reset";
 $l['and'] = "and";
 $l['on'] = "On";
 $l['off'] = "Off";
+$l['alt_enabled'] = "Enabled";
+$l['alt_disabled'] = "Disabled";
+$l['saved'] = 'Saved';
 
 $l['rel_in'] = "In ";
 $l['rel_ago'] = "ago";
 $l['rel_less_than'] = "Less than ";
-$l['rel_minute'] = "{1}{2} {3} {4}";
+$l['rel_time'] = "{1}{2} {3} {4}";
 $l['rel_minutes_single'] = "minute";
 $l['rel_minutes_plural'] = "minutes";
+$l['rel_hours_single'] = "hour";
+$l['rel_hours_plural'] = "hours";
 
 // Parser bits
 $l['quote'] = "Quote:";
@@ -162,37 +176,45 @@ $l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform
 $l['loading_text'] = "Loading<br />Please wait...";
 
 // Time zone selection boxes
-$l['timezone_gmt_minus_1200'] = "(GMT -12:00) Eniwetok, Kwajalein";
-$l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island, Samoa";
-$l['timezone_gmt_minus_1000'] = "(GMT -10:00) Hawaii";
+$l['timezone_gmt_minus_1200'] = "(GMT -12:00) Marshall Islands";
+$l['timezone_gmt_minus_1100'] = "(GMT -11:00) Nome, Midway Island";
+$l['timezone_gmt_minus_1000'] = "(GMT -10:00) Hawaii, Papeete";
+$l['timezone_gmt_minus_950'] = "(GMT -9:30) Marquesas Islands";
 $l['timezone_gmt_minus_900'] = "(GMT -9:00) Alaska";
 $l['timezone_gmt_minus_800'] = "(GMT -8:00) Pacific Time";
 $l['timezone_gmt_minus_700'] = "(GMT -7:00) Mountain Time";
 $l['timezone_gmt_minus_600'] = "(GMT -6:00) Central Time, Mexico City";
 $l['timezone_gmt_minus_500'] = "(GMT -5:00) Eastern Time, Bogota, Lima, Quito";
-$l['timezone_gmt_minus_450'] = "(GMT -4:30) Venezuela (September)";
-$l['timezone_gmt_minus_400'] = "(GMT -4:00) Atlantic Time, Caracas, La Paz";
+$l['timezone_gmt_minus_450'] = "(GMT -4:30) Caracas";
+$l['timezone_gmt_minus_400'] = "(GMT -4:00) Atlantic Time, La Paz, Halifax";
 $l['timezone_gmt_minus_350'] = "(GMT -3:30) Newfoundland";
 $l['timezone_gmt_minus_300'] = "(GMT -3:00) Brazil, Buenos Aires, Georgetown, Falkland Is.";
-$l['timezone_gmt_minus_200'] = "(GMT -2:00) Mid-Atlantic, Ascension Is., St Helena";
+$l['timezone_gmt_minus_200'] = "(GMT -2:00) Mid-Atlantic, South Georgia and the South Sandwich Islands";
 $l['timezone_gmt_minus_100'] = "(GMT -1:00) Azores, Cape Verde Islands";
 $l['timezone_gmt'] = "(GMT) Casablanca, Dublin, Edinburgh, London, Lisbon, Monrovia";
-$l['timezone_gmt_100'] = "(GMT +1:00) Berlin, Brussels, Copenhagen, Madrid, Paris, Rome";
-$l['timezone_gmt_200'] = "(GMT +2:00) Kaliningrad, South Africa, Warsaw";
-$l['timezone_gmt_300'] = "(GMT +3:00) Baghdad, Riyadh, Moscow, Nairobi";
+$l['timezone_gmt_100'] = "(GMT +1:00) Berlin, Brussels, Copenhagen, Madrid, Paris, Rome, Warsaw";
+$l['timezone_gmt_200'] = "(GMT +2:00) Athens, Istanbul, Cairo, Jerusalem, South Africa";
+$l['timezone_gmt_300'] = "(GMT +3:00) Kaliningrad, Minsk, Baghdad, Riyadh, Nairobi";
 $l['timezone_gmt_350'] = "(GMT +3:30) Tehran";
-$l['timezone_gmt_400'] = "(GMT +4:00) Abu Dhabi, Baku, Muscat, Tbilisi";
+$l['timezone_gmt_400'] = "(GMT +4:00) Moscow, Abu Dhabi, Baku, Muscat, Tbilisi";
 $l['timezone_gmt_450'] = "(GMT +4:30) Kabul";
 $l['timezone_gmt_500'] = "(GMT +5:00) Islamabad, Karachi, Tashkent";
 $l['timezone_gmt_550'] = "(GMT +5:30) Mumbai, Calcutta, Madras, New Delhi";
-$l['timezone_gmt_600'] = "(GMT +6:00) Almaty, Colomba, Dhakra";
+$l['timezone_gmt_575'] = "(GMT +5:45) Kathmandu";
+$l['timezone_gmt_600'] = "(GMT +6:00) Almaty, Dhakra, Yekaterinburg";
+$l['timezone_gmt_650'] = "(GMT +6:30) Yangon";
 $l['timezone_gmt_700'] = "(GMT +7:00) Bangkok, Hanoi, Jakarta";
-$l['timezone_gmt_800'] = "(GMT +8:00) Beijing, Hong Kong, Perth, Singapore, Taipei";
-$l['timezone_gmt_900'] = "(GMT +9:00) Osaka, Sapporo, Seoul, Tokyo, Yakutsk";
+$l['timezone_gmt_800'] = "(GMT +8:00) Beijing, Hong Kong, Perth, Singapore, Taipei, Manila";
+$l['timezone_gmt_900'] = "(GMT +9:00) Osaka, Sapporo, Seoul, Tokyo, Irkutsk";
 $l['timezone_gmt_950'] = "(GMT +9:30) Adelaide, Darwin";
-$l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua New Guinea, Sydney, Vladivostok";
-$l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands";
+$l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua New Guinea, Sydney, Yakutsk";
+$l['timezone_gmt_1050'] = "(GMT +10:30) Lord Howe Island";
+$l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands, Vladivostok";
+$l['timezone_gmt_1150'] = "(GMT +11:30) Norfolk Island";
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island";
+$l['timezone_gmt_1275'] = "(GMT +12:45) Chatham Islands";
+$l['timezone_gmt_1300'] = "(GMT +13:00) Samoa, Tonga, Tokelau";
+$l['timezone_gmt_1400'] = "(GMT +14:00) Line Islands";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
 
 // Global language strings used for log deletion pages
@@ -207,7 +229,7 @@ $l['delete_all'] = "Delete All Filtered";
 $l['encountered_errors'] = "The following errors were encountered:";
 $l['invalid_post_verify_key'] = "An authorization code mismatch occurred. Please confirm that you wish to perform the action below.";
 $l['invalid_post_verify_key2'] = "An authorization code mismatch occurred. Please double check that you are accessing this page correctly.";
-$l['forums_colon'] = "Forums:";
+$l['unknown_error'] = "An unknown error has occurred.";
 
 // Code buttons editor language strings
 $l['editor_title_bold'] = "Insert bold text";
@@ -268,6 +290,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
+$l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
 
 $l['massmail_username'] = "Username";
 $l['email_addr'] = "Email Address";
@@ -306,4 +329,5 @@ $l['comma'] = ", ";
 // If the language string for "Username" is too cramped in the ACP Login box
 // then use this to define how much larger you want the gap to be (in px)
 // $l['login_field_width'] = "0";
+
 ?>

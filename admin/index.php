@@ -33,11 +33,14 @@ require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
+if(!isset($cp_language))
 {
-	$mybb->settings['cplanguage'] = "english";
+	if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
+	{
+		$mybb->settings['cplanguage'] = "english";
+	}
+	$lang->set_language($mybb->settings['cplanguage'], "admin");
 }
-$lang->set_language($mybb->settings['cplanguage'], "admin");
 
 // Load global language phrases
 $lang->load("global");
@@ -387,7 +390,9 @@ else
 }
 $mybb->usergroup = usergroup_permissions($mybbgroups);
 
-if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
+$is_super_admin = is_super_admin($mybb->user['uid']);
+
+if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 {
 	$uid = 0;
 	if(isset($mybb->user['uid']))
@@ -403,6 +408,12 @@ if(!empty($mybb->user['uid']))
 {
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
+
+	if(!empty($admin_options['cplanguage']) && file_exists(MYBB_ROOT."inc/languages/".$admin_options['cplanguage']."/admin/home_dashboard.lang.php"))
+	{
+		$cp_language = $admin_options['cplanguage'];
+		$lang->set_language($cp_language, "admin");
+	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
 	{
@@ -455,7 +466,23 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login($lang->error_invalid_username_password, "error");
+		$login_lang_string = $lang->error_invalid_username_password;
+
+		switch($mybb->settings['username_method'])
+		{
+			case 0: // Username only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+				break;
+			case 1: // Email only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+				break;
+			case 2: // Username and email
+			default:
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+				break;
+		}
+
+		$page->show_login($login_lang_string, "error");
 	}
 	else
 	{
@@ -472,8 +499,6 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 $page->add_breadcrumb_item($lang->home, "index.php");
 
 // Begin dealing with the modules
-$is_super_admin = is_super_admin($mybb->user['uid']);
-
 $modules_dir = MYBB_ADMIN_DIR."modules";
 $dir = opendir($modules_dir);
 while(($module = readdir($dir)) !== false)

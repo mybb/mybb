@@ -67,17 +67,17 @@ if($inactiveforums)
 // If there are no forums to syndicate, syndicate all viewable.
 if(!empty($forumlist))
 {
-    $forum_ids = "'-1'";
-    foreach($forumlist as $fid)
-    {
-        $forum_ids .= ",'".intval($fid)."'";
-    }
-    $forumlist = "AND fid IN ($forum_ids) $unviewable";
+	$forum_ids = "'-1'";
+	foreach($forumlist as $fid)
+	{
+		$forum_ids .= ",'".intval($fid)."'";
+	}
+	$forumlist = "AND fid IN ($forum_ids) $unviewable";
 }
 else
 {
-    $forumlist = $unviewable;
-    $all_forums = 1;
+	$forumlist = $unviewable;
+	$all_forums = 1;
 }
 
 // Find out which title to add to the feed.
@@ -86,15 +86,15 @@ $query = $db->simple_select("forums", "name, fid, allowhtml, allowmycode, allows
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {
-    $title .= $comma.$forum['name'];
-    $forumcache[$forum['fid']] = $forum;
-    $comma = $lang->comma;
+	$title .= $comma.$forum['name'];
+	$forumcache[$forum['fid']] = $forum;
+	$comma = $lang->comma;
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
 if(isset($all_forums))
 {
-    $title = $mybb->settings['bbname']." - ".$lang->all_forums;
+	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
 
 // Set the feed type.
@@ -102,10 +102,10 @@ $feedgenerator->set_feed_format($mybb->get_input('type'));
 
 // Set the channel header.
 $channel = array(
-    "title" => $title,
-    "link" => $mybb->settings['bburl']."/",
-    "date" => TIME_NOW,
-    "description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
+	"title" => $title,
+	"link" => $mybb->settings['bburl']."/",
+	"date" => TIME_NOW,
+	"description" => $mybb->settings['bbname']." - ".$mybb->settings['bburl']
 );
 $feedgenerator->set_channel($channel);
 
@@ -144,15 +144,18 @@ if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";
 
-	$attachments = array();
-	$query = $db->simple_select("attachments", "*", $firstpostlist);
-	while($attachment = $db->fetch_array($query))
+	if($mybb->settings['enableattachments'] == 1)
 	{
-		if(!isset($attachments[$attachment['pid']]))
+		$attachments = array();
+		$query = $db->simple_select("attachments", "*", $firstpostlist);
+		while($attachment = $db->fetch_array($query))
 		{
-			$attachments[$attachment['pid']] = array();
+			if(!isset($attachments[$attachment['pid']]))
+			{
+				$attachments[$attachment['pid']] = array();
+			}
+			$attachments[$attachment['pid']][] = $attachment;
 		}
-		$attachments[$attachment['pid']][] = $attachment;
 	}
 
 	$query = $db->simple_select("posts", "message, edittime, tid, fid, pid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));
@@ -164,12 +167,13 @@ if(!empty($firstposts))
 			"allow_smilies" => $forumcache[$post['fid']]['allowsmilies'],
 			"allow_imgcode" => $forumcache[$post['fid']]['allowimgcode'],
 			"allow_videocode" => $forumcache[$post['fid']]['allowvideocode'],
-			"filter_badwords" => 1
+			"filter_badwords" => 1,
+			"filter_cdata" => 1
 		);
 
 		$parsed_message = $parser->parse_message($post['message'], $parser_options);
 
-		if(isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
+		if($mybb->settings['enableattachments'] == 1 && isset($attachments[$post['pid']]) && is_array($attachments[$post['pid']]))
 		{
 			foreach($attachments[$post['pid']] as $attachment)
 			{

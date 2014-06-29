@@ -284,7 +284,12 @@ function get_calendar_permissions($cid=0)
 }
 
 /**
+ * Fetch the calendar permissions
  *
+ * @param int Calendar ID
+ * @param mixed User group ID
+ * @return array Array of permissions for this calendar and group
+ * @return array Array of current permissions
  */
 function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
 {
@@ -328,7 +333,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb;
+	global $db, $mybb, $templates, $lang, $gobutton;
 
 	$calendar_permissions = get_calendar_permissions();
 
@@ -353,9 +358,12 @@ function build_calendar_jump($selected=0)
 		{
 			$sel = "selected=\"selected\"";
 		}
-		$jump_options .= "<option value=\"{$calendar['cid']}\" $sel>{$calendar['name']}</option>\n";
+
+		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
 	}
-	return "<select name=\"calendar\">\n{$jump_options}</select>";
+
+	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
+	return $calendar_jump;
 }
 
 /**
@@ -637,7 +645,7 @@ function fetch_weekday_structure($week_start)
  *
  * @param int The weekday number
  * @param boolean True to fetch the short name ('S'), false to fetch full name
- * @param string The weekday name
+ * @return string The weekday name
  */
 function fetch_weekday_name($weekday, $short=false)
 {

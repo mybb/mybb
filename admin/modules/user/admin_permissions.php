@@ -81,7 +81,8 @@ if($mybb->input['action'] == "delete")
 		// Log admin action
 		if($uid < 0)
 		{
-			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
+			$gid = abs($uid);
+			$query = $db->simple_select("usergroups", "title", "gid='{$gid}'");
 			$group = $db->fetch_array($query);
 			log_admin_action($uid, $group['title']);
 
@@ -160,7 +161,7 @@ if($mybb->input['action'] == "edit")
 		{
 			// Groups
 			$gid = abs($uid);
-			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
+			$query = $db->simple_select("usergroups", "title", "gid='{$gid}'");
 			$group = $db->fetch_array($query);
 			log_admin_action($uid, $group['title']);
 		}

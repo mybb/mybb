@@ -21,6 +21,8 @@ add_breadcrumb($lang->nav_showteam);
 
 $plugins->run_hooks('showteam_start');
 
+$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
+
 $usergroups = array();
 $moderators = array();
 $users = array();
@@ -67,7 +69,7 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -136,6 +138,32 @@ foreach($usergroups as $usergroup)
 		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
+		}
+
+		// For the online image
+		if($user['lastactive'] > $timecut && ($user['invisible'] == 0 || $mybb->usergroup['canviewwolinvis'] == 1) && $user['lastvisit'] != $user['lastactive'])
+		{
+			$status = "online";
+		}
+		else
+		{
+			$status = "offline";
+		}
+
+		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
+		{
+			if($user['lastactive'])
+			{
+				$user['lastvisit'] = $lang->lastvisit_hidden;
+			}
+			else
+			{
+				$user['lastvisit'] = $lang->lastvisit_never;
+			}
+		}
+		else
+		{
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		}
 
 		$bgcolor = alt_trow();

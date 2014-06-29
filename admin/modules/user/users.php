@@ -94,6 +94,12 @@ $user_view_fields = array(
 		"align" => "center"
 	),
 
+	"threadnum" => array(
+		"title" => $lang->thread_count,
+		"width" => "",
+		"align" => "center"
+	),
+
 	"reputation" => array(
 		"title" => $lang->reputation,
 		"width" => "",
@@ -174,29 +180,29 @@ if($mybb->input['action'] == 'iplookup')
 			$ipaddress_host_name = $lang->na;
 		}
 	}
-	
+
 	?>
 	<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
+		<div style="overflow-y: auto; max-height: 400px;">
 
-	<?php
+			<?php
 
-	$table = new Table();
+			$table = new Table();
 
-	$table->construct_cell($lang->ipaddress_host_name.":");
-	$table->construct_cell($ipaddress_host_name);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_host_name.":");
+			$table->construct_cell($ipaddress_host_name);
+			$table->construct_row();
 
-	$table->construct_cell($lang->ipaddress_location.":");
-	$table->construct_cell($ipaddress_location);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_location.":");
+			$table->construct_cell($ipaddress_location);
+			$table->construct_row();
 
-	$table->output($lang->ipaddress_misc_info);
+			$table->output($lang->ipaddress_misc_info);
 
-	?>
-</div>
-</div>
-	<?php
+			?>
+		</div>
+	</div>
+<?php
 }
 
 if($mybb->input['action'] == "activate_user")
@@ -379,9 +385,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"usergroup" => 2
-		);
+		$mybb->input = array_merge(array('usergroup' => 2), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->required_profile_info);
@@ -495,6 +499,7 @@ if($mybb->input['action'] == "edit")
 			"additionalgroups" => $additionalgroups,
 			"displaygroup" => $mybb->input['displaygroup'],
 			"postnum" => $mybb->input['postnum'],
+			"threadnum" => $mybb->input['threadnum'],
 			"usertitle" => $mybb->input['usertitle'],
 			"timezone" => $mybb->input['timezone'],
 			"language" => $mybb->input['language'],
@@ -504,7 +509,8 @@ if($mybb->input['action'] == "edit")
 			"icq" => $mybb->input['icq'],
 			"aim" => $mybb->input['aim'],
 			"yahoo" => $mybb->input['yahoo'],
-			"msn" => $mybb->input['msn'],
+			"skype" => $mybb->input['skype'],
+			"google" => $mybb->input['google'],
 			"birthday" => array(
 				"day" => $mybb->input['bday1'],
 				"month" => $mybb->input['bday2'],
@@ -545,6 +551,8 @@ if($mybb->input['action'] == "edit")
 			"dstcorrection" => $mybb->input['dstcorrection'],
 			"threadmode" => $mybb->input['threadmode'],
 			"classicpostbit" => $mybb->input['classicpostbit'],
+			"showimages" => $mybb->input['showimages'],
+			"showvideos" => $mybb->input['showvideos'],
 			"showsigs" => $mybb->input['showsigs'],
 			"showavatars" => $mybb->input['showavatars'],
 			"showquickreply" => $mybb->input['showquickreply'],
@@ -826,7 +834,7 @@ if($mybb->input['action'] == "edit")
 	if(!$errors)
 	{
 		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
-		$mybb->input = $user;
+		$mybb->input = array_merge($mybb->input, $user);
 
 		$options = array(
 			'bday1', 'bday2', 'bday3',
@@ -837,7 +845,7 @@ if($mybb->input['action'] == "edit")
 
 		foreach($options as $option)
 		{
-			if(!isset($mybb->input[$option]))
+			if(!isset($input_user[$option]))
 			{
 				$mybb->input[$option] = '';
 			}
@@ -897,6 +905,15 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$page->add_breadcrumb_item($lang->edit_user.": ".htmlspecialchars_uni($user['username']));
+
+	$page->extra_header .= <<<EOF
+
+	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
+	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
+	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
+	<script type="text/javascript" src="../jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
+EOF;
 	$page->output_header($lang->edit_user);
 
 	$sub_tabs['edit_user'] = array(
@@ -1096,6 +1113,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
 	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->thread_count." <em>*</em>", "", $form->generate_text_box('threadnum', $mybb->input['threadnum'], array('id' => 'threadnum')), 'threadnum');
 
 	// Output custom profile fields - required
 	if(!isset($profile_fields['required']))
@@ -1112,7 +1130,8 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->icq_number, "", $form->generate_text_box('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row($lang->msn_messanger_handle, "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
+	$form_container->output_row($lang->skype_handle, "", $form->generate_text_box('skype', $mybb->input['skype'], array('id' => 'skype')), 'skype');
+	$form_container->output_row($lang->google_handle, "", $form->generate_text_box('google', $mybb->input['google'], array('id' => 'google')), 'google');
 
 	// Birthday
 	$birthday_days = array(0 => '');
@@ -1271,6 +1290,8 @@ if($mybb->input['action'] == "edit")
 
 	$thread_options = array(
 		$form->generate_check_box("classicpostbit", 1, $lang->show_classic_postbit, array("checked" => $mybb->input['classicpostbit'])),
+		$form->generate_check_box("showimages", 1, $lang->display_images, array("checked" => $mybb->input['showimages'])),
+		$form->generate_check_box("showvideos", 1, $lang->display_videos, array("checked" => $mybb->input['showvideos'])),
 		$form->generate_check_box("showsigs", 1, $lang->display_users_sigs, array("checked" => $mybb->input['showsigs'])),
 		$form->generate_check_box("showavatars", 1, $lang->display_users_avatars, array("checked" => $mybb->input['showavatars'])),
 		$form->generate_check_box("showquickreply", 1, $lang->show_quick_reply, array("checked" => $mybb->input['showquickreply'])),
@@ -1284,7 +1305,7 @@ if($mybb->input['action'] == "edit")
 	$other_options = array(
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->input['showcodebuttons'])),
-		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true),
+		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true, false, true),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->input['language'], array('id' => 'language'))
 	);
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
@@ -1295,7 +1316,7 @@ if($mybb->input['action'] == "edit")
 	//
 	// SIGNATURE EDITOR
 	//
-	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
+	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'height: 250px; width: 95%'));
 	$sig_smilies = $lang->off;
 	if($mybb->settings['sigsmilies'] == 1)
 	{
@@ -1546,7 +1567,7 @@ if($mybb->input['action'] == "edit")
 
 	$form->end();
 
-echo '<script type="text/javascript">
+	echo '<script type="text/javascript">
 <!--
 
 function toggleBox(action)
@@ -1634,7 +1655,12 @@ if($mybb->input['action'] == "delete")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
-		if(delete_user($user) == false)
+		// Set up user handler.
+		require_once MYBB_ROOT.'inc/datahandlers/user.php';
+		$userhandler = new UserDataHandler('delete');
+
+		// Delete the user
+		if(!$userhandler->delete_user($user['uid']))
 		{
 			flash_message($lang->error_cannot_delete_user, 'error');
 			admin_redirect("index.php?module=user-users");
@@ -1737,7 +1763,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
@@ -1847,22 +1873,12 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("reportedposts", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("reportedcontent", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("warnings", array("revokedby" => $destination_user['uid']), "revokedby='{$source_user['uid']}'");
 			$db->update_query("warnings", array("issuedby" => $destination_user['uid']), "issuedby='{$source_user['uid']}'");
-			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
-
-			// Is the source user a moderator?
-			if($groupscache[$source_user['usergroup']]['canmodcp'])
-			{
-				$db->delete_query("moderators", "id='{$source_user['uid']}' AND isgroup = '0'");
-
-				// Update the moderator cache...
-				$cache->update_moderators();
-			}
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
@@ -1979,16 +1995,12 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $lists, "uid='{$destination_user['uid']}'");
 
-			// Delete the old user
-			$db->delete_query("users", "uid='{$source_user['uid']}'");
-			$db->delete_query("banned", "uid='{$source_user['uid']}'");
+			// Set up user handler.
+			require_once MYBB_ROOT.'inc/datahandlers/user.php';
+			$userhandler = new UserDataHandler('delete');
 
-			// Did the old user have an uploaded avatar?
-			if($source_user['avatartype'] == "upload")
-			{
-				// Removes the ./ at the beginning the timestamp on the end...
-				@unlink("../".substr($source_user['avatar'], 2, -20));
-			}
+			// Delete the old user
+			$userhandler->delete_user($source_user['uid']);
 
 			// Get a list of forums where post count doesn't apply
 			$fids = array();
@@ -2012,13 +2024,19 @@ if($mybb->input['action'] == "merge")
 			);
 			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
+			// Update user thread count
+			$query = $db->simple_select("threads", "COUNT(*) AS threadnum", "uid='".$destination_user['uid']."' {$fids_not_in}");
+			$num = $db->fetch_array($query);
+			$updated_count = array(
+				"threadnum" => $num['threadnum']
+			);
+			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
+
 			// Use the earliest registration date
 			if($destination_user['regdate'] > $source_user['regdate'])
 			{
 				$db->update_query("users", array('regdate' => $source_user['regdate']), "uid='{$destination_user['uid']}'");
 			}
-
-			update_stats(array('numusers' => '-1'));
 
 			$plugins->run_hooks("admin_user_users_merge_commit");
 
@@ -2066,7 +2084,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2077,14 +2095,14 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	$("#destination_username").select2({
 		placeholder: "Search for a user",
@@ -2096,7 +2114,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2107,14 +2125,14 @@ if($mybb->input['action'] == "merge")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("../xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	// -->
 	</script>';
@@ -2557,38 +2575,14 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					if($mybb->input['processed'] == 1)
 					{
-						// Admin wants these users, gone!
-						$sql_array = implode(",", $selected);
-						$query = $db->simple_select("users", "uid", "uid IN (".$sql_array.")");
-						$to_be_deleted = $db->num_rows($query);
-						while($user = $db->fetch_array($query))
-						{
-							if($user['uid'] == $mybb->user['uid'] || is_super_admin($user['uid']))
-							{
-								// Remove me and super admins
-								continue;
-							}
-							else
-							{
-								// Run delete queries
-								$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->update_query("threads", array('uid' => 0), "uid='{$user['uid']}'");
-								$db->delete_query("userfields", "ufid='{$user['uid']}'");
-								$db->delete_query("privatemessages", "uid='{$user['uid']}'");
-								$db->delete_query("events", "uid='{$user['uid']}'");
-								$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
-								$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
-								$db->delete_query("sessions", "uid='{$user['uid']}'");
-								$db->delete_query("banned", "uid='{$user['uid']}'");
-								$db->delete_query("threadratings", "uid='{$user['uid']}'");
-								$db->delete_query("users", "uid='{$user['uid']}'");
-								$db->delete_query("joinrequests", "uid='{$user['uid']}'");
-								$db->delete_query("warnings", "uid='{$user['uid']}'");
-							}
-						}
+						// Set up user handler.
+						require_once MYBB_ROOT.'inc/datahandlers/user.php';
+						$userhandler = new UserDataHandler('delete');
+
+						// Delete users
+						$userhandler->delete_user($selected);
+
 						// Update forum stats, remove the cookie and redirect the user
-						update_stats(array('numusers' => '-'.$to_be_deleted.''));
 						my_unsetcookie("inlinemod_useracp");
 						$mybb->input['action'] = "inline_delete";
 						log_admin_action($to_be_deleted);
@@ -3139,7 +3133,7 @@ function build_users_view($view)
 	// Build the search SQL for users
 
 	// List of valid LIKE search fields
-	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
+	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "skype", "google", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
 		if(!empty($view['conditions'][$search_field]) && !$view['conditions'][$search_field.'_blank'])
@@ -3163,7 +3157,7 @@ function build_users_view($view)
 	}
 
 	// LESS THAN or GREATER THAN
-	$direction_fields = array("postnum");
+	$direction_fields = array("postnum", "threadnum");
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
@@ -3317,6 +3311,8 @@ function build_users_view($view)
 				continue;
 			}
 
+			$additional_sql = '';
+
 			switch($db->type)
 			{
 				case "pgsql":
@@ -3401,6 +3397,9 @@ function build_users_view($view)
 				break;
 			case "numposts":
 				$view['sortby'] = "postnum";
+				break;
+			case "numthreads":
+				$view['sortby'] = "threadnum";
 				break;
 			case "warninglevel":
 				$view['sortby'] = "warningpoints";
@@ -3757,7 +3756,7 @@ function build_user_view_card($user, $view, &$i)
 
 	// And build the final card
 	$card = "<fieldset id=\"uid_{$user['uid']}\" style=\"width: 47%; float: {$float};\">\n";
-	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" /> {$user['view']['username']}</legend>\n";
+	$card .= "<legend><input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" /> {$user['view']['username']}</legend>\n";
 	if($avatar)
 	{
 		$card .= "<div class=\"user_avatar\">{$avatar}</div>\n";
@@ -3807,7 +3806,7 @@ function build_user_view_table($user, $view, &$table)
 		$table->construct_cell($value, $field_options);
 	}
 
-	$table->construct_cell("<input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('uid_{$user['uid']}').toggleClassName('inline_selected');\" />");
+	$table->construct_cell("<input type=\"checkbox\" class=\"checkbox\" name=\"inlinemod_{$user['uid']}\" id=\"inlinemod_{$user['uid']}\" value=\"1\" onclick=\"$('#uid_{$user['uid']}').toggleClass('inline_selected');\" />");
 
 	$table->construct_row();
 }
@@ -3916,6 +3915,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$radio_options[''] = $lang->na;
 				}
 				$radio_options += explode("\n", $options);
+				$code = '';
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
@@ -3941,6 +3941,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$select_options[''] = $lang->na;
 				}
 				$select_options += explode("\n", $options);
+				$code = '';
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
@@ -4013,7 +4014,8 @@ function user_search_conditions($input=array(), &$form)
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
 	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
 	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
-	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn'))." {$lang->or} ".$form->generate_check_box('conditions[msn_blank]', 1, $lang->is_not_blank, array('id' => 'msn_blank', 'checked' => $input['conditions']['msn_blank'])), 'msn');
+	$form_container->output_row($lang->skype_contains, "", $form->generate_text_box('conditions[skype]', $input['conditions']['skype'], array('id' => 'skype'))." {$lang->or} ".$form->generate_check_box('conditions[skype_blank]', 1, $lang->is_not_blank, array('id' => 'skype_blank', 'checked' => $input['conditions']['skype_blank'])), 'skype');
+	$form_container->output_row($lang->google_contains, "", $form->generate_text_box('conditions[google]', $input['conditions']['google'], array('id' => 'google'))." {$lang->or} ".$form->generate_check_box('conditions[google_blank]', 1, $lang->is_not_blank, array('id' => 'google_blank', 'checked' => $input['conditions']['google_blank'])), 'google');
 	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');
 	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle'))." {$lang->or} ".$form->generate_check_box('conditions[usertitle_blank]', 1, $lang->is_not_blank, array('id' => 'usertitle_blank', 'checked' => $input['conditions']['usertitle_blank'])), 'usertitle');
 	$greater_options = array(
@@ -4022,6 +4024,7 @@ function user_search_conditions($input=array(), &$form)
 		"less_than" => $lang->less_than
 	);
 	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->thread_count_is, "", $form->generate_select_box('conditions[threadnum_dir]', $greater_options, $input['conditions']['threadnum_dir'], array('id' => 'numthreads_dir'))." ".$form->generate_text_box('conditions[threadnum]', $input['conditions']['threadnum'], array('id' => 'numthreads')), 'numthreads');
 
 	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
@@ -4056,21 +4059,42 @@ function user_search_conditions($input=array(), &$form)
 
 	// Autocompletion for usernames
 	echo '
-	<script type="text/javascript" src="../jscripts/typeahead.js?ver=1800"></script>
-	<script type="text/javascript">
-	<!--
-        $("#username").typeahead({
-            name: \'username\',
-            remote: {
-            	url: \'../xmlhttp.php?action=get_users&query=%QUERY\',
-                filter: function(response){
-                	return response.users;
-                },
-            },
-            limit: 10
-        });
-	// -->
-	</script>';
+<link rel="stylesheet" href="../jscripts/select2/select2.css">
+<script type="text/javascript" src="../jscripts/select2/select2.min.js"></script>
+<script type="text/javascript">
+<!--
+$("#username").select2({
+	placeholder: "Search for a user",
+	minimumInputLength: 3,
+	maximumSelectionSize: 3,
+	multiple: false,
+	ajax: { // instead of writing the function to execute the request we use Select2\'s convenient helper
+		url: "../xmlhttp.php?action=get_users",
+		dataType: \'json\',
+		data: function (term, page) {
+			return {
+				query: term // search term
+			};
+		},
+		results: function (data, page) { // parse the results into the format expected by Select2.
+			// since we are using custom formatting functions we do not need to alter remote JSON data
+			return {results: data};
+		}
+	},
+	initSelection: function(element, callback) {
+		var query = $(element).val();
+		if (query !== "") {
+			$.ajax("../xmlhttp.php?action=get_users&getone=1", {
+				data: {
+					query: query
+				},
+				dataType: "json"
+			}).done(function(data) { callback(data); });
+		}
+	}
+});
+// -->
+</script>';
 }
 
 ?>

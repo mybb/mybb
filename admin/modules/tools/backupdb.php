@@ -140,7 +140,7 @@ if($mybb->input['action'] == "backup")
 
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.date("_Ymd_His_").random_str(16);
 
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -150,11 +150,11 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?module=tools-backupdb&action=backup");
 				}
 
-				$fp = gzopen($file.'.sql.gz', 'w9');
+				$fp = gzopen($file.'.incomplete.sql.gz', 'w9');
 			}
 			else
 			{
-				$fp = fopen($file.'.sql', 'w');
+				$fp = fopen($file.'.incomplete.sql', 'w');
 			}
 		}
 		else
@@ -214,7 +214,15 @@ if($mybb->input['action'] == "backup")
 
 			if($mybb->input['contents'] != 'structure')
 			{
-				$query = $db->simple_select($table);
+				if($db->engine == 'mysqli')
+				{
+					$query = mysqli_query($db->read_link, "SELECT * FROM {$db->table_prefix}{$table}", MYSQLI_USE_RESULT);
+				}
+				else
+				{
+					$query = $db->simple_select($table);
+				}
+
 				while($row = $db->fetch_array($query))
 				{
 					$insert = "INSERT INTO {$table} ($fields) VALUES (";
@@ -224,6 +232,10 @@ if($mybb->input['action'] == "backup")
 						if(!isset($row[$field]) || is_null($row[$field]))
 						{
 							$insert .= $comma."NULL";
+						}
+						else if($db->engine == 'mysqli')
+						{
+							$insert .= $comma."'".mysqli_real_escape_string($db->read_link, $row[$field])."'";
 						}
 						else
 						{
@@ -235,6 +247,7 @@ if($mybb->input['action'] == "backup")
 					$contents .= $insert;
 					clear_overflow($fp, $contents);
 				}
+				$db->free_result($query);
 			}
 		}
 
@@ -246,11 +259,13 @@ if($mybb->input['action'] == "backup")
 			{
 				gzwrite($fp, $contents);
 				gzclose($fp);
+				rename($file.'.incomplete.sql.gz', $file.'.sql.gz');
 			}
 			else
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
+				rename($file.'.incomplete.sql', $file.'.sql');
 			}
 
 			if($mybb->input['filetype'] == 'gzip')
@@ -357,7 +372,7 @@ if($mybb->input['action'] == "backup")
 
 	$form = new Form("index.php?module=tools-backupdb&amp;action=backup", "post", "table_selection", 0, "table_selection");
 
-	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
+	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%', 'style' => 'border-bottom: 0px'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->file_type}</strong><br />\n{$lang->file_type_desc}<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", $lang->gzip_compressed, array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", $lang->plain_text)."</div>", array('width' => '50%'));
@@ -402,20 +417,25 @@ if(!$mybb->input['action'])
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
 	$handle = opendir($dir);
-	while(($file = readdir($handle)) !== false)
+
+	if($handle !== false)
 	{
-		if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
+		while(($file = readdir($handle)) !== false)
 		{
-			$ext = get_extension($file);
-			if($ext == 'gz' || $ext == 'sql')
+			if(filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file')
 			{
-				$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
-					"file" => $file,
-					"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
-					"type" => $ext
-				);
+				$ext = get_extension($file);
+				if($ext == 'gz' || $ext == 'sql')
+				{
+					$backups[@filemtime(MYBB_ADMIN_DIR.'backups/'.$file)] = array(
+						"file" => $file,
+						"time" => @filemtime(MYBB_ADMIN_DIR.'backups/'.$file),
+						"type" => $ext
+					);
+				}
 			}
 		}
+		closedir($handle);
 	}
 
 	$count = count($backups);

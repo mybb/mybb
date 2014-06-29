@@ -41,7 +41,7 @@ var UserCP = {
 				{
 					$.each(json.errors, function(i, message)
 					{
-					  $.jGrowl('There was an error fetching the buddy list. '+message);
+					  $.jGrowl(lang.buddylist_error+message);
 					});
 					return false;
 				}
@@ -126,31 +126,40 @@ var UserCP = {
 		if(canceled != true)
 		{
 			var buddies = $("#buddyselect_buddies").text();
-			existing_buddies = $(this.buddy_field).val();
-			if(existing_buddies != "" && existing_buddies != buddies)
+			existing_buddies = $(this.buddy_field).select2("data");
+			if(existing_buddies.length > 0)
 			{
-				existing_buddies = existing_buddies.replace(/^\s+|\s+$/g, "");
-				existing_buddies = existing_buddies.replace(/,\s?/g, ",");
+				// We already have stuff in our text box we must merge it with the new array we're going to create from the selected buddies
+				// We don't need to care about having dupes because Select2 treats items by ID and we two items have the same ID, there are no dupes because only one exists
+				// ^At least according to my tests :D (Pirata Nervo - so blame me for that if something goes wrong)
+				var newbuddies = [];
 				exp_buddies = buddies.split(",");
-				$.each(exp_buddies, function(i, buddy)
+				$.each(exp_buddies, function(index, buddy)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					if((","+existing_buddies+",").toLowerCase().indexOf(","+buddy.toLowerCase()+",") == -1)
-					{
-						if(existing_buddies)
-						{
-							existing_buddies += ",";
-						}
-						existing_buddies += buddy;
-					}
+					
+					var newbuddy = { id: buddy, text: buddy };
+					newbuddies.push(newbuddy);
 				});
-				$(this.buddy_field).text(existing_buddies.replace(/,\s?/g, ", "));
+				
+				// Merge both
+				var newarray = $.merge(existing_buddies, newbuddies);
+				
+				// Update data
+				$(this.buddy_field).select2("data", newarray);
+				
 			}
 			else
 			{
-				$(this.buddy_field).text(buddies);
+				var newbuddies = [];
+				exp_buddies = buddies.split(",");
+				$.each(exp_buddies, function(index, value ){
+					var newbuddy = { id: value.replace(/,\s?/g, ", "), text: value.replace(/,\s?/g, ", ") };
+					newbuddies.push(newbuddy);
+				});
+				$(this.buddy_field).select2("data", newbuddies);
 			}
-			$(this.buddy_field).focus();
+			$(this.buddy_field).select2("focus");
 		}
 		$("#buddyselect_container").hide();
 	},
@@ -193,7 +202,15 @@ var UserCP = {
 			async: false,
 	        complete: function (request)
 	        {
-		        $("#"+list+"_list").html(request.responseText);
+				if(request.responseText.indexOf("buddy_count") >= 0 || request.responseText.indexOf("ignored_count") >= 0)
+				{
+					 $("#"+list+"_list").html(request.responseText);
+				}
+				else
+				{
+					$("#sentrequests").html(request.responseText);
+				}
+				
 		        type_submit.removeAttr("disabled");
 		        type_add_username.removeAttr("disabled");
 		        type_submit.attr("value", old_value);
@@ -217,20 +234,24 @@ var UserCP = {
 			var message = lang.remove_buddy;
 		}
 
-		if(confirm(message))
-		{
-			if(use_xmlhttprequest != 1)
-			{
-				return true;
+		$.prompt(message, {
+			buttons:[
+					{title: yes_confirm, value: true},
+					{title: no_confirm, value: false}
+			],
+			submit: function(e,v,m,f){
+				if(v == true)
+				{
+					$.ajax(
+					{
+						type: 'post',
+						url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
+						data: { ajax: 1 },
+						async: false
+					});
+				}
 			}
-			$.ajax(
-			{
-				type: 'post',
-				url: 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid,
-				data: { ajax: 1 },
-				async: false
-			});
-		}
+		});
 
 		return false;
 	}

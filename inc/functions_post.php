@@ -279,7 +279,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
+				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
 			}
 
 			$post['userstars'] .= "<br />";
@@ -287,6 +287,7 @@ function build_postbit($post, $post_type=0)
 
 		$postnum = $post['postnum'];
 		$post['postnum'] = my_number_format($post['postnum']);
+		$post['threadnum'] = my_number_format($post['threadnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
@@ -402,29 +403,47 @@ function build_postbit($post, $post_type=0)
 					$type = trim($thing[0]);
 					$useropts = explode("\n", $post[$fieldfid]);
 
-					// Skip over texa area fields, as they might break layout
-					if($type == "textarea")
-					{
-						continue;
-					}
-
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
 						foreach($useropts as $val)
 						{
 							if($val != '')
 							{
-								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
+								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
 							}
 						}
-						if($post['fieldvalue'] != '')
+						if($post['fieldvalue_option'] != '')
 						{
-							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
+							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
 						}
 					}
 					else
 					{
-						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
+						$parser_options = array(
+							"allow_html" => $field['allowhtml'],
+							"allow_mycode" => $field['allowmycode'],
+							"allow_smilies" => $field['allowsmilies'],
+							"allow_imgcode" => $field['allowimgcode'],
+							"allow_videocode" => $field['allowvideocode'],
+							#"nofollow_on" => 1,
+							"filter_badwords" => 1
+						);
+
+						if($customfield['type'] == "textarea")
+						{
+							$parser_options['me_username'] = $post['username'];
+						}
+						else
+						{
+							$parser_options['nl2br'] = 0;
+						}
+
+						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						{
+							$parser_options['allow_imgcode'] = 0;
+						}
+
+						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $parser_options);
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
@@ -464,6 +483,7 @@ function build_postbit($post, $post_type=0)
 
 	$post['button_edit'] = '';
 	$post['button_quickdelete'] = '';
+	$post['button_quickrestore'] = '';
 	$post['button_quote'] = '';
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
@@ -496,6 +516,13 @@ function build_postbit($post, $post_type=0)
 			$post['editdate'] = my_date('relative', $post['edittime']);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
+			$editreason = "";
+			if($post['editreason'] != "")
+			{
+				$post['editreason'] = $parser->parse_badwords($post['editreason']);
+				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
+				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+			}
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 
@@ -505,22 +532,66 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Quick Delete button
-		$can_delete = 0;
+		$can_delete_thread = $can_delete_post = 0;
 		if($mybb->user['uid'] == $post['uid'])
 		{
 			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{
-				$can_delete = 1;
+				$can_delete_thread = 1;
 			}
 			else if($forumpermissions['candeleteposts'] == 1 && $postcounter != 1)
 			{
-				$can_delete = 1;
+				$can_delete_post = 1;
 			}
 		}
 
-		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
+		$postbit_qdelete = '';
+		if($mybb->user['uid'] != 0)
 		{
-			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+			if((is_moderator($fid, "candeleteposts") || $can_delete_post == 1) && $postcounter != 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_post;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid, "canrestoreposts"))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					$postbit_qrestore = $lang->postbit_qrestore_post;
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
+			}
+			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
+			{
+				$postbit_qdelete = $lang->postbit_qdelete_thread;
+				$display = "";
+				if($post['visible'] == -1)
+				{
+					$display = "none";
+				}
+				$postbit_qrestore = $lang->postbit_qrestore_thread;
+				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+
+				// Restore Post
+				if(is_moderator($fid, "canrestoreposts"))
+				{
+					$display = "none";
+					if($post['visible'] == -1)
+					{
+						$display = "";
+					}
+					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+				}
+			}
 		}
 
 		// Inline moderation stuff
@@ -552,12 +623,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 
-		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 
-		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -569,7 +640,7 @@ function build_postbit($post, $post_type=0)
 	}
 	elseif($post_type == 3) // announcement
 	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid))
+		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanageannounce'] == 1 && is_moderator($fid, "canmanageannouncements"))
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
 			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
@@ -610,6 +681,16 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = 0;
 	}
 
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
+	if($mybb->user['showvideos'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestvideos'] != 1 && $mybb->user['uid'] == 0)
+	{
+		$parser_options['allow_videocode'] = 0;
+	}
+
 	// If we have incoming search terms to highlight - get it done.
 	if(!empty($mybb->input['highlight']))
 	{
@@ -620,7 +701,10 @@ function build_postbit($post, $post_type=0)
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	$post['attachments'] = '';
-	get_post_attachments($id, $post);
+	if($mybb->settings['enableattachments'] != 0)
+	{
+		get_post_attachments($id, $post);
+	}
 
 	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
 	{
@@ -636,6 +720,11 @@ function build_postbit($post, $post_type=0)
 		if($usergroup['signofollow'])
 		{
 			$sig_parser['nofollow_on'] = 1;
+		}
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
 		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
@@ -654,7 +743,7 @@ function build_postbit($post, $post_type=0)
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
+		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
 	}
 	else
 	{
@@ -788,7 +877,7 @@ function get_post_attachments($id, &$post)
 				$validationcount++;
 			}
 		}
-		if($validationcount > 0 && is_moderator($post['fid']))
+		if($validationcount > 0 && is_moderator($post['fid'], "canviewunapprove"))
 		{
 			if($validationcount == 1)
 			{

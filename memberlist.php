@@ -11,8 +11,9 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'memberlist.php');
 
-$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,multipage_prevpage";
+$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,multipage_prevpage,memberlist_user_userstar";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,memberlist_referrals,memberlist_referrals_bit,memberlist_error";
+
 require_once "./global.php";
 
 // Load global language phrases
@@ -42,13 +43,13 @@ if($mybb->get_input('action') == "search")
 }
 else
 {
-	$colspan = 5;
+	$colspan = 6;
 	$search_url = '';
 
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
-		$colspan = 6;
+		$colspan = 7;
 		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
 	}
 
@@ -84,6 +85,9 @@ else
 			break;
 		case "postnum":
 			$sort_field = "u.postnum";
+			break;
+		case "threadnum":
+			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
 			$sort_field = "u.referrals";
@@ -197,12 +201,20 @@ else
 		$search_url .= "&icq=".urlencode($mybb->input['icq']);
 	}
 
-	// MSN/Windows Live Messenger address
-	$mybb->input['msn'] = trim($mybb->get_input('msn'));
-	if($mybb->input['msn'])
+	// Google Talk address
+	$mybb->input['google'] = trim($mybb->get_input('google'));
+	if($mybb->input['google'])
 	{
-		$search_query .= " AND u.msn LIKE '%".$db->escape_string_like($mybb->input['msn'])."%'";
-		$search_url .= "&msn=".urlencode($mybb->input['msn']);
+		$search_query .= " AND u.google LIKE '%".$db->escape_string_like($mybb->input['google'])."%'";
+		$search_url .= "&google=".urlencode($mybb->input['google']);
+	}
+
+	// Skype address
+	$mybb->input['skype'] = trim($mybb->get_input('skype'));
+	if($mybb->input['skype'])
+	{
+		$search_query .= " AND u.skype LIKE '%".$db->escape_string_like($mybb->input['skype'])."%'";
+		$search_url .= "&skype=".urlencode($mybb->input['skype']);
 	}
 
 	// Yahoo! Messenger address
@@ -352,7 +364,7 @@ else
 
 			for($i = 0; $i < $user['stars']; ++$i)
 			{
-				$user['userstars'] .= "<img src=\"{$starimage}\" border=\"0\" alt=\"*\" />";
+				eval("\$user['userstars'] .= \"".$templates->get("memberlist_user_userstar", 1, 0)."\";");
 			}
 		}
 
@@ -382,6 +394,7 @@ else
 
 		$user['regdate'] = my_date('relative', $user['regdate']);
 		$user['postnum'] = my_number_format($user['postnum']);
+		$user['threadnum'] = my_number_format($user['threadnum']);
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
 	}
 

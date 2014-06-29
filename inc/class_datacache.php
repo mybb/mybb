@@ -403,7 +403,6 @@ class datacache
 		$this->calllist[$this->call_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Select the size of the cache
 	 *
@@ -822,21 +821,21 @@ class datacache
 	}
 
 	/**
-	 * Update reported posts cache.
+	 * Update reported content cache.
 	 *
 	 */
-	function update_reportedposts()
+	function update_reportedcontent()
 	{
 		global $db, $mybb;
 
 		$reports = array();
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
 
-		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("reportedcontent", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
 
 		$reasons = array();
@@ -860,7 +859,7 @@ class datacache
 			"reasons" => $reasons
 		);
 
-		$this->update("reportedposts", $reports);
+		$this->update("reportedcontent", $reports);
 	}
 
 	/**
@@ -880,6 +879,7 @@ class datacache
 
 		$this->update("mycode", $mycodes);
 	}
+
 	/**
 	 * Update the mailqueue cache
 	 *
@@ -954,7 +954,6 @@ class datacache
 
 		$this->update("tasks", $task_cache);
 	}
-
 
 	/**
 	 * Updates the banned IPs cache
@@ -1164,6 +1163,24 @@ class datacache
 		$this->update("forumsdisplay", $fd_statistics);
 	}
 
+	/**
+	 * Update profile fields cache.
+	 *
+	 */
+	function update_profilefields()
+	{
+		global $db;
+
+		$fields = array();
+		$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
+		while($field = $db->fetch_array($query))
+		{
+			$fields[] = $field;
+		}
+
+		$this->update("profilefields", $fields);
+	}
+
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
 	function reload_mostonline()
 	{
@@ -1219,6 +1236,11 @@ class datacache
 
 		$query = $db->simple_select("datacache", "title,cache", "title='adminnotes'");
 		$this->update("adminnotes", @unserialize($db->fetch_field($query, "cache")));
+	}
+
+	function reload_mybb_credits()
+	{
+		admin_redirect('index.php?module=home-credits&amp;fetch_new=-2');
 	}
 }
 ?>

@@ -73,7 +73,15 @@ $usergroup_permissions = array(
 	"signofollow" => 0,
 	"edittimelimit" => 0,
 	"maxposts" => 0,
-	"showmemberlist" => 1
+	"showmemberlist" => 1,
+	"canmanageannounce" => 0,
+	"canmanagemodqueue" => 0,
+	"canmanagereportedcontent" => 0,
+	"canviewmodlogs" => 0,
+	"caneditprofiles" => 0,
+	"canbanusers" => 0,
+	"canviewwarnlogs" => 0,
+	"canuseipsearch" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -327,7 +335,8 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 			"gid" => $group['gid'],
 			"uid" => $user['uid'],
 			"canmanagemembers" => intval($mybb->input['canmanagemembers']),
-			"canmanagerequests" => intval($mybb->input['canmanagerequests'])
+			"canmanagerequests" => intval($mybb->input['canmanagerequests']),
+			"caninvitemembers" => intval($mybb->input['caninvitemembers'])
 		);
 
 		$plugins->run_hooks("admin_user_groups_add_leader_commit");
@@ -379,6 +388,7 @@ if($mybb->input['action'] == "leaders")
 	$table->construct_header($lang->user);
 	$table->construct_header($lang->can_manage_members, array("class" => 'align_center', "width" => 200));
 	$table->construct_header($lang->can_manage_join_requests, array("class" => 'align_center', "width" => 200));
+	$table->construct_header($lang->can_invite_members, array("class" => 'align_center', "width" => 200));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 
 	$query = $db->query("
@@ -409,10 +419,20 @@ if($mybb->input['action'] == "leaders")
 			$canmanagerequests = $lang->no;
 		}
 
+		if($leader['caninvitemembers'])
+		{
+			$caninvitemembers = $lang->yes;
+		}
+		else
+		{
+			$caninvitemembers = $lang->no;
+		}
+
 		$table->construct_cell("<strong>".build_profile_link($leader['username'], $leader['uid'], "_blank")."</strong>");
 		$table->construct_cell($canmanagemembers, array("class" => "align_center"));
 		$table->construct_cell($canmanagerequests, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell($caninvitemembers, array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user-groups&amp;action=delete_leader&amp;lid={$leader['lid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_leader_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
@@ -433,16 +453,18 @@ if($mybb->input['action'] == "leaders")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			"canmanagemembers" => 1,
-			"canmanagerequests" => 1
-		);
+			"canmanagerequests" => 1,
+			"caninvitemembers" => 1
+		), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-		$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
 	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 
 	$form_container->end();
@@ -525,7 +547,8 @@ if($mybb->input['action'] == "edit_leader")
 	{
 		$updated_leader = array(
 			"canmanagemembers" => intval($mybb->input['canmanagemembers']),
-			"canmanagerequests" => intval($mybb->input['canmanagerequests'])
+			"canmanagerequests" => intval($mybb->input['canmanagerequests']),
+			"caninvitemembers" => intval($mybb->input['caninvitemembers'])
 		);
 
 		$plugins->run_hooks("admin_user_groups_edit_leader_commit");
@@ -542,7 +565,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	if(!$errors)
 	{
-		$mybb->input = $leader;
+		$mybb->input = array_merge($mybb->input, $leader);
 	}
 
 	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -565,7 +588,8 @@ if($mybb->input['action'] == "edit_leader")
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
 
 	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-		$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$form_container->output_row($lang->can_invite_group_members, $lang->can_invite_group_members_desc, $form->generate_yes_no_radio('caninvitemembers', $mybb->input['caninvitemembers']));
 	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 
 	$form_container->end();
@@ -670,9 +694,9 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
+		$mybb->input = array_merge(array(
 			"namestyle" => "{username}"
-		);
+		), $mybb->input);
 	}
 
 	$form_container = new FormContainer($lang->add_user_group);
@@ -730,6 +754,11 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
 
+		if($mybb->input['moderate'] == 1 && $mybb->input['invite'] == 1)
+		{
+			$errors[] = $lang->error_cannot_have_both_types;
+		}
+
 		if(!$errors)
 		{
 			if($mybb->input['joinable'] == 1)
@@ -737,6 +766,10 @@ if($mybb->input['action'] == "edit")
 				if($mybb->input['moderate'] == 1)
 				{
 					$mybb->input['type'] = "4";
+				}
+				elseif($mybb->input['invite'] == 1)
+				{
+					$mybb->input['type'] = "5";
 				}
 				else
 				{
@@ -828,7 +861,15 @@ if($mybb->input['action'] == "edit")
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
 				"maxposts" => intval($mybb->input['maxposts']),
-				"showmemberlist" => intval($mybb->input['showmemberlist'])
+				"showmemberlist" => intval($mybb->input['showmemberlist']),
+				"canmanageannounce" => intval($mybb->input['canmanageannounce']),
+				"canmanagemodqueue" => intval($mybb->input['canmanagemodqueue']),
+				"canmanagereportedcontent" => intval($mybb->input['canmanagereportedcontent']),
+				"canviewmodlogs" => intval($mybb->input['canviewmodlogs']),
+				"caneditprofiles" => intval($mybb->input['caneditprofiles']),
+				"canbanusers" => intval($mybb->input['canbanusers']),
+				"canviewwarnlogs" => intval($mybb->input['canviewwarnlogs']),
+				"canuseipsearch" => intval($mybb->input['canuseipsearch'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -878,24 +919,34 @@ if($mybb->input['action'] == "edit")
 		{
 			$usergroup['joinable'] = 1;
 			$usergroup['moderate'] = 0;
+			$usergroup['invite'] = 0;
 		}
 		elseif($usergroup['type'] == "4")
 		{
 			$usergroup['joinable'] = 1;
 			$usergroup['moderate'] = 1;
+			$usergroup['invite'] = 0;
+		}
+		elseif($usergroup['type'] == "5")
+		{
+			$usergroup['joinable'] = 1;
+			$usergroup['moderate'] = 0;
+			$usergroup['invite'] = 1;
 		}
 		else
 		{
 			$usergroup['joinable'] = 0;
 			$usergroup['moderate'] = 0;
+			$usergroup['invite'] = 0;
 		}
-		$mybb->input = $usergroup;
+		$mybb->input = array_merge($mybb->input, $usergroup);
 	}
 	$tabs = array(
 		"general" => $lang->general,
 		"forums_posts" => $lang->forums_posts,
 		"users_permissions" => $lang->users_permissions,
-		"misc" => $lang->misc
+		"misc" => $lang->misc,
+		"modcp" => $lang->mod_cp
 	);
 	$tabs = $plugins->run_hooks("admin_user_groups_edit_graph_tabs", $tabs);
 	$page->output_tab_control($tabs);
@@ -928,6 +979,7 @@ if($mybb->input['action'] == "edit")
 		$public_options = array(
 			$form->generate_check_box("joinable", 1, $lang->user_joinable, array("checked" => $mybb->input['joinable'])),
 			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->input['moderate'])),
+			$form->generate_check_box("invite", 1, $lang->invite_only, array("checked" => $mybb->input['invite'])),
 			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->input['candisplaygroup'])),
 			);
 		$form_container->output_row($lang->publicly_joinable_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
@@ -1069,6 +1121,31 @@ if($mybb->input['action'] == "edit")
 		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->misc, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");
+
+	$form_container->end();
+	echo "</div>";
+
+	//
+	// MODERATOR CP
+	//
+	echo "<div id=\"tab_modcp\">";
+	$form_container = new FormContainer($lang->mod_cp);
+
+	$forum_post_options = array(
+		$form->generate_check_box("canmanageannounce", 1, $lang->can_manage_announce, array("checked" => $mybb->input['canmanageannounce'])),
+		$form->generate_check_box("canmanagemodqueue", 1, $lang->can_manage_mod_queue, array("checked" => $mybb->input['canmanagemodqueue'])),
+		$form->generate_check_box("canmanagereportedcontent", 1, $lang->can_manage_reported_content, array("checked" => $mybb->input['canmanagereportedcontent'])),
+		$form->generate_check_box("canviewmodlogs", 1, $lang->can_view_mod_logs, array("checked" => $mybb->input['canviewmodlogs']))
+	);
+	$form_container->output_row($lang->forum_post_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $forum_post_options)."</div>");
+
+	$user_options = array(
+		$form->generate_check_box("caneditprofiles", 1, $lang->can_edit_profiles, array("checked" => $mybb->input['caneditprofiles'])),
+		$form->generate_check_box("canbanusers", 1, $lang->can_ban_users, array("checked" => $mybb->input['canbanusers'])),
+		$form->generate_check_box("canviewwarnlogs", 1, $lang->can_view_warnlogs, array("checked" => $mybb->input['canviewwarnlogs'])),
+		$form->generate_check_box("canuseipsearch", 1, $lang->can_use_ipsearch, array("checked" => $mybb->input['canuseipsearch']))
+	);
+	$form_container->output_row($lang->user_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $user_options)."</div>");
 
 	$form_container->end();
 	echo "</div>";
@@ -1290,11 +1367,11 @@ if(!$mybb->input['action'])
 		}
 
 		$join_requests = '';
-		if($joinrequests[$usergroup['gid']] > 1)
+		if($joinrequests[$usergroup['gid']] > 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
-		else if($joinrequests[$usergroup['gid']] == 1)
+		else if($joinrequests[$usergroup['gid']] == 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
@@ -1322,7 +1399,7 @@ if(!$mybb->input['action'])
 		$popup = new PopupMenu("usergroup_{$usergroup['gid']}", $lang->options);
 		$popup->add_item($lang->edit_group, "index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}");
 		$popup->add_item($lang->list_users, "index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
-		if($joinrequests[$usergroup['gid']] > 0)
+		if($joinrequests[$usergroup['gid']] > 0 && $usergroup['type'] == 4)
 		{
 			$popup->add_item($lang->join_requests, "index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
 		}

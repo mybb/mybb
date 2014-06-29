@@ -395,6 +395,8 @@ if($mybb->input['action'] == "add")
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
+		"forumselect" => $lang->forum_selection_box,
+		"groupselect" => $lang->group_selection_box,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -413,7 +415,10 @@ if($mybb->input['action'] == "add")
 	$form->end();
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
 	</script>';
@@ -581,6 +586,8 @@ if($mybb->input['action'] == "edit")
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
 		"select" => $lang->select,
+		"forumselect" => $lang->forum_selection_box,
+		"groupselect" => $lang->group_selection_box,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
 		"language" => $lang->language_selection_box,
@@ -599,7 +606,10 @@ if($mybb->input['action'] == "edit")
 	$form->end();
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var peeker = new Peeker($("#type"), $("#row_extra"), /select|radio|checkbox|php/, false);
+		});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
 	</script>';
@@ -858,10 +868,48 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// Get settings which optionscode is a forum/group select
+		// We cannot rely on user input to decide this
+		$forum_group_select = array();
+		$query = $db->simple_select('settings', 'name', 'optionscode IN (\'forumselect\', \'groupselect\')');
+		while($name = $db->fetch_field($query, 'name'))
+		{
+			$forum_group_select[] = $name;
+		}
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
 			{
+				if(!empty($forum_group_select) && in_array($name, $forum_group_select))
+				{
+					if($value == 'all')
+					{
+						$value = -1;
+					}
+					elseif($value == 'custom')
+					{
+						if(isset($mybb->input['select'][$name]) && is_array($mybb->input['select'][$name]))
+						{
+							foreach($mybb->input['select'][$name] as &$val)
+							{
+								$val = (int)$val;
+							}
+							unset($val);
+
+							$value = implode(',', (array)$mybb->input['select'][$name]);
+						}
+						else
+						{
+							$value = '';
+						}
+					}
+					else
+					{
+						$value = '';
+					}
+				}
+
 				$value = $db->escape_string($value);
 				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
 			}
@@ -1133,6 +1181,102 @@ if($mybb->input['action'] == "change")
 				$setting['optionscode'] = substr($setting['optionscode'], 3);
 				eval("\$setting_code = \"".$setting['optionscode']."\";");
 			}
+			else if($type[0] == "forumselect")
+			{
+				$selected_values = '';
+				if($setting['value'] != '' && $setting['value'] != -1)
+				{
+					$selected_values = explode(',', (string)$setting['value']);
+
+					foreach($selected_values as &$value)
+					{
+						$value = (int)$value;
+					}
+					unset($value);
+				}
+
+				$forum_checked = array('all' => '', 'custom' => '', 'none' => '');
+				if($setting['value'] == -1)
+				{
+					$forum_checked['all'] = 'checked="checked"';
+				}
+				elseif($setting['value'] != '')
+				{
+					$forum_checked['custom'] = 'checked="checked"';
+				}
+				else
+				{
+					$forum_checked['none'] = 'checked="checked"';
+				}
+
+				print_selection_javascript();
+
+				$setting_code = "
+				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$forum_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_forums}</strong></label></dt>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$forum_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_forums}</strong></label></dt>
+					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
+						<table cellpadding=\"4\">
+							<tr>
+								<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
+								<td>".$form->generate_forum_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+							</tr>
+						</table>
+					</dd>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$forum_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+				</dl>
+				<script type=\"text/javascript\">
+					checkAction('{$element_id}');
+				</script>";
+			}
+			else if($type[0] == "groupselect")
+			{
+				$selected_values = '';
+				if($setting['value'] != '' && $setting['value'] != -1)
+				{
+					$selected_values = explode(',', (string)$setting['value']);
+
+					foreach($selected_values as &$value)
+					{
+						$value = (int)$value;
+					}
+					unset($value);
+				}
+
+				$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+				if($setting['value'] == -1)
+				{
+					$group_checked['all'] = 'checked="checked"';
+				}
+				elseif($setting['value'] != '')
+				{
+					$group_checked['custom'] = 'checked="checked"';
+				}
+				else
+				{
+					$group_checked['none'] = 'checked="checked"';
+				}
+
+				print_selection_javascript();
+
+				$setting_code = "
+				<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"all\" {$group_checked['all']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"custom\" {$group_checked['custom']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+					<dd style=\"margin-top: 4px;\" id=\"{$element_id}_forums_groups_custom\" class=\"{$element_id}_forums_groups\">
+						<table cellpadding=\"4\">
+							<tr>
+								<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+								<td>".$form->generate_group_select('select['.$setting['name'].'][]', $selected_values, array('id' => $element_id, 'multiple' => true, 'size' => 5))."</td>
+							</tr>
+						</table>
+					</dd>
+					<dt><label style=\"display: block;\"><input type=\"radio\" name=\"{$element_name}\" value=\"none\" {$group_checked['none']} class=\"{$element_id}_forums_groups_check\" onclick=\"checkAction('{$element_id}');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+				</dl>
+				<script type=\"text/javascript\">
+					checkAction('{$element_id}');
+				</script>";
+			}
 			else
 			{
 				for($i=0; $i < count($type); $i++)
@@ -1216,6 +1360,16 @@ if($mybb->input['action'] == "change")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_settings_start");
+
+	$page->extra_header .= <<<EOF
+	<script type="text/javascript">
+	<!--
+	lang.searching = "{$lang->searching}";
+	lang.search_error = "{$lang->search_error}";
+	lang.search_done = "{$lang->search_done}";
+	// -->
+	</script>
+EOF;
 
 	$page->output_header($lang->board_settings);
 	if(isset($message))
@@ -1371,80 +1525,12 @@ if(!$mybb->input['action'])
 	echo '</div>';
 
 	echo '
+<script type="text/javascript" src="./jscripts/search.js"></script>
 <script type="text/javascript">
 //<!--
-var SettingSearch = Class.create();
-SettingSearch.prototype = {
-
-	spinner: null,
-	form: null,
-	result_div: null,
-	hide_div: null,
-	search_box: null,
-
-	initialize: function(form, search_box, result_div, hide_div)
-	{
-		Event.observe(form, "submit", this.onSubmit.bind(this));
-		this.form = form;
-		this.result_div = result_div;
-		this.hide_div = hide_div;
-		result_div.style.display = "none";
-		this.search_box = search_box;
-		Event.observe(search_box, "focus", function() {
-			if($("search").value == "'.$lang->settings_search.'")
-			{
-				$("search").removeClassName("search_default");
-				$("search").value = "";
-			}
-		});
-		Event.observe(search_box, "blur", function() {
-			if($("search").value == "")
-			{
-				$("search").addClassName("search_default");
-				$("search").value = "'.$lang->settings_search.'";
-				$("search_results").style.display = "none";
-				$("group_list").style.display = "";
-			}
-		});
-	},
-
-	onSubmit: function(e)
-	{
-		Event.stop(e);
-		if(this.search_box.value != "")
-		{
-			this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
-			pars = "module=config-settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
-			new Ajax.Request("index.php", {
-			    method: "get",
-				parameters: pars,
-			    onComplete: this.onComplete.bind(this)
-			});
-		}
-	},
-
-	onComplete: function(request)
-	{
-		if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
-		{
-			message = request.responseText.match(/<error>(.*)<\/error>/);
-			if(!message[1])
-			{
-				message[1] = "'.$lang->error_ajax_unknown.'";
-			}
-			alert(message[1]);
-		}
-		else if(request.responseText)
-		{
-			this.result_div.style.display = "";
-			this.hide_div.style.display = "none";
-			this.result_div.innerHTML = request.responseText;
-			loadPeekers();
-		}
-		this.spinner.destroy();
-	}
-}
-new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
+$(document).ready(function(){
+	SettingSearch.init("'.$lang->settings_search.'","'.$lang->error_ajax_unknown.'");
+});
 //-->
 </script>';
 
@@ -1457,45 +1543,51 @@ function print_setting_peekers()
 	global $plugins;
 
 	$peekers = array(
-		'new Peeker($$(".setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true)',
-		'new Peeker($$(".setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true)',
-		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true)',
-		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true)',
-		'new Peeker($$(".setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true)',
-		'new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false)',
-		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true)',
-		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true)',
-		'new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true)',
-		'new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true)',
-		'new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true)',
-		'new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false)',
-		'new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false)',
-		'new Peeker($$(".setting_postfloodcheck"), $("row_setting_postfloodsecs"), /1/, true)',
-		'new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false)',
-		'new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false)',
-		'new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false)',
-		'new Peeker($$(".setting_enablememberlist"), $("row_setting_membersperpage"), /1/, true)',
-		'new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /1/, true)',
-		'new Peeker($$(".setting_enablememberlist"), $("row_setting_default_memberlist_order"), /1/, true)',
-		'new Peeker($$(".setting_enablereputation"), $("row_setting_repsperpage"), /1/, true)',
-		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /1/, true)',
-		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true)',
-		'new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true)',
-		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true)',
-		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true)',
-		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true)',
-		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true)',
-		'new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowvideocode"), /1/, true)',
-		'new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true)',
-		'new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false)',
-		'new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false)',
-		'new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false)',
-		'new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false)',
+		'new Peeker($(".setting_boardclosed"), $("#row_setting_boardclosed_reason"), /1/, true)',
+		'new Peeker($(".setting_gzipoutput"), $("#row_setting_gziplevel"), /1/, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorlogmedium"), /1/, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errortypemedium"), /1/, true)',
+		'new Peeker($(".setting_useerrorhandling"), $("#row_setting_errorloglocation"), /1/, true)',
+		'new Peeker($("#setting_subforumsindex"), $("#row_setting_subforumsstatusicons"), /[^0+|]/, false)',
+		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarityrating"), /1/, true)',
+		'new Peeker($(".setting_showsimilarthreads"), $("#row_setting_similarlimit"), /1/, true)',
+		'new Peeker($(".setting_disableregs"), $("#row_setting_regtype"), /0/, true)',
+		'new Peeker($(".setting_hiddencaptchaimage"), $("#row_setting_hiddencaptchaimagefield"), /1/, true)',
+		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintime"), /[^0+|]/, false)',
+		'new Peeker($("#setting_failedlogincount"), $("#row_setting_failedlogintext"), /[^0+|]/, false)',
+		'new Peeker($(".setting_postfloodcheck"), $("#row_setting_postfloodsecs"), /1/, true)',
+		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergefignore"), /[^0+|]/, false)',
+		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergeuignore"), /[^0+|]/, false)',
+		'new Peeker($("#setting_postmergemins"), $("#row_setting_postmergesep"), /[^0+|][\d*]/, false)',
+		'new Peeker($(".setting_enablememberlist"), $("#row_setting_membersperpage"), /1/, true)',
+		'new Peeker($(".setting_enablememberlist"), $("#row_setting_default_memberlist_sortby"), /1/, true)',
+		'new Peeker($(".setting_enablememberlist"), $("#row_setting_default_memberlist_order"), /1/, true)',
+		'new Peeker($(".setting_enablereputation"), $("#row_setting_repsperpage"), /1/, true)',
+		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_allowcustomwarnings"), /1/, true)',
+		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_canviewownwarning"), /1/, true)',
+		'new Peeker($(".setting_enablewarningsystem"), $("#row_setting_maxwarningpoints"), /1/, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowhtml"), /1/, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowmycode"), /1/, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowsmilies"), /1/, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowimgcode"), /1/, true)',
+		'new Peeker($(".setting_enablepms"), $("#row_setting_pmsallowvideocode"), /1/, true)',
+		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertertot"), /1/, true)',
+		'new Peeker($(".setting_smilieinserter"), $("#row_setting_smilieinsertercols"), /1/, true)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_host"), /smtp/, false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_port"), /smtp/, false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_user"), /smtp/, false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_smtp_pass"), /smtp/, false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_secure_smtp"), /smtp/, false)',
+		'new Peeker($("#setting_mail_handler"), $("#row_setting_mail_parameters"), /mail/, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchapublickey"), 2, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_captchaprivatekey"), 2, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahpublisherkey"), 3, false)',
+		'new Peeker($("#setting_captchaimage"), $("#row_setting_ayahscoringkey"), 3, false)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_guests"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_badwords"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxsubjectlength"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_minmessagelength"), /1/, true)',
+		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxmessagelength"), /1/, true)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
@@ -1504,13 +1596,49 @@ function print_setting_peekers()
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
-		Event.observe(window, "load", function() {
+		$(document).ready(function() {
 			loadPeekers();
 		});
-		function loadPeekers()
-		{
-			'.$setting_peekers.'
+		function loadPeekers() {
+			' . $setting_peekers . '
 		}
 	</script>';
+}
+
+function print_selection_javascript()
+{
+	static $already_printed = false;
+
+	if($already_printed)
+	{
+		return;
+	}
+
+	$already_printed = true;
+
+	echo "<script type=\"text/javascript\">
+	function checkAction(id)
+	{
+		var checked = '';
+
+		$('.'+id+'_forums_groups_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+
+		$('.'+id+'_forums_groups').each(function(e)
+		{
+			$(this).hide();
+		});
+
+		if($('#'+id+'_forums_groups_'+checked))
+		{
+			$('#'+id+'_forums_groups_'+checked).show();
+		}
+	}
+</script>";
 }
 ?>

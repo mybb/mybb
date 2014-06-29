@@ -11,16 +11,22 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'usercp.php');
 
-$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum";
-$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
-$templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none";
-$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_options";
-$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove";
-$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current";
-$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_drafts,usercp_usergroups_joingroup,usercp_attachments_none";
-$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end";
-$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert";
+$templatelist = "usercp,usercp_nav,usercp_profile,usercp_changename,usercp_email,usercp_password,usercp_subscriptions_thread,forumbit_depth2_forum_lastpost,usercp_forumsubscriptions_forum,postbit_reputation_formatted,usercp_subscriptions_thread_icon";
+$templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups,usercp_nav_attachments,usercp_options_style,usercp_options,usercp_warnings_warning_post";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation,usercp_avatar_remove,usercp_resendactivation";
+$templatelist .= ",usercp_attachments_attachment,usercp_attachments,usercp_profile_away,usercp_profile_customfield,usercp_profile_profilefields,usercp_profile_customtitle,usercp_forumsubscriptions_none,usercp_profile_customtitle_currentcustom";
+$templatelist .= ",usercp_forumsubscriptions,usercp_subscriptions_none,usercp_subscriptions,usercp_options_pms_from_buddys,usercp_options_tppselect,usercp_options_pppselect,usercp_themeselector,usercp_profile_customtitle_reverttitle,usercp_profile_day";
+$templatelist .= ",usercp_nav_editsignature,usercp_referrals,usercp_notepad,usercp_latest_threads_threads,forumdisplay_thread_gotounread,usercp_latest_threads,usercp_subscriptions_remove,usercp_nav_messenger_folder,usercp_profile_profilefields_text";
+$templatelist .= ",usercp_editsig_suspended,usercp_editsig,usercp_avatar_gallery_avatar,usercp_avatar_gallery_blankblock,usercp_avatar_gallery_noavatars,usercp_avatar_gallery,usercp_avatar_current,usercp_options_timezone_option,usercp_drafts";
+$templatelist .= ",usercp_avatar,usercp_editlists_userusercp_editlists,usercp_drafts_draft,usercp_drafts_none,usercp_usergroups_joingroup,usercp_attachments_none,usercp_avatar_upload,usercp_options_timezone,usercp_usergroups_joinable_usergroup_join";
+$templatelist .= ",usercp_warnings_warning,usercp_warnings,usercp_latest_subscribed_threads,usercp_latest_subscribed,usercp_nav_messenger_tracking,multipage_prevpage,multipage_start,multipage_end,usercp_options_language,usercp_options_date_format";
+$templatelist .= ",multipage_nextpage,multipage,multipage_page_current,codebuttons,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,usercp_nav_messenger_compose,usercp_options_language_option,usercp_editlists";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
+$templatelist .= ",usercp_options_time_format,usercp_options_tppselect_option,usercp_options_pppselect_option,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden,usercp_avatar_auto_resize_auto,usercp_avatar_auto_resize_user";
+$templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_editlists_user,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
+$templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_usergroups_memberof_usergroup_setdisplay";
+$templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_usergroups_memberof_usergroup_description";
+$templatelist .= ",usercp_editlists_no_requests,usercp_editlists_sent_request,usercp_editlists_received_request,usercp_editlists_received_requests,usercp_editlists_sent_requests";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -59,6 +65,12 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'allow_imgcode' => $mybb->settings['sigimgcode'],
 		"filter_badwords" => 1
 	);
+
+	if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+	{
+		$parser_options['allow_imgcode'] = 0;
+	}
+
 	$parsed_sig = $parser->parse_message($mybb->get_input('signature'), $parser_options);
 	if((($mybb->settings['sigimgcode'] == 0 && $mybb->settings['sigsmilies'] != 1) &&
 		substr_count($parsed_sig, "<img") > 0) ||
@@ -237,13 +249,17 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	$user = array(
 		"uid" => $mybb->user['uid'],
+		"postnum" => $mybb->user['postnum'],
+		"usergroup" => $mybb->user['usergroup'],
+		"additionalgroups" => $mybb->user['additionalgroups'],
 		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
-		"msn" => $mybb->get_input('msn'),
+		"skype" => $mybb->get_input('skype'),
+		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
-		"birthdayprivacy" => $mybb->get_input('birthdayprivacy', 1),
+		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', 2)
 	);
@@ -310,17 +326,20 @@ if($mybb->input['action'] == "profile")
 	$plugins->run_hooks("usercp_profile_start");
 
 	$bdaydaysel = '';
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($bday[0] == $i)
+		if($bday[0] == $day)
 		{
-			$bdaydaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = "selected=\"selected\"";
 		}
 		else
 		{
-			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
 		}
+
+		eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
 	}
+
 	$bdaymonthsel = array();
 	foreach(range(1, 12) as $month)
 	{
@@ -328,24 +347,18 @@ if($mybb->input['action'] == "profile")
 	}
 	$bdaymonthsel[$bday[1]] = 'selected="selected"';
 
-	$bdayprivacysel = '';
+	$allselected = $noneselected = $ageselected = '';
 	if($user['birthdayprivacy'] == 'all' || !$user['birthdayprivacy'])
 	{
-		$bdayprivacysel .= "<option value=\"all\" selected=\"selected\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+		$allselected = " selected=\"selected\"";
 	}
 	else if($user['birthdayprivacy'] == 'none')
 	{
-		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\" selected=\"selected\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+		$noneselected = " selected=\"selected\"";
 	}
 	else if($user['birthdayprivacy'] == 'age')
 	{
-		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
-		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
-		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
+		$ageselected = " selected=\"selected\"";
 	}
 
 	if($user['website'] == "" || $user['website'] == "http://")
@@ -369,10 +382,12 @@ if($mybb->input['action'] == "profile")
 
 	if($errors)
 	{
-		$user['msn'] = htmlspecialchars_uni($user['msn']);
+		$user['skype'] = htmlspecialchars_uni($user['skype']);
+		$user['google'] = htmlspecialchars_uni($user['google']);
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
 	}
+
 	if($mybb->settings['allowaway'] != 0)
 	{
 		$awaycheck = array('', '');
@@ -416,18 +431,22 @@ if($mybb->input['action'] == "profile")
 				$returndate[2] = '';
 			}
 		}
+
 		$returndatesel = '';
-		for($i = 1; $i <= 31; ++$i)
+		for($day = 1; $day <= 31; ++$day)
 		{
-			if($returndate[0] == $i)
+			if($returndate[0] == $day)
 			{
-				$returndatesel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+				$selected = "selected=\"selected\"";
 			}
 			else
 			{
-				$returndatesel .= "<option value=\"$i\">$i</option>\n";
+				$selected = '';
 			}
+
+			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
+
 		$returndatemonthsel = array();
 		foreach(range(1, 12) as $month)
 		{
@@ -437,188 +456,206 @@ if($mybb->input['action'] == "profile")
 
 		eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
 	}
+
 	// Custom profile fields baby!
 	$altbg = "trow1";
-	$requiredfields = '';
-	$customfields = '';
+	$requiredfields = $customfields = '';
 	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
-	$query = $db->simple_select("profilefields", "*", "editable=1", array('order_by' => 'disporder'));
-	while($profilefield = $db->fetch_array($query))
+
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
 	{
-		// Does this field have a minimum post count?
-		if($profilefield['postnum'] && $profilefield['postnum'] > $user['postnum'])
+		foreach($pfcache as $profilefield)
 		{
-			continue;
-		}
-
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
-		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = $thing[0];
-		if(isset($thing[1]))
-		{
-			$options = $thing[1];
-		}
-		else
-		{
-			$options = array();
-		}
-		$field = "fid{$profilefield['fid']}";
-		$select = '';
-		if($errors)
-		{
-			if(!isset($mybb->input['profile_fields'][$field]))
+			if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'])))
 			{
-				$mybb->input['profile_fields'][$field] = '';
+				continue;
 			}
-			$userfield = $mybb->input['profile_fields'][$field];
-		}
-		else
-		{
-			$userfield = $user[$field];
-		}
-		if($type == "multiselect")
-		{
-			if($errors)
+
+			// Does this field have a minimum post count?
+			if($profilefield['postnum'] && $profilefield['postnum'] > $mybb->user['postnum'])
 			{
-				$useropts = $userfield;
+				continue;
+			}
+
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
+			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
+			$thing = explode("\n", $profilefield['type'], "2");
+			$type = $thing[0];
+			if(isset($thing[1]))
+			{
+				$options = $thing[1];
 			}
 			else
 			{
-				$useropts = explode("\n", $userfield);
+				$options = array();
 			}
-			if(is_array($useropts))
-			{
-				foreach($useropts as $key => $val)
-				{
-					$val = htmlspecialchars_uni($val);
-					$seloptions[$val] = $val;
-				}
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-
-					$sel = "";
-					if($val == $seloptions[$val])
-					{
-						$sel = " selected=\"selected\"";
-					}
-					$select .= "<option value=\"$val\"$sel>$val</option>\n";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 3;
-				}
-				$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
-			}
-		}
-		elseif($type == "select")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					$sel = "";
-					if($val == htmlspecialchars_uni($userfield))
-					{
-						$sel = " selected=\"selected\"";
-					}
-					$select .= "<option value=\"$val\"$sel>$val</option>";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 1;
-				}
-				$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
-			}
-		}
-		elseif($type == "radio")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$checked = "";
-					if($val == $userfield)
-					{
-						$checked = " checked=\"checked\"";
-					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
-				}
-			}
-		}
-		elseif($type == "checkbox")
-		{
+			$field = "fid{$profilefield['fid']}";
+			$select = '';
 			if($errors)
 			{
-				$useropts = $userfield;
+				if(!isset($mybb->input['profile_fields'][$field]))
+				{
+					$mybb->input['profile_fields'][$field] = '';
+				}
+				$userfield = $mybb->input['profile_fields'][$field];
 			}
 			else
 			{
-				$useropts = explode("\n", $userfield);
+				$userfield = $user[$field];
 			}
-			if(is_array($useropts))
+			if($type == "multiselect")
 			{
-				foreach($useropts as $key => $val)
+				if($errors)
 				{
-					$seloptions[$val] = $val;
+					$useropts = $userfield;
 				}
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
+				else
 				{
-					$checked = "";
-					if($val == $seloptions[$val])
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
 					{
-						$checked = " checked=\"checked\"";
+						$val = htmlspecialchars_uni($val);
+						$seloptions[$val] = $val;
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+
+						$sel = "";
+						if($val == $seloptions[$val])
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 3;
+					}
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 				}
 			}
-		}
-		elseif($type == "textarea")
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$maxlength = "";
-			if($profilefield['maxlength'] > 0)
+			elseif($type == "select")
 			{
-				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+						$sel = "";
+						if($val == htmlspecialchars_uni($userfield))
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 1;
+					}
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+				}
 			}
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+			elseif($type == "radio")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $userfield)
+						{
+							$checked = " checked=\"checked\"";
+						}
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+					}
+				}
+			}
+			elseif($type == "checkbox")
+			{
+				if($errors)
+				{
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
+					{
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $seloptions[$val])
+						{
+							$checked = " checked=\"checked\"";
+						}
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+					}
+				}
+			}
+			elseif($type == "textarea")
+			{
+				$value = htmlspecialchars_uni($userfield);
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
+			}
+			else
+			{
+				$value = htmlspecialchars_uni($userfield);
+				$maxlength = "";
+				if($profilefield['maxlength'] > 0)
+				{
+					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				}
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+			}
+
+			if($profilefield['required'] == 1)
+			{
+				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+			}
+			else
+			{
+				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+			}
+			$altbg = alt_trow();
+			$code = "";
+			$select = "";
+			$val = "";
+			$options = "";
+			$expoptions = "";
+			$useropts = "";
+			$seloptions = "";
 		}
-		if($profilefield['required'] == 1)
-		{
-			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		else
-		{
-			eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		$altbg = alt_trow();
-		$code = "";
-		$select = "";
-		$val = "";
-		$options = "";
-		$expoptions = "";
-		$useropts = "";
-		$seloptions = "";
 	}
 	if($customfields)
 	{
@@ -659,6 +696,18 @@ if($mybb->input['action'] == "profile")
 				$user['usertitle'] = $mybb->user['usertitle'];
 			}
 		}
+
+		$currentcustom = $reverttitle = '';
+		if(!empty($mybb->user['usertitle']))
+		{
+			eval("\$currentcustom = \"".$templates->get("usercp_profile_customtitle_currentcustom")."\";");
+
+			if($mybb->user['usertitle'] != $mybb->usergroup['usertitle'])
+			{
+				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
+			}
+		}
+
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else
@@ -699,6 +748,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"invisible" => $mybb->get_input('invisible', 1),
 		"dstcorrection" => $mybb->get_input('dstcorrection', 1),
 		"threadmode" => $mybb->get_input('threadmode'),
+		"showimages" => $mybb->get_input('showimages', 1),
+		"showvideos" => $mybb->get_input('showvideos', 1),
 		"showsigs" => $mybb->get_input('showsigs', 1),
 		"showavatars" => $mybb->get_input('showavatars', 1),
 		"showquickreply" => $mybb->get_input('showquickreply', 1),
@@ -708,6 +759,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"daysprune" => $mybb->get_input('daysprune', 1),
 		"showcodebuttons" => $mybb->get_input('showcodebuttons', 1),
 		"pmnotify" => $mybb->get_input('pmnotify', 1),
+		"buddyrequestspm" => $mybb->get_input('buddyrequestspm', 1),
+		"buddyrequestsauto" => $mybb->get_input('buddyrequestsauto', 1),
 		"showredirect" => $mybb->get_input('showredirect', 1),
 		"classicpostbit" => $mybb->get_input('classicpostbit', 1)
 	);
@@ -753,16 +806,25 @@ if($mybb->input['action'] == "options")
 	{
 		$user = $mybb->user;
 	}
+
 	$languages = $lang->get_languages();
-	$langoptions = '';
-	foreach($languages as $lname => $language)
+	$board_language = $langoptions = '';
+	if(count($languages) > 1)
 	{
-		$sel = "";
-		if(isset($user['language']) && $user['language'] == $lname)
+		foreach($languages as $name => $language)
 		{
-			$sel = " selected=\"selected\"";
+			$language = htmlspecialchars_uni($language);
+
+			$sel = '';
+			if(isset($user['language']) && $user['language'] == $name)
+			{
+				$sel = " selected=\"selected\"";
+			}
+
+			eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
 		}
-		$langoptions .= "<option value=\"$lname\"$sel>".htmlspecialchars_uni($language)."</option>\n";
+
+		eval('$board_language = "'.$templates->get('usercp_options_language').'";');
 	}
 
 	// Lets work out which options the user has selected and check the boxes
@@ -793,18 +855,40 @@ if($mybb->input['action'] == "options")
 		$hideemailcheck = "";
 	}
 
-	$no_email_subscribe_selected = $instant_email_subscribe_selected = $no_subscribe_selected = '';
+	$no_auto_subscribe_selected = $instant_email_subscribe_selected = $instant_pm_subscribe_selected = $no_subscribe_selected = '';
 	if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 1)
 	{
-		$no_email_subscribe_selected = "selected=\"selected\"";
+		$no_subscribe_selected = "selected=\"selected\"";
 	}
 	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 2)
 	{
 		$instant_email_subscribe_selected = "selected=\"selected\"";
 	}
+	else if(isset($user['subscriptionmethod']) && $user['subscriptionmethod'] == 3)
+	{
+		$instant_pm_subscribe_selected = "selected=\"selected\"";
+	}
 	else
 	{
-		$no_subscribe_selected = "selected=\"selected\"";
+		$no_auto_subscribe_selected = "selected=\"selected\"";
+	}
+
+	if(isset($user['showimages']) && $user['showimages'] == 1)
+	{
+		$showimagescheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showimagescheck = "";
+	}
+
+	if(isset($user['showvideos']) && $user['showvideos'] == 1)
+	{
+		$showvideoscheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$showvideoscheck = "";
 	}
 
 	if(isset($user['showsigs']) && $user['showsigs'] == 1)
@@ -901,7 +985,24 @@ if($mybb->input['action'] == "options")
 	{
 		$pmnotifycheck = '';
 	}
+	
+	if(isset($user['buddyrequestspm']) && $user['buddyrequestspm'] != 0)
+	{
+		$buddyrequestspmcheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$buddyrequestspmcheck = '';
+	}
 
+	if(isset($user['buddyrequestsauto']) && $user['buddyrequestsauto'] != 0)
+	{
+		$buddyrequestsautocheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$buddyrequestsautocheck = '';
+	}
 
 	if(!isset($user['threadmode']) || ($user['threadmode'] != "threaded" && $user['threadmode'] != "linear"))
 	{
@@ -917,31 +1018,30 @@ if($mybb->input['action'] == "options")
 		$classicpostbitcheck = '';
 	}
 
-
-	$date_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	$date_format_options = $dateformat = '';
 	foreach($date_formats as $key => $format)
 	{
+		$selected = '';
 		if(isset($user['dateformat']) && $user['dateformat'] == $key)
 		{
-			$date_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$date_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
-		}
+
+		$dateformat = my_date($format, TIME_NOW, "", 0);
+		eval("\$date_format_options .= \"".$templates->get("usercp_options_date_format")."\";");
 	}
 
-	$time_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	$time_format_options = $timeformat = '';
 	foreach($time_formats as $key => $format)
 	{
+		$selected = '';
 		if(isset($user['timeformat']) && $user['timeformat'] == $key)
 		{
-			$time_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$time_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
-		}
+
+		$timeformat = my_date($format, TIME_NOW, "", 0);
+		eval("\$time_format_options .= \"".$templates->get("usercp_options_time_format")."\";");
 	}
 
 	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
@@ -966,12 +1066,20 @@ if($mybb->input['action'] == "options")
 	{
 		$user['style'] = '';
 	}
+
+	$board_style = $stylelist = '';
 	$stylelist = build_theme_select("style", $user['style']);
+
+	if(!empty($stylelist))
+	{
+		eval('$board_style = "'.$templates->get('usercp_options_style').'";');
+	}
+
 	$tppselect = $pppselect = '';
 	if($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
-		$tppoptions = '';
+		$tppoptions = $tpp_option = '';
 		if(is_array($explodedtpp))
 		{
 			foreach($explodedtpp as $key => $val)
@@ -980,17 +1088,20 @@ if($mybb->input['action'] == "options")
 				$selected = "";
 				if(isset($user['tpp']) && $user['tpp'] == $val)
 				{
-					$selected = "selected=\"selected\"";
+					$selected = " selected=\"selected\"";
 				}
-				$tppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
+
+				$tpp_option = $lang->sprintf($lang->tpp_option, $val);
+				eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
 			}
 		}
 		eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
 	}
+
 	if($mybb->settings['userpppoptions'])
 	{
 		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
-		$pppoptions = '';
+		$pppoptions = $ppp_option = '';
 		if(is_array($explodedppp))
 		{
 			foreach($explodedppp as $key => $val)
@@ -999,9 +1110,11 @@ if($mybb->input['action'] == "options")
 				$selected = "";
 				if(isset($user['ppp']) && $user['ppp'] == $val)
 				{
-					$selected = "selected=\"selected\"";
+					$selected = " selected=\"selected\"";
 				}
-				$pppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
+
+				$ppp_option = $lang->sprintf($lang->ppp_option, $val);
+				eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
 			}
 		}
 		eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -1045,35 +1158,26 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1)
+			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != 1 && $mybb->settings['regtype'] != "verify")
 			{
 				$uid = $mybb->user['uid'];
 				$username = $mybb->user['username'];
 
-				if($mybb->settings['regtype'] == "verify")
-				{
-					// Emails require verification
-					$activationcode = random_str();
-					$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
+				// Emails require verification
+				$activationcode = random_str();
+				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
 
-					$newactivation = array(
-						"uid" => $mybb->user['uid'],
-						"dateline" => TIME_NOW,
-						"code" => $activationcode,
-						"type" => "e",
-						"oldgroup" => $mybb->user['usergroup'],
-						"misc" => $db->escape_string($mybb->get_input('email'))
-					);
+				$newactivation = array(
+					"uid" => $mybb->user['uid'],
+					"dateline" => TIME_NOW,
+					"code" => $activationcode,
+					"type" => "e",
+					"misc" => $db->escape_string($mybb->get_input('email'))
+				);
 
-					$db->insert_query("awaitingactivation", $newactivation);
+				$db->insert_query("awaitingactivation", $newactivation);
 
-					$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-				}
-				else
-				{
-					// Email requires no activation
-					$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
-				}
+				$mail_message = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 
 				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
 				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
@@ -1084,6 +1188,9 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 			else
 			{
 				$userhandler->update_user();
+				// Email requires no activation
+				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
+				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 				$plugins->run_hooks("usercp_do_email_changed");
 				redirect("usercp.php", $lang->redirect_emailupdated);
 			}
@@ -1091,8 +1198,8 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	}
 	if(count($errors) > 0)
 	{
-			$mybb->input['action'] = "email";
-			$errors = inline_error($errors);
+		$mybb->input['action'] = "email";
+		$errors = inline_error($errors);
 	}
 }
 
@@ -1263,9 +1370,13 @@ if($mybb->input['action'] == "do_subscriptions")
 		{
 			$new_notification = 0;
 		}
-		else if($mybb->get_input('do') == "instant_notification")
+		else if($mybb->get_input('do') == "email_notification")
 		{
 			$new_notification = 1;
+		}
+		else if($mybb->get_input('do') == "pm_notification")
+		{
+			$new_notification = 2;
 		}
 
 		// Update
@@ -1464,7 +1575,7 @@ if($mybb->input['action'] == "subscriptions")
 			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
 				$icon = $icon_cache[$thread['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 			}
 			else
 			{
@@ -1587,8 +1698,11 @@ if($mybb->input['action'] == "subscriptions")
 			// What kind of notification type do we have here?
 			switch($thread['notification'])
 			{
-				case "1": // Instant
-					$notification_type = $lang->instant_notification;
+				case "2": // PM
+					$notification_type = $lang->pm_notification;
+					break;
+				case "1": // Email
+					$notification_type = $lang->email_notification;
 					break;
 				default: // No notification
 					$notification_type = $lang->no_notification;
@@ -1695,12 +1809,12 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 		{
-			$lastpost = "<div align=\"center\">{$lang->never}</div>";
+			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
 		}
 		// Hide last post
 		elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid'])
 		{
-			$lastpost = "<div align=\"center\">{$lang->na}</div>";
+			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
 		}
 		else
 		{
@@ -1771,7 +1885,6 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	$db->update_query("users", $new_signature, "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_editsig_end");
 	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
-
 }
 
 if($mybb->input['action'] == "editsig")
@@ -1826,6 +1939,11 @@ if($mybb->input['action'] == "editsig")
 			"me_username" => $mybb->user['username'],
 			"filter_badwords" => 1
 		);
+
+		if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0)
+		{
+			$sig_parser['allow_imgcode'] = 0;
+		}
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
 		eval("\$signature = \"".$templates->get($template)."\";");
@@ -2079,13 +2197,26 @@ if($mybb->input['action'] == "avatar")
 		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 	}
 
+	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
-		$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
+		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
 	}
 	else if($mybb->settings['avatarresizing'] == "user")
 	{
-		$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
+		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_user")."\";");
+	}
+
+	$avatarupload = '';
+	if($mybb->usergroup['canuploadavatars'] == 1)
+	{
+		eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
+	}
+
+	$removeavatar = '';
+	if(!empty($mybb->user['avatar']))
+	{
+		eval("\$removeavatar = \"".$templates->get("usercp_avatar_remove")."\";");
 	}
 
 	$plugins->run_hooks("usercp_avatar_end");
@@ -2097,6 +2228,160 @@ if($mybb->input['action'] == "avatar")
 
 	eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
 	output_page($avatar);
+}
+
+if($mybb->input['action'] == "acceptrequest")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	// Validate request
+	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$request = $db->fetch_array($query);
+	if(empty($request))
+	{
+		error($lang->invalid_request);
+	}
+	
+	$plugins->run_hooks("usercp_acceptrequest_start");
+	
+	$user = get_user($request['uid']);
+	if(!empty($user))
+	{
+		// We want to add us to this user's buddy list
+		if($user['buddylist'] != '')
+		{
+			$user['buddylist'] = explode(',', $user['buddylist']);
+		}
+		else
+		{
+			$user['buddylist'] = array();
+		}
+		
+		$user['buddylist'][] = (int)$mybb->user['uid'];
+		
+		// Now we have the new list, so throw it all back together
+		$new_list = implode(",", $user['buddylist']);
+
+		// And clean it up a little to ensure there is no possibility of bad values
+		$new_list = preg_replace("#,{2,}#", ",", $new_list);
+		$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+		if(my_substr($new_list, 0, 1) == ",")
+		{
+			$new_list = my_substr($new_list, 1);
+		}
+		if(my_substr($new_list, -1) == ",")
+		{
+			$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
+		}
+		
+		$user['buddylist'] = $db->escape_string($new_list);
+		
+		$db->update_query("users", array('buddylist' => $user['buddylist']), "uid='".(int)$user['uid']."'");
+		
+		
+		// We want to add the user to our buddy list
+		if($mybb->user['buddylist'] != '')
+		{
+			$mybb->user['buddylist'] = explode(',', $mybb->user['buddylist']);
+		}
+		else
+		{
+			$mybb->user['buddylist'] = array();
+		}
+		
+		$mybb->user['buddylist'][] = (int)$request['uid'];
+		
+		// Now we have the new list, so throw it all back together
+		$new_list = implode(",", $mybb->user['buddylist']);
+
+		// And clean it up a little to ensure there is no possibility of bad values
+		$new_list = preg_replace("#,{2,}#", ",", $new_list);
+		$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+		if(my_substr($new_list, 0, 1) == ",")
+		{
+			$new_list = my_substr($new_list, 1);
+		}
+		if(my_substr($new_list, -1) == ",")
+		{
+			$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
+		}
+		
+		$mybb->user['buddylist'] = $db->escape_string($new_list);
+		
+		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
+	
+		$pm = array(
+			'touid' => $user['uid'],
+			'subject' => $lang->buddyrequest_accepted_request,
+			'message' => $lang->buddyrequest_accepted_request_message,
+			'receivepms' => 1 // Should be later validated by the PM handler
+		);
+	
+		send_pm($pm);
+		
+		$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
+	}
+	else
+	{
+		error($lang->user_doesnt_exist);
+	}
+	
+	$plugins->run_hooks("usercp_acceptrequest_end");
+	
+	redirect("usercp.php?action=editlists", $lang->buddyrequest_accepted);
+}
+elseif($mybb->input['action'] == "declinerequest")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+	
+	// Validate request
+	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$request = $db->fetch_array($query);
+	if(empty($request))
+	{
+		error($lang->invalid_request);
+	}
+	
+	$plugins->run_hooks("usercp_declinerequest_start");
+	
+	$user = get_user($request['uid']);
+	if(!empty($user))
+	{
+		$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
+	}
+	else
+	{
+		error($lang->user_doesnt_exist);
+	}
+
+	$plugins->run_hooks("usercp_declinerequest_end");
+	
+	redirect("usercp.php?action=editlists", $lang->buddyrequest_declined);
+}
+elseif($mybb->input['action'] == "cancelrequest")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+	
+	// Validate request
+	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND uid='.(int)$mybb->user['uid']);
+	$request = $db->fetch_array($query);
+	if(empty($request))
+	{
+		error($lang->invalid_request);
+	}
+	
+	$plugins->run_hooks("usercp_cancelrequest_start");
+	
+	$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
+
+	$plugins->run_hooks("usercp_cancelrequest_end");
+	
+	redirect("usercp.php?action=editlists", $lang->buddyrequest_cancelled);
 }
 
 if($mybb->input['action'] == "do_editlists")
@@ -2163,11 +2448,29 @@ if($mybb->input['action'] == "do_editlists")
 			}
 			$users[$key] = $db->escape_string($username);
 		}
+		
+		// Get the requests we have sent that are still pending
+		$query = $db->simple_select('buddyrequests', 'touid', 'uid='.(int)$mybb->user['uid']);
+		$requests = array();
+		while($req = $db->fetch_array($query))
+		{
+			$requests[$req['touid']] = true;
+		}
+		
+		// Get the requests we have received that are still pending
+		$query = $db->simple_select('buddyrequests', 'uid', 'touid='.(int)$mybb->user['uid']);
+		$requests_rec = array();
+		while($req = $db->fetch_array($query))
+		{
+			$requests_rec[$req['uid']] = true;
+		}
+		
+		$sent = false;
 
 		// Fetch out new users
 		if(count($users) > 0)
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;
@@ -2196,7 +2499,70 @@ if($mybb->input['action'] == "do_editlists")
 					continue;
 				}
 
-				$existing_users[] = $user['uid'];
+				if(isset($requests[$user['uid']]))
+				{
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_sent_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_sent_request_alt;
+					}
+					
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
+				
+				if(isset($requests_rec[$user['uid']]))
+				{
+					if($mybb->get_input('manage') != "ignored")
+					{
+						$error_message = $lang->users_already_rec_request;
+					}
+					elseif($mybb->get_input('manage') == "ignored")
+					{
+						$error_message = $lang->users_already_rec_request_alt;
+					}
+					
+					array_pop($users); // To maintain a proper count when we call count($users)
+					continue;
+				}
+
+				// Do we have auto approval set to On?
+				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
+				{
+					$existing_users[] = $user['uid'];
+					
+					$pm = array(
+						'touid' => $user['uid'],
+						'subject' => $lang->buddyrequest_new_buddy,
+						'message' => $lang->buddyrequest_new_buddy_message,
+						'receivepms' => $user['buddyrequestspm']
+					);
+					
+					send_pm($pm);
+				}
+				elseif($user['buddyrequestsauto'] != 1 && $mybb->get_input('manage') != "ignored")
+				{
+					// Send request
+					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
+					
+					$pm = array(
+						'touid' => $user['uid'],
+						'subject' => $lang->buddyrequest_received,
+						'message' => $lang->buddyrequest_received_message,
+						'receivepms' => $user['buddyrequestspm']
+					);
+					
+					send_pm($pm);
+					
+					$sent = true;
+				}
+				elseif($mybb->get_input('manage') == "ignored")
+				{
+					$existing_users[] = $user['uid'];
+				}
 			}
 		}
 
@@ -2237,6 +2603,11 @@ if($mybb->input['action'] == "do_editlists")
 		if(count($existing_users) == 0)
 		{
 			$message = "";
+			
+			if($sent === true)
+			{
+				$message = $lang->buddyrequests_sent_success;
+			}
 		}
 	}
 
@@ -2249,6 +2620,42 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			unset($existing_users[$key]);
 			$user = get_user($mybb->get_input('delete', 1));
+			if(!empty($user))
+			{
+				// We want to remove us from this user's buddy list
+				if($user['buddylist'] != '')
+				{
+					$user['buddylist'] = explode(',', $user['buddylist']);
+				}
+				else
+				{
+					$user['buddylist'] = array();
+				}
+				
+				$key = array_search((int)$mybb->input['delete'], $user['buddylist']);
+				unset($user['buddylist'][$key]);
+				
+				// Now we have the new list, so throw it all back together
+				$new_list = implode(",", $user['buddylist']);
+
+				// And clean it up a little to ensure there is no possibility of bad values
+				$new_list = preg_replace("#,{2,}#", ",", $new_list);
+				$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+				if(my_substr($new_list, 0, 1) == ",")
+				{
+					$new_list = my_substr($new_list, 1);
+				}
+				if(my_substr($new_list, -1) == ",")
+				{
+					$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
+				}
+				
+				$user['buddylist'] = $db->escape_string($new_list);
+				
+				$db->update_query("users", array('buddylist' => $user['buddylist']), "uid='".(int)$user['uid']."'");
+			}
+			
 			if($mybb->get_input('manage') == "ignored")
 			{
 				$message = $lang->removed_from_ignore_list;
@@ -2384,7 +2791,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_buddies = $lang->sprintf($lang->current_buddies, $buddy_count);
 	if(!$buddy_list)
 	{
-		$buddy_list = "<li>{$lang->buddy_list_empty}</li>";
+		eval("\$buddy_list = \"".$templates->get("usercp_editlists_no_buddies")."\";");
 	}
 
 	// Fetch out ignore list users
@@ -2413,7 +2820,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_ignored_users = $lang->sprintf($lang->current_ignored_users, $ignore_count);
 	if(!$ignore_list)
 	{
-		$ignore_list = "<li>{$lang->ignore_list_empty}</li>";
+		eval("\$ignore_list = \"".$templates->get("usercp_editlists_no_ignored")."\";");
 	}
 
 	// If an AJAX request from buddy management, echo out whatever the new list is.
@@ -2426,12 +2833,86 @@ if($mybb->input['action'] == "editlists")
 		}
 		else
 		{
-			echo $buddy_list;
-			echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			if(isset($sent) && $sent === true)
+			{
+				$sent_rows = '';
+				$query = $db->query("
+					SELECT r.*, u.username
+					FROM `".TABLE_PREFIX."buddyrequests` r
+					LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
+					WHERE r.uid=".(int)$mybb->user['uid']."
+				");
+				while($request = $db->fetch_array($query))
+				{
+					$bgcolor = alt_trow();
+					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
+					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
+				}
+				
+				if($sent_rows == '')
+				{
+					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
+				}
+				
+				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
+			
+				echo $sentrequests;
+				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
+			}
+			else
+			{
+				echo $buddy_list;
+				echo "<script type=\"text/javascript\"> $(\"#buddy_count\").html(\"{$buddy_count}\"); {$message_js}</script>";
+			}
 		}
 		exit;
 	}
-
+	
+	$received_rows = '';
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM `".TABLE_PREFIX."buddyrequests` r
+		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.uid)
+		WHERE r.touid=".(int)$mybb->user['uid']."
+	");
+	while($request = $db->fetch_array($query))
+	{
+		$bgcolor = alt_trow();
+		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
+		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
+	}
+	
+	if($received_rows == '')
+	{
+		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+	}
+	
+	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
+	
+	$sent_rows = '';
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM `".TABLE_PREFIX."buddyrequests` r
+		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
+		WHERE r.uid=".(int)$mybb->user['uid']."
+	");
+	while($request = $db->fetch_array($query))
+	{
+		$bgcolor = alt_trow();
+		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
+		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
+		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
+	}
+	
+	if($sent_rows == '')
+	{
+		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+	}
+	
+	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
+	
 	$plugins->run_hooks("usercp_editlists_end");
 
 	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
@@ -2462,17 +2943,22 @@ if($mybb->input['action'] == "drafts")
 
 		while($draft = $db->fetch_array($query))
 		{
+			$detail = '';
 			$trow = alt_trow();
 			if($draft['threadvisible'] == 1) // We're looking at a draft post
 			{
-				$detail = $lang->thread." <a href=\"".get_thread_link($draft['tid'])."\">".htmlspecialchars_uni($draft['threadsubject'])."</a>";
+				$draft['threadlink'] = get_thread_link($draft['tid']);
+				$draft['threadsubject'] = htmlspecialchars_uni($draft['threadsubject']);
+				eval("\$detail = \"".$templates->get("usercp_drafts_draft_thread")."\";");
 				$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 				$id = $draft['pid'];
 				$type = "post";
 			}
 			elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 			{
-				$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
+				$draft['forumlink'] = get_forum_link($draft['fid']);
+				$draft['forumname'] = htmlspecialchars_uni($draft['forumname']);
+				eval("\$detail = \"".$templates->get("usercp_drafts_draft_forum")."\";");
 				$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 				$id = $draft['tid'];
 				$type = "thread";
@@ -2542,6 +3028,7 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_drafts_end");
 	redirect("usercp.php?action=drafts", $lang->selected_drafts_deleted);
 }
+
 if($mybb->input['action'] == "usergroups")
 {
 	$plugins->run_hooks("usercp_usergroups_start");
@@ -2586,7 +3073,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('leavegroup', 1)."'");
 		$usergroup = $db->fetch_array($query);
-		if($usergroup['type'] != 4 && $usergroup['type'] != 3)
+		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
 			error($lang->cannot_leave_group);
 		}
@@ -2620,6 +3107,11 @@ if($mybb->input['action'] == "usergroups")
 
 		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('joingroup', 1)."'");
 		$usergroup = $db->fetch_array($query);
+
+		if($usergroup['type'] == 5)
+		{
+			error($lang->cannot_join_invite_group);
+		}
 
 		if(($usergroup['type'] != 4 && $usergroup['type'] != 3) || !$usergroup['gid'])
 		{
@@ -2678,6 +3170,35 @@ if($mybb->input['action'] == "usergroups")
 			redirect("usercp.php?action=usergroups", $lang->joined_group);
 		}
 	}
+
+	// Accepting invitation
+	if($mybb->get_input('acceptinvite', 1))
+	{
+		// Verify incoming POST request
+		verify_post_check($mybb->get_input('my_post_key'));
+
+		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('acceptinvite', 1)."'");
+		$usergroup = $db->fetch_array($query);
+
+		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', 1).",") !== false)
+		{
+			error($lang->already_accepted_invite);
+		}
+
+		$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."' AND gid='".$mybb->get_input('acceptinvite', 1)."' AND invite='1'");
+		$joinrequest = $db->fetch_array($query);
+		if($joinrequest['rid'])
+		{
+			join_usergroup($mybb->user['uid'], $mybb->get_input('acceptinvite', 1));
+			$db->delete_query("joinrequests", "uid='{$mybb->user['uid']}' AND gid='".$mybb->get_input('acceptinvite', 1)."'");
+			$plugins->run_hooks("usercp_usergroups_accept_invite");
+			redirect("usercp.php?action=usergroups", $lang->joined_group);
+		}
+		else
+		{
+			error($lang->no_pending_invitation);
+		}
+	}
 	// Show listing of various group related things
 
 	// List of groups this user is a leader of
@@ -2688,18 +3209,18 @@ if($mybb->input['action'] == "usergroups")
 		case "pgsql":
 		case "sqlite":
 			$query = $db->query("
-				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 				FROM ".TABLE_PREFIX."groupleaders l
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
 				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid AND j.uid != 0)
 				WHERE l.uid='".$mybb->user['uid']."'
-				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers
+				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 			");
 			break;
 		default:
 			$query = $db->query("
-				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers, l.caninvitemembers
 				FROM ".TABLE_PREFIX."groupleaders l
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
@@ -2712,14 +3233,14 @@ if($mybb->input['action'] == "usergroups")
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';
-		$memberlistlink = " [<a href=\"managegroup.php?gid=".$usergroup['gid']."\">".$lang->view_members."</a>]";
+		eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
 		}
 		if($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == 1)
 		{
-			$moderaterequestslink = " [<a href=\"managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}\">{$lang->view_requests}</a>]";
+			eval("\$moderaterequestslink = \"".$templates->get("usercp_usergroups_leader_usergroup_moderaterequests")."\";");
 		}
 		$groupleader[$usergroup['gid']] = 1;
 		$trow = alt_trow();
@@ -2734,15 +3255,15 @@ if($mybb->input['action'] == "usergroups")
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$usergroup = $usergroups[$mybb->user['usergroup']];
-	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
+	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 	{
-		$displaycode = " ({$lang->display_group})";
+		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
 	}
 	elseif($usergroup['candisplaygroup'] == 1)
 	{
-		$displaycode = " (<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
+		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
 	}
 	else
 	{
@@ -2760,24 +3281,23 @@ if($mybb->input['action'] == "usergroups")
 
 			if(isset($groupleader[$usergroup['gid']]))
 			{
-				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveleader")."\";");
 			}
-			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3)
+			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 			{
-				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveother")."\";");
 			}
 			else
 			{
-				$leavelink = "<div style=\"text-align: center;\"><a href=\"usercp.php?action=usergroups&amp;leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
+				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leave")."\";");
 			}
+
+			$description = '';
 			if($usergroup['description'])
 			{
-				$description = "<br /><span class=\"smalltext\">".$usergroup['description']."</span>";
+				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
-			else
-			{
-				$description = '';
-			}
+
 			if(!$usergroup['usertitle'])
 			{
 				// fetch title here
@@ -2785,11 +3305,11 @@ if($mybb->input['action'] == "usergroups")
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
-				$displaycode = " ({$lang->display_group})";
+				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
 			}
 			elseif($usergroup['candisplaygroup'] == 1)
 			{
-				$displaycode = "(<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
+				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
 			}
 			else
 			{
@@ -2815,37 +3335,47 @@ if($mybb->input['action'] == "usergroups")
 	}
 
 	$joinablegroups = $joinablegrouplist = '';
-	$query = $db->simple_select("usergroups", "*", "(type='3' OR type='4') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
+	$query = $db->simple_select("usergroups", "*", "(type='3' OR type='4' OR type='5') AND gid NOT IN ($existinggroups)", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
+
+		$description = '';
 		if($usergroup['description'])
 		{
-			$description = "<br /><span class=\"smallfont\">".$usergroup['description']."</span>";
-		}
-		else
-		{
-			$description = '';
+			eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
 		}
 
-		 // Moderating join requests?
+		// Moderating join requests?
 		if($usergroup['type'] == 4)
 		{
 			$conditions = $lang->usergroup_joins_moderated;
+		}
+		elseif($usergroup['type'] == 5)
+		{
+			$conditions = $lang->usergroup_joins_invite;
 		}
 		else
 		{
 			$conditions = $lang->usergroup_joins_anyone;
 		}
 
-		if(isset($appliedjoin[$usergroup['gid']]))
+		if(isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] != 5)
 		{
 			$applydate = my_date('relative', $appliedjoin[$usergroup['gid']]);
 			$joinlink = $lang->sprintf($lang->join_group_applied, $applydate);
 		}
+		elseif(isset($appliedjoin[$usergroup['gid']]) && $usergroup['type'] == 5)
+		{
+			$joinlink = $lang->sprintf($lang->pending_invitation, $usergroup['gid'], $mybb->post_code);
+		}
+		elseif($usergroup['type'] == 5)
+		{
+			$joinlink = "--";
+		}
 		else
 		{
-			$joinlink = "<a href=\"usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->join_group}</a>";
+			eval("\$joinlink = \"".$templates->get("usercp_usergroups_joinable_usergroup_join")."\";");
 		}
 
 		$usergroupleaders = '';
@@ -2878,10 +3408,16 @@ if($mybb->input['action'] == "usergroups")
 	eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
 	output_page($groupmemberships);
 }
+
 if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
+
+	if($mybb->settings['enableattachments'] == 0)
+	{
+		error($lang->attachments_disabled);
+	}
 
 	$attachments = '';
 
@@ -3057,7 +3593,7 @@ if(!$mybb->input['action'])
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
-		$usergroup .= "<br />(<a href=\"member.php?action=resendactivation\">$lang->resend_activation</a>)";
+		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
 	}
 	// Make reputations row
 	$reputations = '';
@@ -3105,7 +3641,8 @@ if(!$mybb->input['action'])
 				{
 					$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-					$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
+					$warning['postlink'] = get_post_link($warning['pid']);
+					eval("\$post_link .= \"".$templates->get("usercp_warnings_warning_post")."\";");
 				}
 				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 				$date_issued = my_date('relative', $warning['dateline']);
@@ -3266,7 +3803,7 @@ if(!$mybb->input['action'])
 						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 						{
 							$icon = $icon_cache[$thread['icon']];
-							$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 						}
 						else
 						{
@@ -3357,7 +3894,7 @@ if(!$mybb->input['action'])
 	while($thread = $db->fetch_array($query))
 	{
 		// Moderated, and not moderator?
-		if($thread['visible'] == 0 && is_moderator($thread['fid']) === false)
+		if($thread['visible'] == 0 && is_moderator($thread['fid'], "canviewunapprove") === false)
 		{
 			continue;
 		}
@@ -3446,7 +3983,7 @@ if(!$mybb->input['action'])
 				if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 				{
 					$icon = $icon_cache[$thread['icon']];
-					$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
+					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 				}
 				else
 				{

@@ -101,6 +101,9 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
+		
+		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
+		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
@@ -117,6 +120,9 @@ var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
 var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
+
+lang.unknown_error = \"{$lang->unknown_error}\";
+lang.saved = \"{$lang->saved}\";
 //]]>
 </script>\n";
 		echo $this->extra_header;
@@ -398,9 +404,25 @@ EOF;
 			$secret_pin = '';
 		}
 
+		$login_lang_string = $lang->enter_username_and_password;
+
+		switch($mybb->settings['username_method'])
+		{
+			case 0: // Username only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+				break;
+			case 1: // Email only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+				break;
+			case 2: // Username and email
+			default:
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+				break;
+		}
+
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
-		<p>{$lang->enter_username_and_password}</p>
+		<p>{$login_lang_string}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
@@ -653,20 +675,6 @@ EOF;
 	{
 		global $plugins;
 		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
-		echo "<script type=\"text/javascript\">\n";
-		if($observe_onload)
-		{
-			echo "$(function() {\n";
-		}
-		echo "	\$\$('#{$id}').each(function(tabs)\n";
-		echo "	{\n";
-		echo "		new Control.Tabs(tabs);\n";
-		echo "	});\n";
-		if($observe_onload)
-		{
-			echo "});\n";
-		}
-		echo "</script>\n";
 		echo "<ul class=\"tabs\" id=\"{$id}\">\n";
 		$tab_count = count($tabs);
 		$done = 1;
@@ -769,21 +777,150 @@ EOF;
 	 * @param string The language string for the editor.
 	 * @return string The build MyCode editor Javascript.
 	 */
-	function build_codebuttons_editor($bind, $editor_language)
+	function build_codebuttons_editor($bind, $editor_language, $smilies)
 	{
-		global $lang;
-		if($bind == "signature")
+		global $lang, $mybb, $smiliecache, $cache;
+
+		// Smilies		
+		$emoticon = "";
+		$emoticons_enabled = "false";
+		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 		{
-			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
+			$emoticon = ",emoticon";
+			$emoticons_enabled = "true";
+			if(!$smiliecount)
+			{
+				$smilie_cache = $cache->read("smilies");
+				$smiliecount = count($smilie_cache);
+			}
+
+			if(!$smiliecache)
+			{
+				if(!is_array($smilie_cache))
+				{
+					$smilie_cache = $cache->read("smilies");
+				}
+				foreach($smilie_cache as $smilie)
+				{
+					if($smilie['showclickable'] != 0)
+					{
+						$smiliecache[$smilie['find']] = $smilie['image'];
+					}
+				}
+			}
+
+			unset($smilie);
+
+			if(is_array($smiliecache))
+			{
+				reset($smiliecache);
+
+				$dropdownsmilies = "";
+				$moresmilies = "";
+				$i = 0;
+
+				foreach($smiliecache as $find => $image)
+				{
+					$find = htmlspecialchars_uni($find);
+					$image = htmlspecialchars_uni($image);
+					if(substr($image, 0, 4) != "http")
+					{
+						$image = $mybb->settings['bburl']."/".$image;
+					}
+					if($i < $mybb->settings['smilieinsertertot'])
+					{
+						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					else
+					{
+						$moresmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					++$i;
+				}
+			}
 		}
-		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
-				"<script type=\"text/javascript\">\n".
-				"//<![CDATA[\n".
-				"	{$editor_language}".
-				"	{$tabs_js}".
-				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
-				"//]]>".
-				"</script>";
+
+		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+
+		if($mybb->settings['allowbasicmycode'] == 1)
+		{
+			$basic1 = "bold,italic,underline,strike|";
+			$basic2 = "horizontalrule,";
+		}
+
+		if($mybb->settings['allowalignmycode'] == 1)
+		{
+			$align = "left,center,right,justify|";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1)
+		{
+			$font = "font,";
+		}
+
+		if($mybb->settings['allowsizemycode'] == 1)
+		{
+			$size = "size,";
+		}
+
+		if($mybb->settings['allowcolormycode'] == 1)
+		{
+			$color = "color,";
+		}
+
+		if($mybb->settings['allowfontmycode'] == 1 || $mybb->settings['allowsizemycode'] == 1 || $mybb->settings['allowcolormycode'] == 1)
+		{
+			$removeformat = "removeformat|";
+		}
+
+		if($mybb->settings['allowemailmycode'] == 1)
+		{
+			$email = "email,";
+		}
+
+		if($mybb->settings['allowlinkmycode'] == 1)
+		{
+			$link = "link,unlink";
+		}
+
+		if($mybb->settings['allowlistmycode'] == 1)
+		{
+			$list = "bulletlist,orderedlist|";
+		}
+
+		if($mybb->settings['allowcodemycode'] == 1)
+		{
+			$code = "code,";
+		}
+
+		return <<<EOF
+
+<script type="text/javascript">
+$(function() {
+	$("#{$bind}").sceditor({
+		plugins: "bbcode",
+		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
+		rtl: {$lang->settings['rtl']},
+        locale: "{$lang->settings['htmllang']}",
+		emoticonsEnabled: {$emoticons_enabled},
+		emoticons: {
+			// Emoticons to be included in the dropdown
+			dropdown: {
+				{$dropdownsmilies}
+			},
+			// Emoticons to be included in the more section
+			more: {
+				{$moresmilies}
+			}
+		},
+		emoticonsCompat: true,
+        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+	});
+      
+	MyBBEditor = $("#{$bind}").sceditor("instance");
+});
+</script>
+EOF;
 	}
 }
 

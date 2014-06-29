@@ -118,9 +118,9 @@ class MyBB {
 			"eid", "pmid", "fid",
 			"aid", "rid", "sid",
 			"vid", "cid", "bid",
-			"pid", "gid", "mid",
+			"hid", "gid", "mid",
 			"wid", "lid", "iid",
-			"sid"
+			"did", "qid", "id"
 		),
 		"pos" => array(
 			"page", "perpage"
@@ -162,6 +162,20 @@ class MyBB {
 		'threadratings' => array('ipaddress' => true),
 		'users' => array('regip' => true, 'lastip' => true)
 	);
+
+	/**
+	 * The cache instance to use.
+	 *
+	 * @var datacache
+	 */
+	public $cache;
+
+	/**
+	 * The base URL to assets.
+	 *
+	 * @var string
+	 */
+	public $asset_url = null;
 
 	/**
 	 * Constructor of class.
@@ -420,6 +434,51 @@ class MyBB {
 	}
 
 	/**
+	 * Get the path to an asset using the CDN URL if configured.
+	 *
+	 * @param string $path    The path to the file.
+	 * @param bool   $use_cdn Whether to use the configured CDN options.
+	 *
+	 * @return string The complete URL to the asset.
+	 */
+	public function get_asset_url($path = '', $use_cdn = true)
+	{
+		$path = (string) $path;
+		$path = ltrim($path, '/');
+
+        if(substr($path, 0, 4) != 'http')
+        {
+            if(substr($path, 0, 2) == './')
+            {
+                $path = substr($path, 2);
+            }
+
+            $base_path = '';
+            if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
+            {
+                $base_path = rtrim($this->settings['cdnurl'], '/');
+            }
+            else
+            {
+                $base_path = rtrim($this->settings['bburl'], '/');
+            }
+
+            $url = $base_path;
+
+            if(!empty($path))
+            {
+                $url = $base_path . '/' . $path;
+            }
+        }
+        else
+        {
+            $url = $path;
+        }
+
+        return $url;
+	}
+
+	/**
 	 * Triggers a generic error.
 	 *
 	 * @param string The error code.
@@ -492,7 +551,7 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperthread");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.

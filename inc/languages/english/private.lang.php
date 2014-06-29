@@ -158,6 +158,7 @@ $l['ascending_order'] = "Ascending Order";
 $l['descending_order'] = "Descending Order";
 $l['search_private_messages'] = "Search Private Messages";
 $l['check_all'] = "Check All";
+$l['search_user'] = "Search for a user";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
@@ -169,6 +170,7 @@ $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messag
 $l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
 $l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
 $l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 minutes.";
+$l['error_nopms'] = "You must have one or more private messages in order to access this function.";
 
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";
 $l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
@@ -187,5 +189,13 @@ $l['redirect_pmsent'] = "Thank you, your private message has successfully been s
 $l['redirect_pmfoldersupdated'] = "Thank you, your private messaging folders have successfully been updated.<br />You will now be returned to your private message Inbox.";
 $l['redirect_pmfoldersemptied'] = "The selected private messaging folders have successfully been emptied.<br />You will now be taken back to your Private Messaging Inbox.";
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
+
+$l['quick_reply'] = "Quick Reply";
+$l['message_note'] = "Type your reply to this message here.";
+$l['send_reply'] = "Send Reply";
+$l['quickreply_signature'] = "Signature";
+$l['quickreply_disable_smilies'] = "Disable Smilies";
+$l['quickreply_save_copy'] = "Save a Copy";
+$l['quickreply_read_receipt'] = "<strong>Request Read Receipt</strong>";
 
 ?>

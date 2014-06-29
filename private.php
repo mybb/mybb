@@ -12,13 +12,15 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
-$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html";
-$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
-$templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online,postbit_find,postbit_pm,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm";
-$templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients";
-$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc";
-$templatelist .= ",private_archive,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,usercp_nav_messenger_tracking,multipage_prevpage";
+$templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage,private_orderarrow,usercp_nav_attachments,usercp_nav_messenger_compose,private_tracking_readmessage_stop";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav,private_empty_folder,private_empty,private_archive_txt,private_archive_csv,private_archive_html,private_tracking_unreadmessage_stop";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,posticons_icon";
+$templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online";
+$templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
+$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
+$templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,multipage_prevpage";
+$templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
+$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,private_emptyexportlink";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -58,12 +60,7 @@ if($rand == 5)
 
 $mybb->input['fid'] = $mybb->get_input('fid', 1);
 
-$foldersearch = "<select multiple=\"multiple\" name=\"folder[]\" id=\"folder\">\n";
-$foldersearch .= "<option selected=\"selected\">{$lang->all_folders}</option>\n";
-$folderjump = "<select name=\"jumpto\">\n";
-$folderoplist = "<input type=\"hidden\" value=\"{$mybb->input['fid']}\" name=\"fromfid\" />\n<select name=\"fid\">\n";
-$folderjump2 = "<select name=\"jumpto2\">\n";
-$folderlinks = '';
+$folder_id = $folder_name = '';
 
 $foldernames = array();
 $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -80,16 +77,18 @@ foreach($foldersexploded as $key => $folders)
 	}
 	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 	$foldernames[$folderinfo[0]] = $folderinfo[1];
-	$folderjump .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderjump2 .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderoplist .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$foldersearch .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
-	$folderlinks .= "&#149;&nbsp;<a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a><br />\n";
+
+	$folder_id = $folderinfo[0];
+	$folder_name = $folderinfo[1];
+
+	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
 }
-$folderjump .= "</select>\n";
-$folderjump2 .= "</select>\n";
-$folderoplist .= "</select>\n";
-$foldersearch .= "</select>\n";
+
+eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
+eval("\$folderoplist = \"".$templates->get("private_move")."\";");
+eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
 
 usercp_menu();
 
@@ -445,7 +444,7 @@ if($mybb->input['action'] == "results")
 		if($message['icon'] > 0 && $icon_cache[$message['icon']])
 		{
 			$icon = $icon_cache[$message['icon']];
-			$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" valign=\"middle\" />";
+			eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 		}
 		else
 		{
@@ -602,17 +601,25 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	}
 
 	$pm['options'] = array();
-	if(isset($mybb->input['options']['signature']))
+	if(isset($mybb->input['options']['signature']) && $mybb->input['options']['signature'] == 1)
 	{
-		$pm['options']['signature'] = $mybb->input['options']['signature'];
+		$pm['options']['signature'] = 1;
+	}
+	else
+	{
+		$pm['options']['signature'] = 0;
 	}
 	if(isset($mybb->input['options']['disablesmilies']))
 	{
 		$pm['options']['disablesmilies'] = $mybb->input['options']['disablesmilies'];
 	}
-	if(isset($mybb->input['options']['savecopy']))
+	if(isset($mybb->input['options']['savecopy']) && $mybb->input['options']['savecopy'] == 1)
 	{
-		$pm['options']['savecopy'] = $mybb->input['options']['savecopy'];
+		$pm['options']['savecopy'] = 1;
+	}
+	else
+	{
+		$pm['options']['savecopy'] = 0;
 	}
 	if(isset($mybb->input['options']['readreceipt']))
 	{
@@ -661,7 +668,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
-		$codebuttons = build_mycode_inserter();
+		$codebuttons = build_mycode_inserter("message", $mybb->settings['pmsallowsmilies']);
 		if($mybb->settings['pmsallowsmilies'] != 0)
 		{
 			$smilieinserter = build_clickable_smilies();
@@ -846,6 +853,13 @@ if($mybb->input['action'] == "send")
 			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 
+			require_once MYBB_ROOT."inc/functions_posting.php";
+
+			if($mybb->settings['maxpmquotedepth'] != '0')
+			{
+				$message = remove_message_quotes($message, $mybb->settings['maxpmquotedepth']);
+			}
+
 			if($mybb->input['do'] == 'forward')
 			{
 				$subject = "Fw: $subject";
@@ -934,17 +948,15 @@ if($mybb->input['action'] == "send")
 	}
 
 	// Hide tracking option if no permission
-	$private_send = $templates->get("private_send");
-	$tracking = '';
+	$private_send_tracking = '';
 	if($mybb->usergroup['cantrackpms'])
 	{
-		$tracking = $templates->get("private_send_tracking");
+		eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
 	}
-	eval("\$private_send_tracking = \"".$tracking."\";");
 
 	$plugins->run_hooks("private_send_end");
 
-	eval("\$send = \"".$private_send."\";");
+	eval("\$send = \"".$templates->get("private_send")."\";");
 	output_page($send);
 }
 
@@ -1137,6 +1149,60 @@ if($mybb->input['action'] == "read")
 	add_breadcrumb($pm['subject']);
 	$message = build_postbit($pm, 2);
 
+	// Decide whether or not to show quick reply.
+	$quickreply = '';
+	if($mybb->settings['pmquickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $mybb->usergroup['cansendpms'] != 0 && $pm['fromid'] != 0 && $pm['folder'] != 3)
+	{
+		$trow = alt_trow();
+
+		$optionschecked = array('savecopy' => 'checked="checked"');
+		if(!empty($mybb->user['signature']))
+		{
+			$optionschecked['signature'] = 'checked="checked"';
+		}
+		if($mybb->usergroup['cantrackpms'] == 1)
+		{
+			$optionschecked['readreceipt'] = 'checked="checked"';
+		}
+
+		require_once MYBB_ROOT.'inc/functions_posting.php';
+
+		$quoted_message = array(
+			'message' => htmlspecialchars_uni($parser->parse_badwords($pm['message'])),
+			'username' => $pm['username'],
+			'quote_is_pm' => true
+		);
+		$quoted_message = parse_quoted_message($quoted_message);
+
+		if($mybb->settings['maxpmquotedepth'] != '0')
+		{
+			$quoted_message = remove_message_quotes($quoted_message, $mybb->settings['maxpmquotedepth']);
+		}
+
+		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+		$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
+
+		if($mybb->user['uid'] == $pm['fromid'])
+		{
+			$to = htmlspecialchars_uni($mybb->user['username']);
+		}
+		else
+		{
+			$query = $db->simple_select('users', 'username', "uid='{$pm['fromid']}'");
+			$to = htmlspecialchars_uni($db->fetch_field($query, 'username'));
+		}
+
+		$private_send_tracking = '';
+		if($mybb->usergroup['cantrackpms'])
+		{
+			$lang->options_read_receipt = $lang->quickreply_read_receipt;
+
+			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
+		}
+
+		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
+	}
+
 	$plugins->run_hooks("private_read_end");
 
 	eval("\$read = \"".$templates->get("private_read")."\";");
@@ -1207,6 +1273,12 @@ if($mybb->input['action'] == "tracking")
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
 
+	$stoptrackingread = '';
+	if(!empty($readmessages))
+	{
+		eval("\$stoptrackingread = \"".$templates->get("private_tracking_readmessage_stop")."\";");
+	}
+
 	if(!$readmessages)
 	{
 		eval("\$readmessages = \"".$templates->get("private_tracking_nomessage")."\";");
@@ -1255,6 +1327,12 @@ if($mybb->input['action'] == "tracking")
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$senddate = my_date('relative', $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
+	}
+
+	$stoptrackingunread = '';
+	if(!empty($unreadmessages))
+	{
+		eval("\$stoptrackingunread = \"".$templates->get("private_tracking_unreadmessage_stop")."\";");
 	}
 
 	if(!$unreadmessages)
@@ -1481,6 +1559,11 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "empty")
 {
+	if($mybb->user['totalpms'] == 0)
+	{
+		error($lang->error_nopms);
+	}
+
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -1663,18 +1746,27 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "export")
 {
+	if($mybb->user['totalpms'] == 0)
+	{
+		error($lang->error_nopms);
+	}
+
 	$plugins->run_hooks("private_export_start");
 
-	$folderlist = "<select name=\"exportfolders[]\" multiple=\"multiple\">\n";
-	$folderlist .= "<option value=\"all\" selected=\"selected\">$lang->all_folders</option>";
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+	$folder_name = $folder_id = '';
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-		$folderlist .= "<option value=\"$folderinfo[0]\">$folderinfo[1]</option>\n";
+
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlist_folder .= \"".$templates->get("private_archive_folders_folder")."\";");
 	}
-	$folderlist .= "</select>\n";
+
+	eval("\$folderlist = \"".$templates->get("private_archive_folders")."\";");
 
 	$plugins->run_hooks("private_export_end");
 
@@ -2247,7 +2339,7 @@ if(!$mybb->input['action'])
 			if($message['icon'] > 0 && $icon_cache[$message['icon']])
 			{
 				$icon = $icon_cache[$message['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" valign=\"middle\" />";
+				eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
 			}
 			else
 			{
@@ -2296,6 +2388,7 @@ if(!$mybb->input['action'])
 		$belowhalf = $overhalf = '';
 		if($spaceused <= "50")
 		{
+			$spaceused_severity = "low";
 			$belowhalf = round($spaceused, 0)."%";
 			if(intval($belowhalf) > 100)
 			{
@@ -2304,6 +2397,16 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			if($spaceused <= "75")
+			{
+				$spaceused_severity = "medium";
+			}
+
+			else
+			{
+				$spaceused_severity = "high";
+			}
+			
 			$overhalf = round($spaceused, 0)."%";
 			if(intval($overhalf) > 100)
 			{
@@ -2311,7 +2414,25 @@ if(!$mybb->input['action'])
 			}
 		}
 
+		if($spaceused > 100)
+		{
+			$spaceused = 100;
+			$spaceused2 = 0;
+		}
+
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
+	}
+
+	$composelink = '';
+	if($mybb->usergroup['cansendpms'] == 1)
+	{
+		eval("\$composelink = \"".$templates->get("private_composelink")."\";");
+	}
+
+	$emptyexportlink = '';
+	if($mybb->user['totalpms'] > 0)
+	{
+		eval("\$emptyexportlink = \"".$templates->get("private_emptyexportlink")."\";");
 	}
 
 	$limitwarning = '';
