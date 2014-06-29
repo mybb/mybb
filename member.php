@@ -9,6 +9,7 @@
  */
 
 define("IN_MYBB", 1);
+define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
@@ -19,7 +20,7 @@ $templatelist .= ",member_profile_email,member_profile_offline,member_profile_re
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
+$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -207,6 +208,53 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			{
 				$errors[] = $error;
 			}
+		}
+	}
+
+	// If we have a security question, check to see if answer is correct
+	if($mybb->settings['securityquestion'])
+	{
+		$question_id = $mybb->get_input('question_id');
+		$answer = $db->escape_string($mybb->get_input('answer'));
+
+		$query = $db->query("
+			SELECT q.*, s.sid
+			FROM ".TABLE_PREFIX."questionsessions s
+			LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+			WHERE q.active='1' AND s.sid='{$question_id}'
+		");
+		if($db->num_rows($query) > 0)
+		{
+			$question = $db->fetch_array($query);
+			$valid_answers = explode("|", $question['answer']);
+			$validated = 0;
+
+			foreach($valid_answers as $answers)
+			{
+				if(my_strtolower($answers) == my_strtolower($answer))
+				{
+					$validated = 1;
+				}
+			}
+
+			if($validated != 1)
+			{
+				$update_question = array(
+					"incorrect" => $question['incorrect'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+
+				$errors[] = $lang->error_question_wrong;
+			}
+			else
+			{
+				$update_question = array(
+					"correct" => $question['correct'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+			}
+
+			$db->delete_query("questionsessions", "sid='{$sid}'");
 		}
 	}
 
@@ -504,7 +552,7 @@ if($mybb->input['action'] == "register")
 		}
 	}
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
+	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post")
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
@@ -857,6 +905,24 @@ if($mybb->input['action'] == "register")
 						}
 					});\n";
 				}
+			}
+		}
+
+		// Security Question
+		$questionbox = '';
+		if($mybb->settings['securityquestion'])
+		{
+			$sid = generate_question();
+			$query = $db->query("
+				SELECT q.question, s.sid
+				FROM ".TABLE_PREFIX."questionsessions s
+				LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+				WHERE q.active='1' AND s.sid='{$sid}'
+			");
+			if($db->num_rows($query) > 0)
+			{
+				$question = $db->fetch_array($query);
+				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
 		}
 

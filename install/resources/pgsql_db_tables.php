@@ -591,6 +591,24 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   PRIMARY KEY(plid)
 );";
 
+$tables[] = "CREATE TABLE mybb_questions (
+  qid serial,
+  question varchar(200) NOT NULL default '',
+  answer varchar(150) NOT NULL default '',
+  shown int unsigned NOT NULL default 0,
+  correct int unsigned NOT NULL default 0,
+  incorrect int unsigned NOT NULL default 0,
+  active smallint NOT NULL default '0',
+  PRIMARY KEY (qid)
+);";
+
+$tables[] = "CREATE TABLE mybb_questionsessions (
+  sid varchar(32) NOT NULL default '',
+  qid int unsigned NOT NULL default '0',
+  dateline int unsigned NOT NULL default '0',
+  UNIQUE (sid)
+);";
+
 $tables[] = "CREATE TABLE mybb_reportedcontent (
   rid serial,
   id int NOT NULL default '0',

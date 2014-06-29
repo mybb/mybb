@@ -2,7 +2,7 @@
 <tasks version="1400" exported="">
 	<task>
 		<title>Hourly Cleanup</title>
-		<description><![CDATA[Cleans out old searches, captcha images and expires redirects.]]></description>
+		<description><![CDATA[Cleans out old searches, captcha images, registration questions and expires redirects.]]></description>
 		<file>hourlycleanup</file>
 		<minute>0</minute>
 		<hour>*</hour>

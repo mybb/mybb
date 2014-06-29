@@ -118,9 +118,9 @@ class MyBB {
 			"eid", "pmid", "fid",
 			"aid", "rid", "sid",
 			"vid", "cid", "bid",
-			"pid", "gid", "mid",
+			"hid", "gid", "mid",
 			"wid", "lid", "iid",
-			"sid"
+			"did", "qid", "id"
 		),
 		"pos" => array(
 			"page", "perpage"
