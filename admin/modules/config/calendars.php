@@ -76,11 +76,12 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"allowhtml" => 0,
-			"eventlimit" => 4,
-			"disporder" => 1,
-			"moderation" => 0
+		$mybb->input = array_merge($mybb->input, array(
+				"allowhtml" => 0,
+				"eventlimit" => 4,
+				"disporder" => 1,
+				"moderation" => 0
+			)
 		);
 	}
 

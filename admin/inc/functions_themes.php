@@ -11,8 +11,8 @@
 /**
  * Import an entire theme (stylesheets, properties & templates) from an XML file.
  *
- * @param string The contents of the XML file
- * @param array Optional array of options or overrides
+ * @param string $xml The contents of the XML file
+ * @param array $options Optional array of options or overrides
  * @return boolean True on success, false on failure
  */
 function import_theme_xml($xml, $options=array())
@@ -359,12 +359,14 @@ function import_theme_xml($xml, $options=array())
 /**
  * Parse theme variables in a specific string.
  *
- * @param string The string to parse variables for
- * @param array Array of variables
+ * @param string $string The string to parse variables for
+ * @param array $variables Array of variables
  * @return string Parsed string with variables replaced
  */
 function parse_theme_variables($string, $variables=array())
 {
+	$find = array();
+	$replace = array();
 	foreach(array_keys($variables) as $variable)
 	{
 		$find[] = "{{$variable}}";
@@ -376,9 +378,11 @@ function parse_theme_variables($string, $variables=array())
 /**
  * Caches a stylesheet to the file system.
  *
- * @param string The theme ID this stylesheet belongs to
- * @param string The name of the stylesheet
- * @param string The contents of the stylesheet
+ * @param string $tid The theme ID this stylesheet belongs to.
+ * @param string $filename The name of the stylesheet.
+ * @param string $stylesheet The contents of the stylesheet.
+ *
+ * @return string The cache file path.
  */
 function cache_stylesheet($tid, $filename, $stylesheet)
 {
@@ -434,18 +438,15 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
 
-	if(!empty($mybb->settings['minifycss']))
+	$stylesheet_min = minify_stylesheet($stylesheet);
+	$filename_min = str_replace('.css', '.min.css', $filename);
+	$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");
+	if(!$fp_min)
 	{
-		$stylesheet_min = minify_stylesheet($stylesheet);
-		$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
-		if(!$fp_min)
-		{
-			return false;
-		}
-
-		@fwrite($fp_min, $stylesheet_min);
-		@fclose($fp_min);
+		return false;
 	}
+	@fwrite($fp_min, $stylesheet_min);
+	@fclose($fp_min);
 
 	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -545,9 +546,9 @@ function unfix_css_urls($url)
 /**
  * Build a theme based on the specified parameters.
  *
- * @param string The name of the theme
- * @param array Array of theme properties (if blank, inherits from parent)
- * @param int The parent ID for this theme (defaults to Master)
+ * @param string $name The name of the theme
+ * @param array $properties Array of theme properties (if blank, inherits from parent)
+ * @param int $parent The parent ID for this theme (defaults to Master)
  * @return int The new theme ID
  */
 function build_new_theme($name, $properties=null, $parent=1)
@@ -652,7 +653,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 /**
  * Generates an array from an incoming CSS file.
  *
- * @param string The incoming CSS
+ * @param string $css The incoming CSS
  * @return array Parsed CSS file as array, false on failure
  */
 function css_to_array($css)
@@ -671,6 +672,8 @@ function css_to_array($css)
 	// Fetch out classes and comments
 	preg_match_all('#(\/\*(.|[\r\n])*?\*\/)?([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~|@\^]+)(\s*)\{(.*?)\}\n#msi', $stripped_css, $matches, PREG_PATTERN_ORDER);
 	$total = count($matches[1]);
+
+	$parsed_css = array();
 
 	for($i=0; $i < $total; $i++)
 	{
@@ -773,14 +776,16 @@ function get_css_properties($css, $id)
 /**
  * Parses CSS supported properties and returns them as an array.
  *
- * @param string Value of CSS properties from within class or selector
+ * @param string $values Value of CSS properties from within class or selector
  * @return array Array of CSS properties
  */
 function parse_css_properties($values)
 {
+	$css_bits = array();
+
 	if(!$values)
 	{
-		return;
+		return null;
 	}
 
 	$values = explode(";", $values);
@@ -813,14 +818,18 @@ function parse_css_properties($values)
 /**
  * Inserts an incoming string of CSS in to an already defined document. If the class ID is not found, the CSS is appended to the file.
  *
- * @param string CSS we wish to insert at this location
- * @param string The selector for this piece of CSS
- * @param string The existing CSS if we have any
- * @param string (Optional) The optional friendly class id value just incase the CSS is not found in the file
+ * @param string $new_css CSS we wish to insert at this location.
+ * @param string $selector The selector for this piece of CSS.
+ * @param string $css The existing CSS if we have any.
+ * @param string $class_id (Optional) The optional friendly class id value just incase the CSS is not found in the file.
+ *
+ * @return string The altered CSS.
  */
 function insert_into_css($new_css, $selector="", $css="", $class_id="")
 {
 	$new_css = str_replace(array("\r\n", "\n", "\r"), "\n", $new_css);
+
+	$generated_css = '';
 
 	// Build the new CSS properties list
 	$new_css = explode("\n", $new_css);
@@ -828,6 +837,8 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	{
 		$generated_css .= "\t".trim($css_line)."\n";
 	}
+
+	$parsed_css = array();
 
 	// Parse out the CSS
 	if($css)
@@ -855,6 +866,7 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 		$existing_block = $parsed_css[$selector];
 
 		$break = strrpos($selector, "_");
+		$actual_occurance = 0;
 		if($break !== false)
 		{
 			$actual_occurance = intval(substr($selector, ($break+1)));
@@ -942,6 +954,8 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			$stylesheets[$stylesheet['name']] = $stylesheet;
 		}
 	}
+
+	$theme_stylesheets = array();
 
 	foreach($stylesheets as $name => $stylesheet)
 	{
@@ -1137,7 +1151,7 @@ function make_child_theme_list($tid)
 
 	if(!isset($themes_by_child[$tid]) || !is_array($themes_by_child[$tid]))
 	{
-		return;
+		return null;
 	}
 
 	$themes = array();
@@ -1297,7 +1311,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 
 	if(!is_array($theme_cache[$parent]) || $ignoretid === $parent)
 	{
-		return;
+		return null;
 	}
 
 	foreach($theme_cache[$parent] as $theme)
@@ -1411,8 +1425,6 @@ function upgrade_css_120_to_140($css)
 			case '.usercpnav':
 			case '.usercpnav li':
 			case '.usercpnav .pmfolders':
-			case '.usercpnav li':
-			case '.usercpnav li':
 				unset($parsed_css[$class_id]);
 				break;
 			default:
@@ -1468,6 +1480,8 @@ function upgrade_css_120_to_140($css)
 		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.gif) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 	);
 
+	$already_parsed = array();
+
 	foreach($to_add as $class_id => $array)
 	{
 		if($already_parsed[$class_id])
@@ -1485,6 +1499,10 @@ function upgrade_css_120_to_140($css)
 
 		$parsed_css[$class_id] = $array;
 	}
+
+	$theme = array(
+		'css' => '',
+	);
 
 	$css = "";
 	foreach($parsed_css as $class_id => $array)

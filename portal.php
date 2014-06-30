@@ -56,6 +56,7 @@ $unviewable = get_unviewable_forums(true);
 if($unviewable)
 {
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
+	$tunviewwhere = " AND t.fid NOT IN ($unviewable)";
 }
 else
 {
@@ -67,6 +68,7 @@ $inactive = get_inactive_forums(true);
 if($inactive)
 {
 	$inactivewhere = " AND fid NOT IN ($inactive)";
+	$tinactivewhere = " AND t.fid NOT IN ($inactive)";
 }
 else
 {
@@ -339,7 +341,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		SELECT t.*, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		WHERE 1=1 {$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
@@ -429,7 +431,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		SELECT p.pid, p.message, p.tid, p.smilieoff, t.attachmentcount
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
+		WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 		ORDER BY t.dateline DESC
 		LIMIT 0, {$numannouncements}"
 	);

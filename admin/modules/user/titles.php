@@ -78,9 +78,10 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			'stars' => '1',
-			'starimage' => '{theme}/star.png',
+		$mybb->input = array_merge($mybb->input, array(
+				'stars' => '1',
+				'starimage' => '{theme}/star.png',
+			)
 		);
 	}
 
@@ -184,7 +185,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $usertitle;
+		$mybb->input = array_merge($mybb->input, $usertitle);
 	}
 
 	$form_container = new FormContainer($lang->edit_user_title);

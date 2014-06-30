@@ -26,7 +26,7 @@ var MyBB = {
 		});
 
 		// Initialise "initial focus" field if we have one
-		var initialfocus = $("input.initial_focus");
+		var initialfocus = $(".initial_focus");
 		if(initialfocus.length > 0)
 		{
 			initialfocus.focus();
@@ -34,7 +34,7 @@ var MyBB = {
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
-			mark_read_imgs = $("img.ajax_mark_read");
+			mark_read_imgs = $(".ajax_mark_read");
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
@@ -335,7 +335,7 @@ var MyBB = {
 
 	dismissPMNotice: function()
 	{
-		var pm_notice = $("#content").find("div#pm_notice");
+		var pm_notice = $("#content").find("#pm_notice");
 		if(!pm_notice)
 		{
 			return false;
@@ -408,7 +408,7 @@ var expandables = {
 
 	init: function()
 	{
-		var expanders = $("div.expcolimage img.expander");
+		var expanders = $(".expcolimage .expander");
 		if(expanders.length)
 		{
 			expanders.each(function()

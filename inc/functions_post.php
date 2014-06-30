@@ -413,12 +413,6 @@ function build_postbit($post, $post_type=0)
 					$type = trim($thing[0]);
 					$useropts = explode("\n", $post[$fieldfid]);
 
-					// Skip over texa area fields, as they might break layout
-					if($type == "textarea")
-					{
-						continue;
-					}
-
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
 						foreach($useropts as $val)
@@ -435,7 +429,31 @@ function build_postbit($post, $post_type=0)
 					}
 					else
 					{
-						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
+						$parser_options = array(
+							"allow_html" => $field['allowhtml'],
+							"allow_mycode" => $field['allowmycode'],
+							"allow_smilies" => $field['allowsmilies'],
+							"allow_imgcode" => $field['allowimgcode'],
+							"allow_videocode" => $field['allowvideocode'],
+							#"nofollow_on" => 1,
+							"filter_badwords" => 1
+						);
+
+						if($customfield['type'] == "textarea")
+						{
+							$parser_options['me_username'] = $post['username'];
+						}
+						else
+						{
+							$parser_options['nl2br'] = 0;
+						}
+
+						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						{
+							$parser_options['allow_imgcode'] = 0;
+						}
+
+						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $parser_options);
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");

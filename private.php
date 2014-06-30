@@ -20,7 +20,7 @@ $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_
 $templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
 $templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,multipage_prevpage";
 $templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
-$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,postbit_purgespammer";
+$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,postbit_purgespammer,private_emptyexportlink";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -613,9 +613,13 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		$pm['options']['disablesmilies'] = $mybb->input['options']['disablesmilies'];
 	}
-	if(isset($mybb->input['options']['savecopy']))
+	if(isset($mybb->input['options']['savecopy']) && $mybb->input['options']['savecopy'] == 1)
 	{
-		$pm['options']['savecopy'] = $mybb->input['options']['savecopy'];
+		$pm['options']['savecopy'] = 1;
+	}
+	else
+	{
+		$pm['options']['savecopy'] = 0;
 	}
 	if(isset($mybb->input['options']['readreceipt']))
 	{
@@ -1555,6 +1559,11 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "empty")
 {
+	if($mybb->user['totalpms'] == 0)
+	{
+		error($lang->error_nopms);
+	}
+
 	$plugins->run_hooks("private_empty_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -1737,6 +1746,11 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "export")
 {
+	if($mybb->user['totalpms'] == 0)
+	{
+		error($lang->error_nopms);
+	}
+
 	$plugins->run_hooks("private_export_start");
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
@@ -2413,6 +2427,12 @@ if(!$mybb->input['action'])
 	if($mybb->usergroup['cansendpms'] == 1)
 	{
 		eval("\$composelink = \"".$templates->get("private_composelink")."\";");
+	}
+
+	$emptyexportlink = '';
+	if($mybb->user['totalpms'] > 0)
+	{
+		eval("\$emptyexportlink = \"".$templates->get("private_emptyexportlink")."\";");
 	}
 
 	$limitwarning = '';

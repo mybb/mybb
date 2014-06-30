@@ -9,6 +9,7 @@
  */
 
 define("IN_MYBB", 1);
+define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword,viewnotes");
 
@@ -16,9 +17,10 @@ $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
 $templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
-$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password";
-$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions_purgespammer,member_profile_modoptions,member_profile_modoptions_editnotes,postbit_reputation_formatted,postbit_warninglevel_formatted";
-$templatelist .= ",usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language";
+$templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
+$templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
+$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -160,7 +162,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"regip" => $session->packedip,
 		"coppa_user" => $coppauser,
 		"regcheck1" => $mybb->get_input('regcheck1'),
-		"regcheck2" => $mybb->get_input('regcheck2')
+		"regcheck2" => $mybb->get_input('regcheck2'),
+		"registration" => true
 	);
 
 	// Do we have a saved COPPA DOB?
@@ -206,6 +209,53 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			{
 				$errors[] = $error;
 			}
+		}
+	}
+
+	// If we have a security question, check to see if answer is correct
+	if($mybb->settings['securityquestion'])
+	{
+		$question_id = $mybb->get_input('question_id');
+		$answer = $db->escape_string($mybb->get_input('answer'));
+
+		$query = $db->query("
+			SELECT q.*, s.sid
+			FROM ".TABLE_PREFIX."questionsessions s
+			LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+			WHERE q.active='1' AND s.sid='{$question_id}'
+		");
+		if($db->num_rows($query) > 0)
+		{
+			$question = $db->fetch_array($query);
+			$valid_answers = explode("|", $question['answer']);
+			$validated = 0;
+
+			foreach($valid_answers as $answers)
+			{
+				if(my_strtolower($answers) == my_strtolower($answer))
+				{
+					$validated = 1;
+				}
+			}
+
+			if($validated != 1)
+			{
+				$update_question = array(
+					"incorrect" => $question['incorrect'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+
+				$errors[] = $lang->error_question_wrong;
+			}
+			else
+			{
+				$update_question = array(
+					"correct" => $question['correct'] + 1
+				);
+				$db->update_query("questions", $update_question, "qid='{$question['qid']}'");
+			}
+
+			$db->delete_query("questionsessions", "sid='{$sid}'");
 		}
 	}
 
@@ -435,19 +485,18 @@ if($mybb->input['action'] == "register")
 	$bdaysel = '';
 	if($mybb->settings['coppa'] == "disabled")
 	{
-		$bdaysel = $bday2blank = "<option value=\"\">&nbsp;</option>";
+		$bdaysel = $bday2blank = '';
 	}
 	$mybb->input['bday1'] = $mybb->get_input('bday1', 1);
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($mybb->input['bday1'] == $i)
+		$selected = '';
+		if($mybb->input['bday1'] == $day)
 		{
-			$bdaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
 		}
-		else
-		{
-			$bdaysel .= "<option value=\"$i\">$i</option>\n";
-		}
+
+		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
 	}
 
 	$mybb->input['bday2'] = $mybb->get_input('bday2', 1);
@@ -504,7 +553,7 @@ if($mybb->input['action'] == "register")
 		}
 	}
 
-	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
+	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) && $fromreg == 0 || $mybb->request_method != "post")
 	{
 		$coppa_agreement = '';
 		// Is this user a COPPA user? We need to show the COPPA agreement too
@@ -550,7 +599,8 @@ if($mybb->input['action'] == "register")
 				foreach($explodedtpp as $val)
 				{
 					$val = trim($val);
-					$tppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
+					$tpp_option = $lang->sprintf($lang->tpp_option, $val);
+					eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
 				}
 			}
 			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
@@ -564,7 +614,8 @@ if($mybb->input['action'] == "register")
 				foreach($explodedppp as $val)
 				{
 					$val = trim($val);
-					$pppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
+					$ppp_option = $lang->sprintf($lang->ppp_option, $val);
+					eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
 				}
 			}
 			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -614,158 +665,201 @@ if($mybb->input['action'] == "register")
 		// Custom profile fields baby!
 		$altbg = "trow1";
 		$requiredfields = $customfields = '';
-		$query = $db->simple_select("profilefields", "*", "(required='1' OR registration='1') AND editable !='0'", array('order_by' => 'disporder'));
-		while($profilefield = $db->fetch_array($query))
-		{
-			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-			$thing = explode("\n", $profilefield['type'], "2");
-			$type = trim($thing[0]);
-			$options = $thing[1];
-			$select = '';
-			$field = "fid{$profilefield['fid']}";
-			if($errors && isset($mybb->input['profile_fields'][$field]))
-			{
-				$userfield = $mybb->input['profile_fields'][$field];
-			}
-			else
-			{
-				$userfield = '';
-			}
-			if($type == "multiselect")
-			{
-				if($errors)
-				{
-					$useropts = $userfield;
-				}
-				else
-				{
-					$useropts = explode("\n", $userfield);
-				}
-				if(is_array($useropts))
-				{
-					foreach($useropts as $key => $val)
-					{
-						$seloptions[$val] = $val;
-					}
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
-					{
-						$val = trim($val);
-						$val = str_replace("\n", "\\n", $val);
 
-						$sel = "";
-						if($val == $seloptions[$val])
-						{
-							$sel = "selected=\"selected\"";
-						}
-						$select .= "<option value=\"$val\" $sel>$val</option>\n";
-					}
-					if(!$profilefield['length'])
-					{
-						$profilefield['length'] = 3;
-					}
-					$code = "<select name=\"profile_fields[$field][]\" id=\"{$field}\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
-				}
-			}
-			elseif($type == "select")
+		if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->settings['regtype'] == "both" || $mybb->get_input('coppa', 1) == 1)
+		{
+			$usergroup = 5;
+		}
+		else
+		{
+			$usergroup = 2;
+		}
+
+		$pfcache = $cache->read('profilefields');
+
+		if(is_array($pfcache))
+		{
+			foreach($pfcache as $profilefield)
 			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
+				if(!(($profilefield['required'] == 1 || $profilefield['registration'] == 1 || $profilefield['editableby'] == -1) || ($profilefield['editableby'] != '' && is_member($profilefield['editableby'], array('usergroup' => $usergroup, 'additionalgroups' => '')))))
 				{
-					foreach($expoptions as $key => $val)
-					{
-						$val = trim($val);
-						$val = str_replace("\n", "\\n", $val);
-						$sel = "";
-						if($val == $userfield)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						$select .= "<option value=\"$val\" $sel>$val</option>";
-					}
-					if(!$profilefield['length'])
-					{
-						$profilefield['length'] = 1;
-					}
-					$code = "<select name=\"profile_fields[$field]\" id=\"{$field}\" size=\"{$profilefield['length']}\">$select</select>";
+					continue;
 				}
-			}
-			elseif($type == "radio")
-			{
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
+
+				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$thing = explode("\n", $profilefield['type'], "2");
+				$type = trim($thing[0]);
+				$options = $thing[1];
+				$select = '';
+				$field = "fid{$profilefield['fid']}";
+				if($errors && isset($mybb->input['profile_fields'][$field]))
 				{
-					foreach($expoptions as $key => $val)
-					{
-						$checked = "";
-						if($val == $userfield)
-						{
-							$checked = "checked=\"checked\"";
-						}
-						$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
-					}
-				}
-			}
-			elseif($type == "checkbox")
-			{
-				if($errors)
-				{
-					$useropts = $userfield;
+					$userfield = $mybb->input['profile_fields'][$field];
 				}
 				else
 				{
-					$useropts = explode("\n", $userfield);
+					$userfield = '';
 				}
-				if(is_array($useropts))
+				if($type == "multiselect")
 				{
-					foreach($useropts as $key => $val)
+					if($errors)
 					{
-						$seloptions[$val] = $val;
+						$useropts = $userfield;
 					}
-				}
-				$expoptions = explode("\n", $options);
-				if(is_array($expoptions))
-				{
-					foreach($expoptions as $key => $val)
+					else
 					{
-						$checked = "";
-						if($val == $seloptions[$val])
+						$useropts = explode("\n", $userfield);
+					}
+					if(is_array($useropts))
+					{
+						foreach($useropts as $key => $val)
 						{
-							$checked = "checked=\"checked\"";
+							$seloptions[$val] = $val;
 						}
-						$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" id=\"{$field}{$key}\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+					}
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$val = trim($val);
+							$val = str_replace("\n", "\\n", $val);
+
+							$sel = "";
+							if($val == $seloptions[$val])
+							{
+								$sel = " selected=\"selected\"";
+							}
+
+							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						}
+						if(!$profilefield['length'])
+						{
+							$profilefield['length'] = 3;
+						}
+
+						eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 					}
 				}
-			}
-			elseif($type == "textarea")
-			{
-				$value = htmlspecialchars_uni($userfield);
-				$code = "<textarea name=\"profile_fields[$field]\" id=\"{$field}\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
-			}
-			else
-			{
-				$value = htmlspecialchars_uni($userfield);
-				$maxlength = "";
-				if($profilefield['maxlength'] > 0)
+				elseif($type == "select")
 				{
-					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$val = trim($val);
+							$val = str_replace("\n", "\\n", $val);
+							$sel = "";
+							if($val == $userfield)
+							{
+								$sel = " selected=\"selected\"";
+							}
+
+							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						}
+						if(!$profilefield['length'])
+						{
+							$profilefield['length'] = 1;
+						}
+
+						eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+					}
 				}
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
-			}
-			if($profilefield['required'] == 1)
-			{
-				// JS validator extra
-				if($type == "checkbox" || $type == "radio")
+				elseif($type == "radio")
 				{
-					$id = "{$field}0";
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$checked = "";
+							if($val == $userfield)
+							{
+								$checked = "checked=\"checked\"";
+							}
+
+							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+						}
+					}
+				}
+				elseif($type == "checkbox")
+				{
+					if($errors)
+					{
+						$useropts = $userfield;
+					}
+					else
+					{
+						$useropts = explode("\n", $userfield);
+					}
+					if(is_array($useropts))
+					{
+						foreach($useropts as $key => $val)
+						{
+							$seloptions[$val] = $val;
+						}
+					}
+					$expoptions = explode("\n", $options);
+					if(is_array($expoptions))
+					{
+						foreach($expoptions as $key => $val)
+						{
+							$checked = "";
+							if($val == $seloptions[$val])
+							{
+								$checked = "checked=\"checked\"";
+							}
+
+							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+						}
+					}
+				}
+				elseif($type == "textarea")
+				{
+					$value = htmlspecialchars_uni($userfield);
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
 				}
 				else
 				{
-					$id = "fid{$profilefield['fid']}";
+					$value = htmlspecialchars_uni($userfield);
+					$maxlength = "";
+					if($profilefield['maxlength'] > 0)
+					{
+						$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+					}
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
 				}
+
+				if($profilefield['required'] == 1)
+				{
+					// JS validator extra
+					if($type == "checkbox" || $type == "radio")
+					{
+						$id = "{$field}0";
+					}
+					else
+					{
+						$id = "fid{$profilefield['fid']}";
+					}
+					
+					$validator_extra .= "
+					$(\"#{$id}\").rules(\"add\", {
+						required: true,
+						minlength: 1,
+						messages: {
+							required: \"{$lang->js_validator_not_empty}\"
+						}
+					});\n";
+
+					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+				}
+				else
+				{
+					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+				}
+<<<<<<< HEAD
 
 				$validator_extra .= "
 				$(\"#{$id}\").rules(\"add\", {
@@ -775,22 +869,19 @@ if($mybb->input['action'] == "register")
 						required: \"{$lang->js_validator_not_empty}\"
 					}
 				});\n";
+=======
+>>>>>>> origin/feature
 
-				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+				$code = '';
+				$select = '';
+				$val = '';
+				$options = '';
+				$expoptions = '';
+				$useropts = '';
+				$seloptions = '';
 			}
-			else
-			{
-				eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
-			}
-
-			$code = '';
-			$select = '';
-			$val = '';
-			$options = '';
-			$expoptions = '';
-			$useropts = '';
-			$seloptions = '';
 		}
+
 		if(!empty($requiredfields))
 		{
 			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
@@ -847,6 +938,24 @@ if($mybb->input['action'] == "register")
 						}
 					});\n";
 				}
+			}
+		}
+
+		// Security Question
+		$questionbox = '';
+		if($mybb->settings['securityquestion'])
+		{
+			$sid = generate_question();
+			$query = $db->query("
+				SELECT q.question, s.sid
+				FROM ".TABLE_PREFIX."questionsessions s
+				LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+				WHERE q.active='1' AND s.sid='{$sid}'
+			");
+			if($db->num_rows($query) > 0)
+			{
+				$question = $db->fetch_array($query);
+				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
 		}
 
@@ -1993,7 +2102,7 @@ if($mybb->input['action'] == "profile")
 		$userstars = '';
 		for($i = 0; $i < $stars; ++$i)
 		{
-			$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
+			eval("\$userstars .= \"".$templates->get("member_profile_userstar", 1, 0)."\";");
 		}
 	}
 
@@ -2115,57 +2224,75 @@ if($mybb->input['action'] == "profile")
 	$userfields = $db->fetch_array($query);
 
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
-	$field_hidden = 'hidden=0';
-	if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['canmodcp'] == 1)
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
 	{
-		$field_hidden = '1=1';
-	}
-
-	$query = $db->simple_select("profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
-	while($customfield = $db->fetch_array($query))
-	{
-		$thing = explode("\n", $customfield['type'], "2");
-		$type = trim($thing[0]);
-
-		$customfieldval = '';
-		$field = "fid{$customfield['fid']}";
-
-		if(isset($userfields[$field]))
+		foreach($pfcache as $customfield)
 		{
-			$useropts = explode("\n", $userfields[$field]);
-			$customfieldval = $comma = '';
-			if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
+			if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canmodcp'] != 1 && ($customfield['viewableby'] == '' || ($customfield['viewableby'] != -1 && !is_member($customfield['viewableby']))))
 			{
-				foreach($useropts as $val)
-				{
-					if($val != '')
-					{
-						$customfieldval .= "<li style=\"margin-left: 0;\">{$val}</li>";
-					}
-				}
-				if($customfieldval != '')
-				{
-					$customfieldval = "<ul style=\"margin: 0; padding-left: 15px;\">{$customfieldval}</ul>";
-				}
+				continue;
 			}
-			else
-			{
-				$userfields[$field] = $parser->parse_badwords($userfields[$field]);
 
-				if($customfield['type'] == "textarea")
+			$thing = explode("\n", $customfield['type'], "2");
+			$type = trim($thing[0]);
+
+			$customfieldval = $customfield_val = '';
+			$field = "fid{$customfield['fid']}";
+
+			if(isset($userfields[$field]))
+			{
+				$useropts = explode("\n", $userfields[$field]);
+				$customfieldval = $comma = '';
+				if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 				{
-					$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
+					foreach($useropts as $val)
+					{
+						if($val != '')
+						{
+							eval("\$customfield_val .= \"".$templates->get("member_profile_customfields_field_multi_item")."\";");
+						}
+					}
+					if($customfield_val != '')
+					{
+						eval("\$customfieldval = \"".$templates->get("member_profile_customfields_field_multi")."\";");
+					}
 				}
 				else
 				{
-					$customfieldval = htmlspecialchars_uni($userfields[$field]);
+					$parser_options = array(
+						"allow_html" => $customfield['allowhtml'],
+						"allow_mycode" => $customfield['allowmycode'],
+						"allow_smilies" => $customfield['allowsmilies'],
+						"allow_imgcode" => $customfield['allowimgcode'],
+						"allow_videocode" => $customfield['allowvideocode'],
+						#"nofollow_on" => 1,
+						"filter_badwords" => 1
+					);
+
+					if($customfield['type'] == "textarea")
+					{
+						$parser_options['me_username'] = $memprofile['username'];
+					}
+					else
+					{
+						$parser_options['nl2br'] = 0;
+					}
+
+					if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+					{
+						$parser_options['allow_imgcode'] = 0;
+					}
+
+					$customfieldval = $parser->parse_message($userfields[$field], $parser_options);
 				}
 			}
-		}
 
-		$customfield['name'] = htmlspecialchars_uni($customfield['name']);
-		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
-		$bgcolor = alt_trow();
+			$customfield['name'] = htmlspecialchars_uni($customfield['name']);
+			eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
+			$bgcolor = alt_trow();
+		}
 	}
 
 	if($customfields)
@@ -2234,6 +2361,8 @@ if($mybb->input['action'] == "profile")
 	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
+		$ignore_list = explode(',', $mybb->user['ignorelist']);
+
 		if(in_array($uid, $buddy_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_buddy_button', 'lang' => $lang->remove_from_buddy_list);
@@ -2243,9 +2372,11 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_buddy_button', 'lang' => $lang->add_to_buddy_list);
 		}
 
-		eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		if(!in_array($uid, $ignore_list))
+		{
+			eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+		}
 
-		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		if(in_array($uid, $ignore_list))
 		{
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;delete={$uid}&amp;my_post_key={$mybb->post_code}", 'class' => 'remove_ignore_button', 'lang' => $lang->remove_from_ignore_list);
@@ -2255,7 +2386,10 @@ if($mybb->input['action'] == "profile")
 			$add_remove_options = array('url' => "usercp.php?action=do_editlists&amp;manage=ignored&amp;add_username=".urlencode($memprofile['username'])."&amp;my_post_key={$mybb->post_code}", 'class' => 'add_ignore_button', 'lang' => $lang->add_to_ignore_list);
 		}
 
-		eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		if(!in_array($uid, $buddy_list))
+		{
+			eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+		}
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{

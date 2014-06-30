@@ -626,7 +626,7 @@ if(!$mybb->input['action'])
 	}
 
 	// If the user has permission to add reputations - show the image
-	if($mybb->usergroup['cangivereputations'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
+	if($mybb->usergroup['cangivereputations'] == 1 && $mybb->user['uid'] != $user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 	{
 		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
 	}

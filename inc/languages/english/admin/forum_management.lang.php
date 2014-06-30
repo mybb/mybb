@@ -87,10 +87,11 @@ $l['can_manage_polls'] = "Can manage polls?";
 $l['can_post_closed_threads'] = "Can post in closed threads?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
-$l['can_manage_announcements'] = "Can manage announcements?";
-$l['can_manage_reported_posts'] = "Can manage reported posts?";
-$l['can_view_mod_log'] = "Can view moderator log?";
+$l['can_manage_announcements'] = "Can manage announcements in this forum?";
+$l['can_manage_reported_posts'] = "Can manage reported posts in this forum?";
+$l['can_view_mod_log'] = "Can view moderator log entries for this forum?";
 $l['moderator_cp_permissions'] = "Moderator CP Permissions";
+$l['moderator_cp_permissions_desc'] = "This user must be able to access the Mod CP and have usergroup permission to access these functions in order for these permissions to take effect.";
 
 $l['save_mod'] = "Save Moderator";
 

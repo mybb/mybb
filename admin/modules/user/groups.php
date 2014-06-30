@@ -453,10 +453,11 @@ if($mybb->input['action'] == "leaders")
 	}
 	else
 	{
-		$mybb->input = array(
-			"canmanagemembers" => 1,
-			"canmanagerequests" => 1,
-			"caninvitemembers" => 1
+		$mybb->input = array_merge($mybb->input, array(
+				"canmanagemembers" => 1,
+				"canmanagerequests" => 1,
+				"caninvitemembers" => 1
+			)
 		);
 	}
 
@@ -565,7 +566,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	if(!$errors)
 	{
-		$mybb->input = $leader;
+		$mybb->input = array_merge($mybb->input, $leader);
 	}
 
 	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user-groups&action=leaders&gid={$group['gid']}");
@@ -694,8 +695,9 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"namestyle" => "{username}"
+		$mybb->input = array_merge($mybb->input, array(
+				"namestyle" => "{username}"
+			)
 		);
 	}
 
@@ -939,7 +941,7 @@ if($mybb->input['action'] == "edit")
 			$usergroup['moderate'] = 0;
 			$usergroup['invite'] = 0;
 		}
-		$mybb->input = $usergroup;
+		$mybb->input = array_merge($mybb->input, $usergroup);
 	}
 	$tabs = array(
 		"general" => $lang->general,
@@ -1367,11 +1369,11 @@ if(!$mybb->input['action'])
 		}
 
 		$join_requests = '';
-		if($joinrequests[$usergroup['gid']] > 1)
+		if($joinrequests[$usergroup['gid']] > 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
-		else if($joinrequests[$usergroup['gid']] == 1)
+		else if($joinrequests[$usergroup['gid']] == 1 && $usergroup['type'] == 4)
 		{
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
@@ -1399,7 +1401,7 @@ if(!$mybb->input['action'])
 		$popup = new PopupMenu("usergroup_{$usergroup['gid']}", $lang->options);
 		$popup->add_item($lang->edit_group, "index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}");
 		$popup->add_item($lang->list_users, "index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
-		if($joinrequests[$usergroup['gid']] > 0)
+		if($joinrequests[$usergroup['gid']] > 0 && $usergroup['type'] == 4)
 		{
 			$popup->add_item($lang->join_requests, "index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
 		}

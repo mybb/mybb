@@ -290,21 +290,33 @@ foreach($stylesheet_scripts as $stylesheet_script)
 					continue;
 				}
 
-                if(strpos($page_stylesheet, 'css.php') !== false)
-                {
-                    $stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
-                }
-                else
-                {
-                    $stylesheet_url = $mybb->get_asset_url($page_stylesheet);
-                }
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					$stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
+				}
+				else
+				{
+					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
+				}
 
 				if($mybb->settings['minifycss'])
 				{
-                    $stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
+					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
 				}
 
-				$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					// We need some modification to get it working with the displayorder
+					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
+					$id = (int) my_substr($query_string, 11);
+					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
+					$real_name = $db->fetch_field($query, "name");
+					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+				else
+				{
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
 
 				$already_loaded[$page_stylesheet] = 1;
 			}
@@ -399,7 +411,7 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist,usercp_themeselector_option";
 $templates->cache($db->escape_string($templatelist));
@@ -729,6 +741,13 @@ if($mybb->settings['showthemeselect'] != 0)
 		$theme_redirect_url = get_current_location(true, 'theme');
 		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
 	}
+}
+
+// If we use the contact form, show 'Contact Us' link when appropriate
+$contact_us = '';
+if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+{
+	eval('$contact_us = "'.$templates->get('footer_contactus').'";');
 }
 
 // DST Auto detection enabled?

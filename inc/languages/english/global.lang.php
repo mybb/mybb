@@ -450,6 +450,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
+$l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
 
 $l['dismiss_notice'] = "Dismiss this notice";
 

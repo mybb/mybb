@@ -3422,7 +3422,7 @@ a.button {
 			{$lang_select}
 			{$theme_select}
 			<ul class="menu bottom_links">
-				<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>
+				{$contact_us}
 				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
 				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
 				<li><a href="<archive_url>">{$lang->bottomlinks_litemode}</a></li>
@@ -3449,6 +3449,7 @@ a.button {
 <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
 {$auto_dst_detection}
 </div>]]></template>
+		<template name="footer_contactus" version="1800"><![CDATA[<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>]]></template>
 		<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
 <form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
 	{$lang_redirect_url['form_html']}
@@ -3966,7 +3967,7 @@ a.button {
 						</fieldset>
 						</form>]]></template>
 		<template name="header_welcomeblock_guest" version="1800"><![CDATA[						<!-- Continuation of div(class="upper") as opened in the header template -->
-						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('div#quick_login').modal({ fadeDuration: 250, keepelement: true }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+						<span class="welcome">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="$('#quick_login').modal({ fadeDuration: 250, keepelement: true }); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
 					</div>
 				</div>
 				<div class="modal" id="quick_login" style="display: none;">
@@ -4648,6 +4649,10 @@ if(use_xmlhttprequest == "1")
 <td class="{$bgcolor}" width="60%">{$customfieldval}</td>
 </tr>
 ]]></template>
+		<template name="member_profile_customfields_field_multi" version="1800"><![CDATA[<ul style="margin: 0; padding-left: 15px;">
+{$customfield_val}
+</ul>]]></template>
+		<template name="member_profile_customfields_field_multi_item" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
 		<template name="member_profile_email" version="120"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->email}</strong></td>
 <td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
@@ -4699,6 +4704,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$memprofile['signature']}</td>
 </tr>
 </table>]]></template>
+		<template name="member_profile_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="member_profile_warn" version="1400"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
 		<template name="member_profile_warninglevel" version="1600"><![CDATA[<tr>
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
@@ -4749,6 +4755,7 @@ if(use_xmlhttprequest == "1")
 {$customfields}
 {$referrer}
 {$regimage}
+{$questionbox}
 </td>
 <td width="50%" class="trow1" valign="top">
 <fieldset class="trow2">
@@ -5015,6 +5022,7 @@ $().ready(function() {
 <tr>
 <td>{$code}</td>
 </tr>]]></template>
+		<template name="member_register_day" version="1800"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="member_register_hiddencaptcha" version="1605"><![CDATA[<tr style="display: none;">
 	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
@@ -5046,6 +5054,25 @@ $().ready(function() {
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>
 ]]></template>
+		<template name="member_register_question" version="1800"><![CDATA[<br />
+<fieldset class="trow2">
+<legend><strong>{$lang->security_question}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td colspan="2"><span class="smalltext">{$lang->question_note}</span></td>
+</tr>
+<tr>
+<td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{$question['question']}</span></td>
+</tr>
+<tr>
+<td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
+<input type="hidden" name="question_id" value="{$sid}" id="question_id" /></td>
+</tr>
+<tr>
+	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
+</tr>
+</table>
+</fieldset>]]></template>
 		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
@@ -5536,6 +5563,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$alt_bg}" align="center">{$user['threadnum']}</td>
 	{$referral_bit}
 </tr>]]></template>
+		<template name="memberlist_user_userstar" version="1800"><![CDATA[<img src="{$starimage}" border="0" alt="*" />]]></template>
 		<template name="memberlist_error" version="1800"><![CDATA[<tr>
 <td colspan="{$colspan}" align="center" class="trow1">{$lang->error_no_members}</td>
 </tr>]]></template>
@@ -6333,11 +6361,7 @@ if(use_xmlhttprequest == "1")
 								<td class="trow2" width="25%"><strong>{$lang->ban_reason}</strong></td>
 								<td class="trow2" width="75%"><textarea name="banreason" cols="60" rows="4" maxlength="255">{$banreason}</textarea></td>
 							</tr>
-							<tr>
-								<td class="trow1" width="25%"><strong>{$lang->ban_movegroup}</strong></td>
-								<td class="trow1" width="75%"><select name="usergroup">{$bangroups}</select>
-							</td>
-							</tr>
+							{$bangroups}
 							<tr>
 								<td class="trow2" width="25%"><strong>{$lang->ban_liftafter}</strong></td>
 								<td class="trow2" width="75%"><select name="liftafter">{$liftlist}</select></td>
@@ -6379,7 +6403,7 @@ if(use_xmlhttprequest == "1")
 		initSelection: function(element, callback) {
 			var query = $(element).val();
 			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
+				$.ajax("xmlhttp.php?action=get_users&getone=1", {
 					data: {
 						query: query
 					},
@@ -6397,12 +6421,18 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%"><input type="text" class="textbox" name="username" id="username" value="{$username}" size="25" /></td>
 </tr>]]></template>
+		<template name="modcp_banuser_bangroups" version="1800"><![CDATA[							<tr>
+								<td class="trow1" width="25%"><strong>{$lang->ban_movegroup}</strong></td>
+								<td class="trow1" width="75%"><select name="usergroup">{$bangroup_option}</select></td>
+							</tr>]]></template>
+		<template name="modcp_banuser_bangroups_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
+		<template name="modcp_banuser_bangroups_hidden" version="1800"><![CDATA[<input type="hidden" name="usergroup" value="{$group['gid']}" />]]></template>
 		<template name="modcp_banuser_editusername" version="1400"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
-		<template name="modcp_banuser_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
 		<template name="modcp_banuser_lift" version="1800"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
+		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
 		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
@@ -7765,6 +7795,34 @@ if(use_xmlhttprequest == "1")
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move" {$method_selected['move']} />{$lang->method_move}</label><br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$mybb->input['redirect_expire']}" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy" {$method_selected['copy']} />{$lang->method_copy}</label><br />]]></template>
+		<template name="moderation_confirmation" version="1800"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->confirm_execute_tool}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="{$mybb->input['action']}" />
+<input type="hidden" name="modtype" value="{$mybb->input['modtype']}" />
+  <input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="confirm" value="1" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$thread['subject']} - {$lang->confirm_execute_tool}</strong></td>
+</tr>
+<tr>
+<td class="trow1" colspan="2" align="center">{$lang->confirm_execute_tool_desc}</td>
+</tr>
+{$loginbox}
+</table>
+<br />
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->confirm_execute_tool}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="moderation_delayedmodaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="{$cols}">{$lang->no_delayed_mods}</td></tr>]]></template>
 		<template name="moderation_deletepoll" version="1400"><![CDATA[<html>
 <head>
@@ -9209,7 +9267,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$usercpnav}
 <td valign="top">
 <fieldset>
-  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span>
+  {$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a>{$composelink} | <a  href="private.php?action=folders">{$lang->manage_folders}</a>{$emptyexportlink}</span>
 </fieldset>
 <br />
 {$limitwarning}
@@ -9499,6 +9557,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" align="center">{$foldercount}</td>
 <td class="trow1" align="center"><input type="checkbox" class="checkbox" name="empty[{$fid}]" value="1" /></td>
 </tr>]]></template>
+		<template name="private_emptyexportlink" version="1800"><![CDATA[ | <a href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a>]]></template>
 		<template name="private_folders" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
@@ -10877,7 +10936,7 @@ if(use_xmlhttprequest == "1")
 		<template name="showthread_newreply" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button new_reply_button"><span>{$lang->new_reply}</span></a>&nbsp;]]></template>
 		<template name="showthread_newreply_closed" version="1800"><![CDATA[<a href="newreply.php?tid={$tid}" class="button closed_button"><span>{$lang->thread_closed}</span></a>&nbsp;]]></template>
 		<template name="showthread_newthread" version="1800"><![CDATA[<a href="newthread.php?fid={$fid}" class="button new_thread_button"><span>{$lang->post_thread}</span></a>&nbsp;]]></template>
-		<template name="showthread_poll" version="1604"><![CDATA[<form action="polls.php" method="post">
+		<template name="showthread_poll" version="1800"><![CDATA[<form action="polls.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
@@ -10891,6 +10950,9 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td><input type="submit" class="button" value="{$lang->vote}" /></td>
 <td valign="top" align="right"><span class="smalltext">[<a href="polls.php?action=showresults&amp;pid={$poll['pid']}">{$lang->show_results}</a>{$edit_poll}]</span></td>
+</tr>
+<tr>
+<td colspan="2"><span class="smalltext">{$closeon}</span></td>
 </tr>
 <tr>
 <td colspan="2"><span class="smalltext">{$publicnote}</span></td>
@@ -11115,7 +11177,8 @@ if(use_xmlhttprequest == "1")
 {$lang->newest_member} {$stats['newest_user']}<br />
 {$lang->members_posted} <strong>{$havepostedpercent}</strong><br />
 {$lang->todays_top_poster}<br />
-{$lang->popular_forum}
+{$lang->popular_forum}<br />
+{$top_referrer}
 </td>
 </tr>
 </table>
@@ -11358,6 +11421,11 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_avatar_auto_resize_auto" version="1800"><![CDATA[<br /><span class="smalltext">{$lang->avatar_auto_resize_note}</span>]]></template>
+		<template name="usercp_avatar_auto_resize_user" version="1800"><![CDATA[<br /><span class="smalltext">
+<input type="checkbox" name="auto_resize" value="1" checked="checked" id="auto_resize" />
+<label for="auto_resize">{$lang->avatar_auto_resize_option}</label>
+</span>]]></template>
 		<template name="usercp_avatar_current" version="1800"><![CDATA[<td width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
 		<template name="usercp_avatar_remove" version="1800"><![CDATA[<input type="submit" class="button" name="remove" value="{$lang->remove_avatar}" />]]></template>
 		<template name="usercp_avatar_upload" version="1800"><![CDATA[			<tr>
@@ -11459,6 +11527,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
+		<template name="usercp_drafts_draft_forum" version="1800"><![CDATA[{$lang->forum}: <a href="{$draft['forumlink']}">{$draft['forumname']}</a>]]></template>
+		<template name="usercp_drafts_draft_thread" version="1800"><![CDATA[{$lang->thread}: <a href="{$draft['threadlink']}">{$draft['threadsubject']}</a>]]></template>
 		<template name="usercp_drafts_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
@@ -11660,6 +11730,8 @@ if(use_xmlhttprequest == "1")
 	{$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_editlists_no_buddies" version="1800"><![CDATA[<li>{$lang->buddy_list_empty}</li>]]></template>
+		<template name="usercp_editlists_no_ignored" version="1800"><![CDATA[<li>{$lang->ignore_list_empty}</li>]]></template>
 		<template name="usercp_editlists_received_requests" version="1800"><![CDATA[
 					<table class="tborder" border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}">
 						<thead>
@@ -12110,6 +12182,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>
 <select name="dateformat">
+<option value="0">{$lang->use_default}</option>
 {$date_format_options}
 </select>
 </td>
@@ -12120,6 +12193,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td>
 <select name="timeformat">
+<option value="0">{$lang->use_default}</option>
 {$time_format_options}
 </select>
 </td>
@@ -12239,6 +12313,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="usercp_options_date_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$dateformat}</option>]]></template>
 		<template name="usercp_options_language" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->board_language}:</span></td>
 </tr>
@@ -12267,12 +12342,14 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
+		<template name="usercp_options_pppselect_option" version="1800"><![CDATA[<option value="{$val}"{$selected}>{$ppp_option}</option>]]></template>
 		<template name="usercp_options_style" version="1800"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->style}</span></td>
 </tr>
 <tr>
 <td colspan="2">{$stylelist}</td>
 </tr>]]></template>
+		<template name="usercp_options_time_format" version="1800"><![CDATA[<option value="{$key}"{$selected}>{$timeformat}</option>]]></template>
 		<template name="usercp_options_timezone" version="1800"><![CDATA[<select name="{$name}" id="{$name}">
 {$timezone_option}
 </select>]]></template>
@@ -12288,6 +12365,7 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>]]></template>
+		<template name="usercp_options_tppselect_option" version="1800"><![CDATA[<option value="{$val}"{$selected}>{$tpp_option}</option>]]></template>
 		<template name="usercp_password" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_password}</title>
@@ -12409,7 +12487,9 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td colspan="3">
 <select name="birthdayprivacy">
-{$bdayprivacysel}
+<option value="all"{$allselected}>{$lang->birthdayprivacyall}</option>
+<option value="none"{$noneselected}>{$lang->birthdayprivacynone}</option>
+<option value="age"{$ageselected}>{$lang->birthdayprivacyage}</option>
 </select>
 </td>
 </tr>
@@ -12537,9 +12617,8 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td>{$code}</td>
-</tr>
-]]></template>
-		<template name="usercp_profile_customtitle" version="120"><![CDATA[<fieldset class="trow2">
+</tr>]]></template>
+		<template name="usercp_profile_customtitle" version="1800"><![CDATA[<fieldset class="trow2">
 <legend><strong>{$lang->custom_usertitle}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -12551,24 +12630,26 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td><span class="smalltext"><strong>{$defaulttitle}</strong></span></td>
 </tr>
-<tr>
-<td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
-</tr>
-<tr>
-<td><span class="smalltext"><strong>{$user['usertitle']}</strong></span></td>
-</tr>
+{$currentcustom}
 <tr>
 <td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
 </tr>
 <tr>
 <td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$mybb->settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
 </tr>
-<tr>
-<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
-</tr>
+{$reverttitle}
 </table>
 </fieldset>
 <br />]]></template>
+		<template name="usercp_profile_customtitle_currentcustom" version="1800"><![CDATA[<tr>
+<td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
+</tr>
+<tr>
+<td><span class="smalltext"><strong>{$user['usertitle']}</strong></span></td>
+</tr>]]></template>
+		<template name="usercp_profile_customtitle_reverttitle" version="1800"><![CDATA[<tr>
+<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
+</tr>]]></template>
 		<template name="usercp_profile_day" version="1800"><![CDATA[<option value="{$day}"{$selected}>{$day}</option>]]></template>
 		<template name="usercp_profile_profilefields" version="120"><![CDATA[<br />
 <fieldset class="trow2">
@@ -12577,9 +12658,23 @@ if(use_xmlhttprequest == "1")
 {$customfields}
 </table>
 </fieldset>]]></template>
+		<template name="usercp_profile_profilefields_checkbox" version="1800"><![CDATA[<input type="checkbox" class="checkbox" name="profile_fields[$field][]" value="{$val}"{$checked} />
+<span class="smalltext">{$val}</span><br />]]></template>
+		<template name="usercp_profile_profilefields_multiselect" version="1800"><![CDATA[<select name="profile_fields[$field][]" size="{$profilefield['length']}" multiple="multiple">
+{$select}
+</select>]]></template>
+		<template name="usercp_profile_profilefields_radio" version="1800"><![CDATA[<input type="radio" class="radio" name="profile_fields[$field]" value="{$val}"{$checked} />
+<span class="smalltext">{$val}</span><br />]]></template>
+		<template name="usercp_profile_profilefields_select" version="1800"><![CDATA[<select name="profile_fields[$field]" size="{$profilefield['length']}">
+{$select}
+</select>]]></template>
+		<template name="usercp_profile_profilefields_select_option" version="1800"><![CDATA[<option value="{$val}"{$sel}>{$val}</option>]]></template>
+		<template name="usercp_profile_profilefields_text" version="1800"><![CDATA[<input type="text" name="profile_fields[$field]" class="textbox" size="{$profilefield['length']}"{$maxlength} value="{$value}" />]]></template>
+		<template name="usercp_profile_profilefields_textarea" version="1800"><![CDATA[<textarea name="profile_fields[$field]" rows="6" cols="30" style="width: 95%">{$value}</textarea>]]></template>
 		<template name="usercp_referrals" version="1600"><![CDATA[<strong>{$lang->members_referred}</strong> {$mybb->user['referrals']}<br />
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
+		<template name="usercp_resendactivation" version="1800"><![CDATA[<br />(<a href="member.php?action=resendactivation">{$lang->resend_activation}</a>)]]></template>
 		<template name="usercp_subscriptions" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
@@ -12668,6 +12763,7 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="check[{$thread['tid']}]" value="{$thread['tid']}" /></td>
 </tr>]]></template>
+		<template name="usercp_subscriptions_thread_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" />]]></template>
 		<template name="usercp_themeselector" version="1800"><![CDATA[<select name="{$name}">
 <option value="0">{$lang->use_default}</option>
 <option value="0">-----------</option>
@@ -12711,6 +12807,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}"><span class="smalltext">{$conditions}</span><br /><span class="smalltext">{$usergroupleaders}</span></td>
 <td class="{$trow}" align="center">{$joinlink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_joinable_usergroup_description" version="1800"><![CDATA[<br /><span class="smalltext">{$usergroup['description']}</span>]]></template>
+		<template name="usercp_usergroups_joinable_usergroup_join" version="1800"><![CDATA[<a href="usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->join_group}</a>]]></template>
 		<template name="usercp_usergroups_joingroup" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
@@ -12771,6 +12869,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_leader_usergroup_memberlist" version="1800"><![CDATA[ [<a href="managegroup.php?gid={$usergroup['gid']}">{$lang->view_members}</a>]]]></template>
+		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]></template>
 		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
@@ -12784,10 +12884,17 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="usercp_usergroups_memberof_usergroup" version="1800"><![CDATA[<tr>
-<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}</td>
+<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}{$description}</td>
 <td class="{$trow}" align="center">{$usergroup['usertitle']}</td>
 <td class="{$trow}">{$leavelink}</td>
 </tr>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_description" version="1800"><![CDATA[<br /><span class="smalltext">{$usergroup['description']}</span>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_display" version="1800"><![CDATA[ ({$lang->display_group})]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leave" version="1800"><![CDATA[<div style="text-align: center;"><a href="usercp.php?action=usergroups&amp;leavegroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->usergroup_leave}</a></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveleader" version="1800"><![CDATA[<div style="text-align: center;"><span class="smalltext">{$lang->usergroup_leave_leader}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveother" version="1800"><![CDATA[<div style="text-align: center;"><span class="smalltext">{$lang->usergroup_cannot_leave}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_leaveprimary" version="1800"><![CDATA[<div style="text-align:center;"><span class="smalltext">{$lang->usergroup_leave_primary}</span></div>]]></template>
+		<template name="usercp_usergroups_memberof_usergroup_setdisplay" version="1800"><![CDATA[ (<a href="usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}">{$lang->set_as_display_group}</a>)]]></template>
 		<template name="usercp_warnings" version="1400"><![CDATA[	<br />
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
@@ -12815,6 +12922,7 @@ if(use_xmlhttprequest == "1")
 				<td class="{$alt_bg}" align="center">{$expires}</td>
 				<td class="{$alt_bg}" align="center">{$issuedby}</td>
 	</tr>]]></template>
+		<template name="usercp_warnings_warning_post" version="1800"><![CDATA[<br /><small>{$lang->warning_for_post} <a href="{$warning['postlink']}">{$warning['post_subject']}</a></small>]]></template>
 		<template name="video_metacafe_embed" version="1600"><![CDATA[<embed src="http://www.metacafe.com/fplayer/{$id}/{$title}.swf" width="400" height="345" wmode="transparent" allowFullScreen="true" allowScriptAccess="always" name="Metacafe_{$id}" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash"></embed>]]></template>
 		<template name="video_dailymotion_embed" version="1610"><![CDATA[<iframe frameborder="0" width="480" height="270" src="http://www.dailymotion.com/embed/video/{$id}"></iframe>]]></template>
 		<template name="video_facebook_embed" version="1800"><![CDATA[<iframe src="https://www.facebook.com/video/embed?video_id={$id}" width="625" height="350" frameborder="0"></iframe>]]></template>
@@ -13148,6 +13256,7 @@ if(use_xmlhttprequest == "1")
 						<div style="padding-left: 10px; font-weight: bold; float: left;">{$new_warning_level}%</div><br style="clear: left;" />
 						{$result}
 					</dd>]]></template>
+		<template name="warnings_warn_type_result" version="1800"><![CDATA[<div class="smalltext" style="clear: left; padding-top: 4px;">{$lang->result}<br />{$new_level['friendly_action']}</div>]]></template>
 		<template name="warnings_warning" version="1400"><![CDATA[			<tr>
 				<td class="{$alt_bg}">{$warning_type} {$points}{$post_link}</td>
 				<td class="{$alt_bg}" align="center">{$date_issued}</td>
@@ -13217,7 +13326,7 @@ if(use_xmlhttprequest == "1")
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
-		style: "{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}",
+		style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
 		emoticonsEnabled: {$emoticons_enabled},

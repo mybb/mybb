@@ -767,6 +767,11 @@ class DB_MySQLi
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$array[$field] = $value;
 			}
 			else
@@ -811,6 +816,11 @@ class DB_MySQLi
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
+					if($value[0] != 'X') // Not escaped?
+					{
+						$value = $this->escape_binary($value);
+					}
+				
 					$values[$field] = $value;
 				}
 				else
@@ -861,6 +871,11 @@ class DB_MySQLi
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1226,6 +1241,11 @@ class DB_MySQLi
 		{
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else

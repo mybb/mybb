@@ -42,6 +42,7 @@ $l['general_options'] = "General Options";
 $l['short_description'] = "Short Description";
 $l['available_in_forums'] = "Available in forums";
 $l['available_to_groups'] = "Available to groups";
+$l['show_confirmation'] = "Show Confirmation Page";
 $l['save_thread_tool'] = "Save Thread Tool";
 
 $l['title'] = "Title";
@@ -82,6 +83,7 @@ $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
 $l['delete_redirects'] = "Delete redirects?";
 $l['remove_subscriptions'] = "Remove thread subscriptions?";
+$l['recount_rebuild'] = "Recount & Rebuild?";
 $l['apply_thread_prefix'] = "Apply thread prefix?";
 $l['new_subject'] = "New subject?";
 $l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";

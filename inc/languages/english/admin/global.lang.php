@@ -30,7 +30,10 @@ $l['logout'] = "Log Out";
 $l['generated_in'] = "Generated in {1} with <a href=\"{2}\" target=\"_blank\">{3} queries</a>. Memory Usage: {4}";
 
 // Login page
-$l['enter_username_and_password'] = "Please enter your username and password to continue.";
+$l['enter_username_and_password'] = "Please enter your {1} and password to continue.";
+$l['login_username'] = 'username';
+$l['login_email'] = 'email';
+$l['login_username_and_password'] = 'username/email';
 $l['mybb_admin_login'] = "MyBB Control Panel - Login";
 $l['return_to_forum'] = "Return to forum";
 $l['please_login'] = "Please Login";
@@ -54,7 +57,7 @@ $l['error_invalid_uid'] = "The user id you entered is invalid.";
 $l['error_invalid_token'] = "The activation code you entered is invalid.";
 
 $l['success_logged_out'] = "You have been logged out successfully.";
-$l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
+$l['error_invalid_username_password'] = "The {1} and password combination you entered is invalid.";
 
 // Action Confirmation
 $l['confirm_action'] = "Are you sure you wish to perform this action?";
@@ -287,6 +290,7 @@ $l['task_massmail_ran_errors'] = "One or more problems occurred sending to \"{1}
 {2}";
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['task_versioncheck_ran_errors'] = "Could not connect to MyBB for a version check.";
+$l['task_recachestylesheets_ran'] = 'Re-cached {1} stylesheets.';
 
 $l['massmail_username'] = "Username";
 $l['email_addr'] = "Email Address";

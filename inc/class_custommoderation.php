@@ -459,6 +459,15 @@ class CustomModeration extends Moderation
 					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
 				}
 			}
+			if(!empty($thread_options['recountrebuild']))
+			{
+				require_once MYBB_ROOT.'/inc/functions_rebuild.php';
+
+				foreach($tids as $tid)
+				{
+					rebuild_thread_counters($tid);
+				}
+			}
 		}
 		
 		// Do we have a PM subject and PM message?

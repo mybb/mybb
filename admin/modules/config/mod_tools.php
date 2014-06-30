@@ -297,11 +297,13 @@ if($mybb->input['action'] == "edit_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'removesubscriptions' => $mybb->input['removesubscriptions'],
+				'recountrebuild' => $mybb->input['recountrebuild'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -413,6 +415,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$group_checked[2] = "checked=\"checked\"";
 		}
 
+		$mybb->input['confirmation'] = $thread_options['confirmation'];
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
@@ -449,6 +452,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
 		$mybb->input['removeredirects'] = $thread_options['removeredirects'];
 		$mybb->input['removesubscriptions'] = $thread_options['removesubscriptions'];
+		$mybb->input['recountrebuild'] = $thread_options['recountrebuild'];
 		$mybb->input['threadprefix'] = $thread_options['threadprefix'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
@@ -516,6 +520,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -602,6 +607,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -775,11 +781,13 @@ if($mybb->input['action'] == "add_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'removesubscriptions' => $mybb->input['removesubscriptions'],
+				'recountrebuild' => $mybb->input['recountrebuild'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -899,6 +907,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['group_1_groups'] = '';
 		$group_checked[1] = "checked=\"checked\"";
 		$group_checked[2] = '';
+		$mybb->input['confirmation'] = '0';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
@@ -916,6 +925,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['deletepoll'] = '0';
 		$mybb->input['removeredirects'] = '0';
 		$mybb->input['removesubscriptions'] = '0';
+		$mybb->input['recountrebuild'] = '0';
 		$mybb->input['threadprefix'] = '-1';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
@@ -983,6 +993,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -1069,6 +1080,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -1262,6 +1274,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
@@ -1273,7 +1286,9 @@ if($mybb->input['action'] == "edit_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message']
 			);
 
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1392,6 +1407,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			$group_checked[2] = "checked=\"checked\"";
 		}
 
+		$mybb->input['confirmation'] = $thread_options['confirmation'];
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
@@ -1427,6 +1443,8 @@ if($mybb->input['action'] == "edit_post_tool")
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
+		$mybb->input['pm_subject'] = $thread_options['pm_subject'];
+		$mybb->input['pm_message'] = $thread_options['pm_message'];
 
 		if($post_options['splitposts'] == '-1')
 		{
@@ -1537,6 +1555,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -1645,6 +1664,11 @@ if($mybb->input['action'] == "edit_post_tool")
 	$form_container = new FormContainer($lang->add_new_reply);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply']), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
+	$form_container->end();
+
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
@@ -1827,6 +1851,7 @@ if($mybb->input['action'] == "add_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
@@ -1838,7 +1863,9 @@ if($mybb->input['action'] == "add_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message']
 			);
 
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1944,6 +1971,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$mybb->input['group_1_groups'] = '';
 		$group_checked[1] = "checked=\"checked\"";
 		$group_checked[2] = '';
+		$mybb->input['confirmation'] = '0';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
@@ -2034,6 +2062,7 @@ if($mybb->input['action'] == "add_post_tool")
 	checkAction('group');
 	</script>";
 	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -2143,6 +2172,11 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container = new FormContainer($lang->add_new_reply);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
+	$form_container->end();
+
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);

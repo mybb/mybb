@@ -15,7 +15,8 @@ function task_hourlycleanup($task)
 	$time = array(
 		'threads' => TIME_NOW,
 		'searchlog' => TIME_NOW-(60*60*24),
-		'captcha' => TIME_NOW-(60*60*24)
+		'captcha' => TIME_NOW-(60*60*24),
+		'question' => TIME_NOW-(60*60*24)
 	);
 
 	if(is_object($plugins))
@@ -43,6 +44,10 @@ function task_hourlycleanup($task)
 	// Delete old captcha images
 	$cut = TIME_NOW-(60*60*24*7);
 	$db->delete_query("captcha", "dateline < '".(int)$time['captcha']."'");
+
+	// Delete old registration questions
+	$cut = TIME_NOW-(60*60*24*7);
+	$db->delete_query("questions", "dateline < '".(int)$time['question']."'");
 
 	add_task_log($task, $lang->task_hourlycleanup_ran);
 }

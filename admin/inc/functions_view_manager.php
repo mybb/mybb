@@ -117,9 +117,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 		else
 		{
-			$mybb->input = array(
-				"perpage" => 20,
-			);
+			$mybb->input = array_merge($mybb->input, array('perpage' => 20));
 		}
 
 		// Write in our JS based field selector
@@ -334,7 +332,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$admin_view['conditions'] = unserialize($admin_view['conditions']);
 			$admin_view['fields'] = unserialize($admin_view['fields']);
 			$admin_view['profile_fields'] = unserialize($admin_view['custom_profile_fields']);
-			$mybb->input = $admin_view;
+			$mybb->input = array_merge($mybb->input, $admin_view);
 
 			$mybb->input['isdefault'] = 0;
 			$default_view = fetch_default_view($type);

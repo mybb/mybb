@@ -365,7 +365,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $icon;
+		$mybb->input = array_merge($mybb->input, $icon);
 	}
 
 	$form_container = new FormContainer($lang->edit_post_icon);

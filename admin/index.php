@@ -466,7 +466,23 @@ if(!isset($mybb->user['uid']) || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login($lang->error_invalid_username_password, "error");
+		$login_lang_string = $lang->error_invalid_username_password;
+
+		switch($mybb->settings['username_method'])
+		{
+			case 0: // Username only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+				break;
+			case 1: // Email only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+				break;
+			case 2: // Username and email
+			default:
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+				break;
+		}
+
+		$page->show_login($login_lang_string, "error");
 	}
 	else
 	{

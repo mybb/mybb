@@ -52,19 +52,55 @@ if($mybb->input['action'] == "add")
 				$thing = $type;
 			}
 
+			foreach(array('viewableby', 'editableby') as $key)
+			{
+				if($mybb->input[$key] == 'all')
+				{
+					$mybb->input[$key] = -1;
+				}
+				elseif($mybb->input[$key] == 'custom')
+				{
+					if(isset($mybb->input['select'][$key]) && is_array($mybb->input['select'][$key]))
+					{
+						foreach($mybb->input['select'][$key] as &$val)
+						{
+							$val = (int)$val;
+						}
+						unset($val);
+
+						$mybb->input[$key] = implode(',', (array)$mybb->input['select'][$key]);
+					}
+					else
+					{
+						$mybb->input[$key] = '';
+					}
+				}
+				else
+				{
+					$mybb->input[$key] = '';
+				}
+			}
+
 			$new_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($thing),
+				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
-				"editable" => $db->escape_string($mybb->input['editable']),
-				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"profile" => $db->escape_string($mybb->input['profile']),
+				"viewableby" => $db->escape_string($mybb->input['viewableby']),
+				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => intval($mybb->input['postnum'])
+				"postnum" => intval($mybb->input['postnum']),
+				"allowhtml" => (int)$mybb->input['allowhtml'],
+				"allowmycode" => (int)$mybb->input['allowmycode'],
+				"allowsmilies" => (int)$mybb->input['allowsmilies'],
+				"allowimgcode" => (int)$mybb->input['allowimgcode'],
+				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
 			$fid = $db->insert_query("profilefields", $new_profile_field);
@@ -100,6 +136,32 @@ if($mybb->input['action'] == "add")
 
 	if($errors)
 	{
+		switch($mybb->input['viewableby'])
+		{
+			case 'all':
+				$mybb->input['viewableby'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['viewableby'] = implode(',', (array)$mybb->input['select']['viewableby']);
+				break;
+			default:
+				$mybb->input['viewableby'] = '';
+				break;
+		}
+
+		switch($mybb->input['editableby'])
+		{
+			case 'all':
+				$mybb->input['editableby'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['editableby'] = implode(',', (array)$mybb->input['select']['editableby']);
+				break;
+			default:
+				$mybb->input['editableby'] = '';
+				break;
+		}
+
 		$page->output_inline_error($errors);
 	}
 	else
@@ -110,6 +172,16 @@ if($mybb->input['action'] == "add")
 		$mybb->input['editable'] = 1;
 		$mybb->input['hidden'] = 0;
 		$mybb->input['postbit'] = 0;
+	}
+
+	if(empty($mybb->input['viewableby']))
+	{
+		$mybb->input['viewableby'] = '';
+	}
+
+	if(empty($mybb->input['editableby']))
+	{
+		$mybb->input['editableby'] = '';
 	}
 
 	$form_container = new FormContainer($lang->add_new_profile_field);
@@ -124,21 +196,119 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
-	$editable_list = array(
-		"0" => $lang->no,
-		"1" => $lang->yes,
-		"2" => $lang->only_at_registration
-	);
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_select_box('editable', $editable_list, $mybb->input['editable'], array('id' => 'editable')), 'editable');
-	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
 	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+
+	$selected_values = '';
+	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
+	{
+		$selected_values = explode(',', (string)$mybb->input['viewableby']);
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['viewableby'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['viewableby'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"all\" {$group_checked['all']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"custom\" {$group_checked['custom']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"viewableby_forums_groups_custom\" class=\"viewableby_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"none\" {$group_checked['none']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('viewableby');
+	</script>";
+	$form_container->output_row($lang->viewableby, $lang->viewableby_desc, $select_code, '', array(), array('id' => 'row_viewableby'));
+
+	$selected_values = '';
+	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
+	{
+		$selected_values = explode(',', (string)$mybb->input['editableby']);
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['editableby'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['editableby'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"all\" {$group_checked['all']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"custom\" {$group_checked['custom']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"editableby_forums_groups_custom\" class=\"editableby_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"none\" {$group_checked['none']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('editableby');
+	</script>";
+	$form_container->output_row($lang->editableby, $lang->editableby_desc, $select_code, '', array(), array('id' => 'row_editableby'));
+
+	$parser_options = array(
+		$form->generate_check_box('allowhtml', 1, $lang->parse_allowhtml, array('checked' => $mybb->input['allowhtml'], 'id' => 'allowhtml')),
+		$form->generate_check_box('allowmycode', 1, $lang->parse_allowmycode, array('checked' => $mybb->input['allowmycode'], 'id' => 'allowmycode')),
+		$form->generate_check_box('allowsmilies', 1, $lang->parse_allowsmilies, array('checked' => $mybb->input['allowsmilies'], 'id' => 'allowsmilies')),
+		$form->generate_check_box('allowimgcode', 1, $lang->parse_allowimgcode, array('checked' => $mybb->input['allowimgcode'], 'id' => 'allowimgcode')),
+		$form->generate_check_box('allowvideocode', 1, $lang->parse_allowvideocode, array('checked' => $mybb->input['allowvideocode'], 'id' => 'allowvideocode'))
+	);
+	$form_container->output_row($lang->parser_options, '', implode('<br />', $parser_options), '', array(), array('id' => 'row_parser_options'));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
@@ -149,7 +319,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength"), /text|textarea/, false);
+				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/, false);
 				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/, false);
 				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/, false);
 				// Add a star to the extra row since the "extra" is required if the box is shown
@@ -201,22 +371,60 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
+			foreach(array('viewableby', 'editableby') as $key)
+			{
+				if($mybb->input[$key] == 'all')
+				{
+					$mybb->input[$key] = -1;
+				}
+				elseif($mybb->input[$key] == 'custom')
+				{
+					if(isset($mybb->input['select'][$key]) && is_array($mybb->input['select'][$key]))
+					{
+						foreach($mybb->input['select'][$key] as &$val)
+						{
+							$val = (int)$val;
+						}
+						unset($val);
+
+						$mybb->input[$key] = implode(',', (array)$mybb->input['select'][$key]);
+					}
+					else
+					{
+						$mybb->input[$key] = '';
+					}
+				}
+				else
+				{
+					$mybb->input[$key] = '';
+				}
+			}
+
 			$updated_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($type),
+				"regex" => $db->escape_string($mybb->input['regex']),
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
-				"editable" => $db->escape_string($mybb->input['editable']),
-				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"profile" => $db->escape_string($mybb->input['profile']),
+				"viewableby" => $db->escape_string($mybb->input['viewableby']),
+				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => intval($mybb->input['postnum'])
+				"postnum" => intval($mybb->input['postnum']),
+				"allowhtml" => (int)$mybb->input['allowhtml'],
+				"allowmycode" => (int)$mybb->input['allowmycode'],
+				"allowsmilies" => (int)$mybb->input['allowsmilies'],
+				"allowimgcode" => (int)$mybb->input['allowimgcode'],
+				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
 			$db->update_query("profilefields", $updated_profile_field, "fid = '".intval($mybb->input['fid'])."'");
+
+			$cache->update_profilefields();
 
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
 
@@ -245,6 +453,32 @@ if($mybb->input['action'] == "edit")
 
 	if($errors)
 	{
+		switch($mybb->input['viewableby'])
+		{
+			case 'all':
+				$mybb->input['viewableby'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['viewableby'] = implode(',', (array)$mybb->input['select']['viewableby']);
+				break;
+			default:
+				$mybb->input['viewableby'] = '';
+				break;
+		}
+
+		switch($mybb->input['editableby'])
+		{
+			case 'all':
+				$mybb->input['editableby'] = -1;
+				break;
+			case 'custom':
+				$mybb->input['editableby'] = implode(',', (array)$mybb->input['select']['editableby']);
+				break;
+			default:
+				$mybb->input['editableby'] = '';
+				break;
+		}
+
 		$page->output_inline_error($errors);
 	}
 	else
@@ -254,6 +488,16 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $profile_field;
 		$mybb->input['fieldtype'] = $type[0];
 		$mybb->input['options'] = $type[1];
+	}
+
+	if(empty($mybb->input['viewableby']))
+	{
+		$mybb->input['viewableby'] = '';
+	}
+
+	if(empty($mybb->input['editableby']))
+	{
+		$mybb->input['editableby'] = '';
 	}
 
 	$form_container = new FormContainer($lang->edit_profile_field);
@@ -268,21 +512,119 @@ if($mybb->input['action'] == "edit")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
-	$editable_list = array(
-		"0" => $lang->no,
-		"1" => $lang->yes,
-		"2" => $lang->only_at_registration
-	);
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_select_box('editable', $editable_list, $mybb->input['editable'], array('id' => 'editable')), 'editable');
-	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
 	$form_container->output_row($lang->display_on_postbit." <em>*</em>", $lang->display_on_postbit_desc, $form->generate_yes_no_radio('postbit', $mybb->input['postbit']));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+
+	$selected_values = '';
+	if($mybb->input['viewableby'] != '' && $mybb->input['viewableby'] != -1)
+	{
+		$selected_values = explode(',', (string)$mybb->input['viewableby']);
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['viewableby'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['viewableby'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"all\" {$group_checked['all']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"custom\" {$group_checked['custom']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"viewableby_forums_groups_custom\" class=\"viewableby_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[viewableby][]', $selected_values, array('id' => 'viewableby', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"viewableby\" value=\"none\" {$group_checked['none']} class=\"viewableby_forums_groups_check\" onclick=\"checkAction('viewableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('viewableby');
+	</script>";
+	$form_container->output_row($lang->viewableby, $lang->viewableby_desc, $select_code, '', array(), array('id' => 'row_viewableby'));
+
+	$selected_values = '';
+	if($mybb->input['editableby'] != '' && $mybb->input['editableby'] != -1)
+	{
+		$selected_values = explode(',', (string)$mybb->input['editableby']);
+
+		foreach($selected_values as &$value)
+		{
+			$value = (int)$value;
+		}
+		unset($value);
+	}
+
+	$group_checked = array('all' => '', 'custom' => '', 'none' => '');
+	if($mybb->input['editableby'] == -1)
+	{
+		$group_checked['all'] = 'checked="checked"';
+	}
+	elseif($mybb->input['editableby'] != '')
+	{
+		$group_checked['custom'] = 'checked="checked"';
+	}
+	else
+	{
+		$group_checked['none'] = 'checked="checked"';
+	}
+
+	print_selection_javascript();
+
+	$select_code = "
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%\">
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"all\" {$group_checked['all']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"custom\" {$group_checked['custom']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"editableby_forums_groups_custom\" class=\"editableby_forums_groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('select[editableby][]', $selected_values, array('id' => 'editableby', 'multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"editableby\" value=\"none\" {$group_checked['none']} class=\"editableby_forums_groups_check\" onclick=\"checkAction('editableby');\" style=\"vertical-align: middle;\" /> <strong>{$lang->none}</strong></label></dt>
+	</dl>
+	<script type=\"text/javascript\">
+		checkAction('editableby');
+	</script>";
+	$form_container->output_row($lang->editableby, $lang->editableby_desc, $select_code, '', array(), array('id' => 'row_editableby'));
+
+	$parser_options = array(
+		$form->generate_check_box('allowhtml', 1, $lang->parse_allowhtml, array('checked' => $mybb->input['allowhtml'], 'id' => 'allowhtml')),
+		$form->generate_check_box('allowmycode', 1, $lang->parse_allowmycode, array('checked' => $mybb->input['allowmycode'], 'id' => 'allowmycode')),
+		$form->generate_check_box('allowsmilies', 1, $lang->parse_allowsmilies, array('checked' => $mybb->input['allowsmilies'], 'id' => 'allowsmilies')),
+		$form->generate_check_box('allowimgcode', 1, $lang->parse_allowimgcode, array('checked' => $mybb->input['allowimgcode'], 'id' => 'allowimgcode')),
+		$form->generate_check_box('allowvideocode', 1, $lang->parse_allowvideocode, array('checked' => $mybb->input['allowvideocode'], 'id' => 'allowvideocode'))
+	);
+	$form_container->output_row($lang->parser_options, '', implode('<br />', $parser_options), '', array(), array('id' => 'row_parser_options'));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
@@ -293,7 +635,7 @@ if($mybb->input['action'] == "edit")
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength"), /text|textarea/);
+				var maxlength_peeker = new Peeker($("#fieldtype"), $("#row_maxlength, #row_regex, #row_parser_options"), /text|textarea/);
 				var fieldlength_peeker = new Peeker($("#fieldtype"), $("#row_fieldlength"), /select|multiselect/);
 				var options_peeker = new Peeker($("#fieldtype"), $("#row_options"), /select|radio|checkbox/);
 				// Add a star to the extra row since the "extra" is required if the box is shown
@@ -371,7 +713,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->required, array("class" => "align_center"));
 	$table->construct_header($lang->registration, array("class" => "align_center"));
 	$table->construct_header($lang->editable, array("class" => "align_center"));
-	$table->construct_header($lang->hidden, array("class" => "align_center"));
+	$table->construct_header($lang->profile, array("class" => "align_center"));
 	$table->construct_header($lang->postbit, array("class" => "align_center"));
 	$table->construct_header($lang->controls, array("class" => "align_center"));
 
@@ -396,26 +738,22 @@ if(!$mybb->input['action'])
 			$registration = $lang->no;
 		}
 
-		if($field['editable'] == 1)
-		{
-			$editable = $lang->yes;
-		}
-		elseif($field['editable'] == 2)
-		{
-			$editable = $lang->registration_editable;
-		}
-		else
+		if($field['editableby'] == '')
 		{
 			$editable = $lang->no;
 		}
-
-		if($field['hidden'])
+		else
 		{
-			$hidden = $lang->yes;
+			$editable = $lang->yes;
+		}
+
+		if($field['profile'])
+		{
+			$profile = $lang->yes;
 		}
 		else
 		{
-			$hidden = $lang->no;
+			$profile = $lang->no;
 		}
 
 		if($field['postbit'])
@@ -431,7 +769,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($registration, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($hidden, array("class" => "align_center", 'width' => '10%'));
+		$table->construct_cell($profile, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($postbit, array("class" => "align_center", 'width' => '10%')); 
 
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
@@ -450,5 +788,42 @@ if(!$mybb->input['action'])
 	$table->output($lang->custom_profile_fields);
 
 	$page->output_footer();
+}
+
+function print_selection_javascript()
+{
+	static $already_printed = false;
+
+	if($already_printed)
+	{
+		return;
+	}
+
+	$already_printed = true;
+
+	echo "<script type=\"text/javascript\">
+	function checkAction(id)
+	{
+		var checked = '';
+
+		$('.'+id+'_forums_groups_check').each(function(e, val)
+		{
+			if($(this).prop('checked') == true)
+			{
+				checked = $(this).val();
+			}
+		});
+
+		$('.'+id+'_forums_groups').each(function(e)
+		{
+			$(this).hide();
+		});
+
+		if($('#'+id+'_forums_groups_'+checked))
+		{
+			$('#'+id+'_forums_groups_'+checked).show();
+		}
+	}
+</script>";
 }
 ?>

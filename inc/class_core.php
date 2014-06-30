@@ -118,9 +118,9 @@ class MyBB {
 			"eid", "pmid", "fid",
 			"aid", "rid", "sid",
 			"vid", "cid", "bid",
-			"pid", "gid", "mid",
+			"hid", "gid", "mid",
 			"wid", "lid", "iid",
-			"sid"
+			"did", "qid", "id"
 		),
 		"pos" => array(
 			"page", "perpage"
@@ -551,7 +551,7 @@ class MyBB {
  */
 
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperthread");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 
 // These are fields in the usergroups table that are also forum permission specific.

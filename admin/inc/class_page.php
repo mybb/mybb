@@ -404,9 +404,25 @@ EOF;
 			$secret_pin = '';
 		}
 
+		$login_lang_string = $lang->enter_username_and_password;
+
+		switch($mybb->settings['username_method'])
+		{
+			case 0: // Username only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+				break;
+			case 1: // Email only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+				break;
+			case 2: // Username and email
+			default:
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+				break;
+		}
+
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
-		<p>{$lang->enter_username_and_password}</p>
+		<p>{$login_lang_string}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
@@ -883,7 +899,7 @@ EOF;
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
-		style: "../jscripts/sceditor/editor_themes/mybb.css",
+		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
 		emoticonsEnabled: {$emoticons_enabled},
