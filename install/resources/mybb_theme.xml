@@ -7789,6 +7789,34 @@ if(use_xmlhttprequest == "1")
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="move" {$method_selected['move']} />{$lang->method_move}</label><br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="redirect" {$method_selected['redirect']} />{$lang->method_move_redirect}</label> <input type="text" class="textbox" name="delayedmoderation[redirect_expire]" value="{$mybb->input['redirect_expire']}" size="3" /> {$lang->redirect_expire_note}<br />
 <label><input type="radio" class="radio" name="delayedmoderation[method]" value="copy" {$method_selected['copy']} />{$lang->method_copy}</label><br />]]></template>
+		<template name="moderation_confirmation" version="1800"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->confirm_execute_tool}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="{$mybb->input['action']}" />
+<input type="hidden" name="modtype" value="{$mybb->input['modtype']}" />
+  <input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="confirm" value="1" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$thread['subject']} - {$lang->confirm_execute_tool}</strong></td>
+</tr>
+<tr>
+<td class="trow1" colspan="2" align="center">{$lang->confirm_execute_tool_desc}</td>
+</tr>
+{$loginbox}
+</table>
+<br />
+<div align="center"><input type="submit" class="button" name="submit" value="{$lang->confirm_execute_tool}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
 		<template name="moderation_delayedmodaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="{$cols}">{$lang->no_delayed_mods}</td></tr>]]></template>
 		<template name="moderation_deletepoll" version="1400"><![CDATA[<html>
 <head>

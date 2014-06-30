@@ -2673,11 +2673,27 @@ switch($mybb->input['action'])
 			// Verify incoming POST request
 			verify_post_check($mybb->get_input('my_post_key'));
 
+			$options = my_unserialize($tool['threadoptions']);
 
 			if(!empty($tool['groups']) && !is_member($tool['groups']))
 			{
 				error_no_permission();
 			}
+
+			if(!empty($options['confirmation']) && empty($mybb->input['confirm']))
+			{
+				add_breadcrumb($lang->confirm_execute_tool);
+
+				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
+
+				$plugins->run_hooks('moderation_confirmation');
+
+				eval('$page = "'.$templates->get('moderation_confirmation').'";');
+
+				output_page($page);
+				exit;
+			}
+
 			if($tool['type'] == 't' && $mybb->get_input('modtype') == 'inlinethread')
 			{
 				if($mybb->get_input('inlinetype') == 'search')
