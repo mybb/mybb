@@ -12,9 +12,9 @@
 /**
  * Remove an attachment from a specific post
  *
- * @param int The post ID
- * @param string The posthash if available
- * @param int The attachment ID
+ * @param int $pid The post ID
+ * @param string $posthash The posthash if available
+ * @param int $aid The attachment ID
  */
 function remove_attachment($pid, $posthash, $aid)
 {
@@ -72,8 +72,8 @@ function remove_attachment($pid, $posthash, $aid)
 /**
  * Remove all of the attachments from a specific post
  *
- * @param int The post ID
- * @param string The posthash if available
+ * @param int $pid The post ID
+ * @param string $posthash The posthash if available
  */
 function remove_attachments($pid, $posthash="")
 {
@@ -141,8 +141,8 @@ function remove_attachments($pid, $posthash="")
 /**
  * Remove any matching avatars for a specific user ID
  *
- * @param int The user ID
- * @param string A file name to be excluded from the removal
+ * @param int $uid The user ID
+ * @param string $exclude A file name to be excluded from the removal
  */
 function remove_avatars($uid, $exclude="")
 {
@@ -177,8 +177,8 @@ function remove_avatars($uid, $exclude="")
 /**
  * Upload a new avatar in to the file system
  *
- * @param srray incoming FILE array, if we have one - otherwise takes $_FILES['avatarupload']
- * @param string User ID this avatar is being uploaded for, if not the current user
+ * @param array $avatar Incoming FILE array, if we have one - otherwise takes $_FILES['avatarupload']
+ * @param int $uid User ID this avatar is being uploaded for, if not the current user
  * @return array Array of errors if any, otherwise filename of successful.
  */
 function upload_avatar($avatar=array(), $uid=0)
@@ -351,8 +351,8 @@ function upload_avatar($avatar=array(), $uid=0)
 /**
  * Upload an attachment in to the file system
  *
- * @param array Attachment data (as fed by PHPs $_FILE)
- * @param boolean Whether or not we are updating a current attachment or inserting a new one
+ * @param array $attachment Attachment data (as fed by PHPs $_FILE)
+ * @param boolean $update_attachment Whether or not we are updating a current attachment or inserting a new one
  * @return array Array of attachment data if successful, otherwise array of error data
  */
 function upload_attachment($attachment, $update_attachment=false)
@@ -660,14 +660,14 @@ function upload_attachment($attachment, $update_attachment=false)
 /**
  * Actually move a file to the uploads directory
  *
- * @param array The PHP $_FILE array for the file
- * @param string The path to save the file in
- * @param string The filename for the file (if blank, current is used)
+ * @param array $file The PHP $_FILE array for the file
+ * @param string $path The path to save the file in
+ * @param string $filename The filename for the file (if blank, current is used)
  * @return array The uploaded file
  */
 function upload_file($file, $path, $filename="")
 {
-	global $plugins;
+	global $plugins, $mybb;
 
 	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
@@ -684,6 +684,15 @@ function upload_file($file, $path, $filename="")
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 
+	$moved_cdn = false;
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$moved_cdn = @move_uploaded_file($file['tmp_name'], $cdn_base_path.'/'.$filename);
+		@my_chmod($cdn_base_path.'/'.$filename, '0644');
+	}
+
 	if(!$moved)
 	{
 		$upload['error'] = 2;
@@ -695,6 +704,12 @@ function upload_file($file, $path, $filename="")
 	$upload['type'] = $file['type'];
 	$upload['size'] = $file['size'];
 	$upload = $plugins->run_hooks("upload_file_end", $upload);
+
+	if($moved_cdn)
+	{
+		$upload['cdn_path'] = $cdn_base_path;
+	}
+
 	return $upload;
 }
 ?>
