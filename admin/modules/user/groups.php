@@ -73,7 +73,15 @@ $usergroup_permissions = array(
 	"signofollow" => 0,
 	"edittimelimit" => 0,
 	"maxposts" => 0,
-	"showmemberlist" => 1
+	"showmemberlist" => 1,
+	"canmanageannounce" => 0,
+	"canmanagemodqueue" => 0,
+	"canmanagereportedcontent" => 0,
+	"canviewmodlogs" => 0,
+	"caneditprofiles" => 0,
+	"canbanusers" => 0,
+	"canviewwarnlogs" => 0,
+	"canuseipsearch" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -853,7 +861,15 @@ if($mybb->input['action'] == "edit")
 				"signofollow" => intval($mybb->input['signofollow']),
 				"edittimelimit" => intval($mybb->input['edittimelimit']),
 				"maxposts" => intval($mybb->input['maxposts']),
-				"showmemberlist" => intval($mybb->input['showmemberlist'])
+				"showmemberlist" => intval($mybb->input['showmemberlist']),
+				"canmanageannounce" => intval($mybb->input['canmanageannounce']),
+				"canmanagemodqueue" => intval($mybb->input['canmanagemodqueue']),
+				"canmanagereportedcontent" => intval($mybb->input['canmanagereportedcontent']),
+				"canviewmodlogs" => intval($mybb->input['canviewmodlogs']),
+				"caneditprofiles" => intval($mybb->input['caneditprofiles']),
+				"canbanusers" => intval($mybb->input['canbanusers']),
+				"canviewwarnlogs" => intval($mybb->input['canviewwarnlogs']),
+				"canuseipsearch" => intval($mybb->input['canuseipsearch'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -929,7 +945,8 @@ if($mybb->input['action'] == "edit")
 		"general" => $lang->general,
 		"forums_posts" => $lang->forums_posts,
 		"users_permissions" => $lang->users_permissions,
-		"misc" => $lang->misc
+		"misc" => $lang->misc,
+		"modcp" => $lang->mod_cp
 	);
 	$tabs = $plugins->run_hooks("admin_user_groups_edit_graph_tabs", $tabs);
 	$page->output_tab_control($tabs);
@@ -1104,6 +1121,31 @@ if($mybb->input['action'] == "edit")
 		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->misc, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");
+
+	$form_container->end();
+	echo "</div>";
+
+	//
+	// MODERATOR CP
+	//
+	echo "<div id=\"tab_modcp\">";
+	$form_container = new FormContainer($lang->mod_cp);
+
+	$forum_post_options = array(
+		$form->generate_check_box("canmanageannounce", 1, $lang->can_manage_announce, array("checked" => $mybb->input['canmanageannounce'])),
+		$form->generate_check_box("canmanagemodqueue", 1, $lang->can_manage_mod_queue, array("checked" => $mybb->input['canmanagemodqueue'])),
+		$form->generate_check_box("canmanagereportedcontent", 1, $lang->can_manage_reported_content, array("checked" => $mybb->input['canmanagereportedcontent'])),
+		$form->generate_check_box("canviewmodlogs", 1, $lang->can_view_mod_logs, array("checked" => $mybb->input['canviewmodlogs']))
+	);
+	$form_container->output_row($lang->forum_post_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $forum_post_options)."</div>");
+
+	$user_options = array(
+		$form->generate_check_box("caneditprofiles", 1, $lang->can_edit_profiles, array("checked" => $mybb->input['caneditprofiles'])),
+		$form->generate_check_box("canbanusers", 1, $lang->can_ban_users, array("checked" => $mybb->input['canbanusers'])),
+		$form->generate_check_box("canviewwarnlogs", 1, $lang->can_view_warnlogs, array("checked" => $mybb->input['canviewwarnlogs'])),
+		$form->generate_check_box("canuseipsearch", 1, $lang->can_use_ipsearch, array("checked" => $mybb->input['canuseipsearch']))
+	);
+	$form_container->output_row($lang->user_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $user_options)."</div>");
 
 	$form_container->end();
 	echo "</div>";

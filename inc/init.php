@@ -206,6 +206,7 @@ if(!$settings['internal']['encryption_key'])
 $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
+$mybb->asset_url = $mybb->get_asset_url();
 
 if($mybb->use_shutdown == true)
 {

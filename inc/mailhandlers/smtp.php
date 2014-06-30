@@ -159,7 +159,26 @@ class SmtpMail extends MailHandler
 			$this->host = $mybb->settings['smtp_host'];
 		}
 
-		$this->helo = $this->host;
+		$local = array('127.0.0.1', '::1', 'localhost');
+		if(!in_array($this->host, $local))
+		{
+			if(function_exists('gethostname') && gethostname() !== false)
+			{
+				$this->helo = gethostname();
+			}
+			elseif(function_exists('php_uname'))
+			{
+				$helo = php_uname('n');
+				if(!empty($helo))
+				{
+					$this->helo = $helo;
+				}
+			}
+			elseif(!empty($_SERVER['SERVER_NAME']))
+			{
+				$this->helo = $_SERVER['SERVER_NAME'];
+			}
+		}
 
 		$this->host = $protocol . $this->host;
 

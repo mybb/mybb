@@ -11,7 +11,10 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'editpost.php');
 
-$templatelist = "editpost,previewpost,posticons,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,post_attachments_add,newthread_postpoll,editpost_disablesmilies,post_subscription_method,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "editpost,previewpost,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_unapprove";
+$templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,post_subscription_method";
+$templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_new";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_disablesmilies_hidden,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,posticons";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -94,7 +97,7 @@ $forumpermissions = forum_permissions($fid);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 {
-	$codebuttons = build_mycode_inserter();
+	$codebuttons = build_mycode_inserter("message", $mybb->settings['smilieinserter']);
 }
 if($mybb->settings['smilieinserter'] != 0)
 {
@@ -132,6 +135,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	if($post['visible'] == -1 && $mybb->settings['soft_delete'] == 1)
 	{
 		error($lang->error_already_deleted);
+	}
+}
+elseif($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	if(!is_moderator($fid) || $post['visible'] != -1 || $mybb->settings['soft_delete'] == 0)
+	{
+		error_no_permission();
 	}
 }
 else
@@ -213,13 +223,13 @@ if($mybb->settings['enableattachments'] == 1 && $mybb->get_input('attachmentaid'
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
 	}
-	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canviewunapprove'))
+	elseif($mybb->get_input('attachmentact') == "approve" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 		update_thread_counters($post['tid'], array('attachmentcount' => "+1"));
 	}
-	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canviewunapprove'))
+	elseif($mybb->get_input('attachmentact') == "unapprove" && is_moderator($fid, 'canapproveunapproveattachs'))
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query("attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
@@ -348,6 +358,84 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 	else
 	{
 		error($lang->redirect_nodelete);
+	}
+}
+
+if($mybb->input['action'] == "restorepost" && $mybb->request_method == "post")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("editpost_restorepost");
+
+	if($mybb->get_input('restore', 1) == 1)
+	{
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+		$firstcheck = $db->fetch_array($query);
+		if($firstcheck['pid'] == $pid)
+		{
+			$firstpost = 1;
+		}
+		else
+		{
+			$firstpost = 0;
+		}
+
+		$modlogdata['fid'] = $fid;
+		$modlogdata['tid'] = $tid;
+		if($firstpost)
+		{
+			if(is_moderator($fid))
+			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_threads(array($tid));
+				log_moderator_action($modlogdata, $lang->thread_restored);
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect(get_forum_link($fid), $lang->redirect_threadrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			if(is_moderator($fid))
+			{
+				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+				$moderation->restore_posts(array($pid));
+				log_moderator_action($modlogdata, $lang->post_restored);
+				$redirect = get_post_link($pid, $tid)."#pid{$pid}";
+
+				if($mybb->input['ajax'] == 1)
+				{
+					header("Content-type: application/json; charset={$lang->settings['charset']}");
+					echo json_encode(array("data" => '1'));
+				}
+				else
+				{
+					redirect($redirect, $lang->redirect_postrestored);
+				}
+			}
+			else
+			{
+				error_no_permission();
+			}
+		}
+	}
+	else
+	{
+		error($lang->redirect_norestore);
 	}
 }
 
@@ -551,13 +639,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		$message = $post['message'];
 		$subject = $post['subject'];
-		$editreason = htmlspecialchars_uni($post['editreason']);
+		$reason = htmlspecialchars_uni($post['editreason']);
 	}
 	else
 	{
 		$message = $mybb->get_input('message');
 		$subject = $mybb->get_input('subject');
-		$editreason = htmlspecialchars_uni($mybb->get_input('editreason'));
+		$reason = htmlspecialchars_uni($mybb->get_input('editreason'));
 	}
 
 	if(!isset($post_errors))
@@ -759,11 +847,22 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$prefixselect = "";
 	}
 
+	$editreason = '';
+	if($mybb->settings['alloweditreason'] == 1)
+	{
+		eval("\$editreason = \"".$templates->get("editpost_reason")."\";");
+		$bgcolor = "trow2";
+		$bgcolor2 = "trow1";
+	}
+	else
+	{
+		$bgcolor = "trow1";
+		$bgcolor2 = "trow2";
+	}
+
 	// Fetch subscription select box
-	$bgcolor = "trow2";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	$bgcolor2 = "trow1";
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
 
@@ -781,13 +880,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Can we disable smilies or are they disabled already?
+	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
 	}
 	else
 	{
-		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
+		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies_hidden")."\";");
 	}
 
 	$plugins->run_hooks("editpost_end");

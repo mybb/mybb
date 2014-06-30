@@ -484,7 +484,7 @@ if($mybb->input['action'] == "editpoll")
 			{
 				$votes[$i] = 0;
 			}
-			$optionvotes = $votes[$i];
+			$optionvotes = intval($votes[$i]);
 
 			if(!$optionvotes)
 			{

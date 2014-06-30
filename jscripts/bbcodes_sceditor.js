@@ -11,7 +11,6 @@ $(document).ready(function($) {
 	 ***********************/
 	$('<style type="text/css">' +
 		'.sceditor-dropdown { text-align: ' + ($('body').css('direction') === 'rtl' ? 'right' :'left') + '; }' +
-		'.sceditor-container .sceditor-button-video div {background-image:url(\'images/icons/video.png\');}' +
 	'</style>').appendTo('body');
 
 

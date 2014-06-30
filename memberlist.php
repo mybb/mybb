@@ -42,13 +42,13 @@ if($mybb->get_input('action') == "search")
 }
 else
 {
-	$colspan = 5;
+	$colspan = 6;
 	$search_url = '';
 
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
-		$colspan = 6;
+		$colspan = 7;
 		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
 	}
 
@@ -84,6 +84,9 @@ else
 			break;
 		case "postnum":
 			$sort_field = "u.postnum";
+			break;
+		case "threadnum":
+			$sort_field = "u.threadnum";
 			break;
 		case "referrals":
 			$sort_field = "u.referrals";
@@ -390,6 +393,7 @@ else
 
 		$user['regdate'] = my_date('relative', $user['regdate']);
 		$user['postnum'] = my_number_format($user['postnum']);
+		$user['threadnum'] = my_number_format($user['threadnum']);
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
 	}
 

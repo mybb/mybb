@@ -44,6 +44,7 @@ $l['group_public_invite'] = "This user group is a public user group that require
 $l['group_private'] = "This user group is a private user group.  Only users added by the group leader can be part of this group.";
 $l['group_default'] = "This user group is a core user group.";
 $l['group_leaders'] = "Group Leaders";
+$l['search_user'] = "Search for a user";
 $l['no_users_selected'] = "Sorry, but no users seemed to be selected for removal.<br />Please go back and select the users you want to remove from this group.";
 
 $l['error_alreadyingroup'] = "The user specified is already part of the user group.";

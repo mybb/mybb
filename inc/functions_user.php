@@ -449,7 +449,7 @@ function usercp_menu_messenger()
 		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
 	}
 
-	$folderlinks = '';
+	$folderlinks = $folder_id = $folder_name = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -468,7 +468,10 @@ function usercp_menu_messenger()
 			$class = "usercp_nav_pmfolder";
 		}
 
-		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
 	}
 
 	if(!isset($collapsedimg['usercppms']))
@@ -677,5 +680,24 @@ function get_pm_folder_name($fid, $name="")
 		default:
 			return $lang->folder_untitled;
 	}
+}
+
+/**
+ * Check whether we can show the Purge Spammer Feature
+ *
+ * @param int The users post count
+ * @param int The usergroup of our user
+ * @return boolean Whether or not to show the feature
+ */
+function purgespammer_show($post_count, $usergroup)
+{
+		global $mybb, $cache;
+
+		// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
+		$groups = explode(",", $mybb->settings['purgespammergroups']);
+		$bangroup = $mybb->settings['purgespammerbangroup'];
+		$usergroups = $cache->read('usergroups');
+
+		return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
 }
 ?>

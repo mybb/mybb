@@ -81,12 +81,15 @@ $l['can_open_close_threads'] = "Can open/close threads?";
 $l['can_stick_unstick_threads'] = "Can stick/unstick threads?";
 $l['can_approve_unapprove_threads'] = "Can approve/unapprove threads?";
 $l['can_approve_unapprove_posts'] = "Can approve/unapprove posts?";
+$l['can_approve_unapprove_attachments'] = "Can approve/unapprove attachments?";
 $l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)?";
 $l['can_manage_polls'] = "Can manage polls?";
+$l['can_post_closed_threads'] = "Can post in closed threads?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
 $l['can_manage_announcements'] = "Can manage announcements?";
 $l['can_manage_reported_posts'] = "Can manage reported posts?";
+$l['can_view_mod_log'] = "Can view moderator log?";
 $l['moderator_cp_permissions'] = "Moderator CP Permissions";
 
 $l['save_mod'] = "Save Moderator";
@@ -212,6 +215,7 @@ $l['allow_post_icons'] = "Yes, allow post icons to be chosen for posts";
 $l['allow_thread_ratings'] = "Yes, allow threads to be rated";
 $l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
 $l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
+$l['use_threadcounts'] = "Yes, threads in this forum should count towards user thread counts";
 
 $l['use_permissions'] = "Use Permissions";
 $l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";

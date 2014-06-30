@@ -389,6 +389,37 @@ $l['icon_no_new'] = "No new posts.";
 $l['icon_new'] = "New posts.";
 $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
+$l['search_user'] = "Search for a user";
 
 $l['buddylist_error'] = 'There was an error fetching the buddy list. ';
+
+$l['buddyrequests_sent'] = 'Buddy Requests Sent';
+$l['buddyrequests_received'] = 'Buddy Requests Received';
+$l['from'] = 'From';
+$l['to'] = 'To';
+$l['date'] = 'Date';
+$l['options'] = 'Options';
+$l['accept'] = 'Accept';
+$l['decline'] = 'Decline';
+$l['cancel'] = 'Cancel';
+$l['no_requests'] = 'No requests found.';
+$l['buddyrequests_pm'] = 'Receive PM notifications for new buddy requests.';
+$l['buddyrequests_auto'] = 'Automatically accept buddy requests (if the above checkbox is ticked, a PM is sent informing of the new buddy connection)';
+$l['buddyrequest_received'] = 'Buddy request received';
+$l['buddyrequest_new_buddy'] = 'You have a new buddy';
+$l['buddyrequest_new_buddy_message'] = "Hi,\n\nI have been automatically added to your buddy list.";
+$l['buddyrequest_accepted_request'] = 'I have accepted your buddy request';
+$l['buddyrequest_accepted_request_message'] = "Hi,\n\nI have accepted your buddy request.";
+$l['buddyrequest_received_message'] = "I have just sent you a buddy request.\nYou can view your pending requests from User Control Panel -> Buddy/Ignore List.";
+$l['users_already_sent_request'] = "You have already sent a buddy request to one of the users you added.";
+$l['users_already_rec_request'] = "You have a pending buddy request from one of the users you added.";
+$l['users_already_sent_request_alt'] = "You have sent a buddy request to one of the users you added. Please cancel the buddy request before adding the user to the ignore list.";
+$l['users_already_rec_request_alt'] = "You have a pending buddy request from one of the users you added. Please decline the buddy request before adding the user to the ignore list.";
+$l['invalid_request'] = 'You have selected an invalid buddy request.';
+$l['buddyrequest_cancelled'] = 'The selected buddy request has been cancelled.';
+$l['buddyrequest_accepted'] = 'The selected buddy request has been accepted.';
+$l['buddyrequest_declined'] = 'The selected buddy request has been declined.';
+$l['user_doesnt_exist'] = 'The end user no longer exists.';
+$l['buddyrequests_sent_success'] = 'Buddy requests sent successfully.';
+
 ?>

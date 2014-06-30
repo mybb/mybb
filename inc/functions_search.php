@@ -67,7 +67,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if(empty($forum['password']) || $pwverified == 1)
 					{
-						$forumlistbits .= "<option value=\"{$forum['fid']}\">$depth {$forum['name']}</option>\n";
+						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
 					}
 					if(!empty($pforumcache[$forum['fid']]))
 					{
@@ -80,7 +80,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 	}
 	if($addselect)
 	{
-		$forumlist = "<select name=\"forums[]\" size=\"20\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+		eval("\$forumlist = \"".$templates->get("search_forumlist")."\";");
 	}
 	return $forumlist;
 }
@@ -1029,9 +1029,25 @@ function perform_search_mysql($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';
@@ -1417,9 +1433,25 @@ function perform_search_mysql_ft($search)
 	}
 
 	$thread_prefixcut = '';
-	if($search['threadprefix'] && $search['threadprefix'] != 'any')
+	$prefixlist = array();
+	if($search['threadprefix'] && $search['threadprefix'][0] != 'any')
 	{
-		$thread_prefixcut = " AND t.prefix='".intval($search['threadprefix'])."'";
+		foreach($search['threadprefix'] as $threadprefix)
+		{
+			$threadprefix = intval($threadprefix);
+			$prefixlist[] = $threadprefix;
+		}
+	}
+	if(count($prefixlist) == 1)
+	{
+		$thread_prefixcut .= " AND t.prefix='$threadprefix' ";
+	}
+	else
+	{
+		if(count($prefixlist) > 1)
+		{
+			$thread_prefixcut = " AND t.prefix IN (".implode(',', $prefixlist).")";
+		}
 	}
 
 	$forumin = '';

@@ -454,6 +454,24 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	* Verifies if the thread count field is filled in correctly.
+	*
+	* @return boolean True when valid, false when invalid.
+	*/
+	function verify_threadnum()
+	{
+		$user = &$this->data;
+
+		if(isset($user['threadnum']) && $user['threadnum'] < 0)
+		{
+			$this->set_error("invalid_threadnum");
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	* Verifies if a profile fields are filled in correctly.
 	*
 	* @return boolean True when valid, false when invalid.
@@ -932,6 +950,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_postnum();
 		}
+		if($this->method == "insert" || array_key_exists('threadnum', $user))
+		{
+			$this->verify_threadnum();
+		}
 		if($this->method == "insert" || array_key_exists('profile_fields', $user))
 		{
 			$this->verify_profile_fields();
@@ -1006,7 +1028,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
 			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
@@ -1023,6 +1045,7 @@ class UserDataHandler extends DataHandler
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
 			"postnum" => intval($user['postnum']),
+			"threadnum" => intval($user['threadnum']),
 			"avatar" => $db->escape_string($user['avatar']),
 			"avatartype" => $db->escape_string($user['avatartype']),
 			"usergroup" => intval($user['usergroup']),
@@ -1175,6 +1198,10 @@ class UserDataHandler extends DataHandler
 		if(isset($user['postnum']))
 		{
 			$this->user_update_data['postnum'] = intval($user['postnum']);
+		}
+		if(isset($user['threadnum']))
+		{
+			$this->user_update_data['threadnum'] = intval($user['threadnum']);
 		}
 		if(isset($user['avatar']))
 		{
@@ -1413,7 +1440,6 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
@@ -1459,6 +1485,24 @@ class UserDataHandler extends DataHandler
 			$db->update_query('posts', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
 			$db->update_query('threads', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
 		}
+
+		// Update thread ratings
+		$query = $db->query("
+			SELECT r.*, t.numratings, t.totalratings
+			FROM ".TABLE_PREFIX."threadratings r
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
+			WHERE r.uid IN({$this->delete_uids})
+		");
+		while($rating = $db->fetch_array($query))
+		{
+			$update_thread = array(
+				"numratings" => $rating['numratings'] - 1,
+				"totalratings" => $rating['totalratings'] - $rating['rating']
+			);
+			$db->update_query("threads", $update_thread, "tid='{$rating['tid']}'");
+		}
+
+		$db->delete_query('threadratings', 'uid IN('.$this->delete_uids.')');
 
 		// Update forums & threads if user is the lastposter
 		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
