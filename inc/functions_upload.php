@@ -669,6 +669,8 @@ function upload_file($file, $path, $filename="")
 {
 	global $plugins, $mybb;
 
+	$upload = array();
+
 	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
 		$upload['error'] = 1;
@@ -686,11 +688,12 @@ function upload_file($file, $path, $filename="")
 
 	$moved_cdn = false;
 	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
 
 	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
 	{
-		$moved_cdn = @move_uploaded_file($file['tmp_name'], $cdn_base_path.'/'.$filename);
-		@my_chmod($cdn_base_path.'/'.$filename, '0644');
+		$moved_cdn = @copy($path . '/' . $filename, $cdn_path . '/' . $filename);
+		@my_chmod($cdn_path . '/' . $filename, '0644');
 	}
 
 	if(!$moved)
@@ -707,7 +710,7 @@ function upload_file($file, $path, $filename="")
 
 	if($moved_cdn)
 	{
-		$upload['cdn_path'] = $cdn_base_path;
+		$upload['cdn_path'] = $cdn_path;
 	}
 
 	return $upload;
