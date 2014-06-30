@@ -1653,6 +1653,15 @@ function is_moderator($fid="0", $action="", $uid="0")
 	$user_perms = user_permissions($uid);
 	if($user_perms['issupermod'] == 1)
 	{
+		if($fid)
+		{
+			$forumpermissions = forum_permissions($fid);
+			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			{
+				return true;
+			}
+			return false;
+		}
 		return true;
 	}
 	else
@@ -6305,10 +6314,15 @@ function fetch_remote_file($url, $post_data=array())
  */
 function is_super_admin($uid)
 {
-	global $mybb;
+	static $super_admins;
 
-	$mybb->config['super_admins'] = str_replace(" ", "", $mybb->config['super_admins']);
-	if(my_strpos(",{$mybb->config['super_admins']},", ",{$uid},") === false)
+	if(!isset($super_admins))
+	{
+		global $mybb;
+		$super_admins = str_replace(" ", "", $mybb->config['super_admins']);
+	}
+
+	if(my_strpos(",{$super_admins},", ",{$uid},") === false)
 	{
 		return false;
 	}
