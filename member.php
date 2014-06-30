@@ -859,8 +859,7 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
-<<<<<<< HEAD
-
+				
 				$validator_extra .= "
 				$(\"#{$id}\").rules(\"add\", {
 					required: true,
@@ -869,8 +868,6 @@ if($mybb->input['action'] == "register")
 						required: \"{$lang->js_validator_not_empty}\"
 					}
 				});\n";
-=======
->>>>>>> origin/feature
 
 				$code = '';
 				$select = '';
