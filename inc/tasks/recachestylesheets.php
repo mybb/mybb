@@ -25,10 +25,11 @@ function task_recachestylesheets($task)
 
 	$num_recached = 0;
 
-	while($theme = $db->fetch_array($query))
+	while($stylesheet = $db->fetch_array($query))
 	{
-		if(cache_stylesheet($theme['tid'], $theme['name'], $theme['stylesheet']))
+		if(cache_stylesheet($stylesheet['tid'], $stylesheet['name'], $stylesheet['stylesheet']))
 		{
+			$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
 			++$num_recached;
 		}
 	}
