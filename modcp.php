@@ -3542,7 +3542,7 @@ if($mybb->input['action'] == "ipsearch")
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
 					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql}
+					WHERE {$post_ip_sql} AND visibility >= 0
 				");
 
 				$post_results = $db->fetch_field($query, "count");
@@ -3697,7 +3697,7 @@ if($mybb->input['action'] == "ipsearch")
 			$query = $db->query("
 				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
 				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql}
+				WHERE {$post_ip_sql} AND visibility >= 0
 				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
