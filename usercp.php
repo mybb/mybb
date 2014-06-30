@@ -2312,6 +2312,10 @@ if($mybb->input['action'] == "acceptrequest")
 		$mybb->user['buddylist'] = $db->escape_string($new_list);
 		
 		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
+		
+		// Load language
+		$lang->set_language($user['language']);
+		$lang->load("usercp");
 	
 		$pm = array(
 			'touid' => $user['uid'],
@@ -2319,6 +2323,10 @@ if($mybb->input['action'] == "acceptrequest")
 			'message' => $lang->buddyrequest_accepted_request_message,
 			'receivepms' => 1 // Should be later validated by the PM handler
 		);
+		
+		// Load language
+		$lang->set_language($mybb->user['language']);
+		$lang->load("usercp");
 	
 		send_pm($pm);
 		
@@ -2470,7 +2478,7 @@ if($mybb->input['action'] == "do_editlists")
 		// Fetch out new users
 		if(count($users) > 0)
 		{
-			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;
@@ -2534,12 +2542,20 @@ if($mybb->input['action'] == "do_editlists")
 				{
 					$existing_users[] = $user['uid'];
 					
+					// Load language
+					$lang->set_language($user['language']);
+					$lang->load("usercp");
+					
 					$pm = array(
 						'touid' => $user['uid'],
 						'subject' => $lang->buddyrequest_new_buddy,
 						'message' => $lang->buddyrequest_new_buddy_message,
 						'receivepms' => $user['buddyrequestspm']
 					);
+					
+					// Load language
+					$lang->set_language($mybb->user['language']);
+					$lang->load("usercp");
 					
 					send_pm($pm);
 				}
@@ -2548,12 +2564,20 @@ if($mybb->input['action'] == "do_editlists")
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
 					
+					// Load language
+					$lang->set_language($user['language']);
+					$lang->load("usercp");
+					
 					$pm = array(
 						'touid' => $user['uid'],
 						'subject' => $lang->buddyrequest_received,
 						'message' => $lang->buddyrequest_received_message,
 						'receivepms' => $user['buddyrequestspm']
 					);
+					
+					// Load language
+					$lang->set_language($mybb->user['language']);
+					$lang->load("usercp");
 					
 					send_pm($pm);
 					
