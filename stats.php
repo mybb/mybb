@@ -128,6 +128,21 @@ else
 	$topforumthreads = $forum['threads'];
 }
 
+// Top referrer defined for the templates even if we don't use it
+$top_referrer = '';
+
+if($mybb->settings['statstopreferrer'] == 1)
+{
+	$query = $db->simple_select("users", "uid, username, referrals", "", array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));
+	$topreferrer = $db->fetch_array($query);
+	// Only show this if we have anything more the 0 referrals
+	if($topreferrer['referrals'] > 0)
+	{
+		$toprefuser = build_profile_link($topreferrer['username'], $topreferrer['uid']);
+		$top_referrer = $lang->sprintf($lang->top_referrer, $toprefuser, my_number_format($topreferrer['referrals']));
+	}
+}
+
 // Today's top poster
 $timesearch = TIME_NOW - 86400;
 switch($db->type)

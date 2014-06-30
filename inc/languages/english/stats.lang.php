@@ -32,5 +32,6 @@ $l['most_viewed_threads'] = "Most Viewed Threads";
 $l['not_enough_info_stats'] = "Sorry, but there is not enough information on this board to generate statistics. Before statistics can be generated this board needs to contain at least 1 member and 1 thread.";
 $l['replies'] = "replies";
 $l['views'] = "views";
+$l['top_referrer'] = "Top referrer: <strong>{1}</strong> (<strong>{2}</strong> referrals)";
 
 ?>
