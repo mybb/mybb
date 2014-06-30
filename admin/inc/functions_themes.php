@@ -405,7 +405,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
 	{
-		$theme_directory = "cache/themes";
+		$theme_directory = MYBB_ROOT . "cache/themes";
 		$filename = $tid."_".$filename;
 	}
 	// Does our theme directory exist? Try and create it.
@@ -413,7 +413,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	{
 		if(!@mkdir($cache_themes_dir))
 		{
-			$theme_directory = "cache/themes";
+			$theme_directory = MYBB_ROOT . "cache/themes";
 			$filename        = $tid."_".$filename;
 		}
 		else
@@ -440,7 +440,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	$stylesheet_min = minify_stylesheet($stylesheet);
 	$filename_min = str_replace('.css', '.min.css', $filename);
-	$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");
+	$fp_min = @fopen("{$theme_directory}/{$filename_min}", "wb");
 	if(!$fp_min)
 	{
 		return false;
@@ -448,7 +448,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp_min, $stylesheet_min);
 	@fclose($fp_min);
 
-	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
+	$fp = @fopen("{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
 	{
 		return false;
