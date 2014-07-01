@@ -2152,9 +2152,9 @@ smtp=SMTP mail]]></optionscode>
 	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the purgespammer feature" disporder="22" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
-			<description><![CDATA[Enter the ID of the usergroups who are allowed to use Purge Spammer.]]></description>
+			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[3,4,6]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
@@ -2199,3 +2199,4 @@ delete=Delete]]></optionscode>
 		</setting>
 	</settinggroup>
 </settings>
+			
