@@ -47,7 +47,7 @@ function task_hourlycleanup($task)
 
 	// Delete old registration questions
 	$cut = TIME_NOW-(60*60*24*7);
-	$db->delete_query("questions", "dateline < '".(int)$time['question']."'");
+	$db->delete_query("questionsessions", "dateline < '".(int)$time['question']."'");
 
 	add_task_log($task, $lang->task_hourlycleanup_ran);
 }
