@@ -222,6 +222,7 @@ $l['threaded_mode'] = "Threaded Mode";
 $l['thread_view_options'] = "Thread View Options";
 $l['show_redirect'] = "Show friendly redirection pages";
 $l['show_code_buttons'] = "Show MyCode formatting options on posting pages";
+$l['source_editor'] = "Put the editor in source mode by default";
 $l['theme'] = "Theme";
 $l['board_language'] = "Board Language";
 $l['other_options'] = "Other Options";
