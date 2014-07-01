@@ -282,6 +282,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("newreply_do_newreply_start");
 
+	$post_errors = array();
+	
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
@@ -302,7 +304,25 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			// Otherwise use the name they specified.
 			else
 			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
+				//check validity of the username
+				
+				// Set up user handler.
+				require_once MYBB_ROOT."inc/datahandlers/user.php";
+				$userhandler = new UserDataHandler();
+				
+				$data_array = array('username' => $mybb->get_input('username'));
+				$userhandler->set_data($data_array);
+				
+				if(!$userhandler->verify_username())
+				{
+					// invalid username
+					$post_errors = $userhandler->get_friendly_errors();
+				}
+				else
+				{
+					// valid username
+					$username = htmlspecialchars_uni($mybb->get_input('username'));
+				}
 			}
 			$uid = 0;
 		}
@@ -395,11 +415,10 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// Now let the post handler do all the hard work.
 	$valid_post = $posthandler->validate_post();
 
-	$post_errors = array();
 	// Fetch friendly error messages if this is an invalid post
 	if(!$valid_post)
 	{
-		$post_errors = $posthandler->get_friendly_errors();
+		$post_errors = array_merge($post_errors, $posthandler->get_friendly_errors()); 
 	}
 
 	// Mark thread as read
