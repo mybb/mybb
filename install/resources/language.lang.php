@@ -356,7 +356,7 @@ $l['login_password'] = "Password";
 $l['login_password_desc'] = "Please note that passwords are case sensitive.";
 
 /* Error messages */
-$l['development_preview'] = "<div class=\"error\"><h2 class=\"fail\">Warning</h2><p>This version of MyBB is a development preview and is to be used for testing purposes only.</p><p>No official support, other than for plugins and theme development, will be provided for this version. By continuing with this install/upgrade you do so at your own risk.</div>";
+$l['development_preview'] = "<div class=\"error\"><h2 class=\"fail\">Warning</h2><p>This version of MyBB is a development preview and is to be used for testing purposes only.</p><p>No official support, other than for plugins and theme development, will be provided for this version. By continuing with this install/upgrade you do so at your own risk.</p></div>";
 $l['locked'] = 'The installer is currently locked, please remove \'lock\' from the install directory to continue';
 $l['no_permision'] = "You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={1}\">here</a>. From there you will be able to log in again under your administrator account.";
 
