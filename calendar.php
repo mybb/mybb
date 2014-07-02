@@ -931,7 +931,7 @@ if($mybb->input['action'] == "editevent")
 			$type_ranged = "checked=\"checked\"";
 			$type_single = '';
 			$type = "ranged";
-			$repeats = unserialize($event['repeats']);
+			$repeats = my_unserialize($event['repeats']);
 			if($repeats['repeats'] >= 0)
 			{
 				$repeats_sel[$repeats['repeats']] = " selected=\"selected\"";
@@ -1508,7 +1508,7 @@ if($mybb->input['action'] == "event")
 		$start_time = gmdate("Hi", $event['starttime_user']);
 		$end_time = gmdate("Hi", $event['endtime_user']);
 
-		$event['repeats'] = unserialize($event['repeats']);
+		$event['repeats'] = my_unserialize($event['repeats']);
 
 		// Event only runs over one day
 		if($start_day == $end_day && $event['repeats']['repeats'] == 0)

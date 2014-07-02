@@ -26,7 +26,7 @@ function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_level
 	while($warn_level = $db->fetch_array($query))
 	{
 		// revoke actions taken at this warning level
-		$action = unserialize($warn_level['action']);
+		$action = my_unserialize($warn_level['action']);
 		if($action['type'] < 1 || $action['type'] > 3)	// prevent any freak-ish cases
 		{
 			continue;

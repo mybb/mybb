@@ -218,7 +218,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$query = $db->simple_select("adminoptions", "permissions", "uid='0'");
-		$permission_data = unserialize($db->fetch_field($query, "permissions"));
+		$permission_data = my_unserialize($db->fetch_field($query, "permissions"));
 		$page->add_breadcrumb_item($lang->default_permissions);
 		$title = $lang->default;
 	}

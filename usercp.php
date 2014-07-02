@@ -1508,7 +1508,7 @@ if($mybb->input['action'] == "subscriptions")
 				ORDER BY pid, disporder
 			");
 
-			$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+			$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 		}
 		else
 		{

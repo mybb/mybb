@@ -292,7 +292,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		if($new_level['lid'])
 		{
 			$expiration = 0;
-			$action = unserialize($new_level['action']);
+			$action = my_unserialize($new_level['action']);
 
 			switch($action['type'])
 			{
@@ -672,7 +672,7 @@ if($mybb->input['action'] == "warn")
 	$query = $db->simple_select("warninglevels", "*");
 	while($level = $db->fetch_array($query))
 	{
-		$level['action'] = unserialize($level['action']);
+		$level['action'] = my_unserialize($level['action']);
 		switch($level['action']['type'])
 		{
 			case 1:

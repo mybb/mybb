@@ -432,7 +432,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			"limit" => "1"
 		);
 		$query = $db->simple_select("adminoptions", "permissions", "(uid='-{$get_gid}' OR uid='0') AND permissions != ''", $options);
-		return unserialize($db->fetch_field($query, "permissions"));
+		return my_unserialize($db->fetch_field($query, "permissions"));
 	}
 	else
 	{
@@ -454,7 +454,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		$query = $db->simple_select("adminoptions", "permissions, uid", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
-			$perm['permissions'] = unserialize($perm['permissions']);
+			$perm['permissions'] = my_unserialize($perm['permissions']);
 
 			// Sorting out which permission is which
 			if($perm['uid'] > 0)
@@ -541,7 +541,7 @@ function change_admin_permission($tab, $page="", $default=1)
 	$query = $db->simple_select("adminoptions", "uid, permissions", "permissions != ''");
 	while($adminoption = $db->fetch_array($query))
 	{
-		$adminoption['permissions'] = unserialize($adminoption['permissions']);
+		$adminoption['permissions'] = my_unserialize($adminoption['permissions']);
 
 		if($default == -1)
 		{

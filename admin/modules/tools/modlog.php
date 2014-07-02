@@ -251,7 +251,7 @@ if(!$mybb->input['action'])
 
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
-			$data = unserialize($logitem['data']);
+			$data = my_unserialize($logitem['data']);
 			if($data['uid'])
 			{
 				$information = "<strong>{$lang->user_info}</strong> <a href=\"../".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";

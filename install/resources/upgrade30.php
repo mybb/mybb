@@ -1776,8 +1776,8 @@ function upgrade30_updatetheme()
 	$query = $db->simple_select("themes", "*", "tid = '{$tid}'");
 
 	$theme = $db->fetch_array($query);
-	$properties = unserialize($theme['properties']);
-	$stylesheets = unserialize($theme['stylesheets']);
+	$properties = my_unserialize($theme['properties']);
+	$stylesheets = my_unserialize($theme['stylesheets']);
 
 	$query = $db->simple_select("themes", "tid", "def != '0'");
 

@@ -86,7 +86,7 @@ if($loadstyle == "def='1'")
 	$theme = $cache->read('default_theme');
 }
 
-$theme = @array_merge($theme, unserialize($theme['properties']));
+$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))

@@ -432,7 +432,7 @@ if($mybb->input['action'] == "reports")
 
 			if($report['reporters'])
 			{
-				$reporters = unserialize($report['reporters']);
+				$reporters = my_unserialize($report['reporters']);
 
 				if(is_array($reporters))
 				{
@@ -884,7 +884,7 @@ if($mybb->input['action'] == "modlogs")
 		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
-			$data = unserialize($logitem['data']);
+			$data = my_unserialize($logitem['data']);
 			if(!empty($data['uid']))
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
@@ -4532,7 +4532,7 @@ if(!$mybb->input['action'])
 			// Edited a user or managed announcement?
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
-				$data = unserialize($logitem['data']);
+				$data = my_unserialize($logitem['data']);
 				if($data['uid'])
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));

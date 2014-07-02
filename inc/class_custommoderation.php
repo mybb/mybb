@@ -77,8 +77,8 @@ class CustomModeration extends Moderation
 		}
 
 		// Unserialize custom moderation
-		$post_options = unserialize($tool['postoptions']);
-		$thread_options = unserialize($tool['threadoptions']);
+		$post_options = my_unserialize($tool['postoptions']);
+		$thread_options = my_unserialize($tool['threadoptions']);
 
 		// If the tool type is a post tool, then execute the post moderation
 		if($tool['type'] == 'p')

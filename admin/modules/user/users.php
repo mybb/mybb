@@ -1708,7 +1708,7 @@ if($mybb->input['action'] == "referrers")
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
 
-	$admin_view['conditions'] = unserialize($admin_view['conditions']);
+	$admin_view['conditions'] = my_unserialize($admin_view['conditions']);
 	$admin_view['conditions']['referrer'] = $mybb->input['uid'];
 
 	$view = build_users_view($admin_view);
@@ -3052,15 +3052,15 @@ function build_users_view($view)
 	}
 	if(!is_array($view['conditions']))
 	{
-		$view['conditions'] = unserialize($view['conditions']);
+		$view['conditions'] = my_unserialize($view['conditions']);
 	}
 	if(!is_array($view['fields']))
 	{
-		$view['fields'] = unserialize($view['fields']);
+		$view['fields'] = my_unserialize($view['fields']);
 	}
 	if(!is_array($view['custom_profile_fields']))
 	{
-		$view['custom_profile_fields'] = unserialize($view['custom_profile_fields']);
+		$view['custom_profile_fields'] = my_unserialize($view['custom_profile_fields']);
 	}
 	if(isset($mybb->input['username']))
 	{
@@ -3986,17 +3986,17 @@ function user_search_conditions($input=array(), &$form)
 
 	if(!is_array($input['conditions']))
 	{
-		$input['conditions'] = unserialize($input['conditions']);
+		$input['conditions'] = my_unserialize($input['conditions']);
 	}
 
 	if(!is_array($input['profile_fields']))
 	{
-		$input['profile_fields'] = unserialize($input['profile_fields']);
+		$input['profile_fields'] = my_unserialize($input['profile_fields']);
 	}
 
 	if(!is_array($input['fields']))
 	{
-		$input['fields'] = unserialize($input['fields']);
+		$input['fields'] = my_unserialize($input['fields']);
 	}
 
 	$form_container = new FormContainer($lang->find_users_where);

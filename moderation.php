@@ -449,7 +449,7 @@ switch($mybb->input['action'])
 			{
 				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
 			}
-			$delayedmod['inputs'] = unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
@@ -991,7 +991,7 @@ switch($mybb->input['action'])
 			{
 				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
 			}
-			$delayedmod['inputs'] = unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
@@ -3085,7 +3085,7 @@ switch($mybb->input['action'])
 					error_no_permission();
 				}
 
-				$thread_options = unserialize($tool['threadoptions']);
+				$thread_options = my_unserialize($tool['threadoptions']);
 				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
 				{
 					error($lang->error_movetocategory);
@@ -3116,7 +3116,7 @@ switch($mybb->input['action'])
 					error_no_permission();
 				}
 
-				$thread_options = unserialize($tool['threadoptions']);
+				$thread_options = my_unserialize($tool['threadoptions']);
 				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
 				{
 					error($lang->error_movetocategory);

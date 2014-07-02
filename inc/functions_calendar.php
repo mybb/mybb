@@ -475,7 +475,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 
 			$start_day = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 
-			$event['repeats'] = @unserialize($event['repeats']);
+			$event['repeats'] = my_unserialize($event['repeats']);
 
 			// Event does not repeat - just goes over a few days
 			if($event['repeats']['repeats'] == 0)
@@ -946,7 +946,7 @@ function fetch_friendly_repetition($event)
 
 	if(!is_array($event['repeats']))
 	{
-		$event['repeats'] = @unserialize($event['repeats']);
+		$event['repeats'] = my_unserialize($event['repeats']);
 		if(!is_array($event['repeats']))
 		{
 			return false;

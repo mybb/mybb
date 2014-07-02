@@ -53,7 +53,7 @@ if($mybb->input['action'] == "edit")
 
 	if($email['conditions'] != '')
 	{
-		$email['conditions'] = unserialize($email['conditions']);
+		$email['conditions'] = my_unserialize($email['conditions']);
 	}
 
 	$sub_tabs['edit_mass_mail'] = array(
@@ -954,7 +954,7 @@ if($mybb->input['action'] == "send")
 			if($email['conditions'] != '')
 			{
 				$input = array(
-					"conditions" => unserialize($email['conditions'])
+					"conditions" => my_unserialize($email['conditions'])
 				);
 			}
 			else
@@ -1482,7 +1482,7 @@ if($mybb->input['action'] == "resend")
 	}
 
 	// Need to perform the search to fetch the number of users we're emailing
-	$member_query = build_mass_mail_query(unserialize($mass_email['conditions']));
+	$member_query = build_mass_mail_query(my_unserialize($mass_email['conditions']));
 	$query = $db->simple_select("users u", "COUNT(uid) AS num", $member_query);
 	$total_recipients = $db->fetch_field($query, "num");
 

@@ -285,7 +285,7 @@ if($mybb->input['action'] == "edit_level")
 				"percentage" => $level['percentage'],
 			)
 		);
-		$action = unserialize($level['action']);
+		$action = my_unserialize($level['action']);
 		if($action['type'] == 1)
 		{
 			$mybb->input['action_1_usergroup'] = $action['usergroup'];
@@ -663,7 +663,7 @@ if($mybb->input['action'] == "levels")
 	while($level = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong>{$level['percentage']}%</strong>", array("class" => "align_center"));
-		$action = unserialize($level['action']);
+		$action = my_unserialize($level['action']);
 		$period = fetch_friendly_expiration($action['length']);
 
 		// Get the right language for the ban period

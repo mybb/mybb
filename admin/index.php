@@ -319,7 +319,7 @@ else
 		}
 		else
 		{
-			$admin_session['data'] = @unserialize($admin_session['data']);
+			$admin_session['data'] = my_unserialize($admin_session['data']);
 
 			// Fetch the user from the admin session
 			$mybb->user = get_user($admin_session['uid']);

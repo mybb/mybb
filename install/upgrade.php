@@ -732,7 +732,7 @@ function get_upgrade_store($title)
 
 	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
-	return unserialize($data['contents']);
+	return my_unserialize($data['contents']);
 }
 
 function add_upgrade_store($title, $contents)

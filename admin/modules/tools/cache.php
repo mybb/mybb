@@ -37,7 +37,7 @@ if($mybb->input['action'] == 'view')
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	$cachecontents = unserialize($cacheitem['cache']);
+	$cachecontents = my_unserialize($cacheitem['cache']);
 	if(empty($cachecontents))
 	{
 		$cachecontents = $lang->error_empty_cache;

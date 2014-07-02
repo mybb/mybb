@@ -1254,7 +1254,7 @@ function upgrade12_dbchanges5()
 				if(!$condition['value']) continue;
 				if($condition['attributes']['is_serialized'] == 1)
 				{
-					$condition['value'] = unserialize($condition['value']);
+					$condition['value'] = my_unserialize($condition['value']);
 				}
 				$conditions[$condition['attributes']['name']] = $condition['value'];
 			}
@@ -1899,7 +1899,7 @@ function upgrade12_redothemes()
 	$query = $db->simple_select("themes", "*", "tid=1");
 	$master_theme = $db->fetch_array($query);
 
-	$master_stylesheets = unserialize($master_theme['stylesheets']);
+	$master_stylesheets = my_unserialize($master_theme['stylesheets']);
 
 	if(is_array($master_stylesheets))
 	{

@@ -509,7 +509,7 @@ if($mybb->input['action'] == "export")
 
 	if($mybb->request_method == "post")
 	{
-		$properties = unserialize($theme['properties']);
+		$properties = my_unserialize($theme['properties']);
 
 		$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\r\n";
 		$xml .= "<theme name=\"".htmlspecialchars_uni($theme['name'])."\" version=\"".$mybb->version_code."\">\r\n";
@@ -530,7 +530,7 @@ if($mybb->input['action'] == "export")
 		$xml .= "\t</properties>\r\n";
 
 		// Fetch list of all of the stylesheets for this theme
-		$file_stylesheets = unserialize($theme['stylesheets']);
+		$file_stylesheets = my_unserialize($theme['stylesheets']);
 
 		$stylesheets = array();
 		$inherited_load = array();
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "export")
 		// Now we loop through the list of stylesheets for each file
 		foreach($file_stylesheets as $file => $action_stylesheet)
 		{
-			if($file == 'inherited')
+			if($file == 'inherited' !is_array($action_stylesheet))
 			{
 				continue;
 			}
@@ -938,7 +938,7 @@ if($mybb->input['action'] == "delete")
 		$query = $db->simple_select("themes", "tid,stylesheets", "tid != '{$theme['tid']}'", array('order_by' => "pid, name"));
 		while($theme2 = $db->fetch_array($query))
 		{
-			$theme2['stylesheets'] = unserialize($theme2['stylesheets']);
+			$theme2['stylesheets'] = my_unserialize($theme2['stylesheets']);
 
 			if(!$theme2['stylesheets']['inherited'])
 			{
@@ -1056,7 +1056,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_invalid_templateset;
 		}
 
-		$theme_properties = unserialize($theme['properties']);
+		$theme_properties = my_unserialize($theme['properties']);
 		if($theme_properties['disporder'])
 		{
 			$properties['disporder'] = $theme_properties['disporder'];
@@ -1141,7 +1141,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
+	$file_stylesheets = my_unserialize($theme['stylesheets']);
 
 	$stylesheets = array();
 	$inherited_load = array();
@@ -1149,7 +1149,7 @@ if($mybb->input['action'] == "edit")
 	// Now we loop through the list of stylesheets for each file
 	foreach($file_stylesheets as $file => $action_stylesheet)
 	{
-		if($file == 'inherited')
+		if($file == 'inherited' !is_array($action_stylesheet))
 		{
 			continue;
 		}
@@ -1224,7 +1224,7 @@ if($mybb->input['action'] == "edit")
 		asort($orders, SORT_NUMERIC);
 
 		// Save the orders in the theme properties
-		$properties = unserialize($theme['properties']);
+		$properties = my_unserialize($theme['properties']);
 		$properties['disporder'] = $orders;
 
 		$update_array = array(
@@ -1267,7 +1267,7 @@ if($mybb->input['action'] == "edit")
 		'description' => $lang->duplicate_theme_desc
 	);
 
-	$properties = unserialize($theme['properties']);
+	$properties = my_unserialize($theme['properties']);
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
 
 	$table = new Table;
@@ -1717,7 +1717,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 		}
 	}
 
-	$properties = unserialize($theme['properties']);
+	$properties = my_unserialize($theme['properties']);
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item(htmlspecialchars_uni($stylesheet['name'])." {$lang->properties}", "index.php?module=style-themes&amp;action=edit_properties&amp;tid={$mybb->input['tid']}");
 
@@ -1997,7 +1997,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 		if($mybb->input['serialized'] == 1)
 		{
-			$mybb->input['css_bits'] = unserialize($mybb->input['css_bits']);
+			$mybb->input['css_bits'] = my_unserialize($mybb->input['css_bits']);
 		}
 
 		$css_to_insert = '';
@@ -2580,7 +2580,7 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item($lang->add_stylesheet);
-	$properties = unserialize($theme['properties']);
+	$properties = my_unserialize($theme['properties']);
 
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
 
