@@ -389,13 +389,13 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	global $mybb;
 
 	$filename = str_replace('/', '', $filename);
-	$tid = intval($tid);
-	$cache_themes_dir = MYBB_ROOT . "cache/themes/theme{$tid}";
+	$tid = (int) $tid;
+	$cache_themes_dir = "cache/themes/theme{$tid}";
 
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
 	{
-		$theme_directory = MYBB_ROOT . "cache/themes";
+		$theme_directory = "cache/themes";
 		$filename = $tid."_".$filename;
 	}
 	// Does our theme directory exist? Try and create it.
@@ -403,7 +403,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	{
 		if(!@mkdir($cache_themes_dir))
 		{
-			$theme_directory = MYBB_ROOT . "cache/themes";
+			$theme_directory = "cache/themes";
 			$filename        = $tid."_".$filename;
 		}
 		else
@@ -438,7 +438,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp_min, $stylesheet_min);
 	@fclose($fp_min);
 
-	$fp = @fopen("{$theme_directory}/{$filename}", "wb");
+	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
 	{
 		return false;
@@ -452,17 +452,21 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
 		$cache_themes_dir = $cdn_path.'/'."cache/themes/theme{$tid}";
 
-		@copy("{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
-		@copy("{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
-	}
+		$copy_to_cdn = true;
 
-	if(strpos($theme_directory, MYBB_ROOT) == 0)
-	{
-		$theme_directory = str_replace(MYBB_ROOT.'/', '', $theme_directory);
-	}
-	else
-	{
-		$theme_directory = str_replace($cdn_path.'/', '', $theme_directory);
+		if(!is_dir($cache_themes_dir))
+		{
+			if(!@mkdir($cache_themes_dir))
+			{
+				$copy_to_cdn = false;
+			}
+		}
+
+		if($copy_to_cdn)
+		{
+			@copy("{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
+			@copy("{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
+		}
 	}
 
 	return "{$theme_directory}/{$filename}";
