@@ -3353,9 +3353,14 @@ if(!$mybb->input['action'])
 	// Get unviewable forums
 	$f_perm_sql = '';
 	$unviewable_forums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
-		$f_perm_sql = "AND t.fid NOT IN (".$unviewable_forums.")";
+		$f_perm_sql = " AND t.fid NOT IN (".$unviewable_forums.")";
+	}
+	if($inactiveforums)
+	{
+		$f_perm_sql .= " AND t.fid NOT IN (".$inactiveforums.")";
 	}
 
 	$visible = " AND t.visible != 0";

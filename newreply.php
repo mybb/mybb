@@ -684,9 +684,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
 			$unviewable_forums = get_unviewable_forums();
+			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+			}
+			if($inactiveforums)
+			{
+				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
 			if(is_moderator($fid))
 			{
@@ -703,7 +708,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$inactiveforums} {$visible_where}
 			");
 			$load_all = intval($mybb->input['load_all_quotes']);
 			while($quoted_post = $db->fetch_array($query))
