@@ -1339,7 +1339,7 @@ if($mybb->input['action'] == "thread")
 
 	// Display 'send thread' link if permissions allow
 	$sendthread = '';
-	if($mybb->user['uid'] > 0 && $mybb->usergroup['cansendemail'] == 1)
+	if($mybb->usergroup['cansendemail'] == 1)
 	{
 		eval("\$sendthread = \"".$templates->get("showthread_send_thread")."\";");
 	}

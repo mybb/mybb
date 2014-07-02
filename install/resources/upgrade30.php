@@ -487,6 +487,11 @@ function upgrade30_dbchanges4()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->field_exists('emailfloodtime', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "emailfloodtime");
+	}
+
 	if($db->field_exists('canmanageannounce', 'usergroups'))
 	{
 		$db->drop_column("usergroups", "canmanageannounce");
@@ -530,6 +535,7 @@ function upgrade30_dbchanges4()
 	switch($db->type)
 	{
 		case "pgsql":
+			$db->add_column("usergroups", "emailfloodtime", "int NOT NULL default '5' AFTER maxemails");
 			$db->add_column("usergroups", "canmanageannounce", "smallint NOT NULL default '0' AFTER showmemberlist");
 			$db->add_column("usergroups", "canmanagemodqueue", "smallint NOT NULL default '0' AFTER canmanageannounce");
 			$db->add_column("usergroups", "canmanagereportedcontent", "smallint NOT NULL default '0' AFTER canmanagemodqueue");
@@ -540,6 +546,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			break;
 		default:
+			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
 			$db->add_column("usergroups", "canmanageannounce", "tinyint(1) NOT NULL default '0' AFTER showmemberlist");
 			$db->add_column("usergroups", "canmanagemodqueue", "tinyint(1) NOT NULL default '0' AFTER canmanageannounce");
 			$db->add_column("usergroups", "canmanagereportedcontent", "tinyint(1) NOT NULL default '0' AFTER canmanagemodqueue");

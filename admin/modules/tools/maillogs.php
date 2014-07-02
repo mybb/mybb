@@ -271,6 +271,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
+	$table->construct_header($lang->ip_address, array("class" => "align_center", 'width' => '10%'));
 
 	$query = $db->query("
 		SELECT l.*, r.username AS to_username, f.username AS from_username, t.subject AS thread_subject
@@ -312,6 +313,7 @@ if(!$mybb->input['action'])
 			$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 			$table->construct_cell($log['toemail']);
 			$table->construct_cell($log['dateline'], array("class" => "align_center"));
+			$table->construct_cell(my_inet_ntop($db->unescape_binary($log['ipaddress'])), array("class" => "align_center"));
 		}
 		else
 		{
@@ -336,6 +338,7 @@ if(!$mybb->input['action'])
 				$table->construct_cell("{$find_to}<div><a href=\"../".get_profile_link($log['touid'])."\">{$log['to_username']}</a></div>");
 			}
 			$table->construct_cell($log['dateline'], array("class" => "align_center"));
+			$table->construct_cell(my_inet_ntop($db->unescape_binary($log['ipaddress'])), array("class" => "align_center"));
 		}
 		$table->construct_row();
 	}

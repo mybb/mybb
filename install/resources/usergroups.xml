@@ -36,6 +36,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -117,6 +118,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -198,6 +200,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[10]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -280,6 +283,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[0]]></maxemails>
+		<emailfloodtime><![CDATA[0]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -361,6 +365,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -442,6 +447,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -523,6 +529,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[0]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[0]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>

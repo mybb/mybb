@@ -472,4 +472,15 @@ $l['debug_server_load'] = "Server Load: {1}";
 $l['debug_memory_usage'] = "Memory Usage: {1}";
 $l['debug_advanced_details'] = "Advanced Details";
 
+$l['error_emailflooding_1_second'] = "Sorry, but you can only send one email every {1} minutes. Please wait another 1 second before attempting to email again.";
+$l['error_emailflooding_seconds'] = "Sorry, but you can only send one email every {1} minutes. Please wait another {2} seconds before attempting to email again.";
+$l['error_emailflooding_1_minute'] = "Sorry, but you can only send one email every {1} minutes. Please wait another 1 minute before attempting to email again.";
+$l['error_emailflooding_minutes'] = "Sorry, but you can only send one email every {1} minutes. Please wait another {2} minutes before attempting to email again.";
+$l['error_invalidfromemail'] = "You did not enter a valid from email address.";
+$l['error_noname'] = "You did not enter a valid name.";
+$l['your_email'] = "Your Email:";
+$l['email_note'] = "Enter your email address here.";
+$l['your_name'] = "Your Name:";
+$l['name_note'] = "Enter your name here.";
+
 ?>

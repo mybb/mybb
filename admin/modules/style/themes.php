@@ -1149,7 +1149,7 @@ if($mybb->input['action'] == "edit")
 	// Now we loop through the list of stylesheets for each file
 	foreach($file_stylesheets as $file => $action_stylesheet)
 	{
-		if($file == 'inherited'|| !is_array($action_stylesheet))
+		if($file == 'inherited' || !is_array($action_stylesheet))
 		{
 			continue;
 		}
