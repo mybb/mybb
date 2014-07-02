@@ -91,16 +91,18 @@ $(document).ready(function($) {
 					size     = 1;
 
 					if(fontSize > 9)
-						size = 2;
+						size = 1;
 					if(fontSize > 12)
-						size = 3;
+						size = 2;
 					if(fontSize > 15)
-						size = 4;
+						size = 3;
 					if(fontSize > 17)
-						size = 5;
+						size = 4;
 					if(fontSize > 23)
-						size = 6;
+						size = 5;
 					if(fontSize > 31)
+						size = 6;
+					if(fontSize > 47)
 						size = 7;
 				}
 				else
@@ -130,7 +132,7 @@ $(document).ready(function($) {
 					e.preventDefault();
 				};
 
-			for (var i=1; i < 7; i++)
+			for (var i=1; i <= 7; i++)
 				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').click(clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
@@ -146,7 +148,7 @@ $(document).ready(function($) {
 					size = (~~size);
 					size = (size > 7) ? 7 : ( (size < 1) ? 1 : size );
 
-					editor.insertText('[size=' + sizes[size] + ']', '[/size]');
+					editor.insertText('[size=' + sizes[size-1] + ']', '[/size]');
 				}
 			);
 		}
@@ -341,4 +343,3 @@ $(document).ready(function($) {
 					.remove('th')
 					.remove('td');
 });
-
