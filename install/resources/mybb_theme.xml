@@ -105,6 +105,10 @@ a:hover, a:active {
 	background-position: 0 -60px;
 }
 
+#logo ul.top_links a.portal {
+	background-position: 0 -180px;
+}
+
 #panel .upper a.logout {
 	font-weight: bold;
 	background: url(images/headerlinks_sprite.png) right -80px no-repeat;
@@ -3931,6 +3935,7 @@ a.button {
 				<div class="wrapper">
 					<a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a>
 					<ul class="menu top_links">
+						{$menu_portal}
 						{$menu_search}
 						{$menu_memberlist}
 						{$menu_calendar}
@@ -3958,6 +3963,7 @@ a.button {
 				<br />]]></template>
 		<template name="header_menu_calendar" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>]]></template>
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
+		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
 		<template name="header_quicksearch" version="1800"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
 						<fieldset id="search">
@@ -8734,9 +8740,11 @@ if(use_xmlhttprequest == "1")
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
-		<template name="portal" version="127"><![CDATA[<html>
+		<template name="portal" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
+<link rel="alternate" type="application/rss+xml" title="{$lang->latest_announcements} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_announcements} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1&type=atom1.0" />
 {$headerinclude}
 </head>
 <body>
@@ -8753,6 +8761,7 @@ if(use_xmlhttprequest == "1")
 <td>&nbsp;</td>
 <td valign="top">
 {$announcements}
+{$multipage}
 </td>
 </tr>
 </table>
@@ -8765,7 +8774,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} - {$lang->forum} <a href="{$mybb->settings['bburl']}/{$announcement['forumlink']}">{$announcement['forumname']}</a> {$numcomments}</span>
 </td>
 </tr>
 <tr>
@@ -8808,6 +8817,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
+{$lang->forum} <a href="{$thread['forumlink']}">{$thread['forumname']}</a><br />
 <a href="{$thread['lastpostlink']}">{$lang->latest_threads_lastpost}</a> {$lastposterlink}<br />
 {$lastpostdate}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />

@@ -43,6 +43,11 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("portal");
 
+if($mybb->settings['portal'] == 0)
+{
+	error($lang->portal_disabled);
+}
+
 // Fetch the current URL
 $portal_url = get_current_location();
 
@@ -373,6 +378,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+		$thread['forumlink'] = get_thread_link($thread['fid']);
+		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
@@ -389,6 +396,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	// Get latest news announcements
 	// Build where clause
 	$annfidswhere = '';
+	$announcementcount = 0;
 	if($mybb->settings['portal_announcementsfid'] != -1)
 	{
 		// First validate announcement fids:
@@ -415,13 +423,38 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$forum[$fid] = $f;
 		}
 	}
+	
+	if($announcementcount == 0)
+	{
+		$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
+		$announcementcount = $db->fetch_field($query, "threads");
+	}
+	
 
 	$numannouncements = intval($mybb->settings['portal_numannouncements']);
 	if(!$numannouncements)
 	{
 		$numannouncements = 10; // Default back to 10
 	}
+	if($mybb->input['page'] > 0)
+	{
+		$page = $mybb->input['page'];
+		$start = ($page-1) * $numannouncements;
+		$pages = $announcementcount / $numannouncements;
+		$pages = ceil($numannouncements);
+		if($page > $numannouncements || $page <= 0)
+		{
+			$start = 0;
+			$page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
 
+	$multipage = multipage($announcementcount, $numannouncements, $page, 'portal.php');
 	$pids = '';
 	$tids = '';
 	$comma = '';
@@ -433,7 +466,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 		ORDER BY t.dateline DESC
-		LIMIT 0, {$numannouncements}"
+		LIMIT {$start}, {$numannouncements}"
 	);
 	while($getid = $db->fetch_array($query))
 	{
@@ -491,6 +524,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
+			$announcement['forumlink'] = get_forum_link($announcement['fid']);
+			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
 			if($announcement['uid'] == 0)
 			{
