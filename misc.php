@@ -811,13 +811,21 @@ elseif($mybb->input['action'] == "syndication")
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if(is_array($forums))
 	{
-		$unexp = explode(",", $unviewable);
+		$unexp = explode(",", str_replace("'", '', $unviewable));
 		foreach($unexp as $fid)
 		{
 			$unview[$fid] = true;
 		}
+
+		$unexp = explode(",", $inactiveforums);
+		foreach($unexp as $fid)
+		{
+			$unview[$fid] = true;
+		}
+
 		$syndicate = '';
 		$comma = '';
 		$all = false;
@@ -920,7 +928,7 @@ elseif($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $templates;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $inactiveforums, $templates;
 	static $unviewableforums;
 
 	$pid = intval($pid);
@@ -947,7 +955,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!$unviewableforums)
 	{
 		// Save our unviewable forums in an array
-		$unviewableforums = explode(",", str_replace("'", "", $unviewable));
+		$unviewableforums = explode(",", str_replace("'", '', $unviewable.','.$inactiveforums));
 	}
 
 	if(is_array($forumcache[$pid]))

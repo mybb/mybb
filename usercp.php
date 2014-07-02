@@ -3902,9 +3902,14 @@ if(!$mybb->input['action'])
 	// Get unviewable forums
 	$f_perm_sql = '';
 	$unviewable_forums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
-		$f_perm_sql = "AND t.fid NOT IN (".$unviewable_forums.")";
+		$f_perm_sql = " AND t.fid NOT IN (".$unviewable_forums.")";
+	}
+	if($inactiveforums)
+	{
+		$f_perm_sql .= " AND t.fid NOT IN (".$inactiveforums.")";
 	}
 
 	$visible = " AND t.visible != 0";
@@ -3917,7 +3922,7 @@ if(!$mybb->input['action'])
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible} {$f_perm_sql}
+		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible >= 0 {$visible}{$f_perm_sql}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");

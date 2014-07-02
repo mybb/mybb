@@ -567,9 +567,14 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Fetch unviewable forums
 	$unviewable_forums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
 		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+	}
+	if($inactiveforums)
+	{
+		$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 	}
 	$message = '';
 

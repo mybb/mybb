@@ -64,7 +64,7 @@ else
 }
 
 // get inactive forums
-$inactive = get_inactive_forums(true);
+$inactive = get_inactive_forums();
 if($inactive)
 {
 	$inactivewhere = " AND fid NOT IN ($inactive)";
