@@ -1754,11 +1754,11 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="portal_announcementsfid">
-			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
+			<title>Forums to pull announcements from</title>
+			<description><![CDATA[Please select the forums of the forum(s) you wish to pull the announcements from.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
-			<settingvalue><![CDATA[2]]></settingvalue>
+			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="portal_numannouncements">
