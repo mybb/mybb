@@ -54,7 +54,7 @@ function task_massmail($task)
 		$mass_email['orig_htmlmessage'] = $mass_email['htmlmessage'];
 
 		// Need to perform the search to fetch the number of users we're emailing
-		$member_query = build_mass_mail_query(unserialize($mass_email['conditions']));
+		$member_query = build_mass_mail_query(my_unserialize($mass_email['conditions']));
 
 		$count_query = $db->simple_select("users u", "COUNT(uid) AS num", $member_query);
 		$mass_email['totalcount'] = $db->fetch_field($count_query, "num");

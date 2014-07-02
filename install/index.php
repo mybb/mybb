@@ -1709,8 +1709,8 @@ function insert_templates()
 	$query = $db->simple_select("themes", "stylesheets, properties", "tid='{$tid}'", array('limit' => 1));
 
 	$theme = $db->fetch_array($query);
-	$properties = unserialize($theme['properties']);
-	$stylesheets = unserialize($theme['stylesheets']);
+	$properties = my_unserialize($theme['properties']);
+	$stylesheets = my_unserialize($theme['stylesheets']);
 
 	$properties['templateset'] = $templateset;
 	unset($properties['inherited']['templateset']);
@@ -2026,7 +2026,7 @@ function create_admin_user()
 					if(!$condition['value']) continue;
 					if($condition['attributes']['is_serialized'] == 1)
 					{
-						$condition['value'] = unserialize($condition['value']);
+						$condition['value'] = my_unserialize($condition['value']);
 					}
 					$conditions[$condition['attributes']['name']] = $condition['value'];
 				}

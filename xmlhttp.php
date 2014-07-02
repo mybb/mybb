@@ -86,7 +86,7 @@ if($loadstyle == "def='1'")
 	$theme = $cache->read('default_theme');
 }
 
-$theme = @array_merge($theme, unserialize($theme['properties']));
+$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
@@ -567,9 +567,14 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Fetch unviewable forums
 	$unviewable_forums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
 		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+	}
+	if($inactiveforums)
+	{
+		$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 	}
 	$message = '';
 

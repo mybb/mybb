@@ -2887,7 +2887,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				}
 			}
 
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
 
 			if($mybb->settings['allowbasicmycode'] == 1)
 			{
@@ -2938,6 +2938,11 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
 				$code = "code,";
+			}
+
+			if($mybb->user['sourceeditor'] == 1)
+			{
+				$sourcemode = "MyBBEditor.sourceMode(true);";
 			}
 
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");

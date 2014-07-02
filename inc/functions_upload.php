@@ -49,16 +49,16 @@ function remove_attachment($pid, $posthash, $aid)
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 	if($db->fetch_field($query, "numreferences") == 0)
 	{
-		@unlink($uploadpath."/".$attachment['attachname']);
+		delete_uploaded_file($uploadpath."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
-			@unlink($uploadpath."/".$attachment['thumbnail']);
+			delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
 		if(@is_dir($uploadpath."/".$date_directory[0]))
 		{
-			@rmdir($uploadpath."/".$date_directory[0]);
+			delete_upload_directory($uploadpath."/".$date_directory[0]);
 		}
 	}
 
@@ -118,16 +118,16 @@ function remove_attachments($pid, $posthash="")
 		$query2 = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 		if($db->fetch_field($query2, "numreferences") == 0)
 		{
-			@unlink($uploadpath."/".$attachment['attachname']);
+			delete_uploaded_file($uploadpath."/".$attachment['attachname']);
 			if($attachment['thumbnail'])
 			{
-				@unlink($uploadpath."/".$attachment['thumbnail']);
+				delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
 			}
 
 			$date_directory = explode('/', $attachment['attachname']);
 			if(@is_dir($uploadpath."/".$date_directory[0]))
 			{
-				@rmdir($uploadpath."/".$date_directory[0]);
+				delete_upload_directory($uploadpath."/".$date_directory[0]);
 			}
 		}
 	}
@@ -166,7 +166,7 @@ function remove_avatars($uid, $exclude="")
 
 			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($avatarpath."/".$file) && $file != $exclude)
 			{
-				@unlink($avatarpath."/".$file);
+				delete_uploaded_file($avatarpath."/".$file);
 			}
 		}
 
@@ -238,7 +238,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	$file = upload_file($avatar, $avatarpath, $filename);
 	if($file['error'])
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -248,7 +248,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if(!file_exists($avatarpath."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		return $ret;
 	}
 
@@ -256,7 +256,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	$img_dimensions = @getimagesize($avatarpath."/".$filename);
 	if(!is_array($img_dimensions))
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -276,7 +276,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
-					@unlink($avatarpath."/".$filename);
+					delete_uploaded_file($avatarpath."/".$filename);
 					return $ret;
 				}
 				else
@@ -294,7 +294,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				{
 					$ret['error'] .= "<br /><br />".$lang->error_avataruserresize;
 				}
-				@unlink($avatarpath."/".$filename);
+				delete_uploaded_file($avatarpath."/".$filename);
 				return $ret;
 			}
 		}
@@ -303,7 +303,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	// Next check the file size
 	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadsize;
 		return $ret;
 	}
@@ -333,7 +333,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if($img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		return $ret;
 	}
 	// Everything is okay so lets delete old avatars for this user
@@ -589,7 +589,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
 		{
-			@unlink($mybb->settings['uploadspath']."/".$filename);
+			delete_uploaded_file($mybb->settings['uploadspath']."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;
 			return $ret;
 		}
@@ -630,16 +630,16 @@ function upload_attachment($attachment, $update_attachment=false)
 		$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($prevattach['attachname'])."'");
 		if($db->fetch_field($query, "numreferences") == 0)
 		{
-			@unlink($mybb->settings['uploadspath']."/".$prevattach['attachname']);
+			delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['attachname']);
 			if($prevattach['thumbnail'])
 			{
-				@unlink($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
+				delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
 			}
 
 			$date_directory = explode('/', $prevattach['attachname']);
 			if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
 			{
-				@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+				delete_upload_directory($mybb->settings['uploadspath']."/".$date_directory[0]);
 			}
 		}
 
@@ -658,6 +658,61 @@ function upload_attachment($attachment, $update_attachment=false)
 }
 
 /**
+ * Delete an uploaded file both from the relative path and the CDN path if a CDN is in use.
+ *
+ * @param string $path The relative path to the uploaded file.
+ *
+ * @return bool Whether the file was deleted successfully.
+ */
+function delete_uploaded_file($path = '')
+{
+	global $mybb;
+
+	$deleted = false;
+
+	$deleted = @unlink($path);
+
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$path = ltrim($path, '/');
+	$cdn_path = realpath($cdn_base_path . '/' . $path);
+
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$deleted = $deleted && @unlink($cdn_path);
+	}
+
+	return $deleted;
+}
+
+/**
+ * Delete an upload directory on both the local filesystem and the CDN filesystem.
+ *
+ * @param string $path The directory to delete.
+ *
+ * @return bool Whether the directory was deleted.
+ */
+function delete_upload_directory($path = '')
+{
+	global $mybb;
+
+	$deleted = false;
+
+	$deleted = @rmdir($path);
+
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$path = ltrim($path, '/');
+	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$deleted = $deleted && @rmdir($cdn_path);
+	}
+
+	return $deleted;
+}
+
+/**
  * Actually move a file to the uploads directory
  *
  * @param array $file The PHP $_FILE array for the file
@@ -668,6 +723,8 @@ function upload_attachment($attachment, $update_attachment=false)
 function upload_file($file, $path, $filename="")
 {
 	global $plugins, $mybb;
+
+	$upload = array();
 
 	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
@@ -686,11 +743,12 @@ function upload_file($file, $path, $filename="")
 
 	$moved_cdn = false;
 	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
 
 	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
 	{
-		$moved_cdn = @move_uploaded_file($file['tmp_name'], $cdn_base_path.'/'.$filename);
-		@my_chmod($cdn_base_path.'/'.$filename, '0644');
+		$moved_cdn = @copy($path . '/' . $filename, $cdn_path . '/' . $filename);
+		@my_chmod($cdn_path . '/' . $filename, '0644');
 	}
 
 	if(!$moved)
@@ -707,7 +765,7 @@ function upload_file($file, $path, $filename="")
 
 	if($moved_cdn)
 	{
-		$upload['cdn_path'] = $cdn_base_path;
+		$upload['cdn_path'] = $cdn_path;
 	}
 
 	return $upload;

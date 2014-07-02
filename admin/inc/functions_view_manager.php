@@ -329,9 +329,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 		else
 		{
-			$admin_view['conditions'] = unserialize($admin_view['conditions']);
-			$admin_view['fields'] = unserialize($admin_view['fields']);
-			$admin_view['profile_fields'] = unserialize($admin_view['custom_profile_fields']);
+			$admin_view['conditions'] = my_unserialize($admin_view['conditions']);
+			$admin_view['fields'] = my_unserialize($admin_view['fields']);
+			$admin_view['profile_fields'] = my_unserialize($admin_view['custom_profile_fields']);
 			$mybb->input = array_merge($mybb->input, $admin_view);
 
 			$mybb->input['isdefault'] = 0;
@@ -494,8 +494,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$query = $db->simple_select("adminviews", "*", $type_where);
 		while($admin_view = $db->fetch_array($query))
 		{
-			$fields = unserialize($admin_view['fields']);
-			$conditions = unserialize($admin_view['conditions']);
+			$fields = my_unserialize($admin_view['fields']);
+			$conditions = my_unserialize($admin_view['conditions']);
 
 			$admin_view['title'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['title']);
 			$admin_view['sortby'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortby']);
@@ -635,7 +635,7 @@ function set_default_view($type, $vid)
 	global $mybb, $db;
 
 	$query = $db->simple_select("adminoptions", "defaultviews", "uid='{$mybb->user['uid']}'");
-	$default_views = unserialize($db->fetch_field($query, "defaultviews"));
+	$default_views = my_unserialize($db->fetch_field($query, "defaultviews"));
 	if(!$db->num_rows($query))
 	{
 		$create = true;
@@ -661,7 +661,7 @@ function fetch_default_view($type)
 {
 	global $mybb, $db;
 	$query = $db->simple_select("adminoptions", "defaultviews", "uid='{$mybb->user['uid']}'");
-	$default_views = unserialize($db->fetch_field($query, "defaultviews"));
+	$default_views = my_unserialize($db->fetch_field($query, "defaultviews"));
 	if(!is_array($default_views))
 	{
 		return false;

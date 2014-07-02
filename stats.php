@@ -50,12 +50,26 @@ $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
 $unviewableforums = get_unviewable_forums(true);
-$fidnot = '1=1';
+$inactiveforums = get_inactive_forums();
+$fidnot = '1=1 AND ';
 $unviewableforumsarray = array();
 if($unviewableforums)
 {
-	$fidnot = "fid NOT IN ($unviewableforums)";
-	$unviewableforumsarray = explode(',', $unviewableforums);
+	$fidnot .= "fid NOT IN ($unviewableforums) AND ";
+	$unviewableforumsfids = explode(',', str_replace("'", '', $unviewableforums));
+	foreach($unviewableforumsfids as $fid)
+	{
+		$unviewableforumsarray[] = (int)$fid;
+	}
+}
+if($inactiveforums)
+{
+	$fidnot .= "fid NOT IN ($inactiveforums) AND ";
+	$unviewableforumsfids = explode(',', $inactiveforums);
+	foreach($unviewableforumsfids as $fid)
+	{
+		$unviewableforumsarray[] = (int)$fid;
+	}
 }
 
 // Most replied-to threads
@@ -72,7 +86,7 @@ if(!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
 	{
-		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -97,7 +111,7 @@ if(!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)
 	{
-		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
+		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
@@ -109,11 +123,7 @@ if(!empty($most_viewed))
 }
 
 // Top forum
-if(!empty($fidnot))
-{
-	$fidnot .= " AND";
-}
-$query = $db->simple_select("forums", "fid, name, threads, posts", "$fidnot type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+$query = $db->simple_select("forums", "fid, name, threads, posts", "{$fidnot}type='f'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
 $forum = $db->fetch_array($query);
 if(!$forum['posts'])
 {

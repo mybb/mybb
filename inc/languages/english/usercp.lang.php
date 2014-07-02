@@ -143,6 +143,7 @@ $l['receive_from_buddy'] = "Only receive private messages from users on my <a hr
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['pm_notify'] = "Notify me by email when I receive a new Private Message.";
 $l['show_codebuttons'] = "Show the MyCode formatting options on the posting pages.";
+$l['source_editor'] = "Put the editor in source mode by default";
 $l['show_redirect'] = "Show friendly redirect pages.";
 $l['thread_view_options'] = "Thread View Options";
 $l['thread_mode'] = "Thread View Mode:";

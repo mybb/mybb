@@ -233,7 +233,7 @@ if(!$mybb->input['action'])
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 
-		$logitem['data'] = unserialize($logitem['data']);
+		$logitem['data'] = my_unserialize($logitem['data']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 
@@ -470,7 +470,7 @@ function get_admin_log_action($logitem)
 			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
 			break;
 		case 'admin_log_tools_optimizedb_': // Optimize DB
-			$logitem['data'][0] = @implode(', ', unserialize($logitem['data'][0]));
+			$logitem['data'][0] = @implode(', ', my_unserialize($logitem['data'][0]));
 			break;
 		case 'admin_log_tools_recount_rebuild_': // Recount and rebuild
 			$detail_lang_string = $lang_string.$logitem['data'][0];

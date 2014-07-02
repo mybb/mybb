@@ -325,7 +325,7 @@ if($mybb->input['action'] == "results")
 	$users_query = $db->simple_select("privatemessages", "recipients", "pmid IN(".$db->escape_string($search['querycache']).")", array('limit_start' => $start, 'limit' => $perpage, 'order_by' => $query_sortby, 'order_dir' => $order));
 	while($row = $db->fetch_array($users_query))
 	{
-		$recipients = unserialize($row['recipients']);
+		$recipients = my_unserialize($row['recipients']);
 		if(is_array($recipients['to']) && count($recipients['to']))
 		{
 			$get_users = array_merge($get_users, $recipients['to']);
@@ -392,7 +392,7 @@ if($mybb->input['action'] == "results")
 		if($folder == 2 || $folder == 3)
 		{
 			// Sent Items or Drafts Folder Check
-			$recipients = unserialize($message['recipients']);
+			$recipients = my_unserialize($message['recipients']);
 			$to_users = $bcc_users = '';
 			if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 			{
@@ -808,7 +808,7 @@ if($mybb->input['action'] == "send")
 			}
 
 			// Get list of recipients
-			$recipients = unserialize($pm['recipients']);
+			$recipients = my_unserialize($pm['recipients']);
 			$comma = $recipientids = '';
 			if(isset($recipients['to']) && is_array($recipients['to']))
 			{
@@ -884,7 +884,7 @@ if($mybb->input['action'] == "send")
 				$subject = "Re: $subject";
 
 				// Get list of recipients
-				$recipients = unserialize($pm['recipients']);
+				$recipients = my_unserialize($pm['recipients']);
 				$recipientids = $pm['fromid'];
 				if(isset($recipients['to']) && is_array($recipients['to']))
 				{
@@ -1084,7 +1084,7 @@ if($mybb->input['action'] == "read")
 	}
 
 	// Fetch the recipients for this message
-	$pm['recipients'] = @unserialize($pm['recipients']);
+	$pm['recipients'] = my_unserialize($pm['recipients']);
 
 	if(is_array($pm['recipients']['to']))
 	{
@@ -2176,7 +2176,7 @@ if(!$mybb->input['action'])
 		");
 		while($row = $db->fetch_array($users_query))
 		{
-			$recipients = unserialize($row['recipients']);
+			$recipients = my_unserialize($row['recipients']);
 			if(is_array($recipients['to']) && count($recipients['to']))
 			{
 				$get_users = array_merge($get_users, $recipients['to']);
@@ -2266,7 +2266,7 @@ if(!$mybb->input['action'])
 			$tofromuid = 0;
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
-				$recipients = unserialize($message['recipients']);
+				$recipients = my_unserialize($message['recipients']);
 				$to_users = $bcc_users = '';
 				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && isset($recipients['bcc']) && count($recipients['bcc']) > 0))
 				{

@@ -64,7 +64,7 @@ else
 }
 
 // get inactive forums
-$inactive = get_inactive_forums(true);
+$inactive = get_inactive_forums();
 if($inactive)
 {
 	$inactivewhere = " AND fid NOT IN ($inactive)";
@@ -338,7 +338,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	$altbg = alt_trow();
 	$threadlist = '';
 	$query = $db->query("
-		SELECT t.*, u.username
+		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.threadlink, t.lastpostlink, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 		WHERE 1=1 {$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
@@ -356,6 +356,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
+		$thread['replies'] = my_number_format($thread['replies']);
+		$thread['views'] = my_number_format($thread['views']);
 
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)

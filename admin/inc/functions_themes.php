@@ -103,7 +103,7 @@ function import_theme_xml($xml, $options=array())
 
 			if($property == 'colors' || $property == 'disporder')
 			{
-				$data = @unserialize($value['value']);
+				$data = my_unserialize($value['value']);
 
 				if(!is_array($data))
 				{
@@ -238,7 +238,7 @@ function import_theme_xml($xml, $options=array())
 		$query = $db->simple_select("themes", "stylesheets", "tid = '{$theme_id}'");
 		if($db->num_rows($query))
 		{
-			$inherited_stylesheets = unserialize($db->fetch_field($query, "stylesheets"));
+			$inherited_stylesheets = my_unserialize($db->fetch_field($query, "stylesheets"));
 
 			if(is_array($inherited_stylesheets['inherited']))
 			{
@@ -405,7 +405,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
 	{
-		$theme_directory = "cache/themes";
+		$theme_directory = MYBB_ROOT . "cache/themes";
 		$filename = $tid."_".$filename;
 	}
 	// Does our theme directory exist? Try and create it.
@@ -413,7 +413,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	{
 		if(!@mkdir($cache_themes_dir))
 		{
-			$theme_directory = "cache/themes";
+			$theme_directory = MYBB_ROOT . "cache/themes";
 			$filename        = $tid."_".$filename;
 		}
 		else
@@ -440,7 +440,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	$stylesheet_min = minify_stylesheet($stylesheet);
 	$filename_min = str_replace('.css', '.min.css', $filename);
-	$fp_min = @fopen(MYBB_ROOT."{$theme_directory}/{$filename_min}", "wb");
+	$fp_min = @fopen("{$theme_directory}/{$filename_min}", "wb");
 	if(!$fp_min)
 	{
 		return false;
@@ -448,7 +448,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp_min, $stylesheet_min);
 	@fclose($fp_min);
 
-	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
+	$fp = @fopen("{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
 	{
 		return false;
@@ -573,7 +573,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 		$parent_theme = $db->fetch_array($query);
 		if(count($properties) == 0 || !is_array($properties))
 		{
-			$parent_properties = unserialize($parent_theme['properties']);
+			$parent_properties = my_unserialize($parent_theme['properties']);
 			if(!empty($parent_properties))
 			{
 				foreach($parent_properties as $property => $value)
@@ -597,7 +597,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 			}
 		}
 
-		$parent_stylesheets = unserialize($parent_theme['stylesheets']);
+		$parent_stylesheets = my_unserialize($parent_theme['stylesheets']);
 		if(!empty($parent_stylesheets))
 		{
 			foreach($parent_stylesheets as $location => $value)
@@ -1042,7 +1042,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		if(!is_array($properties))
 		{
-			$properties = unserialize($theme['properties']);
+			$properties = my_unserialize($theme['properties']);
 		}
 
 		foreach($stylesheets as $stylesheet)
@@ -1179,8 +1179,8 @@ function cache_themes()
 		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
 		while($theme = $db->fetch_array($query))
 		{
-			$theme['properties'] = unserialize($theme['properties']);
-			$theme['stylesheets'] = unserialize($theme['stylesheets']);
+			$theme['properties'] = my_unserialize($theme['properties']);
+			$theme['stylesheets'] = my_unserialize($theme['stylesheets']);
 			$theme_cache[$theme['tid']] = $theme;
 
 			if($theme['def'] == 1)
@@ -1335,7 +1335,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 function fetch_theme_stylesheets($theme)
 {
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
+	$file_stylesheets = my_unserialize($theme['stylesheets']);
 
 	if(!is_array($file_stylesheets))
 	{

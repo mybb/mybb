@@ -1366,7 +1366,7 @@ if($mybb->input['action'] == "delete_set")
 	$query = $db->simple_select("themes", "properties");
 	while($theme = $db->fetch_array($query))
 	{
-		$properties = @unserialize($theme['properties']);
+		$properties = my_unserialize($theme['properties']);
 		if($properties['templateset'] == $sid)
 		{
 			flash_message($lang->error_themes_attached_template_set, 'error');
@@ -1864,7 +1864,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("themes", "name,tid,properties", "tid != '1'");
 	while($theme = $db->fetch_array($query))
 	{
-		$tbits = unserialize($theme['properties']);
+		$tbits = my_unserialize($theme['properties']);
 		$themes[$tbits['templateset']][$theme['tid']] = htmlspecialchars_uni($theme['name']);
 	}
 

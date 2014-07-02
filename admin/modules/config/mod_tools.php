@@ -386,7 +386,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	{
 		$query = $db->simple_select("modtools", "*", "tid = '{$mybb->input['tid']}'");
 		$modtool = $db->fetch_array($query);
-		$thread_options = unserialize($modtool['threadoptions']);
+		$thread_options = my_unserialize($modtool['threadoptions']);
 
 		$mybb->input['title'] = $modtool['name'];
 		$mybb->input['description'] = $modtool['description'];
@@ -1377,8 +1377,8 @@ if($mybb->input['action'] == "edit_post_tool")
 	{
 		$query = $db->simple_select("modtools", "*", "tid = '{$mybb->input['tid']}'");
 		$modtool = $db->fetch_array($query);
-		$thread_options = unserialize($modtool['threadoptions']);
-		$post_options = unserialize($modtool['postoptions']);
+		$thread_options = my_unserialize($modtool['threadoptions']);
+		$post_options = my_unserialize($modtool['postoptions']);
 
 		$mybb->input['title'] = $modtool['name'];
 		$mybb->input['description'] = $modtool['description'];

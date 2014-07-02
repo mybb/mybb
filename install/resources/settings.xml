@@ -1754,11 +1754,11 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 	</settinggroup>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="20" isdefault="1">
 		<setting name="portal_announcementsfid">
-			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
+			<title>Forums to pull announcements from</title>
+			<description><![CDATA[Please select the forums of the forum(s) you wish to pull the announcements from.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
-			<settingvalue><![CDATA[2]]></settingvalue>
+			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="portal_numannouncements">
@@ -2152,9 +2152,9 @@ smtp=SMTP mail]]></optionscode>
 	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the purgespammer feature" disporder="22" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
-			<description><![CDATA[Enter the ID of the usergroups who are allowed to use Purge Spammer.]]></description>
+			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[3,4,6]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
@@ -2199,3 +2199,4 @@ delete=Delete]]></optionscode>
 		</setting>
 	</settinggroup>
 </settings>
+			

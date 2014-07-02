@@ -173,19 +173,35 @@ else
 
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
+$inactiveforums = get_inactive_forums();
 
 if($unviewableforums && !is_super_admin($mybb->user['uid']))
 {
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
 
-	$unviewableforums = str_replace("'", '', $unviewableforums);
-	$unviewableforums = explode(',', $unviewableforums);
+	$unviewablefids = explode(',', $unviewableforums);
+	foreach($unviewablefids as $key => $fid)
+	{
+		$unviewablefids[$key] = (int)$fid;
+	}
+	unset($fid);
 }
-else
+
+if($inactiveforums)
 {
-	$unviewableforums = array();
+	$flist .= " AND fid NOT IN ({$inactiveforums})";
+	$tflist .= " AND t.fid NOT IN ({$inactiveforums})";
+
+	$unviewablefids = explode(',', $inactiveforums);
+	foreach($unviewablefids as &$fid)
+	{
+		$fid = (int)$fid;
+	}
+	unset($fid);
 }
+
+$unviewableforums = $unviewablefids;
 
 if(!isset($collapsedimg['modcpforums']))
 {
@@ -432,7 +448,7 @@ if($mybb->input['action'] == "reports")
 
 			if($report['reporters'])
 			{
-				$reporters = unserialize($report['reporters']);
+				$reporters = my_unserialize($report['reporters']);
 
 				if(is_array($reporters))
 				{
@@ -884,7 +900,7 @@ if($mybb->input['action'] == "modlogs")
 		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
-			$data = unserialize($logitem['data']);
+			$data = my_unserialize($logitem['data']);
 			if(!empty($data['uid']))
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
@@ -4532,7 +4548,7 @@ if(!$mybb->input['action'])
 			// Edited a user or managed announcement?
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
-				$data = unserialize($logitem['data']);
+				$data = my_unserialize($logitem['data']);
 				if($data['uid'])
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
