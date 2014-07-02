@@ -225,6 +225,8 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("newthread_do_newthread_start");
 
+	$post_errors = array();
+	
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
@@ -247,7 +249,25 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Otherwise use the name they specified.
 			else
 			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
+				//check validity of the username
+				
+				// Set up user handler.
+				require_once MYBB_ROOT."inc/datahandlers/user.php";
+				$userhandler = new UserDataHandler();
+				
+				$data_array = array('username' => $mybb->get_input('username'));
+				$userhandler->set_data($data_array);
+				
+				if(!$userhandler->verify_username())
+				{
+					// invalid username
+					$post_errors = $userhandler->get_friendly_errors();
+				}
+				else
+				{
+					// valid username
+					$username = htmlspecialchars_uni($mybb->get_input('username'));
+				}
 			}
 			$uid = 0;
 		}
@@ -346,11 +366,10 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	// Now let the post handler do all the hard work.
 	$valid_thread = $posthandler->validate_thread();
 
-	$post_errors = array();
 	// Fetch friendly error messages if this is an invalid thread
 	if(!$valid_thread)
 	{
-		$post_errors = $posthandler->get_friendly_errors();
+		$post_errors = array_merge($post_errors, $posthandler->get_friendly_errors()); 
 	}
 
 	// Check captcha image
@@ -675,6 +694,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	// If we're preving a post then generate the preview.
 	if(!empty($mybb->input['previewpost']))
 	{
+		$post_errors = array();
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
@@ -695,7 +715,25 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				// Otherwise use the name they specified.
 				else
 				{
-					$username = htmlspecialchars_uni($mybb->get_input('username'));
+					//check validity of the username
+					
+					// Set up user handler.
+					require_once MYBB_ROOT."inc/datahandlers/user.php";
+					$userhandler = new UserDataHandler();
+					
+					$data_array = array('username' => $mybb->get_input('username'));
+					$userhandler->set_data($data_array);
+					
+					if(!$userhandler->verify_username())
+					{
+						// invalid username
+						$post_errors = $userhandler->get_friendly_errors();
+					}
+					else
+					{
+						// valid username
+						$username = htmlspecialchars_uni($mybb->get_input('username'));
+					}
 				}
 				$uid = 0;
 			}
@@ -736,11 +774,10 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$valid_thread = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
 
-		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
 		if(!$valid_thread || !$valid_subject)
 		{
-			$post_errors = $posthandler->get_friendly_errors();
+			$post_errors = array_merge($post_errors, $posthandler->get_friendly_errors());
 		}
 
 		// One or more errors returned, fetch error list and throw to newreply page
