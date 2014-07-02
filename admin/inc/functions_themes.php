@@ -390,17 +390,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	$filename = str_replace('/', '', $filename);
 	$tid = intval($tid);
-	$cache_themes_dir = MYBB_ROOT."cache/themes/theme{$tid}";
-
-	$cdn_path = '';
-
-	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
-	{
-		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
-		$cache_themes_dir = $cdn_path.'/'."cache/themes/theme{$tid}";
-	}
-
-	$cache_themes_dir = realpath($cache_themes_dir);
+	$cache_themes_dir = MYBB_ROOT . "cache/themes/theme{$tid}";
 
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
@@ -456,6 +446,16 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	@fwrite($fp, $stylesheet);
 	@fclose($fp);
+
+	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	{
+		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
+		$cache_themes_dir = $cdn_path.'/'."cache/themes/theme{$tid}";
+
+		@copy("{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
+		@copy("{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
+	}
+
 	if(strpos($theme_directory, MYBB_ROOT) == 0)
 	{
 		$theme_directory = str_replace(MYBB_ROOT.'/', '', $theme_directory);
