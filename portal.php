@@ -341,7 +341,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	$altbg = alt_trow();
 	$threadlist = '';
 	$query = $db->query("
-		SELECT t.*, u.username
+		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, t.threadlink, t.lastpostlink, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 		WHERE 1=1 {$unviewwhere}{$inactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
@@ -422,11 +422,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		}
 	}
 	
-	if($announcementcount == 0)
-	{
-		$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
-		$announcementcount = $db->fetch_field($query, "threads");
-	}
+	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
+	$announcementcount = $db->fetch_field($query, "threads");
 	
 
 	$numannouncements = intval($mybb->settings['portal_numannouncements']);
@@ -434,9 +431,9 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	{
 		$numannouncements = 10; // Default back to 10
 	}
-	if($mybb->input['page'] > 0)
+	if($mybb->get_input('page', 1) > 0)
 	{
-		$page = $mybb->input['page'];
+		$page = $mybb->get_input('page', 1);
 		$start = ($page-1) * $numannouncements;
 		$pages = $announcementcount / $numannouncements;
 		$pages = ceil($numannouncements);
