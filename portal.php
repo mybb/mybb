@@ -356,6 +356,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 
 		$lastpostdate = my_date('relative', $thread['lastpost']);
+		$thread['replies'] = my_number_format($thread['replies']);
+		$thread['views'] = my_number_format($thread['views']);
 
 		// Don't link to guest's profiles (they have no profile).
 		if($thread['lastposteruid'] == 0)
