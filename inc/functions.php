@@ -2825,7 +2825,14 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"Enter URL:" => "editor_enterurl",
 			"Enter the YouTube video URL or ID:" => "editor_enteryoutubeurl",
 			"Insert a Quote" => "editor_insertquote",
-			"Invalid YouTube video" => "editor_invalidyoutube"
+			"Invalid YouTube video" => "editor_invalidyoutube",
+			"Dailymotion" => "editor_dailymotion",
+			"MetaCafe" => "editor_metacafe",
+			"Veoh" => "editor_veoh",
+			"Vimeo" => "editor_vimeo",
+			"Youtube" => "editor_youtube",
+			"Insert a video" => "editor_insertvideo",
+			"PHP" => "editor_php"
 		);
 		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
