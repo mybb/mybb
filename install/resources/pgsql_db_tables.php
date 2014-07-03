@@ -394,6 +394,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	toemail varchar(200) NOT NULL default '',
 	tid int NOT NULL default '0',
 	ipaddress bytea NOT NULL default '',
+	type smallint NOT NULL default '0',
 	PRIMARY KEY(mid)
 );";
 

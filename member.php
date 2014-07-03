@@ -2540,7 +2540,8 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"touid" => $to_user['uid'],
 				"toemail" => $db->escape_string($to_user['email']),
 				"tid" => 0,
-				"ipaddress" => $db->escape_binary($session->packedip)
+				"ipaddress" => $db->escape_binary($session->packedip),
+				"type" => 1
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

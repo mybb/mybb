@@ -205,7 +205,8 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 				"touid" => 0,
 				"toemail" => $db->escape_string($mybb->input['email']),
 				"tid" => $thread['tid'],
-				"ipaddress" => $db->escape_binary($session->packedip)
+				"ipaddress" => $db->escape_binary($session->packedip),
+				"type" => 2
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}

@@ -407,6 +407,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	toemail varchar(200) NOT NULL default '',
 	tid int unsigned NOT NULL default '0',
 	ipaddress varbinary(16) NOT NULL default '',
+	type tinyint(1) NOT NULL default '0',
 	PRIMARY KEY (mid)
 ) ENGINE=MyISAM;";
 

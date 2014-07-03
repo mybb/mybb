@@ -25,6 +25,7 @@ $l['find_emails_by_user'] = "Find all emails sent by this user";
 $l['find'] = "Find";
 $l['deleted_user'] = "Deleted User";
 $l['email_sent_to_user'] = "Email sent to user";
+$l['email_sent_using_contact_form'] = "Email sent using the contact form";
 $l['no_logs'] = "There are no log entries with the selected criteria.";
 $l['filter_user_email_log'] = "Filter User Email Log";
 $l['username_is'] = "Username is";

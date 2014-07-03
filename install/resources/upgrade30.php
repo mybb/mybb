@@ -532,6 +532,11 @@ function upgrade30_dbchanges4()
 		$db->drop_column("usergroups", "canuseipsearch");
 	}
 
+	if($db->field_exists('type', 'maillogs'))
+	{
+		$db->drop_column("maillogs", "type");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -544,6 +549,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canbanusers", "smallint NOT NULL default '0' AFTER caneditprofiles");
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
+			$db->add_column("maillogs", "type", "smallint NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
@@ -555,6 +561,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canbanusers", "tinyint(1) NOT NULL default '0' AFTER caneditprofiles");
 			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
+			$db->add_column("maillogs", "type", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
 
@@ -569,6 +576,16 @@ function upgrade30_dbchanges4()
 		"canuseipsearch" => 1
 	);
 	$db->update_query("usergroups", $update_array, "canmodcp= '1'");
+
+	$update_array = array(
+		"type" => 1
+	);
+	$db->update_query("maillogs", $update_array, "tid= '0'");
+
+	$update_array = array(
+		"type" => 2
+	);
+	$db->update_query("maillogs", $update_array, "tid > '0'");
 
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
