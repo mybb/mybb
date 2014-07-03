@@ -2514,6 +2514,21 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$errors[] = $lang->error_no_email_message;
 	}
 
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
+
 	if(count($errors) == 0)
 	{
 		if($mybb->settings['mail_handler'] == 'smtp')
@@ -2666,6 +2681,22 @@ if($mybb->input['action'] == "emailuser")
 		$fromemail = '';
 		$subject = '';
 		$message = '';
+	}
+
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post_captcha");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+	else
+	{
+		$captcha = '';
 	}
 
 	$from_email = '';

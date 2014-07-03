@@ -4425,6 +4425,7 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="40%" class="trow1"><strong>{$lang->email_message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
 </tr>
+{$captcha}
 </table>
 <br />
 <input type="hidden" name="action" value="do_emailuser" />
@@ -13421,7 +13422,6 @@ $(function() {
 </tr>
 {$captcha}
 </table>
-</table>
 <br />
 <div align="center">
 <input type="submit" class="button" name="submit" value="{$lang->contact_send}" />
@@ -13534,6 +13534,7 @@ $(function() {
 <td valign="top" width="40%" class="trow1"><strong>{$lang->message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
 </tr>
+{$captcha}
 </table>
 <br />
 <input type="hidden" name="action" value="do_sendtofriend" />

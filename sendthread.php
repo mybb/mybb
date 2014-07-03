@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -174,6 +174,21 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		$errors[] = $lang->error_nomessage;
 	}
 
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
+
 	// No errors detected
 	if(count($errors) == 0)
 	{
@@ -242,6 +257,22 @@ if(!$mybb->input['action'])
 		$fromemail = '';
 		$subject = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
 		$message = '';
+	}
+
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post_captcha");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+	else
+	{
+		$captcha = '';
 	}
 
 	$from_email = '';
