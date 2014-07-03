@@ -364,7 +364,8 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	touid int unsigned NOT NULL default '0',
 	toemail varchar(200) NOT NULL default '',
 	tid int NOT NULL default '0',
-	ipaddress blob(16) NOT NULL default ''
+	ipaddress blob(16) NOT NULL default '',
+	type tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_mailqueue (
@@ -842,6 +843,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	cansendemail tinyint(1) NOT NULL default '0',
 	cansendemailoverride tinyint(1) NOT NULL default '0',
 	maxemails int(3) NOT NULL default '5',
+	emailfloodtime int(3) NOT NULL default '5',
 	canviewmemberlist tinyint(1) NOT NULL default '0',
 	canviewcalendar tinyint(1) NOT NULL default '0',
 	canaddevents tinyint(1) NOT NULL default '0',

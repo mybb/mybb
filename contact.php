@@ -12,6 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
 $templatelist = "contact,post_captcha";
+
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';
 
@@ -26,6 +27,71 @@ add_breadcrumb($lang->contact, "contact.php");
 if($mybb->settings['contact'] != 1 || (!$mybb->user['uid'] && $mybb->settings['contact_guests'] == 1))
 {
 	error_no_permission();
+}
+
+// Check group limits
+if($mybb->usergroup['maxemails'] > 0)
+{
+	if($mybb->user['uid'] > 0)
+	{
+		$user_check = "fromuid='{$mybb->user['uid']}'";
+	}
+	else
+	{
+		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+	}
+
+	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+	$sent_count = $db->fetch_field($query, "sent_count");
+	if($sent_count >= $mybb->usergroup['maxemails'])
+	{
+		$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+		error($lang->error_max_emails_day);
+	}
+}
+
+// Check email flood control
+if($mybb->usergroup['emailfloodtime'] > 0)
+{
+	if($mybb->user['uid'] > 0)
+	{
+		$user_check = "fromuid='{$mybb->user['uid']}'";
+	}
+	else
+	{
+		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+	}
+
+	$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+
+	$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+	$last_email = $db->fetch_array($query);
+
+	// Users last email was within the flood time, show the error
+	if($last_email['mid'])
+	{
+		$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+
+		if($remaining_time == 1)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_second, $mybb->usergroup['emailfloodtime']);
+		}
+		elseif($remaining_time < 60)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_seconds, $mybb->usergroup['emailfloodtime'], $remaining_time);
+		}
+		elseif($remaining_time > 60 && $remaining_time < 120)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_minute, $mybb->usergroup['emailfloodtime']);
+		}
+		else
+		{
+			$remaining_time_minutes = ceil($remaining_time/60);
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
+		}
+
+		error($lang->error_emailflooding);
+	}
 }
 
 $errors = '';
@@ -120,6 +186,24 @@ if($mybb->request_method == "post")
 
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
+
+		if($mybb->settings['mail_logging'] > 0)
+		{
+			// Log the message
+			$log_entry = array(
+				"subject" => $db->escape_string($subject),
+				"message" => $db->escape_string($message),
+				"dateline" => TIME_NOW,
+				"fromuid" => $mybb->user['uid'],
+				"fromemail" => $db->escape_string($mybb->input['email']),
+				"touid" => 0,
+				"toemail" => $db->escape_string($mybb->settings['adminemail']),
+				"tid" => 0,
+				"ipaddress" => $db->escape_binary($session->packedip),
+				"type" => 3
+			);
+			$db->insert_query("maillogs", $log_entry);
+		}
 
 		// Redirect
 		redirect('contact.php', $lang->contact_success_message);

@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'sendthread.php');
 
-$templatelist = "sendthread,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "sendthread,sendthread_fromemail,sendthread_fromemail_hidden,forumdisplay_password_wrongpass,forumdisplay_password,post_captcha";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -45,14 +45,6 @@ if($thread['prefix'])
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 
-// Guests cannot use this feature
-if(!$mybb->user['uid'])
-{
-	error_no_permission();
-}
-$fid = $thread['fid'];
-
-
 // Make navigation
 build_forum_breadcrumb($thread['fid']);
 add_breadcrumb($breadcrumbprefix.$thread['subject'], get_thread_link($thread['tid']));
@@ -85,12 +77,65 @@ if($mybb->usergroup['cansendemail'] == 0)
 // Check group limits
 if($mybb->usergroup['maxemails'] > 0)
 {
-	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}' AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+	if($mybb->user['uid'] > 0)
+	{
+		$user_check = "fromuid='{$mybb->user['uid']}'";
+	}
+	else
+	{
+		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+	}
+
+	$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
 	$sent_count = $db->fetch_field($query, "sent_count");
 	if($sent_count >= $mybb->usergroup['maxemails'])
 	{
 		$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 		error($lang->error_max_emails_day);
+	}
+}
+
+// Check email flood control
+if($mybb->usergroup['emailfloodtime'] > 0)
+{
+	if($mybb->user['uid'] > 0)
+	{
+		$user_check = "fromuid='{$mybb->user['uid']}'";
+	}
+	else
+	{
+		$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+	}
+
+	$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+
+	$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+	$last_email = $db->fetch_array($query);
+
+	// Users last email was within the flood time, show the error
+	if($last_email['mid'])
+	{
+		$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+
+		if($remaining_time == 1)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_second, $mybb->usergroup['emailfloodtime']);
+		}
+		elseif($remaining_time < 60)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_seconds, $mybb->usergroup['emailfloodtime'], $remaining_time);
+		}
+		elseif($remaining_time > 60 && $remaining_time < 120)
+		{
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_minute, $mybb->usergroup['emailfloodtime']);
+		}
+		else
+		{
+			$remaining_time_minutes = ceil($remaining_time/60);
+			$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
+		}
+
+		error($lang->error_emailflooding);
 	}
 }
 
@@ -109,6 +154,16 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		$errors[] = $lang->error_invalidemail;
 	}
 
+	if(!validate_email_format($mybb->input['fromemail']))
+	{
+		$errors[] = $lang->error_invalidfromemail;
+	}
+
+	if(empty($mybb->input['fromname']))
+	{
+		$errors[] = $lang->error_noname;
+	}
+
 	if(empty($mybb->input['subject']))
 	{
 		$errors[] = $lang->error_nosubject;
@@ -119,24 +174,39 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		$errors[] = $lang->error_nomessage;
 	}
 
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
+
 	// No errors detected
 	if(count($errors) == 0)
 	{
 		if($mybb->settings['mail_handler'] == 'smtp')
 		{
-			$from = $mybb->user['email'];
+			$from = $mybb->input['fromemail'];
 		}
 		else
 		{
-			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
 		}
 
 		$threadlink = get_thread_link($thread['tid']);
 
-		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
+		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
 
 		// Send the actual message
-		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->user['email']);
+		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->input['fromemail']);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{
@@ -146,11 +216,12 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 				"message" => $db->escape_string($message),
 				"dateline" => TIME_NOW,
 				"fromuid" => $mybb->user['uid'],
-				"fromemail" => $db->escape_string($mybb->user['email']),
+				"fromemail" => $db->escape_string($mybb->input['fromemail']),
 				"touid" => 0,
 				"toemail" => $db->escape_string($mybb->input['email']),
 				"tid" => $thread['tid'],
-				"ipaddress" => $db->escape_binary($session->packedip)
+				"ipaddress" => $db->escape_binary($session->packedip),
+				"type" => 2
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}
@@ -173,6 +244,8 @@ if(!$mybb->input['action'])
 	{
 		$errors = inline_error($errors);
 		$email = htmlspecialchars_uni($mybb->input['email']);
+		$fromname = htmlspecialchars_uni($mybb->input['fromname']);
+		$fromemail = htmlspecialchars_uni($mybb->input['fromemail']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 		$message = htmlspecialchars_uni($mybb->input['message']);
 	}
@@ -180,8 +253,36 @@ if(!$mybb->input['action'])
 	{
 		$errors = '';
 		$email = '';
+		$fromname = '';
+		$fromemail = '';
 		$subject = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
 		$message = '';
+	}
+
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post_captcha");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+	else
+	{
+		$captcha = '';
+	}
+
+	$from_email = '';
+	if($mybb->user['uid'] == 0)
+	{
+		eval("\$from_email = \"".$templates->get("sendthread_fromemail")."\";");
+	}
+	else
+	{
+		eval("\$from_email = \"".$templates->get("sendthread_fromemail_hidden")."\";");
 	}
 
 	$plugins->run_hooks("sendthread_end");

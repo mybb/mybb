@@ -43,6 +43,9 @@ code:before {
 	padding: 4px 0 3px 0;
 	margin-bottom: 10px;
 }
+code.phpcodeblock:before {
+	content: 'PHP Code:' !important;
+}
 code {
 	font-family: Monaco, Consolas, Courier, monospace;
 	font-size: 13px !important;

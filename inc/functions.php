@@ -2937,7 +2937,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
-				$code = "code,";
+				$code = "code,php,";
 			}
 
 			if($mybb->user['sourceeditor'] == 1)

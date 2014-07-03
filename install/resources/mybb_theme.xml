@@ -4402,7 +4402,7 @@ if(use_xmlhttprequest == "1")
 	</dl>
 </body>
 </html>]]></template>
-		<template name="member_emailuser" version="1400"><![CDATA[<html>
+		<template name="member_emailuser" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->email_user}</title>
 {$headerinclude}
@@ -4416,6 +4416,7 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->email_user}</strong></td>
 </tr>
+{$from_email}
 <tr>
 <td width="40%" class="trow2"><strong>{$lang->email_subject}</strong></td>
 <td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$subject}" /></td>
@@ -4424,6 +4425,7 @@ if(use_xmlhttprequest == "1")
 <td valign="top" width="40%" class="trow1"><strong>{$lang->email_message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
 </tr>
+{$captcha}
 </table>
 <br />
 <input type="hidden" name="action" value="do_emailuser" />
@@ -4433,14 +4435,16 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_emailuser_guest" version="120"><![CDATA[<tr>
+		<template name="member_emailuser_guest" version="1800"><![CDATA[<tr>
 <td width="40%" class="trow2"><strong>{$lang->your_name}</strong><br /><span class="smalltext">{$lang->name_note}</span></td>
-<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" /></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" value="{$fromname}" /></td>
 </tr>
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
-<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail"  value="{$fromemail}" /></td>
 </tr>]]></template>
+		<template name="member_emailuser_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
+<input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="member_loggedin_notice" version="1800"><![CDATA[<fieldset class="align_right smalltext">{$lang->already_logged_in}</fieldset>
 <br />]]></template>
 		<template name="member_login" version="1611"><![CDATA[<html>
@@ -8193,6 +8197,43 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_purgespammer" version="1800"><![CDATA[<html>
+<head>
+<title>{$lang->purgespammer}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form method="post" action="moderation.php">
+<input type="hidden" name="action" value="do_purgespammer" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead">
+<strong>{$lang->purgespammer_actionstotake}</strong>
+<input type="submit" value="{$lang->purgespammer_submit}" class="float_right" />
+</td>
+</tr>
+<tr>
+<td class="tcat">{$lang->purgespammer_desc}</td>
+</tr>
+{$options}
+<tr>
+<td class="tfoot" align="center"><input type="submit" value="{$lang->purgespammer_submit}" /></td>
+</tr>
+</table>
+<input type="hidden" name="uid" value="{$mybb->input['uid']}" />
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="moderation_purgespammer_option" version="1800"><![CDATA[<tr>
+		<td class="{$altbg}" width="99%"><strong>{$title}</strong></label><br />{$description}</td>
+		<input type="hidden" name="actions[{$action}]" id="actions_{$action}" value="1" />
+</tr>]]></template>
+		<template name="moderation_purgespammer_option_textbox" version="1800"><![CDATA[<tr>
+			<td class="{$altbg}" width="100%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
+</tr>]]></template>
 		<template name="moderation_split" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
@@ -13327,6 +13368,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
+var partialmode = {$mybb->settings['partialmode']};
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
@@ -13379,7 +13421,6 @@ $(function() {
 <td class="trow1"><input type="text" name="email" class="textbox" value="{$mybb->input['email']}" /></td>
 </tr>
 {$captcha}
-</table>
 </table>
 <br />
 <div align="center">
@@ -13480,6 +13521,7 @@ $(function() {
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->send_thread}</strong></td>
 </tr>
+{$from_email}
 <tr>
 <td width="40%" class="trow1"><strong>{$lang->recipient}</strong><br /><span class="smalltext">{$lang->recipient_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="email" value="{$email}" /></td>
@@ -13492,6 +13534,7 @@ $(function() {
 <td valign="top" width="40%" class="trow1"><strong>{$lang->message}</strong></td>
 <td width="60%" class="trow1"><textarea cols="50" rows="10" name="message">{$message}</textarea></td>
 </tr>
+{$captcha}
 </table>
 <br />
 <input type="hidden" name="action" value="do_sendtofriend" />
@@ -13501,42 +13544,15 @@ $(function() {
 {$footer}
 </body>
 </html>]]></template>
-	<template name="moderation_purgespammer" version="1800"><![CDATA[<html>
-<head>
-<title>{$lang->purgespammer}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form method="post" action="moderation.php">
-<input type="hidden" name="action" value="do_purgespammer" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead">
-<strong>{$lang->purgespammer_actionstotake}</strong>
-<input type="submit" value="{$lang->purgespammer_submit}" class="float_right" />
-</td>
+		<template name="sendthread_fromemail" version="1800"><![CDATA[<tr>
+<td width="40%" class="trow2"><strong>{$lang->your_name}</strong><br /><span class="smalltext">{$lang->name_note}</span></td>
+<td width="60%" class="trow2"><input type="text" class="textbox" size="50" name="fromname" value="{$fromname}" /></td>
 </tr>
 <tr>
-<td class="tcat">{$lang->purgespammer_desc}</td>
-</tr>
-{$options}
-<tr>
-<td class="tfoot" align="center"><input type="submit" value="{$lang->purgespammer_submit}" /></td>
-</tr>
-</table>
-<input type="hidden" name="uid" value="{$mybb->input['uid']}" />
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-</form>
-{$footer}
-</body>
-</html>]]></template>
-	<template name="moderation_purgespammer_option" version="1800"><![CDATA[<tr>
-		<td class="{$altbg}" width="99%"><strong>{$title}</strong></label><br />{$description}</td>
-		<input type="hidden" name="actions[{$action}]" id="actions_{$action}" value="1" />
+<td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
+<td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" value="{$fromemail}" /></td>
 </tr>]]></template>
-	<template name="moderation_purgespammer_option_textbox" version="1800"><![CDATA[<tr>
-			<td class="{$altbg}" width="100%"><label for="actions_{$action}"><strong>{$title}</strong></label><br />{$description}<br /><input type="text" name="actions[{$action}]" id="actions_{$action}" value="{$text}" /></td>
-</tr>]]></template>
+		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
+<input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 	</templates>
 </theme>

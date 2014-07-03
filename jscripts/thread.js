@@ -229,14 +229,17 @@ var Thread = {
 				pid = id.replace( /[^\d.]/g, '');
 
 				// Create a copy of the post
-				$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
+				if($('#pid_' + pid + '_temp').length == 0)
+				{
+					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
+				}
 
 				// Trigger the edit event
 				$('#pid_' + pid).trigger("edit" + pid);
 
 				// Edit Reason
 				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
-				if(allowEditReason == 1)
+				if(allowEditReason == 1 && $('#quickedit_' + pid + '_editreason').length == 0)
 				{
 					$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="50" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
 				}

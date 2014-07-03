@@ -15,12 +15,12 @@ define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_l
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,member_register_hiddencaptcha,member_coppa_form,member_register_coppa,member_register_agreement_coppa,member_register_agreement,usercp_options_tppselect,usercp_options_pppselect,member_register_referrer,member_register_customfield,member_register_requiredfields";
-$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove";
+$templatelist .= ",member_resetpassword,member_loggedin_notice,member_profile_away,member_emailuser,member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,member_profile_addremove,member_emailuser_guest";
 $templatelist .= ",member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_viewnotes";
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
+$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2409,7 +2409,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	$plugins->run_hooks("member_do_emailuser_start");
 
 	// Guests or those without permission can't email other users
-	if($mybb->usergroup['cansendemail'] == 0 || !$mybb->user['uid'])
+	if($mybb->usergroup['cansendemail'] == 0)
 	{
 		error_no_permission();
 	}
@@ -2417,12 +2417,65 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
-		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}' AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+		if($mybb->user['uid'] > 0)
+		{
+			$user_check = "fromuid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+		}
+
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
 		$sent_count = $db->fetch_field($query, "sent_count");
 		if($sent_count >= $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 			error($lang->error_max_emails_day);
+		}
+	}
+
+	// Check email flood control
+	if($mybb->usergroup['emailfloodtime'] > 0)
+	{
+		if($mybb->user['uid'] > 0)
+		{
+			$user_check = "fromuid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+		}
+
+		$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+
+		$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$last_email = $db->fetch_array($query);
+
+		// Users last email was within the flood time, show the error
+		if($last_email['mid'])
+		{
+			$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+
+			if($remaining_time == 1)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_second, $mybb->usergroup['emailfloodtime']);
+			}
+			elseif($remaining_time < 60)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_seconds, $mybb->usergroup['emailfloodtime'], $remaining_time);
+			}
+			elseif($remaining_time > 60 && $remaining_time < 120)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_minute, $mybb->usergroup['emailfloodtime']);
+			}
+			else
+			{
+				$remaining_time_minutes = ceil($remaining_time/60);
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
+			}
+
+			error($lang->error_emailflooding);
 		}
 	}
 
@@ -2441,6 +2494,16 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	$errors = array();
 
+	if(!validate_email_format($mybb->input['fromemail']))
+	{
+		$errors[] = $lang->error_invalidfromemail;
+	}
+
+	if(empty($mybb->input['fromname']))
+	{
+		$errors[] = $lang->error_noname;
+	}
+
 	if(empty($mybb->input['subject']))
 	{
 		$errors[] = $lang->error_no_email_subject;
@@ -2451,19 +2514,34 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$errors[] = $lang->error_no_email_message;
 	}
 
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
+
 	if(count($errors) == 0)
 	{
 		if($mybb->settings['mail_handler'] == 'smtp')
 		{
-			$from = $mybb->user['email'];
+			$from = $mybb->input['fromemail'];
 		}
 		else
 		{
-			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+			$from = "{$mybb->input['fromname']} <{$mybb->input['fromemail']}>";
 		}
 
-		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
-		my_mail($to_user['email'], $mybb->get_input('subject'), $message, $from, "", "", false, "text", "", $mybb->user['email']);
+		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->input['fromname'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->get_input('message'));
+		my_mail($to_user['email'], $mybb->get_input('subject'), $message, $from, "", "", false, "text", "", $mybb->input['fromemail']);
 
 		if($mybb->settings['mail_logging'] > 0)
 		{
@@ -2473,11 +2551,12 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 				"message" => $db->escape_string($mybb->get_input('message')),
 				"dateline" => TIME_NOW,
 				"fromuid" => $mybb->user['uid'],
-				"fromemail" => $db->escape_string($mybb->user['email']),
+				"fromemail" => $db->escape_string($mybb->input['fromemail']),
 				"touid" => $to_user['uid'],
 				"toemail" => $db->escape_string($to_user['email']),
 				"tid" => 0,
-				"ipaddress" => $db->escape_binary($session->packedip)
+				"ipaddress" => $db->escape_binary($session->packedip),
+				"type" => 1
 			);
 			$db->insert_query("maillogs", $log_entry);
 		}
@@ -2497,7 +2576,7 @@ if($mybb->input['action'] == "emailuser")
 	$plugins->run_hooks("member_emailuser_start");
 
 	// Guests or those without permission can't email other users
-	if($mybb->usergroup['cansendemail'] == 0 || !$mybb->user['uid'])
+	if($mybb->usergroup['cansendemail'] == 0)
 	{
 		error_no_permission();
 	}
@@ -2505,12 +2584,65 @@ if($mybb->input['action'] == "emailuser")
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
-		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}' AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+		if($mybb->user['uid'] > 0)
+		{
+			$user_check = "fromuid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+		}
+
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "{$user_check} AND dateline >= '".(TIME_NOW - (60*60*24))."'");
 		$sent_count = $db->fetch_field($query, "sent_count");
-		if($sent_count > $mybb->usergroup['maxemails'])
+		if($sent_count >= $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 			error($lang->error_max_emails_day);
+		}
+	}
+
+	// Check email flood control
+	if($mybb->usergroup['emailfloodtime'] > 0)
+	{
+		if($mybb->user['uid'] > 0)
+		{
+			$user_check = "fromuid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$user_check = "ipaddress=".$db->escape_binary($session->packedip);
+		}
+
+		$timecut = TIME_NOW-$mybb->usergroup['emailfloodtime']*60;
+
+		$query = $db->simple_select("maillogs", "mid, dateline", "{$user_check} AND dateline > '{$timecut}'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$last_email = $db->fetch_array($query);
+
+		// Users last email was within the flood time, show the error
+		if($last_email['mid'])
+		{
+			$remaining_time = ($mybb->usergroup['emailfloodtime']*60)-(TIME_NOW-$last_email['dateline']);
+
+			if($remaining_time == 1)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_second, $mybb->usergroup['emailfloodtime']);
+			}
+			elseif($remaining_time < 60)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_seconds, $mybb->usergroup['emailfloodtime'], $remaining_time);
+			}
+			elseif($remaining_time > 60 && $remaining_time < 120)
+			{
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_1_minute, $mybb->usergroup['emailfloodtime']);
+			}
+			else
+			{
+				$remaining_time_minutes = ceil($remaining_time/60);
+				$lang->error_emailflooding = $lang->sprintf($lang->error_emailflooding_minutes, $mybb->usergroup['emailfloodtime'], $remaining_time_minutes);
+			}
+
+			error($lang->error_emailflooding);
 		}
 	}
 
@@ -2537,14 +2669,44 @@ if($mybb->input['action'] == "emailuser")
 	if(isset($errors) && count($errors) > 0)
 	{
 		$errors = inline_error($errors);
+		$fromname = htmlspecialchars_uni($mybb->get_input('fromname'));
+		$fromemail = htmlspecialchars_uni($mybb->get_input('fromemail'));
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
 	}
 	else
 	{
 		$errors = '';
+		$fromname = '';
+		$fromemail = '';
 		$subject = '';
 		$message = '';
+	}
+
+	// Generate CAPTCHA?
+	if($mybb->settings['captchaimage'] && $mybb->user['uid'] == 0)
+	{
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(true, "post_captcha");
+
+		if($post_captcha->html)
+		{
+			$captcha = $post_captcha->html;
+		}
+	}
+	else
+	{
+		$captcha = '';
+	}
+
+	$from_email = '';
+	if($mybb->user['uid'] == 0)
+	{
+		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
+	}
+	else
+	{
+		eval("\$from_email = \"".$templates->get("member_emailuser_hidden")."\";");
 	}
 
 	$plugins->run_hooks("member_emailuser_end");

@@ -890,7 +890,7 @@ EOF;
 
 		if($mybb->settings['allowcodemycode'] == 1)
 		{
-			$code = "code,";
+			$code = "code,php,";
 		}
 
 		if($mybb->user['sourceeditor'] == 1)
@@ -901,6 +901,7 @@ EOF;
 		return <<<EOF
 
 <script type="text/javascript">
+var partialmode = {$mybb->settings['partialmode']};
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
