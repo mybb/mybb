@@ -901,6 +901,7 @@ EOF;
 		return <<<EOF
 
 <script type="text/javascript">
+var partialmode = {$mybb->settings['partialmode']};
 {$editor_language}
 $(function() {
 	$("#{$bind}").sceditor({

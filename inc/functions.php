@@ -2834,6 +2834,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 		$i = 0;
 		foreach($editor_lang_strings as $key => $lang_string)
 		{
+			++$i;
 			// Strip initial editor_ off language string if it exists - ensure case sensitivity does not matter.
 			$js_lang_string = preg_replace("#^editor_#i", "", $lang_string);
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
