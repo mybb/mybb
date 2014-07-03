@@ -390,7 +390,7 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 	$filename = str_replace('/', '', $filename);
 	$tid = (int) $tid;
-	$cache_themes_dir = "cache/themes/theme{$tid}";
+	$theme_directory = "cache/themes/theme{$tid}";
 
 	// If we're in safe mode save to the main theme folder by default
 	if($mybb->safemode)
@@ -399,9 +399,9 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		$filename = $tid."_".$filename;
 	}
 	// Does our theme directory exist? Try and create it.
-	elseif(!is_dir($cache_themes_dir))
+	elseif(!is_dir(MYBB_ROOT . $theme_directory))
 	{
-		if(!@mkdir($cache_themes_dir))
+		if(!@mkdir(MYBB_ROOT . $theme_directory))
 		{
 			$theme_directory = "cache/themes";
 			$filename        = $tid."_".$filename;
@@ -409,17 +409,11 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		else
 		{
 			// Add in empty index.html!
-			$fp = @fopen($cache_themes_dir."/index.html", "w");
+			$fp = @fopen(MYBB_ROOT . $theme_directory."/index.html", "w");
 			@fwrite($fp, "");
 			@fclose($fp);
 
-			$theme_directory = $cache_themes_dir;
 		}
-	}
-	// Seems like we're all good
-	else
-	{
-		$theme_directory = $cache_themes_dir;
 	}
 
 	$theme_vars = array(
@@ -427,16 +421,6 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	);
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace_callback("#url\((\"|'|)(.*)\\1\)#", create_function('$matches', 'return fix_css_urls($matches[2]);'), $stylesheet);
-
-	$stylesheet_min = minify_stylesheet($stylesheet);
-	$filename_min = str_replace('.css', '.min.css', $filename);
-	$fp_min = @fopen("{$theme_directory}/{$filename_min}", "wb");
-	if(!$fp_min)
-	{
-		return false;
-	}
-	@fwrite($fp_min, $stylesheet_min);
-	@fclose($fp_min);
 
 	$fp = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -447,10 +431,20 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	@fwrite($fp, $stylesheet);
 	@fclose($fp);
 
+	$stylesheet_min = minify_stylesheet($stylesheet);
+	$filename_min = str_replace('.css', '.min.css', $filename);
+	$fp_min = @fopen(MYBB_ROOT . "{$theme_directory}/{$filename_min}", "wb");
+	if(!$fp_min)
+	{
+		return false;
+	}
+	@fwrite($fp_min, $stylesheet_min);
+	@fclose($fp_min);
+
 	if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 	{
 		$cdn_path         = rtrim($mybb->settings['cdnpath'], '/\\');
-		$cache_themes_dir = $cdn_path.'/'."cache/themes/theme{$tid}";
+		$cache_themes_dir = $cdn_path . '/' . $theme_directory;
 
 		$copy_to_cdn = true;
 
@@ -464,8 +458,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 
 		if($copy_to_cdn)
 		{
-			@copy("{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
-			@copy("{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
+			@copy(MYBB_ROOT . "{$theme_directory}/{$filename}", "{$cache_themes_dir}/{$filename}");
+			@copy(MYBB_ROOT . "{$theme_directory}/{$filename_min}", "{$cache_themes_dir}/{$filename_min}");
 		}
 	}
 
