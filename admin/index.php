@@ -173,6 +173,13 @@ elseif($mybb->input['do'] == "login")
 	{
 		if(login_attempt_check_acp($mybb->user['uid']) == true)
 		{
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int) $login_user['uid'],
+					'ip_address' => $session->ipaddress,
+				)
+			);
+			
 			$default_page->show_lockedout();
 		}
 
@@ -292,6 +299,13 @@ elseif($mybb->input['do'] == "login")
 				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
 				my_mail($login_user['email'], $subject, $message);
 			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int) $login_user['uid'],
+					'ip_address' => $session->ipaddress,
+				)
+			);
 
 			$default_page->show_lockedout();
 		}
