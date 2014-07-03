@@ -13366,15 +13366,15 @@ if(use_xmlhttprequest == "1")
 <link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/editor_languages/{$lang->settings['htmllang']}.js"></script>
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']};
+{$editor_language}
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
 		style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
+        locale: "mybblang",
 		emoticonsEnabled: {$emoticons_enabled},
 		emoticons: {
 			// Emoticons to be included in the dropdown

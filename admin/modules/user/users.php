@@ -913,7 +913,6 @@ if($mybb->input['action'] == "edit")
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
