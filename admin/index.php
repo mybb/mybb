@@ -176,10 +176,10 @@ elseif($mybb->input['do'] == "login")
 			log_admin_action(array(
 					'type' => 'admin_locked_out',
 					'uid' => (int) $login_user['uid'],
-					'ip_address' => $session->ipaddress,
+					'ip_address' => get_ip(),
 				)
 			);
-			
+
 			$default_page->show_lockedout();
 		}
 
@@ -303,7 +303,7 @@ elseif($mybb->input['do'] == "login")
 			log_admin_action(array(
 					'type' => 'admin_locked_out',
 					'uid' => (int) $login_user['uid'],
-					'ip_address' => $session->ipaddress,
+					'ip_address' => get_ip(),
 				)
 			);
 

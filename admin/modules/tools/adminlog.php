@@ -554,11 +554,18 @@ function get_admin_log_action($logitem)
 	}
 	else
 	{
-		// Build a default string
-		$string = $logitem['module'].' - '.$logitem['action'];
-		if(is_array($logitem['data']) && count($logitem['data']) > 0)
+		if(isset($logitem['data']['type']) && $logitem['data']['type'] == 'admin_locked_out')
 		{
-			$string .= '('.implode(', ', $logitem['data']).')';
+			$string = $lang->sprintf($lang->admin_log_admin_locked_out, $logitem['data']['uid'], $logitem['data']['ip_address']);
+		}
+		else
+		{
+			// Build a default string
+			$string = $logitem['module'].' - '.$logitem['action'];
+			if(is_array($logitem['data']) && count($logitem['data']) > 0)
+			{
+				$string .= '('.implode(', ', $logitem['data']).')';
+			}
 		}
 	}
 	return $string;
