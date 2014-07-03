@@ -902,12 +902,13 @@ EOF;
 
 <script type="text/javascript">
 var partialmode = {$mybb->settings['partialmode']};
+{$editor_language}
 $(function() {
 	$("#{$bind}").sceditor({
 		plugins: "bbcode",
 		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
+        	locale: "mybblang",
 		emoticonsEnabled: {$emoticons_enabled},
 		emoticons: {
 			// Emoticons to be included in the dropdown
