@@ -416,9 +416,21 @@ class DB_MySQL
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=MYSQL_ASSOC)
 	{
-		$array = mysql_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case MYSQL_ASSOC:
+				break;
+			case MYSQL_NUM:
+				break;
+			case MYSQL_BOTH:
+				break;
+			default:
+				$resulttype = MYSQL_ASSOC;
+				break;
+		}
+		$array = mysql_fetch_array($query, $resulttype);
 		return $array;
 	}
 
