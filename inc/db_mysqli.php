@@ -443,7 +443,7 @@ class DB_MySQLi
 			default:
 				$resulttype = MYSQLI_ASSOC;
 		}
-		$array = mysqli_fetch_assoc($query, $resulttype);
+		$array = mysqli_fetch_array($query, $resulttype);
 		return $array;
 	}
 
