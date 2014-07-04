@@ -735,7 +735,6 @@ class PostDataHandler extends DataHandler
 		}
 	}
 
-
 	/**
 	 * Insert a post into the database.
 	 *
@@ -861,6 +860,10 @@ class PostDataHandler extends DataHandler
 
 			// Decide on the visibility of this post.
 			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
+			{
+				$visible = 0;
+			}
+			elseif($mybb->user['uid'] == $post['uid'] && $mybb->usergroup['modposts'] == 1 && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -1303,9 +1306,12 @@ class PostDataHandler extends DataHandler
 		// Thread is being made now and we have a bit to do.
 		else
 		{
-
 			// Decide on the visibility of this post.
 			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
+			{
+				$visible = 0;
+			}
+			elseif($mybb->user['uid'] == $thread['uid'] && ($mybb->usergroup['modposts'] == 1 || $mybb->usergroup['modthreads'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}

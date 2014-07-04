@@ -50,6 +50,16 @@ function upgrade30_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	if($db->field_exists('modposts', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "modposts");
+	}
+
+	if($db->field_exists('modthreads', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "modthreads");
+	}
+
 	if($db->field_exists('regex', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "regex");
@@ -163,6 +173,8 @@ function upgrade30_dbchanges()
 	switch($db->type)
 	{
 		case "pgsql":
+			$db->add_column("usergroups", "modposts", "int NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "int NOT NULL default '0' AFTER canratethreads");
 			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
 			$db->add_column("profilefields", "allowhtml", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "smallint NOT NULL default '0'");
@@ -184,6 +196,8 @@ function upgrade30_dbchanges()
 			$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'")
 			break;
 		case "sqlite":
+			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
 			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
 			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");
@@ -205,6 +219,8 @@ function upgrade30_dbchanges()
 			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'")
 			break;
 		default:
+			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
 			$db->add_column("profilefields", "regex", "text NOT NULL");
 			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");

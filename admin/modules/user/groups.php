@@ -20,6 +20,8 @@ $usergroup_permissions = array(
 	"canpostreplys" => 1,
 	"canpostattachments" => 1,
 	"canratethreads" => 1,
+	"modposts" => 0,
+	"modthreads" => 0,
 	"caneditposts" => 1,
 	"candeleteposts" => 1,
 	"candeletethreads" => 1,
@@ -813,6 +815,8 @@ if($mybb->input['action'] == "edit")
 				"canpostreplys" => intval($mybb->input['canpostreplys']),
 				"canpostattachments" => intval($mybb->input['canpostattachments']),
 				"canratethreads" => intval($mybb->input['canratethreads']),
+				"modposts" => intval($mybb->input['modposts']),
+				"modthreads" => intval($mybb->input['modthreads']),
 				"caneditposts" => intval($mybb->input['caneditposts']),
 				"candeleteposts" => intval($mybb->input['candeleteposts']),
 				"candeletethreads" => intval($mybb->input['candeletethreads']),
@@ -1019,6 +1023,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
 		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
 		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
+		$form->generate_check_box("modposts", 1, $lang->moderate_posts, array("checked" => $mybb->input['modposts'])),
+		$form->generate_check_box("modthreads", 1, $lang->moderate_threads, array("checked" => $mybb->input['modthreads'])),
 		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_text_box('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
