@@ -908,6 +908,7 @@ $(function() {
 		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
 		rtl: {$lang->settings['rtl']},
         locale: "{$lang->settings['htmllang']}",
+		width: "100%",
 		emoticonsEnabled: {$emoticons_enabled},
 		emoticons: {
 			// Emoticons to be included in the dropdown
