@@ -282,6 +282,8 @@ $(document).ready(function($) {
 			var	matches, url,
 				html = {
 					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					liveleak: '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
@@ -295,6 +297,14 @@ $(document).ready(function($) {
 					case 'dailymotion':
 						matches = content.match(/dailymotion\.com\/video\/([^_]+)/);
 						url     = matches ? 'http://www.dailymotion.com/embed/video/' + matches[1] : false;
+						break;
+					case 'facebook':
+						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
+						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
+						break;
+					case 'liveleak':
+						matches = content.match(/liveleak\.com\/(?:view\?i=)([^\/]+)/);
+						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
@@ -337,6 +347,8 @@ $(document).ready(function($) {
 					'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
 					'<select id="videotype">' +
 						'<option value="dailymotion">Dailymotion</option>' +
+						'<option value="facebook">Facebook</option>' +
+						'<option value="liveleak">LiveLeak</option>' +
 						'<option value="metacafe">MetaCafe</option>' +
 						'<option value="veoh">Veoh</option>' +
 						'<option value="vimeo">Vimeo</option>' +
