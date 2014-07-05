@@ -7229,7 +7229,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_modqueue_link_forum" version="1800"><![CDATA[<strong>{$lang->meta_forum} <a href="{$thread['forumlink']}">{$forum_name}</a></strong><br />]]></template>
+		<template name="modcp_modqueue_link_forum" version="1800"><![CDATA[<strong>{$lang->meta_forum} <a href="{$forum_link}">{$forum_name}</a></strong><br />]]></template>
 		<template name="modcp_modqueue_link_thread" version="1800"><![CDATA[<strong>{$lang->meta_thread} <a href="{$post['threadlink']}">{$post['threadsubject']}</a></strong>]]></template>
 		<template name="modcp_modqueue_masscontrols" version="1800"><![CDATA[<ul class="modqueue_mass">
   <li><a href="#" class="mass_ignore" onclick="$('input.radio_ignore').each(function(){ $(this).prop('checked', true); }); return false">{$lang->mark_all_ignored}</a></li>
