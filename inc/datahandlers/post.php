@@ -99,6 +99,13 @@ class PostDataHandler extends DataHandler
 	public $tid = 0;
 
 	/**
+	 * Values to be returned after inserting/updating a post/thread.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies the author of a post and fetches the username if necessary.
 	 *
 	 * @return boolean True if the author information is valid, false if invalid.
@@ -941,10 +948,15 @@ class PostDataHandler extends DataHandler
 				}
 
 				// Return the post's pid and whether or not it is visible.
-				return array(
+				$this->return_values = array(
 					"pid" => $double_post['pid'],
-					"visible" => $visible
+					"visible" => $visible,
+					"merge" => true
 				);
+
+				$plugins->run_hooks("datahandler_post_insert_merge", $this);
+
+				return $this->return_values;
 			}
 		}
 
@@ -1198,10 +1210,14 @@ class PostDataHandler extends DataHandler
 		update_thread_counters($post['tid'], $thread_update);
 
 		// Return the post's pid and whether or not it is visible.
-		return array(
+		$this->return_values = array(
 			"pid" => $this->pid,
 			"visible" => $visible
 		);
+
+		$plugins->run_hooks("datahandler_post_insert_post_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -1654,11 +1670,15 @@ class PostDataHandler extends DataHandler
 		}
 
 		// Return the post's pid and whether or not it is visible.
-		return array(
+		$this->return_values = array(
 			"pid" => $this->pid,
 			"tid" => $this->tid,
 			"visible" => $visible
 		);
+
+		$plugins->run_hooks("datahandler_post_insert_thread_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -1874,10 +1894,15 @@ class PostDataHandler extends DataHandler
 		update_forum_lastpost($post['fid']);
 		update_last_post($post['tid']);
 
-		return array(
+		// Return the thread's first post id and whether or not it is visible.
+		$this->return_values = array(
 			'visible' => $visible,
 			'first_post' => $first_post
 		);
+
+		$plugins->run_hooks("datahandler_post_update_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>
