@@ -1272,6 +1272,8 @@ if(!empty($threadcache) && is_array($threadcache))
 			$attachment_count = '';
 		}
 
+		$plugins->run_hooks("forumdisplay_thread_end");
+
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
