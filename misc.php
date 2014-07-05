@@ -582,10 +582,10 @@ elseif($mybb->input['action'] == "syndication")
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
-	$unexp = explode(",", str_replace("'", '', $unviewable));
+	$inactiveforums = get_inactive_forums();
 	if(is_array($forums))
 	{
-		$unexp = explode(",", $unviewable);
+		$unexp = explode(",", str_replace("'", '', $unviewable));
 		foreach($unexp as $fid)
 		{
 			$unview[$fid] = 1;
