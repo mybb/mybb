@@ -286,7 +286,7 @@ function parse_page($contents)
 {
 	global $lang, $theme, $mybb, $htmldoctype, $archive_url, $error_handler;
 
-	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
+	$contents = str_replace('<navigation>', build_breadcrumb(), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
 
 	if($htmldoctype)
@@ -3899,7 +3899,7 @@ function reset_breadcrumb()
  * @param int The ID of the item
  * @return string The URL
  */
-function build_archive_link($type, $id="")
+function build_archive_link($type="", $id="")
 {
 	global $mybb;
 

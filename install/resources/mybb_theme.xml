@@ -1961,28 +1961,26 @@ ul.thread_tools li {
 	padding-bottom: 4px;
 	margin-bottom: 3px;
 	font-size: 11px;
-	background-image: url(images/showthread_sprite.png);
-	background-repeat: no-repeat;
 }
 
 ul.thread_tools li.printable {
-	background-position: 0 0;
+	background: url('images/printable.png') no-repeat 0px 0px;
 }
 
 ul.thread_tools li.sendthread {
-	background-position: 0 -20px;
+	background: url('images/send.png') no-repeat 0px 0px;
 }
 
 ul.thread_tools li.subscription_add {
-	background-position: 0 -40px;
+	background: url('images/subscribe.png') no-repeat 0px 0px;
 }
 
 ul.thread_tools li.subscription_remove {
-	background-position: 0 -60px;
+	background: url('images/unsubscribe.png') no-repeat 0px 0px;
 }
 
 ul.thread_tools li.poll {
-	background-position: 0 -80px;
+	background: url('images/poll.png') no-repeat 0px 0px;
 }]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
@@ -3920,12 +3918,12 @@ a.button {
 </div>
 <br />]]></template>
 		<template name="global_boardclosed_warning" version="1600"><![CDATA[<div class="red_alert"><strong>{$lang->bbclosed_warning}</strong></div>]]></template>
-		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
+		<template name="global_pending_joinrequests" version="1600"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/usercp.php?action=usergroups">{$lang->pending_joinrequests}</a></div>]]></template>
 		<template name="global_pm_alert" version="1800"><![CDATA[<div class="pm_alert" id="pm_notice">
-	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
+	<div class="float_right"><a href="{$mybb->settings['bburl']}/private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismiss_notice}" onclick="return MyBB.dismissPMNotice('{$mybb->settings['bburl']}/')"><img src="{$theme['imgdir']}/dismiss_notice.png" alt="{$lang->dismiss_notice}" title="{$lang->dismiss_notice}" /></a></div>
 	<div>{$privatemessage_text}</div>
 </div>]]></template>
-		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
+		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
 		<template name="header" version="1800"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
@@ -3973,7 +3971,7 @@ a.button {
 					</div>
 				</div>
 				<div class="modal" id="quick_login" style="display: none;">
-					<form method="post" action="member.php">
+					<form method="post" action="{$mybb->settings['bburl']}/member.php">
 						<input name="action" type="hidden" value="do_login" />
 						<input name="url" type="hidden" value="" />
 						<input name="quick_login" type="hidden" value="1" />
@@ -4018,7 +4016,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>

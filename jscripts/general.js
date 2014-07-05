@@ -333,7 +333,7 @@ var MyBB = {
 		}
 	},
 
-	dismissPMNotice: function()
+	dismissPMNotice: function(bburl)
 	{
 		var pm_notice = $("#content").find("#pm_notice");
 		if(!pm_notice)
@@ -349,7 +349,7 @@ var MyBB = {
 		$.ajax(
 		{
 			type: 'post',
-			url: 'private.php?action=dismiss_notice',
+			url: bburl + 'private.php?action=dismiss_notice',
 			data: { ajax: 1, my_post_key: my_post_key },
 			async: true
 		});

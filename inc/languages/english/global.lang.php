@@ -378,8 +378,8 @@ $l['with_trout'] = "around a bit with a large trout.";
 $l['mybb_engine'] = "MyBB Engine";
 $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
 $l['quickrestore_confirm'] = "Are you sure you want to restore this post?";
-$l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from {1} titled <a href=\"private.php?action=read&amp;pmid={2}\" style=\"font-weight: bold;\">{3}</a>";
-$l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from {2} titled <a href=\"private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
+$l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from {1} titled <a href=\"{2}/private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
+$l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from {2} titled <a href=\"{3}/private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 
