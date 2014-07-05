@@ -3564,26 +3564,26 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_announcement_rating" version="1400"><![CDATA[	<td class="{$bgcolor}" align="center"><img src="{$theme['imgdir']}/pixel.gif" alt="" /></td>]]></template>
+		<template name="forumdisplay_announcement_rating" version="1800"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center"><img src="{$theme['imgdir']}/pixel.gif" alt="" /></td>]]></template>
 		<template name="forumdisplay_announcements" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->forum_announcements}</td>
 </tr>
 {$announcements}]]></template>
 		<template name="forumdisplay_announcements_announcement" version="1800"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}" width="2%"><span class="thread_status {$folder}">&nbsp;</span></td>
-<td align="center" class="{$bgcolor}" width="2%">&nbsp;</td>
-<td class="{$bgcolor}">
+<td align="center" class="{$bgcolor} forumdisplay_announcement" width="2%"><span class="thread_status {$folder}">&nbsp;</span></td>
+<td align="center" class="{$bgcolor} forumdisplay_announcement" width="2%">&nbsp;</td>
+<td class="{$bgcolor} forumdisplay_announcement">
 	<a href="{$announcement['announcementlink']}"{$new_class}>{$announcement['subject']}</a>
 	<div class="author smalltext">{$announcement['profilelink']}</div>
 </td>
-<td align="center" class="{$bgcolor}">-</td>
-<td align="center" class="{$bgcolor}">-</td>
+<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>
+<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>
 {$rating}
-<td class="{$bgcolor}" style="white-space: nowrap; text-align: right"><span class="smalltext">{$postdate}</span></td>
+<td class="{$bgcolor} forumdisplay_announcement" style="white-space: nowrap; text-align: right"><span class="smalltext">{$postdate}</span></td>
 {$modann}
 </tr>
 ]]></template>
-		<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
+		<template name="forumdisplay_announcements_announcement_modbit" version="1800"><![CDATA[<td align="center" class="{$bgcolor} forumdisplay_announcement">-</td>]]></template>
 		<template name="forumdisplay_inlinemoderation" version="1800"><![CDATA[<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_moderation.js?ver=1800"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -3741,7 +3741,7 @@ a.button {
 		<template name="forumdisplay_thread_attachment_count" version="1800"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.png" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_thread_gotounread" version="1800"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.png" alt="{$lang->goto_first_unread}" title="{$lang->goto_first_unread}" /></a> ]]></template>
 		<template name="forumdisplay_thread_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" />]]></template>
-		<template name="forumdisplay_thread_modbit" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
+		<template name="forumdisplay_thread_modbit" version="1800"><![CDATA[<td class="{$bgcolor}{$thread_type_class}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
 		<template name="forumdisplay_thread_multipage" version="120"><![CDATA[ <span class="smalltext">({$lang->pages} {$threadpages}{$morelink})</span>]]></template>
 		<template name="forumdisplay_thread_multipage_more" version="1600"><![CDATA[... <a href="{$page_link}">{$thread['pages']}</a>]]></template>
 		<template name="forumdisplay_thread_multipage_page" version="1400"><![CDATA[<a href="{$page_link}">{$i}</a> ]]></template>
