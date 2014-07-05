@@ -231,7 +231,7 @@ var Thread = {
 				// Create a copy of the post
 				if($('#pid_' + pid + '_temp').length == 0)
 				{
-					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none!important').appendTo("body");
+					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none').appendTo("body");
 				}
 
 				// Trigger the edit event
