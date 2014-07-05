@@ -265,6 +265,56 @@ $(document).ready(function($) {
 
 
 
+	/***************************************
+	 * Update email to support description *
+	 ***************************************/
+	$.sceditor.command.set('email', {
+		_dropDown: function (editor, caller) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+					'<label for="email">' + editor._('E-mail:') + '</label> ' +
+					'<input type="text" id="email" />' +					
+				'</div>' +
+				'<div>' +
+					'<label for="des">' + editor._('Description (optional):') + '</label> ' +
+					'<input type="text" id="des" />' +
+				'</div>' +
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+			);
+
+			$content.find('.button').click(function (e) {
+				var	val = $content.find('#email').val(),
+					description = $content.find('#des').val();
+
+				if(val) {
+					// needed for IE to reset the last range
+					editor.focus();
+
+					if(!editor.getRangeHelper().selectedHtml() || description) {
+						if(!description)
+							description = val;
+
+						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
+					}
+					else
+						editor.execCommand('createlink', 'mailto:' + val);
+					}
+
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertemail', $content);
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('email')._dropDown(this, caller);
+		}
+	});
+
+
+
 	/**************************
 	 * Add MyBB video command *
 	 **************************/
