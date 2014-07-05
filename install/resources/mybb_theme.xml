@@ -1961,26 +1961,28 @@ ul.thread_tools li {
 	padding-bottom: 4px;
 	margin-bottom: 3px;
 	font-size: 11px;
+	background-image: url(images/showthread_sprite.png);
+	background-repeat: no-repeat;
 }
 
 ul.thread_tools li.printable {
-	background: url('images/printable.png') no-repeat 0px 0px;
+	background-position: 0 0;
 }
 
 ul.thread_tools li.sendthread {
-	background: url('images/send.png') no-repeat 0px 0px;
+	background-position: 0 -20px;
 }
 
 ul.thread_tools li.subscription_add {
-	background: url('images/subscribe.png') no-repeat 0px 0px;
+	background-position: 0 -40px;
 }
 
 ul.thread_tools li.subscription_remove {
-	background: url('images/unsubscribe.png') no-repeat 0px 0px;
+	background-position: 0 -60px;
 }
 
 ul.thread_tools li.poll {
-	background: url('images/poll.png') no-repeat 0px 0px;
+	background-position: 0 -80px;
 }]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
