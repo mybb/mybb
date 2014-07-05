@@ -36,9 +36,11 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
+			$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
+
 			$new_question = array(
 				"question" => $db->escape_string($mybb->input['question']),
-				"answer" => $db->escape_string($mybb->input['answer']),
+				"answer" => $db->escape_string($answer),
 				"active" => intval($mybb->input['active'])
 			);
 			$qid = $db->insert_query("questions", $new_question);
@@ -121,9 +123,11 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
+			$answer = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['answer']));
+
 			$updated_question = array(
 				"question" => $db->escape_string($mybb->input['question']),
-				"answer" => $db->escape_string($mybb->input['answer']),
+				"answer" => $db->escape_string($answer),
 				"active" => intval($mybb->input['active'])
 			);
 			$db->update_query("questions", $updated_question, "qid='{$question['qid']}'");
@@ -293,6 +297,8 @@ if(!$mybb->input['action'])
 	{
 		$questions['question'] = htmlspecialchars_uni($questions['question']);
 		$questions['answer'] = htmlspecialchars_uni($questions['answer']);
+		$questions['answer'] = preg_replace("#(\n)#s", "<br />", trim($questions['answer']));
+
 		if($questions['active'] == 1)
 		{
 			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.png\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
