@@ -3527,7 +3527,7 @@ a.button {
 		<template name="forumbit_depth2_forum_lastpost_hidden" version="1800"><![CDATA[<div style="text-align: center;">-</div>]]></template>
 		<template name="forumbit_depth2_forum_lastpost_never" version="1800"><![CDATA[<div style="text-align: center;">{$lang->lastpost_never}</div>]]></template>
 		<template name="forumbit_depth2_forum_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$forum['unapprovedposts']})</span>]]></template>
-		<template name="forumbit_depth2_forum_unapproved_threads" version="1800"><![CDATA[ <span title="{$unapproved_threads_count}">{$forum['unapprovedthreads']}</span>]]></template>
+		<template name="forumbit_depth2_forum_unapproved_threads" version="1800"><![CDATA[ <span title="{$unapproved_threads_count}">({$forum['unapprovedthreads']})</span>]]></template>
 		<template name="forumbit_depth2_forum_viewers" version="1800"><![CDATA[<span class="smalltext">{$forum_viewers_text}</span>]]></template>
 		<template name="forumbit_depth3" version="1404"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
@@ -11412,8 +11412,6 @@ if(use_xmlhttprequest == "1")
 </head>
 <body>
 {$header}
-<form enctype="multipart/form-data" action="usercp.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 	{$usercpnav}
@@ -11436,6 +11434,8 @@ if(use_xmlhttprequest == "1")
 			<tr>
 				<td class="tcat" colspan="2"><strong>{$lang->custom_avatar}</strong></td>
 			</tr>
+			<form enctype="multipart/form-data" action="usercp.php" method="post">
+			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 			{$avatarupload}
 			<tr>
 				<td class="trow2" width="40%">
