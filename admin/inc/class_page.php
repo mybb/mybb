@@ -55,6 +55,11 @@ class DefaultPage
 	public $extra_header = "";
 
 	/**
+	 * @var string Any additional messages to add after the flash messages are shown.
+	 */
+	public $extra_messages = array();
+
+	/**
 	 * @var string Show a post verify error
 	 */
 	public $show_post_verify_error = '';
@@ -151,6 +156,26 @@ lang.saved = \"{$lang->saved}\";
 			echo "</div>\n";
 			update_admin_session('flash_message', '');
 		}
+
+		if(!empty($this->extra_messages) && is_array($this->extra_messages))
+		{
+			foreach($this->extra_messages as $message)
+			{
+				switch($message['type'])
+				{
+					case 'success':
+					case 'error':
+						echo "<div id=\"flash_message\" class=\"{$message['type']}\">\n";
+						echo "{$message['message']}\n";
+						echo "</div>\n";
+						break;
+					default:
+						$this->output_error($message['message']);
+						break;
+				}
+			}
+		}
+
 		if($this->show_post_verify_error == true)
 		{
 			$this->output_error($lang->invalid_post_verify_key);
