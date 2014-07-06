@@ -33,52 +33,51 @@ $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
 $plugins->run_hooks("usercp2_start");
 
-$mybb->input['action'] = $mybb->get_input('action');
-if($mybb->input['action'] == "do_addsubscription")
+if($mybb->get_input('action') == "do_addsubscription" && $mybb->get_input('type') != "forum")
 {
-	if($mybb->get_input('type') != "forum")
+	$thread = get_thread($mybb->get_input('tid'));
+	if(!$thread)
 	{
-		$thread = get_thread($mybb->get_input('tid'));
-		if(!$thread)
-		{
-			error($lang->error_invalidthread);
-		}
-
-		// Is the currently logged in user a moderator of this forum?
-		if(is_moderator($thread['fid']))
-		{
-			$ismod = true;
-		}
-		else
-		{
-			$ismod = false;
-		}
-
-		// Make sure we are looking at a real thread here.
-		if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
-		{
-			error($lang->error_invalidthread);
-		}
-
-		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
-		{
-			error_no_permission();
-		}
-		add_subscribed_thread($thread['tid'], $mybb->get_input('notification', 1));
-		if($mybb->get_input('referrer'))
-		{
-			$url = htmlspecialchars_uni($mybb->get_input('referrer'));
-		}
-		else
-		{
-			$url = get_thread_link($thread['tid']);
-		}
-		redirect($url, $lang->redirect_subscriptionadded);
+		error($lang->error_invalidthread);
 	}
-}
 
-if($mybb->input['action'] == "addsubscription")
+	// Is the currently logged in user a moderator of this forum?
+	if(is_moderator($thread['fid']))
+	{
+		$ismod = true;
+	}
+	else
+	{
+		$ismod = false;
+	}
+
+	// Make sure we are looking at a real thread here.
+	if(($thread['visible'] != 1 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	{
+		error($lang->error_invalidthread);
+	}
+
+	$forumpermissions = forum_permissions($thread['fid']);
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || (isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $thread['uid'] != $mybb->user['uid']))
+	{
+		error_no_permission();
+	}
+
+	$plugins->run_hooks("usercp2_do_addsubscription");
+
+	add_subscribed_thread($thread['tid'], $mybb->get_input('notification', 1));
+
+	if($mybb->get_input('referrer'))
+	{
+		$url = htmlspecialchars_uni($mybb->get_input('referrer'));
+	}
+	else
+	{
+		$url = get_thread_link($thread['tid']);
+	}
+	redirect($url, $lang->redirect_subscriptionadded);
+}
+elseif($mybb->get_input('action') == "addsubscription")
 {
 	if($mybb->get_input('type') == "forum")
 	{
@@ -92,6 +91,9 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			error_no_permission();
 		}
+
+		$plugins->run_hooks("usercp2_addsubscription_forum");
+
 		add_subscribed_forum($forum['fid']);
 		if($server_http_referer)
 		{
@@ -160,11 +162,15 @@ if($mybb->input['action'] == "addsubscription")
 		{
 			$notification_pm_checked = "checked=\"checked\"";
 		}
+
+		$plugins->run_hooks("usercp2_addsubscription_thread");
+
 		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
 		output_page($add_subscription);
+		exit;
 	}
 }
-elseif($mybb->input['action'] == "removesubscription")
+elseif($mybb->get_input('action') == "removesubscription")
 {
 	if($mybb->get_input('type') == "forum")
 	{
@@ -173,6 +179,9 @@ elseif($mybb->input['action'] == "removesubscription")
 		{
 			error($lang->error_invalidforum);
 		}
+
+		$plugins->run_hooks("usercp2_removesubscription_forum");
+
 		remove_subscribed_forum($forum['fid']);
 		if($server_http_referer)
 		{
@@ -208,6 +217,8 @@ elseif($mybb->input['action'] == "removesubscription")
 			error($lang->error_invalidthread);
 		}
 
+		$plugins->run_hooks("usercp2_removesubscription_thread");
+
 		remove_subscribed_thread($thread['tid']);
 		if($server_http_referer)
 		{
@@ -220,10 +231,12 @@ elseif($mybb->input['action'] == "removesubscription")
 		redirect($url, $lang->redirect_subscriptionremoved);
 	}
 }
-elseif($mybb->input['action'] == "removesubscriptions")
+elseif($mybb->get_input('action') == "removesubscriptions")
 {
 	if($mybb->get_input('type') == "forum")
 	{
+		$plugins->run_hooks("usercp2_removesubscriptions_forum");
+
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)
 		{
@@ -237,6 +250,8 @@ elseif($mybb->input['action'] == "removesubscriptions")
 	}
 	else
 	{
+		$plugins->run_hooks("usercp2_removesubscriptions_thread");
+
 		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)
 		{
@@ -253,7 +268,5 @@ else
 {
 	error($lang->error_invalidaction);
 }
-
-$plugins->run_hooks("usercp2_end");
 
 ?>
