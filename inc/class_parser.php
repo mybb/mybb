@@ -65,7 +65,7 @@ class postParser
 	public $highlight_cache = array();
 
 	/**
-	 * Options for this parsed message (Private - set by parse_message argument)
+	 * Options for this parsed message
 	 *
 	 * @access public
 	 * @var array
