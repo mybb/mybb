@@ -5804,14 +5804,6 @@ function email_already_in_use($email, $uid="")
 	return false;
 }
 
-/*
- * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
- */
-function rebuildsettings()
-{
-	rebuild_settings();
-}
-
 /**
  * Rebuilds settings.php
  *
