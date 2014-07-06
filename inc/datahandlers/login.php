@@ -242,6 +242,8 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
+		$plugins->run_hooks('datahandler_login_validate_start', $this);
+
 		$this->verify_attempts($mybb->settings['captchaimage']);
 
 		if(array_key_exists('username', $user))
@@ -253,6 +255,8 @@ class LoginDataHandler extends DataHandler
 		{
 			$this->verify_password();
 		}
+
+		$plugins->run_hooks('datahandler_login_validate_end', $this);
 
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -268,6 +272,8 @@ class LoginDataHandler extends DataHandler
 		global $db, $mybb, $session;
 
 		$user = &$this->login_data;
+
+		$plugins->run_hooks('datahandler_login_complete_start', $this);
 
 		// Login to MyBB
 		my_setcookie('loginattempts', 1);
@@ -295,6 +301,9 @@ class LoginDataHandler extends DataHandler
 		{
 			$this->captcha->invalidate_captcha();
 		}
+
+		$plugins->run_hooks('datahandler_login_complete_end', $this);
+
 		return true;
 	}
 }
