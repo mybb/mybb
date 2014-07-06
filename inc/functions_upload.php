@@ -243,7 +243,6 @@ function upload_avatar($avatar=array(), $uid=0)
 		return $ret;
 	}
 
-
 	// Lets just double check that it exists
 	if(!file_exists($avatarpath."/".$filename))
 	{

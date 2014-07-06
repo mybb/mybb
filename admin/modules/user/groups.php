@@ -478,7 +478,6 @@ if($mybb->input['action'] == "leaders")
 	$page->output_footer();
 }
 
-
 if($mybb->input['action'] == "delete_leader")
 {
 	$plugins->run_hooks("admin_user_groups_delete_leader");

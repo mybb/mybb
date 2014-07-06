@@ -163,7 +163,6 @@ function run_shutdown()
 		$mybb->settings = &$settings;
 	}
 
-
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
@@ -189,7 +188,6 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
-
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -2420,8 +2418,6 @@ function update_thread_data($tid)
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
-
-
 
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
@@ -6974,7 +6970,6 @@ function get_execution_time()
 		return $total;
 	}
 }
-
 
 /**
  * Processes a checksum list on MyBB files and returns a result set

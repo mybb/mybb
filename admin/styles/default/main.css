@@ -279,7 +279,6 @@ table.bottom_cell_border td {
 	border-left: 0;
 }
 
-
 table.general td {
 	background: #f5f5f5;
 	padding: 6px;
@@ -301,7 +300,6 @@ table.general th a, table.general th {
 	color: #fff;
 	text-decoration: none;
 }
-
 
 table.general .alt_row td {
 	background: #f1f1f1;
@@ -545,7 +543,6 @@ textarea[disabled=disabled] {
 	-webkit-border-radius: 5px;
 }
 
-
 select {
 	border: 1px solid #aaa;
 	padding: 4px;
@@ -560,7 +557,6 @@ select {
 textarea:focus, input.text_input:focus, select:focus {
 	border-color: #777;
 }
-
 
 input.inline_submit {
 	font-weight:  bold;
@@ -711,7 +707,6 @@ input.radio_input {
 	display: block;
 }
 
-
 div.error, div.success {
 	margin: 10px 0;
 	padding: 10px;
@@ -797,7 +792,6 @@ div.success ul, div.error.ul {
 	color: #666;
 	text-decoration: none;
 }
-
 
 .nav_tabs li.active a {
     color: #555;
@@ -967,7 +961,6 @@ ul.tabs li a.active {
 	border: 1px solid #999;
 }
 
-
 .view_fields .enabled, .view_fields .disabled {
 	width: 200px;
 	float: left;
@@ -994,7 +987,6 @@ ul.tabs li a.active {
 	overflow-x: hidden;
 	margin-top: 4px;
 }
-
 
 .view_fields li {
 	-moz-border-radius: 3px;
@@ -1038,7 +1030,6 @@ ul.tabs li a.active {
 	height: 120px;
 	margin-top: 4px;
 }
-
 
 .quick_perm_fields li {
 	border-radius: 3px;

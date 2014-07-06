@@ -1238,7 +1238,6 @@ if($mybb->input['action'] == "find_updated")
 		$templatesets[$templateset['sid']] = $templateset;
 	}
 
-
 	echo <<<LEGEND
 	<fieldset>
 <legend>{$lang->legend}</legend>

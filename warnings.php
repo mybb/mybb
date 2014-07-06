@@ -936,7 +936,6 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 				}
 			}
 
-
 			// Update user
 			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
 		}

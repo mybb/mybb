@@ -646,8 +646,6 @@ function build_new_theme($name, $properties=null, $parent=1)
 	return $tid;
 }
 
-
-
 /**
  * Generates an array from an incoming CSS file.
  *

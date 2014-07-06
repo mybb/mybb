@@ -105,7 +105,6 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		// we don't need to remove start offsets after the last end offset, because the loop will deplete something before that
 	}
 
-
 	if(empty($good_offsets))
 	{
 		return $text;
@@ -159,11 +158,9 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		$newtext .= substr($text, $cpy_start);
 	}
 
-
 	// we're done
 	return $newtext;
 }
-
 
 /**
  * Performs cleanup of a quoted message, such as replacing /me commands, before presenting quoted post to the user.

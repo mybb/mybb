@@ -1336,7 +1336,6 @@ function upgrade12_redoconfig()
 			$config['db_encoding'] = "utf8";
 		}
 
-
 		$configdata = "<?php
 /**
  * Database configuration

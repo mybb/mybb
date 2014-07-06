@@ -1744,7 +1744,6 @@ div.jqi .jqisubstate .jqibuttons button {
 	margin: -1px;
 }
 
-
 .pmspace_used.low {
 	border: 1px solid #0c5a01;
 	background: #167203;
@@ -1759,7 +1758,6 @@ div.jqi .jqisubstate .jqibuttons button {
 	background: #e73c3c;
 	border: 1px solid #c00;
 }
-
 
 .pmspace_unused {
 	display: inline-block;

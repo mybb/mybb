@@ -440,7 +440,6 @@ class DB_MySQLi
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Return a result array for a query.
 	 *
@@ -588,7 +587,6 @@ class DB_MySQLi
 		}
 	}
 
-
 	/**
 	 * Returns the number of affected rows in a query.
 	 *
@@ -598,7 +596,6 @@ class DB_MySQLi
 	{
 		return mysqli_affected_rows($this->current_link);
 	}
-
 
 	/**
 	 * Return the number of fields.

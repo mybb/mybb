@@ -434,7 +434,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$conditions_callback($mybb->input, $form);
 		}
 
-
 		$buttons[] = $form->generate_submit_button($lang->save_view);
 		$form->output_submit_wrapper($buttons);
 
@@ -589,7 +588,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				$default_add = " ({$lang->default})";
 			}
-
 
 			$title_string = "view_title_{$view['vid']}";
 

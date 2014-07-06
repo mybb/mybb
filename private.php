@@ -1517,7 +1517,6 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				error($lang->error_emptypmfoldername);
 			}
 
-
 			if($val != '' || ($key >= 1 && $key <= 4))
 			{
 				// If there is a name or if this is a default folder, save it
@@ -1968,7 +1967,6 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$message['tousername'] = addslashes($message['tousername']);
 			$message['fromusername'] = addslashes($message['fromusername']);
 		}
-
 
 		if(empty($donefolder[$message['folder']]))
 		{

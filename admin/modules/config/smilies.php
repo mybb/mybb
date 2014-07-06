@@ -638,7 +638,6 @@ if(!$mybb->input['action'])
 		$pagenum = 1;
 	}
 
-
 	$table = new Table;
 	$table->construct_header($lang->image, array("class" => "align_center", "width" => 1));
 	$table->construct_header($lang->name, array("width" => "35%"));

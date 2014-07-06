@@ -335,7 +335,6 @@ lang.saved = \"{$lang->saved}\";
 		echo "</div>\n";
 	}
 
-
 	/**
 	 * Generate the login page.
 	 *
@@ -653,7 +652,6 @@ EOF;
 		}
 		return $build_menu;
 	}
-
 
 	/**
 	 * Build a navigation sub menu if we have one.

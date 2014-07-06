@@ -1215,7 +1215,6 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-
 	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('new_calendar', 1)."'");
 	$new_calendar = $db->fetch_array($query);
 

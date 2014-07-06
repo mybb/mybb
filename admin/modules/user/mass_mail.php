@@ -436,7 +436,6 @@ if($mybb->input['action'] == "edit")
 		$html_display = 'display: none';
 	}
 
-
 	echo "<div id=\"message_html\" style=\"{$html_display}\">";
 	$form_container = new FormContainer("{$lang->edit_mass_mail}: {$lang->define_html_message}");
 	$form_container->output_row("{$lang->define_html_message_desc}:", $html_personalisation, $form->generate_text_area('htmlmessage', $input['htmlmessage'], array('id' => 'htmlmessage', 'rows' => 15, 'cols '=> 70, 'style' => 'width: 95%'))."<div id=\"automatic_display\" style=\"{$automatic_display}\">".$form->generate_check_box('automatic_text', 1, $lang->auto_gen_plain_text, array('checked' => $automatic_text_check, "id" => "automatic_text"))."</div>");
@@ -595,7 +594,6 @@ if($mybb->input['action'] == "edit")
 	$form->end();
 	$page->output_footer();
 }
-
 
 if($mybb->input['action'] == "send")
 {
@@ -1256,7 +1254,6 @@ if($mybb->input['action'] == "send")
 		{
 			$html_display = 'display: none';
 		}
-
 
 		echo "<div id=\"message_html\" style=\"{$html_display}\">";
 		$form_container = new FormContainer("{$lang->send_mass_mail}: {$lang->step_one} - {$lang->define_html_message}");

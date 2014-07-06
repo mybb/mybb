@@ -77,7 +77,6 @@ class session
 			}
 		}
 
-
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
 		if($this->sid && (!isset($mybb->cookies['sid']) || $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
 		{

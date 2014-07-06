@@ -148,7 +148,6 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 		$to = $pages;
 	}
 
-
 	if($from > 2)
 	{
 		$first = fetch_page_url($url, 1);
