@@ -626,8 +626,8 @@ if(!$mybb->input['action'])
 		// Username matching
 		if($mybb->input['username'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-			$user = $db->fetch_array($query);
+			$user = get_user_by_username($mybb->input['username']);
+
 			if(!$user['uid'])
 			{
 				$errors[] = $lang->error_invalid_username;

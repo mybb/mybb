@@ -223,8 +223,7 @@ if(!$mybb->input['action'])
 	}
 	else if($mybb->input['toname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username)='".my_strtolower($toname)."'");
-		$user = $db->fetch_array($query);
+		$user = get_user_by_username($toname, array('fields' => 'username'));
 		$to_filter = $user['username'];
 
 		if(!$user['uid'])

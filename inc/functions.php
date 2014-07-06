@@ -163,6 +163,7 @@ function run_shutdown()
 		$mybb->settings = &$settings;
 	}
 
+
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
@@ -188,6 +189,7 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
+
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -2419,6 +2421,8 @@ function update_thread_data($tid)
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
+
+
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
@@ -2827,11 +2831,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_veoh" => "Veoh",
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
-			"editor_facebook" => "Facebook",
-			"editor_liveleak" => "LiveLeak",
 			"editor_insertvideo" => "Insert a video",
-			"editor_php" => "PHP",
-			"editor_maximize" => "Maximize"
+			"editor_php" => "PHP"
 		);
 		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
@@ -5488,7 +5489,7 @@ function get_calendar_week_link($calendar, $week)
 }
 
 /**
- * Get the user data of a user id.
+ * Get the user data of an user id.
  *
  * @param int The user id of the user.
  * @return array The users data
@@ -5516,6 +5517,54 @@ function get_user($uid)
 		return $user_cache[$uid];
 	}
 	return array();
+}
+
+/**
+ * Get the user data of an user username.
+ *
+ * @param string The user username of the user.
+ * @return array The users data
+ */
+function get_user_by_username($username, $options=array())
+{
+	global $mybb, $db;
+
+	$username = $db->escape_string(my_strtolower($username));
+
+	if(!isset($options['username_method']))
+	{
+		$options['username_method'] = 0;
+	}
+
+	switch($options['username_method'])
+	{
+		case 1:
+			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
+			break;
+		case 2:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			break;
+		default:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			break;
+	}
+
+	$fields = array('uid');
+	if(isset($options['fields']))
+	{
+		$fields = array_merge((array)$options['fields'], $fields);
+	}
+
+	$fields = array_flip($fields);
+
+	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+
+	if(isset($options['exists']))
+	{
+		return (bool)$db->num_rows($query);
+	}
+
+	return $db->fetch_array($query);
 }
 
 /**
@@ -5801,6 +5850,14 @@ function email_already_in_use($email, $uid="")
 	}
 
 	return false;
+}
+
+/*
+ * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
+ */
+function rebuildsettings()
+{
+	rebuild_settings();
 }
 
 /**
@@ -6973,6 +7030,7 @@ function get_execution_time()
 		return $total;
 	}
 }
+
 
 /**
  * Processes a checksum list on MyBB files and returns a result set

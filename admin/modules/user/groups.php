@@ -314,8 +314,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		admin_redirect("index.php?module=user-group");
 	}
 
-	$query = $db->simple_select("users", "uid, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($mybb->input['username'], array('fields' => 'username'));
 	if(!$user['uid'])
 	{
 		$errors[] = $lang->error_invalid_username;
@@ -477,6 +476,7 @@ if($mybb->input['action'] == "leaders")
 
 	$page->output_footer();
 }
+
 
 if($mybb->input['action'] == "delete_leader")
 {
@@ -1386,6 +1386,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?module=user-groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} {$lang->outstanding_join_request})</span></a></small>";
 		}
 
+		$usergroup['title'] = format_name($usergroup['title'], $usergroup['gid']);
 		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$usergroup['gid']}\">{$usergroup['title']}</a></strong>{$join_requests}<br /><small>{$usergroup['description']}{$leaders_list}</small></div>");
 
 		if(!$primaryusers[$usergroup['gid']])

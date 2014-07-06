@@ -227,7 +227,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($db->num_rows($query) > 0)
 		{
 			$question = $db->fetch_array($query);
-			$valid_answers = explode("\n", $question['answer']);
+			$valid_answers = explode("|", $question['answer']);
 			$validated = 0;
 
 			foreach($valid_answers as $answers)
@@ -636,8 +636,7 @@ if($mybb->input['action'] == "register")
 			}
 			elseif(!empty($referrername))
 			{
-				$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($referrername))."'");
-				$ref = $db->fetch_array($query);
+				$ref = get_user_by_username($referrername);
 				if(!$ref['uid'])
 				{
 					$errors[] = $lang->error_badreferrer;
@@ -1065,22 +1064,11 @@ if($mybb->input['action'] == "activate")
 	if(isset($mybb->input['username']))
 	{
 		$mybb->input['username'] = $mybb->get_input('username');
-		switch($mybb->settings['username'])
-		{
-			case 0:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-				break;
-			case 1:
-				$query = $db->simple_select("users", "*", "LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-				break;
-			case 2:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-				break;
-			default:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-				break;
-		}
-		$user = $db->fetch_array($query);
+		$options = array(
+			'username_method' => $mybb->settings['username_method'],
+			'fields' => '*',
+		);
+		$user = get_user_by_username($mybb->input['username'], $options);
 		if(!$user)
 		{
 			switch($mybb->settings['username_method'])
@@ -1337,22 +1325,11 @@ if($mybb->input['action'] == "resetpassword")
 	if(isset($mybb->input['username']))
 	{
 		$mybb->input['username'] = $mybb->get_input('username');
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-				break;
-			case 1:
-				$query = $db->simple_select("users", "*", "LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-				break;
-			case 2:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-				break;
-			default:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-				break;
-		}
-		$user = $db->fetch_array($query);
+		$options = array(
+			'username_method' => $mybb->settings['username_method'],
+			'fields' => '*',
+		);
+		$user = get_user_by_username($mybb->input['username'], $options);
 		if(!$user)
 		{
 			switch($mybb->settings['username_method'])

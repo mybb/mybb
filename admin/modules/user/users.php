@@ -1823,15 +1823,13 @@ if($mybb->input['action'] == "merge")
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['source_username']))."'");
-		$source_user = $db->fetch_array($query);
+		$source_user = get_user_by_username($mybb->input['source_username'], array('fields' => '*'));
 		if(!$source_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_source;
 		}
 
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['destination_username']))."'");
-		$destination_user = $db->fetch_array($query);
+		$destination_user = get_user_by_username($mybb->input['destination_username'], array('fields' => '*'));
 		if(!$destination_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_destination;
