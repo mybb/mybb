@@ -663,11 +663,11 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 
 	if($mybb->user['pms_unread'] == 1)
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	else
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
@@ -747,6 +747,11 @@ if($mybb->settings['showthemeselect'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
+	if(my_substr($mybb->settings['contactlink'], 0, 1) != "/" && !in_array(my_substr($mybb->settings['contactlink'], 0, 7), array('http://', 'https://')))
+	{
+		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+	}
+
 	eval('$contact_us = "'.$templates->get('footer_contactus').'";');
 }
 
@@ -764,7 +769,7 @@ $navbits[0]['name'] = $mybb->settings['bbname_orig'];
 $navbits[0]['url'] = $mybb->settings['bburl'].'/index.php';
 
 // Set the link to the archive.
-$archive_url = $mybb->settings['bburl'].'/archive/index.php';
+$archive_url = build_archive_link();
 
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress, true))

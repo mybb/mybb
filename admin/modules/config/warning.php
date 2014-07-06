@@ -152,7 +152,7 @@ if($mybb->input['action'] == "add_level")
 	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "add_level")
 		</dd>
 	</dl>
 	<script type=\"text/javascript\">
-	checkAction();
+	checkAction('action');
 	</script>";
 	$form_container->output_row($lang->action_to_be_taken, $lang->action_to_be_taken_desc, $actions);
 	$form_container->end();
@@ -348,7 +348,7 @@ if($mybb->input['action'] == "edit_level")
 	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -361,7 +361,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -370,7 +370,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -381,7 +381,7 @@ if($mybb->input['action'] == "edit_level")
 		</dd>
 	</dl>
 	<script type=\"text/javascript\">
-	checkAction();
+	checkAction('action');
 	</script>";
 	$form_container->output_row($lang->action_to_be_taken, $lang->action_to_be_taken_desc, $actions);
 	$form_container->end();

@@ -140,6 +140,8 @@ while($thread = $db->fetch_array($query))
 	$firstposts[] = $thread['firstpost'];
 }
 
+$plugins->run_hooks('syndication_get_posts');
+
 if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".$db->escape_string(implode(',', $firstposts)).")";

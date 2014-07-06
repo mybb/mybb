@@ -227,7 +227,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($db->num_rows($query) > 0)
 		{
 			$question = $db->fetch_array($query);
-			$valid_answers = explode("|", $question['answer']);
+			$valid_answers = explode("\n", $question['answer']);
 			$validated = 0;
 
 			foreach($valid_answers as $answers)

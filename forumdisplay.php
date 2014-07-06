@@ -817,6 +817,8 @@ $icon_cache = $cache->read("posticons");
 
 if($fpermissions['canviewthreads'] != 0)
 {
+	$plugins->run_hooks("forumdisplay_get_threads");
+
 	// Start Getting Threads
 	$query = $db->query("
 		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
@@ -1271,6 +1273,8 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$attachment_count = '';
 		}
+
+		$plugins->run_hooks("forumdisplay_thread_end");
 
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}

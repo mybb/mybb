@@ -265,6 +265,56 @@ $(document).ready(function($) {
 
 
 
+	/***************************************
+	 * Update email to support description *
+	 ***************************************/
+	$.sceditor.command.set('email', {
+		_dropDown: function (editor, caller) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+					'<label for="email">' + editor._('E-mail:') + '</label> ' +
+					'<input type="text" id="email" />' +					
+				'</div>' +
+				'<div>' +
+					'<label for="des">' + editor._('Description (optional):') + '</label> ' +
+					'<input type="text" id="des" />' +
+				'</div>' +
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+			);
+
+			$content.find('.button').click(function (e) {
+				var	val = $content.find('#email').val(),
+					description = $content.find('#des').val();
+
+				if(val) {
+					// needed for IE to reset the last range
+					editor.focus();
+
+					if(!editor.getRangeHelper().selectedHtml() || description) {
+						if(!description)
+							description = val;
+
+						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
+					}
+					else
+						editor.execCommand('createlink', 'mailto:' + val);
+					}
+
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertemail', $content);
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('email')._dropDown(this, caller);
+		}
+	});
+
+
+
 	/**************************
 	 * Add MyBB video command *
 	 **************************/
@@ -282,6 +332,8 @@ $(document).ready(function($) {
 			var	matches, url,
 				html = {
 					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					liveleak: '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
@@ -295,6 +347,14 @@ $(document).ready(function($) {
 					case 'dailymotion':
 						matches = content.match(/dailymotion\.com\/video\/([^_]+)/);
 						url     = matches ? 'http://www.dailymotion.com/embed/video/' + matches[1] : false;
+						break;
+					case 'facebook':
+						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
+						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
+						break;
+					case 'liveleak':
+						matches = content.match(/liveleak\.com\/(?:view\?i=)([^\/]+)/);
+						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
@@ -336,11 +396,13 @@ $(document).ready(function($) {
 				'<div>' +
 					'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
 					'<select id="videotype">' +
-						'<option value="dailymotion">Dailymotion</option>' +
-						'<option value="metacafe">MetaCafe</option>' +
-						'<option value="veoh">Veoh</option>' +
-						'<option value="vimeo">Vimeo</option>' +
-						'<option value="youtube">Youtube</option>' +
+						'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
+						'<option value="facebook">' + editor._('Facebook') + '</option>' +
+						'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
+						'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
+						'<option value="veoh">' + editor._('Veoh') + '</option>' +
+						'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
+						'<option value="youtube">' + editor._('Youtube') + '</option>' +
 					'</select>'+
 				'</div>' +
 				'<div>' +
