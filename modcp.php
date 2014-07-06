@@ -1872,10 +1872,10 @@ if($mybb->input['action'] == "do_modqueue")
 	$mybb->input['attachments'] = $mybb->get_input('attachments', 2);
 	if(!empty($mybb->input['threads']))
 	{
-		$mybb->input['threads'] = array_map("intval", array_keys($mybb->input['threads']));
+		$threads = array_map("intval", array_keys($mybb->input['threads']));
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $mybb->input['threads'])."){$flist_queue_threads}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $threads)."){$flist_queue_threads}");
 		while($thread = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['threads'][$thread['tid']]))
@@ -1908,7 +1908,7 @@ if($mybb->input['action'] == "do_modqueue")
 			{
 				foreach($threads_to_delete as $tid)
 				{
-						$moderation->delete_thread($tid);
+					$moderation->delete_thread($tid);
 				}
 				log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
 			}
@@ -1920,10 +1920,10 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['posts']))
 	{
-		$mybb->input['posts'] = array_map("intval", array_keys($mybb->input['posts']));
+		$posts = array_map("intval", array_keys($mybb->input['posts']));
 		// Fetch posts
 		$posts_to_approve = $posts_to_delete = array();
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $mybb->input['posts'])."){$flist_queue_posts}");
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $posts)."){$flist_queue_posts}");
 		while($post = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['posts'][$post['pid']]))
@@ -1968,13 +1968,13 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['attachments']))
 	{
-		$mybb->input['attachments'] = array_map("intval", array_keys($mybb->input['attachments']));
+		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
 			SELECT a.pid, a.aid
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE aid IN (".implode(",", $mybb->input['attachments'])."){$tflist_queue_attach}
+			WHERE aid IN (".implode(",", $attachments)."){$tflist_queue_attach}
 		");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -2074,7 +2074,7 @@ if($mybb->input['action'] == "modqueue")
 			$altbg = alt_trow();
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$thread['threadlink'] = get_thread_link($thread['tid']);
-			$thread['forumlink'] = get_forum_link($thread['fid']);
+			$forum_link = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
 
@@ -2193,8 +2193,8 @@ if($mybb->input['action'] == "modqueue")
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
-			$post['forumlink'] = get_forum_link($post['fid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+			$forum_link = get_forum_link($post['fid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
 

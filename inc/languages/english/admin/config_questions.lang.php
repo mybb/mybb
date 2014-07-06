@@ -21,7 +21,7 @@ $l['no_security_questions'] = "There are no security questions on your forum at 
 $l['question'] = "Question";
 $l['question_desc'] = "Enter the question you want answered during registration.";
 $l['answers'] = "Answer(s)";
-$l['answers_desc'] = "Enter the answer(s) to the question above. Seperate multiple answers with a vertical bar (|).";
+$l['answers_desc'] = "Enter the answer(s) to the question above. Please enter each answer on a separate line.";
 $l['active'] = "Active";
 $l['save_question'] = "Save Question";
 

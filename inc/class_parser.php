@@ -174,7 +174,7 @@ class postParser
 		// Replace MyCode if requested.
 		if(!empty($this->options['allow_mycode']))
 		{
-			$message = $this->parse_mycode($message, $this->options);
+			$message = $this->parse_mycode($message);
 		}
 
 		// Parse Highlights
@@ -194,7 +194,7 @@ class postParser
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					if(!empty($options['allow_html']))
+					if(!empty($this->options['allow_html']))
 					{
 						$text[2] = $this->parse_html($text[2]);
 					}
@@ -221,7 +221,7 @@ class postParser
 			), $message);
 		}
 
-		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
+		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -415,6 +415,11 @@ class postParser
 	{
 		global $lang, $mybb;
 
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
 		{
@@ -472,7 +477,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if(!empty($options['allow_imgcode']))
+		if(!empty($this->options['allow_imgcode']))
 		{
 			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback1'), $message);
 			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
@@ -488,7 +493,7 @@ class postParser
 		}
 
 		// Convert videos when allow.
-		if(!empty($options['allow_videocode']))
+		if(!empty($this->options['allow_videocode']))
 		{
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
 		}
@@ -613,6 +618,11 @@ class postParser
 	 */
 	function parse_badwords($message, $options=array())
 	{
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		if($this->badwords_cache == 0)
 		{
 			$this->cache_badwords();
@@ -639,7 +649,7 @@ class postParser
 				}
 			}
 		}
-		if(!empty($options['strip_tags']))
+		if(!empty($this->options['strip_tags']))
 		{
 			$message = strip_tags($message);
 		}
@@ -1634,8 +1644,13 @@ class postParser
 	{
 		global $plugins;
 
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		// Filter bad words if requested.
-		if(!empty($options['filter_badwords']))
+		if(!empty($this->options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -1662,12 +1677,12 @@ class postParser
 		$message = preg_replace($find, $replace, $message);
 
 		// Replace "me" code and slaps if we have a username
-		if(!empty($options['me_username']))
+		if(!empty($this->options['me_username']))
 		{
 			global $lang;
 
-			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$options['me_username']} \\2", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$this->options['me_username']} \\2", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
 		}
 
 		// Reset list cache

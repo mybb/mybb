@@ -544,7 +544,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
  */
 function get_forum_unapproved($forum)
 {
-	global $lang;
+	global $lang, $templates;
 
 	$unapproved_threads = $unapproved_posts = '';
 

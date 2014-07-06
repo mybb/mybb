@@ -575,10 +575,15 @@ function build_friendly_wol_location($user_activity)
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	$fidnot = '';
 	if($unviewableforums)
 	{
 		$fidnot = " AND fid NOT IN ($unviewableforums)";
+	}
+	if($inactiveforums)
+	{
+		$fidnot .= " AND fid NOT IN ($unviewableforums)";
 	}
 
 	// Fetch any users
@@ -627,7 +632,7 @@ function build_friendly_wol_location($user_activity)
 	if(!is_array($posts) && count($pid_list) > 0)
 	{
 		$pid_sql = implode(",", $pid_list);
-		$query = $db->simple_select("posts", "pid,tid", "pid IN ($pid_sql) $fidnot");
+		$query = $db->simple_select("posts", "pid,tid", "pid IN ({$pid_sql}) {$fidnot}");
 		while($post = $db->fetch_array($query))
 		{
 			$posts[$post['pid']] = $post['tid'];
@@ -680,14 +685,14 @@ function build_friendly_wol_location($user_activity)
 	// Fetch any forums
 	if(!is_array($forums) && count($fid_list) > 0)
 	{
-		if($fidnot && $unviewableforums)
+		if($fidnot)
 		{
-			$fidnot = explode(',', $unviewableforums);
+			$fidnot = explode(',', str_replace('\'', '', (string)$unviewableforums).$inactiveforums);
 		}
 
 		foreach($forum_cache as $fid => $forum)
 		{
-			if(in_array($fid, $fid_list) && (!$fidnot || is_array($fidnot) && !in_array("'{$fid}'", $fidnot)))
+			if(in_array($fid, $fid_list) && (!$fidnot || is_array($fidnot) && !in_array($fid, $fidnot)))
 			{
 				$forums[$fid] = $forum['name'];
 				$forums_linkto[$fid] = $forum['linkto'];

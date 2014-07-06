@@ -903,6 +903,8 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canpostreplys smallint NOT NULL default '0',
   canpostattachments smallint NOT NULL default '0',
   canratethreads smallint NOT NULL default '0',
+  modthreads int NOT NULL default '0',
+  modposts int NOT NULL default '0',
   caneditposts smallint NOT NULL default '0',
   candeleteposts smallint NOT NULL default '0',
   candeletethreads smallint NOT NULL default '0',
