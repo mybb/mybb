@@ -238,7 +238,7 @@ class LoginDataHandler extends DataHandler
 
 	function validate_login()
 	{
-		global $mybb;
+		global $plugins, $mybb;
 
 		$user = &$this->data;
 
@@ -269,7 +269,7 @@ class LoginDataHandler extends DataHandler
 
 	function complete_login()
 	{
-		global $db, $mybb, $session;
+		global $plugins, $db, $mybb, $session;
 
 		$user = &$this->login_data;
 
