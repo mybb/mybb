@@ -736,9 +736,19 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$valid_thread = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
 
+		// guest post --> verify author
+		if($post['uid'] == 0)
+		{
+			$valid_username = $posthandler->verify_author();
+		}
+		else
+		{
+			$valid_username = true;
+		}
+		
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_thread || !$valid_subject)
+		if(!$valid_thread || !$valid_subject || !$valid_username)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
