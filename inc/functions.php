@@ -163,7 +163,6 @@ function run_shutdown()
 		$mybb->settings = &$settings;
 	}
 
-
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
@@ -189,7 +188,6 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
-
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -2421,8 +2419,6 @@ function update_thread_data($tid)
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
-
-
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
@@ -2831,8 +2827,11 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_veoh" => "Veoh",
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
+			"editor_facebook" => "Facebook",
+			"editor_liveleak" => "LiveLeak",
 			"editor_insertvideo" => "Insert a video",
-			"editor_php" => "PHP"
+			"editor_php" => "PHP",
+			"editor_maximize" => "Maximize"
 		);
 		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
@@ -5852,14 +5851,6 @@ function email_already_in_use($email, $uid="")
 	return false;
 }
 
-/*
- * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
- */
-function rebuildsettings()
-{
-	rebuild_settings();
-}
-
 /**
  * Rebuilds settings.php
  *
@@ -7030,7 +7021,6 @@ function get_execution_time()
 		return $total;
 	}
 }
-
 
 /**
  * Processes a checksum list on MyBB files and returns a result set
