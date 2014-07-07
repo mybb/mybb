@@ -33,8 +33,6 @@ function upgrade30_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
 
-	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
-
 	// Avoid complex convert coding...
 	$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
 	$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
@@ -242,6 +240,8 @@ function upgrade30_dbchanges()
 			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
+
+	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
 
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
@@ -700,6 +700,11 @@ function upgrade30_dbchanges6()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->table_exists("buddyrequests"))
+	{
+		$db->drop_table("buddyrequests");
+	}
+
 	$collation = $db->build_create_table_collation();
 
 	switch($db->type)
@@ -712,7 +717,7 @@ function upgrade30_dbchanges6()
 				 date int NOT NULL,
 				 PRIMARY KEY (id)
 			);");
-		break;
+			break;
 		case "sqlite":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id INTEGER PRIMARY KEY,
@@ -720,7 +725,7 @@ function upgrade30_dbchanges6()
 				 touid bigint(30) UNSIGNED NOT NULL,
 				 date int(11) UNSIGNED NOT NULL
 			);");
-		break;
+			break;
 		default:
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id int(10) UNSIGNED NOT NULL auto_increment,
@@ -731,7 +736,7 @@ function upgrade30_dbchanges6()
 				 KEY (touid),
 				 PRIMARY KEY (id)
 			) ENGINE=MyISAM{$collation};");
-		break;
+			break;
 	}
 
 	if($db->field_exists('msn', 'users'))
@@ -797,7 +802,7 @@ function upgrade30_dbchanges6()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER profile");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
@@ -812,7 +817,7 @@ function upgrade30_dbchanges6()
 			$db->add_column("users", "sourceeditor", "smallint NOT NULL default '0'");
 			break;
 		default:
-			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER profile");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
