@@ -108,6 +108,26 @@ function upgrade30_dbchanges()
 		$db->drop_column("forums", "deletedposts");
 	}
 
+	if($db->field_exists('threads', 'promotions '))
+	{
+		$db->drop_column('promotions', 'threads');
+	}
+
+	if($db->field_exists('threadtype', 'promotions '))
+	{
+		$db->drop_column('promotions', 'threadtype');
+	}
+
+	if($db->field_exists('online', 'promotions '))
+	{
+		$db->drop_column('promotions', 'online');
+	}
+
+	if($db->field_exists('onlinetype', 'promotions '))
+	{
+		$db->drop_column('promotions', 'onlinetype');
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -117,8 +137,12 @@ function upgrade30_dbchanges()
 			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
 			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
+			$db->add_column("promotions", "threadtype", "varchar(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("promotions", "online", "int NOT NULL default '0' AFTER warningstype");
+			$db->add_column("promotions", "onlinetype", "varchar(20) NOT NULL default '' AFTER online");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
@@ -129,8 +153,12 @@ function upgrade30_dbchanges()
 			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
 			$db->add_column("reportedposts", "reporters", "text NOT NULL");
 			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
+			$db->add_column("promotions", "threadtype", "char(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "char(2) NOT NULL default '' AFTER warnings");
+			$db->add_column("promotions", "online", "int NOT NULL default '0' AFTER warningstype");
+			$db->add_column("promotions", "onlinetype", "varchar(20) NOT NULL default '' AFTER online");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
