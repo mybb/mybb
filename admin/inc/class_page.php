@@ -343,7 +343,15 @@ lang.saved = \"{$lang->saved}\";
 	 */
 	function show_login($message="", $class="success")
 	{
-		global $lang, $cp_style, $mybb;
+		global $plugins, $lang, $cp_style, $mybb;
+
+		$args = array(
+			'this' => &$this,
+			'message' => &$message,
+			'class' => &$class
+		);
+
+		$plugins->run_hooks('admin_page_show_login_start', $args);
 
 		$copy_year = COPY_YEAR;
 
@@ -357,7 +365,7 @@ lang.saved = \"{$lang->saved}\";
 			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
         }
 
-		print <<<EOF
+		$login_page .= <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
@@ -387,7 +395,7 @@ lang.saved = \"{$lang->saved}\";
 EOF;
 		if($message)
 		{
-			echo "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
+			$login_page .= "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
 		}
 		// Make query string nice and pretty so that user can go to his/her preferred destination
 		$query_string = '';
@@ -445,7 +453,8 @@ EOF;
 		}
 
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
-print <<<EOF
+
+		$login_page .= <<<EOF
 		<p>{$login_lang_string}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
@@ -456,7 +465,6 @@ print <<<EOF
 
 			<div class="label"{$login_label_width}><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
-
             {$secret_pin}
 		</div>
 		<p class="submit">
@@ -473,7 +481,16 @@ print <<<EOF
 </body>
 </html>
 EOF;
-	exit;
+
+		$args = array(
+			'this' => &$this,
+			'login_page' => &$login_page
+		);
+
+		$plugins->run_hooks('admin_page_show_login_end', $args);
+
+		echo $login_page;
+		exit;
 	}
 
 	/**
