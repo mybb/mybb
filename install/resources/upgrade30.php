@@ -330,6 +330,11 @@ function upgrade30_dbchanges2()
 		$db->drop_column("forums", "usethreadcounts");
 	}
 
+	if($db->field_exists('requireprefix', 'forums'))
+	{
+		$db->drop_column("forums", "requireprefix");
+	}
+
 	if($db->field_exists('threadnum', 'users'))
 	{
 		$db->drop_column("users", "threadnum");
@@ -352,6 +357,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("captcha", "used", "smallint NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			$db->add_column("forums", "usethreadcounts", "smallint NOT NULL default '0' AFTER usepostcounts");
+			$db->add_column("forums", "requireprefix", "smallint NOT NULL default '0' AFTER usethreadcounts");
 			$db->add_column("users", "threadnum", "int NOT NULL default '0' AFTER postnum");
 			break;
 		default:
@@ -369,6 +375,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("captcha", "used", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("posts", "editreason", "varchar(150) NOT NULL default '' AFTER edittime");
 			$db->add_column("forums", "usethreadcounts", "tinyint(1) NOT NULL default '0' AFTER usepostcounts");
+			$db->add_column("forums", "requireprefix", "tinyint(1) NOT NULL default '0' AFTER usethreadcounts");
 			$db->add_column("users", "threadnum", "int(10) NOT NULL default '0' AFTER postnum");
 			break;
 	}

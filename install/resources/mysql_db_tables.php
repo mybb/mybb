@@ -283,6 +283,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   allowtratings tinyint(1) NOT NULL default '0',
   usepostcounts tinyint(1) NOT NULL default '0',
   usethreadcounts tinyint(1) NOT NULL default '0',
+  requireprefix tinyint(1) NOT NULL default '0',
   password varchar(50) NOT NULL default '',
   showinjump tinyint(1) NOT NULL default '0',
   style smallint unsigned NOT NULL default '0',

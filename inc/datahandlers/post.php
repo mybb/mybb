@@ -667,6 +667,15 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
+		// Does this forum require a prefix?
+		$forum = get_forum($this->data['fid']);
+
+		if($forum['requireprefix'] == 1 && $prefix == 0)
+		{
+			$this->set_error('require_prefix');
+			return false;
+		}
+
 		return true;
 	}
 
