@@ -413,7 +413,7 @@ else
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist,usercp_themeselector_option";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -486,7 +486,7 @@ else
 }
 
 // Display menu links and quick search if user has permission
-$menu_search = $menu_memberlist = $menu_calendar = $quicksearch = '';
+$menu_search = $menu_memberlist = $menu_portal = $menu_calendar = $quicksearch = '';
 if($mybb->usergroup['cansearch'] == 1)
 {
 	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
@@ -501,6 +501,11 @@ if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberli
 if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
 {
 	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
+}
+
+if($mybb->settings['portal'] == 1)
+{
+	eval('$menu_portal = "'.$templates->get('header_menu_portal').'";');
 }
 
 // See if there are any pending join requests for group leaders
