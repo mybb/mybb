@@ -491,7 +491,7 @@ if($mybb->input['action'] == "permissions")
 			// User has set permissions for this group...
 			foreach($fields_array as $field)
 			{
-				if(strpos($field['Field'], 'can') !== false)
+				if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
 				{
 					if(array_key_exists($field['Field'], $mybb->input['permissions']))
 					{
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "permissions")
 			// Else, we assume that the group has no permissions...
 			foreach($fields_array as $field)
 			{
-				if(strpos($field['Field'], 'can') !== false)
+				if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
 				{
 					$update_array[$db->escape_string($field['Field'])] = 0;
 				}
@@ -715,6 +715,11 @@ $(document).ready(function() {
 			'candeletethreads' => 'editing',
 			'caneditattachments' => 'editing',
 
+			'modposts' => 'moderate',
+			'modthreads' => 'moderate',
+			'modattachments' => 'moderate',
+			'mod_edit_posts' => 'moderate',
+
 			'canpostpolls' => 'polls',
 			'canvotepolls' => 'polls',
 			'cansearch' => 'misc',
@@ -742,7 +747,7 @@ $(document).ready(function() {
 		$fields_array = $db->show_fields_from("forumpermissions");
 		foreach($fields_array as $field)
 		{
-			if(strpos($field['Field'], 'can') !== false)
+			if(strpos($field['Field'], 'can') !== false || strpos($field['Field'], 'mod') !== false)
 			{
 				if(array_key_exists($field['Field'], $groups))
 				{
@@ -841,10 +846,6 @@ if($mybb->input['action'] == "add")
 				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
-				"modposts" => intval($mybb->input['modposts']),
-				"modthreads" => intval($mybb->input['modthreads']),
-				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
-				"modattachments" => intval($mybb->input['modattachments']),
 				"style" => intval($mybb->input['style']),
 				"overridestyle" => intval($mybb->input['overridestyle']),
 				"rulestype" => intval($mybb->input['rulestype']),
@@ -945,10 +946,6 @@ if($mybb->input['action'] == "add")
 		$forum_data['password'] = "";
 		$forum_data['active'] = 1;
 		$forum_data['open'] = 1;
-		$forum_data['modposts'] = "";
-		$forum_data['modthreads'] = "";
-		$forum_data['modattachments'] = "";
-		$forum_data['mod_edit_posts'] = "";
 		$forum_data['overridestyle'] = "";
 		$forum_data['style'] = "";
 		$forum_data['rulestype'] = "";
@@ -1011,15 +1008,6 @@ if($mybb->input['action'] == "add")
 	);
 
 	$form_container->output_row($lang->access_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $access_options)."</div>");
-
-	$moderator_options = array(
-		$form->generate_check_box('modposts', 1, $lang->mod_new_posts, array('checked' => $forum_data['modposts'], 'id' => 'modposts')),
-		$form->generate_check_box('modthreads', 1, $lang->mod_new_threads, array('checked' => $forum_data['modthreads'], 'id' => 'modthreads')),
-		$form->generate_check_box('modattachments', 1, $lang->mod_new_attachments, array('checked' => $forum_data['modattachments'], 'id' => 'modattachments')),
-		$form->generate_check_box('mod_edit_posts', 1, $lang->mod_after_edit, array('checked' => $forum_data['mod_edit_posts'], 'id' => 'mod_edit_posts'))
-	);
-
-	$form_container->output_row($lang->moderation_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_options)."</div>");
 
 	$styles = array(
 		'0' => $lang->use_default
@@ -1391,10 +1379,6 @@ if($mybb->input['action'] == "edit")
 				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
 				"password" => $db->escape_string($mybb->input['password']),
 				"showinjump" => intval($mybb->input['showinjump']),
-				"modposts" => intval($mybb->input['modposts']),
-				"modthreads" => intval($mybb->input['modthreads']),
-				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
-				"modattachments" => intval($mybb->input['modattachments']),
 				"style" => intval($mybb->input['style']),
 				"overridestyle" => intval($mybb->input['overridestyle']),
 				"rulestype" => intval($mybb->input['rulestype']),
@@ -1562,15 +1546,6 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->access_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $access_options)."</div>");
-
-	$moderator_options = array(
-		$form->generate_check_box('modposts', 1, $lang->mod_new_posts, array('checked' => $forum_data['modposts'], 'id' => 'modposts')),
-		$form->generate_check_box('modthreads', 1, $lang->mod_new_threads, array('checked' => $forum_data['modthreads'], 'id' => 'modthreads')),
-		$form->generate_check_box('modattachments', 1, $lang->mod_new_attachments, array('checked' => $forum_data['modattachments'], 'id' => 'modattachments')),
-		$form->generate_check_box('mod_edit_posts',1, $lang->mod_after_edit, array('checked' => $forum_data['mod_edit_posts'], 'id' => 'mod_edit_posts'))
-	);
-
-	$form_container->output_row($lang->moderation_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_options)."</div>");
 
 	$styles = array(
 		'0' => $lang->use_default

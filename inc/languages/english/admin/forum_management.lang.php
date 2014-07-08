@@ -152,11 +152,6 @@ $l['copy_settings_and_properties_desc'] = "Only applies if the destination forum
 $l['copy_user_group_permissions'] = "Copy User Group Permissions";
 $l['copy_user_group_permissions_desc'] = "Use CTRL to select multiple groups.";
 
-$l['moderation_options'] = "Moderation Options";
-$l['mod_new_posts'] = "Yes, moderate new posts";
-$l['mod_new_threads'] = "Yes, moderate new threads";
-$l['mod_new_attachments'] = "Yes, moderate new attachments";
-$l['mod_after_edit'] = "Yes, moderate posts after they've been edited";
 $l['override_user_style'] = "Yes, override the user's selected style for this forum";
 $l['style_options'] = "Style Options";
 $l['forum_specific_style'] = "Forum-Specific Style:";
@@ -248,6 +243,7 @@ $l['error_invalid_destination_forum'] = "Invalid destination forum.";
 $l['group_viewing'] = "Viewing";
 $l['group_posting_rating'] = "Posting / Rating";
 $l['group_editing'] = "Editing";
+$l['group_moderate'] = "Moderation";
 $l['group_polls'] = "Polls";
 $l['group_misc'] = "Miscellaneous";
 
@@ -266,6 +262,11 @@ $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";
 $l['editing_field_candeletethreads'] = "Can delete own threads?";
 $l['editing_field_caneditattachments'] = "Can update own attachments?";
+
+$l['moderate_field_modposts'] = "Moderate new posts?";
+$l['moderate_field_modthreads'] = "Moderate new threads?";
+$l['moderate_field_modattachments'] = "Moderate new attachments?";
+$l['moderate_field_mod_edit_posts'] = "Moderate posts after they've been edited?";
 
 $l['polls_field_canpostpolls'] = "Can post polls?";
 $l['polls_field_canvotepolls'] = "Can vote in polls?";

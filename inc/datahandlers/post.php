@@ -866,11 +866,8 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
-			{
-				$visible = 0;
-			}
-			elseif($mybb->user['uid'] == $post['uid'] && $mybb->usergroup['modposts'] == 1 && !is_moderator($thread['fid'], "", $thread['uid']))
+			$forumpermissions = forum_permissions($post['fid'], $post['uid']);
+			if($forumpermissions['modposts'] == 1)
 			{
 				$visible = 0;
 			}
@@ -1322,12 +1319,9 @@ class PostDataHandler extends DataHandler
 		// Thread is being made now and we have a bit to do.
 		else
 		{
+			$forumpermissions = forum_permissions($thread['fid'], $thread['uid']);
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
-			{
-				$visible = 0;
-			}
-			elseif($mybb->user['uid'] == $thread['uid'] && ($mybb->usergroup['modposts'] == 1 || $mybb->usergroup['modthreads'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
+			if($forumpermissions['modthreads'] == 1 || $forumpermissions['modposts'] == 1)
 			{
 				$visible = 0;
 			}
@@ -1708,11 +1702,12 @@ class PostDataHandler extends DataHandler
 		$post['fid'] = $existing_post['fid'];
 
 		$forum = get_forum($post['fid']);
+		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
 		// Decide on the visibility of this post.
 		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
 		{
-			if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+			if($forumpermissions['mod_edit_posts'] == 1)
 			{
 				if($existing_post['visible'] == 1)
 				{
@@ -1757,7 +1752,7 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			$visible = 0;
-			if($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
+			if($forumpermissions['mod_edit_posts'] != 1)
 			{
 				$visible = 1;
 			}

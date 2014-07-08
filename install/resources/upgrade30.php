@@ -60,6 +60,16 @@ function upgrade30_dbchanges()
 		$db->drop_column("usergroups", "modthreads");
 	}
 
+	if($db->field_exists('mod_edit_posts', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "mod_edit_posts");
+	}
+
+	if($db->field_exists('modattachments', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "modattachments");
+	}
+
 	if($db->field_exists('regex', 'profilefields'))
 	{
 		$db->drop_column("profilefields", "regex");
@@ -173,8 +183,10 @@ function upgrade30_dbchanges()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("usergroups", "modposts", "int NOT NULL default '0' AFTER canratethreads");
-			$db->add_column("usergroups", "modthreads", "int NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modposts", "smallint NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "smallint NOT NULL default '0' AFTER modposts");
+			$db->add_column("usergroups", "mod_edit_posts", "smallint NOT NULL default '0' AFTER modthreads");
+			$db->add_column("usergroups", "modattachments", "smallint NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
 			$db->add_column("profilefields", "allowhtml", "smallint NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "smallint NOT NULL default '0'");
@@ -197,7 +209,9 @@ function upgrade30_dbchanges()
 			break;
 		case "sqlite":
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
-			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER modposts");
+			$db->add_column("usergroups", "mod_edit_posts", "tinyint(1) NOT NULL default '0' AFTER modthreads");
+			$db->add_column("usergroups", "modattachments", "tinyint(1) NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("profilefields", "regex", "text NOT NULL default ''");
 			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");
@@ -220,7 +234,9 @@ function upgrade30_dbchanges()
 			break;
 		default:
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
-			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
+			$db->add_column("usergroups", "modthreads", "tinyint(1) NOT NULL default '0' AFTER modposts");
+			$db->add_column("usergroups", "mod_edit_posts", "tinyint(1) NOT NULL default '0' AFTER modthreads");
+			$db->add_column("usergroups", "modattachments", "tinyint(1) NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("profilefields", "regex", "text NOT NULL");
 			$db->add_column("profilefields", "allowhtml", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowmycode", "tinyint(1) NOT NULL default '0'");
@@ -323,6 +339,10 @@ function upgrade30_dbchanges2()
 	{
 		case "pgsql":
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "smallint NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("forumpermissions", "modposts", "smallint NOT NULL default '0' AFTER caneditattachments");
+			$db->add_column("forumpermissions", "modthreads", "smallint NOT NULL default '0' AFTER modposts");
+			$db->add_column("forumpermissions", "mod_edit_posts", "smallint NOT NULL default '0' AFTER modthreads");
+			$db->add_column("forumpermissions", "modattachments", "smallint NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "smallint NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
@@ -336,6 +356,10 @@ function upgrade30_dbchanges2()
 			break;
 		default:
 			$db->add_column("forumpermissions", "canonlyreplyownthreads", "tinyint(1) NOT NULL default '0' AFTER canpostreplys");
+			$db->add_column("forumpermissions", "modposts", "tinyint(1) NOT NULL default '0' AFTER caneditattachments");
+			$db->add_column("forumpermissions", "modthreads", "tinyint(1) NOT NULL default '0' AFTER modposts");
+			$db->add_column("forumpermissions", "mod_edit_posts", "tinyint(1) NOT NULL default '0' AFTER modthreads");
+			$db->add_column("forumpermissions", "modattachments", "tinyint(1) NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "tinyint(1) NOT NULL default '0' AFTER canchangename");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
