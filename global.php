@@ -808,6 +808,31 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 	exit;
 }
 
+$force_bypass = array(
+	'member.php' => array(
+		'login',
+		'do_login',
+		'logout',
+		'register',
+		'do_register',
+		'lostpw',
+		'do_lostpw',
+		'activate',
+		'resendactivation',
+		'do_resendactivation',
+		'resetpassword',
+	),
+	'captcha.php',
+);
+
+// If the board forces user to login/register, and the user is a guest, show the force login message
+if($mybb->settings['forcelogin'] == 1 && $mybb->user['uid'] == 0 && !in_array($current_page, $force_bypass) && (!is_array($force_bypass[$current_page]) || !in_array($mybb->get_input('action'), $force_bypass[$current_page])))
+{
+	// Show error
+	error_no_permission();
+	exit;
+}
+
 // Load Limiting
 if($mybb->usergroup['cancp'] != 1 && $mybb->settings['load'] > 0 && ($load = get_server_load()) && $load != $lang->unknown && $load > $mybb->settings['load'])
 {
