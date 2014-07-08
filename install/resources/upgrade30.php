@@ -973,6 +973,7 @@ function upgrade30_dbchanges6()
 <option value=\"-7\" ".($setting[\'value\'] == -7?"selected=\"selected\"":"").">GMT -7:00 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -7).")</option>
 <option value=\"-6\" ".($setting[\'value\'] == -6?"selected=\"selected\"":"").">GMT -6:00 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -6).")</option>
 <option value=\"-5\" ".($setting[\'value\'] == -5?"selected=\"selected\"":"").">GMT -5:00 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -5).")</option>
+<option value=\"-4.5\" ".($setting[\'value\'] == -4.5?"selected=\"selected\"":"").">GMT -4:30 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -4.5).")</option>
 <option value=\"-4\" ".($setting[\'value\'] == -4?"selected=\"selected\"":"").">GMT -4:00 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -4).")</option>
 <option value=\"-3.5\" ".($setting[\'value\'] == -3.5?"selected=\"selected\"":"").">GMT -3:30 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -3.5).")</option>
 <option value=\"-3\" ".($setting[\'value\'] == -3?"selected=\"selected\"":"").">GMT -3:00 Hours (".my_date($mybb->settings[\'timeformat\'], TIME_NOW, -3).")</option>
