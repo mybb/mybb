@@ -25,7 +25,7 @@ $l['awaiting_activation'] = "Awaiting Activation";
 $l['server_load'] = "Server Load";
 $l['attachments'] = "Attachments";
 $l['used'] = "Used";
-$l['repored_posts'] = "Reported Posts";
+$l['reported_posts'] = "Reported Posts";
 $l['unread_reports'] = "Unread Reports";
 
 $l['version_check'] = "Check for Updates";
