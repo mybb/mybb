@@ -7595,6 +7595,41 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
+	if(isset($pm['language']))
+	{
+		$revert = false;
+		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
+		{
+			// Load language
+			$lang->set_language($pm['language']);
+			$lang->load($pm['language_file']);
+
+			$revert = true;
+		}
+
+		foreach(array('subject', 'message') as $key)
+		{
+			if(is_array($pm[$key]))
+			{
+				$num_args = count($pm[$key]);
+
+				for($i = 1; $i < $num_args; $i++)
+				{
+					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+				}
+			}
+
+			$pm[$key] = $lang->{$pm[$key][0]};
+		}
+
+		if($revert)
+		{
+			// Load language
+			$lang->set_language($mybb->user['language']);
+			$lang->load($pm['language_file']);
+		}
+	}
+
 	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;

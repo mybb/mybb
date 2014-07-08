@@ -51,13 +51,16 @@ $l['error_alreadyingroup'] = "The user specified is already part of the user gro
 $l['error_alreadyinvited'] = "The user specified has already been invited.";
 
 $l['user_invited'] = "The user has been invited to join the user group.";
-$l['invite_expires'] = "This invite will expire {1} days from now.";
-$l['does_not_expire'] = "This invitation does not expire.";
 $l['invite_pm_subject'] = "You have been invited to join \"{1}\"";
-$l['invite_pm_message'] = "You have recieved an invitation to join the user group \"{1}\".
+$l['invite_pm_message'] = "You have received an invitation to join the user group \"{1}\".
 
 To join, please proceed to your [url={2}/usercp.php?action=usergroups]Group Memberships[/url] page and click 'Accept Invite'.
 
-{3}";
+This invitation does not expire.";
+$l['invite_pm_message_expires'] = "You have received an invitation to join the user group \"{1}\".
+
+To join, please proceed to your [url={2}/usercp.php?action=usergroups]Group Memberships[/url] page and click 'Accept Invite'.
+
+This invite will expire {3} days from now.";
 
 ?>
