@@ -3243,6 +3243,75 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 }
 
 /**
+ * Build the thread prefix selection menu for a forum
+ *
+ *  @param mixed The forum ID (integer ID)
+ *  @param mixed The selected prefix ID (integer ID or string any)
+ */
+function build_forum_prefix_select($fid, $selected_pid=0)
+{
+	global $cache, $db, $lang, $mybb, $templates;
+
+	$fid = intval($fid);
+
+	$prefix_cache = build_prefixes(0);
+	if(!$prefix_cache)
+	{
+		return false; // We've got no prefixes to show
+	}
+
+	// Go through each of our prefixes and decide which ones we can use
+	$prefixes = array();
+	foreach($prefix_cache as $prefix)
+	{
+		if($prefix['forums'] != "-1")
+		{
+			// Decide whether this prefix can be used in our forum
+			$forums = explode(",", $prefix['forums']);
+
+			if(!in_array($fid, $forums))
+			{
+				// This prefix is not in our forum list
+				continue;
+			}
+		}
+		else
+		{
+			// This prefix is for anybody to use...
+			$prefixes[$prefix['pid']] = $prefix;
+		}
+	}
+
+	if(empty($prefixes))
+	{
+		return false;
+	}
+
+	$prefixselect = $prefixselect_prefix = '';
+
+	$default_selected = '';
+	if(intval($selected_pid) == 0)
+	{
+		$default_selected = " selected=\"selected\"";
+	}
+
+	foreach($prefixes as $prefix)
+	{
+		$selected = '';
+		if($prefix['pid'] == $selected_pid)
+		{
+			$selected = " selected=\"selected\"";
+		}
+
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+	}
+
+	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	return $prefixselect;
+}
+
+/**
  * Gzip encodes text to a specified level
  *
  * @param string The string to encode

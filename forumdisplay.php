@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdispl
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
 $templatelist .= ",forumdisplay_inlinemoderation_openclose,forumdisplay_inlinemoderation_stickunstick,forumdisplay_inlinemoderation_softdelete,forumdisplay_inlinemoderation_restore,forumdisplay_inlinemoderation_delete,forumdisplay_inlinemoderation_manage,forumdisplay_inlinemoderation_approveunapprove";
-$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard";
+$templatelist .= ",forumbit_depth2_forum_unapproved_posts,forumbit_depth2_forum_unapproved_threads,forumbit_moderators_user,forumdisplay_inlinemoderation_standard,forumdisplay_threadlist_prefixes_prefix,forumdisplay_threadlist_prefixes";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -467,6 +467,19 @@ else
 	$datecutsql2 = '';
 }
 
+// Sort by thread prefix
+$tprefix = $mybb->get_input('prefix', 1);
+if($tprefix > 0)
+{
+	$prefixsql = "AND prefix='{$tprefix}'";
+	$prefixsql2 = "AND t.prefix='{$tprefix}'";
+}
+else
+{
+	$prefixsql = '';
+	$prefixsql2 = '';
+}
+
 // Pick the sort order.
 if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 {
@@ -556,11 +569,11 @@ else
 $mybb->input['page'] = $mybb->get_input('page', 1);
 if($mybb->input['page'] > 1)
 {
-	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut";
+	$sorturl = get_forum_link($fid, $mybb->input['page']).$string."datecut=$datecut&amp;prefix=$tprefix";
 }
 else
 {
-	$sorturl = get_forum_link($fid).$string."datecut=$datecut";
+	$sorturl = get_forum_link($fid).$string."datecut=$datecut&amp;prefix=$tprefix";
 }
 
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
@@ -578,7 +591,7 @@ if($fpermissions['canviewthreads'] != 0)
 	// How many posts are there?
 	if($datecut > 0 || isset($fpermissions['canonlyviewownthreads']) && $fpermissions['canonlyviewownthreads'] == 1)
 	{
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql");
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $useronly $visibleonly $datecutsql $prefixsql");
 		$threadcount = $db->fetch_field($query, "threads");
 	}
 	else
@@ -636,7 +649,7 @@ if($upper > $threadcount)
 }
 
 // Assemble page URL
-if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) // Ugly URL
+if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] || $mybb->input['prefix']) // Ugly URL
 {
 	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
 
@@ -668,6 +681,13 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 	if($datecut > 0)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
+		$q = '';
+		$and = "&";
+	}
+
+	if($tprefix > 0)
+	{
+		$page_url .= "{$q}{$and}prefix={$tprefix}";
 	}
 }
 else
@@ -824,7 +844,7 @@ if($fpermissions['canviewthreads'] != 0)
 		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
+		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2 $prefixsql2
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");
@@ -1420,6 +1440,8 @@ if($foruminfo['type'] != "c")
 	{
 		$post_code_string = "&amp;my_post_key=".$mybb->post_code;
 	}
+
+	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");

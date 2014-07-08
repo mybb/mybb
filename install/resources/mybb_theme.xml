@@ -3806,6 +3806,7 @@ a.button {
 					<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
 					<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
 				</select>
+				{$prefixselect}
 				{$gobutton}
 			</form>
 		</td>
@@ -3846,6 +3847,11 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
+		<template name="forumdisplay_threadlist_prefixes" version="1800"><![CDATA[<select name="prefix">
+<option value="0"{$default_selected}>{$lang->prefix_all}</option>
+{$prefixselect_prefix}
+</select>]]></template>
+		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>
 		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
