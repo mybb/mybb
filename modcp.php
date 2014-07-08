@@ -152,6 +152,7 @@ if($mybb->usergroup['issupermod'] != 1)
 	}
 	if($flist_reports)
 	{
+		$wflist_reports = "WHERE r.id3 IN ({$flist_reports})";
 		$tflist_reports = " AND r.id3 IN (0{$flist_reports})";
 		$flist_reports = " AND id3 IN (0{$flist_reports})";
 	}
@@ -605,8 +606,25 @@ if($mybb->input['action'] == "allreports")
 		$page = $mybb->get_input('page', 1);
 	}
 
-	$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
-	$warnings = $db->fetch_field($query, "count");
+	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+	{
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
+		$report_count = $db->fetch_field($query, "count");
+	}
+	else
+	{
+		$query = $db->simple_select('reportedcontent', 'id3', "type = 'post' OR type = ''");
+
+		$report_count = 0;
+		while($fid = $db->fetch_field($query, 'id3'))
+		{
+			if(is_moderator($fid, "canmanagereportedposts"))
+			{
+				++$report_count;
+			}
+		}
+		unset($fid);
+	}
 
 	if(isset($mybb->input['rid']))
 	{
@@ -622,7 +640,7 @@ if($mybb->input['action'] == "allreports")
 			$page = intval($result / $perpage) + 1;
 		}
 	}
-	$postcount = intval($warnings);
+	$postcount = intval($report_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -664,6 +682,7 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
+		{$wflist_reports}
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
