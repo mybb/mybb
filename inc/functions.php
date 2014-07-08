@@ -3246,7 +3246,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
  * Build the thread prefix selection menu for a forum
  *
  *  @param mixed The forum ID (integer ID)
- *  @param mixed The selected prefix ID (integer ID or string any)
+ *  @param mixed The selected prefix ID (integer ID)
  */
 function build_forum_prefix_select($fid, $selected_pid=0)
 {
@@ -3269,10 +3269,10 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 			// Decide whether this prefix can be used in our forum
 			$forums = explode(",", $prefix['forums']);
 
-			if(!in_array($fid, $forums))
+			if(in_array($fid, $forums))
 			{
-				// This prefix is not in our forum list
-				continue;
+				// This forum can use this prefix!
+				$prefixes[$prefix['pid']] = $prefix;
 			}
 		}
 		else
