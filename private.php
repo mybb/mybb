@@ -1425,7 +1425,7 @@ if($mybb->input['action'] == "stopalltracking")
 	$sql_array = array(
 		"receipt" => 0
 	);
-	$db->update_query("privatemessages", $sql_array, "receipt='2' AND folder!='3' AND status!='0' AND fromid="{$mybb->user['uid']});
+	$db->update_query("privatemessages", $sql_array, "receipt='2' AND folder!='3' AND status!='0' AND fromid=".$mybb->user['uid']);
 
 	$plugins->run_hooks("private_stopalltracking_end");
 	redirect("private.php?action=tracking", $lang->redirect_allpmstrackingstopped);
