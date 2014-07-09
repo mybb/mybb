@@ -18,7 +18,8 @@ function task_dailycleanup($task)
 		'sessionstime' => TIME_NOW-60*60*24,
 		'threadreadcut' => TIME_NOW-(((int)$mybb->settings['threadreadcut'])*60*60*24),
 		'privatemessages' => TIME_NOW-(60*60*24*7),
-		'deleteinvite' => TIME_NOW-(((int)$mybb->settings['deleteinvites'])*60*60*24)
+		'deleteinvite' => TIME_NOW-(((int)$mybb->settings['deleteinvites'])*60*60*24),
+		'stoppmtracking' => TIME_NOW-(60*60*24*180)
 	);
 
 	if(is_object($plugins))
@@ -53,6 +54,12 @@ function task_dailycleanup($task)
 	{
 		$db->delete_query("joinrequests", "dateline < '".(int)$time['deleteinvite']."' AND invite='1'");
 	}
+
+	// Stop tracking read PMs after 6 months
+	$sql_array = array(
+		"receipt" => 0
+	);
+	$db->update_query("privatemessages", $sql_array, "receipt='2' AND folder!='3' AND status!='0' AND readtime < '".(int)$time['stoppmtracking']."'");
 
 	if(is_object($plugins))
 	{

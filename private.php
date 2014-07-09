@@ -17,10 +17,10 @@ $templatelist .= ",private_folders,private_folders_folder,private_folders_folder
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,posticons_icon";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to,postbit_online";
 $templatelist .= ",postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages,postbit_author_guest,private_multiple_recipients_user,private_multiple_recipients_bcc,private_multiple_recipients,usercp_nav_messenger_folder";
-$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink";
+$templatelist .= ",private_search_messagebit,private_search_results_nomessages,private_search_results,private_advanced_search,previewpost,private_send_tracking,private_send_signature,private_read_bcc,private_composelink,postbit_purgespammer";
 $templatelist .= ",private_archive,private_quickreply,private_pmspace,private_limitwarning,postbit_groupimage,postbit_offline,postbit_www,postbit_replyall_pm,postbit_signature,postbit_classic,postbit_gotopost,multipage_prevpage";
 $templatelist .= ",private_archive_folders_folder,private_archive_folders,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,private_messagebit_icon,private_jump_folders_folder,private_advanced_search_folders";
-$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,postbit_purgespammer,private_emptyexportlink";
+$templatelist .= ",private_jump_folders,postbit_avatar,postbit_warn,postbit_rep_button,postbit_email,postbit_reputation,private_move,private_read_action,postbit_away,postbit_pm,usercp_nav_messenger_tracking,postbit_find,private_emptyexportlink";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1228,7 +1228,7 @@ if($mybb->input['action'] == "tracking")
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['postsperpage'];
 
-	$query = $db->simple_select("privatemessages", "COUNT(pmid) as readpms", "receipt='2' AND folder!='3'  AND status!='0' AND fromid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("privatemessages", "COUNT(pmid) as readpms", "receipt='2' AND folder!='3' AND status!='0' AND fromid='".$mybb->user['uid']."'");
 	$postcount = $db->fetch_field($query, "readpms");
 
 	$page = $mybb->get_input('read_page', 1);
@@ -1346,6 +1346,7 @@ if($mybb->input['action'] == "tracking")
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
 	output_page($tracking);
 }
+
 if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
@@ -1412,6 +1413,22 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 		$plugins->run_hooks("private_do_tracking_end");
 		redirect("private.php?action=tracking", $lang->redirect_pmstrackingcanceled);
 	}
+}
+
+if($mybb->input['action'] == "stopalltracking")
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks("private_stopalltracking_start");
+
+	$sql_array = array(
+		"receipt" => 0
+	);
+	$db->update_query("privatemessages", $sql_array, "receipt='2' AND folder!='3' AND status!='0' AND fromid="{$mybb->user['uid']});
+
+	$plugins->run_hooks("private_stopalltracking_end");
+	redirect("private.php?action=tracking", $lang->redirect_allpmstrackingstopped);
 }
 
 if($mybb->input['action'] == "folders")
