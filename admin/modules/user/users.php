@@ -2621,13 +2621,13 @@ if($mybb->input['action'] == "inline_edit")
 								$db->delete_query("warnings", "uid='{$user['uid']}'");
 
 								// Update thread ratings
-								$query = $db->query("
+								$update_thread_ratings_query = $db->query("
 									SELECT r.*, t.numratings, t.totalratings
 									FROM ".TABLE_PREFIX."threadratings r
 									LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=r.tid)
 									WHERE r.uid='{$user['uid']}'
 								");
-								while($rating = $db->fetch_array($query))
+								while($rating = $db->fetch_array($update_thread_ratings_query))
 								{
 									$update_thread = array(
 										"numratings" => $rating['numratings'] - 1,
