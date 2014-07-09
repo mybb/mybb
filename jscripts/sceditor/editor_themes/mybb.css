@@ -154,6 +154,9 @@ html {
   background-position:  0px -448px;
     
 }
+.sceditor-emoticons img {
+    cursor: pointer;
+}
 .sceditor-button-email div  {
     
   background-position:  0px -464px;
