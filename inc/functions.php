@@ -2881,7 +2881,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					{
 						if($smilie['showclickable'] != 0)
 						{
-							$smiliecache[$smilie['find']] = $smilie['image'];
+							$smiliecache[$smilie['sid']] = $smilie;
 						}
 					}
 				}
@@ -2896,10 +2896,10 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					$moresmilies = "";
 					$i = 0;
 
-					foreach($smiliecache as $find => $image)
+					foreach($smiliecache as $smilie)
 					{
-						$find = htmlspecialchars_uni($find);
-						$image = htmlspecialchars_uni($image);
+						$find = htmlspecialchars_uni($smilie['find']);
+						$image = htmlspecialchars_uni($smilie['image']);
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -3005,7 +3005,7 @@ function build_clickable_smilies()
 			{
 				if($smilie['showclickable'] != 0)
 				{
-					$smiliecache[$smilie['find']] = $smilie['image'];
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 		}
@@ -3031,7 +3031,8 @@ function build_clickable_smilies()
 			$counter = 0;
 			$i = 0;
 
-			foreach($smiliecache as $find => $image)
+			$extra_class = '';
+			foreach($smiliecache as $smilie)
 			{
 				if($i < $mybb->settings['smilieinsertertot'])
 				{
@@ -3041,6 +3042,9 @@ function build_clickable_smilies()
 					}
 
 					$find = htmlspecialchars_uni($find);
+
+					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
+					eval('$smilie = "'.$templates->get('smilie').'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
