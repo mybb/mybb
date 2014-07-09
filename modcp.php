@@ -152,7 +152,7 @@ if($mybb->usergroup['issupermod'] != 1)
 	}
 	if($flist_reports)
 	{
-		$wflist_reports = "WHERE r.id3 IN ({$flist_reports})";
+		$wflist_reports = "WHERE r.id3 IN (0{$flist_reports})";
 		$tflist_reports = " AND r.id3 IN (0{$flist_reports})";
 		$flist_reports = " AND id3 IN (0{$flist_reports})";
 	}
