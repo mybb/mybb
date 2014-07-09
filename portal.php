@@ -436,17 +436,18 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$numannouncements = 10; // Default back to 10
 	}
 
-	if($mybb->get_input('page', 1) > 0)
+	$page = $mybb->get_input('page', 1);
+	$pages = $announcementcount / $numannouncements;
+	$pages = ceil($pages);
+
+	if($page > $pages || $page <= 0)
 	{
-		$page = $mybb->get_input('page', 1);
+		$page = 1;
+	}
+
+	if($page)
+	{
 		$start = ($page-1) * $numannouncements;
-		$pages = $announcementcount / $numannouncements;
-		$pages = ceil($numannouncements);
-		if($page > $numannouncements || $page <= 0)
-		{
-			$start = 0;
-			$page = 1;
-		}
 	}
 	else
 	{
@@ -478,9 +479,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$pids .= ",'{$getid['pid']}'";
 			}
-				$tids .= ",'{$getid['tid']}'";
-				$posts[$getid['tid']] = $getid;
+
+			$posts[$getid['tid']] = $getid;
 		}
+
+		$tids .= ",'{$getid['tid']}'";
 	}
 	if(!empty($posts))
 	{
