@@ -1161,6 +1161,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("themestylesheets", "tid", "smallint NOT NULL default '0'");
 			$db->modify_column("usergroups", "canusesigxposts", "smallint NOT NULL default '0'");
 			$db->modify_column("users", "timezone", "varchar(5) NOT NULL default ''");
+			$db->modify_column("users", "reputation", "int NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint NOT NULL default '0'");
@@ -1185,6 +1186,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("themestylesheets", "tid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("usergroups", "canusesigxposts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("users", "timezone", "varchar(5) NOT NULL default ''");
+			$db->modify_column("users", "reputation", "int NOT NULL default '0'");
 			$db->modify_column("warninglevels", "percentage", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("warningtypes", "points", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("warnings", "points", "smallint unsigned NOT NULL default '0'");
@@ -1389,7 +1391,7 @@ function upgrade30_dbchanges_optimize4()
 		"threadsubscriptions" => array("dateline"),
 		"threadsread" => array("dateline"),
 		"usergroups" => array("reputationpower", "maxreputationsday", "maxreputationsperuser", "maxreputationsperthread", "attachquota"),
-		"users" => array("regdate", "lastactive", "lastvisit", "lastpost", "reputation", "timeonline", "moderationtime", "suspensiontime", "suspendsigtime"),
+		"users" => array("regdate", "lastactive", "lastvisit", "lastpost", "timeonline", "moderationtime", "suspensiontime", "suspendsigtime"),
 		"warningtypes" => array("expirationtime"),
 		"warnings" => array("dateline", "expires", "daterevoked")
 	);

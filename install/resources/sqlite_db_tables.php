@@ -966,7 +966,7 @@ $tables[] = "CREATE TABLE mybb_users (
 	notepad TEXT NOT NULL,
 	referrer int NOT NULL default '0',
 	referrals int NOT NULL default '0',
-	reputation int unsigned NOT NULL default '0',
+	reputation int NOT NULL default '0',
 	regip blob(16) NOT NULL default '',
 	lastip blob(16) NOT NULL default '',
 	language varchar(50) NOT NULL default '',

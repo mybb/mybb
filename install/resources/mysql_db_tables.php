@@ -1080,7 +1080,7 @@ $tables[] = "CREATE TABLE mybb_users (
   notepad text NOT NULL,
   referrer int unsigned NOT NULL default '0',
   referrals int unsigned NOT NULL default '0',
-  reputation int unsigned NOT NULL default '0',
+  reputation int NOT NULL default '0',
   regip varbinary(16) NOT NULL default '',
   lastip varbinary(16) NOT NULL default '',
   language varchar(50) NOT NULL default '',
