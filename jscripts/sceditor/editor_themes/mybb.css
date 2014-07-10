@@ -237,6 +237,7 @@ div.sceditor-grip  {
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
+    -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 100% !important;
@@ -256,9 +257,10 @@ div.sceditor-grip  {
     margin: 5px;
     resize: none;
     background: #fff;
+    -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    width: 100% !important;
+    width: 99% !important;
 }
 div.sceditor-resize-cover {
     position: absolute;
@@ -568,4 +570,17 @@ div.sceditor-group {
 }
 .sceditor-container .sceditor-toolbar,  .sceditor-container iframe,  .sceditor-container textarea  {
     margin:  0 -4px;
+}
+
+
+/* Additional buttons (for MyBB) */
+.sceditor-button-video div  {
+    
+  background-image: url(video.png);
+    
+}
+.sceditor-button-php div  {
+    
+  background-image: url(php.png);
+    
 }
