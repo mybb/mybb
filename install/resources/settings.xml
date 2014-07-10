@@ -1039,6 +1039,14 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+        <setting name="enablestopforumspam">
+            <title>Check Registrations Against StopForumSpam.com?</title>
+            <description><![CDATA[Do you wish to check all new registrations against the StopForumSpam.com database?]]></description>
+            <disporder>24</disporder>
+            <optionscode><![CDATA[yesno]]></optionscode>
+            <settingvalue><![CDATA[0]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="10" isdefault="1">
 		<setting name="sigmycode">
