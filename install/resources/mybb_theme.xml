@@ -13522,5 +13522,6 @@ $(function() {
 </tr>]]></template>
 		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
+		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 	</templates>
 </theme>
