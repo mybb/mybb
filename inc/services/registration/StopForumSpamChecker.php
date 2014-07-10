@@ -21,7 +21,7 @@ class StopForumSpamChecker implements RegistrationCheckerInterface
 	 */
 	public function __construct($min_weighting_before_spam = 50.00)
 	{
-		$this->min_weighting_before_spam = $min_weighting_before_spam;
+		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
 	}
 
 	/**
@@ -48,10 +48,15 @@ class StopForumSpamChecker implements RegistrationCheckerInterface
 
 			if($result !== false)
 			{
-				// Parse results
+				$result_json = @json_decode($check_url, true);
+
+				if(json_last_error() == JSON_ERROR_NONE && $result_json != null)
+				{
+					// Calculate if user is a spammer
+				}
 			}
 		}
-		
+
 		return $is_spammer;
 	}
 }
