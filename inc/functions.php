@@ -2882,6 +2882,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					{
 						if($smilie['showclickable'] != 0)
 						{
+							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 							$smiliecache[$smilie['find']] = $smilie['image'];
 						}
 					}
