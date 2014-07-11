@@ -1842,7 +1842,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="portal_announcementsfid">
+		<setting name="portal_excludediscussion">
 			<title>Forums to exclude latest discussions from</title>
 			<description><![CDATA[Please select the forums you wish to exclude from the current forum discussions box.]]></description>
 			<disporder>11</disporder>
