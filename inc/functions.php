@@ -3007,6 +3007,7 @@ function build_clickable_smilies()
 			{
 				if($smilie['showclickable'] != 0)
 				{
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 					$smiliecache[$smilie['find']] = $smilie['image'];
 				}
 			}
