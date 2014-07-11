@@ -1735,6 +1735,7 @@ function get_post_icons()
 
 	foreach($posticons as $dbicon)
 	{
+		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
 		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 

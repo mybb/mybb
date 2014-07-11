@@ -512,7 +512,7 @@ class postParser
 	 */
 	private function cache_smilies()
 	{
-		global $cache, $mybb;
+		global $cache, $mybb, $theme;
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
@@ -520,7 +520,8 @@ class postParser
 		{
 			foreach($smilies as $sid => $smilie)
 			{
-                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
 				$this->smilies_cache[$smilie['find']] = "<img src=\"{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
 			}
