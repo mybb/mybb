@@ -17,7 +17,7 @@ $l['manage_post_icons_desc'] = "This section allows you to edit, delete, and man
 
 $l['name_desc'] = "This is the name for the post icon.";
 $l['image_path'] = "Image Path";
-$l['image_path_desc'] = "This is the path to the post icon image.";
+$l['image_path_desc'] = "This is the path to the post icon image. If you want to use different post icon images for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme.";
 $l['save_post_icon'] = "Save Post Icon";
 $l['reset'] = "Reset";
 

@@ -1036,6 +1036,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
 			$icon = $icon_cache[$thread['icon']];
+			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 		}
 		else

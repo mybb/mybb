@@ -752,6 +752,7 @@ function build_postbit($post, $post_type=0)
 		$icon = $icon_cache[$post['icon']];
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
+		$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
 		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
 	}

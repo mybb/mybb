@@ -417,6 +417,7 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$thread['icon']]))
 			{
 				$posticon = $icon_cache[$thread['icon']];
+				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
 				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
 			}
 			else
@@ -828,6 +829,7 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$post['icon']]))
 			{
 				$posticon = $icon_cache[$post['icon']];
+				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
 				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
 			}
 			else
