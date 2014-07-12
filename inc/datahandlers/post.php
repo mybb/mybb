@@ -1381,7 +1381,7 @@ class PostDataHandler extends DataHandler
 		{
 			$forumpermissions = forum_permissions($thread['fid'], $thread['uid']);
 			// Decide on the visibility of this post.
-			if($forumpermissions['modthreads'] == 1 || $forumpermissions['modposts'] == 1)
+			if($forumpermissions['modthreads'] == 1)
 			{
 				$visible = 0;
 			}
