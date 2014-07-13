@@ -186,8 +186,11 @@ else
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->get_input('username'))."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
+		$options = array(
+			'fields' => array('username', 'password', 'salt', 'loginkey')
+		);
+		$user = get_user_by_username($mybb->get_input('username'), $options);
+
 		if(!$user['uid'])
 		{
 			$output->print_error("The username you have entered appears to be invalid.");

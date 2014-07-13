@@ -413,8 +413,10 @@ function upgrade5_redoconfig()
 	$uid = 0;
 	if($mybb->input['username'] != '' && !$mybb->input['uid'])
 	{
-		$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['username'])."'");
-		$uid = $db->fetch_field($query, "uid");
+		$user = get_user_by_username($mybb->input['username']);
+
+		$uid = (int)$user['uid'];
+
 		if(!$uid)
 		{
 			echo "<p><span style=\"color: red; font-weight: bold;\">The username you entered could not be found.</span><br />Please ensure you corectly enter a valid username.</p>";

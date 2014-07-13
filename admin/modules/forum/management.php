@@ -2161,16 +2161,18 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$query = $db->simple_select("users", "uid AS id, username AS name", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+				$options = array(
+					'fields' => array('uid AS id', 'username AS name')
+				);
+				$newmod = get_user_by_username($mybb->input['username'], $options);
 
-				if(!$db->num_rows($query))
+				if(empty($newmod['id']))
 				{
 					flash_message($lang->error_moderator_not_found, 'error');
 					admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
 				}
 
 				$isgroup = 0;
-				$newmod = $db->fetch_array($query);
 			}
 
 			if($newmod['id'])
