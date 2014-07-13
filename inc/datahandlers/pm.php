@@ -733,9 +733,14 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Return back with appropriate data
-		return array(
-			"messagesent" => 1
+		$this->return_values = array(
+			"messagesent" => 1,
+			"pmids" => $this->pmid
 		);
+
+		$plugins->run_hooks("datahandler_pm_insert_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>
