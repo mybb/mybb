@@ -528,6 +528,7 @@ none=Hide Errors and Warnings
 <option value=\"-7\" ".($setting['value'] == -7?"selected=\"selected\"":"").">GMT -7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -7).")</option>
 <option value=\"-6\" ".($setting['value'] == -6?"selected=\"selected\"":"").">GMT -6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -6).")</option>
 <option value=\"-5\" ".($setting['value'] == -5?"selected=\"selected\"":"").">GMT -5:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -5).")</option>
+<option value=\"-4.5\" ".($setting['value'] == -4.5?"selected=\"selected\"":"").">GMT -4:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -4.5).")</option>
 <option value=\"-4\" ".($setting['value'] == -4?"selected=\"selected\"":"").">GMT -4:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -4).")</option>
 <option value=\"-3.5\" ".($setting['value'] == -3.5?"selected=\"selected\"":"").">GMT -3:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -3.5).")</option>
 <option value=\"-3\" ".($setting['value'] == -3?"selected=\"selected\"":"").">GMT -3:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -3).")</option>
@@ -864,10 +865,18 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="forcelogin">
+			<title>Force Users to Login</title>
+			<description><![CDATA[Setting this to yes will force guests to login or register in order to access the board.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="minnamelength">
 			<title>Minimum Username Length</title>
 			<description><![CDATA[The minimum number of characters a username can be when a user registers.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -875,7 +884,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxnamelength">
 			<title>Maximum Username Length</title>
 			<description><![CDATA[The maximum number of characters a username can be when a user registers.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -883,7 +892,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="minpasswordlength">
 			<title>Minimum Password Length</title>
 			<description><![CDATA[The minimum number of characters a password should contain.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[6]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -891,7 +900,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxpasswordlength">
 			<title>Maximum Password Length</title>
 			<description><![CDATA[The maximum number of characters a password should contain.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -899,7 +908,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="requirecomplexpasswords">
 			<title>Require a complex password?</title>
 			<description><![CDATA[Do you want users to use complex passwords? Complex passwords require an upper case letter, lower case letter and a number.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -907,7 +916,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
 			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -915,7 +924,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxregsbetweentime">
 			<title>Maximum Registrations Per IP Address</title>
 			<description><![CDATA[This option allows you to set the maximum amount of times a certain user can register within the timeframe specified above.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -923,7 +932,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="allowmultipleemails">
 			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
 			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -931,7 +940,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should they be allowed to keep it?]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -939,7 +948,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="hiddencaptchaimage">
 			<title>Display a hidden CAPTCHA</title>
 			<description><![CDATA[Do you want to display a hidden CAPTCHA field when a user registers? This may prevent spambots from registering on your forum.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -947,7 +956,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="hiddencaptchaimagefield">
 			<title>Hidden CAPTCHA field</title>
 			<description><![CDATA[You can choose a name for your hidden CAPTCHA field below.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[email3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -955,7 +964,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="usereferrals">
 			<title>Use Referrals System</title>
 			<description><![CDATA[Do you want to use the user referrals system on these forums?]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -963,7 +972,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
 			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
 deny=Deny users under the age of 13
@@ -974,7 +983,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
 1=Email Only
@@ -985,7 +994,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. 0 to disable]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -993,7 +1002,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1001,7 +1010,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1009,7 +1018,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1017,7 +1026,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="regtime">
 			<title>Minimum Registration Time</title>
 			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form.  Used to prevent automated bot signups.  Setting this to 0 to disables the function.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1025,7 +1034,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="securityquestion">
 			<title>Show Security Question</title>
 			<description><![CDATA[Do you wish to show a question that users must answer when registering?]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1763,7 +1772,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="portal_announcementsfid">
 			<title>Forums to pull announcements from</title>
-			<description><![CDATA[Please select the forums of the forum(s) you wish to pull the announcements from.]]></description>
+			<description><![CDATA[Please select the forums you wish to pull the announcements from.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -1771,7 +1780,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="portal_numannouncements">
 			<title>Number of announcements to show</title>
-			<description><![CDATA[Please enter the number of announcements to show on the main page.]]></description>
+			<description><![CDATA[Please enter the number of announcements to show per page on the main page.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1831,6 +1840,14 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="portal_excludediscussion">
+			<title>Forums to exclude latest discussions from</title>
+			<description><![CDATA[Please select the forums you wish to exclude from the current forum discussions box.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[forumselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -2215,4 +2232,3 @@ delete=Delete]]></optionscode>
 		</setting>
 	</settinggroup>
 </settings>
-			

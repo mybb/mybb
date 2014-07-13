@@ -470,6 +470,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$icon['path'] = str_replace("{theme}", "images", $icon['path']);
 			$image = "../".$icon['path'];
 		}
 

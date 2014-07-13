@@ -512,7 +512,7 @@ class postParser
 	 */
 	private function cache_smilies()
 	{
-		global $cache, $mybb, $templates;
+		global $cache, $mybb, $theme, $templates;
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
@@ -521,7 +521,8 @@ class postParser
 			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
-                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
 				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie').'";');
 			}

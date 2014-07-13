@@ -22,6 +22,8 @@ $usergroup_permissions = array(
 	"canratethreads" => 1,
 	"modposts" => 0,
 	"modthreads" => 0,
+	"modattachments" => 0,
+	"mod_edit_posts" => 0,
 	"caneditposts" => 1,
 	"candeleteposts" => 1,
 	"candeletethreads" => 1,
@@ -815,6 +817,8 @@ if($mybb->input['action'] == "edit")
 				"canratethreads" => intval($mybb->input['canratethreads']),
 				"modposts" => intval($mybb->input['modposts']),
 				"modthreads" => intval($mybb->input['modthreads']),
+				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
+				"modattachments" => intval($mybb->input['modattachments']),
 				"caneditposts" => intval($mybb->input['caneditposts']),
 				"candeleteposts" => intval($mybb->input['candeleteposts']),
 				"candeletethreads" => intval($mybb->input['candeletethreads']),
@@ -1021,11 +1025,17 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
 		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
 		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
-		$form->generate_check_box("modposts", 1, $lang->moderate_posts, array("checked" => $mybb->input['modposts'])),
-		$form->generate_check_box("modthreads", 1, $lang->moderate_threads, array("checked" => $mybb->input['modthreads'])),
 		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_text_box('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
+
+	$moderator_options = array(
+		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->input['modposts'])),
+		$form->generate_check_box("modthreads", 1, $lang->mod_new_threads, array("checked" => $mybb->input['modthreads'])),
+		$form->generate_check_box("modattachments", 1, $lang->mod_new_attachments, array("checked" => $mybb->input['modattachments'])),
+		$form->generate_check_box("mod_edit_posts", 1, $lang->mod_after_edit, array("checked" => $mybb->input['mod_edit_posts']))
+	);
+	$form_container->output_row($lang->moderation_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $moderator_options)."</div>");
 
 	$poll_options = array(
 		$form->generate_check_box("canpostpolls", 1, $lang->can_post_polls, array("checked" => $mybb->input['canpostpolls'])),

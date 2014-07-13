@@ -3814,6 +3814,7 @@ a.button {
 					<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
 					<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
 				</select>
+				{$prefixselect}
 				{$gobutton}
 			</form>
 		</td>
@@ -3854,6 +3855,11 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
+		<template name="forumdisplay_threadlist_prefixes" version="1800"><![CDATA[<select name="prefix">
+<option value="0"{$default_selected}>{$lang->prefix_all}</option>
+{$prefixselect_prefix}
+</select>]]></template>
+		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>
 		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
@@ -10070,7 +10076,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_tracking_readmessage_stop" version="1800"><![CDATA[<tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages} / <a href="private.php?action=stopalltracking&amp;my_post_key={$mybb->post_code}">{$lang->stop_tracking_all}</a></strong></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="1800"><![CDATA[<tr>
 <td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/new_pm.png" alt="" /></td>
@@ -13336,7 +13342,6 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
 		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
@@ -13525,6 +13530,7 @@ $(function() {
 </tr>]]></template>
 		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
+		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" border="0" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
 	</templates>
 </theme>

@@ -654,6 +654,7 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 			$image = "../".$smilie['image'];
 		}
 

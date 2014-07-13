@@ -412,7 +412,7 @@ else
 }
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
-$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector";
+$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
 $templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie";
 $templates->cache($db->escape_string($templatelist));
 
@@ -702,7 +702,7 @@ if(!$task_cache['nextrun'])
 
 if($task_cache['nextrun'] <= TIME_NOW)
 {
-	$task_image = '<img src="'.$mybb->settings['bburl'].'/task.php" border="0" width="1" height="1" alt="" />';
+	eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
 // Are we showing the quick language selection box?
@@ -805,6 +805,31 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 	error($lang->error_boardclosed);
+	exit;
+}
+
+$force_bypass = array(
+	'member.php' => array(
+		'login',
+		'do_login',
+		'logout',
+		'register',
+		'do_register',
+		'lostpw',
+		'do_lostpw',
+		'activate',
+		'resendactivation',
+		'do_resendactivation',
+		'resetpassword',
+	),
+	'captcha.php',
+);
+
+// If the board forces user to login/register, and the user is a guest, show the force login message
+if($mybb->settings['forcelogin'] == 1 && $mybb->user['uid'] == 0 && !in_array($current_page, $force_bypass) && (!is_array($force_bypass[$current_page]) || !in_array($mybb->get_input('action'), $force_bypass[$current_page])))
+{
+	// Show error
+	error_no_permission();
 	exit;
 }
 

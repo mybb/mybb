@@ -35,7 +35,7 @@ $l['edit_group'] = "Edit Group";
 $l['default'] = "Default";
 $l['group'] = "Group";
 
-$l['error_delete_super_admin'] = 'Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.';
+$l['error_super_admin'] = 'Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.';
 $l['error_delete_no_uid'] = 'You did not enter a admin user/usergroup permission id';
 $l['error_delete_invalid_uid'] = 'You did not enter a valid admin user/usergroup permission id';
 

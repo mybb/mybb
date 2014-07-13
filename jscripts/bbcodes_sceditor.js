@@ -167,19 +167,19 @@ $(document).ready(function($) {
 
 			if($cite.length === 1 || $elm.data('author'))
 			{
-				author = $cite.text() || $elm.data('author');
+				author = $elm.data('author') || $cite.text();
 
 				$elm.data('author', author);
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				author  = '=' + author;
+				author  = "='" + author;
 
 				$elm.prepend($cite);
 			}
 
 			if($elm.data('pid'))
-				author += " pid='" + $elm.data('pid') + "'";
+				author += "' pid='" + $elm.data('pid') + "'";
 
 			if($elm.data('dateline'))
 				author += " dateline='" + $elm.data('dateline') + "'";
@@ -196,7 +196,10 @@ $(document).ready(function($) {
 				data += ' data-dateline="' + attrs.dateline + '"';
 
 			if(typeof attrs.defaultattr !== "undefined")
+			{
 				content = '<cite>' + attrs.defaultattr + '</cite>' + content;
+				data += ' data-author="' + attrs.defaultattr + '"';
+			}
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
