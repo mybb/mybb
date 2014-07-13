@@ -133,28 +133,22 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_username_exists()
 	{
-		global $db;
-
 		$username = &$this->data['username'];
 
-		$uid_check = "";
-		if(!empty($this->data['uid']))
+		$user = get_user_by_username(trim($username));
+
+		if(!empty($this->data['uid']) && !empty($user['uid']) && $user['uid'] == $this->data['uid'])
 		{
-			$uid_check = " AND uid!='{$this->data['uid']}'";
+			unset($user);
 		}
 
-		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
-
-		$user_count = $db->fetch_field($query, "count");
-		if($user_count > 0)
+		if(!empty($user['uid']))
 		{
 			$this->set_error("username_exists", array($username));
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
