@@ -658,7 +658,7 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
 		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
 
