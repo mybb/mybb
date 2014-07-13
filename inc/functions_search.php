@@ -605,7 +605,7 @@ function privatemessage_perform_search_mysql($search)
 		$userids = array();
 		$search['sender'] = my_strtolower($search['sender']);
 
-		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['sender']))."%'");
+		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['sender'])."%'");
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
