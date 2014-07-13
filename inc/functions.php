@@ -3380,24 +3380,17 @@ function log_moderator_action($data, $action="")
 {
 	global $mybb, $db, $session;
 
-	// If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it.
-	if(empty($data['fid']))
+	$fid = 0;
+	if(isset($data['fid']))
 	{
-		$fid = 0;
-	}
-	else
-	{
-		$fid = $data['fid'];
+		$fid = (int)$data['fid'];
 		unset($data['fid']);
 	}
 
-	if(empty($data['tid']))
+	$tid = 0;
+	if(isset($data['tid']))
 	{
-		$tid = 0;
-	}
-	else
-	{
-		$tid = $data['tid'];
+		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
 
@@ -3407,12 +3400,10 @@ function log_moderator_action($data, $action="")
 		$data = serialize($data);
 	}
 
-	$time = TIME_NOW;
-
 	$sql_array = array(
-		"uid" => $mybb->user['uid'],
-		"dateline" => $time,
-		"fid" => $fid,
+		"uid" => (int)$mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"fid" => (int)$fid,
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
@@ -5792,9 +5783,8 @@ function get_inactive_forums()
 
 /**
  * Checks to make sure a user has not tried to login more times than permitted
- * Will stop execution with call to error() unless
  *
- * @param bool (Optional) The function will stop execution if it finds an error with the login. Default is True
+ * @param bool (Optional) Stop execution if it finds an error with the login. Default is True
  * @return bool Number of logins when success, false if failed.
  */
 function login_attempt_check($fatal = true)
