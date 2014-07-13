@@ -1030,10 +1030,10 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 
 	$moderator_options = array(
-		$form->generate_check_box('modposts', 1, $lang->mod_new_posts, array('checked' => $forum_data['modposts'], 'id' => 'modposts')),
-		$form->generate_check_box('modthreads', 1, $lang->mod_new_threads, array('checked' => $forum_data['modthreads'], 'id' => 'modthreads')),
-		$form->generate_check_box('modattachments', 1, $lang->mod_new_attachments, array('checked' => $forum_data['modattachments'], 'id' => 'modattachments')),
-		$form->generate_check_box('mod_edit_posts', 1, $lang->mod_after_edit, array('checked' => $forum_data['mod_edit_posts'], 'id' => 'mod_edit_posts'))
+		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->input['modposts'])),
+		$form->generate_check_box("modthreads", 1, $lang->mod_new_threads, array("checked" => $mybb->input['modthreads'])),
+		$form->generate_check_box("modattachments", 1, $lang->mod_new_attachments, array("checked" => $mybb->input['modattachments'])),
+		$form->generate_check_box("mod_edit_posts", 1, $lang->mod_after_edit, array("checked" => $mybb->input['mod_edit_posts']))
 	);
 	$form_container->output_row($lang->moderation_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $moderator_options)."</div>");
 
