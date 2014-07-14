@@ -197,6 +197,18 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors = $userhandler->get_friendly_errors();
 	}
 
+	if($mybb->settings['enablestopforumspam'])
+	{
+		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
+
+		$stop_forum_spam_checker = new StopForumSpamChecker($mybb->settings['stopforumspam_min_weighting_before_spam']);
+
+		if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
+		{
+			error($lang->error_stop_forum_spam_spammer);
+		}
+	}
+
 	if($mybb->settings['captchaimage'])
 	{
 		require_once MYBB_ROOT.'inc/class_captcha.php';

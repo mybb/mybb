@@ -3,7 +3,7 @@
 /**
  * Registration checker to check registrations against the StopForumSpam.com database.
  */
-class StopForumSpamChecker implements RegistrationCheckerInterface
+class StopForumSpamChecker
 {
 	/**
 	 * The base URL format to the stop forum spam API.
@@ -40,7 +40,6 @@ class StopForumSpamChecker implements RegistrationCheckerInterface
 		{
 			$username   = urlencode($username);
 			$email      = urlencode($email);
-			$ip_address = urlencode($ip_address);
 
 			$check_url = sprintf(self::STOP_FORUM_SPAM_API_URL_FORMAT, $username, $email, $ip_address);
 
@@ -48,11 +47,31 @@ class StopForumSpamChecker implements RegistrationCheckerInterface
 
 			if($result !== false)
 			{
-				$result_json = @json_decode($check_url, true);
+				$result_json = @json_decode($check_url);
 
 				if(json_last_error() == JSON_ERROR_NONE && $result_json != null)
 				{
-					// Calculate if user is a spammer
+					$confidence = 0;
+
+					if($result_json->username->appears)
+					{
+						$confidence += $result_json->username->confidence;
+					}
+
+					if($result_json->email->appears)
+					{
+						$confidence += $result_json->email->confidence;
+					}
+
+					if($result_json->ip->appears)
+					{
+						$confidence += $result_json->ip->confidence;
+					}
+
+					if($confidence > $this->min_weighting_before_spam)
+					{
+						$is_spammer = true;
+					}
 				}
 			}
 		}

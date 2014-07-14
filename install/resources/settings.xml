@@ -1055,6 +1055,14 @@ disabled=Disable this feature]]></optionscode>
             <settingvalue><![CDATA[0]]></settingvalue>
             <isdefault>1</isdefault>
         </setting>
+        <setting name="stopforumspam_min_weighting_before_spam">
+            <title>Minimum stop forum spam weighting?</title>
+            <description><![CDATA[The minimum weighting received from StopForumSpam.com before deciding a user is a spammer. Should be a number between 0 and 100.]]></description>
+            <disporder>24</disporder>
+            <optionscode><![CDATA[text]]></optionscode>
+            <settingvalue><![CDATA[50.00]]></settingvalue>
+            <isdefault>1</isdefault>
+        </setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="10" isdefault="1">
 		<setting name="sigmycode">
