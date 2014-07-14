@@ -432,6 +432,8 @@ else
 	$lastvisit = $lang->lastvisit_never;
 }
 
+$plugins->run_hooks('global_intermediate');
+
 // If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
 $bbclosedwarning = '';
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
