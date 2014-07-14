@@ -240,7 +240,6 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
 			break;
 		case "sqlite":
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
@@ -265,7 +264,6 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
@@ -294,7 +292,6 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
 
