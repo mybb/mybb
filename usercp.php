@@ -252,7 +252,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"postnum" => $mybb->user['postnum'],
 		"usergroup" => $mybb->user['usergroup'],
 		"additionalgroups" => $mybb->user['additionalgroups'],
-		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
@@ -263,6 +262,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', 2)
 	);
+	
+	if($mybb->usergroup['canchangewebsite'] == 1)
+	{
+		$user['website'] = $mybb->get_input('website');
+	}
 
 	if($mybb->usergroup['cancustomtitle'] == 1)
 	{
@@ -715,6 +719,11 @@ if($mybb->input['action'] == "profile")
 		$customtitle = "";
 	}
 
+	if($mybb->usergroup['canchangewebsite'] == 1)
+	{
+		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");
+	}
+	
 	$plugins->run_hooks("usercp_profile_end");
 
 	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");

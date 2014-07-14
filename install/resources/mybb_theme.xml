@@ -12520,12 +12520,7 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>
-<tr>
-<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
-</tr>
-<tr>
-<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
-</tr>
+{$website}
 </table>
 </fieldset>
 {$customfields}
@@ -12635,6 +12630,12 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </fieldset>]]></template>
+	<template name="usercp_profile_website" version="1800"><![CDATA[<tr>
+<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
+</tr>
+<tr>
+<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
+</tr>]]></template>
 		<template name="usercp_profile_customfield" version="1800"><![CDATA[<tr>
 <td>
 <span>{$profilefield['name']}</span>:

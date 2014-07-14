@@ -126,6 +126,7 @@ $l['edit_time_limit_desc'] = "The number of minutes until regular users cannot e
 $l['can_be_reported'] = "Can be reported?";
 $l['can_access_usercp'] = "Can access User CP?";
 $l['can_change_username'] = "Can change username?";
+$l['can_change_website'] = "Can change website?";
 $l['can_use_usertitles'] = "Can use custom user titles?";
 $l['can_upload_avatars'] = "Can upload avatars?";
 $l['can_use_signature'] = "Can add a signature?";

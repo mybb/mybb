@@ -57,6 +57,7 @@ $usergroup_permissions = array(
 	"canratemembers" => 1,
 	"canchangename" => 0,
 	"canbereported" => 0,
+	"canchangewebsite" => 1,
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
@@ -851,6 +852,7 @@ if($mybb->input['action'] == "edit")
 				"canuploadavatars" => intval($mybb->input['canuploadavatars']),
 				"canchangename" => intval($mybb->input['canchangename']),
 				"canbereported" => intval($mybb->input['canbereported']),
+				"canchangewebsite" => intval($mybb->input['canchangewebsite']),
 				"showforumteam" => intval($mybb->input['showforumteam']),
 				"usereputationsystem" => intval($mybb->input['usereputationsystem']),
 				"cangivereputations" => intval($mybb->input['cangivereputations']),
@@ -1076,6 +1078,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars'])),
 		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
 		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
+		$form->generate_check_box("canchangewebsite", 1, $lang->can_change_website, array("checked" => $mybb->input['canchangewebsite'])),
 		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_text_box('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");
