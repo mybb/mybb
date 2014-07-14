@@ -3157,12 +3157,21 @@ if($mybb->input['action'] == "usergroups")
 				foreach($groupleader as $leader)
 				{
 					$leader_user = get_user($leader['uid']);
+					
+					// Load language
+					$lang->set_language($leader_user['language']);
+					$lang->load("messages");
+					
 					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
 					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
 					my_mail($leader_user['email'], $subject, $message);
 				}
 			}
 
+			// Load language
+			$lang->set_language($mybb->user['language']);
+			$lang->load("messages");
+			
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
 			redirect("usercp.php?action=usergroups", $lang->group_join_requestsent);
 			exit;

@@ -247,10 +247,18 @@ if($mybb->input['action'] == "activate_user")
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
+	
+	// Load language
+	$lang->set_language($user['language']);
+	$lang->load("user_users", false, true);
 
 	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
+	// Load language
+	$lang->set_language($mybb->user['language']);
+	$lang->load("user_users", false, true);
+	
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
