@@ -150,7 +150,7 @@ var inlineModeration = {
 				var selectRow = $('#selectAllrow');
 				if(selectRow)
 				{
-					selectRow.css('display', 'none');
+					selectRow.hide();
 				}
 			}
 			else
@@ -159,7 +159,7 @@ var inlineModeration = {
 				var allSelectedRow = $('#allSelectedrow');
 				if(allSelectedRow)
 				{
-					allSelectedRow.css('display', 'none');
+					allSelectedRow.hide();
 				}
 			}
 			var post = element.parents('.post_content');
@@ -184,13 +184,13 @@ var inlineModeration = {
 		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', 'none');
+			selectRow.hide();
 		}
 
 		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', 'none');
+			allSelectedRow.hide();
 		}
 
 		var inputs = $('input');
@@ -327,7 +327,7 @@ var inlineModeration = {
 				}
 				else
 				{
-					selectRow.css('display', 'none');
+					selectRow.hide();
 				}
 			}
 		}
@@ -337,7 +337,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'none');
+				allSelectedRow.hide();
 			}
 		}
 		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
@@ -357,7 +357,7 @@ var inlineModeration = {
 		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', 'none');
+			selectRow.hide();
 		}
 
 		var allSelectedRow = $('#allSelectedrow');
