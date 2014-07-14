@@ -173,24 +173,44 @@ function upgrade30_dbchanges()
 		$db->drop_column("forums", "deletedposts");
 	}
 
-	if($db->field_exists('threads', 'promotions '))
+	if($db->field_exists('threads', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threads');
 	}
 
-	if($db->field_exists('threadtype', 'promotions '))
+	if($db->field_exists('threadtype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threadtype');
 	}
 
-	if($db->field_exists('online', 'promotions '))
+	if($db->field_exists('online', 'promotions'))
 	{
 		$db->drop_column('promotions', 'online');
 	}
 
-	if($db->field_exists('onlinetype', 'promotions '))
+	if($db->field_exists('onlinetype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'onlinetype');
+	}
+
+	if($db->field_exists('modposts', 'forums'))
+	{
+		$db->drop_column("forums", "modposts");
+	}
+
+	if($db->field_exists('modthreads', 'forums'))
+	{
+		$db->drop_column("forums", "modthreads");
+	}
+
+	if($db->field_exists('mod_edit_posts', 'forums'))
+	{
+		$db->drop_column("forums", "mod_edit_posts");
+	}
+
+	if($db->field_exists('modattachments', 'forums'))
+	{
+		$db->drop_column("forums", "modattachments");
 	}
 
 	// Avoid complex convert coding...
@@ -321,6 +341,26 @@ function upgrade30_dbchanges2()
 	if($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
+	}
+
+	if($db->field_exists('modposts', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modposts");
+	}
+
+	if($db->field_exists('modthreads', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modthreads");
+	}
+
+	if($db->field_exists('mod_edit_posts', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "mod_edit_posts");
+	}
+
+	if($db->field_exists('modattachments', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modattachments");
 	}
 
 	if($db->field_exists('canbereported', 'usergroups'))
@@ -1314,7 +1354,7 @@ function upgrade30_dbchanges_optimize3()
 		"calendarpermissions" => array("canviewcalendar", "canaddevents", "canbypasseventmod", "canmoderateevents"),
 		"events" => array("visible", "private", "ignoretimezone", "usingtime"),
 		"forumpermissions" => array("canview", "canviewthreads", "canonlyviewownthreads", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch"),
-		"forums" => array("active", "open", "allowhtml", "allowmycode", "allowsmilies", "allowimgcode", "allowvideocode", "allowpicons", "allowtratings", "usepostcounts", "showinjump", "modposts", "modthreads", "modattachments", "mod_edit_posts", "overridestyle", "rulestype"),
+		"forums" => array("active", "open", "allowhtml", "allowmycode", "allowsmilies", "allowimgcode", "allowvideocode", "allowpicons", "allowtratings", "usepostcounts", "showinjump", "overridestyle", "rulestype"),
 		"groupleaders" => array("canmanagemembers", "canmanagerequests"),
 		"helpdocs" => array("usetranslation", "enabled"),
 		"helpsections" => array("usetranslation", "enabled"),
