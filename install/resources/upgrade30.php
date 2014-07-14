@@ -387,6 +387,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("forumpermissions", "mod_edit_posts", "smallint NOT NULL default '0' AFTER modthreads");
 			$db->add_column("forumpermissions", "modattachments", "smallint NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "smallint NOT NULL default '0' AFTER canchangename");
+			$db->add_column("usergroups", "canchangewebsite", "smallint NOT NULL default '1' AFTER canbereported");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "smallint NOT NULL default '1'");
@@ -405,6 +406,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("forumpermissions", "mod_edit_posts", "tinyint(1) NOT NULL default '0' AFTER modthreads");
 			$db->add_column("forumpermissions", "modattachments", "tinyint(1) NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "tinyint(1) NOT NULL default '0' AFTER canchangename");
+			$db->add_column("usergroups", "canchangewebsite", "tinyint(1) NOT NULL default '1' AFTER canbereported");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "tinyint(1) NOT NULL default '1'");
