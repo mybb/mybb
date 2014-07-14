@@ -54,6 +54,13 @@ class EventDataHandler extends DataHandler
 	public $eid = 0;
 
 	/**
+	 * Values to be returned after inserting/updating an event.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies if an event name is valid or not and attempts to fix it
 	 *
 	 * @return boolean True if valid, false if invalid.
@@ -509,11 +516,15 @@ class EventDataHandler extends DataHandler
 		$this->eid = $db->insert_query("events", $this->event_insert_data);
 
 		// Return the event's eid and whether or not it is private.
-		return array(
+		$this->return_values = array(
 			'eid' => $this->eid,
 			'private' => $event['private'],
 			'visible' => $visible
 		);
+
+		$plugins->run_hooks("datahandler_event_insert_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -611,10 +622,14 @@ class EventDataHandler extends DataHandler
 		$db->update_query("events", $this->event_update_data, "eid='".intval($event['eid'])."'");
 
 		// Return the event's eid and whether or not it is private.
-		return array(
+		$this->return_values = array(
 			'eid' => $event['eid'],
 			'private' => $event['private']
 		);
+
+		$plugins->run_hooks("datahandler_event_update_end", $this);
+
+		return $this->return_values;
 	}
 }
 
