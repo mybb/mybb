@@ -56,6 +56,13 @@ class UserDataHandler extends DataHandler
 	public $uid = 0;
 
 	/**
+	 * Values to be returned after inserting/deleting an user.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
 	 * @param boolean True when valid, false when invalid.
@@ -133,28 +140,22 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_username_exists()
 	{
-		global $db;
-
 		$username = &$this->data['username'];
 
-		$uid_check = "";
-		if(!empty($this->data['uid']))
+		$user = get_user_by_username(trim($username));
+
+		if(!empty($this->data['uid']) && !empty($user['uid']) && $user['uid'] == $this->data['uid'])
 		{
-			$uid_check = " AND uid!='{$this->data['uid']}'";
+			unset($user);
 		}
 
-		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
-
-		$user_count = $db->fetch_field($query, "count");
-		if($user_count > 0)
+		if(!empty($user['uid']))
 		{
 			$this->set_error("username_exists", array($username));
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -598,13 +599,14 @@ class UserDataHandler extends DataHandler
 		// Does the referrer exist or not?
 		if($mybb->settings['usereferrals'] == 1 && $user['referrer'] != '')
 		{
-			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", array('limit' => 1));
-			$referrer = $db->fetch_array($query);
-			if(!$referrer['uid'])
+			$referrer = get_user_by_username($user['referrer']);
+
+			if(empty($referrer['uid']))
 			{
 				$this->set_error('invalid_referrer', array($user['referrer']));
 				return false;
 			}
+
 			$user['referrer_uid'] = $referrer['uid'];
 		}
 		else
@@ -1143,7 +1145,7 @@ class UserDataHandler extends DataHandler
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
 
-		return array(
+		$this->return_values = array(
 			"uid" => $this->uid,
 			"username" => $user['username'],
 			"loginkey" => $user['loginkey'],
@@ -1151,6 +1153,10 @@ class UserDataHandler extends DataHandler
 			"password" => $user['password'],
 			"usergroup" => $user['usergroup']
 		);
+
+		$plugins->run_hooks("datahandler_user_insert_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -1391,6 +1397,8 @@ class UserDataHandler extends DataHandler
 				update_stats(array("numusers" => "+0"));
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -1502,15 +1510,19 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 
-		$plugins->run_hooks('datahandler_user_delete_end', $this);
-
 		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Update forum stats
 		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
 
-		return $this->deleted_users;
+		$this->return_values = array(
+			"deleted_users" => $this->deleted_users
+		);
+
+		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>

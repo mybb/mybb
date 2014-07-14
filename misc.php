@@ -706,21 +706,27 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
-		while($smilie = $db->fetch_array($query))
+		$smilies = $cache->read("smilies");
+		if(is_array($smilies))
 		{
-			$smilie['insert'] = addslashes($smilie['find']);
-			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
-			if($e == 2)
+			$extra_class = ' smilie_pointer';
+			foreach($smilies as $smilie)
 			{
-				$smilies .= "</tr><tr>";
-				$e = 1;
-				$class = alt_trow();
-			}
-			else
-			{
-				$e = 2;
+				$smilie['insert'] = addslashes($smilie['find']);
+				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				$onclick = '  onclick="MyBBEditor.insertText(\'{$smilie[\'insert\']}\');"';
+				eval('$smilie = "'.$templates->get('smilie').'";');
+				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
+				if($e == 2)
+				{
+					$smilies .= "</tr><tr>";
+					$e = 1;
+					$class = alt_trow();
+				}
+				else
+				{
+					$e = 2;
+				}
 			}
 		}
 		if($e == 2)
@@ -734,12 +740,17 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
-		while($smilie = $db->fetch_array($query))
+		$smilies = $cache->read("smilies");
+		if(is_array($smilies))
 		{
-			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-			eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
-			$class = alt_trow();
+			$extra_class = $onclick = '';
+			foreach($smilies as $smilie)
+			{
+				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				eval('$smilie = "'.$templates->get('smilie').'";');
+				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
+				$class = alt_trow();
+			}
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
 		output_page($smiliespage);

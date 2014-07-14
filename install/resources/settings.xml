@@ -292,6 +292,14 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="hidewebsite">
+			<title>Hide Websites To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>	
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">
@@ -1780,7 +1788,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="portal_announcementsfid">
 			<title>Forums to pull announcements from</title>
-			<description><![CDATA[Please select the forums of the forum(s) you wish to pull the announcements from.]]></description>
+			<description><![CDATA[Please select the forums you wish to pull the announcements from.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
@@ -1788,7 +1796,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="portal_numannouncements">
 			<title>Number of announcements to show</title>
-			<description><![CDATA[Please enter the number of announcements to show on the main page.]]></description>
+			<description><![CDATA[Please enter the number of announcements to show per page on the main page.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
@@ -1848,6 +1856,14 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="portal_excludediscussion">
+			<title>Forums to exclude latest discussions from</title>
+			<description><![CDATA[Please select the forums you wish to exclude from the current forum discussions box.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[forumselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>

@@ -339,15 +339,22 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 $latestthreads = '';
 // Latest forum discussions
-if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'])
+if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $mybb->settings['portal_excludediscussion'] != -1)
 {
 	$altbg = alt_trow();
 	$threadlist = '';
+
+	$excludeforums = '';
+	if(!empty($mybb->settings['portal_excludediscussion']))
+	{
+		$excludeforums = "AND t.fid NOT IN ({$mybb->settings['portal_excludediscussion']})";
+	}
+
 	$query = $db->query("
 		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		WHERE 1=1 {$excludeforums}{$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);

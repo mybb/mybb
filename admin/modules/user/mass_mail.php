@@ -39,6 +39,8 @@ if($mybb->input['action'] == "send" || $mybb->input['action'] == "archive" || !$
 	);
 }
 
+$plugins->run_hooks("admin_user_mass_email");
+
 if($mybb->input['action'] == "edit")
 {
 	$page->add_breadcrumb_item($lang->edit_mass_mail);
@@ -50,6 +52,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_mid, 'error');
 		admin_redirect("index.php?module=user-mass_mail");
 	}
+
+	$plugins->run_hooks("admin_user_mass_email_edit_start");
 
 	if($email['conditions'] != '')
 	{
@@ -185,6 +189,9 @@ if($mybb->input['action'] == "edit")
 				"type" => intval($mybb->input['type']),
 				"perpage" => intval($mybb->input['perpage'])
 			);
+
+			$plugins->run_hooks("admin_user_mass_email_edit_commit");
+
 			$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
 			flash_message($lang->success_mass_mail_saved, 'success');
@@ -626,6 +633,8 @@ if($mybb->input['action'] == "send")
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n// --></script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n// --></script>\n";
 
+	$plugins->run_hooks("admin_user_mass_email_send_start");
+
 	if($mybb->input['step'] == 4)
 	{
 		// All done here
@@ -664,6 +673,9 @@ if($mybb->input['action'] == "send")
 					"status" => 1,
 					"senddate" => $delivery_date
 				);
+
+				$plugins->run_hooks("admin_user_mass_email_send_finalize_commit");
+
 				$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
 				flash_message($lang->success_mass_mail_saved, 'success');
@@ -907,8 +919,7 @@ if($mybb->input['action'] == "send")
 		$form->end();
 		$page->output_footer();
 	}
-
-	if($mybb->input['step'] == 3)
+	elseif($mybb->input['step'] == 3)
 	{
 		// Define the recipients/conditions
 		if($mybb->request_method == "post")
@@ -929,6 +940,9 @@ if($mybb->input['action'] == "send")
 					"totalcount" => $num,
 					"conditions" => $db->escape_string(serialize($mybb->input['conditions']))
 				);
+
+				$plugins->run_hooks("admin_user_mass_email_send_define_commit");
+
 				$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
 				// Take the user to the next step
@@ -1022,9 +1036,8 @@ if($mybb->input['action'] == "send")
 		$form->end();
 		$page->output_footer();
 	}
-
 	// Reviewing the automatic text based version of the message.
-	if($mybb->input['step'] == 2)
+	elseif($mybb->input['step'] == 2)
 	{
 		// Update text based version
 		if($mybb->request_method == "post")
@@ -1038,6 +1051,9 @@ if($mybb->input['action'] == "send")
 				$updated_email = array(
 					"message" => $db->escape_string($mybb->input['message'])
 				);
+
+				$plugins->run_hooks("admin_user_mass_email_send_review_commit");
+
 				$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
 				// Take the user to the next step
@@ -1066,8 +1082,7 @@ if($mybb->input['action'] == "send")
 		$form->end();
 		$page->output_footer();
 	}
-
-	if(!$mybb->input['step'] || $mybb->input['step'] == 1)
+	else
 	{
 		if($mybb->request_method == "post")
 		{
@@ -1144,6 +1159,9 @@ if($mybb->input['action'] == "send")
 						"conditions" => "",
 						"perpage" => intval($mybb->input['perpage'])
 					);
+
+					$plugins->run_hooks("admin_user_mass_email_send_insert_commit");
+
 					$mid = $db->insert_query("massemails", $new_email);
 				}
 				// Updating an existing one
@@ -1157,6 +1175,9 @@ if($mybb->input['action'] == "send")
 						"type" => intval($mybb->input['type']),
 						"perpage" => intval($mybb->input['perpage'])
 					);
+
+					$plugins->run_hooks("admin_user_mass_email_send_update_commit");
+
 					$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 					$mid = $email['mid'];
 				}
@@ -1373,6 +1394,8 @@ if($mybb->input['action'] == "send")
 		$form->end();
 		$page->output_footer();
 	}
+
+	$plugins->run_hooks("admin_user_mass_email_preview_end");
 }
 
 if($mybb->input['action'] == "delete")
@@ -1391,6 +1414,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=user-mass_mail");
 	}
+
+	$plugins->run_hooks("admin_user_mass_email_delete_start");
 
 	if($mybb->request_method == "post")
 	{
@@ -1436,11 +1461,10 @@ if($mybb->input['action'] == "preview")
 		admin_redirect("index.php?module=user-mass_mail");
 	}
 
-	?>
-	<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
-	
-	<?php
+	$plugins->run_hooks("admin_user_mass_email_preview_start");
+
+	echo '<div class="modal">
+	<div style="overflow-y: auto; max-height: 400px;">';
 	
 	$table = new Table();
 	
@@ -1455,14 +1479,14 @@ if($mybb->input['action'] == "preview")
 		$table->construct_cell($mass_email['htmlmessage']);
 	}
 
+	$plugins->run_hooks("admin_user_mass_email_preview_end");
+
 	$table->construct_row();
 
 	$table->output($lang->mass_mail_preview);
 
-		?>
-</div>
-</div>
-	<?php
+	echo '</div>
+</div>';
 	exit;
 }
 
@@ -1477,6 +1501,8 @@ if($mybb->input['action'] == "resend")
 		flash_message($lang->error_invalid_mid, 'error');
 		admin_redirect("index.php?module=user-mass_mail");
 	}
+
+	$plugins->run_hooks("admin_user_mass_email_resend_start");
 
 	// Need to perform the search to fetch the number of users we're emailing
 	$member_query = build_mass_mail_query(my_unserialize($mass_email['conditions']));
@@ -1499,6 +1525,9 @@ if($mybb->input['action'] == "resend")
 		"conditions" => $db->escape_string($mass_email['conditions']),
 		"perpage" => $mass_email['perpage']
 	);
+
+	$plugins->run_hooks("admin_user_mass_email_resend_end");
+
 	$mid = $db->insert_query("massemails", $new_email);
 
 	// Redirect the user to the summary page so they can select when to deliver this message
@@ -1522,6 +1551,9 @@ if($mybb->input['action'] == "cancel")
 	$updated_email = array(
 		'status' => 4
 	);
+
+	$plugins->run_hooks("admin_user_mass_email_cancel");
+
 	$db->update_query("massemails", $updated_email, "mid='{$mass_email['mid']}'");
 
 	flash_message($lang->success_mass_mail_canceled, 'success');
@@ -1533,6 +1565,8 @@ if($mybb->input['action'] == "archive")
 {
 	// View a list of archived email messages
 	$page->output_header($lang->mass_mail_archive);
+
+	$plugins->run_hooks("admin_user_mass_email_archive_start");
 
 	$page->output_nav_tabs($sub_tabs, 'archive');
 
@@ -1579,6 +1613,8 @@ if($mybb->input['action'] == "archive")
 		$no_results = true;
 	}
 
+	$plugins->run_hooks("admin_user_mass_email_archive_end");
+
 	$table->output($lang->mass_mail_archive);
 
 	$page->output_footer();
@@ -1587,6 +1623,8 @@ if($mybb->input['action'] == "archive")
 if(!$mybb->input['action'])
 {
 	$page->output_header($lang->mass_mail_queue);
+
+	$plugins->run_hooks("admin_user_mass_email_start");
 
 	$page->output_nav_tabs($sub_tabs, 'mail_queue');
 
@@ -1657,6 +1695,8 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 		$no_results = true;
 	}
+
+	$plugins->run_hooks("admin_user_mass_email_end");
 
 	$table->output($lang->mass_mail_queue);
 

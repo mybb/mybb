@@ -33,13 +33,6 @@ function upgrade30_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
 
-	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
-
-	// Avoid complex convert coding...
-	$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
-	$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
-	$db->update_query('profilefields', array('hidden' => 0), 'hidden=2');
-
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		if($db->index_exists('posts', 'tiddate'))
@@ -180,24 +173,62 @@ function upgrade30_dbchanges()
 		$db->drop_column("forums", "deletedposts");
 	}
 
-	if($db->field_exists('threads', 'promotions '))
+	if($db->field_exists('threads', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threads');
 	}
 
-	if($db->field_exists('threadtype', 'promotions '))
+	if($db->field_exists('threadtype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'threadtype');
 	}
 
-	if($db->field_exists('online', 'promotions '))
+	if($db->field_exists('online', 'promotions'))
 	{
 		$db->drop_column('promotions', 'online');
 	}
 
-	if($db->field_exists('onlinetype', 'promotions '))
+	if($db->field_exists('onlinetype', 'promotions'))
 	{
 		$db->drop_column('promotions', 'onlinetype');
+	}
+
+	if($db->field_exists('modposts', 'forums'))
+	{
+		$db->drop_column("forums", "modposts");
+	}
+
+	if($db->field_exists('modthreads', 'forums'))
+	{
+		$db->drop_column("forums", "modthreads");
+	}
+
+	if($db->field_exists('mod_edit_posts', 'forums'))
+	{
+		$db->drop_column("forums", "mod_edit_posts");
+	}
+
+	if($db->field_exists('modattachments', 'forums'))
+	{
+		$db->drop_column("forums", "modattachments");
+	}
+
+	// Avoid complex convert coding...
+	if($db->field_exists('hidden', 'profilefields'))
+	{
+		$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
+		$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
+		$db->update_query('profilefields', array('hidden' => 0), 'hidden=2');
+
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
+				break;
+			default:
+				$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
+				break;
+		}
 	}
 
 	switch($db->type)
@@ -229,7 +260,6 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
 			break;
 		case "sqlite":
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
@@ -254,7 +284,6 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("usergroups", "modposts", "tinyint(1) NOT NULL default '0' AFTER canratethreads");
@@ -283,9 +312,10 @@ function upgrade30_dbchanges()
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
 			$db->add_column("forums", "deletedthreads", "int(10) NOT NULL default '0' AFTER unapprovedposts");
 			$db->add_column("forums", "deletedposts", "int(10) NOT NULL default '0' AFTER deletedthreads");
-			$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
 			break;
 	}
+
+	$db->update_query('profilefields', array('viewableby' => '-1', 'editableby' => '-1'));
 
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
@@ -311,6 +341,26 @@ function upgrade30_dbchanges2()
 	if($db->field_exists('canonlyreplyownthreads', 'forumpermissions'))
 	{
 		$db->drop_column("forumpermissions", "canonlyreplyownthreads");
+	}
+
+	if($db->field_exists('modposts', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modposts");
+	}
+
+	if($db->field_exists('modthreads', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modthreads");
+	}
+
+	if($db->field_exists('mod_edit_posts', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "mod_edit_posts");
+	}
+
+	if($db->field_exists('modattachments', 'forumpermissions'))
+	{
+		$db->drop_column("forumpermissions", "modattachments");
 	}
 
 	if($db->field_exists('canbereported', 'usergroups'))
@@ -377,6 +427,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("forumpermissions", "mod_edit_posts", "smallint NOT NULL default '0' AFTER modthreads");
 			$db->add_column("forumpermissions", "modattachments", "smallint NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "smallint NOT NULL default '0' AFTER canchangename");
+			$db->add_column("usergroups", "canchangewebsite", "smallint NOT NULL default '1' AFTER canbereported");
 			$db->add_column("usergroups", "edittimelimit", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "smallint NOT NULL default '1'");
@@ -395,6 +446,7 @@ function upgrade30_dbchanges2()
 			$db->add_column("forumpermissions", "mod_edit_posts", "tinyint(1) NOT NULL default '0' AFTER modthreads");
 			$db->add_column("forumpermissions", "modattachments", "tinyint(1) NOT NULL default '0' AFTER mod_edit_posts");
 			$db->add_column("usergroups", "canbereported", "tinyint(1) NOT NULL default '0' AFTER canchangename");
+			$db->add_column("usergroups", "canchangewebsite", "tinyint(1) NOT NULL default '1' AFTER canbereported");
 			$db->add_column("usergroups", "edittimelimit", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "maxposts", "int(4) NOT NULL default '0'");
 			$db->add_column("usergroups", "showmemberlist", "tinyint(1) NOT NULL default '1'");
@@ -759,6 +811,11 @@ function upgrade30_dbchanges6()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->table_exists("buddyrequests"))
+	{
+		$db->drop_table("buddyrequests");
+	}
+
 	$collation = $db->build_create_table_collation();
 
 	switch($db->type)
@@ -771,7 +828,7 @@ function upgrade30_dbchanges6()
 				 date int NOT NULL,
 				 PRIMARY KEY (id)
 			);");
-		break;
+			break;
 		case "sqlite":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id INTEGER PRIMARY KEY,
@@ -779,7 +836,7 @@ function upgrade30_dbchanges6()
 				 touid bigint(30) UNSIGNED NOT NULL,
 				 date int(11) UNSIGNED NOT NULL
 			);");
-		break;
+			break;
 		default:
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id int(10) UNSIGNED NOT NULL auto_increment,
@@ -790,7 +847,7 @@ function upgrade30_dbchanges6()
 				 KEY (touid),
 				 PRIMARY KEY (id)
 			) ENGINE=MyISAM{$collation};");
-		break;
+			break;
 	}
 
 	if($db->field_exists('msn', 'users'))
@@ -856,7 +913,7 @@ function upgrade30_dbchanges6()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "smallint NOT NULL default '0' AFTER profile");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
@@ -871,7 +928,7 @@ function upgrade30_dbchanges6()
 			$db->add_column("users", "sourceeditor", "smallint NOT NULL default '0'");
 			break;
 		default:
-			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER hidden");
+			$db->add_column("profilefields", "postbit", "tinyint(1) NOT NULL default '0' AFTER profile");
 			$db->add_column("users", "skype", "varchar(75) NOT NULL default '' AFTER yahoo");
 			$db->add_column("users", "google", "varchar(75) NOT NULL default '' AFTER skype");
 			$db->add_column("adminoptions", "cplanguage", "varchar(50) NOT NULL default '' AFTER cpstyle");
@@ -1297,7 +1354,7 @@ function upgrade30_dbchanges_optimize3()
 		"calendarpermissions" => array("canviewcalendar", "canaddevents", "canbypasseventmod", "canmoderateevents"),
 		"events" => array("visible", "private", "ignoretimezone", "usingtime"),
 		"forumpermissions" => array("canview", "canviewthreads", "canonlyviewownthreads", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch"),
-		"forums" => array("active", "open", "allowhtml", "allowmycode", "allowsmilies", "allowimgcode", "allowvideocode", "allowpicons", "allowtratings", "usepostcounts", "showinjump", "modposts", "modthreads", "modattachments", "mod_edit_posts", "overridestyle", "rulestype"),
+		"forums" => array("active", "open", "allowhtml", "allowmycode", "allowsmilies", "allowimgcode", "allowvideocode", "allowpicons", "allowtratings", "usepostcounts", "showinjump", "overridestyle", "rulestype"),
 		"groupleaders" => array("canmanagemembers", "canmanagerequests"),
 		"helpdocs" => array("usetranslation", "enabled"),
 		"helpsections" => array("usetranslation", "enabled"),

@@ -451,16 +451,16 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				$data .= "</captcha>";
 
-				header("Content-type: application/json; charset={$lang->settings['charset']}");
-				echo json_encode(array("data" => $data));
+				//header("Content-type: application/json; charset={$lang->settings['charset']}");
+				$json_data = array("data" => $data);
 			}
 			else if($post_captcha->type == 2)
 			{
 				//header("Content-type: text/html; charset={$lang->settings['charset']}");
 				$data = "<captcha>reload</captcha>";
 
-				header("Content-type: application/json; charset={$lang->settings['charset']}");
-				echo json_encode(array("data" => $data));
+				//header("Content-type: application/json; charset={$lang->settings['charset']}");
+				$json_data = array("data" => $data);
 			}
 		}
 	}
@@ -468,7 +468,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// One or more errors returned, fetch error list and throw to newreply page
 	if(count($post_errors) > 0)
 	{
-		$reply_errors = inline_error($post_errors);
+		$reply_errors = inline_error($post_errors, '', $json_data);
 		$mybb->input['action'] = "newreply";
 	}
 	else

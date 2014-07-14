@@ -165,7 +165,7 @@ class captcha
 
 	function build_captcha($return = false)
 	{
-		global $db, $lang, $templates, $theme;
+		global $db, $lang, $templates, $theme, $mybb;
 
 		// This will build a MyBB CAPTCHA
 		$randomstr = random_str(5);

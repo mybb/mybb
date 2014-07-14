@@ -243,10 +243,11 @@ if(!$mybb->input['action'])
 
 	// Filter options
 	$where_sql = '';
-	if($mybb->input['filter']['username'])
+	if(!empty($mybb->input['filter']['username']))
 	{
-		$search['username'] = $db->escape_string($mybb->input['filter']['username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['username']}'");
+		$search_user = get_user_by_username($mybb->input['filter']['username']);
+
+		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
 		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
 	}
 	if($mybb->input['filter']['uid'])
@@ -259,11 +260,11 @@ if(!$mybb->input['action'])
 			$mybb->input['search']['username'] = $user['username'];
 		}
 	}
-	if($mybb->input['filter']['mod_username'])
+	if(!empty($mybb->input['filter']['mod_username']))
 	{
-		$search['mod_username'] = $db->escape_string($mybb->input['filter']['mod_username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['mod_username']}'");
-		$mybb->input['filter']['mod_uid'] = $db->fetch_field($query, "uid");
+		$mod_user = get_user_by_username($mybb->input['filter']['mod_username']);
+
+		$mybb->input['filter']['mod_uid'] = (int)$mod_user['uid'];
 	}
 	if($mybb->input['filter']['mod_uid'])
 	{
