@@ -302,45 +302,47 @@ var Thread = {
 				{
 					$.jGrowl(lang.quick_reply_post_error + ' ' + message);
 				});
-				return false;
 			}
 		}
 
 		if($('#captcha_trow'))
 		{
-			captcha = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
-			if(captcha)
+			cap = json.data.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
+			if(cap)
 			{
 				json.data = json.data.replace(/^<captcha>(.*)<\/captcha>/, '');
 
-				if(captcha[1] == "reload")
+				if(cap[1] == "reload")
 				{
 					Recaptcha.reload();
 				}
 				else if($("#captcha_img"))
 				{
-					if(captcha[1])
+					if(cap[1])
 					{
-						imghash = captcha[1];
-						$('#imagehash').value = imghash;
-						if(captcha[3])
+						imghash = cap[1];
+						$('#imagehash').val(imghash);
+						if(cap[3])
 						{
-							$('#imagestring').type = "hidden";
-							$('#imagestring').value = captcha[3];
+							$('#imagestring').attr('type', 'hidden');
+							$('#imagestring').val(cap[3]);
 							// hide the captcha
-							$('#captcha_trow').style.display = "none";
+							$('#captcha_trow').css('display', 'none');
 						}
 						else
 						{
-							$('#captcha_img').src = "captcha.php?action=regimage&imagehash="+imghash;
-							$('#imagestring').type = "text";
-							$('#imagestring').value = "";
-							$('#captcha_trow').style.display = "";
+							$('#captcha_img').attr('src', "captcha.php?action=regimage&imagehash="+imghash);
+							$('#imagestring').attr('type', 'text');
+							$('#imagestring').val('');
+							$('#captcha_trow').css('display', '');
 						}
 					}
 				}
 			}
 		}
+		
+		if(json.hasOwnProperty("errors"))
+			return false;
 
 		if(json.data.match(/id="post_([0-9]+)"/))
 		{
@@ -348,7 +350,10 @@ var Thread = {
 			var post = document.createElement("div");
 
 			$('#posts').append(json.data);
-			$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
+			
+			if (typeof inlineModeration != "undefined") // Guests don't have this object defined
+				$("#inlinemod_" + pid).on('change', inlineModeration.checkItem);
+				
 			Thread.quickEdit("#pid_" + pid);
 
 			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")

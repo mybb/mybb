@@ -784,9 +784,10 @@ function error($error="", $title="")
  *
  * @param array Array of errors to be shown
  * @param string The title of the error message
+ * @param string JSON data to be encoded (we may want to send more data; e.g. newreply.php uses this for CAPTCHA)
  * @return string The inline error HTML
  */
-function inline_error($errors, $title="")
+function inline_error($errors, $title="", $json_data=array())
 {
 	global $theme, $mybb, $db, $lang, $templates;
 
@@ -805,7 +806,15 @@ function inline_error($errors, $title="")
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("errors" => $errors));
+		
+		if(empty($json_data))
+		{
+			echo json_encode(array("errors" => $errors));
+		}
+		else
+		{
+			echo json_encode(array_merge(array("errors" => $errors), $json_data));
+		}
 		exit;
 	}
 
