@@ -299,7 +299,7 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>	
+		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">
@@ -1047,22 +1047,24 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-        <setting name="enablestopforumspam">
-            <title>Check Registrations Against StopForumSpam.com?</title>
-            <description><![CDATA[Do you wish to check all new registrations against the StopForumSpam.com database?]]></description>
-            <disporder>24</disporder>
-            <optionscode><![CDATA[yesno]]></optionscode>
-            <settingvalue><![CDATA[0]]></settingvalue>
-            <isdefault>1</isdefault>
-        </setting>
-        <setting name="stopforumspam_min_weighting_before_spam">
-            <title>Minimum stop forum spam weighting?</title>
-            <description><![CDATA[The minimum weighting received from StopForumSpam.com before deciding a user is a spammer. Should be a number between 0 and 100.]]></description>
-            <disporder>24</disporder>
-            <optionscode><![CDATA[text]]></optionscode>
-            <settingvalue><![CDATA[50.00]]></settingvalue>
-            <isdefault>1</isdefault>
-        </setting>
+		<setting name="enablestopforumspam">
+			<title>Check Registrations Against StopForumSpam.com?</title>
+			<description>
+				<![CDATA[Do you wish to check all new registrations against the StopForumSpam.com database?]]></description>
+			<disporder>24</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="stopforumspam_min_weighting_before_spam">
+			<title>Minimum stop forum spam weighting?</title>
+			<description>
+				<![CDATA[The minimum weighting received from StopForumSpam.com before deciding a user is a spammer. Should be a number between 0 and 100.]]></description>
+			<disporder>24</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[50.00]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="10" isdefault="1">
 		<setting name="sigmycode">
