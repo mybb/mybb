@@ -79,7 +79,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'table-row');
+				allSelectedRow.show();
 			}
 		}
 		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
@@ -87,7 +87,7 @@ var inlineModeration = {
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
 			{
-				selectRow.css('display', 'table-row');
+				selectRow.show();
 			}
 		}
 		return true;
@@ -127,7 +127,7 @@ var inlineModeration = {
 					var allSelectedRow = $('#allSelectedrow');
 					if(allSelectedRow)
 					{
-						allSelectedRow.css('display', 'table-row');
+						allSelectedRow.show();
 					}
 				}
 			}
@@ -323,7 +323,7 @@ var inlineModeration = {
 			{
 				if(master.prop('checked') == true)
 				{
-					selectRow.css('display', 'table-row');
+					selectRow.show();
 				}
 				else
 				{
@@ -345,7 +345,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'table-row');
+				allSelectedRow.show();
 			}
 		}
 	},
@@ -363,7 +363,7 @@ var inlineModeration = {
 		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', 'table-row');
+			allSelectedRow.show();
 		}
 	},
 
