@@ -7,10 +7,12 @@ class StopForumSpamChecker
 {
 	/**
 	 * The base URL format to the stop forum spam API.
+	 * @var string
 	 */
 	const STOP_FORUM_SPAM_API_URL_FORMAT = 'http://www.stopforumspam.com/api?username=%s&email=%s&ip=%s&f=json&confidence';
 	/**
-	 * @var MyBB
+	 * The minimum weighting before a user is considered to be a spammer.
+	 * @var double
 	 */
 	private $min_weighting_before_spam = null;
 
