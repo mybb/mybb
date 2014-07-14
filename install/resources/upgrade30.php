@@ -33,11 +33,6 @@ function upgrade30_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'forumselect'), 'name IN (\'postmergefignore\', \'portal_announcementsfid\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'groupselect'), 'name=\'postmergeuignore\' AND optionscode=\'text\'');
 
-	// Avoid complex convert coding...
-	$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
-	$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
-	$db->update_query('profilefields', array('hidden' => 0), 'hidden=2');
-
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
 		if($db->index_exists('posts', 'tiddate'))
@@ -196,6 +191,24 @@ function upgrade30_dbchanges()
 	if($db->field_exists('onlinetype', 'promotions '))
 	{
 		$db->drop_column('promotions', 'onlinetype');
+	}
+
+	// Avoid complex convert coding...
+	if($db->field_exists('hidden', 'profilefields'))
+	{
+		$db->update_query('profilefields', array('hidden' => 2), 'hidden=1');
+		$db->update_query('profilefields', array('hidden' => 1), 'hidden=0');
+		$db->update_query('profilefields', array('hidden' => 0), 'hidden=2');
+
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
+				break;
+			default:
+				$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
+				break;
+		}
 	}
 
 	switch($db->type)
