@@ -941,28 +941,29 @@ EOF;
 		return <<<EOF
 
 <script type="text/javascript">
-var partialmode = {$mybb->settings['partialmode']};
+var partialmode = {$mybb->settings['partialmode']},
+opt_editor = {
+	plugins: "bbcode",
+	style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
+	rtl: {$lang->settings['rtl']},
+	locale: "mybblang",
+	emoticonsEnabled: {$emoticons_enabled},
+	emoticons: {
+		// Emoticons to be included in the dropdown
+		dropdown: {
+			{$dropdownsmilies}
+		},
+		// Emoticons to be included in the more section
+		more: {
+			{$moresmilies}
+		}
+	},
+	emoticonsCompat: true,
+	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+};
 {$editor_language}
 $(function() {
-	$("#{$bind}").sceditor({
-		plugins: "bbcode",
-		style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
-		rtl: {$lang->settings['rtl']},
-        	locale: "mybblang",
-		emoticonsEnabled: {$emoticons_enabled},
-		emoticons: {
-			// Emoticons to be included in the dropdown
-			dropdown: {
-				{$dropdownsmilies}
-			},
-			// Emoticons to be included in the more section
-			more: {
-				{$moresmilies}
-			}
-		},
-		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
-	});
+	$("#{$bind}").sceditor(opt_editor);
       
 	MyBBEditor = $("#{$bind}").sceditor("instance");
 	{$sourcemode}
