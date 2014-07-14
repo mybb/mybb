@@ -9749,9 +9749,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <div id="posts">
 {$message}
 </div>
-{$quickreply}
 </td></tr>
 </table>
+{$quickreply}
 </td>
 </tr>
 </table>
