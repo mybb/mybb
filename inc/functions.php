@@ -6688,45 +6688,15 @@ function ban_date2timestamp($date, $stamp=0)
  */
 function expire_warnings()
 {
-	global $db;
+	global $warningshandler;
 
-	$users = array();
-
-	$query = $db->query("
-		SELECT w.wid, w.uid, w.points, u.warningpoints
-		FROM ".TABLE_PREFIX."warnings w
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.uid)
-		WHERE expires<".TIME_NOW." AND expires!=0 AND expired!=1
-	");
-	while($warning = $db->fetch_array($query))
+	if(!is_object($warningshandler))
 	{
-		$updated_warning = array(
-			"expired" => 1
-		);
-		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-
-		if(array_key_exists($warning['uid'], $users))
-		{
-			$users[$warning['uid']] -= $warning['points'];
-		}
-		else
-		{
-			$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
-		}
+		require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+		$warningshandler = new WarningsHandler('update');
 	}
 
-	foreach($users as $uid => $warningpoints)
-	{
-		if($warningpoints < 0)
-		{
-			$warningpoints = 0;
-		}
-
-		$updated_user = array(
-			"warningpoints" => intval($warningpoints)
-		);
-		$db->update_query("users", $updated_user, "uid='".intval($uid)."'");
-	}
+	return $warningshandler->expire_warnings();
 }
 
 /**
@@ -7763,15 +7733,13 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$pmhandler->admin_override = (int)$admin_override;
 
 	$pmhandler->set_data($pm);
+
 	if($pmhandler->validate_pm())
 	{
 		$pmhandler->insert_pm();
-	}
-	else
-	{
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 }
 ?>
