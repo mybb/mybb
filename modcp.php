@@ -152,6 +152,7 @@ if($mybb->usergroup['issupermod'] != 1)
 	}
 	if($flist_reports)
 	{
+		$wflist_reports = "WHERE r.id3 IN (0{$flist_reports})";
 		$tflist_reports = " AND r.id3 IN (0{$flist_reports})";
 		$flist_reports = " AND id3 IN (0{$flist_reports})";
 	}
@@ -605,8 +606,25 @@ if($mybb->input['action'] == "allreports")
 		$page = $mybb->get_input('page', 1);
 	}
 
-	$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
-	$warnings = $db->fetch_field($query, "count");
+	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+	{
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
+		$report_count = $db->fetch_field($query, "count");
+	}
+	else
+	{
+		$query = $db->simple_select('reportedcontent', 'id3', "type = 'post' OR type = ''");
+
+		$report_count = 0;
+		while($fid = $db->fetch_field($query, 'id3'))
+		{
+			if(is_moderator($fid, "canmanagereportedposts"))
+			{
+				++$report_count;
+			}
+		}
+		unset($fid);
+	}
 
 	if(isset($mybb->input['rid']))
 	{
@@ -622,7 +640,7 @@ if($mybb->input['action'] == "allreports")
 			$page = intval($result / $perpage) + 1;
 		}
 	}
-	$postcount = intval($warnings);
+	$postcount = intval($report_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -664,6 +682,7 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
+		{$wflist_reports}
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -3313,9 +3332,9 @@ if($mybb->input['action'] == "warninglogs")
 	$mybb->input['search'] = $mybb->get_input('search', 2);
 	if(!empty($mybb->input['filter']['username']))
 	{
-		$search['username'] = $db->escape_string($mybb->input['filter']['username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['username']}'");
-		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
+		$search_user = get_user_by_username($mybb->input['filter']['username']);
+
+		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
 		$mybb->input['filter']['username'] = htmlspecialchars_uni($mybb->input['filter']['username']);
 	}
 	else
@@ -3338,9 +3357,9 @@ if($mybb->input['action'] == "warninglogs")
 	}
 	if(!empty($mybb->input['filter']['mod_username']))
 	{
-		$search['mod_username'] = $db->escape_string($mybb->input['filter']['mod_username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['mod_username']}'");
-		$mybb->input['filter']['mod_uid'] = $db->fetch_field($query, "uid");
+		$mod_user = get_user_by_username($mybb->input['filter']['mod_username']);
+
+		$mybb->input['filter']['mod_uid'] = (int)$mod_user['uid'];
 		$mybb->input['filter']['mod_username'] = htmlspecialchars_uni($mybb->input['filter']['mod_username']);
 	}
 	else
@@ -3558,7 +3577,7 @@ if($mybb->input['action'] == "ipsearch")
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
 					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql}
+					WHERE {$post_ip_sql} AND visibility >= -1
 				");
 
 				$post_results = $db->fetch_field($query, "count");
@@ -3713,7 +3732,7 @@ if($mybb->input['action'] == "ipsearch")
 			$query = $db->query("
 				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
 				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql}
+				WHERE {$post_ip_sql} AND visibility >= -1
 				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");

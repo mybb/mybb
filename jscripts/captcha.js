@@ -24,9 +24,9 @@ var captcha = {
 		var json = $.parseJSON(request.responseText);
 		if(json.hasOwnProperty("errors"))
 		{
-			$.each(json.errors[0], function(i, error)
+			$.each(json.errors, function(i, message)
 			{
-			  	$.jGrowl(lang.captcha_fetch_failure + ' ' + error);
+				$.jGrowl(lang.captcha_fetch_failure + ' ' + message);
 			});
 		}
 		else if(json.imagehash)

@@ -307,8 +307,11 @@ if(!$mybb->input['action'])
 	
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
+		$options = array(
+			'fields' => array('username', 'usergroup', 'additionalgroups', 'displaygroup')
+		);
+
+		$user = get_user_by_username($mybb->input['username'], $options);
 		
 		// Are we searching a user?
 		if(isset($mybb->input['search']) && $mybb->get_input('search') != '')

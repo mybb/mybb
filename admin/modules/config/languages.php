@@ -608,7 +608,6 @@ if($mybb->input['action'] == "edit")
 	$page->output_footer();
 }
 
-
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_config_languages_start");

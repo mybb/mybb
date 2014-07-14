@@ -226,6 +226,14 @@ elseif(!$mybb->input['action'])
 	$query = $db->simple_select("posts", "COUNT(*) AS newposts", "dateline > '$timecut' AND visible='1'");
 	$newposts = my_number_format($db->fetch_field($query, "newposts"));
 
+	// Get the number of reported post
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
+	$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
+
+	// Get the number of reported posts that haven't been marked as read yet
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
+	$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
+
 	// Get the number and total file size of attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
 	$attachs = $db->fetch_array($query);
@@ -270,7 +278,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(PHP_VERSION, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));

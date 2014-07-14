@@ -18,34 +18,44 @@
  * @return boolean true if updated one or more templates, false if not.
  */
 
-function find_replace_templatesets($title, $find, $replace, $autocreate=1)
+function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=false)
 {
 	global $db, $mybb;
 
 	$return = false;
 
+    $sqlwhere = '>0';
+
 	$template_sets = array(-2, -1);
 
-	// Select all global with that title
-	$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
-	while($template = $db->fetch_array($query))
+	// Select all global with that title if not working on a specific template set
+	if($sid !== false)
 	{
-		// Update the template if there is a replacement term or a change
-		$new_template = preg_replace($find, $replace, $template['template']);
-		if($new_template == $template['template'])
-		{
-			continue;
-		}
+        $sqlwhere = '='.(int)$sid;
 
-		// The template is a custom template.  Replace as normal.
-		$updated_template = array(
-			"template" => $db->escape_string($new_template)
-		);
-		$db->update_query("templates", $updated_template, "tid='{$template['tid']}'");
+        // Disable copying from master as it should not apply for a specific set
+        $autocreate = 0;
+
+		$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
+		while($template = $db->fetch_array($query))
+		{
+			// Update the template if there is a replacement term or a change
+			$new_template = preg_replace($find, $replace, $template['template']);
+			if($new_template == $template['template'])
+			{
+				continue;
+			}
+
+			// The template is a custom template.  Replace as normal.
+			$updated_template = array(
+				"template" => $db->escape_string($new_template)
+			);
+			$db->update_query("templates", $updated_template, "tid='{$template['tid']}'");
+		}
 	}
 
 	// Select all other modified templates with that title
-	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND sid > 0");
+	$query = $db->simple_select("templates", "tid, sid, template", "title = '".$db->escape_string($title)."' AND sid{$sqlwhere}");
 	while($template = $db->fetch_array($query))
 	{
 		// Keep track of which templates sets have a modified version of this template already

@@ -1105,7 +1105,7 @@ class datacache
 		global $db;
 
 		$prefixes = array();
-		$query = $db->simple_select("threadprefixes", "*", "", array("order_by" => "pid"));
+		$query = $db->simple_select("threadprefixes", "*", "", array('order_by' => 'prefix', 'order_dir' => 'ASC'));
 
 		while($prefix = $db->fetch_array($query))
 		{

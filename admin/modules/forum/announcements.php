@@ -860,7 +860,6 @@ if(!$mybb->input['action'])
 		$table->output($lang->global_announcements);
 	}
 
-
 	$table = new Table;
 	$table->construct_header($lang->announcement);
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));

@@ -667,6 +667,66 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
+		// Does this forum require a prefix?
+		$forum = get_forum($this->data['fid']);
+
+		if($forum['requireprefix'] == 1)
+		{
+			$required_cache = build_prefixes();
+			$num_prefixes = 0;
+
+			// Go through each of our prefixes and decide if there are any possible prefixes to use.
+			foreach($required_cache as $required)
+			{
+				if($required['forums'] != "-1")
+				{
+					// Decide whether this prefix can be used in our forum
+					$forums = explode(",", $required['forums']);
+
+					if(!in_array($forum['fid'], $forums))
+					{
+						continue;
+					}
+				}
+				if($required['groups'] != "-1")
+				{
+					if(!empty($this->data['edit_uid']))
+					{
+						// Post is being edited
+						$user = get_user($this->data['edit_uid']);
+					}
+					else
+					{
+						$user = get_user($this->data['uid']);
+					}
+					$groups = array($user['usergroup']);
+					if(!empty($user['additionalgroups']))
+					{
+						$groups = array_merge($groups, explode(',', $user['additionalgroups']));
+					}
+					$prefix_groups = explode(",", $required['groups']);
+
+					foreach($groups as $group)
+					{
+						if(in_array($group, $prefix_groups))
+						{
+							++$num_prefixes;
+						}
+					}
+				}
+				else
+				{
+					++$num_prefixes;
+				}
+			}
+
+			if($prefix == 0 && $num_prefixes > 0)
+			{
+				$this->set_error('require_prefix');
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -866,11 +926,8 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
-			{
-				$visible = 0;
-			}
-			elseif($mybb->user['uid'] == $post['uid'] && $mybb->usergroup['modposts'] == 1 && !is_moderator($thread['fid'], "", $thread['uid']))
+			$forumpermissions = forum_permissions($post['fid'], $post['uid']);
+			if($forumpermissions['modposts'] == 1)
 			{
 				$visible = 0;
 			}
@@ -1322,12 +1379,9 @@ class PostDataHandler extends DataHandler
 		// Thread is being made now and we have a bit to do.
 		else
 		{
+			$forumpermissions = forum_permissions($thread['fid'], $thread['uid']);
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
-			{
-				$visible = 0;
-			}
-			elseif($mybb->user['uid'] == $thread['uid'] && ($mybb->usergroup['modposts'] == 1 || $mybb->usergroup['modthreads'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
+			if($forumpermissions['modthreads'] == 1)
 			{
 				$visible = 0;
 			}
@@ -1708,11 +1762,12 @@ class PostDataHandler extends DataHandler
 		$post['fid'] = $existing_post['fid'];
 
 		$forum = get_forum($post['fid']);
+		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
 		// Decide on the visibility of this post.
 		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
 		{
-			if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+			if($forumpermissions['mod_edit_posts'] == 1)
 			{
 				if($existing_post['visible'] == 1)
 				{
@@ -1757,7 +1812,7 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			$visible = 0;
-			if($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
+			if($forumpermissions['mod_edit_posts'] != 1)
 			{
 				$visible = 1;
 			}

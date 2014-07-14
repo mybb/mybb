@@ -31,8 +31,9 @@ if(!@chdir($forumdir) && !empty($forumdir))
 	}
 }
 
-$templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal_pms,portal";
-$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_announcement_avatar,portal_announcement_send_item,portal_announcement_icon";
+$templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_welcome";
+$templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_pms";
+$templatelist .= ",multipage_prevpage,multipage_page,multipage_page_current,multipage,multipage_nextpage,multipage_end,portal_announcement_send_item,portal_announcement_icon,portal_announcement_avatar,portal_announcement_numcomments";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -42,6 +43,11 @@ $parser = new postParser;
 
 // Load global language phrases
 $lang->load("portal");
+
+if($mybb->settings['portal'] == 0)
+{
+	error($lang->portal_disabled);
+}
 
 // Fetch the current URL
 $portal_url = get_current_location();
@@ -333,15 +339,22 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 
 $latestthreads = '';
 // Latest forum discussions
-if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'])
+if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'] && $mybb->settings['portal_excludediscussion'] != -1)
 {
 	$altbg = alt_trow();
 	$threadlist = '';
+
+	$excludeforums = '';
+	if(!empty($mybb->settings['portal_excludediscussion']))
+	{
+		$excludeforums = "AND t.fid NOT IN ({$mybb->settings['portal_excludediscussion']})";
+	}
+
 	$query = $db->query("
 		SELECT t.tid, t.fid, t.uid, t.lastpost, t.lastposteruid, t.lastposter, t.subject, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE 1=1 {$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+		WHERE 1=1 {$excludeforums}{$tunviewwhere}{$tinactivewhere} AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 		ORDER BY t.lastpost DESC
 		LIMIT 0, ".$mybb->settings['portal_showdiscussionsnum']
 	);
@@ -375,6 +388,8 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+		$thread['forumlink'] = get_thread_link($thread['fid']);
+		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}
@@ -391,6 +406,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	// Get latest news announcements
 	// Build where clause
 	$annfidswhere = '';
+	$announcementcount = 0;
 	if($mybb->settings['portal_announcementsfid'] != -1)
 	{
 		// First validate announcement fids:
@@ -417,12 +433,36 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$forum[$fid] = $f;
 		}
 	}
+	
+	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
+	$announcementcount = $db->fetch_field($query, "threads");
 
 	$numannouncements = intval($mybb->settings['portal_numannouncements']);
 	if(!$numannouncements)
 	{
 		$numannouncements = 10; // Default back to 10
 	}
+
+	$page = $mybb->get_input('page', 1);
+	$pages = $announcementcount / $numannouncements;
+	$pages = ceil($pages);
+
+	if($page > $pages || $page <= 0)
+	{
+		$page = 1;
+	}
+
+	if($page)
+	{
+		$start = ($page-1) * $numannouncements;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+
+	$multipage = multipage($announcementcount, $numannouncements, $page, 'portal.php');
 
 	$pids = '';
 	$tids = '';
@@ -435,7 +475,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 		ORDER BY t.dateline DESC
-		LIMIT 0, {$numannouncements}"
+		LIMIT {$start}, {$numannouncements}"
 	);
 	while($getid = $db->fetch_array($query))
 	{
@@ -446,9 +486,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$pids .= ",'{$getid['pid']}'";
 			}
-				$tids .= ",'{$getid['tid']}'";
-				$posts[$getid['tid']] = $getid;
+
+			$posts[$getid['tid']] = $getid;
 		}
+
+		$tids .= ",'{$getid['tid']}'";
 	}
 	if(!empty($posts))
 	{
@@ -493,6 +535,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 			$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
 			$announcement['threadlink'] = get_thread_link($announcement['tid']);
+			$announcement['forumlink'] = get_forum_link($announcement['fid']);
+			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
 			if($announcement['uid'] == 0)
 			{
@@ -511,6 +555,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
 			{
 				$icon = $icon_cache[$announcement['icon']];
+				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
 			}
 			else

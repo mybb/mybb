@@ -295,7 +295,10 @@ $l['editor_metacafe'] = "MetaCafe";
 $l['editor_veoh'] = "Veoh";
 $l['editor_vimeo'] = "Vimeo";
 $l['editor_youtube'] = "Youtube";
+$l['editor_facebook'] = "Facebook";
+$l['editor_liveleak'] = "LiveLeak";
 $l['editor_insertvideo'] = "Insert a video";
+$l['editor_maximize'] = "Maximize";
 
 $l['missing_task'] = "Error: Task file does not exist";
 $l['task_backup_cannot_write_backup'] = "Error: The database backup task cannot write to backups directory.";

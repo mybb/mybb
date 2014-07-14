@@ -65,7 +65,7 @@ class postParser
 	public $highlight_cache = array();
 
 	/**
-	 * Options for this parsed message (Private - set by parse_message argument)
+	 * Options for this parsed message
 	 *
 	 * @access public
 	 * @var array
@@ -512,17 +512,19 @@ class postParser
 	 */
 	private function cache_smilies()
 	{
-		global $cache, $mybb;
+		global $cache, $mybb, $theme, $templates;
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
 		if(is_array($smilies))
 		{
+			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
-                $smilie['image'] = $mybb->get_asset_url($smilie['image']);
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				$this->smilies_cache[$smilie['find']] = "<img src=\"{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie').'";');
 			}
 		}
 	}

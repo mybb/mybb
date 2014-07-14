@@ -180,6 +180,10 @@ div.sceditor-grip {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100% !important;
 }
 .sceditor-container,
 .sceditor-container div,
@@ -202,6 +206,10 @@ div.sceditor-dropdown div {
   resize: none;
   background: #fff;
   display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 99% !important;
 }
 div.sceditor-resize-cover {
   position: absolute;
@@ -627,4 +635,17 @@ div.sceditor-group {
 }
 .sceditor-button div {
   margin: 0;
+}
+
+
+/* Additional buttons (for MyBB) */
+.sceditor-button-video div  {
+    
+  background-image: url(video.png);
+    
+}
+.sceditor-button-php div  {
+    
+  background-image: url(php.png);
+    
 }

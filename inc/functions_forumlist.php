@@ -268,7 +268,6 @@ function build_forumbits($pid=0, $depth=1)
 				continue;
 			}
 
-
 			// Forum is a category, set template type
 			if($forum['type'] == 'c')
 			{

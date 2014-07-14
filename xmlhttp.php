@@ -725,8 +725,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check if the username is actually already in use
-	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($username);
 
 	if($user['uid'])
 	{
@@ -760,8 +759,7 @@ else if($mybb->input['action'] == "username_exists")
 	}
 
 	// Check if the username actually exists
-	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($username);
 
 	if($user['uid'])
 	{

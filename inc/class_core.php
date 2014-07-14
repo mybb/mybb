@@ -567,6 +567,10 @@ $fpermfields = array(
 	'candeleteposts',
 	'candeletethreads',
 	'caneditattachments',
+	'modposts',
+	'modthreads',
+	'modattachments',
+	'mod_edit_posts',
 	'canpostpolls',
 	'canvotepolls',
 	'cansearch'

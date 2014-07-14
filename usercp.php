@@ -252,7 +252,6 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"postnum" => $mybb->user['postnum'],
 		"usergroup" => $mybb->user['usergroup'],
 		"additionalgroups" => $mybb->user['additionalgroups'],
-		"website" => $mybb->get_input('website'),
 		"icq" => $mybb->get_input('icq', 1),
 		"aim" => $mybb->get_input('aim'),
 		"yahoo" => $mybb->get_input('yahoo'),
@@ -263,6 +262,11 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', 2)
 	);
+	
+	if($mybb->usergroup['canchangewebsite'] == 1)
+	{
+		$user['website'] = $mybb->get_input('website');
+	}
 
 	if($mybb->usergroup['cancustomtitle'] == 1)
 	{
@@ -715,6 +719,11 @@ if($mybb->input['action'] == "profile")
 		$customtitle = "";
 	}
 
+	if($mybb->usergroup['canchangewebsite'] == 1)
+	{
+		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");
+	}
+	
 	$plugins->run_hooks("usercp_profile_end");
 
 	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");
@@ -1585,6 +1594,7 @@ if($mybb->input['action'] == "subscriptions")
 			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
 				$icon = $icon_cache[$thread['icon']];
+				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 			}
 			else
@@ -2322,10 +2332,6 @@ if($mybb->input['action'] == "acceptrequest")
 		$mybb->user['buddylist'] = $db->escape_string($new_list);
 		
 		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
-		
-		// Load language
-		$lang->set_language($user['language']);
-		$lang->load("usercp");
 	
 		$pm = array(
 			'touid' => $user['uid'],
@@ -2333,10 +2339,6 @@ if($mybb->input['action'] == "acceptrequest")
 			'message' => $lang->buddyrequest_accepted_request_message,
 			'receivepms' => 1 // Should be later validated by the PM handler
 		);
-		
-		// Load language
-		$lang->set_language($mybb->user['language']);
-		$lang->load("usercp");
 	
 		send_pm($pm);
 		
@@ -2488,7 +2490,7 @@ if($mybb->input['action'] == "do_editlists")
 		// Fetch out new users
 		if(count($users) > 0)
 		{
-			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;
@@ -2552,20 +2554,12 @@ if($mybb->input['action'] == "do_editlists")
 				{
 					$existing_users[] = $user['uid'];
 					
-					// Load language
-					$lang->set_language($user['language']);
-					$lang->load("usercp");
-					
 					$pm = array(
 						'touid' => $user['uid'],
 						'subject' => $lang->buddyrequest_new_buddy,
 						'message' => $lang->buddyrequest_new_buddy_message,
 						'receivepms' => $user['buddyrequestspm']
 					);
-					
-					// Load language
-					$lang->set_language($mybb->user['language']);
-					$lang->load("usercp");
 					
 					send_pm($pm);
 				}
@@ -2574,20 +2568,12 @@ if($mybb->input['action'] == "do_editlists")
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
 					
-					// Load language
-					$lang->set_language($user['language']);
-					$lang->load("usercp");
-					
 					$pm = array(
 						'touid' => $user['uid'],
 						'subject' => $lang->buddyrequest_received,
 						'message' => $lang->buddyrequest_received_message,
 						'receivepms' => $user['buddyrequestspm']
 					);
-					
-					// Load language
-					$lang->set_language($mybb->user['language']);
-					$lang->load("usercp");
 					
 					send_pm($pm);
 					
@@ -3837,6 +3823,7 @@ if(!$mybb->input['action'])
 						if($thread['icon'] > 0 && isset($icon_cache[$thread['icon']]))
 						{
 							$icon = $icon_cache[$thread['icon']];
+							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 						}
 						else
@@ -4022,6 +4009,7 @@ if(!$mybb->input['action'])
 				if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 				{
 					$icon = $icon_cache[$thread['icon']];
+					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 				}
 				else

@@ -910,7 +910,6 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
 EOF;
@@ -1823,15 +1822,13 @@ if($mybb->input['action'] == "merge")
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['source_username']))."'");
-		$source_user = $db->fetch_array($query);
+		$source_user = get_user_by_username($mybb->input['source_username'], array('fields' => '*'));
 		if(!$source_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_source;
 		}
 
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['destination_username']))."'");
-		$destination_user = $db->fetch_array($query);
+		$destination_user = get_user_by_username($mybb->input['destination_username'], array('fields' => '*'));
 		if(!$destination_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_destination;

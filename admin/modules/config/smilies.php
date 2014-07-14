@@ -638,7 +638,6 @@ if(!$mybb->input['action'])
 		$pagenum = 1;
 	}
 
-
 	$table = new Table;
 	$table->construct_header($lang->image, array("class" => "align_center", "width" => 1));
 	$table->construct_header($lang->name, array("width" => "35%"));
@@ -655,10 +654,11 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 			$image = "../".$smilie['image'];
 		}
 
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
 		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
 

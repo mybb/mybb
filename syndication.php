@@ -29,7 +29,15 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Find out the thread limit.
-$thread_limit = $mybb->get_input('limit', 1);
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
+{
+	$thread_limit = $mybb->settings['portal_numannouncements'];
+}
+else
+{
+	$thread_limit = $mybb->get_input('limit', 1);
+}
+
 if($thread_limit > 50)
 {
 	$thread_limit = 50;
@@ -40,7 +48,14 @@ else if(!$thread_limit || $thread_limit < 0)
 }
 
 // Syndicate a specific forum or all viewable?
-if($mybb->get_input('fid'))
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
+{
+	if($mybb->settings['portal_announcementsfid'] != '-1')
+	{
+		$forumlist = explode(',', $mybb->settings['portal_announcementsfid']);
+	}
+}
+elseif($mybb->get_input('fid'))
 {
 	$forumlist = explode(',', $mybb->get_input('fid'));
 }
@@ -86,15 +101,30 @@ $query = $db->simple_select("forums", "name, fid, allowhtml, allowmycode, allows
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {
-	$title .= $comma.$forum['name'];
+	if(!$mybb->get_input('portal') || $mybb->settings['portal'] == 0)
+	{
+		$title .= $comma.$forum['name'];
+		$comma = $lang->comma;
+	}
 	$forumcache[$forum['fid']] = $forum;
-	$comma = $lang->comma;
+}
+
+if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
+{
+		$title .= $comma.$lang->portal;
 }
 
 // If syndicating all forums then cut the title back to "All Forums"
 if(isset($all_forums))
 {
-	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
+	if($mybb->get_input('portal') && $mybb->settings['portal'] != 0)
+	{
+		$title = $mybb->settings['bbname']." - ".$lang->portal;
+	}
+	else
+	{
+		$title = $mybb->settings['bbname']." - ".$lang->all_forums;
+	}
 }
 
 // Set the feed type.

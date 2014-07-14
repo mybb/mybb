@@ -342,7 +342,6 @@ if($mybb->input['action'] == "nextoldest")
 	exit;
 }
 
-
 $pid = $mybb->input['pid'] = $mybb->get_input('pid', 1);
 
 // Forumdisplay cache

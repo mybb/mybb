@@ -75,7 +75,6 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
-
 	$page->add_breadcrumb_item($lang->add_new_attachment_type);
 	$page->output_header($lang->attachment_types." - ".$lang->add_new_attachment_type);
 

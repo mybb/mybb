@@ -431,7 +431,6 @@ class DB_SQLite
 		}
 	}
 
-
 	/**
 	 * Returns the number of affected rows in a query.
 	 *
@@ -599,7 +598,6 @@ class DB_SQLite
 
 		return $this->query($query);
 	}
-
 
 	/**
 	 * Build an insert query from an array.
@@ -1251,7 +1249,6 @@ class DB_SQLite
 
 					$prevword = $defparts[sizeof($defparts)-1];
 				}
-
 
 				// This block of code generates a test table simply to verify that the columns specifed are valid in an sql statement
 				// This ensures that no reserved words are used as columns, for example

@@ -22,6 +22,8 @@ $usergroup_permissions = array(
 	"canratethreads" => 1,
 	"modposts" => 0,
 	"modthreads" => 0,
+	"modattachments" => 0,
+	"mod_edit_posts" => 0,
 	"caneditposts" => 1,
 	"candeleteposts" => 1,
 	"candeletethreads" => 1,
@@ -55,6 +57,7 @@ $usergroup_permissions = array(
 	"canratemembers" => 1,
 	"canchangename" => 0,
 	"canbereported" => 0,
+	"canchangewebsite" => 1,
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
@@ -314,8 +317,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		admin_redirect("index.php?module=user-group");
 	}
 
-	$query = $db->simple_select("users", "uid, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($mybb->input['username'], array('fields' => 'username'));
 	if(!$user['uid'])
 	{
 		$errors[] = $lang->error_invalid_username;
@@ -477,7 +479,6 @@ if($mybb->input['action'] == "leaders")
 
 	$page->output_footer();
 }
-
 
 if($mybb->input['action'] == "delete_leader")
 {
@@ -817,6 +818,8 @@ if($mybb->input['action'] == "edit")
 				"canratethreads" => intval($mybb->input['canratethreads']),
 				"modposts" => intval($mybb->input['modposts']),
 				"modthreads" => intval($mybb->input['modthreads']),
+				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
+				"modattachments" => intval($mybb->input['modattachments']),
 				"caneditposts" => intval($mybb->input['caneditposts']),
 				"candeleteposts" => intval($mybb->input['candeleteposts']),
 				"candeletethreads" => intval($mybb->input['candeletethreads']),
@@ -849,6 +852,7 @@ if($mybb->input['action'] == "edit")
 				"canuploadavatars" => intval($mybb->input['canuploadavatars']),
 				"canchangename" => intval($mybb->input['canchangename']),
 				"canbereported" => intval($mybb->input['canbereported']),
+				"canchangewebsite" => intval($mybb->input['canchangewebsite']),
 				"showforumteam" => intval($mybb->input['showforumteam']),
 				"usereputationsystem" => intval($mybb->input['usereputationsystem']),
 				"cangivereputations" => intval($mybb->input['cangivereputations']),
@@ -1023,11 +1027,17 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
 		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
 		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads'])),
-		$form->generate_check_box("modposts", 1, $lang->moderate_posts, array("checked" => $mybb->input['modposts'])),
-		$form->generate_check_box("modthreads", 1, $lang->moderate_threads, array("checked" => $mybb->input['modthreads'])),
 		"{$lang->max_posts_per_day}<br /><small class=\"input\">{$lang->max_posts_per_day_desc}</small><br />".$form->generate_text_box('maxposts', $mybb->input['maxposts'], array('id' => 'maxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
+
+	$moderator_options = array(
+		$form->generate_check_box("modposts", 1, $lang->mod_new_posts, array("checked" => $mybb->input['modposts'])),
+		$form->generate_check_box("modthreads", 1, $lang->mod_new_threads, array("checked" => $mybb->input['modthreads'])),
+		$form->generate_check_box("modattachments", 1, $lang->mod_new_attachments, array("checked" => $mybb->input['modattachments'])),
+		$form->generate_check_box("mod_edit_posts", 1, $lang->mod_after_edit, array("checked" => $mybb->input['mod_edit_posts']))
+	);
+	$form_container->output_row($lang->moderation_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $moderator_options)."</div>");
 
 	$poll_options = array(
 		$form->generate_check_box("canpostpolls", 1, $lang->can_post_polls, array("checked" => $mybb->input['canpostpolls'])),
@@ -1068,6 +1078,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars'])),
 		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
 		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
+		$form->generate_check_box("canchangewebsite", 1, $lang->can_change_website, array("checked" => $mybb->input['canchangewebsite'])),
 		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_text_box('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");

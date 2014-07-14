@@ -31,7 +31,6 @@ if($mybb->settings['enablewarningsystem'] == 0)
 // Expire old warnings
 expire_warnings();
 
-
 $mybb->input['action'] = $mybb->get_input('action');
 
 $plugins->run_hooks("warnings_start");
@@ -47,32 +46,11 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	// Check we haven't exceeded the maximum number of warnings per day
-	if($mybb->usergroup['maxwarningsday'] != 0)
-	{
-		$timecut = TIME_NOW-60*60*24;
-		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
-		$given_today = $db->fetch_field($query, "given_today");
-		if($given_today >= $mybb->usergroup['maxwarningsday'])
-		{
-			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
-		}
-	}
-
 	$user = get_user($mybb->get_input('uid', 1));
-	if(!$user)
+
+	if(!$user['uid'])
 	{
 		error($lang->error_invalid_user);
-	}
-
-	if($user['uid'] == $mybb->user['uid'])
-	{
-		error($lang->cannot_warn_self);
-	}
-
-	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
-	{
-		error($lang->user_reached_max_warning);
 	}
 
 	$group_permissions = user_permissions($user['uid']);
@@ -87,374 +65,56 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error($lang->error_cant_warn_user);
 	}
 
+	$plugins->run_hooks("warnings_do_warn_start");
+
+	$warning = array(
+		'uid' => $mybb->get_input('uid', 1),
+		'notes' => $mybb->get_input('notes'),
+		'type' => $mybb->get_input('type'),
+		'custom_reason' => $mybb->get_input('custom_reason'),
+		'custom_points' => $mybb->get_input('custom_points', 1),
+		'expires' => $mybb->get_input('expires', 1),
+		'expires_period' => $mybb->get_input('expires_period', 1)
+	);
+
 	// Is this warning being given for a post?
 	if($mybb->get_input('pid', 1))
 	{
-		$post = get_post($mybb->get_input('pid', 1));
-		if($post)
-		{
-			$thread = get_thread($post['tid']);
-		}
-		if(!$post || !$thread)
-		{
-			error($lang->error_invalid_post);
-		}
-		$forum_permissions = forum_permissions($thread['fid']);
+		$warning['pid'] = $mybb->get_input('pid', 1);
+
+		$post = get_post($warning['pid']);
+
+		$forum_permissions = forum_permissions($post['fid']);
+
 		if($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
 	}
 
-	$plugins->run_hooks("warnings_do_warn_start");
+	$warningshandler->set_data($warning)
 
-	$warn_errors = array();
-
-	if(!trim($mybb->get_input('notes')))
+	if($warningshandler->validate_warning())
 	{
-		$warn_errors[] = $lang->error_no_note;
-	}
+		// Are we notifying the user?
+		if($mybb->get_input('send_pm', 1) == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
+		{
 
-	// Using a predefined warning type
-	if($mybb->get_input('type') != "custom")
-	{
-		$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('type', 1)."'");
-		$warning_type = $db->fetch_array($query);
-		if(!$warning_type)
-		{
-			$warn_errors[] = $lang->error_invalid_type;
-		}
-		$points = $warning_type['points'];
-		$warning_title = $warning_expires = "";
-		if($warning_type['expirationtime'])
-		{
-			$warning_expires = TIME_NOW+$warning_type['expirationtime'];
-		}
-	}
-	// Issuing a custom warning
-	else
-	{
-		if($mybb->settings['allowcustomwarnings'] == 0)
-		{
-			$warn_errors[] = $lang->error_cant_custom_warn;
-		}
-		else
-		{
-			if(!$mybb->get_input('custom_reason'))
-			{
-				$warn_errors[] = $lang->error_no_custom_reason;
-			}
-			else
-			{
-				$warning_title = $mybb->get_input('custom_reason');
-			}
-			if(!$mybb->get_input('custom_points', 1) || $mybb->get_input('custom_points', 1) > $mybb->settings['maxwarningpoints'] || $mybb->get_input('custom_points', 1) < 0)
-			{
-				$warn_errors[] = $lang->sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarningpoints']);
-			}
-			else
-			{
-				$points = round($mybb->get_input('custom_points', 1));
-			}
-			// Build expiry date
-			if($mybb->get_input('expires', 1))
-			{
-				$warning_expires = $mybb->get_input('expires', 1);
-				if($mybb->get_input('expires_period') == "hours")
-				{
-					$warning_expires = $warning_expires*3600;
-				}
-				else if($mybb->get_input('expires_period') == "days")
-				{
-					$warning_expires = $warning_expires*86400;
-				}
-				else if($mybb->get_input('expires_period') == "weeks")
-				{
-					$warning_expires = $warning_expires*604800;
-				}
-				else if($mybb->get_input('expires_period') == "months")
-				{
-					$warning_expires = $warning_expires*2592000;
-				}
-				// Add on current time and we're there!
-				if($mybb->get_input('expires_period') != "never" && $warning_expires)
-				{
-					$warning_expires += TIME_NOW;
-				}
-			}
-		}
-	}
+			$pm = array(
+				'subject' => $mybb->get_input('pm_subject'),
+				'message' => $mybb->get_input('pm_message'),
+				'touid' => $user['uid']
+			);
 
-	if($warning_expires <= TIME_NOW)
-	{
-		$warning_expires = 0;
-	}
-
-	// Are we notifying the user?
-	if(!$warn_errors && $mybb->get_input('send_pm', 1) == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
-	{
-		// Bring up the PM handler
-		require_once MYBB_ROOT."inc/datahandlers/pm.php";
-		$pmhandler = new PMDataHandler();
-
-		$pm = array(
-			"subject" => $mybb->get_input('pm_subject'),
-			"message" => $mybb->get_input('pm_message'),
-			"fromid" => $mybb->user['uid'],
-			"toid" => array($user['uid']),
-			"ipaddress" => $session->packedip
-		);
-		
-		$mybb->input['pm_options'] = $mybb->get_input('pm_options', 2);
-		$pm['options'] = array();
-		if(isset($mybb->input['pm_options']['signature']))
-		{
-			$pm['options']['signature'] = $mybb->input['pm_options']['signature'];
-		}
-		if(isset($mybb->input['pm_options']['disablesmilies']))
-		{
-			$pm['options']['disablesmilies'] = $mybb->input['pm_options']['disablesmilies'];
-		}
-		if(isset($mybb->input['pm_options']['signature']))
-		{
-			$pm['options']['savecopy'] = $mybb->input['pm_options']['savecopy'];
-		}
-		if(isset($mybb->input['pm_options']['signature']))
-		{
-			$pm['options']['readreceipt'] = $mybb->input['pm_options']['readreceipt'];
+			// No friendly errors whatsoever
+			send_pm($pm, $mybb->user['uid'], 1)
 		}
 
-		$pmhandler->set_data($pm);
-		$pmhandler->admin_override = true;
+		$warninginfo = $warningshandler->insert_warning();
+	
+		$plugins->run_hooks("warnings_do_warn_end");
 
-		// Now let the pm handler do all the hard work.
-		if(!$pmhandler->validate_pm())
-		{
-			$pm_errors = $pmhandler->get_friendly_errors();
-			if($warn_errors)
-			{
-				$warn_errors = array_merge($warn_errors, $pm_errors);
-			}
-			else
-			{
-				$warn_errors = $pm_errors;
-			}
-		}
-		else
-		{
-			$pminfo = $pmhandler->insert_pm();
-		}
-	}
-
-	// No errors - save warning to database
-	if(empty($warn_errors))
-	{
-		// Build warning level & ensure it doesn't go over 100.
-		$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-		$new_warning_level = round(($user['warningpoints']+$points)/$mybb->settings['maxwarningpoints']*100);
-		if($new_warning_level > 100)
-		{
-			$new_warning_level = 100;
-		}
-
-		$new_warning = array(
-			"uid" => $user['uid'],
-			"title" => $db->escape_string($warning_title),
-			"points" => intval($points),
-			"dateline" => TIME_NOW,
-			"issuedby" => $mybb->user['uid'],
-			"expires" => $warning_expires,
-			"expired" => 0,
-			"revokereason" => '',
-			"notes" => $db->escape_string($mybb->get_input('notes'))
-		);
-		if(isset($post['pid']))
-		{
-			$new_warning['pid'] = intval($post['pid']);
-		}
-		if(isset($warning_type['tid']))
-		{
-			$new_warning['tid'] = intval($warning_type['tid']);
-		}
-		$db->insert_query("warnings", $new_warning);
-
-		// Update user
-		$updated_user = array(
-			"warningpoints" => $user['warningpoints']+$points
-		);
-
-		// Fetch warning level
-		$query = $db->simple_select("warninglevels", "*", "percentage<=$new_warning_level", array("order_by" => "percentage", "order_dir" => "desc"));
-		$new_level = $db->fetch_array($query);
-
-		$friendly_action = '';
-
-		if($new_level['lid'])
-		{
-			$expiration = 0;
-			$action = my_unserialize($new_level['action']);
-
-			switch($action['type'])
-			{
-				// Ban the user for a specified time
-				case 1:
-					if($action['length'] > 0)
-					{
-						$expiration = TIME_NOW+$action['length'];
-					}
-					// Fetch any previous bans for this user
-					$query = $db->simple_select("banned", "*", "uid='{$user['uid']}' AND gid='{$action['usergroup']}' AND lifted>".TIME_NOW);
-					$existing_ban = $db->fetch_array($query);
-
-					// Only perform if no previous ban or new ban expires later than existing ban
-					if(($expiration > $existing_ban['lifted'] && $existing_ban['lifted'] != 0) || $expiration == 0 || !$existing_ban['uid'])
-					{
-						if(!$warning_title)
-						{
-							$warning_title = $warning_type['title'];
-						}
-
-						// Never lift the ban?
-						if($action['length'] <= 0)
-						{
-							$bantime = '---';
-						}
-						else
-						{
-							$bantimes = fetch_ban_times();
-							foreach($bantimes as $date => $string)
-							{
-								if($date == '---')
-								{
-									continue;
-								}
-
-								$time = 0;
-								list($day, $month, $year) = explode('-', $date);
-								if($day > 0)
-								{
-									$time += 60*60*24*$day;
-								}
-
-								if($month > 0)
-								{
-									$time += 60*60*24*30*$month;
-								}
-
-								if($year > 0)
-								{
-									$time += 60*60*24*365*$year;
-								}
-
-								if($time == $action['length'])
-								{
-									$bantime = $date;
-									break;
-								}
-							}
-						}
-
-						$new_ban = array(
-							"uid" => intval($user['uid']),
-							"gid" => $db->escape_string($action['usergroup']),
-							"oldgroup" => $db->escape_string($user['usergroup']),
-							"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
-							"olddisplaygroup" => $db->escape_string($user['displaygroup']),
-							"admin" => $mybb->user['uid'],
-							"dateline" => TIME_NOW,
-							"bantime" => $db->escape_string($bantime),
-							"lifted" => $expiration,
-							"reason" => $db->escape_string($warning_title)
-						);
-						// Delete old ban for this user, taking details
-						if($existing_ban['uid'])
-						{
-							$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
-							// Override new ban details with old group info
-							$new_ban['oldgroup'] = $db->escape_string($existing_ban['oldgroup']);
-							$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
-							$new_ban['olddisplaygroup'] = $db->escape_string($existing_ban['olddisplaygroup']);
-						}
-
-						$period = $lang->expiration_never;
-						$ban_length = fetch_friendly_expiration($action['length']);
-
-						if($ban_length['time'])
-						{
-							$lang_str = "expiration_".$ban_length['period'];
-							$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-						}
-
-						$group_name = $groupscache[$action['usergroup']]['title'];
-						$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_banned, $group_name, $period);
-
-						$db->insert_query("banned", $new_ban);
-						$updated_user['usergroup'] = $action['usergroup'];
-						$updated_user['additionalgroups'] = $updated_user['displaygroup'] = "";
-					}
-					break;
-				// Suspend posting privileges
-				case 2:
-					if($action['length'] > 0)
-					{
-						$expiration = TIME_NOW+$action['length'];
-					}
-					// Only perform if the expiration time is greater than the users current suspension period
-					if($expiration == 0 || $expiration > $user['suspensiontime'])
-					{
-						if(($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
-						{
-							$period = $lang->expiration_never;
-							$ban_length = fetch_friendly_expiration($action['length']);
-
-							if($ban_length['time'])
-							{
-								$lang_str = "expiration_".$ban_length['period'];
-								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-							}
-
-							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_suspended, $period);
-
-							$updated_user['suspensiontime'] = $expiration;
-							$updated_user['suspendposting'] = 1;
-						}
-					}
-					break;
-				// Moderate new posts
-				case 3:
-					if($action['length'] > 0)
-					{
-						$expiration = TIME_NOW+$action['length'];
-					}
-					// Only perform if the expiration time is greater than the users current suspension period
-					if($expiration == 0 || $expiration > $user['moderationtime'])
-					{
-						if(($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
-						{
-							$period = $lang->expiration_never;
-							$ban_length = fetch_friendly_expiration($action['length']);
-
-							if($ban_length['time'])
-							{
-								$lang_str = "expiration_".$ban_length['period'];
-								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-							}
-
-							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_moderate, $period);
-
-							$updated_user['moderationtime'] = $expiration;
-							$updated_user['moderateposts'] = 1;
-						}
-					}
-					break;
-			}
-		}
-
-		// Save updated details
-		$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
-		$cache->update_moderators();
-
-		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, $user['username'], $new_warning_level, $friendly_action);
+		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, htmlspecialchars_uni($user['username']), $warningshandler->new_warning_level, $warningshandler->friendly_action);
 
 		if(!empty($post['pid']))
 		{
@@ -465,11 +125,11 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			redirect(get_profile_link($user['uid']), $lang->redirect_warned);
 		}
 	}
-
-	if($warn_errors)
+	else
 	{
+		$warn_errors = $warningshandler->get_friendly_errors();
 		$warn_errors = inline_error($warn_errors);
-		$mybb->input['action'] = "warn";
+		$mybb->input['action'] = 'warn';
 	}
 }
 
@@ -935,7 +595,6 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 					}
 				}
 			}
-
 
 			// Update user
 			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");

@@ -28,11 +28,11 @@ function log_admin_action()
 	}
 
 	$log_entry = array(
-		"uid" => $mybb->user['uid'],
+		"uid" => (int)$mybb->user['uid'],
 		"ipaddress" => $db->escape_binary(my_inet_pton(get_ip())),
 		"dateline" => TIME_NOW,
-		"module" => $db->escape_string($mybb->input['module']),
-		"action" => $db->escape_string($mybb->input['action']),
+		"module" => $db->escape_string($mybb->get_input('module')),
+		"action" => $db->escape_string($mybb->get_input('action')),
 		"data" => $db->escape_string(@serialize($data))
 	);
 
@@ -147,7 +147,6 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	{
 		$to = $pages;
 	}
-
 
 	if($from > 2)
 	{

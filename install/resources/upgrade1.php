@@ -248,7 +248,6 @@ function upgrade1_dbchanges2()
 		}
 	}
 
-
 	// add the theme set
 	$tquery1 = "";
 	$tquery2 = "";

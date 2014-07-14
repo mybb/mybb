@@ -94,7 +94,7 @@ if($mybb->usergroup['emailfloodtime'] > 0)
 	}
 }
 
-$errors = '';
+$errors = array();
 
 $mybb->input['message'] = trim_blank_chrs($mybb->get_input('message'));
 $mybb->input['subject'] = trim_blank_chrs($mybb->get_input('subject'));
@@ -104,6 +104,8 @@ if($mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
+
+	$plugins->run_hooks('contact_do_start');
 
 	// Validate input
 	if(empty($mybb->input['subject']))
@@ -184,6 +186,8 @@ if($mybb->request_method == "post")
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);
 		$message = $lang->sprintf($lang->email_contact, $user, $session->ipaddress, $mybb->input['message']);
 
+		$plugins->run_hooks('contact_do_end');
+
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
 
@@ -214,6 +218,11 @@ if($mybb->request_method == "post")
 	}
 }
 
+if(empty($errors))
+{
+	$errors = '';
+}
+
 // Generate CAPTCHA?
 if($mybb->settings['captchaimage'])
 {
@@ -232,6 +241,8 @@ else
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 $mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
 $mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+
+$plugins->run_hooks('contact_end');
 
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);

@@ -163,7 +163,6 @@ function run_shutdown()
 		$mybb->settings = &$settings;
 	}
 
-
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
@@ -189,7 +188,6 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
-
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -786,9 +784,10 @@ function error($error="", $title="")
  *
  * @param array Array of errors to be shown
  * @param string The title of the error message
+ * @param string JSON data to be encoded (we may want to send more data; e.g. newreply.php uses this for CAPTCHA)
  * @return string The inline error HTML
  */
-function inline_error($errors, $title="")
+function inline_error($errors, $title="", $json_data=array())
 {
 	global $theme, $mybb, $db, $lang, $templates;
 
@@ -807,7 +806,15 @@ function inline_error($errors, $title="")
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("errors" => $errors));
+		
+		if(empty($json_data))
+		{
+			echo json_encode(array("errors" => $errors));
+		}
+		else
+		{
+			echo json_encode(array_merge(array("errors" => $errors), $json_data));
+		}
 		exit;
 	}
 
@@ -1737,6 +1744,7 @@ function get_post_icons()
 
 	foreach($posticons as $dbicon)
 	{
+		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
 		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 
@@ -2421,8 +2429,6 @@ function update_thread_data($tid)
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
-
-
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
@@ -2831,8 +2837,11 @@ function build_mycode_inserter($bind="message", $smilies = true)
 			"editor_veoh" => "Veoh",
 			"editor_vimeo" => "Vimeo",
 			"editor_youtube" => "Youtube",
+			"editor_facebook" => "Facebook",
+			"editor_liveleak" => "LiveLeak",
 			"editor_insertvideo" => "Insert a video",
-			"editor_php" => "PHP"
+			"editor_php" => "PHP",
+			"editor_maximize" => "Maximize"
 		);
 		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
@@ -2882,7 +2891,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					{
 						if($smilie['showclickable'] != 0)
 						{
-							$smiliecache[$smilie['find']] = $smilie['image'];
+							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+							$smiliecache[$smilie['sid']] = $smilie;
 						}
 					}
 				}
@@ -2897,10 +2907,10 @@ function build_mycode_inserter($bind="message", $smilies = true)
 					$moresmilies = "";
 					$i = 0;
 
-					foreach($smiliecache as $find => $image)
+					foreach($smiliecache as $smilie)
 					{
-						$find = htmlspecialchars_uni($find);
-						$image = htmlspecialchars_uni($image);
+						$find = htmlspecialchars_uni($smilie['find']);
+						$image = htmlspecialchars_uni($smilie['image']);
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -3006,7 +3016,8 @@ function build_clickable_smilies()
 			{
 				if($smilie['showclickable'] != 0)
 				{
-					$smiliecache[$smilie['find']] = $smilie['image'];
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 		}
@@ -3032,7 +3043,8 @@ function build_clickable_smilies()
 			$counter = 0;
 			$i = 0;
 
-			foreach($smiliecache as $find => $image)
+			$extra_class = '';
+			foreach($smiliecache as $smilie)
 			{
 				if($i < $mybb->settings['smilieinsertertot'])
 				{
@@ -3042,6 +3054,9 @@ function build_clickable_smilies()
 					}
 
 					$find = htmlspecialchars_uni($find);
+
+					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
+					eval('$smilie = "'.$templates->get('smilie').'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
@@ -3244,6 +3259,75 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 }
 
 /**
+ * Build the thread prefix selection menu for a forum
+ *
+ *  @param mixed The forum ID (integer ID)
+ *  @param mixed The selected prefix ID (integer ID)
+ */
+function build_forum_prefix_select($fid, $selected_pid=0)
+{
+	global $cache, $db, $lang, $mybb, $templates;
+
+	$fid = intval($fid);
+
+	$prefix_cache = build_prefixes(0);
+	if(!$prefix_cache)
+	{
+		return false; // We've got no prefixes to show
+	}
+
+	// Go through each of our prefixes and decide which ones we can use
+	$prefixes = array();
+	foreach($prefix_cache as $prefix)
+	{
+		if($prefix['forums'] != "-1")
+		{
+			// Decide whether this prefix can be used in our forum
+			$forums = explode(",", $prefix['forums']);
+
+			if(in_array($fid, $forums))
+			{
+				// This forum can use this prefix!
+				$prefixes[$prefix['pid']] = $prefix;
+			}
+		}
+		else
+		{
+			// This prefix is for anybody to use...
+			$prefixes[$prefix['pid']] = $prefix;
+		}
+	}
+
+	if(empty($prefixes))
+	{
+		return false;
+	}
+
+	$prefixselect = $prefixselect_prefix = '';
+
+	$default_selected = '';
+	if(intval($selected_pid) == 0)
+	{
+		$default_selected = " selected=\"selected\"";
+	}
+
+	foreach($prefixes as $prefix)
+	{
+		$selected = '';
+		if($prefix['pid'] == $selected_pid)
+		{
+			$selected = " selected=\"selected\"";
+		}
+
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+	}
+
+	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	return $prefixselect;
+}
+
+/**
  * Gzip encodes text to a specified level
  *
  * @param string The string to encode
@@ -3305,24 +3389,17 @@ function log_moderator_action($data, $action="")
 {
 	global $mybb, $db, $session;
 
-	// If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it.
-	if(empty($data['fid']))
+	$fid = 0;
+	if(isset($data['fid']))
 	{
-		$fid = 0;
-	}
-	else
-	{
-		$fid = $data['fid'];
+		$fid = (int)$data['fid'];
 		unset($data['fid']);
 	}
 
-	if(empty($data['tid']))
+	$tid = 0;
+	if(isset($data['tid']))
 	{
-		$tid = 0;
-	}
-	else
-	{
-		$tid = $data['tid'];
+		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
 
@@ -3332,12 +3409,10 @@ function log_moderator_action($data, $action="")
 		$data = serialize($data);
 	}
 
-	$time = TIME_NOW;
-
 	$sql_array = array(
-		"uid" => $mybb->user['uid'],
-		"dateline" => $time,
-		"fid" => $fid,
+		"uid" => (int)$mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"fid" => (int)$fid,
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
@@ -5489,7 +5564,7 @@ function get_calendar_week_link($calendar, $week)
 }
 
 /**
- * Get the user data of a user id.
+ * Get the user data of an user id.
  *
  * @param int The user id of the user.
  * @return array The users data
@@ -5517,6 +5592,54 @@ function get_user($uid)
 		return $user_cache[$uid];
 	}
 	return array();
+}
+
+/**
+ * Get the user data of an user username.
+ *
+ * @param string The user username of the user.
+ * @return array The users data
+ */
+function get_user_by_username($username, $options=array())
+{
+	global $mybb, $db;
+
+	$username = $db->escape_string(my_strtolower($username));
+
+	if(!isset($options['username_method']))
+	{
+		$options['username_method'] = 0;
+	}
+
+	switch($options['username_method'])
+	{
+		case 1:
+			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
+			break;
+		case 2:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			break;
+		default:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			break;
+	}
+
+	$fields = array('uid');
+	if(isset($options['fields']))
+	{
+		$fields = array_merge((array)$options['fields'], $fields);
+	}
+
+	$fields = array_flip($fields);
+
+	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+
+	if(isset($options['exists']))
+	{
+		return (bool)$db->num_rows($query);
+	}
+
+	return $db->fetch_array($query);
 }
 
 /**
@@ -5669,9 +5792,8 @@ function get_inactive_forums()
 
 /**
  * Checks to make sure a user has not tried to login more times than permitted
- * Will stop execution with call to error() unless
  *
- * @param bool (Optional) The function will stop execution if it finds an error with the login. Default is True
+ * @param bool (Optional) Stop execution if it finds an error with the login. Default is True
  * @return bool Number of logins when success, false if failed.
  */
 function login_attempt_check($fatal = true)
@@ -5802,14 +5924,6 @@ function email_already_in_use($email, $uid="")
 	}
 
 	return false;
-}
-
-/*
- * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
- */
-function rebuildsettings()
-{
-	rebuild_settings();
 }
 
 /**
@@ -6583,45 +6697,15 @@ function ban_date2timestamp($date, $stamp=0)
  */
 function expire_warnings()
 {
-	global $db;
+	global $warningshandler;
 
-	$users = array();
-
-	$query = $db->query("
-		SELECT w.wid, w.uid, w.points, u.warningpoints
-		FROM ".TABLE_PREFIX."warnings w
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.uid)
-		WHERE expires<".TIME_NOW." AND expires!=0 AND expired!=1
-	");
-	while($warning = $db->fetch_array($query))
+	if(!is_object($warningshandler))
 	{
-		$updated_warning = array(
-			"expired" => 1
-		);
-		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-
-		if(array_key_exists($warning['uid'], $users))
-		{
-			$users[$warning['uid']] -= $warning['points'];
-		}
-		else
-		{
-			$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
-		}
+		require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+		$warningshandler = new WarningsHandler('update');
 	}
 
-	foreach($users as $uid => $warningpoints)
-	{
-		if($warningpoints < 0)
-		{
-			$warningpoints = 0;
-		}
-
-		$updated_user = array(
-			"warningpoints" => intval($warningpoints)
-		);
-		$db->update_query("users", $updated_user, "uid='".intval($uid)."'");
-	}
+	return $warningshandler->expire_warnings();
 }
 
 /**
@@ -6982,7 +7066,6 @@ function get_execution_time()
 		return $total;
 	}
 }
-
 
 /**
  * Processes a checksum list on MyBB files and returns a result set
@@ -7557,6 +7640,41 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
+	if(isset($pm['language']))
+	{
+		$revert = false;
+		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
+		{
+			// Load language
+			$lang->set_language($pm['language']);
+			$lang->load($pm['language_file']);
+
+			$revert = true;
+		}
+
+		foreach(array('subject', 'message') as $key)
+		{
+			if(is_array($pm[$key]))
+			{
+				$num_args = count($pm[$key]);
+
+				for($i = 1; $i < $num_args; $i++)
+				{
+					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+				}
+			}
+
+			$pm[$key] = $lang->{$pm[$key][0]};
+		}
+
+		if($revert)
+		{
+			// Load language
+			$lang->set_language($mybb->user['language']);
+			$lang->load($pm['language_file']);
+		}
+	}
+
 	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
@@ -7624,15 +7742,13 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$pmhandler->admin_override = (int)$admin_override;
 
 	$pmhandler->set_data($pm);
+
 	if($pmhandler->validate_pm())
 	{
 		$pmhandler->insert_pm();
-	}
-	else
-	{
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 }
 ?>

@@ -134,6 +134,7 @@ $l['you_forwarded'] = "You forwarded this message {1}";
 $l['select_from_buddies'] = "Select from Buddies";
 $l['no_readmessages'] = "You currently do not have any read messages being tracked.";
 $l['no_unreadmessages'] = "You currently do not have any unread messages being tracked.";
+$l['stop_tracking_all'] = "Stop Tracking all messages";
 
 $l['enter_keywords'] = "Enter Keywords";
 $l['advanced_search'] = "Advanced Search";
@@ -183,6 +184,7 @@ $l['error_invalidsearch'] = "An invalid search was specified.  Please go back an
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
 $l['redirect_pmstrackingcanceled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
+$l['redirect_allpmstrackingstopped'] = "Tracking of all read PMs has been stopped.";
 $l['redirect_pmsmoved'] = "The selected private messages have been moved.";
 $l['redirect_pmsdeleted'] = "The selected private messages have been deleted.";
 $l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";

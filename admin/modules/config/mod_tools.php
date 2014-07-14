@@ -98,7 +98,6 @@ if($mybb->input['action'] == "delete_thread_tool")
 	}
 }
 
-
 if($mybb->input['action'] == "post_tools")
 {
 	$plugins->run_hooks("admin_config_mod_tools_post_tools");

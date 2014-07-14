@@ -105,6 +105,10 @@ a:hover, a:active {
 	background-position: 0 -60px;
 }
 
+#logo ul.top_links a.portal {
+	background-position: 0 -180px;
+}
+
 #panel .upper a.logout {
 	font-weight: bold;
 	background: url(images/headerlinks_sprite.png) right -80px no-repeat;
@@ -1343,6 +1347,14 @@ form #message {
 	display: none;
 }
 
+.smilie {
+	vertical-align: middle;
+}
+
+.smilie_pointer {
+	cursor: smilie_pointer;
+}
+
 /** jGrowl Start **/
 
 div.jGrowl {
@@ -1744,7 +1756,6 @@ div.jqi .jqisubstate .jqibuttons button {
 	margin: -1px;
 }
 
-
 .pmspace_used.low {
 	border: 1px solid #0c5a01;
 	background: #167203;
@@ -1759,7 +1770,6 @@ div.jqi .jqisubstate .jqibuttons button {
 	background: #e73c3c;
 	border: 1px solid #c00;
 }
-
 
 .pmspace_unused {
 	display: inline-block;
@@ -3804,6 +3814,7 @@ a.button {
 					<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
 					<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
 				</select>
+				{$prefixselect}
 				{$gobutton}
 			</form>
 		</td>
@@ -3844,6 +3855,11 @@ a.button {
 <br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
+		<template name="forumdisplay_threadlist_prefixes" version="1800"><![CDATA[<select name="prefix">
+<option value="0"{$default_selected}>{$lang->prefix_all}</option>
+{$prefixselect_prefix}
+</select>]]></template>
+		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>
 		<template name="forumdisplay_threadlist_rating" version="1800"><![CDATA[	<td class="tcat" align="center" width="80">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="{$mybb->asset_url}/jscripts/rating.js?ver=1800"></script>
@@ -3920,6 +3936,7 @@ a.button {
 				<div class="wrapper">
 					<a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a>
 					<ul class="menu top_links">
+						{$menu_portal}
 						{$menu_search}
 						{$menu_memberlist}
 						{$menu_calendar}
@@ -3947,6 +3964,7 @@ a.button {
 				<br />]]></template>
 		<template name="header_menu_calendar" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>]]></template>
 		<template name="header_menu_memberlist" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>]]></template>
+		<template name="header_menu_portal" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/portal.php" class="portal">{$lang->toplinks_portal}</a></li>]]></template>
 		<template name="header_menu_search" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>]]></template>
 		<template name="header_quicksearch" version="1800"><![CDATA[						<form action="{$mybb->settings['bburl']}/search.php" method="post">
 						<fieldset id="search">
@@ -5834,11 +5852,11 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center"><img src="{$smilie['image']}" alt="{$smilie['find']}" title="{$smilie['find']}" onclick="MyBBEditor.insertText('{$smilie['insert']}');" style="cursor: pointer" /></a></td>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
-<td class="{$class}" align="center"><img src="{$smilie['image']}" /></td>
+<td class="{$class}" align="center">{$smilie}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
@@ -8747,9 +8765,11 @@ if(use_xmlhttprequest == "1")
 <td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>]]></template>
-		<template name="portal" version="127"><![CDATA[<html>
+		<template name="portal" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
+<link rel="alternate" type="application/rss+xml" title="{$lang->latest_announcements} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1" />
+<link rel="alternate" type="application/atom+xml" title="{$lang->latest_announcements} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?portal=1&type=atom1.0" />
 {$headerinclude}
 </head>
 <body>
@@ -8766,6 +8786,7 @@ if(use_xmlhttprequest == "1")
 <td>&nbsp;</td>
 <td valign="top">
 {$announcements}
+{$multipage}
 </td>
 </tr>
 </table>
@@ -8778,7 +8799,7 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} - {$lang->forum} <a href="{$mybb->settings['bburl']}/{$announcement['forumlink']}">{$announcement['forumname']}</a> {$numcomments}</span>
 </td>
 </tr>
 <tr>
@@ -8821,6 +8842,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
+{$lang->forum} <a href="{$thread['forumlink']}">{$thread['forumname']}</a><br />
 <a href="{$thread['lastpostlink']}">{$lang->latest_threads_lastpost}</a> {$lastposterlink}<br />
 {$lastpostdate}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
@@ -9727,9 +9749,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <div id="posts">
 {$message}
 </div>
-{$quickreply}
 </td></tr>
 </table>
+{$quickreply}
 </td>
 </tr>
 </table>
@@ -10054,7 +10076,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_tracking_readmessage_stop" version="1800"><![CDATA[<tr>
-<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages}</strong></td>
+<td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptracking" value="{$lang->stop_tracking}" /> {$lang->selected_messages} / <a href="private.php?action=stopalltracking&amp;my_post_key={$mybb->post_code}">{$lang->stop_tracking_all}</a></strong></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="1800"><![CDATA[<tr>
 <td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/new_pm.png" alt="" /></td>
@@ -11138,7 +11160,7 @@ if(use_xmlhttprequest == "1")
 		<template name="smilieinsert_getmore" version="1800"><![CDATA[<tr>
   <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
-		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center"><img src="{$image}" border="0" class="smilie" alt="{$find}" onclick="console.log(MyBBEditor); MyBBEditor.insertText('{$find}');" /></td>]]></template>
+		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center">{$smilie}</td>]]></template>
 		<template name="smilieinsert_smilie_empty" version="1800"><![CDATA[<td colspan="{$colspan}">&nbsp;</td>
 </tr>]]></template>
 		<template name="stats" version="1800"><![CDATA[<html>
@@ -12498,12 +12520,7 @@ if(use_xmlhttprequest == "1")
 </select>
 </td>
 </tr>
-<tr>
-<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
-</tr>
-<tr>
-<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
-</tr>
+{$website}
 </table>
 </fieldset>
 {$customfields}
@@ -12613,6 +12630,12 @@ if(use_xmlhttprequest == "1")
 </tr>
 </table>
 </fieldset>]]></template>
+	<template name="usercp_profile_website" version="1800"><![CDATA[<tr>
+<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
+</tr>
+<tr>
+<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$user['website']}" /></td>
+</tr>]]></template>
 		<template name="usercp_profile_customfield" version="1800"><![CDATA[<tr>
 <td>
 <span>{$profilefield['name']}</span>:
@@ -13320,7 +13343,6 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
 		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
-<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
@@ -13509,5 +13531,7 @@ $(function() {
 </tr>]]></template>
 		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
+		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
+		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" border="0" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
 	</templates>
 </theme>

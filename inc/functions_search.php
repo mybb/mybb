@@ -605,7 +605,7 @@ function privatemessage_perform_search_mysql($search)
 		$userids = array();
 		$search['sender'] = my_strtolower($search['sender']);
 
-		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['sender']))."%'");
+		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['sender'])."%'");
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
@@ -1031,15 +1031,16 @@ function perform_search_mysql($search)
 	if($search['author'])
 	{
 		$userids = array();
+		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($search['author'])."'");
+			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
-			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
 		}
+
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
@@ -1433,14 +1434,14 @@ function perform_search_mysql_ft($search)
 	if($search['author'])
 	{
 		$userids = array();
+		$search['author'] = my_strtolower($search['author']);
 		if($search['matchusername'])
 		{
-			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($search['author'])."'");
+			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string($search['author'])."'");
 		}
 		else
 		{
-			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
 		}
 
 		while($user = $db->fetch_array($query))

@@ -641,7 +641,6 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
 
-
 	// Prevent editing of default
 	if($setting['isdefault'] == 1)
 	{

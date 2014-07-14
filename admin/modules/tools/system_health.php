@@ -827,7 +827,6 @@ if(!$mybb->input['action'])
 			$table->construct_row();
 		}
 
-
 		$table->output($lang->existing_db_backups);
 	}
 
@@ -910,7 +909,6 @@ if(!$mybb->input['action'])
 		$message_themes = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
-
 
 	if($errors)
 	{
