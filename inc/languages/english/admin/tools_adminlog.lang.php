@@ -288,6 +288,6 @@ $l['admin_log_user_users_inline_lift'] = "Lifted {1} user(s) bans";
 
 $l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})";
 
-$l['admin_log_admin_locked_out'] = 'Administrator login attempt for user ID {1} locked out from IP address {2}.'
+$l['admin_log_admin_locked_out'] = 'Administrator login attempt for user ID {1} locked out.'
 
 ?>
