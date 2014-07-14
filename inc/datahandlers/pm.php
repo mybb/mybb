@@ -54,6 +54,13 @@ class PMDataHandler extends DataHandler
 	public $pmid = 0;
 
 	/**
+	 * Values to be returned after inserting a PM.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies a private message subject.
 	 *
 	 * @return boolean True when valid, false when invalid.

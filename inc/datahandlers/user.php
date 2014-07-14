@@ -56,6 +56,13 @@ class UserDataHandler extends DataHandler
 	public $uid = 0;
 
 	/**
+	 * Values to be returned after inserting/deleting an user.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
 	 * @param boolean True when valid, false when invalid.
@@ -1138,7 +1145,7 @@ class UserDataHandler extends DataHandler
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
 
-		return array(
+		$this->return_values = array(
 			"uid" => $this->uid,
 			"username" => $user['username'],
 			"loginkey" => $user['loginkey'],
@@ -1146,6 +1153,10 @@ class UserDataHandler extends DataHandler
 			"password" => $user['password'],
 			"usergroup" => $user['usergroup']
 		);
+
+		$plugins->run_hooks("datahandler_user_insert_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -1386,6 +1397,8 @@ class UserDataHandler extends DataHandler
 				update_stats(array("numusers" => "+0"));
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -1497,15 +1510,19 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 
-		$plugins->run_hooks('datahandler_user_delete_end', $this);
-
 		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Update forum stats
 		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
 
-		return $this->deleted_users;
+		$this->return_values = array(
+			"deleted_users" => $this->deleted_users
+		);
+
+		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>
