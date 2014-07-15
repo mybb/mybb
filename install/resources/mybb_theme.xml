@@ -12532,41 +12532,7 @@ if(use_xmlhttprequest == "1")
 </td>
 <td width="50%" class="trow1" valign="top">
 {$customtitle}
-<fieldset class="trow2">
-<legend><strong>{$lang->additional_contact_details}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-<tr>
-<td><span class="smalltext">{$lang->icq_number}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="icq" size="25" value="{$user['icq']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->aim_screenname}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->skype_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="skype" size="25" value="{$user['skype']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->google_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="google" size="25" value="{$user['google']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->yahoo_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user['yahoo']}" /></td>
-</tr>
-</table>
-</fieldset>
+{$contactfields}
 {$awaysection}
 </td>
 </tr>
@@ -12583,6 +12549,22 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+	<template name="usercp_profile_contact_fields" version="1800"><![CDATA[<fieldset class="trow2">
+<legend><strong>{$lang->additional_contact_details}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	{$contact_fields['icq']}
+	{$contact_fields['aim']}
+	{$contact_fields['yahoo']}
+	{$contact_fields['skype']}
+	{$contact_fields['google']}
+</table>
+</fieldset>]]></template>
+	<template name="usercp_profile_contact_fields_field" version="1800"><![CDATA[<tr>
+<td><span class="smalltext">{$lang_string}</span></td>
+</tr>
+<tr>
+  <td><input type="text" class="textbox" name="{$cfield}" size="25" value="{$cfvalue}" /></td>
+</tr>]]></template>
 		<template name="usercp_profile_away" version="120"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>

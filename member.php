@@ -1829,7 +1829,6 @@ if($mybb->input['action'] == "profile")
 		$thread_percent = 100;
 	}
 
-	$mybb->settings['allowgooglefield'] = $mybb->settings['allowgoogletalkfield'];
 	$contact_fields = array();
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
 	{
