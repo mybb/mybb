@@ -201,11 +201,23 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
 
-		$stop_forum_spam_checker = new StopForumSpamChecker($mybb->settings['stopforumspam_min_weighting_before_spam']);
+		$stop_forum_spam_checker = new StopForumSpamChecker(
+			$plugins,
+			$mybb->settings['stopforumspam_min_weighting_before_spam'],
+			$mybb->settings['stopforumspam_check_usernames'],
+			$mybb->settings['stopforumspam_check_emails'],
+			$mybb->settings['stopforumspam_check_ips']
+		);
 
-		if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
+		try {
+			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
+			{
+				error($lang->error_stop_forum_spam_spammer);
+			}
+		}
+		catch (Exception $e)
 		{
-			error($lang->error_stop_forum_spam_spammer);
+			error($lang->error_stop_forum_spam_fetching);
 		}
 	}
 
