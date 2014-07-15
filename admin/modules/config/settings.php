@@ -1596,6 +1596,11 @@ function print_setting_peekers()
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxsubjectlength"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_minmessagelength"), /1/, true)',
 		'new Peeker($(".setting_contact"), $("#row_setting_contact_maxmessagelength"), /1/, true)',
+		'new Peeker($(".setting_enablestopforumspam"), $("#row_setting_stopforumspam_min_weighting_before_spam"), /1/, true)',
+		'new Peeker($(".setting_enablestopforumspam"), $("#row_setting_stopforumspam_check_usernames"), /1/, true)',
+		'new Peeker($(".setting_enablestopforumspam"), $("#row_setting_stopforumspam_check_emails"), /1/, true)',
+		'new Peeker($(".setting_enablestopforumspam"), $("#row_setting_stopforumspam_check_ips"), /1/, true)',
+		'new Peeker($(".setting_enablestopforumspam"), $("#row_setting_stopforumspam_block_on_error"), /1/, true)',
 	);
 
 	$peekers = $plugins->run_hooks("admin_settings_print_peekers", $peekers);
