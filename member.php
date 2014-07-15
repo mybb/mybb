@@ -217,7 +217,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		catch (Exception $e)
 		{
-			error($lang->error_stop_forum_spam_fetching);
+			if($mybb->settings['stopforumspam_block_on_error'])
+			{
+				error($lang->error_stop_forum_spam_fetching);
+			}
 		}
 	}
 
