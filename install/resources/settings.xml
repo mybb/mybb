@@ -1078,7 +1078,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Check email addresses?</title>
 			<description>
 				<![CDATA[Should the user email addresses be checked against the StopForumSpam database?]]></description>
-			<disporder>24</disporder>
+			<disporder>27</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1087,7 +1087,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Check IP addresses?</title>
 			<description>
 				<![CDATA[Should the user IP addresses be checked against the StopForumSpam database?]]></description>
-			<disporder>24</disporder>
+			<disporder>28</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1096,7 +1096,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Block registration on StopForumSpam error?</title>
 			<description>
 				<![CDATA[If there is an error retreiving information from the StopForumSpam API, should the registration be blocked?]]></description>
-			<disporder>24</disporder>
+			<disporder>29</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
