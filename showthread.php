@@ -1208,6 +1208,7 @@ if($mybb->input['action'] == "thread")
 					break;
 				default:
 					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+					break;
 			}
 
 			while($tool = $db->fetch_array($query))
