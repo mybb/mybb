@@ -185,44 +185,40 @@ else
 		$search_url .= "&website=".urlencode($mybb->input['website']);
 	}
 
-	// AIM Identity
-	$mybb->input['aim'] = trim($mybb->get_input('aim'));
-	if($mybb->input['aim'])
+	// Search by contact field input
+	foreach(array('aim', 'icq', 'google', 'skype', 'yahoo') as $cfield)
 	{
-		$search_query .= " AND u.aim LIKE '%".$db->escape_string_like($mybb->input['aim'])."%'";
-		$search_url .= "&aim=".urlencode($mybb->input['aim']);
-	}
+		$csetting = 'allow'.$cfield.'field';
+		$mybb->input[$cfield] = trim($mybb->get_input($cfield));
+		if($mybb->input[$cfield] && $mybb->settings[$csetting] != '')
+		{
+			if($mybb->settings[$csetting] != -1)
+			{
+				$gids = explode(',', (string)$mybb->settings[$csetting]);
 
-	// ICQ Number
-	$mybb->input['icq'] = trim($mybb->get_input('icq'));
-	if($mybb->input['icq'])
-	{
-		$search_query .= " AND u.icq LIKE '%".$db->escape_string_like($mybb->input['icq'])."%'";
-		$search_url .= "&icq=".urlencode($mybb->input['icq']);
-	}
-
-	// Google Talk address
-	$mybb->input['google'] = trim($mybb->get_input('google'));
-	if($mybb->input['google'])
-	{
-		$search_query .= " AND u.google LIKE '%".$db->escape_string_like($mybb->input['google'])."%'";
-		$search_url .= "&google=".urlencode($mybb->input['google']);
-	}
-
-	// Skype address
-	$mybb->input['skype'] = trim($mybb->get_input('skype'));
-	if($mybb->input['skype'])
-	{
-		$search_query .= " AND u.skype LIKE '%".$db->escape_string_like($mybb->input['skype'])."%'";
-		$search_url .= "&skype=".urlencode($mybb->input['skype']);
-	}
-
-	// Yahoo! Messenger address
-	$mybb->input['yahoo'] = trim($mybb->get_input('yahoo'));
-	if($mybb->input['yahoo'])
-	{
-		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string_like($mybb->input['yahoo'])."%'";
-		$search_url .= "&yahoo=".urlencode($mybb->input['yahoo']);
+				$search_query .= " AND (";
+				$or = '';
+				foreach($gids as $gid)
+				{
+					$gid = (int)$gid;
+					$search_query .= $or.'u.usergroup=\''.$gid.'\'';
+					switch($db->type)
+					{
+						case 'pgsql':
+						case 'sqlite':
+							$search_query .= " OR ','||u.additionalgroups||',' LIKE '%,{$gid},%'";
+							break;
+						default:
+							$search_query .= " OR CONCAT(',',u.additionalgroups,',') LIKE '%,{$gid},%'";
+							break;
+					}
+					$or = ' OR ';
+				}
+				$search_query .= ")";
+			}
+			$search_query .= " AND u.{$cfield} LIKE '%".$db->escape_string_like($mybb->input[$cfield])."%'";
+			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
+		}
 	}
 
 	$usergroups_cache = $cache->read('usergroups');
