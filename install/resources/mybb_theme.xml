@@ -4588,26 +4588,11 @@ if(use_xmlhttprequest == "1")
 					<td class="{$bgcolors['pm']}"><strong>{$lang->pm}</strong></td>
 					<td class="{$bgcolors['pm']}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 				</tr>
-				<tr>
-					<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
-					<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-					<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
-					<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
-				</tr>
+				{$contact_fields['icq']}
+				{$contact_fields['aim']}
+				{$contact_fields['yahoo']}
+				{$contact_fields['skype']}
+				{$contact_fields['google']}
 			</table>
 		</td>
 		<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
@@ -4719,6 +4704,26 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_website" version="1800"><![CDATA[<a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a>]]></template>
+		<template name="member_profile_contact_fields_icq" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
+	<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_aim" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
+	<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_yahoo" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
+	<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_skype" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
+	<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_google" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
+	<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
+</tr>]]></template>
 		<template name="member_register" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
@@ -12527,41 +12532,7 @@ if(use_xmlhttprequest == "1")
 </td>
 <td width="50%" class="trow1" valign="top">
 {$customtitle}
-<fieldset class="trow2">
-<legend><strong>{$lang->additional_contact_details}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-<tr>
-<td><span class="smalltext">{$lang->icq_number}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="icq" size="25" value="{$user['icq']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->aim_screenname}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->skype_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="skype" size="25" value="{$user['skype']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->google_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="google" size="25" value="{$user['google']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->yahoo_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user['yahoo']}" /></td>
-</tr>
-</table>
-</fieldset>
+{$contactfields}
 {$awaysection}
 </td>
 </tr>
@@ -12578,6 +12549,22 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+	<template name="usercp_profile_contact_fields" version="1800"><![CDATA[<fieldset class="trow2">
+<legend><strong>{$lang->additional_contact_details}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	{$contact_fields['icq']}
+	{$contact_fields['aim']}
+	{$contact_fields['yahoo']}
+	{$contact_fields['skype']}
+	{$contact_fields['google']}
+</table>
+</fieldset>]]></template>
+	<template name="usercp_profile_contact_fields_field" version="1800"><![CDATA[<tr>
+<td><span class="smalltext">{$lang_string}</span></td>
+</tr>
+<tr>
+  <td><input type="text" class="textbox" name="{$cfield}" size="25" value="{$cfvalue}" /></td>
+</tr>]]></template>
 		<template name="usercp_profile_away" version="120"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>
@@ -13346,28 +13333,29 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
-var partialmode = {$mybb->settings['partialmode']};
+var partialmode = {$mybb->settings['partialmode']},
+opt_editor = {
+	plugins: "bbcode",
+	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
+	rtl: {$lang->settings['rtl']},
+	locale: "mybblang",
+	emoticonsEnabled: {$emoticons_enabled},
+	emoticons: {
+		// Emoticons to be included in the dropdown
+		dropdown: {
+			{$dropdownsmilies}
+		},
+		// Emoticons to be included in the more section
+		more: {
+			{$moresmilies}
+		}
+	},
+	emoticonsCompat: true,
+	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+};
 {$editor_language}
 $(function() {
-	$("#{$bind}").sceditor({
-		plugins: "bbcode",
-		style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
-		rtl: {$lang->settings['rtl']},
-        locale: "mybblang",
-		emoticonsEnabled: {$emoticons_enabled},
-		emoticons: {
-			// Emoticons to be included in the dropdown
-			dropdown: {
-				{$dropdownsmilies}
-			},
-			// Emoticons to be included in the more section
-			more: {
-				{$moresmilies}
-			}
-		},
-		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
-	});
+	$("#{$bind}").sceditor(opt_editor);
 
 	MyBBEditor = $("#{$bind}").sceditor("instance");
 	{$sourcemode}

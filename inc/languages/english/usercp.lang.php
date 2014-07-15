@@ -207,11 +207,11 @@ $l['change_email_notice'] = "To change your email address please click <a href=\
 $l['profile_optional'] = "Optional Fields";
 $l['website_url'] = "Your Website URL:";
 $l['birthdate'] = "Birthdate:";
-$l['icq_number'] = "ICQ Number:";
-$l['aim_screenname'] = "AIM Screen Name:";
-$l['yahoo_id'] = "Yahoo ID:";
-$l['skype_id'] = "Skype ID:";
-$l['google_id'] = "Google Talk ID:";
+$l['contact_field_icq'] = "ICQ Number:";
+$l['contact_field_aim'] = "AIM Screen Name:";
+$l['contact_field_yahoo'] = "Yahoo ID:";
+$l['contact_field_skype'] = "Skype ID:";
+$l['contact_field_google'] = "Google Talk ID:";
 $l['additional_information'] = "Additional Information";
 $l['update_profile'] = "Update Profile";
 $l['away_information'] = "Away Information";

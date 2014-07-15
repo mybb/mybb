@@ -2828,7 +2828,7 @@ switch($mybb->input['action'])
 						}
 						elseif($mybb->settings['purgespammerbandelete'] == "delete")
 						{
-							require_once MyBB_ROOT.'inc/datahandlers/user.php';
+							require_once MYBB_ROOT.'inc/datahandlers/user.php';
 							$userhandler = new UserDataHandler('delete');
 
 							$user_deleted = $userhandler->delete_user($uid);

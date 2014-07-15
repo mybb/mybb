@@ -2208,7 +2208,7 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the purgespammer feature" disporder="22" isdefault="1">
+	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature" disporder="26" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
@@ -2253,6 +2253,53 @@ delete=Delete]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature" disporder="27" isdefault="1">
+		<setting name="allowicqfield">
+			<title>Allow ICQ Number Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowaimfield">
+			<title>Allow AIM Screen Name To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the AIM Screen Name contact field.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowyahoofield">
+			<title>Allow Yahoo ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Yahoo ID contact field.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowskypefield">
+			<title>Allow Skype ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Skype ID contact field.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowgooglefield">
+			<title>Allow Google Talk ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Google Talk ID contact field.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
