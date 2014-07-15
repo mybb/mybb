@@ -429,7 +429,7 @@ if($mybb->input['action'] == "profile")
 
 		$lang_string = 'contact_field_'.$cfield;
 		$lang_string = $lang->{$lang_string};
-		$cfvalue = $user[$cfield];
+		$cfvalue = htmlspecialchars_uni($user[$cfield]);
 
 		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
 	}

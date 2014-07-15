@@ -216,7 +216,14 @@ else
 				}
 				$search_query .= ")";
 			}
-			$search_query .= " AND u.{$cfield} LIKE '%".$db->escape_string_like($mybb->input[$cfield])."%'";
+			if($cfield == 'icq')
+			{
+				$search_query .= " AND u.{$cfield} LIKE '%".(int)$mybb->input[$cfield]."%'";
+			}
+			else
+			{
+				$search_query .= " AND u.{$cfield} LIKE '%".$db->escape_string_like($mybb->input[$cfield])."%'";
+			}
 			$search_url .= "&{$cfield}=".urlencode($mybb->input[$cfield]);
 		}
 	}

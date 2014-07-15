@@ -307,6 +307,12 @@ class UserDataHandler extends DataHandler
 			$website = "http://".$website;
 		}
 
+		if(!filter_var($website, FILTER_VALIDATE_URL))
+		{
+			$this->set_error('invalid_website');
+			return false;
+		}
+
 		return true;
 	}
 
@@ -1019,8 +1025,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
-			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1046,12 +1051,12 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"website" => $db->escape_string($user['website']),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"skype" => $db->escape_string(htmlspecialchars($user['skype'])),
-			"google" => $db->escape_string(htmlspecialchars($user['google'])),
+			"aim" => $db->escape_string($user['aim']),
+			"yahoo" => $db->escape_string($user['yahoo']),
+			"skype" => $db->escape_string($user['skype']),
+			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1222,7 +1227,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usertitle']))
 		{
-			$this->user_update_data['usertitle'] = $db->escape_string(htmlspecialchars_uni($user['usertitle']));
+			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
 		}
 		if(isset($user['regdate']))
 		{
@@ -1242,7 +1247,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
+			$this->user_update_data['website'] = $db->escape_string($user['website']);
 		}
 		if(isset($user['icq']))
 		{
@@ -1250,19 +1255,19 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
 		}
 		if(isset($user['skype']))
 		{
-			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
+			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
 		}
 		if(isset($user['google']))
 		{
-			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
+			$this->user_update_data['google'] = $db->escape_string($user['google']);
 		}
 		if(isset($user['bday']))
 		{
