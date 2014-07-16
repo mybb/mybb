@@ -653,6 +653,55 @@ class datacache
 	}
 
 	/**
+	 * Update the statistics cache
+	 *
+	 */
+	function update_statistics()
+	{
+		global $db;
+
+		$query = $db->simple_select('forums', 'fid, threads, posts', $fidnot.'type=\'f\'', array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
+		$forum = $db->fetch_array($query);
+
+		$query = $db->simple_select('users', 'uid, username, referrals', 'referrals>0', array('order_by' => 'referrals', 'order_dir' => 'DESC', 'limit' => 1));
+		$topreferrer = $db->fetch_array($query);
+
+		$timesearch = TIME_NOW - 86400;
+		switch($db->type)
+		{
+			case 'pgsql':
+				$group_by = $db->build_fields_string('users', 'u.');
+				break;
+			default:
+				$group_by = 'p.uid';
+				break;
+		}
+
+		$query = $db->query('
+			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			FROM '.TABLE_PREFIX.'posts p
+			LEFT JOIN '.TABLE_PREFIX.'users u ON (p.uid=u.uid)
+			WHERE p.dateline>'.$timesearch.'
+			GROUP BY '.$group_by.' ORDER BY poststoday DESC
+			LIMIT 1
+		');
+		$topposter = $db->fetch_array($query);
+
+		$query = $db->simple_select('users', 'COUNT(*) AS posters', 'postnum>0');
+		$posters = $db->fetch_field($query, 'posters');
+
+		$statistics = array(
+			'time' => TIME_NOW,
+			'top_forum' => (array)$forum,
+			'top_referrer' => (array)$topreferrer,
+			'top_poster' => (array)$topposter,
+			'posters' => (int)$posters,
+		);
+
+		$this->update('statistics', $statistics);
+	}
+
+	/**
 	 * Update the moderators cache.
 	 *
 	 */
