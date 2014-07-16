@@ -161,7 +161,7 @@ if($mybb->request_method == "post")
 		}
 	}
 
-	if(!$mybb->user['uid'] && $mybb->settings['enablestopforumspam'] && $mybb->settings['stopforumspam_on_contact'])
+	if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_contact'])
 	{
 		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
 

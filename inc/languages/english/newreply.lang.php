@@ -44,4 +44,7 @@ $l['redirect_newreply_post'] = "<br />You will now be taken to your post.";
 $l['redirect_newreplyerror'] = "Sorry, but your reply has been rejected for lack of content. <br />You will now be returned to the thread.";
 $l['redirect_threadclosed'] = "You cannot post replies in this thread because it has been closed by a moderator.";
 $l['error_post_noperms'] = "You don't have permission to edit this draft.";
+
+$l['error_stop_forum_spam_spammer'] = 'Sorry, your username or IP address matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
+$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your reply. Please try again later.';
 ?>

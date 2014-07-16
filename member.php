@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors = $userhandler->get_friendly_errors();
 	}
 
-	if($mybb->settings['enablestopforumspam'])
+	if($mybb->settings['enablestopforumspam_on_register'])
 	{
 		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
 
