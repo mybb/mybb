@@ -511,4 +511,17 @@ $l['email_note'] = "Enter your email address here.";
 $l['your_name'] = "Your Name:";
 $l['name_note'] = "Enter your name here.";
 
+$l['january'] = "January";
+$l['february'] = "February";
+$l['march'] = "March";
+$l['april'] = "April";
+$l['may'] = "May";
+$l['june'] = "June";
+$l['july'] = "July";
+$l['august'] = "August";
+$l['september'] = "September";
+$l['october'] = "October";
+$l['november'] = "November";
+$l['december'] = "December";
+
 ?>
