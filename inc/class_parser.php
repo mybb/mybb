@@ -255,7 +255,7 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_mycode()
+	function cache_mycode()
 	{
 		global $cache, $lang, $mybb;
 		$this->mycode_cache = array();
@@ -510,7 +510,7 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_smilies()
+	function cache_smilies()
 	{
 		global $cache, $mybb, $theme, $templates;
 		$this->smilies_cache = array();
@@ -604,7 +604,7 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_badwords()
+	function cache_badwords()
 	{
 		global $cache;
 		$this->badwords_cache = array();
