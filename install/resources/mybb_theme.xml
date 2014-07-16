@@ -7711,8 +7711,19 @@ if(use_xmlhttprequest == "1")
 <td class="trow2">{$threads}</td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->delay_moderation_for}</strong></td>
-<td class="trow2"><input type="text" class="textbox" size="5" name="delay" maxlength="10" value="{$mybb->input['delay']}"/> {$lang->days}</td>
+<td class="trow1"><strong>{$lang->run_moderation_time}</strong></td>
+<td class="trow2">
+		<select name="date_day">
+				{$dateday}
+		</select>
+		&nbsp;
+		<select name="date_month">
+				{$datemonth}
+		</select>
+		&nbsp;
+		<input type="text" name="date_year" value="{$dateyear}" size="4" maxlength="4" class="textbox" />
+		 - {$lang->time} <input type="text" name="date_time" value="{$datetime}" size="10" class="textbox" />
+</td>
 </tr>
 <tr>
 <td class="trow1" style="vertical-align: top;"><strong>{$lang->moderation_action}</strong></td>
@@ -7784,6 +7795,19 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_delayedmoderation_date_month" version="1800"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->january}</option>
+<option value="02" {$datemonth['02']}>{$lang->february}</option>
+<option value="03" {$datemonth['03']}>{$lang->march}</option>
+<option value="04" {$datemonth['04']}>{$lang->april}</option>
+<option value="05" {$datemonth['05']}>{$lang->may}</option>
+<option value="06" {$datemonth['06']}>{$lang->june}</option>
+<option value="07" {$datemonth['07']}>{$lang->july}</option>
+<option value="08" {$datemonth['08']}>{$lang->august}</option>
+<option value="09" {$datemonth['09']}>{$lang->september}</option>
+<option value="10" {$datemonth['10']}>{$lang->october}</option>
+<option value="11" {$datemonth['11']}>{$lang->november}</option>
+<option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
+		<template name="moderation_delayedmoderation_date_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
 		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
 <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
@@ -12885,7 +12909,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
 		<template name="usercp_usergroups_leader_usergroup_memberlist" version="1800"><![CDATA[ [<a href="managegroup.php?gid={$usergroup['gid']}">{$lang->view_members}</a>]]]></template>
-		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]></template>
+		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]]></template>
 		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
