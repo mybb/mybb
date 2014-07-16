@@ -12909,7 +12909,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
 		<template name="usercp_usergroups_leader_usergroup_memberlist" version="1800"><![CDATA[ [<a href="managegroup.php?gid={$usergroup['gid']}">{$lang->view_members}</a>]]]></template>
-		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]></template>
+		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]]></template>
 		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
