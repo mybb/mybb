@@ -789,7 +789,7 @@ if($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		switch($mybb->settings['username'])
+		switch($mybb->settings['username_method'])
 		{
 			case 0:
 				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
