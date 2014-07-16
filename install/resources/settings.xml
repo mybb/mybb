@@ -2243,6 +2243,15 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="stopforumspam_on_contact">
+			<title>Check Guests Again STopForumSpam?</title>
+			<description>
+				<![CDATA[Should guest email and IP addresses be checked against StopFOrumSpam when using the contact page? The settings for StopForumSpam can be found in the registration and profile settings.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature" disporder="26" isdefault="1">
 		<setting name="purgespammergroups">

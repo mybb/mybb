@@ -22,4 +22,7 @@ $l['invalid_captcha'] = "The image verification code that you entered was incorr
 $l['subject_too_long'] = 'The subject is too long. Please enter a subject shorter than {1} characters (currently {2}).';
 $l['message_too_short'] = 'The message is too short. Please enter a message longer than {1} characters (currently {2}).';
 $l['message_too_long'] = 'The message is too long. Please enter a message shorter than {1} characters (currently {2}).';
+
+$l['error_stop_forum_spam_spammer'] = 'Sorry, your email or IP address matches that of a known spammer and therefore your contact submission has been blocked.';
+$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your message. Please try again later.';
 ?>
