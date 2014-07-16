@@ -1457,7 +1457,7 @@ class UserDataHandler extends DataHandler
 
 		
 		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
-		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
 		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
 		
 		// Update the reports made by the deleted users by setting the uid to 0
