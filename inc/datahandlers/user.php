@@ -1455,6 +1455,14 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
 		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
 
+		
+		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
+		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
+		
+		// Update the reports made by the deleted users by setting the uid to 0
+		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+
 		// Remove any of the user(s) uploaded avatars
 		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
 		while($avatar = $db->fetch_field($query, 'avatar'))
@@ -1485,6 +1493,9 @@ class UserDataHandler extends DataHandler
 			{
 				$moderation->delete_post($pid);
 			}
+			
+			// Delete Reports made to users's posts/threads
+			$db->delete_query('reportedcontent', 'type=\'posts\' AND id3 IN('.$this->delete_uids.')');
 		}
 		else
 		{
@@ -1524,6 +1535,9 @@ class UserDataHandler extends DataHandler
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
 		);
+		
+		// Update reports cache
+		$cache->update_reportedcontent();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 
