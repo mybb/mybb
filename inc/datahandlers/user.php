@@ -1495,7 +1495,22 @@ class UserDataHandler extends DataHandler
 			}
 			
 			// Delete Reports made to users's posts/threads
-			$db->delete_query('reportedcontent', 'type=\'posts\' AND id3 IN('.$this->delete_uids.')');
+			$pids = array();
+			$q = $db->query("
+				SELECT p.pid
+				FROM `".TABLE_PREFIX."reportedcontent` r
+				LEFT JOIN `".TABLE_PREFIX."posts` p ON (p.pid=r.id)
+				WHERE p.uid IN ({$this->delete_uids})
+			");
+			while($pid = $db->fetch_field($q, 'pid'))
+			{
+				$pids[] = (int)$pid;
+			}
+			
+			if(!empty($pids))
+			{
+				$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
+			}
 		}
 		else
 		{
