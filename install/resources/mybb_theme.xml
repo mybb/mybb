@@ -917,6 +917,10 @@ div.error ul {
 	text-decoration: none;
 }
 
+.pagination form {
+	display: inline;
+}
+
 .thread_legend, .thread_legend dd {
 	margin: 0;
 	padding: 0;
@@ -8388,7 +8392,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post" style="display: inline;">
+		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post">
 <input type="text" class="textbox" name="page" value="{$page}" size="3" />
 <input type="submit" class="button" value="{$lang->go}" />
 </form>]]></template>
