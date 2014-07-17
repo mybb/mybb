@@ -122,7 +122,7 @@ if(class_exists('PDO'))
 	}
 }
 
-if(file_exists('lock'))
+if(file_exists('lock') && $mybb->dev_mode != true)
 {
 	$output->print_error($lang->locked);
 }

@@ -101,7 +101,7 @@ class MyBB {
 	public $safemode = false;
 
 	/**
-	 * Loads templates directly from the master theme
+	 * Loads templates directly from the master theme and disables the installer locked error
 	 *
 	 * @var boolean
 	 */
@@ -318,7 +318,7 @@ class MyBB {
 					unset($this->cookies[$key]);
 				}
 			}
-			
+
 			if(empty($this->cookies[$key]))
 			{
 				$this->cookies[$key] = $val;
