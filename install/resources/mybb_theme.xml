@@ -8374,7 +8374,7 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1400"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
-{$prevpage}{$start}{$mppage}{$end}{$nextpage}
+{$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
 </div>]]></template>
 		<template name="multipage_breadcrumb" version="1800"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
@@ -8388,6 +8388,10 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
+		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post" style="display: inline;">
+<input type="text" class="textbox" name="page" value="{$page}" size="3" />
+<input type="submit" class="button" value="{$lang->go}" />
+</form>]]></template>
 		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">{$lang->next} &raquo;</a>]]></template>
 		<template name="multipage_page" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
 		<template name="multipage_page_current" version="1400"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
