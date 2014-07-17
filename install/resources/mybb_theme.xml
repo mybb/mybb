@@ -5857,11 +5857,11 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie}</a></td>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie_image}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
-		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
-<td class="{$class}" align="center">{$smilie}</td>
+		<template name="misc_smilies_smilie" version="1800"><![CDATA[<tr>
+<td class="{$class}" align="center">{$smilie_image}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
