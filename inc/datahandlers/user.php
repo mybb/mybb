@@ -1488,25 +1488,15 @@ class UserDataHandler extends DataHandler
 			}
 
 			// Posts
+			$pids = array();
 			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
 			while($pid = $db->fetch_field($query, 'pid'))
 			{
 				$moderation->delete_post($pid);
-			}
-			
-			// Delete Reports made to users's posts/threads
-			$pids = array();
-			$q = $db->query("
-				SELECT p.pid
-				FROM `".TABLE_PREFIX."reportedcontent` r
-				LEFT JOIN `".TABLE_PREFIX."posts` p ON (p.pid=r.id)
-				WHERE p.uid IN ({$this->delete_uids})
-			");
-			while($pid = $db->fetch_field($q, 'pid'))
-			{
 				$pids[] = (int)$pid;
 			}
 			
+			// Delete Reports made to users's posts/threads
 			if(!empty($pids))
 			{
 				$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
