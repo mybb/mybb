@@ -5317,11 +5317,11 @@ if(use_xmlhttprequest == "1")
 </tr>
 <tr>
 <td class="tcat" width="1%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
-<td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
-<td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
-<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
-<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
+<td class="tcat"><span class="smalltext"><a href="{$sorturl}&amp;sort=username&amp;order=ascending"><strong>{$lang->username}</strong></a> {$orderarrow['username']}</span></td>
+<td class="tcat" width="15%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=regdate&amp;order=ascending"><strong>{$lang->joined}</strong></a> {$orderarrow['regdate']}</span></td>
+<td class="tcat" width="15%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=lastvisit&amp;order=ascending"><strong>{$lang->lastvisit}</strong></a> {$orderarrow['lastvisit']}</span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=postnum&amp;order=ascending"><strong>{$lang->posts}</strong></a> {$orderarrow['postnum']}</span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=threadnum&amp;order=ascending"><strong>{$lang->threads}</strong></a> {$orderarrow['threadnum']}</span></td>
 {$referral_header}
 </tr>
 {$users}
@@ -5424,7 +5424,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="memberlist_referrals" version="1600"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->referrals}</strong></span></td>]]></template>
+		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=ascending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_search" version="1800"><![CDATA[<html>
 <head>
@@ -5587,6 +5587,7 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="memberlist_user_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
+		<template name="memberlist_orderarrow" version="1800"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sort={$sort}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="misc_buddypopup" version="1800"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 		<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -11614,7 +11615,7 @@ if(use_xmlhttprequest == "1")
 		{$request['date']}
 	</td>
 	<td class="{$bgcolor}">
-		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a> 
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a>
 	</td>
 </tr>]]></template>
 		<template name="usercp_editlists_no_requests" version="1800"><![CDATA[<tr>
