@@ -2198,7 +2198,7 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature" disporder="26" isdefault="1">
+	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature." disporder="26" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
@@ -2247,7 +2247,7 @@ delete=Delete]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature" disporder="27" isdefault="1">
+	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="27" isdefault="1">
 		<setting name="allowicqfield">
 			<title>Allow ICQ Number Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
@@ -2290,6 +2290,26 @@ delete=Delete]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
+		<setting name="statsenabled">
+			<title>Enable Statistics Pages</title>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no. 0 to disable caching.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="statscachetime">
+			<title>Statistics Cache Time</title>
+			<description><![CDATA[Inser the interval of time to refresh the statistics page cache in hours.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>

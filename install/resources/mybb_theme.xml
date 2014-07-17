@@ -4092,14 +4092,16 @@ a.button {
 		<span class="smalltext">
 			{$logoutlink}
 			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
-			<a href="showteam.php">{$lang->forumteam}</a> |
-			<a href="stats.php">{$lang->forumstats}</a>
+			<a href="showteam.php">{$lang->forumteam}</a>
+			{$statspage}
 		</span>
 	</td>
 </tr>
 </tbody>
 </table>
 <br />]]></template>
+		<template name="index_statspage" version="1800"><![CDATA[ |
+			<a href="stats.php">{$lang->forumstats}</a>]]></template>
 		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
