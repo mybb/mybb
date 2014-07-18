@@ -1740,7 +1740,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$website = '';
-	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $mybb->usergroup['canchangewebsite'] == 1)
+	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
