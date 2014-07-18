@@ -664,7 +664,7 @@ class UserDataHandler extends DataHandler
 		{
 			// Value out of range
 			$options['subscriptionmethod'] = intval($options['subscriptionmethod']);
-			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
+			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 3)
 			{
 				$options['subscriptionmethod'] = 0;
 			}
