@@ -44,6 +44,13 @@ if(!empty($mybb->input['pid']) && !$mybb->input['tid'])
 		);
 		$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
 		$post = $db->fetch_array($query);
+		
+		if(empty($post))
+		{
+			// post does not exist --> show error message
+			error($lang->error_invalidpost);
+		}
+		
 		$mybb->input['tid'] = $post['tid'];
 	}
 }
