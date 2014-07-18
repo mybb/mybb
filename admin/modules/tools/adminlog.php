@@ -557,7 +557,7 @@ function get_admin_log_action($logitem)
 	{
 		if(isset($logitem['data']['type']) && $logitem['data']['type'] == 'admin_locked_out')
 		{
-			$string = $lang->sprintf($lang->admin_log_admin_locked_out, $logitem['data']['uid']);
+			$string = $lang->sprintf($lang->admin_log_admin_locked_out, (int) $logitem['data']['uid'], htmlspecialchars_uni($logitem['data']['username']));
 		}
 		else
 		{

@@ -175,7 +175,8 @@ elseif($mybb->input['do'] == "login")
 		{
 			log_admin_action(array(
 					'type' => 'admin_locked_out',
-					'uid' => (int)$login_user['uid'],
+					'uid' => (int)$mybb->user['uid'],
+					'username' => $mybb->user['username'],
 				)
 			);
 
@@ -252,16 +253,16 @@ elseif($mybb->input['do'] == "login")
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 			case 1:
-				$query = $db->simple_select("users", "uid,email", "LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			case 2:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			default:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 		}
 		$login_user = $db->fetch_array($query);
@@ -302,6 +303,7 @@ elseif($mybb->input['do'] == "login")
 			log_admin_action(array(
 					'type' => 'admin_locked_out',
 					'uid' => (int)$login_user['uid'],
+					'username' => $login_user['username'],
 				)
 			);
 
