@@ -709,6 +709,16 @@ $tables[] = "CREATE TABLE mybb_smilies (
   PRIMARY KEY (sid)
 );";
 
+$tables[] = "CREATE TABLE mybb_spamlog (
+		sid serial,
+		username varchar(120) NOT NULL DEFAULT '',
+		email varchar(220) NOT NULL DEFAULT '',
+		ipaddress bytea NOT NULL default '',
+		dateline numeric(30,0) NOT NULL default '0',
+		data text NOT NULL default ''
+		PRIMARY KEY (sid)
+	);";
+
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid serial,
 	name varchar(100) NOT NULL default '',

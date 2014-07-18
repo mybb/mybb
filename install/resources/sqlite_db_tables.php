@@ -658,6 +658,15 @@ $tables[] = "CREATE TABLE mybb_smilies (
 	showclickable tinyint(1) NOT NULL default '0'
 );";
 
+$tables[] = "CREATE TABLE mybb_spamlog (
+		sid INTEGER PRIMARY KEY,
+		username varchar(120) NOT NULL DEFAULT '',
+		email varchar(220) NOT NULL DEFAULT '',
+		ipaddress blob(16) NOT NULL default ''
+		dateline int unsigned NOT NULL default '0' PRIMARY KEY,
+		data TEXT NOT NULL
+	) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',

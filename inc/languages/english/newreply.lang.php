@@ -46,5 +46,5 @@ $l['redirect_threadclosed'] = "You cannot post replies in this thread because it
 $l['error_post_noperms'] = "You don't have permission to edit this draft.";
 
 $l['error_stop_forum_spam_spammer'] = 'Sorry, your username or IP address matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
-$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your reply. Please try again later.';
+$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
 ?>
