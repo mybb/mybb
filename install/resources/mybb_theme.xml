@@ -4024,7 +4024,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
