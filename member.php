@@ -434,7 +434,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			if(!empty($admingroups))
 			{
 				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
-				while($recipient = $db->fetch_array($q)
+				while($recipient = $db->fetch_array($q))
 				{
 					// Load language
 					$lang->set_language($recipient['language']);
@@ -474,7 +474,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			if(!empty($admingroups))
 			{
 				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
-				while($recipient = $db->fetch_array($q)
+				while($recipient = $db->fetch_array($q))
 				{
 					// Load language
 					$lang->set_language($recipient['language']);
