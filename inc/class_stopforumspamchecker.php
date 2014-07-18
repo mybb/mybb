@@ -1,4 +1,12 @@
 <?php
+/**
+ * MyBB 1.8
+ * Copyright 2014 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybb.com
+ * License: http://www.mybb.com/about/license
+ *
+ */
 
 /**
  * Registration checker to check registrations against the StopForumSpam.com database.
@@ -142,9 +150,7 @@ class StopForumSpamChecker
 		{
 			log_spam_block(
 				$username, $email, array(
-					'stopforumspam' => array(
-						'confidence' => (double)$confidence,
-					),
+					'confidence' => (double)$confidence,
 				)
 			);
 		}
