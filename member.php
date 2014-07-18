@@ -433,7 +433,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			
 			if(!empty($admingroups))
 			{
-				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				$q = $db->simple_select('users', 'username,email,language', 'usergroup IN ('.implode(',', $admingroups).')');
 				while($recipient = $db->fetch_array($q))
 				{
 					// Load language
@@ -444,11 +444,11 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
 					my_mail($recipient['email'], $subject, $message);
 				}
+				
+				// Load language
+				$lang->set_language($user['language']);
+				$lang->load("member");
 			}
-
-			// Load language
-			$lang->set_language($user['language']);
-			$lang->load("member");
 
 			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
 
@@ -473,7 +473,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			
 			if(!empty($admingroups))
 			{
-				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				$q = $db->simple_select('users', 'username,email,language', 'usergroup IN ('.implode(',', $admingroups).')');
 				while($recipient = $db->fetch_array($q))
 				{
 					// Load language
@@ -484,11 +484,11 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
 					my_mail($recipient['email'], $subject, $message);
 				}
+				
+				// Load language
+				$lang->set_language($user['language']);
+				$lang->load("member");
 			}
-
-			// Load language
-			$lang->set_language($user['language']);
-			$lang->load("member");
 			
 			$activationcode = random_str();
 			$activationarray = array(
