@@ -2117,13 +2117,10 @@ tr td.trow_shaded:last-child {
     border-top-left-radius: 0;
 }
 
-tr:last-child td.tfoot:first-child {
+.tborder tbody:nth-last-child(2) td.tcat_collapse_collapsed {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
-}
-
-tr:last-child td.tfoot:last-child {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
@@ -7391,7 +7388,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_announcements" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>]]></template>
 		<template name="modcp_nav_banning" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=banning" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>]]></template>
 		<template name="modcp_nav_forums_posts" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpforums']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
@@ -7408,7 +7405,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_modqueue" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>]]></template>
 		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_nav_users" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpusers']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
@@ -11614,7 +11611,7 @@ if(use_xmlhttprequest == "1")
 		{$request['date']}
 	</td>
 	<td class="{$bgcolor}">
-		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a> 
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a>
 	</td>
 </tr>]]></template>
 		<template name="usercp_editlists_no_requests" version="1800"><![CDATA[<tr>
@@ -12082,7 +12079,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
@@ -12103,7 +12100,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpmisc']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
 	</td>
@@ -12120,7 +12117,7 @@ if(use_xmlhttprequest == "1")
 </tbody>]]></template>
 		<template name="usercp_nav_profile" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpprofile']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
 	</td>
