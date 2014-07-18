@@ -7757,4 +7757,32 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	return false;
 }
+
+/**
+ * Log a user spam block from StopForumSpam (or other spam service providers...)
+ *
+ * @param string $username The username that the user was using.
+ * @param string $email    The email address the user was using.
+ * @param array  $data     An array of extra data to go with the block (eg: confidence rating).
+ * @return bool Whether the action was logged successfully.
+ */
+function log_spam_block($username = '', $email = '', $data = array())
+{
+	global $db, $session;
+
+	if(!is_array($data))
+	{
+		$data = array($data);
+	}
+
+	$insert_array = array(
+		'username'  => $db->escape_string($username),
+		'email'     => $db->escape_string($email),
+		'ipaddress' => $db->escape_binary($session->packedip),
+		'dateline'  => (int)TIME_NOW,
+		'data'      => $db->escape_string(@serialize($data)),
+	);
+
+	return (bool)$db->insert_array('spamlog', $insert_array);
+}
 ?>

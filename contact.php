@@ -170,7 +170,8 @@ if($mybb->request_method == "post")
 			$mybb->settings['stopforumspam_min_weighting_before_spam'],
 			$mybb->settings['stopforumspam_check_usernames'],
 			$mybb->settings['stopforumspam_check_emails'],
-			$mybb->settings['stopforumspam_check_ips']
+			$mybb->settings['stopforumspam_check_ips'],
+			$mybb->settings['stopforumspam_log_blocks']
 		);
 
 		try {

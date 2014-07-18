@@ -2337,6 +2337,15 @@ delete=Delete]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="stopforumspam_log_blocks">
+			<title>Log StopForumSpam blocks?</title>
+			<description>
+				<![CDATA[Should every StopForumSpam block be logged?]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
 	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="28" isdefault="1">
 		<setting name="allowicqfield">

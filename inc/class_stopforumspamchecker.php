@@ -39,6 +39,12 @@ class StopForumSpamChecker
 	 * @var bool
 	 */
 	private $check_ips = true;
+	/**
+	 * Whether to log whenever a user is found to be a spammer.
+	 *
+	 * @var bool
+	 */
+	private $log_blocks;
 
 	/**
 	 * Create a new instance of the StopForumSpam.com checker.
@@ -47,15 +53,16 @@ class StopForumSpamChecker
 	 * @param double       $min_weighting_before_spam The minimum confidence rating before a user is considered definitely spam.
 	 * @param bool         $check_usernames           Whether to check usernames against StopForumSpam.
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
-	 * @param bool         $check_ips                 Whetehr to check IP addresses against StopForumSpam.
+	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
 	 */
-	public function __construct(&$plugins = null, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true)
+	public function __construct(&$plugins = null, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
 	{
-		$this->plugins                   = $plugins;
+		$this->plugins                   = & $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
 		$this->check_usernames           = (bool)$check_usernames;
 		$this->check_emails              = (bool)$check_emails;
 		$this->check_ips                 = (bool)$check_ips;
+		$this->log_blocks                = (bool)$log_blocks;
 	}
 
 	/**
@@ -70,6 +77,7 @@ class StopForumSpamChecker
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
 		$is_spammer = false;
+		$confidence = 0;
 
 		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
 		{
@@ -86,8 +94,6 @@ class StopForumSpamChecker
 
 				if(json_last_error() == JSON_ERROR_NONE && $result_json != null && !isset($result_json->error))
 				{
-					$confidence = 0;
-
 					if($this->check_usernames && $result_json->username->appears)
 					{
 						$confidence += $result_json->username->confidence;
@@ -121,12 +127,24 @@ class StopForumSpamChecker
 
 		if($this->plugins)
 		{
-			$this->plugins->run_hooks(
-				'stopforumspam_check_spammer_pre_return', array(
-					'username'   => $username,
-					'email'      => $email,
-					'ip_address' => $ip_address,
-					'is_spammer' => $is_spammer,
+			$params = array(
+				'username'   => &$username,
+				'email'      => &$email,
+				'ip_address' => &$ip_address,
+				'is_spammer' => &$is_spammer,
+				'confidence' => &$confidence,
+			);
+
+			$this->plugins->run_hooks('stopforumspam_check_spammer_pre_return', $params);
+		}
+
+		if($this->log_blocks && $is_spammer)
+		{
+			log_spam_block(
+				$username, $email, array(
+					'stopforumspam' => array(
+						'confidence' => (double)$confidence,
+					),
 				)
 			);
 		}
