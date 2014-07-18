@@ -858,15 +858,6 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
-				
-				$validator_extra .= "
-				$(\"#{$id}\").rules(\"add\", {
-					required: true,
-					minlength: 1,
-					messages: {
-						required: \"{$lang->js_validator_not_empty}\"
-					}
-				});\n";
 
 				$code = '';
 				$select = '';
