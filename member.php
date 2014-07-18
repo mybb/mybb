@@ -418,6 +418,38 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "admin")
 		{
+			$groups = $cache->read("usergroups");
+			$admingroups = array();
+			if(!empty($groups)) // Shouldn't be...
+			{
+				foreach($groups as $group)
+				{
+					if($group['cancp'] == 1)
+					{
+						$admingroups[] = (int)$group['gid'];
+					}
+				}
+			}
+			
+			if(!empty($admingroups))
+			{
+				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				while($recipient = $db->fetch_array($q)
+				{
+					// Load language
+					$lang->set_language($recipient['language']);
+					$lang->load("member");
+					
+					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
+					my_mail($recipient['email'], $subject, $message);
+				}
+			}
+
+			// Load language
+			$lang->set_language($user['language']);
+			$lang->load("member");
+
 			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -426,6 +458,38 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "both")
 		{
+			$groups = $cache->read("usergroups");
+			$admingroups = array();
+			if(!empty($groups)) // Shouldn't be...
+			{
+				foreach($groups as $group)
+				{
+					if($group['cancp'] == 1)
+					{
+						$admingroups[] = (int)$group['gid'];
+					}
+				}
+			}
+			
+			if(!empty($admingroups))
+			{
+				$q = $db->simple_select('users', 'email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				while($recipient = $db->fetch_array($q)
+				{
+					// Load language
+					$lang->set_language($recipient['language']);
+					$lang->load("member");
+					
+					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
+					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
+					my_mail($recipient['email'], $subject, $message);
+				}
+			}
+
+			// Load language
+			$lang->set_language($user['language']);
+			$lang->load("member");
+			
 			$activationcode = random_str();
 			$activationarray = array(
 				"uid" => $user_info['uid'],
