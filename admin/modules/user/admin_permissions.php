@@ -43,8 +43,6 @@ $plugins->run_hooks("admin_user_admin_permissions_begin");
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_admin_permissions_delete");
-
 	if(is_super_admin($uid))
 	{
 		flash_message($lang->error_super_admin, 'error');
@@ -68,6 +66,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_delete_invalid_uid, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
+
+	$plugins->run_hooks("admin_user_admin_permissions_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -109,13 +109,13 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_admin_permissions_edit");
-
 	if(is_super_admin($uid))
 	{
 		flash_message($lang->error_super_admin, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
+
+	$plugins->run_hooks("admin_user_admin_permissions_edit");
 
 	if($mybb->request_method == "post")
 	{

@@ -706,16 +706,16 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$smilies = $cache->read("smilies");
-		if(is_array($smilies))
+		$smilies_cache = $cache->read("smilies");
+		if(is_array($smilies_cache))
 		{
 			$extra_class = ' smilie_pointer';
-			foreach($smilies as $smilie)
+			foreach($smilies_cache as $smilie)
 			{
 				$smilie['insert'] = addslashes($smilie['find']);
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				$onclick = '  onclick="MyBBEditor.insertText(\'{$smilie[\'insert\']}\');"';
-				eval('$smilie = "'.$templates->get('smilie').'";');
+				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
+				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
 				{
@@ -740,14 +740,14 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$smilies = $cache->read("smilies");
-		if(is_array($smilies))
+		$smilies_cache = $cache->read("smilies");
+		if(is_array($smilies_cache))
 		{
 			$extra_class = $onclick = '';
-			foreach($smilies as $smilie)
+			foreach($smilies_cache as $smilie)
 			{
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				eval('$smilie = "'.$templates->get('smilie').'";');
+				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
 				$class = alt_trow();
 			}

@@ -1082,7 +1082,7 @@ if($mybb->input['action'] == "send")
 		$form->end();
 		$page->output_footer();
 	}
-	else
+	elseif(!$mybb->input['step'] || $mybb->input['step'] == 1)
 	{
 		if($mybb->request_method == "post")
 		{
@@ -1160,9 +1160,9 @@ if($mybb->input['action'] == "send")
 						"perpage" => intval($mybb->input['perpage'])
 					);
 
-					$plugins->run_hooks("admin_user_mass_email_send_insert_commit");
-
 					$mid = $db->insert_query("massemails", $new_email);
+
+					$plugins->run_hooks("admin_user_mass_email_send_insert_commit");
 				}
 				// Updating an existing one
 				else
@@ -1526,9 +1526,9 @@ if($mybb->input['action'] == "resend")
 		"perpage" => $mass_email['perpage']
 	);
 
-	$plugins->run_hooks("admin_user_mass_email_resend_end");
-
 	$mid = $db->insert_query("massemails", $new_email);
+
+	$plugins->run_hooks("admin_user_mass_email_resend_end");
 
 	// Redirect the user to the summary page so they can select when to deliver this message
 	flash_message($lang->success_mass_mail_resent, 'success');

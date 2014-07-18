@@ -885,15 +885,6 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
-				
-				$validator_extra .= "
-				$(\"#{$id}\").rules(\"add\", {
-					required: true,
-					minlength: 1,
-					messages: {
-						required: \"{$lang->js_validator_not_empty}\"
-					}
-				});\n";
 
 				$code = '';
 				$select = '';
@@ -1767,14 +1758,14 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$website = '';
-	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $mybb->usergroup['canchangewebsite'] == 1)
+	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
 	}
 
 	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
+	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],

@@ -31,13 +31,14 @@ $plugins->run_hooks("admin_tools_adminlog_begin");
 
 if($mybb->input['action'] == 'prune')
 {
-	$plugins->run_hooks("admin_tools_adminlog_prune");
-
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=tools-adminlog");
 	}
+
+	$plugins->run_hooks("admin_tools_adminlog_prune");
+
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
@@ -135,8 +136,6 @@ if($mybb->input['action'] == 'prune')
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_adminlog_start");
-
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
 
@@ -147,6 +146,8 @@ if(!$mybb->input['action'])
 	}
 
 	$where = '';
+
+	$plugins->run_hooks("admin_tools_adminlog_start");
 
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])

@@ -6,6 +6,7 @@
  */
 
 $l['nav_stats'] = "Board Statistics";
+$l['stats_disabled'] = "You cannot view the statistics page as it has been disabled by the Administrator.";
 
 $l['board_stats'] = "Board Statistics";
 $l['none'] = "None";

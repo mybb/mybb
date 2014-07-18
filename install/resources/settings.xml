@@ -244,10 +244,18 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="jumptopagemultipage">
+			<title>Show Jump To Page form in Pagination</title>
+			<description><![CDATA[Whther if to show a Jump To Page form in pagination if number of pages exists Maximum Page Links in Pagination setting value.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -255,7 +263,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
 			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -263,7 +271,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="helpsearch">
 			<title>Enable Help Documents Search</title>
 			<description><![CDATA[If enabled it will allow users to search through the help documents.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -271,7 +279,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -279,7 +287,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestimages">
 			<title>Show Posted Images To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -287,7 +295,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestvideos">
 			<title>Show Posted Videos To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -295,7 +303,15 @@ email=Sent via Email]]></optionscode>
 		<setting name="hidewebsite">
 			<title>Hide Websites To Groups</title>
 			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="hidesignatures">
+			<title>Hide Signatures To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2190,7 +2206,7 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature" disporder="26" isdefault="1">
+	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature." disporder="26" isdefault="1">
 		<setting name="purgespammergroups">
 			<title>Allowed Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
@@ -2322,7 +2338,7 @@ delete=Delete]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature" disporder="28" isdefault="1">
+	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="28" isdefault="1">
 		<setting name="allowicqfield">
 			<title>Allow ICQ Number Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
@@ -2365,6 +2381,26 @@ delete=Delete]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
+		<setting name="statsenabled">
+			<title>Enable Statistics Pages</title>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no. 0 to disable caching.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="statscachetime">
+			<title>Statistics Cache Time</title>
+			<description><![CDATA[Inser the interval of time to refresh the statistics page cache in hours.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>

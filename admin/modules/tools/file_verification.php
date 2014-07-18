@@ -76,6 +76,8 @@ if(!$mybb->input['action'])
 
 		$bad_files = verify_files();
 
+		$plugins->run_hooks("admin_tools_file_verification_check_commit_start");
+
 		$table = new Table;
 		$table->construct_header($lang->file);
 		$table->construct_header($lang->status, array("class" => "align_center", "width" => 100));

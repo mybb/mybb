@@ -266,13 +266,13 @@ if($mybb->input['action'] == "editmod")
 	$query = $db->simple_select("moderators", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mod_data = $db->fetch_array($query);
 
-	$plugins->run_hooks("admin_forum_management_editmod");
-
 	if(!$mod_data['id'])
 	{
 		flash_message($lang->error_incorrect_moderator, 'error');
 		admin_redirect("index.php?module=forum-management");
 	}
+
+	$plugins->run_hooks("admin_forum_management_editmod");
 
 	if($mod_data['isgroup'])
 	{
@@ -422,8 +422,6 @@ if($mybb->input['action'] == "editmod")
 
 if($mybb->input['action'] == "clear_permission")
 {
-	$plugins->run_hooks("admin_forum_management_deletemod");
-
 	$pid = intval($mybb->input['pid']);
 	$fid = intval($mybb->input['fid']);
 	$gid = intval($mybb->input['gid']);
@@ -433,6 +431,8 @@ if($mybb->input['action'] == "clear_permission")
 	{
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
+
+	$plugins->run_hooks("admin_forum_management_deletemod");
 
 	if($mybb->request_method == "post")
 	{
@@ -1287,8 +1287,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_forum_management_edit");
-
 	if(!$mybb->input['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
@@ -1304,6 +1302,8 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$fid = intval($mybb->input['fid']);
+
+	$plugins->run_hooks("admin_forum_management_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -1851,8 +1851,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 if($mybb->input['action'] == "deletemod")
 {
-	$plugins->run_hooks("admin_forum_management_deletemod");
-
 	$modid = intval($mybb->input['id']);
 	$isgroup = intval($mybb->input['isgroup']);
 	$fid = intval($mybb->input['fid']);
@@ -1872,6 +1870,8 @@ if($mybb->input['action'] == "deletemod")
 	{
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
+
+	$plugins->run_hooks("admin_forum_management_deletemod");
 
 	if($mybb->request_method == "post")
 	{
@@ -1932,8 +1932,6 @@ if($mybb->input['action'] == "deletemod")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_forum_management_delete");
-
 	$query = $db->simple_select("forums", "*", "fid='{$mybb->input['fid']}'");
 	$forum = $db->fetch_array($query);
 
@@ -1949,6 +1947,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=forum-management");
 	}
+
+	$plugins->run_hooks("admin_forum_management_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -2058,8 +2058,6 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_forum_management_start");
-
 	if(!isset($mybb->input['fid']))
 	{
 		$mybb->input['fid'] = 0;
@@ -2070,6 +2068,8 @@ if(!$mybb->input['action'])
 	{
 		$forum = get_forum($fid);
 	}
+
+	$plugins->run_hooks("admin_forum_management_start");
 
 	if($mybb->request_method == "post")
 	{

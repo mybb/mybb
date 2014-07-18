@@ -1087,6 +1087,12 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
 
+	$jumptopage = '';
+	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
+	{
+		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
+	}
+
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 
 	if($breadcrumb == true)

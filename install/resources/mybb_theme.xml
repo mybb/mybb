@@ -917,6 +917,10 @@ div.error ul {
 	text-decoration: none;
 }
 
+.pagination form {
+	display: inline;
+}
+
 .thread_legend, .thread_legend dd {
 	margin: 0;
 	padding: 0;
@@ -2113,13 +2117,10 @@ tr td.trow_shaded:last-child {
     border-top-left-radius: 0;
 }
 
-tr:last-child td.tfoot:first-child {
+.tborder tbody:nth-last-child(2) td.tcat_collapse_collapsed {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
-}
-
-tr:last-child td.tfoot:last-child {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
@@ -4023,7 +4024,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
@@ -4088,14 +4089,16 @@ a.button {
 		<span class="smalltext">
 			{$logoutlink}
 			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
-			<a href="showteam.php">{$lang->forumteam}</a> |
-			<a href="stats.php">{$lang->forumstats}</a>
+			<a href="showteam.php">{$lang->forumteam}</a>
+			{$statspage}
 		</span>
 	</td>
 </tr>
 </tbody>
 </table>
 <br />]]></template>
+		<template name="index_statspage" version="1800"><![CDATA[ |
+			<a href="stats.php">{$lang->forumstats}</a>]]></template>
 		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
@@ -5857,11 +5860,11 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie}</a></td>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie_image}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
-		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
-<td class="{$class}" align="center">{$smilie}</td>
+		<template name="misc_smilies_smilie" version="1800"><![CDATA[<tr>
+<td class="{$class}" align="center">{$smilie_image}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
@@ -7385,7 +7388,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_announcements" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>]]></template>
 		<template name="modcp_nav_banning" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=banning" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>]]></template>
 		<template name="modcp_nav_forums_posts" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpforums']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
@@ -7402,7 +7405,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_modqueue" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>]]></template>
 		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_nav_users" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpusers']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
@@ -8374,7 +8377,7 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1400"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
-{$prevpage}{$start}{$mppage}{$end}{$nextpage}
+{$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
 </div>]]></template>
 		<template name="multipage_breadcrumb" version="1800"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
@@ -8388,6 +8391,10 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
+		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post">
+<input type="text" class="textbox" name="page" value="{$page}" size="3" />
+<input type="submit" class="button" value="{$lang->go}" />
+</form>]]></template>
 		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">{$lang->next} &raquo;</a>]]></template>
 		<template name="multipage_page" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
 		<template name="multipage_page_current" version="1400"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
@@ -11604,7 +11611,7 @@ if(use_xmlhttprequest == "1")
 		{$request['date']}
 	</td>
 	<td class="{$bgcolor}">
-		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a> 
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a>
 	</td>
 </tr>]]></template>
 		<template name="usercp_editlists_no_requests" version="1800"><![CDATA[<tr>
@@ -12072,7 +12079,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
@@ -12093,7 +12100,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpmisc']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
 	</td>
@@ -12110,7 +12117,7 @@ if(use_xmlhttprequest == "1")
 </tbody>]]></template>
 		<template name="usercp_nav_profile" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpprofile']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
 	</td>

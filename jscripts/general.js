@@ -12,7 +12,7 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
-		
+
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
 			$(this).change(function() {
@@ -75,7 +75,7 @@ var MyBB = {
 		if(!options) options = { fadeDuration: 250, zIndex: 5 }
 		if(root != true)
 			url = rootpath + url;
-		
+
 		$.get(url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
@@ -212,7 +212,7 @@ var MyBB = {
 				}
 			}
 		});
-		
+
 		return false;
 	},
 
@@ -384,7 +384,7 @@ var MyBB = {
 
 		return false;
 	},
-	
+
 	deleteAnnouncement: function(data)
 	{
 		$.prompt(announcement_quickdelete_confirm, {
@@ -474,6 +474,7 @@ var expandables = {
 				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
+				element.parent().parent('td').removeClass('tcat_collapse_collapsed');
 				element.parent().parent('.thead').removeClass('thead_collapsed');
 				this.saveCollapsed(controls);
 			}
@@ -484,6 +485,7 @@ var expandables = {
 				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
+				element.parent().parent('td').addClass('tcat_collapse_collapsed');
 				element.parent().parent('.thead').addClass('thead_collapsed');
 				this.saveCollapsed(controls, 1);
 			}

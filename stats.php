@@ -29,6 +29,11 @@ if($stats['numthreads'] < 1 || $stats['numusers'] < 1)
 	error($lang->not_enough_info_stats);
 }
 
+if($mybb->settings['statsenabled'] != 1)
+{
+	error($lang->stats_disabled);
+}
+
 $plugins->run_hooks("stats_start");
 
 $repliesperthread = my_number_format(round((($stats['numposts'] - $stats['numthreads']) / $stats['numthreads']), 2));
@@ -123,7 +128,14 @@ if(!empty($most_viewed))
 }
 
 $statistics = $cache->read('statistics');
-if(!$statistics || TIME_NOW-86400 > $statistics['time'])
+$mybb->settings['statscachetime'] = (int)$mybb->settings['statscachetime'];
+if($mybb->settings['statscachetime'] < 1)
+{
+	$mybb->settings['statscachetime'] = 0;
+}
+$interval = (int)$mybb->settings['statscachetime']*60860;
+
+if(!$statistics || TIME_NOW-$interval > $statistics['time'] || $mybb->settings['statscachetime'] == 0)
 {
 	$cache->update_statistics();
 	$statistics = $cache->read('statistics', true);

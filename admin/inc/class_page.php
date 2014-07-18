@@ -73,7 +73,12 @@ class DefaultPage
 	{
 		global $mybb, $admin_session, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_header");
+		$args = array(
+			'this' => &$this,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks("admin_page_output_header", $args);
 
 		if(!$title)
 		{
@@ -106,7 +111,7 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
-		
+
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
 		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
@@ -189,7 +194,12 @@ lang.saved = \"{$lang->saved}\";
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_footer");
+		$args = array(
+			'this' => &$this,
+			'quit' => &$quit,
+		);
+
+		$plugins->run_hooks("admin_page_output_footer", $args);
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
@@ -790,7 +800,16 @@ EOF;
 	 */
 	function output_confirm_action($url, $message="", $title="")
 	{
-		global $lang;
+		global $lang, $plugins;
+
+		$args = array(
+			'this' => &$this,
+			'url' => &$url,
+			'message' => &$message,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks('admin_page_output_confirm_action', $args);
 
 		if(!$message)
 		{
@@ -798,6 +817,7 @@ EOF;
 		}
 		$this->output_header($title);
 		$form = new Form($url, 'post');
+
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$message}</p>\n";
 		echo "<br />\n";
@@ -806,6 +826,7 @@ EOF;
 		echo $form->generate_submit_button($lang->no, array("name" => "no", 'class' => 'button_no'));
 		echo "</p>\n";
 		echo "</div>\n";
+
 		$form->end();
 		$this->output_footer();
 	}
@@ -821,7 +842,7 @@ EOF;
 	{
 		global $lang, $mybb, $smiliecache, $cache;
 
-		// Smilies		
+		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
 		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
@@ -964,7 +985,7 @@ opt_editor = {
 {$editor_language}
 $(function() {
 	$("#{$bind}").sceditor(opt_editor);
-      
+
 	MyBBEditor = $("#{$bind}").sceditor("instance");
 	{$sourcemode}
 });

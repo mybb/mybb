@@ -65,7 +65,11 @@ if($mybb->input['action'] == "add")
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
 
+			$plugins->run_hooks("admin_config_calendars_add_commit_start");
+
 			$cid = $db->insert_query("calendars", $calendar);
+
+			$plugins->run_hooks("admin_config_calendars_add_commit_end");
 
 			// Log admin action
 			log_admin_action($cid, $mybb->input['name']);
@@ -128,8 +132,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "permissions")
 {
-	$plugins->run_hooks("admin_config_calendars_permissions");
-
 	$usergroups = array();
 
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
@@ -141,6 +143,8 @@ if($mybb->input['action'] == "permissions")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_permissions");
 
 	$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 	while($usergroup = $db->fetch_array($query))
@@ -271,8 +275,6 @@ if($mybb->input['action'] == "permissions")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_calendars_edit");
-
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 
@@ -282,6 +284,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -311,9 +315,9 @@ if($mybb->input['action'] == "edit")
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
 
-			$db->update_query("calendars", $updated_calendar, "cid = '".intval($mybb->input['cid'])."'");
-
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
+
+			$db->update_query("calendars", $updated_calendar, "cid = '".intval($mybb->input['cid'])."'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
@@ -371,8 +375,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_calendars_delete");
-
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 
@@ -382,6 +384,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_delete");
 
 	// User clicked no
 	if($mybb->input['no'])
@@ -412,12 +416,12 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("admin_config_calendars_update_order");
-
 	if(!is_array($mybb->input['disporder']))
 	{
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_update_order");
 
 	foreach($mybb->input['disporder'] as $cid => $order)
 	{

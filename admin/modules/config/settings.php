@@ -114,8 +114,6 @@ if($mybb->input['action'] == "addgroup")
 // Edit setting group
 if($mybb->input['action'] == "editgroup")
 {
-	$plugins->run_hooks("admin_config_settings_editgroup");
-
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -131,6 +129,8 @@ if($mybb->input['action'] == "editgroup")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_editgroup");
 
 	// Do edit?
 	if($mybb->request_method == "post")
@@ -216,8 +216,6 @@ if($mybb->input['action'] == "editgroup")
 // Delete Setting Group
 if($mybb->input['action'] == "deletegroup")
 {
-	$plugins->run_hooks("admin_config_settings_deletegroup");
-
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -239,6 +237,8 @@ if($mybb->input['action'] == "deletegroup")
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_deletegroup");
 
 	if($mybb->request_method == "post")
 	{
@@ -433,8 +433,6 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_settings_edit");
-
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -451,6 +449,9 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_edit");
+
 	$type = explode("\n", $setting['optionscode'], 2);
 	$type = trim($type[0]);
 	if($type == "php")
@@ -629,8 +630,6 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_settings_delete");
-
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -653,6 +652,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_delete");
 
 	if($mybb->request_method == "post")
 	{
