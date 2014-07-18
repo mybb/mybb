@@ -1487,11 +1487,11 @@ function upgrade30_dbchanges_smilies()
 
 	if($db->type == 'sqlite')
 	{
-		$db->modify_column("smilies", "find", "TEXT NOT NULL default '0'");
+		$db->modify_column("smilies", "find", "TEXT NOT NULL");
 	}
 	else
 	{
-		$db->modify_column("smilies", "find", "text NOT NULL default '0'");
+		$db->modify_column("smilies", "find", "text NOT NULL");
 	}
 
 	$query = $db->simple_select('smilies', 'sid, image, find', '', array('order_by' => 'image, sid'));
