@@ -334,8 +334,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_profile_fields_edit");
-
 	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 
@@ -344,6 +342,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?module=config-profile_fields");
 	}
+
+	$plugins->run_hooks("admin_config_profile_fields_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -650,8 +650,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_profile_fields_delete");
-
 	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 
@@ -667,6 +665,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-profile_fields");
 	}
+
+	$plugins->run_hooks("admin_config_profile_fields_delete");
 
 	if($mybb->request_method == "post")
 	{

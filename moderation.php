@@ -15,7 +15,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option,moderation_purgespammer_option_textbox,moderation_purgespammer';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option,moderation_purgespammer_option_textbox,moderation_purgespammer,moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -234,12 +234,34 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$mybb->input['delay'] = $mybb->get_input('delay', 1);
-			if($mybb->input['delay'] < 1)
+			if($mybb->input['date_day'] > 31 || $mybb->input['date_day'] < 1)
 			{
-				$mybb->input['delay'] = 1;
-				$errors[] = $lang->error_delayedmoderation_invalid_delay;
+				$errors[] = $lang->error_delayedmoderation_invalid_date_day;
 			}
+
+			if($mybb->input['date_month'] > 12 || $mybb->input['date_month'] < 1)
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_month;
+			}
+
+			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW))
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
+			}
+
+			$enddate = explode(' ', (string)$mybb->input['date_time']);
+			$enddate = explode(':', (string)$enddate[0]);
+
+			if(stristr($mybb->input['date_time'], 'pm'))
+			{
+				$enddate[0] = 12+$enddate[0];
+				if($enddate[0] >= 24)
+				{
+					$enddate[0] = '00';
+				}
+			}
+
+			$rundate = mktime((int)$enddate[0], (int)$enddate[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
 
 			if(!$errors)
 			{
@@ -249,7 +271,7 @@ switch($mybb->input['action'])
 				}
 				$db->insert_query("delayedmoderation", array(
 					'type' => $db->escape_string($mybb->input['type']),
-					'delaydateline' => TIME_NOW+($mybb->input['delay']*24*60*60),
+					'delaydateline' => (int)$rundate,
 					'uid' => $mybb->user['uid'],
 					'tids' => $db->escape_string($mybb->input['tids']),
 					'fid' => $fid,
@@ -510,6 +532,30 @@ switch($mybb->input['action'])
 		}
 		$mybb->input['redirect_expire'] = $mybb->get_input('redirect_expire');
 		eval("\$moderation_delayedmoderation_move = \"".$templates->get("moderation_delayedmoderation_move")."\";");
+
+		// Generate form elements for date form
+		$dateday = '';
+		for($day = 1; $day <= 31; ++$day)
+		{
+			$selected = '';
+			if($endday == $day)
+			{
+				$selected = ' selected="selected"';
+			}
+			eval('$dateday .= "'.$templates->get('moderation_delayedmoderation_date_day').'";');
+		}
+
+		$datemonth = array();
+		foreach(array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') as $month)
+		{
+			$datemonth[$month] = '';
+		}
+		$datemonth[$endmonth] = ' selected="selected"';
+
+		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
+
+		$dateyear = gmdate('Y', TIME_NOW);
+		$datetime = gmdate('g:i a', TIME_NOW);
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -2828,7 +2874,7 @@ switch($mybb->input['action'])
 						}
 						elseif($mybb->settings['purgespammerbandelete'] == "delete")
 						{
-							require_once MyBB_ROOT.'inc/datahandlers/user.php';
+							require_once MYBB_ROOT.'inc/datahandlers/user.php';
 							$userhandler = new UserDataHandler('delete');
 
 							$user_deleted = $userhandler->delete_user($uid);

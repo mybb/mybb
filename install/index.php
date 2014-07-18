@@ -122,7 +122,7 @@ if(class_exists('PDO'))
 	}
 }
 
-if(file_exists('lock'))
+if(file_exists('lock') && $mybb->dev_mode != true)
 {
 	$output->print_error($lang->locked);
 }
@@ -2267,6 +2267,7 @@ function install_done()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
+	$cache->update_statistics();
 	$cache->update_forums();
 	$cache->update_moderators();
 	$cache->update_usertitles();

@@ -1328,6 +1328,7 @@ if(!empty($threadcache) && is_array($threadcache))
 						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
 					}
 					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups=''{$gidswhere}) AND type = 't'");
+					break;
 			}
 
 			while($tool = $db->fetch_array($query))

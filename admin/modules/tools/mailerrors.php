@@ -56,8 +56,6 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$plugins->run_hooks("admin_tools_mailerrors_view");
-
 	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -65,6 +63,8 @@ if($mybb->input['action'] == "view")
 	{
 		exit;
 	}
+
+	$plugins->run_hooks("admin_tools_mailerrors_view");
 
 	$log['toaddress'] = htmlspecialchars_uni($log['toaddress']);
 	$log['fromaddress'] = htmlspecialchars_uni($log['fromaddress']);
@@ -133,8 +133,6 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_mailerrors_start");
-
 	$per_page = 20;
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
@@ -149,6 +147,8 @@ if(!$mybb->input['action'])
 	}
 
 	$additional_criteria = array();
+
+	$plugins->run_hooks("admin_tools_mailerrors_start");
 
 	$page->output_header($lang->system_email_log);
 

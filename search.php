@@ -1328,7 +1328,7 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	else
 	{
-		$days = $mybb->get_input('fid', 1);
+		$days = $mybb->get_input('days', 1);
 	}
 	$datecut = TIME_NOW-(86400*$days);
 

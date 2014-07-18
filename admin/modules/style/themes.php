@@ -495,8 +495,6 @@ if($mybb->input['action'] == "import")
 
 if($mybb->input['action'] == "export")
 {
-	$plugins->run_hooks("admin_style_themes_export");
-
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
@@ -506,6 +504,8 @@ if($mybb->input['action'] == "export")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_export");
 
 	if($mybb->request_method == "post")
 	{
@@ -913,8 +913,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_style_themes_delete");
-
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
@@ -930,6 +928,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -1010,8 +1010,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_style_themes_edit");
-
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
@@ -1021,6 +1019,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_edit");
 
 	if($mybb->request_method == "post" && !$mybb->input['do'])
 	{
@@ -1570,8 +1570,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "stylesheet_properties")
 {
-	$plugins->run_hooks("admin_style_themes_stylesheet_properties");
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -1581,6 +1579,8 @@ if($mybb->input['action'] == "stylesheet_properties")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_stylesheet_properties");
 
 	$parent_list = make_parent_theme_list($theme['tid']);
 	$parent_list = implode(',', $parent_list);
@@ -1953,8 +1953,6 @@ EOF;
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
 if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) || $mybb->input['mode'] == "simple"))
 {
-	$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple");
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -1964,6 +1962,8 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_edit_stylesheet_simple");
 
 	$parent_list = make_parent_theme_list($theme['tid']);
 	$parent_list = implode(',', $parent_list);
@@ -2217,8 +2217,6 @@ $(document).ready(function() {
 
 if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
 {
-	$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced");
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -2228,6 +2226,8 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_edit_stylesheet_advanced");
 
 	$parent_list = make_parent_theme_list($theme['tid']);
 	$parent_list = implode(',', $parent_list);
@@ -2383,8 +2383,6 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 if($mybb->input['action'] == "delete_stylesheet")
 {
-	$plugins->run_hooks("admin_style_themes_delete_stylesheet");
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -2394,6 +2392,8 @@ if($mybb->input['action'] == "delete_stylesheet")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_delete_stylesheet");
 
 	$parent_list = make_parent_theme_list($theme['tid']);
 	$parent_list = implode(',', $parent_list);
@@ -2442,8 +2442,6 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 if($mybb->input['action'] == "add_stylesheet")
 {
-	$plugins->run_hooks("admin_style_themes_add_stylesheet");
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -2453,6 +2451,8 @@ if($mybb->input['action'] == "add_stylesheet")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_add_stylesheet");
 
 	// Fetch list of all of the stylesheets for this theme
 	$stylesheets = fetch_theme_stylesheets($theme);
@@ -2853,8 +2853,6 @@ $(function() {
 
 if($mybb->input['action'] == "set_default")
 {
-	$plugins->run_hooks("admin_style_themes_set_default");
-
 	if(!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -2870,6 +2868,8 @@ if($mybb->input['action'] == "set_default")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_set_default");
 
 	$cache->update('default_theme', $theme);
 
@@ -2887,8 +2887,6 @@ if($mybb->input['action'] == "set_default")
 
 if($mybb->input['action'] == "force")
 {
-	$plugins->run_hooks("admin_style_themes_force");
-
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
@@ -2898,6 +2896,8 @@ if($mybb->input['action'] == "force")
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style-themes");
 	}
+
+	$plugins->run_hooks("admin_style_themes_force");
 
 	// User clicked no
 	if($mybb->input['no'])
@@ -2929,9 +2929,9 @@ if($mybb->input['action'] == "force")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_style_themes_start");
-
 	$page->output_header($lang->themes);
+
+	$plugins->run_hooks("admin_style_themes_start");
 
 	$page->output_nav_tabs($sub_tabs, 'themes');
 

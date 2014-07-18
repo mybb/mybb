@@ -917,6 +917,10 @@ div.error ul {
 	text-decoration: none;
 }
 
+.pagination form {
+	display: inline;
+}
+
 .thread_legend, .thread_legend dd {
 	margin: 0;
 	padding: 0;
@@ -2113,13 +2117,10 @@ tr td.trow_shaded:last-child {
     border-top-left-radius: 0;
 }
 
-tr:last-child td.tfoot:first-child {
+.tborder tbody:nth-last-child(2) td.tcat_collapse_collapsed {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
-}
-
-tr:last-child td.tfoot:last-child {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
@@ -4023,7 +4024,7 @@ a.button {
 			{$admincplink}
 		</ul>
 		<ul class="menu user_links">
-			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup'); return false;">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', null, true); return false;">{$lang->welcome_open_buddy_list}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
@@ -4088,14 +4089,16 @@ a.button {
 		<span class="smalltext">
 			{$logoutlink}
 			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
-			<a href="showteam.php">{$lang->forumteam}</a> |
-			<a href="stats.php">{$lang->forumstats}</a>
+			<a href="showteam.php">{$lang->forumteam}</a>
+			{$statspage}
 		</span>
 	</td>
 </tr>
 </tbody>
 </table>
 <br />]]></template>
+		<template name="index_statspage" version="1800"><![CDATA[ |
+			<a href="stats.php">{$lang->forumstats}</a>]]></template>
 		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="index_stats" version="1400"><![CDATA[<tr><td class="tcat"><span class="smalltext"><strong>{$lang->boardstats}</strong></span></td></tr>
 <tr>
@@ -4588,26 +4591,11 @@ if(use_xmlhttprequest == "1")
 					<td class="{$bgcolors['pm']}"><strong>{$lang->pm}</strong></td>
 					<td class="{$bgcolors['pm']}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 				</tr>
-				<tr>
-					<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
-					<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
-					<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
-					<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
-					<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
-				</tr>
-				<tr>
-					<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
-					<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
-				</tr>
+				{$contact_fields['icq']}
+				{$contact_fields['aim']}
+				{$contact_fields['yahoo']}
+				{$contact_fields['skype']}
+				{$contact_fields['google']}
 			</table>
 		</td>
 		<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
@@ -4719,6 +4707,26 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_website" version="1800"><![CDATA[<a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a>]]></template>
+		<template name="member_profile_contact_fields_icq" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['icq']}"><strong>{$lang->icq_number}</strong></td>
+	<td class="{$bgcolors['icq']}">{$memprofile['icq']}</td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_aim" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['aim']}"><strong>{$lang->aim_screenname}</strong></td>
+	<td class="{$bgcolors['aim']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=aim&amp;uid={$uid}'); return false;">{$memprofile['aim']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_yahoo" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['yahoo']}"><strong>{$lang->yahoo_id}</strong></td>
+	<td class="{$bgcolors['yahoo']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=yahoo&amp;uid={$uid}'); return false;">{$memprofile['yahoo']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_skype" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['skype']}"><strong>{$lang->skype_id}</strong></td>
+	<td class="{$bgcolors['skype']}"><a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype=skype&amp;uid={$uid}'); return false;">{$memprofile['skype']}</a></td>
+</tr>]]></template>
+		<template name="member_profile_contact_fields_google" version="1800"><![CDATA[<tr>
+	<td class="{$bgcolors['google']}"><strong>{$lang->google_id}</strong></td>
+	<td class="{$bgcolors['google']}">{$memprofile['google']}</td>
+</tr>]]></template>
 		<template name="member_register" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
@@ -5852,11 +5860,11 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie}</a></td>
+		<template name="misc_smilies_popup_smilie" version="1800"><![CDATA[<td class="{$class}" align="center">{$smilie_image}</a></td>
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
-		<template name="misc_smilies_smilie" version="120"><![CDATA[<tr>
-<td class="{$class}" align="center">{$smilie}</td>
+		<template name="misc_smilies_smilie" version="1800"><![CDATA[<tr>
+<td class="{$class}" align="center">{$smilie_image}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
@@ -7380,7 +7388,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_announcements" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>]]></template>
 		<template name="modcp_nav_banning" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=banning" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>]]></template>
 		<template name="modcp_nav_forums_posts" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpforums']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpforums']}.png" id="modcpforums_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_forums}</strong></span></div>
 		</td>
@@ -7397,7 +7405,7 @@ if(use_xmlhttprequest == "1")
 		<template name="modcp_nav_modqueue" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>]]></template>
 		<template name="modcp_nav_reportcenter" version="1800"><![CDATA[<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>]]></template>
 		<template name="modcp_nav_users" version="1800"><![CDATA[	<tr>
-		<td class="tcat tcat_menu">
+		<td class="tcat tcat_menu tcat_collapse{$collapsedimg['modcpusers']}">
 			<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcpusers']}.png" id="modcpusers_img" class="expander" alt="[-]" title="[-]" /></div>
 			<div><span class="smalltext"><strong>{$lang->mcp_nav_users}</strong></span></div>
 		</td>
@@ -7706,8 +7714,19 @@ if(use_xmlhttprequest == "1")
 <td class="trow2">{$threads}</td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->delay_moderation_for}</strong></td>
-<td class="trow2"><input type="text" class="textbox" size="5" name="delay" maxlength="10" value="{$mybb->input['delay']}"/> {$lang->days}</td>
+<td class="trow1"><strong>{$lang->run_moderation_time}</strong></td>
+<td class="trow2">
+		<select name="date_day">
+				{$dateday}
+		</select>
+		&nbsp;
+		<select name="date_month">
+				{$datemonth}
+		</select>
+		&nbsp;
+		<input type="text" name="date_year" value="{$dateyear}" size="4" maxlength="4" class="textbox" />
+		 - {$lang->time} <input type="text" name="date_time" value="{$datetime}" size="10" class="textbox" />
+</td>
 </tr>
 <tr>
 <td class="trow1" style="vertical-align: top;"><strong>{$lang->moderation_action}</strong></td>
@@ -7779,6 +7798,19 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+		<template name="moderation_delayedmoderation_date_month" version="1800"><![CDATA[<option value="01" {$datemonth['01']}>{$lang->january}</option>
+<option value="02" {$datemonth['02']}>{$lang->february}</option>
+<option value="03" {$datemonth['03']}>{$lang->march}</option>
+<option value="04" {$datemonth['04']}>{$lang->april}</option>
+<option value="05" {$datemonth['05']}>{$lang->may}</option>
+<option value="06" {$datemonth['06']}>{$lang->june}</option>
+<option value="07" {$datemonth['07']}>{$lang->july}</option>
+<option value="08" {$datemonth['08']}>{$lang->august}</option>
+<option value="09" {$datemonth['09']}>{$lang->september}</option>
+<option value="10" {$datemonth['10']}>{$lang->october}</option>
+<option value="11" {$datemonth['11']}>{$lang->november}</option>
+<option value="12" {$datemonth['12']}>{$lang->december}</option>]]></template>
+		<template name="moderation_delayedmoderation_date_day" version="1800"><![CDATA[<option value="{$day}"{$selected}">{$day}</option>]]></template>
 		<template name="moderation_delayedmoderation_custommodtool" version="1600"><![CDATA[<dt><input type="radio" name="type" value="modtool_{$tool['tid']}" {$checked} id="type_modtool_{$tool['tid']}" onclick="toggleType();" /> <label for="type_modtool_{$tool['tid']}"><strong>{$tool['name']}</strong> <small>({$lang->custom})</small></label></dt>]]></template>
 		<template name="moderation_delayedmoderation_merge" version="1600"><![CDATA[<dt><input type="radio" name="type" value="merge" {$type_selected['merge']} id="type_merge" onclick="toggleType();" /> <label for="type_merge"><strong>{$lang->merge_threads}</strong></label></dt>
 <dd style="margin-top: 4px; width: 100%;" id="type_merge_expanded">
@@ -8345,7 +8377,7 @@ if(use_xmlhttprequest == "1")
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1400"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
-{$prevpage}{$start}{$mppage}{$end}{$nextpage}
+{$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
 </div>]]></template>
 		<template name="multipage_breadcrumb" version="1800"><![CDATA[<div id="breadcrumb_multipage_popup" class="pagination pagination_breadcrumb" style="display: none;">
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
@@ -8359,6 +8391,10 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
+		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post">
+<input type="text" class="textbox" name="page" value="{$page}" size="3" />
+<input type="submit" class="button" value="{$lang->go}" />
+</form>]]></template>
 		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">{$lang->next} &raquo;</a>]]></template>
 		<template name="multipage_page" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
 		<template name="multipage_page_current" version="1400"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
@@ -11575,7 +11611,7 @@ if(use_xmlhttprequest == "1")
 		{$request['date']}
 	</td>
 	<td class="{$bgcolor}">
-		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a> 
+		<a href="{$mybb->settings['bburl']}/usercp.php?action=cancelrequest&amp;id={$request['id']}&amp;my_post_key={$mybb->post_code}">{$lang->cancel}</a>
 	</td>
 </tr>]]></template>
 		<template name="usercp_editlists_no_requests" version="1800"><![CDATA[<tr>
@@ -12043,7 +12079,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
 		<template name="usercp_nav_messenger" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercppms']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.png" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
@@ -12064,7 +12100,7 @@ if(use_xmlhttprequest == "1")
 		<template name="usercp_nav_messenger_tracking" version="1610"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_nav_misc" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpmisc']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.png" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
 	</td>
@@ -12081,7 +12117,7 @@ if(use_xmlhttprequest == "1")
 </tbody>]]></template>
 		<template name="usercp_nav_profile" version="1800"><![CDATA[<tbody>
 <tr>
-	<td class="tcat tcat_menu">
+	<td class="tcat tcat_menu tcat_collapse{$collapsedimg['usercpprofile']}">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.png" id="usercpprofile_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
 	</td>
@@ -12527,41 +12563,7 @@ if(use_xmlhttprequest == "1")
 </td>
 <td width="50%" class="trow1" valign="top">
 {$customtitle}
-<fieldset class="trow2">
-<legend><strong>{$lang->additional_contact_details}</strong></legend>
-<table cellspacing="0" cellpadding="{$theme['tablespace']}">
-<tr>
-<td><span class="smalltext">{$lang->icq_number}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="icq" size="25" value="{$user['icq']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->aim_screenname}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="aim" size="25" value="{$user['aim']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->skype_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="skype" size="25" value="{$user['skype']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->google_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="google" size="25" value="{$user['google']}" /></td>
-</tr>
-<tr>
-<td><span class="smalltext">{$lang->yahoo_id}</span></td>
-</tr>
-<tr>
-<td><input type="text" class="textbox" name="yahoo" size="25" value="{$user['yahoo']}" /></td>
-</tr>
-</table>
-</fieldset>
+{$contactfields}
 {$awaysection}
 </td>
 </tr>
@@ -12578,6 +12580,22 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
+	<template name="usercp_profile_contact_fields" version="1800"><![CDATA[<fieldset class="trow2">
+<legend><strong>{$lang->additional_contact_details}</strong></legend>
+<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	{$contact_fields['icq']}
+	{$contact_fields['aim']}
+	{$contact_fields['yahoo']}
+	{$contact_fields['skype']}
+	{$contact_fields['google']}
+</table>
+</fieldset>]]></template>
+	<template name="usercp_profile_contact_fields_field" version="1800"><![CDATA[<tr>
+<td><span class="smalltext">{$lang_string}</span></td>
+</tr>
+<tr>
+  <td><input type="text" class="textbox" name="{$cfield}" size="25" value="{$cfvalue}" /></td>
+</tr>]]></template>
 		<template name="usercp_profile_away" version="120"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>
@@ -12898,7 +12916,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
 		<template name="usercp_usergroups_leader_usergroup_memberlist" version="1800"><![CDATA[ [<a href="managegroup.php?gid={$usergroup['gid']}">{$lang->view_members}</a>]]]></template>
-		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]></template>
+		<template name="usercp_usergroups_leader_usergroup_moderaterequests" version="1800"><![CDATA[ [<a href="managegroup.php?action=joinrequests&amp;gid={$usergroup['gid']}">{$lang->view_requests}</a>]]]></template>
 		<template name="usercp_usergroups_memberof" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_memberof}</strong></td>
@@ -13346,28 +13364,29 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
-var partialmode = {$mybb->settings['partialmode']};
+var partialmode = {$mybb->settings['partialmode']},
+opt_editor = {
+	plugins: "bbcode",
+	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
+	rtl: {$lang->settings['rtl']},
+	locale: "mybblang",
+	emoticonsEnabled: {$emoticons_enabled},
+	emoticons: {
+		// Emoticons to be included in the dropdown
+		dropdown: {
+			{$dropdownsmilies}
+		},
+		// Emoticons to be included in the more section
+		more: {
+			{$moresmilies}
+		}
+	},
+	emoticonsCompat: true,
+	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+};
 {$editor_language}
 $(function() {
-	$("#{$bind}").sceditor({
-		plugins: "bbcode",
-		style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
-		rtl: {$lang->settings['rtl']},
-        locale: "mybblang",
-		emoticonsEnabled: {$emoticons_enabled},
-		emoticons: {
-			// Emoticons to be included in the dropdown
-			dropdown: {
-				{$dropdownsmilies}
-			},
-			// Emoticons to be included in the more section
-			more: {
-				{$moresmilies}
-			}
-		},
-		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
-	});
+	$("#{$bind}").sceditor(opt_editor);
 
 	MyBBEditor = $("#{$bind}").sceditor("instance");
 	{$sourcemode}

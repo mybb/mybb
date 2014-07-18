@@ -92,8 +92,6 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_banning_delete");
-
 	$query = $db->simple_select("banfilters", "*", "fid='".intval($mybb->input['fid'])."'");
 	$filter = $db->fetch_array($query);
 
@@ -103,6 +101,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_filter, 'error');
 		admin_redirect("index.php?module=config-banning");
 	}
+
+	$plugins->run_hooks("admin_config_banning_delete");
 
 	if($filter['type'] == 3)
 	{

@@ -56,8 +56,6 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$plugins->run_hooks("admin_tools_maillogs_view");
-
 	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -65,6 +63,8 @@ if($mybb->input['action'] == "view")
 	{
 		exit;
 	}
+
+	$plugins->run_hooks("admin_tools_maillogs_view");
 
 	$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 	$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
@@ -119,8 +119,6 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_maillogs_start");
-
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
@@ -140,6 +138,8 @@ if(!$mybb->input['action'])
 	}
 
 	$additional_criteria = array();
+
+	$plugins->run_hooks("admin_tools_maillogs_start");
 
 	// Filter form was submitted - play around with the values
 	if($mybb->request_method == "post")

@@ -307,6 +307,12 @@ class UserDataHandler extends DataHandler
 			$website = "http://".$website;
 		}
 
+		if(!filter_var($website, FILTER_VALIDATE_URL))
+		{
+			$this->set_error('invalid_website');
+			return false;
+		}
+
 		return true;
 	}
 
@@ -658,7 +664,7 @@ class UserDataHandler extends DataHandler
 		{
 			// Value out of range
 			$options['subscriptionmethod'] = intval($options['subscriptionmethod']);
-			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
+			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 3)
 			{
 				$options['subscriptionmethod'] = 0;
 			}
@@ -1019,8 +1025,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
-			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1046,12 +1051,12 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"website" => $db->escape_string($user['website']),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"skype" => $db->escape_string(htmlspecialchars($user['skype'])),
-			"google" => $db->escape_string(htmlspecialchars($user['google'])),
+			"aim" => $db->escape_string($user['aim']),
+			"yahoo" => $db->escape_string($user['yahoo']),
+			"skype" => $db->escape_string($user['skype']),
+			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1222,7 +1227,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usertitle']))
 		{
-			$this->user_update_data['usertitle'] = $db->escape_string(htmlspecialchars_uni($user['usertitle']));
+			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
 		}
 		if(isset($user['regdate']))
 		{
@@ -1242,7 +1247,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
+			$this->user_update_data['website'] = $db->escape_string($user['website']);
 		}
 		if(isset($user['icq']))
 		{
@@ -1250,19 +1255,19 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
 		}
 		if(isset($user['skype']))
 		{
-			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
+			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
 		}
 		if(isset($user['google']))
 		{
-			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
+			$this->user_update_data['google'] = $db->escape_string($user['google']);
 		}
 		if(isset($user['bday']))
 		{
@@ -1450,6 +1455,14 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
 		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
 
+		
+		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
+		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
+		
+		// Update the reports made by the deleted users by setting the uid to 0
+		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+
 		// Remove any of the user(s) uploaded avatars
 		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
 		while($avatar = $db->fetch_field($query, 'avatar'))
@@ -1475,10 +1488,18 @@ class UserDataHandler extends DataHandler
 			}
 
 			// Posts
+			$pids = array();
 			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
 			while($pid = $db->fetch_field($query, 'pid'))
 			{
 				$moderation->delete_post($pid);
+				$pids[] = (int)$pid;
+			}
+			
+			// Delete Reports made to users's posts/threads
+			if(!empty($pids))
+			{
+				$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
 			}
 		}
 		else
@@ -1519,6 +1540,9 @@ class UserDataHandler extends DataHandler
 		$this->return_values = array(
 			"deleted_users" => $this->deleted_users
 		);
+		
+		// Update reports cache
+		$cache->update_reportedcontent();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 

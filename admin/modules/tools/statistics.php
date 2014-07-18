@@ -36,8 +36,6 @@ $plugins->run_hooks("admin_tools_statistics_begin");
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_statistics_overall_begin");
-
 	$query = $db->simple_select("stats", "COUNT(*) as total");
 	if($db->fetch_field($query, "total") == 0)
 	{
@@ -46,6 +44,8 @@ if(!$mybb->input['action'])
 	}
 
 	$per_page = 20;
+
+	$plugins->run_hooks("admin_tools_statistics_overall_begin");
 
 	// Do we have date range criteria?
 	if($mybb->input['from_year'])

@@ -26,7 +26,7 @@ $templatelist .= ",usercp_options_tppselect_option,usercp_options_pppselect_opti
 $templatelist .= ",usercp_editlists_no_buddies,usercp_editlists_no_ignored,usercp_editlists_no_requests,usercp_editlists_received_requests,usercp_editlists_sent_requests,usercp_drafts_draft_thread,usercp_drafts_draft_forum";
 $templatelist .= ",usercp_usergroups_leader_usergroup_memberlist,usercp_usergroups_leader_usergroup_moderaterequests,usercp_usergroups_memberof_usergroup_leaveprimary,usercp_usergroups_memberof_usergroup_display,usercp_email";
 $templatelist .= ",usercp_usergroups_memberof_usergroup_leaveleader,usercp_usergroups_memberof_usergroup_leaveother,usercp_usergroups_memberof_usergroup_leave,usercp_usergroups_joinable_usergroup_description,usercp_options_time_format";
-$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day";
+$templatelist .= ",usercp_editlists_sent_request,usercp_editlists_received_request,usercp_drafts_none,usercp_usergroups_memberof_usergroup_setdisplay,usercp_usergroups_memberof_usergroup_description,usercp_editlists_user,usercp_profile_day,usercp_profile_contact_fields,usercp_profile_contact_fields_field, usercp_profile_website";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -252,16 +252,33 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"postnum" => $mybb->user['postnum'],
 		"usergroup" => $mybb->user['usergroup'],
 		"additionalgroups" => $mybb->user['additionalgroups'],
-		"icq" => $mybb->get_input('icq', 1),
-		"aim" => $mybb->get_input('aim'),
-		"yahoo" => $mybb->get_input('yahoo'),
-		"skype" => $mybb->get_input('skype'),
-		"google" => $mybb->get_input('google'),
 		"birthday" => $bday,
 		"birthdayprivacy" => $mybb->get_input('birthdayprivacy'),
 		"away" => $away,
 		"profile_fields" => $mybb->get_input('profile_fields', 2)
 	);
+	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
+	{
+		$csetting = 'allow'.$cfield.'field';
+		if($mybb->settings[$csetting] == '')
+		{
+			continue;
+		}
+
+		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		{
+			continue;
+		}
+
+		if($cfield == 'icq')
+		{
+			$user[$cfield] = $mybb->get_input($cfield, 1);
+		}
+		else
+		{
+			$user[$cfield] = $mybb->get_input($cfield);
+		}
+	}
 	
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
@@ -390,6 +407,36 @@ if($mybb->input['action'] == "profile")
 		$user['google'] = htmlspecialchars_uni($user['google']);
 		$user['aim'] = htmlspecialchars_uni($user['aim']);
 		$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
+	}
+
+	$contact_fields = array();
+	$contactfields = '';
+	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $cfield)
+	{
+		$contact_fields[$cfield] = '';
+		$csetting = 'allow'.$cfield.'field';
+		if($mybb->settings[$csetting] == '')
+		{
+			continue;
+		}
+
+		if($mybb->settings[$csetting] != -1 && !is_member($mybb->settings[$csetting]))
+		{
+			continue;
+		}
+
+		$cfieldsshow = true;
+
+		$lang_string = 'contact_field_'.$cfield;
+		$lang_string = $lang->{$lang_string};
+		$cfvalue = htmlspecialchars_uni($user[$cfield]);
+
+		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
+	}
+
+	if(!empty($cfieldsshow))
+	{
+		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
 	}
 
 	if($mybb->settings['allowaway'] != 0)
@@ -3166,12 +3213,21 @@ if($mybb->input['action'] == "usergroups")
 				foreach($groupleader as $leader)
 				{
 					$leader_user = get_user($leader['uid']);
+					
+					// Load language
+					$lang->set_language($leader_user['language']);
+					$lang->load("messages");
+					
 					$subject = $lang->sprintf($lang->emailsubject_newjoinrequest, $mybb->settings['bbname']);
 					$message = $lang->sprintf($lang->email_groupleader_joinrequest, $leader_user['username'], $mybb->user['username'], $usergroups[$leader['gid']]['title'], $mybb->settings['bbname'], $mybb->get_input('reason'), $mybb->settings['bburl'], $leader['gid']);
 					my_mail($leader_user['email'], $subject, $message);
 				}
 			}
 
+			// Load language
+			$lang->set_language($mybb->user['language']);
+			$lang->load("messages");
+			
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
 			redirect("usercp.php?action=usergroups", $lang->group_join_requestsent);
 			exit;

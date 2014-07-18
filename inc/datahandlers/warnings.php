@@ -235,7 +235,7 @@ class WarningsHandler extends DataHandler
 			$this->validate_type();
 		}
 
-		$plugins->run_hooks("datahandler_warnings_validate", $this);
+		$plugins->run_hooks("datahandler_warnings_validate_warning", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -518,6 +518,8 @@ class WarningsHandler extends DataHandler
 
 		$this->update_user();
 
+		$plugins->run_hooks("datahandler_warnings_insert_warning", $this);
+
 		return $this->write_warning_data;
 	}
 
@@ -541,6 +543,8 @@ class WarningsHandler extends DataHandler
 		);
 
 		$db->update_query("warnings", $this->write_warning_data, "wid='{$warning['wid']}'");
+
+		$plugins->run_hooks("datahandler_warnings_update_warning", $this);
 
 		return $this->write_warning_data;
 	}

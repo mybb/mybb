@@ -45,6 +45,13 @@ if(!empty($mybb->input['pid']) && !isset($mybb->input['tid']))
 		);
 		$query = $db->simple_select("posts", "tid", "pid=".$mybb->get_input('pid', 1), $options);
 		$post = $db->fetch_array($query);
+		
+		if(empty($post))
+		{
+			// post does not exist --> show corresponding error
+			error($lang->error_invalidpost);
+		}
+		
 		$mybb->input['tid'] = $post['tid'];
 	}
 }
@@ -1208,6 +1215,7 @@ if($mybb->input['action'] == "thread")
 					break;
 				default:
 					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+					break;
 			}
 
 			while($tool = $db->fetch_array($query))

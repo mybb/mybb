@@ -38,8 +38,6 @@ $plugins->run_hooks("admin_user_group_promotions_begin");
 
 if($mybb->input['action'] == "disable")
 {
-	$plugins->run_hooks("admin_user_group_promotions_disable");
-
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-group_promotions");
@@ -59,6 +57,8 @@ if($mybb->input['action'] == "disable")
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
 	}
+
+	$plugins->run_hooks("admin_user_group_promotions_disable");
 
 	if($mybb->request_method == "post")
 	{
@@ -84,8 +84,6 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_group_promotions_delete");
-
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-group_promotions");
@@ -105,6 +103,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
 	}
+
+	$plugins->run_hooks("admin_user_group_promotions_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -126,8 +126,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "enable")
 {
-	$plugins->run_hooks("admin_user_group_promotions_enable");
-
 	if(!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -149,6 +147,8 @@ if($mybb->input['action'] == "enable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
+	$plugins->run_hooks("admin_user_group_promotions_enable");
+
 	$update_promotion = array(
 		"enabled" => 1
 	);
@@ -166,8 +166,6 @@ if($mybb->input['action'] == "enable")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_group_promotions_edit");
-
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
@@ -182,6 +180,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
 	}
+
+	$plugins->run_hooks("admin_user_group_promotions_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -591,9 +591,9 @@ if($mybb->input['action'] == "logs")
 {
 	$plugins->run_hooks("admin_user_group_promotions_logs");
 
-	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	if($mybb->get_input('page', 1) > 1)
 	{
-		$mybb->input['page'] = intval($mybb->input['page']);
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*20)-20;
 	}
 	else

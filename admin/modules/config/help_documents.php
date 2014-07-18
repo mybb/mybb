@@ -299,9 +299,9 @@ if($mybb->input['action'] == "edit")
 					"disporder" => intval($mybb->input['disporder'])
 				);
 
-				$db->update_query("helpsections", $sql_array, "sid = '{$sid}'");
-
 				$plugins->run_hooks("admin_config_help_documents_edit_section_commit");
+
+				$db->update_query("helpsections", $sql_array, "sid = '{$sid}'");
 
 				// Log admin action
 				log_admin_action($sid, $mybb->input['name'], 'section');
@@ -407,9 +407,9 @@ if($mybb->input['action'] == "edit")
 					"disporder" => intval($mybb->input['disporder'])
 				);
 
-				$db->update_query("helpdocs", $sql_array, "hid = '{$hid}'");
-
 				$plugins->run_hooks("admin_config_help_documents_edit_page_commit");
+
+				$db->update_query("helpdocs", $sql_array, "hid = '{$hid}'");
 
 				// Log admin action
 				log_admin_action($hid, $mybb->input['name'], 'document');
@@ -482,13 +482,13 @@ if($mybb->input['action'] == "edit")
 // Delete something
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_help_documents_delete");
-
 	// User clicked no
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=config-help_documents");
 	}
+
+	$plugins->run_hooks("admin_config_help_documents_delete");
 
 	// Do delete something?
 	if($mybb->request_method == "post")
@@ -568,8 +568,6 @@ if($mybb->input['action'] == "delete")
 // List document and sections
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_config_help_documents_start");
-
 	$page->output_header($lang->help_documents);
 
 	$sub_tabs['manage_help_documents'] = array(
@@ -587,6 +585,8 @@ if(!$mybb->input['action'])
 		'title'	=> $lang->add_new_section,
 		'link'	=> "index.php?module=config-help_documents&amp;action=add&amp;type=section"
 	);
+
+	$plugins->run_hooks("admin_config_help_documents_start");
 
 	$page->output_nav_tabs($sub_tabs, 'manage_help_documents');
 

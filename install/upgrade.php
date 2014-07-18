@@ -576,6 +576,7 @@ function buildcaches()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
+	$cache->update_statistics();
 	$cache->update_moderators();
 	$cache->update_forums();
 	$cache->update_usertitles();

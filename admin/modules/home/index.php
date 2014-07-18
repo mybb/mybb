@@ -47,6 +47,8 @@ if($mybb->input['action'] == "version_check")
 		admin_redirect('index.php');
 	}
 
+	$plugins->run_hooks("admin_home_version_check");
+
 	$page->add_breadcrumb_item($lang->version_check, "index.php?module=home-version_check");
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
