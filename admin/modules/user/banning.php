@@ -52,8 +52,6 @@ $plugins->run_hooks("admin_user_banning_begin");
 
 if($mybb->input['action'] == "prune")
 {
-	$plugins->run_hooks("admin_user_banning_prune");
-
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -76,6 +74,8 @@ if($mybb->input['action'] == "prune")
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_prune");
 
 	if($mybb->request_method == "post")
 	{
@@ -111,8 +111,6 @@ if($mybb->input['action'] == "prune")
 
 if($mybb->input['action'] == "lift")
 {
-	$plugins->run_hooks("admin_user_banning_lift");
-
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -135,6 +133,8 @@ if($mybb->input['action'] == "lift")
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_lift");
 
 	if($mybb->request_method == "post")
 	{
@@ -165,8 +165,6 @@ if($mybb->input['action'] == "lift")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_banning_edit");
-
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
@@ -177,6 +175,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -301,10 +301,10 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$where_sql_full = $where_sql = '';
+
 	$plugins->run_hooks("admin_user_banning_start");
 
-	$where_sql_full = $where_sql = '';
-	
 	if($mybb->request_method == "post")
 	{
 		$options = array(

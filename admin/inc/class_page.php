@@ -73,7 +73,12 @@ class DefaultPage
 	{
 		global $mybb, $admin_session, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_header");
+		$args = array(
+			'this' => &$this,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks("admin_page_output_header", $args);
 
 		if(!$title)
 		{
@@ -189,7 +194,12 @@ lang.saved = \"{$lang->saved}\";
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_footer");
+		$args = array(
+			'this' => &$this,
+			'quit' => &$quit,
+		);
+
+		$plugins->run_hooks("admin_page_output_footer", $args);
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
@@ -790,7 +800,16 @@ EOF;
 	 */
 	function output_confirm_action($url, $message="", $title="")
 	{
-		global $lang;
+		global $lang, $plugins;
+
+		$args = array(
+			'this' => &$this,
+			'url' => &$url,
+			'message' => &$message,,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks('admin_page_output_confirm_action', $args);
 
 		if(!$message)
 		{
@@ -798,6 +817,7 @@ EOF;
 		}
 		$this->output_header($title);
 		$form = new Form($url, 'post');
+
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$message}</p>\n";
 		echo "<br />\n";
@@ -806,6 +826,7 @@ EOF;
 		echo $form->generate_submit_button($lang->no, array("name" => "no", 'class' => 'button_no'));
 		echo "</p>\n";
 		echo "</div>\n";
+
 		$form->end();
 		$this->output_footer();
 	}

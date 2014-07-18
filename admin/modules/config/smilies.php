@@ -126,8 +126,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_smilies_edit");
-
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -137,6 +135,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_smilie, 'error');
 		admin_redirect("index.php?module=config-smilies");
 	}
+
+	$plugins->run_hooks("admin_config_smilies_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -230,8 +230,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_smilies_delete");
-
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -247,6 +245,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-smilies");
 	}
+
+	$plugins->run_hooks("admin_config_smilies_delete");
 
 	if($mybb->request_method == "post")
 	{

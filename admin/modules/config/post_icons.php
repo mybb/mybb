@@ -301,8 +301,6 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_post_icons_edit");
-
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
 
@@ -311,6 +309,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?module=config-post_icons");
 	}
+
+	$plugins->run_hooks("admin_config_post_icons_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -384,8 +384,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_post_icons_delete");
-
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
 
@@ -400,6 +398,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-post_icons");
 	}
+
+	$plugins->run_hooks("admin_config_post_icons_delete");
 
 	if($mybb->request_method == "post")
 	{

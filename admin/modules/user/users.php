@@ -207,8 +207,6 @@ if($mybb->input['action'] == 'iplookup')
 
 if($mybb->input['action'] == "activate_user")
 {
-	$plugins->run_hooks("admin_user_users_coppa_activate");
-
 	if(!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -223,6 +221,8 @@ if($mybb->input['action'] == "activate_user")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_activate");
 
 	$updated_user['usergroup'] = $user['usergroup'];
 
@@ -247,18 +247,10 @@ if($mybb->input['action'] == "activate_user")
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
-	
-	// Load language
-	$lang->set_language($user['language'], 'admin');
-	$lang->load("user_users", false, true);
 
 	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 	my_mail($user['email'], $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']), $message);
 
-	// Load language
-	$lang->set_language($mybb->user['language'], 'admin');
-	$lang->load("user_users", false, true);
-	
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
@@ -301,6 +293,8 @@ if($mybb->input['action'] == "activate_user")
 	{
 		$url = "index.php?module=user-users&action=edit&uid={$user['uid']}";
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_end");
 
 	admin_redirect($url);
 }
@@ -428,8 +422,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_users_edit");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -438,6 +430,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -818,6 +812,9 @@ if($mybb->input['action'] == "edit")
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
+
+				$plugins->run_hooks("admin_user_users_edit_commit_start");
+
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
 
 				// if we're updating the user's signature preferences, do so now
@@ -1636,8 +1633,6 @@ else
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_users_delete");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -1659,6 +1654,8 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-users");
 	}
 
+	$plugins->run_hooks("admin_user_users_delete");
+
 	if($mybb->request_method == "post")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
@@ -1674,6 +1671,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$plugins->run_hooks("admin_user_users_delete_commit_end");
+
 		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
@@ -1687,8 +1686,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "referrers")
 {
-	$plugins->run_hooks("admin_user_users_referrers");
-
 	$page->add_breadcrumb_item($lang->show_referrers);
 	$page->output_header($lang->show_referrers);
 
@@ -1697,6 +1694,8 @@ if($mybb->input['action'] == "referrers")
 		'link' => "index.php?module=user-users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_referrers_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_referrers");
 
 	$page->output_nav_tabs($sub_tabs, 'referrers');
 
@@ -1737,8 +1736,6 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
-	$plugins->run_hooks("admin_user_users_ipaddresses");
-
 	$page->add_breadcrumb_item($lang->ip_addresses);
 	$page->output_header($lang->ip_addresses);
 
@@ -1747,6 +1744,8 @@ if($mybb->input['action'] == "ipaddresses")
 		'link' => "index.php?module=user-users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_ip_addresses_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_ipaddresses");
 
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
 
@@ -2225,6 +2224,8 @@ if($mybb->input['action'] == "search")
 		{
 			$admin_view['custom_profile_fields'] = $mybb->input['profile_fields'];
 		}
+
+		$plugins->run_hooks("admin_user_users_search_commit");
 
 		$results = build_users_view($admin_view);
 

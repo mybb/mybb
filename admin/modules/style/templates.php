@@ -402,8 +402,6 @@ if($mybb->input['action'] == "add_template_group")
 
 if($mybb->input['action'] == "edit_set")
 {
-	$plugins->run_hooks("admin_style_templates_edit_set");
-
 	$query = $db->simple_select("templatesets", "*", "sid='{$sid}'");
 	$set = $db->fetch_array($query);
 	if(!$set)
@@ -411,6 +409,9 @@ if($mybb->input['action'] == "edit_set")
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=style-templates");
 	}
+
+	$plugins->run_hooks("admin_style_templates_edit_set");
+
 	$sid = $set['sid'];
 
 	if($mybb->request_method == "post")
@@ -479,13 +480,13 @@ if($mybb->input['action'] == "edit_set")
 
 if($mybb->input['action'] == "edit_template")
 {
-	$plugins->run_hooks("admin_style_templates_edit_template");
-
 	if(!$mybb->input['title'] || !$sid || !isset($template_sets[$sid]))
 	{
 		flash_message($lang->error_missing_input, 'error');
 		admin_redirect("index.php?module=style-templates");
 	}
+
+	$plugins->run_hooks("admin_style_templates_edit_template");
 
 	if($mybb->request_method == "post")
 	{
@@ -1309,8 +1310,6 @@ LEGEND;
 
 if($mybb->input['action'] == "delete_template_group")
 {
-	$plugins->run_hooks("admin_style_template_group_delete");
-
 	$gid = intval($mybb->input['gid']);
 	$query = $db->simple_select("templategroups", "*", "gid='{$gid}'");
 
@@ -1325,6 +1324,8 @@ if($mybb->input['action'] == "delete_template_group")
 	{
 		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
 	}
+
+	$plugins->run_hooks("admin_style_template_group_delete");
 
 	$template_group = $db->fetch_array($query);
 
@@ -1349,8 +1350,6 @@ if($mybb->input['action'] == "delete_template_group")
 
 if($mybb->input['action'] == "delete_set")
 {
-	$plugins->run_hooks("admin_style_templates_delete_set");
-
 	$query = $db->simple_select("templatesets", "*", "sid='{$sid}' AND sid > 0");
 	$set = $db->fetch_array($query);
 
@@ -1360,6 +1359,8 @@ if($mybb->input['action'] == "delete_set")
 		flash_message($lang->error_invalid_template_set, 'error');
 		admin_redirect("index.php?module=style-templates");
 	}
+
+	$plugins->run_hooks("admin_style_templates_delete_set");
 
 	// Is there a theme attached to this set?
 	$query = $db->simple_select("themes", "properties");
@@ -1404,8 +1405,6 @@ if($mybb->input['action'] == "delete_set")
 
 if($mybb->input['action'] == "delete_template")
 {
-	$plugins->run_hooks("admin_style_templates_delete_template");
-
 	$query = $db->query("
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
@@ -1426,6 +1425,8 @@ if($mybb->input['action'] == "delete_template")
 	{
 		admin_redirect("index.php?module=style-templates&sid={$template['sid']}{$expand_str2}");
 	}
+
+	$plugins->run_hooks("admin_style_templates_delete_template");
 
 	if($mybb->request_method == "post")
 	{
@@ -1550,8 +1551,6 @@ if($mybb->input['action'] == "diff_report")
 
 if($mybb->input['action'] == "revert")
 {
-	$plugins->run_hooks("admin_style_templates_revert");
-
 	$query = $db->query("
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
@@ -1572,6 +1571,8 @@ if($mybb->input['action'] == "revert")
 	{
 		admin_redirect("index.php?module=style-templates&sid={$template['sid']}{$expand_str2}");
 	}
+
+	$plugins->run_hooks("admin_style_templates_revert");
 
 	if($mybb->request_method == "post")
 	{

@@ -200,8 +200,6 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$plugins->run_hooks("admin_config_warning_edit_level");
-
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -211,6 +209,8 @@ if($mybb->input['action'] == "edit_level")
 		flash_message($lang->error_invalid_warning_level, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_edit_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -396,8 +396,6 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$plugins->run_hooks("admin_config_warning_delete_level");
-
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -413,6 +411,8 @@ if($mybb->input['action'] == "delete_level")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_delete_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -513,8 +513,6 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$plugins->run_hooks("admin_config_warning_edit_type");
-
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -524,6 +522,8 @@ if($mybb->input['action'] == "edit_type")
 		flash_message($lang->error_invalid_warning_type, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_edit_type");
 
 	if($mybb->request_method == "post")
 	{
@@ -609,8 +609,6 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$plugins->run_hooks("admin_config_warning_delete_type");
-
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -626,6 +624,8 @@ if($mybb->input['action'] == "delete_type")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_delete_type");
 
 	if($mybb->request_method == "post")
 	{

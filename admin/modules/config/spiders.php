@@ -114,8 +114,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_spiders_delete");
-
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -131,6 +129,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -155,8 +155,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_spiders_edit");
-
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -166,6 +164,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_bot, 'error');
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_edit");
 
 	if($mybb->request_method == "post")
 	{

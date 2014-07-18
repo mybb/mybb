@@ -98,8 +98,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_questions_edit");
-
 	$query = $db->simple_select("questions", "*", "qid='".intval($mybb->input['qid'])."'");
 	$question = $db->fetch_array($query);
 
@@ -108,6 +106,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
 	}
+
+	$plugins->run_hooks("admin_config_questions_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -180,8 +180,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_questions_delete");
-
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=config-questions");
@@ -195,6 +193,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
 	}
+
+	$plugins->run_hooks("admin_config_questions_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -217,8 +217,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "disable")
 {
-	$plugins->run_hooks("admin_config_questions_disable");
-
 	$query = $db->simple_select("questions", "*", "qid='".intval($mybb->input['qid'])."'");
 	$question = $db->fetch_array($query);
 
@@ -227,6 +225,8 @@ if($mybb->input['action'] == "disable")
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
 	}
+
+	$plugins->run_hooks("admin_config_questions_disable");
 
 	$update_question = array(
 		"active" => 0
@@ -244,8 +244,6 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "enable")
 {
-	$plugins->run_hooks("admin_config_questions_enable");
-
 	$query = $db->simple_select("questions", "*", "qid='".intval($mybb->input['qid'])."'");
 	$question = $db->fetch_array($query);
 
@@ -254,6 +252,8 @@ if($mybb->input['action'] == "enable")
 		flash_message($lang->error_invalid_question, 'error');
 		admin_redirect("index.php?module=config-questions");
 	}
+
+	$plugins->run_hooks("admin_config_questions_enable");
 
 	$update_question = array(
 		"active" => 1

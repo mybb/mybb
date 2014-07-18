@@ -20,8 +20,6 @@ $plugins->run_hooks("admin_config_mod_tools_begin");
 
 if($mybb->input['action'] == "delete_post_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_delete_post_tool");
-
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 
@@ -37,6 +35,8 @@ if($mybb->input['action'] == "delete_post_tool")
 	{
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_delete_post_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -60,8 +60,6 @@ if($mybb->input['action'] == "delete_post_tool")
 
 if($mybb->input['action'] == "delete_thread_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool");
-
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 
@@ -77,6 +75,8 @@ if($mybb->input['action'] == "delete_thread_tool")
 	{
 		admin_redirect("index.php?module=config-mod_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -151,14 +151,14 @@ if($mybb->input['action'] == "post_tools")
 
 if($mybb->input['action'] == "edit_thread_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool");
-
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='t'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_thread_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -1120,14 +1120,14 @@ if($mybb->input['action'] == "add_thread_tool")
 
 if($mybb->input['action'] == "edit_post_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool");
-
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='p'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_post_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool");
 
 	if($mybb->request_method == 'post')
 	{
