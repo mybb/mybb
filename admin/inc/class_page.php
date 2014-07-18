@@ -111,7 +111,7 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
-		
+
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
 		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
@@ -805,7 +805,7 @@ EOF;
 		$args = array(
 			'this' => &$this,
 			'url' => &$url,
-			'message' => &$message,,
+			'message' => &$message,
 			'title' => &$title,
 		);
 
@@ -842,7 +842,7 @@ EOF;
 	{
 		global $lang, $mybb, $smiliecache, $cache;
 
-		// Smilies		
+		// Smilies
 		$emoticon = "";
 		$emoticons_enabled = "false";
 		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
@@ -985,7 +985,7 @@ opt_editor = {
 {$editor_language}
 $(function() {
 	$("#{$bind}").sceditor(opt_editor);
-      
+
 	MyBBEditor = $("#{$bind}").sceditor("instance");
 	{$sourcemode}
 });
