@@ -447,9 +447,20 @@ class DB_MySQLi
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=MYSQLI_ASSOC)
 	{
-		$array = mysqli_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case MYSQLI_NUM:
+			case MYSQLI_BOTH:
+				break;
+			default:
+				$resulttype = MYSQLI_ASSOC;
+				break;
+		}
+
+		$array = mysqli_fetch_array($query, $resulttype);
+
 		return $array;
 	}
 

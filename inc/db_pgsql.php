@@ -411,9 +411,20 @@ class DB_PgSQL
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=PGSQL_ASSOC)
 	{
-		$array = pg_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case PGSQL_NUM:
+			case PGSQL_BOTH:
+				break;
+			default:
+				$resulttype = PGSQL_ASSOC;
+				break;
+		}
+
+		$array = pg_fetch_array($query, NULL, $resulttype);
+
 		return $array;
 	}
 
