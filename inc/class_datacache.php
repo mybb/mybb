@@ -784,6 +784,20 @@ class datacache
 	}
 
 	/**
+	 * Update the users awaiting activation cache.
+	 *
+	 */
+	function update_awaitingactivation()
+	{
+		global $db;
+
+		$query = $db->simple_select('users', 'COUNT(uid) AS awaitingusers', 'usergroup=\'5\'');
+		$awaitingusers = (int)$db->fetch_field($query, 'awaitingusers');
+
+		$this->update('awaitingactivation', $awaitingusers);
+	}
+
+	/**
 	 * Build the moderators array
 	 *
 	 * @access private

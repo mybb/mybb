@@ -2272,6 +2272,7 @@ function install_done()
 	$cache->update_moderators();
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
+	$cache->update_awaitingactivation();
 	$cache->update_mycode();
 	$cache->update_profilefields();
 	$cache->update_posticons();

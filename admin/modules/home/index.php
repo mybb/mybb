@@ -191,8 +191,15 @@ elseif(!$mybb->input['action'])
 	$users = my_number_format($db->fetch_field($query, "numusers"));
 
 	// Get the number of users awaiting validation
-	$query = $db->simple_select("users", "COUNT(uid) AS awaitingusers", "usergroup='5'");
-	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers"));
+	$awaitingusers = $cache->read('awaitingactivation');
+	if(empty($awaitingusers))
+	{
+		$awaitingusers = 0;
+	}
+	else
+	{
+		$awaitingusers = my_number_format($awaitingusers);
+	}
 
 	// Get the number of new users for today
 	$timecut = TIME_NOW - 86400;

@@ -18,7 +18,7 @@ $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,postbit_warninglevel,showthread_poll_resultbit";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,postbit_warninglevel,showthread_poll_resultbit,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1192,6 +1192,19 @@ if($mybb->input['action'] == "thread")
 		if($thread['closed'] == 1)
 		{
 			$trow = 'trow_shaded';
+		}
+	
+		$moderation_notice = '';
+		if($forumpermissions['modposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_forum_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+		
+		if($mybb->user['moderateposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_user_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 
 	    $posthash = md5($mybb->user['uid'].random_str());

@@ -678,6 +678,32 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
+$cache->update('awaitingactivation', 50);
+if($mybb->usergroup['cancp'] == 1)
+{
+	$awaitingusers = $cache->read('awaitingactivation');
+	if(empty($awaitingusers))
+	{
+		$awaitingusers = 0;
+	}
+	else
+	{
+		$awaitingusers = my_number_format($awaitingusers);
+	}
+	
+	if($awaitingusers > 0)
+	{
+		if($awaitingusers == 1)
+		{
+			$awaiting_message = $lang->awaiting_message_single;
+		}
+		else
+		{
+			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
+		}
+		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
+	}
+}
 
 // Set up some of the default templates
 eval('$headerinclude = "'.$templates->get('headerinclude').'";');

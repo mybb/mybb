@@ -3287,6 +3287,7 @@ a.button {
 {$preview}
 {$post_errors}
 {$attacherror}
+{$moderation_notice}
 {$deletebox}
 <form id="editpost" action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -3930,6 +3931,8 @@ a.button {
 	<div>{$privatemessage_text}</div>
 </div>]]></template>
 		<template name="global_unreadreports" version="1800"><![CDATA[<div class="red_alert"><a href="{$mybb->settings['bburl']}/modcp.php?action=reports">{$lang->unread_reports}</a></div>]]></template>
+		<template name="global_moderation_notice" version="1800"><![CDATA[<div class="pm_alert">{$moderation_text}</div>]]></template>
+		<template name="global_awaiting_activation" version="1800"><![CDATA[<div class="red_alert">{$awaiting_message}</div>]]></template>
 		<template name="header" version="1800"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
@@ -3961,6 +3964,7 @@ a.button {
 				{$bbclosedwarning}
 				{$unreadreports}
 				{$pending_joinrequests}
+				{$awaitingusers}
 				<navigation>
 				<br />]]></template>
 		<template name="header_menu_calendar" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>]]></template>
@@ -8422,6 +8426,7 @@ if(use_xmlhttprequest == "1")
 {$maximageserror}
 {$attacherror}
 {$reply_errors}
+{$moderation_notice}
 <form action="newreply.php?tid={$tid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -8514,6 +8519,7 @@ if(use_xmlhttprequest == "1")
 {$preview}
 {$thread_errors}
 {$attacherror}
+{$moderation_notice}
 <form action="newthread.php?fid={$fid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -11059,6 +11065,7 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
 		<template name="showthread_quickreply" version="1800"><![CDATA[<br />
+{$moderation_notice}
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<input type="hidden" name="subject" value="RE: {$reply_subject}" />
