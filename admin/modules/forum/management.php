@@ -1857,9 +1857,20 @@ if($mybb->input['action'] == "deletemod")
 		$query = $db->simple_select("moderators", "*", "id='{$mod['id']}' AND isgroup='0'");
 		if($db->num_rows($query) == 0)
 		{
-			$updatequery = array(
-				"usergroup" => "2"
-			);
+			$query = $db->query("SELECT usergroup FROM ".TABLE_PREFIX."users WHERE uid='{$mod['id']}'");
+			$basegid = $db->fetch_field($query, "usergroup");
+			if($basegid)
+		   	{
+				$updatequery = array(
+					"usergroup" => $basegid
+				);
+		 	} 
+		 	else
+		   	{
+				$updatequery = array(
+					"usergroup" => "2"
+				);
+		 	}
 			$db->update_query("users", $updatequery, "uid='{$mod['id']}' AND usergroup != '4' AND usergroup != '3'");
 		}
 		$cache->update_moderators();
