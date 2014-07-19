@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup";
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
