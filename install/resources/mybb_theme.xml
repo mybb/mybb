@@ -5071,6 +5071,12 @@ $().ready(function() {
 </tr>]]></template>
 		<template name="member_register_question" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
+<script type="text/javascript">
+<!--
+	lang.question_fetch_failure = "{$lang->question_fetch_failure}";
+// -->
+</script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1800"></script>
 <legend><strong>{$lang->security_question}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -5081,7 +5087,15 @@ $().ready(function() {
 </tr>
 <tr>
 <td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
-<input type="hidden" name="question_id" value="{$sid}" id="question_id" /></td>
+<input type="hidden" name="question_id" value="{$sid}" id="question_id" />
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+		document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return question.refresh();" \/>');
+	}
+// -->
+</script></td>
 </tr>
 <tr>
 	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
