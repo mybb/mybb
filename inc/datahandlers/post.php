@@ -1153,11 +1153,6 @@ class PostDataHandler extends DataHandler
 						$emailsubject = $lang->emailsubject_subscription;
 						$emailmessage = $lang->email_subscription;
 					}
-					elseif($subscribedmember['notification'] == 2)
-					{
-						$pmsubject = $lang->pmsubject_subscription;
-						$pmmessage = $lang->pm_subscription;
-					}
 				}
 				else
 				{
@@ -1175,21 +1170,6 @@ class PostDataHandler extends DataHandler
 						}
 						$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
 						$emailmessage = $langcache[$uselang]['email_subscription'];
-					}
-					elseif($subscribedmember['notification'] == 2)
-					{
-						if(!isset($langcache[$uselang]['pmsubject_subscription']))
-						{
-							$userlang = new MyLanguage;
-							$userlang->set_path(MYBB_ROOT."inc/languages");
-							$userlang->set_language($uselang);
-							$userlang->load("messages");
-							$langcache[$uselang]['pmsubject_subscription'] = $userlang->pmsubject_subscription;
-							$langcache[$uselang]['pm_subscription'] = $userlang->pm_subscription;
-							unset($userlang);
-						}
-						$pmsubject = $langcache[$uselang]['pmsubject_subscription'];
-						$pmmessage = $langcache[$uselang]['pm_subscription'];
 					}
 				}
 
@@ -1212,17 +1192,13 @@ class PostDataHandler extends DataHandler
 				}
 				elseif($subscribedmember['notification'] == 2)
 				{
-					$pmsubject = $lang->sprintf($pmsubject, $subject);
-
 					$post_code = md5($subscribedmember['loginkey'].$subscribedmember['salt'].$subscribedmember['regdate']);
-					$pmmessage = $lang->sprintf($pmmessage, $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code);
 					$pm = array(
-						'subject' => $pmsubject,
-						'message' => $pmmessage,
+						'subject' => array('pmsubject_subscription', $subject),
+						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code),
 						'touid' => $subscribedmember['uid']
 					);
 					send_pm($pm, -1, true);
-					unset($userlang);
 				}
 			}
 			// Have one or more emails been queued? Update the queue count
