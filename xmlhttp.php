@@ -804,7 +804,7 @@ else if($mybb->input['action'] == "username_exists")
 	else
 	{
 		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
-		echo json_encode(array("fail" => $lang->invalid_username));
+		echo $lang->invalid_username;
 		exit;
 	}
 }
