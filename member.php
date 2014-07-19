@@ -433,9 +433,35 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			
 			if(!empty($admingroups))
 			{
-				$q = $db->simple_select('users', 'username,email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				$q = $db->simple_select('users', 'uid,username,email,language,usergroup,additionalgroups', 'usergroup IN ('.implode(',', $admingroups).')');
 				while($recipient = $db->fetch_array($q))
 				{
+					// First we check if the user's a super admin: if yes, we don't care about permissions
+					$is_super_admin = is_super_admin($recipient['uid']);
+					if(!$is_super_admin)
+					{
+						// Include admin functions
+						if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+						{
+							require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
+						}
+						
+						// Get admin permissions
+						$adminperms = get_admin_permissions($recipient['uid']);
+						
+						// Verify if we have permissions to access user-users
+						require_once MYBB_ADMIN_DIR."modules/user/module_meta.php";
+						if(function_exists("user_admin_permissions"))
+						{
+							$func = "user_admin_permissions";
+							$permissions = $func();
+							if($permissions['user']['users'] && $adminperms['user']['users'] != 1)
+							{
+								continue; // No permissions
+							}
+						}
+					}
+										
 					// Load language
 					$lang->set_language($recipient['language']);
 					$lang->load("member");
@@ -473,9 +499,35 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			
 			if(!empty($admingroups))
 			{
-				$q = $db->simple_select('users', 'username,email,language', 'usergroup IN ('.implode(',', $admingroups).')');
+				$q = $db->simple_select('users', 'uid,username,email,language,usergroup,additionalgroups', 'usergroup IN ('.implode(',', $admingroups).')');
 				while($recipient = $db->fetch_array($q))
 				{
+					// First we check if the user's a super admin: if yes, we don't care about permissions
+					$is_super_admin = is_super_admin($recipient['uid']);
+					if(!$is_super_admin)
+					{
+						// Include admin functions
+						if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+						{
+							require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
+						}
+						
+						// Get admin permissions
+						$adminperms = get_admin_permissions($recipient['uid']);
+						
+						// Verify if we have permissions to access user-users
+						require_once MYBB_ADMIN_DIR."modules/user/module_meta.php";
+						if(function_exists("user_admin_permissions"))
+						{
+							$func = "user_admin_permissions";
+							$permissions = $func();
+							if($permissions['user']['users'] && $adminperms['user']['users'] != 1)
+							{
+								continue; // No permissions
+							}
+						}
+					}
+					
 					// Load language
 					$lang->set_language($recipient['language']);
 					$lang->load("member");
