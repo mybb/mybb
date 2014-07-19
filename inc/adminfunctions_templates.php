@@ -24,17 +24,14 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	$return = false;
 
-    $sqlwhere = '>0';
+    $sqlwhere = '>\'0\'';
 
 	$template_sets = array(-2, -1);
 
 	// Select all global with that title if not working on a specific template set
 	if($sid !== false)
 	{
-        $sqlwhere = '='.(int)$sid;
-
-        // Disable copying from master as it should not apply for a specific set
-        $autocreate = 0;
+        $sqlwhere = '=\''.(int)$sid.'\'';
 
 		$query = $db->simple_select("templates", "tid, template", "title = '".$db->escape_string($title)."' AND sid='-1'");
 		while($template = $db->fetch_array($query))
@@ -88,7 +85,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		if($master_template['new_template'] != $master_template['template'])
 		{
 			// Update the rest of our template sets that are currently inheriting this template from our master set
-			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).")");
+			$query = $db->simple_select("templatesets", "sid", "sid NOT IN (".implode(',', $template_sets).") AND sid{$sqlwhere}");
 			while($template = $db->fetch_array($query))
 			{
 				$insert_template = array(
