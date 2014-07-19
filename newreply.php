@@ -1431,22 +1431,27 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	$moderation_notice = '';
-	if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
 	{
-		$moderation_text = $lang->moderation_forum_attachments;
-		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+		{
+			$moderation_text = $lang->moderation_forum_attachments;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
 	}
-
-	if($forumpermissions['modposts'] == 1)
+	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
 	{
-		$moderation_text = $lang->moderation_forum_posts;
-		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-	}
+		if($forumpermissions['modposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_forum_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
 
-	if($mybb->user['moderateposts'] == 1)
-	{
-		$moderation_text = $lang->moderation_user_posts;
-		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		if($mybb->user['moderateposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_user_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
 	}
 
 	$plugins->run_hooks("newreply_end");

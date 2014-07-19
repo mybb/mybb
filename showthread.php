@@ -1193,18 +1193,21 @@ if($mybb->input['action'] == "thread")
 		{
 			$trow = 'trow_shaded';
 		}
-	
+
 		$moderation_notice = '';
-		if($forumpermissions['modposts'] == 1)
+		if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
 		{
-			$moderation_text = $lang->moderation_forum_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-		
-		if($mybb->user['moderateposts'] == 1)
-		{
-			$moderation_text = $lang->moderation_user_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			if($forumpermissions['modposts'] == 1)
+			{
+				$moderation_text = $lang->moderation_forum_posts;
+				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			}
+			
+			if($mybb->user['moderateposts'] == 1)
+			{
+				$moderation_text = $lang->moderation_user_posts;
+				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			}
 		}
 
 	    $posthash = md5($mybb->user['uid'].random_str());
