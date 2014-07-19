@@ -565,7 +565,7 @@ if($mybb->input['action'] == "mass_edit")
 	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
 	while($smilie = $db->fetch_array($query))
 	{
-		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
+		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/")
 		{
 			$image = $smilie['image'];
@@ -647,14 +647,13 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("smilies", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'disporder'));
 	while($smilie = $db->fetch_array($query))
 	{
-		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
+		$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/")
 		{
 			$image = $smilie['image'];
 		}
 		else
 		{
-			$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 			$image = "../".$smilie['image'];
 		}
 
