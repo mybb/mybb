@@ -944,6 +944,23 @@ if($mybb->input['action'] == "register")
 				$question = $db->fetch_array($query);
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
+			
+			$validator_extra .= "
+				$(\"#answer\").rules(\"add\", {
+					remote:{
+						url: \"xmlhttp.php?action=validate_question\",
+						type: \"post\",
+						dataType: \"json\",
+						data:
+						{
+							question: $('#question_id').val(),
+							my_post_key: my_post_key
+						},
+					},
+					messages: {
+						remote: \"{$lang->js_validator_no_security_question}\"
+					}
+				});\n";
 		}
 
 		$hiddencaptcha = '';
