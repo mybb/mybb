@@ -420,17 +420,16 @@ class DB_MySQL
 	{
 		switch($resulttype)
 		{
-			case MYSQL_ASSOC:
-				break;
 			case MYSQL_NUM:
-				break;
 			case MYSQL_BOTH:
 				break;
 			default:
 				$resulttype = MYSQL_ASSOC;
 				break;
 		}
+
 		$array = mysql_fetch_array($query, $resulttype);
+
 		return $array;
 	}
 

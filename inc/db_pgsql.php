@@ -417,17 +417,16 @@ class DB_PgSQL
 	{
 		switch($resulttype)
 		{
-			case PGSQL_ASSOC:
-				break;
 			case PGSQL_NUM:
-				break;
 			case PGSQL_BOTH:
 				break;
 			default:
 				$resulttype = PGSQL_ASSOC;
 				break;
 		}
+
 		$array = pg_fetch_array($query, NULL, $resulttype);
+
 		return $array;
 	}
 

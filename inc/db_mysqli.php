@@ -434,16 +434,16 @@ class DB_MySQLi
 	{
 		switch($resulttype)
 		{
-			case MYSQLI_ASSOC:
-				break;
 			case MYSQLI_NUM:
-				break;
 			case MYSQLI_BOTH:
 				break;
 			default:
 				$resulttype = MYSQLI_ASSOC;
+				break;
 		}
+
 		$array = mysqli_fetch_array($query, $resulttype);
+
 		return $array;
 	}
 
