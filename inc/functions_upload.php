@@ -12,9 +12,9 @@
 /**
  * Remove an attachment from a specific post
  *
- * @param int The post ID
- * @param string The posthash if available
- * @param int The attachment ID
+ * @param int $pid The post ID
+ * @param string $posthash The posthash if available
+ * @param int $aid The attachment ID
  */
 function remove_attachment($pid, $posthash, $aid)
 {
@@ -49,16 +49,16 @@ function remove_attachment($pid, $posthash, $aid)
 	$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 	if($db->fetch_field($query, "numreferences") == 0)
 	{
-		@unlink($uploadpath."/".$attachment['attachname']);
+		delete_uploaded_file($uploadpath."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
-			@unlink($uploadpath."/".$attachment['thumbnail']);
+			delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
 		if(@is_dir($uploadpath."/".$date_directory[0]))
 		{
-			@rmdir($uploadpath."/".$date_directory[0]);
+			delete_upload_directory($uploadpath."/".$date_directory[0]);
 		}
 	}
 
@@ -72,8 +72,8 @@ function remove_attachment($pid, $posthash, $aid)
 /**
  * Remove all of the attachments from a specific post
  *
- * @param int The post ID
- * @param string The posthash if available
+ * @param int $pid The post ID
+ * @param string $posthash The posthash if available
  */
 function remove_attachments($pid, $posthash="")
 {
@@ -118,16 +118,16 @@ function remove_attachments($pid, $posthash="")
 		$query2 = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($attachment['attachname'])."'");
 		if($db->fetch_field($query2, "numreferences") == 0)
 		{
-			@unlink($uploadpath."/".$attachment['attachname']);
+			delete_uploaded_file($uploadpath."/".$attachment['attachname']);
 			if($attachment['thumbnail'])
 			{
-				@unlink($uploadpath."/".$attachment['thumbnail']);
+				delete_uploaded_file($uploadpath."/".$attachment['thumbnail']);
 			}
 
 			$date_directory = explode('/', $attachment['attachname']);
 			if(@is_dir($uploadpath."/".$date_directory[0]))
 			{
-				@rmdir($uploadpath."/".$date_directory[0]);
+				delete_upload_directory($uploadpath."/".$date_directory[0]);
 			}
 		}
 	}
@@ -141,8 +141,8 @@ function remove_attachments($pid, $posthash="")
 /**
  * Remove any matching avatars for a specific user ID
  *
- * @param int The user ID
- * @param string A file name to be excluded from the removal
+ * @param int $uid The user ID
+ * @param string $exclude A file name to be excluded from the removal
  */
 function remove_avatars($uid, $exclude="")
 {
@@ -166,7 +166,7 @@ function remove_avatars($uid, $exclude="")
 
 			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($avatarpath."/".$file) && $file != $exclude)
 			{
-				@unlink($avatarpath."/".$file);
+				delete_uploaded_file($avatarpath."/".$file);
 			}
 		}
 
@@ -177,8 +177,8 @@ function remove_avatars($uid, $exclude="")
 /**
  * Upload a new avatar in to the file system
  *
- * @param srray incoming FILE array, if we have one - otherwise takes $_FILES['avatarupload']
- * @param string User ID this avatar is being uploaded for, if not the current user
+ * @param array $avatar Incoming FILE array, if we have one - otherwise takes $_FILES['avatarupload']
+ * @param int $uid User ID this avatar is being uploaded for, if not the current user
  * @return array Array of errors if any, otherwise filename of successful.
  */
 function upload_avatar($avatar=array(), $uid=0)
@@ -238,17 +238,16 @@ function upload_avatar($avatar=array(), $uid=0)
 	$file = upload_file($avatar, $avatarpath, $filename);
 	if($file['error'])
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
-
 
 	// Lets just double check that it exists
 	if(!file_exists($avatarpath."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		return $ret;
 	}
 
@@ -256,7 +255,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	$img_dimensions = @getimagesize($avatarpath."/".$filename);
 	if(!is_array($img_dimensions))
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -276,7 +275,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
-					@unlink($avatarpath."/".$filename);
+					delete_uploaded_file($avatarpath."/".$filename);
 					return $ret;
 				}
 				else
@@ -294,7 +293,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				{
 					$ret['error'] .= "<br /><br />".$lang->error_avataruserresize;
 				}
-				@unlink($avatarpath."/".$filename);
+				delete_uploaded_file($avatarpath."/".$filename);
 				return $ret;
 			}
 		}
@@ -303,7 +302,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	// Next check the file size
 	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
 	{
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadsize;
 		return $ret;
 	}
@@ -333,7 +332,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if($img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($avatarpath."/".$filename);
+		delete_uploaded_file($avatarpath."/".$filename);
 		return $ret;
 	}
 	// Everything is okay so lets delete old avatars for this user
@@ -351,8 +350,8 @@ function upload_avatar($avatar=array(), $uid=0)
 /**
  * Upload an attachment in to the file system
  *
- * @param array Attachment data (as fed by PHPs $_FILE)
- * @param boolean Whether or not we are updating a current attachment or inserting a new one
+ * @param array $attachment Attachment data (as fed by PHPs $_FILE)
+ * @param boolean $update_attachment Whether or not we are updating a current attachment or inserting a new one
  * @return array Array of attachment data if successful, otherwise array of error data
  */
 function upload_attachment($attachment, $update_attachment=false)
@@ -589,7 +588,7 @@ function upload_attachment($attachment, $update_attachment=false)
 
 		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array($mime, $supported_mimes)))
 		{
-			@unlink($mybb->settings['uploadspath']."/".$filename);
+			delete_uploaded_file($mybb->settings['uploadspath']."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;
 			return $ret;
 		}
@@ -609,7 +608,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forum['modattachments'] == 1 && !is_moderator($forum['fid'], "canviewunapprove", $mybb->user['uid']))
+	if($forumpermissions['modattachments'] == 1)
 	{
 		$attacharray['visible'] = 0;
 	}
@@ -630,16 +629,16 @@ function upload_attachment($attachment, $update_attachment=false)
 		$query = $db->simple_select("attachments", "COUNT(aid) as numreferences", "attachname='".$db->escape_string($prevattach['attachname'])."'");
 		if($db->fetch_field($query, "numreferences") == 0)
 		{
-			@unlink($mybb->settings['uploadspath']."/".$prevattach['attachname']);
+			delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['attachname']);
 			if($prevattach['thumbnail'])
 			{
-				@unlink($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
+				delete_uploaded_file($mybb->settings['uploadspath']."/".$prevattach['thumbnail']);
 			}
 
 			$date_directory = explode('/', $prevattach['attachname']);
 			if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
 			{
-				@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+				delete_upload_directory($mybb->settings['uploadspath']."/".$date_directory[0]);
 			}
 		}
 
@@ -658,16 +657,73 @@ function upload_attachment($attachment, $update_attachment=false)
 }
 
 /**
+ * Delete an uploaded file both from the relative path and the CDN path if a CDN is in use.
+ *
+ * @param string $path The relative path to the uploaded file.
+ *
+ * @return bool Whether the file was deleted successfully.
+ */
+function delete_uploaded_file($path = '')
+{
+	global $mybb;
+
+	$deleted = false;
+
+	$deleted = @unlink($path);
+
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$path = ltrim($path, '/');
+	$cdn_path = realpath($cdn_base_path . '/' . $path);
+
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$deleted = $deleted && @unlink($cdn_path);
+	}
+
+	return $deleted;
+}
+
+/**
+ * Delete an upload directory on both the local filesystem and the CDN filesystem.
+ *
+ * @param string $path The directory to delete.
+ *
+ * @return bool Whether the directory was deleted.
+ */
+function delete_upload_directory($path = '')
+{
+	global $mybb;
+
+	$deleted = false;
+
+	$deleted = @rmdir($path);
+
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$path = ltrim($path, '/');
+	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$deleted = $deleted && @rmdir($cdn_path);
+	}
+
+	return $deleted;
+}
+
+/**
  * Actually move a file to the uploads directory
  *
- * @param array The PHP $_FILE array for the file
- * @param string The path to save the file in
- * @param string The filename for the file (if blank, current is used)
+ * @param array $file The PHP $_FILE array for the file
+ * @param string $path The path to save the file in
+ * @param string $filename The filename for the file (if blank, current is used)
  * @return array The uploaded file
  */
 function upload_file($file, $path, $filename="")
 {
-	global $plugins;
+	global $plugins, $mybb;
+
+	$upload = array();
 
 	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
@@ -684,6 +740,16 @@ function upload_file($file, $path, $filename="")
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 
+	$moved_cdn = false;
+	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
+	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
+
+	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
+	{
+		$moved_cdn = @copy($path . '/' . $filename, $cdn_path . '/' . $filename);
+		@my_chmod($cdn_path . '/' . $filename, '0644');
+	}
+
 	if(!$moved)
 	{
 		$upload['error'] = 2;
@@ -695,6 +761,12 @@ function upload_file($file, $path, $filename="")
 	$upload['type'] = $file['type'];
 	$upload['size'] = $file['size'];
 	$upload = $plugins->run_hooks("upload_file_end", $upload);
+
+	if($moved_cdn)
+	{
+		$upload['cdn_path'] = $cdn_path;
+	}
+
 	return $upload;
 }
 ?>

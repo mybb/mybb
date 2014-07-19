@@ -18,6 +18,7 @@ options = array(
 	me_username
 	shorten_urls
 	highlight
+	filter_cdata
 )
 */
 
@@ -64,7 +65,7 @@ class postParser
 	public $highlight_cache = array();
 
 	/**
-	 * Options for this parsed message (Private - set by parse_message argument)
+	 * Options for this parsed message
 	 *
 	 * @access public
 	 * @var array
@@ -91,7 +92,7 @@ class postParser
 	 * Parses a message with the specified options.
 	 *
 	 * @param string The message to be parsed.
-	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username.
+	 * @param array Array of yes/no options - allow_html,filter_badwords,allow_mycode,allow_smilies,nl2br,me_username,filter_cdata.
 	 * @return string The parsed message.
 	 */
 	function parse_message($message, $options=array())
@@ -121,6 +122,12 @@ class postParser
 		if(!empty($this->options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
+		}
+
+		// Filter CDATA tags if requested (syndication.php).
+		if(!empty($this->options['filter_cdata']))
+		{
+			$message = $this->parse_cdata($message);
 		}
 
 		if(empty($this->options['allow_html']))
@@ -167,7 +174,7 @@ class postParser
 		// Replace MyCode if requested.
 		if(!empty($this->options['allow_mycode']))
 		{
-			$message = $this->parse_mycode($message, $this->options);
+			$message = $this->parse_mycode($message);
 		}
 
 		// Parse Highlights
@@ -187,7 +194,7 @@ class postParser
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					if(!empty($options['allow_html']))
+					if(!empty($this->options['allow_html']))
 					{
 						$text[2] = $this->parse_html($text[2]);
 					}
@@ -214,7 +221,7 @@ class postParser
 			), $message);
 		}
 
-		if(!isset($options['nl2br']) || $options['nl2br'] != 0)
+		if(!isset($this->options['nl2br']) || $this->options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -248,7 +255,7 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_mycode()
+	function cache_mycode()
 	{
 		global $cache, $lang, $mybb;
 		$this->mycode_cache = array();
@@ -408,6 +415,11 @@ class postParser
 	{
 		global $lang, $mybb;
 
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		// Cache the MyCode globally if needed.
 		if($this->mycode_cache == 0)
 		{
@@ -465,7 +477,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if(!empty($options['allow_imgcode']))
+		if(!empty($this->options['allow_imgcode']))
 		{
 			$message = preg_replace_callback("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback1'), $message);
 			$message = preg_replace_callback("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#is", array($this, 'mycode_parse_img_callback2'), $message);
@@ -481,7 +493,7 @@ class postParser
 		}
 
 		// Convert videos when allow.
-		if(!empty($options['allow_videocode']))
+		if(!empty($this->options['allow_videocode']))
 		{
 			$message = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $message);
 		}
@@ -498,23 +510,21 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_smilies()
+	function cache_smilies()
 	{
-		global $cache, $mybb;
+		global $cache, $mybb, $theme, $templates;
 		$this->smilies_cache = array();
 
 		$smilies = $cache->read("smilies");
 		if(is_array($smilies))
 		{
+			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
-				if(defined("IN_ARCHIVE") && substr($smilie['image'], 0, 4) != "http")
-				{
-					// We're in the archive and not using an outside image, add in our address
-					$smilie['image'] = $mybb->settings['bburl']."/".$smilie['image'];
-				}
+				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				$this->smilies_cache[$smilie['find']] = "<img src=\"{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie').'";');
 			}
 		}
 	}
@@ -594,7 +604,7 @@ class postParser
 	 *
 	 * @access private
 	 */
-	private function cache_badwords()
+	function cache_badwords()
 	{
 		global $cache;
 		$this->badwords_cache = array();
@@ -610,6 +620,11 @@ class postParser
 	 */
 	function parse_badwords($message, $options=array())
 	{
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		if($this->badwords_cache == 0)
 		{
 			$this->cache_badwords();
@@ -636,7 +651,7 @@ class postParser
 				}
 			}
 		}
-		if(!empty($options['strip_tags']))
+		if(!empty($this->options['strip_tags']))
 		{
 			$message = strip_tags($message);
 		}
@@ -644,7 +659,20 @@ class postParser
 	}
 
 	/**
-	 * Attempts to move any javascript references in the specified message.
+	 * Resolves nested CDATA tags in the specified message.
+	 *
+	 * @param string The message to be parsed.
+	 * @return string The parsed message.
+	 */
+	function parse_cdata($message)
+	{
+		$message = str_replace(']]>', ']]]]><![CDATA[>', $message);
+
+		return $message;
+	}
+
+	/**
+ 	 * Attempts to move any javascript references in the specified message.
 	 *
 	 * @param string The message to be parsed.
 	 * @return string The parsed message.
@@ -1569,7 +1597,7 @@ class postParser
 
 	/**
 	 * Strips smilies from a string
- 	 *
+	 *
 	 * @param string The message for smilies to be stripped from
 	 * @return string The message with smilies stripped
 	 */
@@ -1588,7 +1616,7 @@ class postParser
 
 	/**
 	 * Highlights a string
- 	 *
+	 *
 	 * @param string The message to be highligted
 	 * @param string The highlight keywords
 	 * @return string The message with highlight bbcodes
@@ -1618,8 +1646,13 @@ class postParser
 	{
 		global $plugins;
 
+		if(empty($this->options))
+		{
+			$this->options = $options;
+		}
+
 		// Filter bad words if requested.
-		if(!empty($options['filter_badwords']))
+		if(!empty($this->options['filter_badwords']))
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -1646,12 +1679,12 @@ class postParser
 		$message = preg_replace($find, $replace, $message);
 
 		// Replace "me" code and slaps if we have a username
-		if(!empty($options['me_username']))
+		if(!empty($this->options['me_username']))
 		{
 			global $lang;
 
-			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$options['me_username']} \\2", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$this->options['me_username']} \\2", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$this->options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
 		}
 
 		// Reset list cache

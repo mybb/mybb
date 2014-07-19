@@ -75,7 +75,6 @@ if($mybb->input['action'] == "add")
 		}
 	}
 
-
 	$page->add_breadcrumb_item($lang->add_new_attachment_type);
 	$page->output_header($lang->attachment_types." - ".$lang->add_new_attachment_type);
 
@@ -140,8 +139,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_attachment_types_edit");
-
 	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
 	$attachment_type = $db->fetch_array($query);
 
@@ -150,6 +147,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?module=config-attachment_types");
 	}
+
+	$plugins->run_hooks("admin_config_attachment_types_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -183,9 +182,9 @@ if($mybb->input['action'] == "edit")
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
-			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
-
 			$plugins->run_hooks("admin_config_attachment_types_edit_commit");
+
+			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
 
 			// Log admin action
 			log_admin_action($attachment_type['atid'], $mybb->input['extension']);
@@ -216,7 +215,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $attachment_type;
+		$mybb->input = array_merge($mybb->input, $attachment_type);
 	}
 
 	// PHP settings
@@ -255,8 +254,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_attachment_types_delete");
-
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=config-attachment_types");
@@ -270,6 +267,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?module=config-attachment_types");
 	}
+
+	$plugins->run_hooks("admin_config_attachment_types_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -293,8 +292,6 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_config_attachment_types_start");
-
 	$page->output_header($lang->attachment_types);
 
 	$sub_tabs['attachment_types'] = array(
@@ -306,6 +303,8 @@ if(!$mybb->input['action'])
 		'title' => $lang->add_new_attachment_type,
 		'link' => "index.php?module=config-attachment_types&amp;action=add",
 	);
+
+	$plugins->run_hooks("admin_config_attachment_types_start");
 
 	$page->output_nav_tabs($sub_tabs, 'attachment_types');
 

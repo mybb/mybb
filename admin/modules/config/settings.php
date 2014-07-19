@@ -114,8 +114,6 @@ if($mybb->input['action'] == "addgroup")
 // Edit setting group
 if($mybb->input['action'] == "editgroup")
 {
-	$plugins->run_hooks("admin_config_settings_editgroup");
-
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -131,6 +129,8 @@ if($mybb->input['action'] == "editgroup")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_editgroup");
 
 	// Do edit?
 	if($mybb->request_method == "post")
@@ -216,8 +216,6 @@ if($mybb->input['action'] == "editgroup")
 // Delete Setting Group
 if($mybb->input['action'] == "deletegroup")
 {
-	$plugins->run_hooks("admin_config_settings_deletegroup");
-
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -239,6 +237,8 @@ if($mybb->input['action'] == "deletegroup")
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_deletegroup");
 
 	if($mybb->request_method == "post")
 	{
@@ -318,6 +318,10 @@ if($mybb->input['action'] == "add")
 			{
 				$options_code = $mybb->input['type'];
 			}
+
+			$mybb->input['name'] = str_replace("\\", '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
 
 			$new_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
@@ -429,8 +433,6 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_settings_edit");
-
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -447,6 +449,9 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_edit");
+
 	$type = explode("\n", $setting['optionscode'], 2);
 	$type = trim($type[0]);
 	if($type == "php")
@@ -499,6 +504,11 @@ if($mybb->input['action'] == "edit")
 			{
 				$options_code = $mybb->input['type'];
 			}
+
+			$mybb->input['name'] = str_replace("\\", '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
+			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
+
 			$updated_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
@@ -620,8 +630,6 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_settings_delete");
-
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -631,7 +639,6 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
-
 
 	// Prevent editing of default
 	if($setting['isdefault'] == 1)
@@ -645,6 +652,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-settings&action=manage");
 	}
+
+	$plugins->run_hooks("admin_config_settings_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -1052,10 +1061,10 @@ if($mybb->input['action'] == "change")
 		}
 
 		if(!$db->num_rows($query))
-        {
-            flash_message($lang->error_no_settings_found, 'error');
-            admin_redirect("index.php?module=config-settings");
-        }
+		{
+			flash_message($lang->error_no_settings_found, 'error');
+			admin_redirect("index.php?module=config-settings");
+		}
 
 		$group_lang_var = "setting_group_{$groupinfo['name']}";
 		if(isset($lang->$group_lang_var))
@@ -1113,15 +1122,15 @@ if($mybb->input['action'] == "change")
 		$form_container = new FormContainer($groupinfo['title']);
 
 		if(empty($cache_settings[$groupinfo['gid']]))
-        {
-            $form_container->output_cell($lang->error_no_settings_found);
-            $form_container->construct_row();
+		{
+			$form_container->output_cell($lang->error_no_settings_found);
+			$form_container->construct_row();
 
-            $form_container->end();
-            echo '<br />';
+			$form_container->end();
+			echo '<br />';
 
-            continue;
-        }
+			continue;
+		}
 
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{

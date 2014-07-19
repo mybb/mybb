@@ -91,16 +91,18 @@ $(document).ready(function($) {
 					size     = 1;
 
 					if(fontSize > 9)
-						size = 2;
+						size = 1;
 					if(fontSize > 12)
-						size = 3;
+						size = 2;
 					if(fontSize > 15)
-						size = 4;
+						size = 3;
 					if(fontSize > 17)
-						size = 5;
+						size = 4;
 					if(fontSize > 23)
-						size = 6;
+						size = 5;
 					if(fontSize > 31)
+						size = 6;
+					if(fontSize > 47)
 						size = 7;
 				}
 				else
@@ -130,7 +132,7 @@ $(document).ready(function($) {
 					e.preventDefault();
 				};
 
-			for (var i=1; i < 7; i++)
+			for (var i=1; i <= 7; i++)
 				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').click(clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
@@ -146,7 +148,7 @@ $(document).ready(function($) {
 					size = (~~size);
 					size = (size > 7) ? 7 : ( (size < 1) ? 1 : size );
 
-					editor.insertText('[size=' + sizes[size] + ']', '[/size]');
+					editor.insertText('[size=' + sizes[size-1] + ']', '[/size]');
 				}
 			);
 		}
@@ -165,19 +167,19 @@ $(document).ready(function($) {
 
 			if($cite.length === 1 || $elm.data('author'))
 			{
-				author = $cite.text() || $elm.data('author');
+				author = $elm.data('author') || $cite.text();
 
 				$elm.data('author', author);
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				author  = '=' + author;
+				author  = "='" + author;
 
 				$elm.prepend($cite);
 			}
 
 			if($elm.data('pid'))
-				author += " pid='" + $elm.data('pid') + "'";
+				author += "' pid='" + $elm.data('pid') + "'";
 
 			if($elm.data('dateline'))
 				author += " dateline='" + $elm.data('dateline') + "'";
@@ -194,7 +196,10 @@ $(document).ready(function($) {
 				data += ' data-dateline="' + attrs.dateline + '"';
 
 			if(typeof attrs.defaultattr !== "undefined")
+			{
 				content = '<cite>' + attrs.defaultattr + '</cite>' + content;
+				data += ' data-author="' + attrs.defaultattr + '"';
+			}
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
@@ -223,6 +228,96 @@ $(document).ready(function($) {
 
 
 
+	/************************
+	 * Add MyBB PHP command *
+	 ************************/
+	$.sceditor.command.set('php', {
+		exec: function() {
+			this.wysiwygEditorInsertHtml('<code class="phpcodeblock">', '</code>');
+		},
+		txtExec: ['[php]', '[/php]'],
+		tooltip: "PHP"
+	});
+	
+	$.sceditor.plugins.bbcode.bbcode.set('php', {
+		isInline: false,
+		allowedChildren: ['#', '#newline'],
+		format: '[php]{0}[/php]',
+		html: '<code class="phpcodeblock">{0}</code>'
+	});
+
+
+
+	/******************************
+	 * Update code to support PHP *
+	 ******************************/
+	$.sceditor.plugins.bbcode.bbcode.set('code', {
+		tags: {
+			code: null
+		},
+		isInline: false,
+		allowedChildren: ['#', '#newline'],
+		format: function (element, content) {
+			if ($(element[0]).hasClass('phpcodeblock')) {
+				return '[php]' + content + '[/php]';
+			}
+			return '[code]' + content + '[/code]';
+		},
+		html: '<code>{0}</code>'
+	});
+
+
+
+	/***************************************
+	 * Update email to support description *
+	 ***************************************/
+	$.sceditor.command.set('email', {
+		_dropDown: function (editor, caller) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+					'<label for="email">' + editor._('E-mail:') + '</label> ' +
+					'<input type="text" id="email" />' +					
+				'</div>' +
+				'<div>' +
+					'<label for="des">' + editor._('Description (optional):') + '</label> ' +
+					'<input type="text" id="des" />' +
+				'</div>' +
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+			);
+
+			$content.find('.button').click(function (e) {
+				var	val = $content.find('#email').val(),
+					description = $content.find('#des').val();
+
+				if(val) {
+					// needed for IE to reset the last range
+					editor.focus();
+
+					if(!editor.getRangeHelper().selectedHtml() || description) {
+						if(!description)
+							description = val;
+
+						editor.wysiwygEditorInsertHtml('<a href="' + 'mailto:' + val + '">' + description + '</a>');
+					}
+					else
+						editor.execCommand('createlink', 'mailto:' + val);
+					}
+
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertemail', $content);
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('email')._dropDown(this, caller);
+		}
+	});
+
+
+
 	/**************************
 	 * Add MyBB video command *
 	 **************************/
@@ -240,6 +335,8 @@ $(document).ready(function($) {
 			var	matches, url,
 				html = {
 					dailymotion: '<iframe frameborder="0" width="480" height="270" src="{url}" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					facebook: '<iframe src="{url}" width="625" height="350" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
+					liveleak: '<iframe width="500" height="300" src="{url}" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					metacafe: '<iframe src="{url}" width="440" height="248" frameborder=0 data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					veoh: '<iframe src="{url}" width="410" height="341" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
 					vimeo: '<iframe src="{url}" width="500" height="281" frameborder="0" data-mybb-vt="{type}" data-mybb-vsrc="{src}"></iframe>',
@@ -253,6 +350,14 @@ $(document).ready(function($) {
 					case 'dailymotion':
 						matches = content.match(/dailymotion\.com\/video\/([^_]+)/);
 						url     = matches ? 'http://www.dailymotion.com/embed/video/' + matches[1] : false;
+						break;
+					case 'facebook':
+						matches = content.match(/facebook\.com\/(?:photo.php\?v=|video\/video.php\?v=|video\/embed\?video_id=|v\/?)(\d+)/);
+						url     = matches ? 'https://www.facebook.com/video/embed?video_id=' + matches[1] : false;
+						break;
+					case 'liveleak':
+						matches = content.match(/liveleak\.com\/(?:view\?i=)([^\/]+)/);
+						url     = matches ? 'http://www.liveleak.com/ll_embed?i=' + matches[1] : false;
 						break;
 					case 'metacafe':
 						matches = content.match(/metacafe\.com\/watch\/([^\/]+)/);
@@ -294,11 +399,13 @@ $(document).ready(function($) {
 				'<div>' +
 					'<label for="videotype">' + editor._('Video Type:') + '</label> ' +
 					'<select id="videotype">' +
-						'<option value="dailymotion">Dailymotion</option>' +
-						'<option value="metacafe">MetaCafe</option>' +
-						'<option value="veoh">Veoh</option>' +
-						'<option value="vimeo">Vimeo</option>' +
-						'<option value="youtube">Youtube</option>' +
+						'<option value="dailymotion">' + editor._('Dailymotion') + '</option>' +
+						'<option value="facebook">' + editor._('Facebook') + '</option>' +
+						'<option value="liveleak">' + editor._('LiveLeak') + '</option>' +
+						'<option value="metacafe">' + editor._('MetaCafe') + '</option>' +
+						'<option value="veoh">' + editor._('Veoh') + '</option>' +
+						'<option value="vimeo">' + editor._('Vimeo') + '</option>' +
+						'<option value="youtube">' + editor._('Youtube') + '</option>' +
 					'</select>'+
 				'</div>' +
 				'<div>' +
@@ -340,5 +447,65 @@ $(document).ready(function($) {
 					.remove('tr')
 					.remove('th')
 					.remove('td');
-});
 
+
+
+	/********************************************
+	 * Remove code and quote if in partial mode *
+	 ********************************************/
+	if(partialmode) {
+		$.sceditor.plugins.bbcode.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
+		$.sceditor.command
+			.set('code', {
+				exec: function() {
+					this.insert('[code]', '[/code]');
+				}
+			})
+			.set('php', {
+				exec: function() {
+					this.insert('[php]', '[/php]');
+				}
+			})
+			.set('image', {
+				exec:  function (caller) {
+					var	editor  = this,
+						content = $(this._('<form><div><label for="link">{0}</label> <input type="text" id="image" value="http://" /></div>' +
+							'<div><label for="width">{1}</label> <input type="text" id="width" size="2" /></div>' +
+							'<div><label for="height">{2}</label> <input type="text" id="height" size="2" /></div></form>',
+								this._("URL:"),
+								this._("Width (optional):"),
+								this._("Height (optional):")
+							))
+						.submit(function () {return false;});
+
+					content.append($(this._('<div><input type="button" class="button" value="Insert" /></div>',
+							this._("Insert")
+						)).click(function (e) {
+						var	$form = $(this).parent('form'),
+							val = $form.find('#image').val(),
+							width = $form.find('#width').val(),
+							height = $form.find('#height').val(),
+							attrs = '';
+
+						if(width && height) {
+							attrs = '=' + width + 'x' + height;
+						}
+
+						if(val && val !== 'http://') {
+							editor.wysiwygEditorInsertHtml('[img' + attrs + ']' + val + '[/img]');
+						}
+
+						editor.closeDropDown(true);
+						e.preventDefault();
+					}));
+
+					editor.createDropDown(caller, 'insertimage', content);
+				}
+			})
+			.set('quote', {
+				exec: function() {
+					this.insert('[quote]', '[/quote]');
+				}
+			});
+	}	 
+});

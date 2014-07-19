@@ -69,7 +69,7 @@ if(!$users_in)
 }
 $forum_permissions = forum_permissions();
 
-$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, invisible", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
+$query = $db->simple_select("users", "uid, username, displaygroup, usergroup, ignorelist, hideemail, receivepms, lastactive, lastvisit, invisible", "displaygroup IN ($groups_in) OR (displaygroup='0' AND usergroup IN ($groups_in)) OR uid IN ($users_in)", array('order_by' => 'username'));
 while($user = $db->fetch_array($query))
 {
 	// If this user is a moderator
@@ -154,19 +154,21 @@ foreach($usergroups as $usergroup)
 		{
 			if($user['lastactive'])
 			{
-				$user['lastactive'] = $lang->lastvisit_hidden;
+				$user['lastvisit'] = $lang->lastvisit_hidden;
 			}
 			else
 			{
-				$user['lastactive'] = $lang->lastvisit_never;
+				$user['lastvisit'] = $lang->lastvisit_never;
 			}
 		}
 		else
 		{
-			$user['lastactive'] = my_date('relative', $user['lastactive']);
+			$user['lastvisit'] = my_date('relative', $user['lastactive']);
 		}
 
 		$bgcolor = alt_trow();
+
+		$plugins->run_hooks('showteam_user');
 
 		// If the current group is a moderator group
 		if($usergroup['gid'] == 6 && !empty($user['forumlist']))

@@ -77,8 +77,8 @@ class CustomModeration extends Moderation
 		}
 
 		// Unserialize custom moderation
-		$post_options = unserialize($tool['postoptions']);
-		$thread_options = unserialize($tool['threadoptions']);
+		$post_options = my_unserialize($tool['postoptions']);
+		$thread_options = my_unserialize($tool['threadoptions']);
 
 		// If the tool type is a post tool, then execute the post moderation
 		if($tool['type'] == 'p')
@@ -457,6 +457,15 @@ class CustomModeration extends Moderation
 				foreach($tids as $tid)
 				{
 					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
+				}
+			}
+			if(!empty($thread_options['recountrebuild']))
+			{
+				require_once MYBB_ROOT.'/inc/functions_rebuild.php';
+
+				foreach($tids as $tid)
+				{
+					rebuild_thread_counters($tid);
 				}
 			}
 		}

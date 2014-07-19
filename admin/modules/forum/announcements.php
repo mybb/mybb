@@ -424,13 +424,13 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_forum_announcements_edit");
-
 	if(!trim($mybb->input['aid']))
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
 		admin_redirect("index.php?module=forum-announcements");
 	}
+
+	$plugins->run_hooks("admin_forum_announcements_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -776,8 +776,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_forum_announcements_delete");
-
 	$query = $db->simple_select("announcements", "*", "aid='{$mybb->input['aid']}'");
 	$announcement = $db->fetch_array($query);
 
@@ -793,6 +791,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=forum-announcements");
 	}
+
+	$plugins->run_hooks("admin_forum_announcements_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -859,7 +859,6 @@ if(!$mybb->input['action'])
 		}
 		$table->output($lang->global_announcements);
 	}
-
 
 	$table = new Table;
 	$table->construct_header($lang->announcement);

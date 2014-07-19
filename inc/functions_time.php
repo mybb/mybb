@@ -136,7 +136,6 @@ Thursday, October 4, 1582 (Julian) was followed immediately by Friday, October 1
 	return $day - 7 * floor($day / 7);
 }
 
-
 /**
  Checks for leap year, returns true if it is. No 2-digit year check. Also
  handles julian calendar correctly.
@@ -154,7 +153,6 @@ function _adodb_is_leap_year($year)
 
 	return true;
 }
-
 
 /**
  checks for leap year, returns true if it is. Has 2-digit year check
@@ -434,7 +432,6 @@ global $_month_table_normal,$_month_table_leaf;
 		);
 	}
 
-
 	$dow = adodb_dow($year,$month,$day);
 
 	return array(
@@ -463,7 +460,6 @@ function adodb_tz_offset($gmt,$isphp5)
 	break;
 }
 
-
 function adodb_gmdate($fmt,$d=false)
 {
 	return adodb_date($fmt,$d,true);
@@ -486,7 +482,6 @@ function adodb_date2($fmt, $d=false, $is_gmt=false)
 
 	return adodb_date($fmt,$d,$is_gmt);
 }
-
 
 /**
 	Return formatted date based on timestamp $d

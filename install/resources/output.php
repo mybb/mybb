@@ -118,7 +118,6 @@ END;
 		$this->print_footer();
 	}
 
-
 	function print_footer($nextact="")
 	{
 		global $lang, $footer_extra;

@@ -117,9 +117,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 		else
 		{
-			$mybb->input = array(
-				"perpage" => 20,
-			);
+			$mybb->input = array_merge($mybb->input, array('perpage' => 20));
 		}
 
 		// Write in our JS based field selector
@@ -331,10 +329,10 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 		else
 		{
-			$admin_view['conditions'] = unserialize($admin_view['conditions']);
-			$admin_view['fields'] = unserialize($admin_view['fields']);
-			$admin_view['profile_fields'] = unserialize($admin_view['custom_profile_fields']);
-			$mybb->input = $admin_view;
+			$admin_view['conditions'] = my_unserialize($admin_view['conditions']);
+			$admin_view['fields'] = my_unserialize($admin_view['fields']);
+			$admin_view['profile_fields'] = my_unserialize($admin_view['custom_profile_fields']);
+			$mybb->input = array_merge($mybb->input, $admin_view);
 
 			$mybb->input['isdefault'] = 0;
 			$default_view = fetch_default_view($type);
@@ -436,7 +434,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$conditions_callback($mybb->input, $form);
 		}
 
-
 		$buttons[] = $form->generate_submit_button($lang->save_view);
 		$form->output_submit_wrapper($buttons);
 
@@ -496,8 +493,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$query = $db->simple_select("adminviews", "*", $type_where);
 		while($admin_view = $db->fetch_array($query))
 		{
-			$fields = unserialize($admin_view['fields']);
-			$conditions = unserialize($admin_view['conditions']);
+			$fields = my_unserialize($admin_view['fields']);
+			$conditions = my_unserialize($admin_view['conditions']);
+
+			$admin_view['title'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['title']);
+			$admin_view['sortby'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortby']);
+			$admin_view['sortorder'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['sortorder']);
+			$admin_view['view_type'] = str_replace(']]>', ']]]]><![CDATA[>', $admin_view['view_type']);
+
 			$xml .= "\t<view vid=\"{$admin_view['vid']}\" uid=\"{$admin_view['uid']}\" type=\"{$admin_view['type']}\" visibility=\"{$admin_view['visibility']}\">\n";
 			$xml .= "\t\t<title><![CDATA[{$admin_view['title']}]]></title>\n";
 			$xml .= "\t\t<fields>\n";
@@ -515,6 +518,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 					$condition = serialize($condition);
 					$is_serialized = " is_serialized=\"1\"";
 				}
+				$condition = str_replace(']]>', ']]]]><![CDATA[>', $condition);
 				$xml .= "\t\t\t<condition name=\"{$name}\"{$is_serialized}><![CDATA[{$condition}]]></condition>\n";
 			}
 			$xml .= "\t\t</conditions>\n";
@@ -585,7 +589,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$default_add = " ({$lang->default})";
 			}
 
-
 			$title_string = "view_title_{$view['vid']}";
 
 			if($lang->$title_string)
@@ -630,7 +633,7 @@ function set_default_view($type, $vid)
 	global $mybb, $db;
 
 	$query = $db->simple_select("adminoptions", "defaultviews", "uid='{$mybb->user['uid']}'");
-	$default_views = unserialize($db->fetch_field($query, "defaultviews"));
+	$default_views = my_unserialize($db->fetch_field($query, "defaultviews"));
 	if(!$db->num_rows($query))
 	{
 		$create = true;
@@ -656,7 +659,7 @@ function fetch_default_view($type)
 {
 	global $mybb, $db;
 	$query = $db->simple_select("adminoptions", "defaultviews", "uid='{$mybb->user['uid']}'");
-	$default_views = unserialize($db->fetch_field($query, "defaultviews"));
+	$default_views = my_unserialize($db->fetch_field($query, "defaultviews"));
 	if(!is_array($default_views))
 	{
 		return false;

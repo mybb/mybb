@@ -138,7 +138,7 @@ if(!empty($report_type_db))
 	{
 		// Existing report
 		$report = $db->fetch_array($query);
-		$report['reporters'] = unserialize($report['reporters']);
+		$report['reporters'] = my_unserialize($report['reporters']);
 
 		if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
 		{

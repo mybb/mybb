@@ -55,6 +55,11 @@ class DefaultPage
 	public $extra_header = "";
 
 	/**
+	 * @var string Any additional messages to add after the flash messages are shown.
+	 */
+	public $extra_messages = array();
+
+	/**
 	 * @var string Show a post verify error
 	 */
 	public $show_post_verify_error = '';
@@ -68,7 +73,12 @@ class DefaultPage
 	{
 		global $mybb, $admin_session, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_header");
+		$args = array(
+			'this' => &$this,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks("admin_page_output_header", $args);
 
 		if(!$title)
 		{
@@ -101,7 +111,7 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
-		
+
 		echo "	<link rel=\"stylesheet\" href=\"jscripts/jqueryui/css/redmond/jquery-ui-1.10.4.custom.min.css\" />\n";
 		echo "	<script src=\"jscripts/jqueryui/js/jquery-ui-1.10.4.custom.min.js\"></script>\n";
 
@@ -151,6 +161,26 @@ lang.saved = \"{$lang->saved}\";
 			echo "</div>\n";
 			update_admin_session('flash_message', '');
 		}
+
+		if(!empty($this->extra_messages) && is_array($this->extra_messages))
+		{
+			foreach($this->extra_messages as $message)
+			{
+				switch($message['type'])
+				{
+					case 'success':
+					case 'error':
+						echo "<div id=\"flash_message\" class=\"{$message['type']}\">\n";
+						echo "{$message['message']}\n";
+						echo "</div>\n";
+						break;
+					default:
+						$this->output_error($message['message']);
+						break;
+				}
+			}
+		}
+
 		if($this->show_post_verify_error == true)
 		{
 			$this->output_error($lang->invalid_post_verify_key);
@@ -164,7 +194,12 @@ lang.saved = \"{$lang->saved}\";
 	{
 		global $mybb, $maintimer, $db, $lang, $plugins;
 
-		$plugins->run_hooks("admin_page_output_footer");
+		$args = array(
+			'this' => &$this,
+			'quit' => &$quit,
+		);
+
+		$plugins->run_hooks("admin_page_output_footer", $args);
 
 		$memory_usage = get_friendly_size(get_memory_usage());
 
@@ -310,7 +345,6 @@ lang.saved = \"{$lang->saved}\";
 		echo "</div>\n";
 	}
 
-
 	/**
 	 * Generate the login page.
 	 *
@@ -319,7 +353,15 @@ lang.saved = \"{$lang->saved}\";
 	 */
 	function show_login($message="", $class="success")
 	{
-		global $lang, $cp_style, $mybb;
+		global $plugins, $lang, $cp_style, $mybb;
+
+		$args = array(
+			'this' => &$this,
+			'message' => &$message,
+			'class' => &$class
+		);
+
+		$plugins->run_hooks('admin_page_show_login_start', $args);
 
 		$copy_year = COPY_YEAR;
 
@@ -333,7 +375,7 @@ lang.saved = \"{$lang->saved}\";
 			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
         }
 
-		print <<<EOF
+		$login_page .= <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
@@ -363,7 +405,7 @@ lang.saved = \"{$lang->saved}\";
 EOF;
 		if($message)
 		{
-			echo "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
+			$login_page .= "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
 		}
 		// Make query string nice and pretty so that user can go to his/her preferred destination
 		$query_string = '';
@@ -404,9 +446,26 @@ EOF;
 			$secret_pin = '';
 		}
 
+		$login_lang_string = $lang->enter_username_and_password;
+
+		switch($mybb->settings['username_method'])
+		{
+			case 0: // Username only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username);
+				break;
+			case 1: // Email only
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_email);
+				break;
+			case 2: // Username and email
+			default:
+				$login_lang_string = $lang->sprintf($login_lang_string, $lang->login_username_and_password);
+				break;
+		}
+
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
-print <<<EOF
-		<p>{$lang->enter_username_and_password}</p>
+
+		$login_page .= <<<EOF
+		<p>{$login_lang_string}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
@@ -416,7 +475,6 @@ print <<<EOF
 
 			<div class="label"{$login_label_width}><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
-
             {$secret_pin}
 		</div>
 		<p class="submit">
@@ -433,7 +491,16 @@ print <<<EOF
 </body>
 </html>
 EOF;
-	exit;
+
+		$args = array(
+			'this' => &$this,
+			'login_page' => &$login_page
+		);
+
+		$plugins->run_hooks('admin_page_show_login_end', $args);
+
+		echo $login_page;
+		exit;
 	}
 
 	/**
@@ -613,7 +680,6 @@ EOF;
 		return $build_menu;
 	}
 
-
 	/**
 	 * Build a navigation sub menu if we have one.
 	 *
@@ -734,7 +800,16 @@ EOF;
 	 */
 	function output_confirm_action($url, $message="", $title="")
 	{
-		global $lang;
+		global $lang, $plugins;
+
+		$args = array(
+			'this' => &$this,
+			'url' => &$url,
+			'message' => &$message,
+			'title' => &$title,
+		);
+
+		$plugins->run_hooks('admin_page_output_confirm_action', $args);
 
 		if(!$message)
 		{
@@ -742,6 +817,7 @@ EOF;
 		}
 		$this->output_header($title);
 		$form = new Form($url, 'post');
+
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$message}</p>\n";
 		echo "<br />\n";
@@ -750,6 +826,7 @@ EOF;
 		echo $form->generate_submit_button($lang->no, array("name" => "no", 'class' => 'button_no'));
 		echo "</p>\n";
 		echo "</div>\n";
+
 		$form->end();
 		$this->output_footer();
 	}
@@ -761,11 +838,70 @@ EOF;
 	 * @param string The language string for the editor.
 	 * @return string The build MyCode editor Javascript.
 	 */
-	function build_codebuttons_editor($bind, $editor_language)
+	function build_codebuttons_editor($bind, $editor_language, $smilies)
 	{
-		global $lang, $mybb;
+		global $lang, $mybb, $smiliecache, $cache;
 
-		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+		// Smilies
+		$emoticon = "";
+		$emoticons_enabled = "false";
+		if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+		{
+			$emoticon = ",emoticon";
+			$emoticons_enabled = "true";
+			if(!$smiliecount)
+			{
+				$smilie_cache = $cache->read("smilies");
+				$smiliecount = count($smilie_cache);
+			}
+
+			if(!$smiliecache)
+			{
+				if(!is_array($smilie_cache))
+				{
+					$smilie_cache = $cache->read("smilies");
+				}
+				foreach($smilie_cache as $smilie)
+				{
+					if($smilie['showclickable'] != 0)
+					{
+						$smiliecache[$smilie['find']] = $smilie['image'];
+					}
+				}
+			}
+
+			unset($smilie);
+
+			if(is_array($smiliecache))
+			{
+				reset($smiliecache);
+
+				$dropdownsmilies = "";
+				$moresmilies = "";
+				$i = 0;
+
+				foreach($smiliecache as $find => $image)
+				{
+					$find = htmlspecialchars_uni($find);
+					$image = htmlspecialchars_uni($image);
+					if(substr($image, 0, 4) != "http")
+					{
+						$image = $mybb->settings['bburl']."/".$image;
+					}
+					if($i < $mybb->settings['smilieinsertertot'])
+					{
+						$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					else
+					{
+						$moresmilies .= '"'.$find.'": "'.$image.'",';
+					}
+					++$i;
+				}
+			}
+		}
+
+		$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
 
 		if($mybb->settings['allowbasicmycode'] == 1)
 		{
@@ -815,51 +951,43 @@ EOF;
 
 		if($mybb->settings['allowcodemycode'] == 1)
 		{
-			$code = "code,";
+			$code = "code,php,";
+		}
+
+		if($mybb->user['sourceeditor'] == 1)
+		{
+			$sourcemode = "MyBBEditor.sourceMode(true);";
 		}
 
 		return <<<EOF
 
 <script type="text/javascript">
-$(function() {
-	$("#{$bind}").sceditor({
-		plugins: "bbcode",
-		style: "../jscripts/sceditor/editor_themes/mybb.css",
-		rtl: {$lang->settings['rtl']},
-        locale: "{$lang->settings['htmllang']}",
-		emoticons: {
-			// Emoticons to be included in the dropdown
-			dropdown: {
-				":s": "../images/smilies/confused.png",
-				":-/": "../images/smilies/undecided.png",
-				":)": "../images/smilies/smile.png",
-				";)": "../images/smilies/wink.png",
-				":D": "../images/smilies/biggrin.png",
-				":P": "../images/smilies/tongue.png",
-				":(": "../images/smilies/sad.png",
-				":@": "../images/smilies/angry.png",
-				":blush:": "../images/smilies/blush.png",
-			},
-			// Emoticons to be included in the more section
-			more: {
-				":angel:": "../images/smilies/angel.png",
-				":dodgy:": "../images/smilies/dodgy.png",
-				":exclamation:": "../images/smilies/exclamation.png",
-				":heart:": "../images/smilies/heart.png",
-				":huh:": "../images/smilies/huh.png",
-				":idea:": "../images/smilies/lightbulb.png",
-				":sleepy:": "../images/smilies/sleepy.png",
-				":cool:": "../images/smilies/cool.png",
-				":rolleyes:": "../images/smilies/rolleyes.png",
-				":shy:": "../images/smilies/shy.png",
-				":at:": "../images/smilies/at.png"
-			}
+var partialmode = {$mybb->settings['partialmode']},
+opt_editor = {
+	plugins: "bbcode",
+	style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
+	rtl: {$lang->settings['rtl']},
+	locale: "mybblang",
+	emoticonsEnabled: {$emoticons_enabled},
+	emoticons: {
+		// Emoticons to be included in the dropdown
+		dropdown: {
+			{$dropdownsmilies}
 		},
-		emoticonsCompat: true,
-        toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video,emoticon|{$list}{$code}quote|maximize,source",
-	});
-      
+		// Emoticons to be included in the more section
+		more: {
+			{$moresmilies}
+		}
+	},
+	emoticonsCompat: true,
+	toolbar: "{$basic1}{$align}{$font}{$size}{$color}{$removeformat}{$basic2}image,{$email}{$link}|video{$emoticon}|{$list}{$code}quote|maximize,source",
+};
+{$editor_language}
+$(function() {
+	$("#{$bind}").sceditor(opt_editor);
+
 	MyBBEditor = $("#{$bind}").sceditor("instance");
+	{$sourcemode}
 });
 </script>
 EOF;

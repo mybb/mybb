@@ -20,6 +20,8 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -36,6 +38,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -101,6 +104,8 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -117,6 +122,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -182,6 +188,8 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -198,6 +206,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[10]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -264,6 +273,8 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -280,6 +291,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[0]]></maxemails>
+		<emailfloodtime><![CDATA[0]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[1]]></canaddevents>
@@ -345,6 +357,8 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[0]]></caneditposts>
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
@@ -361,6 +375,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -426,6 +441,8 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -442,6 +459,7 @@
 		<cansendemail><![CDATA[1]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[1]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[1]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>
@@ -507,6 +525,8 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
+		<modthreads><![CDATA[0]]></modthreads>
+		<modposts><![CDATA[0]]></modposts>
 		<caneditposts><![CDATA[0]]></caneditposts>
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
@@ -523,6 +543,7 @@
 		<cansendemail><![CDATA[0]]></cansendemail>
 		<cansendemailoverride><![CDATA[0]]></cansendemailoverride>
 		<maxemails><![CDATA[5]]></maxemails>
+		<emailfloodtime><![CDATA[5]]></emailfloodtime>
 		<canviewmemberlist><![CDATA[0]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[0]]></canviewcalendar>
 		<canaddevents><![CDATA[0]]></canaddevents>

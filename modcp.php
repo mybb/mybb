@@ -11,19 +11,21 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'modcp.php');
 
-$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads";
-$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts";
+$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation,modcp_banuser_bangroups_hidden";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads,modcp_banuser_bangroups";
+$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts,modcp_nav_editprofile";
 $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults, modcp_nav_forums_posts";
-$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue";
+$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue,modcp_banuser_liftlist";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info,modcp_nav_announcements,modcp_modqueue_post_link";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned,modcp_modqueue_thread_link";
-$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
-$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions,modcp_nav_banning";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
-$templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
-$templatelist .= ",modcp_nav_editprofile,modcp_nav_banning,modcp_nav_warninglogs,modcp_nav_ipsearch,modcp_nav_users";
+$templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_bangroups_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
+$templatelist .= ",modcp_nav_warninglogs,modcp_nav_ipsearch,modcp_nav_users,modcp_announcements_day,modcp_announcements_month_start,modcp_announcements_month_end,modcp_announcements_announcement_expired,modcp_announcements_announcement_active";
+$templatelist .= ",modcp_modqueue_link_forum,modcp_modqueue_link_thread,usercp_profile_day,usercp_profile_away,modcp_ipsearch_result_regip,modcp_ipsearch_result_lastip,modcp_ipsearch_result_post,modcp_ipsearch_results_information,usercp_profile_profilefields_text";
+$templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -150,6 +152,7 @@ if($mybb->usergroup['issupermod'] != 1)
 	}
 	if($flist_reports)
 	{
+		$wflist_reports = "WHERE r.id3 IN (0{$flist_reports})";
 		$tflist_reports = " AND r.id3 IN (0{$flist_reports})";
 		$flist_reports = " AND id3 IN (0{$flist_reports})";
 	}
@@ -171,19 +174,35 @@ else
 
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
+$inactiveforums = get_inactive_forums();
 
 if($unviewableforums && !is_super_admin($mybb->user['uid']))
 {
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
 
-	$unviewableforums = str_replace("'", '', $unviewableforums);
-	$unviewableforums = explode(',', $unviewableforums);
+	$unviewablefids = explode(',', $unviewableforums);
+	foreach($unviewablefids as $key => $fid)
+	{
+		$unviewablefids[$key] = (int)$fid;
+	}
+	unset($fid);
 }
-else
+
+if($inactiveforums)
 {
-	$unviewableforums = array();
+	$flist .= " AND fid NOT IN ({$inactiveforums})";
+	$tflist .= " AND t.fid NOT IN ({$inactiveforums})";
+
+	$unviewablefids = explode(',', $inactiveforums);
+	foreach($unviewablefids as &$fid)
+	{
+		$fid = (int)$fid;
+	}
+	unset($fid);
 }
+
+$unviewableforums = $unviewablefids;
 
 if(!isset($collapsedimg['modcpforums']))
 {
@@ -430,7 +449,7 @@ if($mybb->input['action'] == "reports")
 
 			if($report['reporters'])
 			{
-				$reporters = unserialize($report['reporters']);
+				$reporters = my_unserialize($report['reporters']);
 
 				if(is_array($reporters))
 				{
@@ -587,8 +606,25 @@ if($mybb->input['action'] == "allreports")
 		$page = $mybb->get_input('page', 1);
 	}
 
-	$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
-	$warnings = $db->fetch_field($query, "count");
+	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+	{
+		$query = $db->simple_select("reportedcontent", "COUNT(rid) AS count");
+		$report_count = $db->fetch_field($query, "count");
+	}
+	else
+	{
+		$query = $db->simple_select('reportedcontent', 'id3', "type = 'post' OR type = ''");
+
+		$report_count = 0;
+		while($fid = $db->fetch_field($query, 'id3'))
+		{
+			if(is_moderator($fid, "canmanagereportedposts"))
+			{
+				++$report_count;
+			}
+		}
+		unset($fid);
+	}
 
 	if(isset($mybb->input['rid']))
 	{
@@ -604,7 +640,7 @@ if($mybb->input['action'] == "allreports")
 			$page = intval($result / $perpage) + 1;
 		}
 	}
-	$postcount = intval($warnings);
+	$postcount = intval($report_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -646,6 +682,7 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
+		{$wflist_reports}
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
@@ -882,7 +919,7 @@ if($mybb->input['action'] == "modlogs")
 		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 		{
-			$data = unserialize($logitem['data']);
+			$data = my_unserialize($logitem['data']);
 			if(!empty($data['uid']))
 			{
 				$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));
@@ -1227,24 +1264,28 @@ if($mybb->input['action'] == "new_announcement")
 
 	// Generate form elements
 	$startdateday = $enddateday = '';
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($startday == $i)
+		if($startday == $day)
 		{
-			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
+			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 		else
 		{
-			$startdateday .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
+			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 
-		if($endday == $i)
+		if($endday == $day)
 		{
-			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
+			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 		else
 		{
-			$enddateday .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
+			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 	}
 
@@ -1259,30 +1300,8 @@ if($mybb->input['action'] == "new_announcement")
 
 	$startdatemonth = $enddatemonth = '';
 
-	$startdatemonth .= "<option value=\"01\" {$startmonthsel['01']}>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" {$endmonthsel['01']}>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" {$startmonthsel['02']}>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" {$endmonthsel['02']}>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" {$startmonthsel['03']}>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" {$endmonthsel['03']}>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" {$startmonthsel['04']}>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" {$endmonthsel['04']}>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" {$startmonthsel['05']}>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" {$endmonthsel['05']}>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" {$startmonthsel['06']}>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" {$endmonthsel['06']}>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" {$startmonthsel['07']}>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" {$endmonthsel['07']}>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" {$startmonthsel['08']}>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" {$endmonthsel['08']}>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" {$startmonthsel['09']}>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" {$endmonthsel['09']}>{$lang->september}</option>\n";
-	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
-	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
-	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
-	$enddatemonth .= "<option value=\"11\" {$endmonthsel['11']}>{$lang->november}</option>\n";
-	$startdatemonth .= "<option value=\"12\" {$startmonthsel['12']}>{$lang->december}</option>\n";
-	$enddatemonth .= "<option value=\"12\" {$endmonthsel['12']}>{$lang->december}</option>\n";
+	eval("\$startdatemonth .= \"".$templates->get("modcp_announcements_month_start")."\";");
+	eval("\$enddatemonth .= \"".$templates->get("modcp_announcements_month_end")."\";");
 
 	$title = htmlspecialchars_uni($announcement['subject']);
 	$message = htmlspecialchars_uni($announcement['message']);
@@ -1643,24 +1662,28 @@ if($mybb->input['action'] == "edit_announcement")
 
 	// Generate form elements
 	$startdateday = $enddateday = '';
-	for($i = 1; $i <= 31; ++$i)
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($startday == $i)
+		if($startday == $day)
 		{
-			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
+			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 		else
 		{
-			$startdateday .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
+			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 
-		if($endday == $i)
+		if($endday == $day)
 		{
-			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = " selected=\"selected\"";
+			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 		else
 		{
-			$enddateday .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
+			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
 		}
 	}
 
@@ -1675,30 +1698,8 @@ if($mybb->input['action'] == "edit_announcement")
 
 	$startdatemonth = $enddatemonth = '';
 
-	$startdatemonth .= "<option value=\"01\" {$startmonthsel['01']}>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" {$endmonthsel['01']}>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" {$startmonthsel['02']}>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" {$endmonthsel['02']}>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" {$startmonthsel['03']}>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" {$endmonthsel['03']}>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" {$startmonthsel['04']}>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" {$endmonthsel['04']}>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" {$startmonthsel['05']}>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" {$endmonthsel['05']}>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" {$startmonthsel['06']}>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" {$endmonthsel['06']}>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" {$startmonthsel['07']}>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" {$endmonthsel['07']}>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" {$startmonthsel['08']}>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" {$endmonthsel['08']}>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" {$startmonthsel['09']}>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" {$endmonthsel['09']}>{$lang->september}</option>\n";
-	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
-	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
-	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
-	$enddatemonth .= "<option value=\"11\" {$endmonthsel['11']}>{$lang->november}</option>\n";
-	$startdatemonth .= "<option value=\"12\" {$startmonthsel['12']}>{$lang->december}</option>\n";
-	$enddatemonth .= "<option value=\"12\" {$endmonthsel['12']}>{$lang->december}</option>\n";
+	eval("\$startdatemonth .= \"".$templates->get("modcp_announcements_month_start")."\";");
+	eval("\$enddatemonth .= \"".$templates->get("modcp_announcements_month_end")."\";");
 
 	$title = htmlspecialchars_uni($announcement['subject']);
 	$message = htmlspecialchars_uni($announcement['message']);
@@ -1836,11 +1837,11 @@ if($mybb->input['action'] == "announcements")
 				$trow = alt_trow();
 				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
-					$icon = "<img src=\"{$theme['imgdir']}/minioff.png\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
 				}
 				else
 				{
-					$icon = "<img src=\"{$theme['imgdir']}/minion.png\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
 				}
 
 				$subject = htmlspecialchars_uni($announcement['subject']);
@@ -1890,10 +1891,10 @@ if($mybb->input['action'] == "do_modqueue")
 	$mybb->input['attachments'] = $mybb->get_input('attachments', 2);
 	if(!empty($mybb->input['threads']))
 	{
-		$mybb->input['threads'] = array_map("intval", array_keys($mybb->input['threads']));
+		$threads = array_map("intval", array_keys($mybb->input['threads']));
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $mybb->input['threads'])."){$flist_queue_threads}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $threads)."){$flist_queue_threads}");
 		while($thread = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['threads'][$thread['tid']]))
@@ -1926,7 +1927,7 @@ if($mybb->input['action'] == "do_modqueue")
 			{
 				foreach($threads_to_delete as $tid)
 				{
-						$moderation->delete_thread($tid);
+					$moderation->delete_thread($tid);
 				}
 				log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
 			}
@@ -1938,10 +1939,10 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['posts']))
 	{
-		$mybb->input['posts'] = array_map("intval", array_keys($mybb->input['posts']));
+		$posts = array_map("intval", array_keys($mybb->input['posts']));
 		// Fetch posts
 		$posts_to_approve = $posts_to_delete = array();
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $mybb->input['posts'])."){$flist_queue_posts}");
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $posts)."){$flist_queue_posts}");
 		while($post = $db->fetch_array($query))
 		{
 			if(!isset($mybb->input['posts'][$post['pid']]))
@@ -1986,13 +1987,13 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['attachments']))
 	{
-		$mybb->input['attachments'] = array_map("intval", array_keys($mybb->input['attachments']));
+		$attachments = array_map("intval", array_keys($mybb->input['attachments']));
 		$query = $db->query("
 			SELECT a.pid, a.aid
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE aid IN (".implode(",", $mybb->input['attachments'])."){$tflist_queue_attach}
+			WHERE aid IN (".implode(",", $attachments)."){$tflist_queue_attach}
 		");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -2092,7 +2093,7 @@ if($mybb->input['action'] == "modqueue")
 			$altbg = alt_trow();
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$thread['threadlink'] = get_thread_link($thread['tid']);
-			$thread['forumlink'] = get_forum_link($thread['fid']);
+			$forum_link = get_forum_link($thread['fid']);
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date('relative', $thread['dateline']);
 
@@ -2113,7 +2114,7 @@ if($mybb->input['action'] == "modqueue")
 			}
 
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
-			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
+			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
 
@@ -2211,8 +2212,8 @@ if($mybb->input['action'] == "modqueue")
 			$altbg = alt_trow();
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
-			$post['forumlink'] = get_forum_link($post['fid']);
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
+			$forum_link = get_forum_link($post['fid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date('relative', $post['dateline']);
 
@@ -2232,8 +2233,8 @@ if($mybb->input['action'] == "modqueue")
 				$profile_link = build_profile_link($post['username'], $post['uid']);
 			}
 
-			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
-			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
+			eval("\$thread = \"".$templates->get("modcp_modqueue_link_thread")."\";");
+			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
 		}
@@ -2737,18 +2738,21 @@ if($mybb->input['action'] == "editprofile")
 		$lang->current_custom_usertitle = '';
 	}
 
-	$bdaydaysel = '';
-	for($i = 1; $i <= 31; ++$i)
+	$bdaydaysel = $selected = '';
+	for($day = 1; $day <= 31; ++$day)
 	{
-		if($mybb->input['birthday_day'] == $i)
+		if($mybb->input['birthday_day'] == $day)
 		{
-			$bdaydaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+			$selected = "selected=\"selected\"";
 		}
 		else
 		{
-			$bdaydaysel .= "<option value=\"$i\">$i</option>\n";
+			$selected = '';
 		}
+
+		eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
 	}
+
 	$bdaymonthsel = array();
 	foreach(range(1, 12) as $month)
 	{
@@ -2791,18 +2795,21 @@ if($mybb->input['action'] == "editprofile")
 			}
 			$returndate = explode("-", $user['returndate']);
 		}
-		$returndatesel = '';
-		for($i = 1; $i <= 31; ++$i)
+		$returndatesel = $selected = '';
+		for($day = 1; $day <= 31; ++$day)
 		{
-			if($returndate[0] == $i)
+			if($returndate[0] == $day)
 			{
-				$returndatesel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+				$selected = "selected=\"selected\"";
 			}
 			else
 			{
-				$returndatesel .= "<option value=\"$i\">$i</option>\n";
+				$selected = '';
 			}
+
+			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
 		}
+
 		$returndatemonthsel = array();
 		foreach(range(1, 12) as $month)
 		{
@@ -2830,179 +2837,192 @@ if($mybb->input['action'] == "editprofile")
 	$requiredfields = '';
 	$customfields = '';
 	$mybb->input['profile_fields'] = $mybb->get_input('profile_fields', 2);
-	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
-	while($profilefield = $db->fetch_array($query))
-	{
-		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
-		$thing = explode("\n", $profilefield['type'], "2");
-		$type = $thing[0];
-		if(isset($thing[1]))
-		{
-			$options = $thing[1];
-		}
-		else
-		{
-			$options = '';
-		}
-		$field = "fid{$profilefield['fid']}";
-		$select = '';
-		if($errors)
-		{
-			if(isset($mybb->input['profile_fields'][$field]))
-			{
-				$userfield = $mybb->input['profile_fields'][$field];
-			}
-			else
-			{
-				$userfield = '';
-			}
-		}
-		else
-		{
-			$userfield = $user_fields[$field];
-		}
-		$code = '';
-		if($type == "multiselect")
-		{
-			if($errors)
-			{
-				$useropts = $userfield;
-			}
-			else
-			{
-				$useropts = explode("\n", $userfield);
-			}
-			if(is_array($useropts))
-			{
-				foreach($useropts as $key => $val)
-				{
-					$seloptions[$val] = $val;
-				}
-			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
 
-					$sel = "";
-					if($val == $seloptions[$val])
-					{
-						$sel = " selected=\"selected\"";
-					}
-					$select .= "<option value=\"$val\"$sel>$val</option>\n";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 3;
-				}
-				$code = "<select name=\"profile_fields[$field][]\" size=\"{$profilefield['length']}\" multiple=\"multiple\">$select</select>";
-			}
-		}
-		elseif($type == "select")
+	$pfcache = $cache->read('profilefields');
+
+	if(is_array($pfcache))
+	{
+		foreach($pfcache as $profilefield)
 		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
+			$thing = explode("\n", $profilefield['type'], "2");
+			$type = $thing[0];
+			if(isset($thing[1]))
 			{
-				foreach($expoptions as $key => $val)
-				{
-					$val = trim($val);
-					$val = str_replace("\n", "\\n", $val);
-					$sel = "";
-					if($val == $userfield)
-					{
-						$sel = " selected=\"selected\"";
-					}
-					$select .= "<option value=\"$val\"$sel>$val</option>";
-				}
-				if(!$profilefield['length'])
-				{
-					$profilefield['length'] = 1;
-				}
-				$code = "<select name=\"profile_fields[$field]\" size=\"{$profilefield['length']}\">$select</select>";
-			}
-		}
-		elseif($type == "radio")
-		{
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
-			{
-				foreach($expoptions as $key => $val)
-				{
-					$checked = "";
-					if($val == $userfield)
-					{
-						$checked = " checked=\"checked\"";
-					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
-				}
-			}
-		}
-		elseif($type == "checkbox")
-		{
-			if($errors)
-			{
-				$useropts = $userfield;
+				$options = $thing[1];
 			}
 			else
 			{
-				$useropts = explode("\n", $userfield);
+				$options = '';
 			}
-			if(is_array($useropts))
+			$field = "fid{$profilefield['fid']}";
+			$select = '';
+			if($errors)
 			{
-				foreach($useropts as $key => $val)
+				if(isset($mybb->input['profile_fields'][$field]))
 				{
-					$seloptions[$val] = $val;
+					$userfield = $mybb->input['profile_fields'][$field];
+				}
+				else
+				{
+					$userfield = '';
 				}
 			}
-			$expoptions = explode("\n", $options);
-			if(is_array($expoptions))
+			else
 			{
-				foreach($expoptions as $key => $val)
+				$userfield = $user_fields[$field];
+			}
+			$code = '';
+			if($type == "multiselect")
+			{
+				if($errors)
 				{
-					$checked = "";
-					if($val == $seloptions[$val])
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
 					{
-						$checked = " checked=\"checked\"";
+						$seloptions[$val] = $val;
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+
+						$sel = "";
+						if($val == $seloptions[$val])
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 3;
+					}
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
 				}
 			}
-		}
-		elseif($type == "textarea")
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$code = "<textarea name=\"profile_fields[$field]\" rows=\"6\" cols=\"30\" style=\"width: 95%\">$value</textarea>";
-		}
-		else
-		{
-			$value = htmlspecialchars_uni($userfield);
-			$maxlength = "";
-			if($profilefield['maxlength'] > 0)
+			elseif($type == "select")
 			{
-				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$val = trim($val);
+						$val = str_replace("\n", "\\n", $val);
+						$sel = "";
+						if($val == $userfield)
+						{
+							$sel = " selected=\"selected\"";
+						}
+
+						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+					}
+					if(!$profilefield['length'])
+					{
+						$profilefield['length'] = 1;
+					}
+
+					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+				}
 			}
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
+			elseif($type == "radio")
+			{
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $userfield)
+						{
+							$checked = " checked=\"checked\"";
+						}
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+					}
+				}
+			}
+			elseif($type == "checkbox")
+			{
+				if($errors)
+				{
+					$useropts = $userfield;
+				}
+				else
+				{
+					$useropts = explode("\n", $userfield);
+				}
+				if(is_array($useropts))
+				{
+					foreach($useropts as $key => $val)
+					{
+						$seloptions[$val] = $val;
+					}
+				}
+				$expoptions = explode("\n", $options);
+				if(is_array($expoptions))
+				{
+					foreach($expoptions as $key => $val)
+					{
+						$checked = "";
+						if($val == $seloptions[$val])
+						{
+							$checked = " checked=\"checked\"";
+						}
+
+						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+					}
+				}
+			}
+			elseif($type == "textarea")
+			{
+				$value = htmlspecialchars_uni($userfield);
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
+			}
+			else
+			{
+				$value = htmlspecialchars_uni($userfield);
+				$maxlength = "";
+				if($profilefield['maxlength'] > 0)
+				{
+					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				}
+
+				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+			}
+
+			if($profilefield['required'] == 1)
+			{
+				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+			}
+			else
+			{
+				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+			}
+			$altbg = alt_trow();
+			$code = "";
+			$select = "";
+			$val = "";
+			$options = "";
+			$expoptions = "";
+			$useropts = "";
+			$seloptions = "";
 		}
-		if($profilefield['required'] == 1)
-		{
-			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		else
-		{
-			eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
-		}
-		$altbg = alt_trow();
-		$code = "";
-		$select = "";
-		$val = "";
-		$options = "";
-		$expoptions = "";
-		$useropts = "";
-		$seloptions = "";
 	}
 	if($customfields)
 	{
@@ -3312,9 +3332,9 @@ if($mybb->input['action'] == "warninglogs")
 	$mybb->input['search'] = $mybb->get_input('search', 2);
 	if(!empty($mybb->input['filter']['username']))
 	{
-		$search['username'] = $db->escape_string($mybb->input['filter']['username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['username']}'");
-		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
+		$search_user = get_user_by_username($mybb->input['filter']['username']);
+
+		$mybb->input['filter']['uid'] = (int)$search_user['uid'];
 		$mybb->input['filter']['username'] = htmlspecialchars_uni($mybb->input['filter']['username']);
 	}
 	else
@@ -3337,9 +3357,9 @@ if($mybb->input['action'] == "warninglogs")
 	}
 	if(!empty($mybb->input['filter']['mod_username']))
 	{
-		$search['mod_username'] = $db->escape_string($mybb->input['filter']['mod_username']);
-		$query = $db->simple_select("users", "uid", "username='{$search['mod_username']}'");
-		$mybb->input['filter']['mod_uid'] = $db->fetch_field($query, "uid");
+		$mod_user = get_user_by_username($mybb->input['filter']['mod_username']);
+
+		$mybb->input['filter']['mod_uid'] = (int)$mod_user['uid'];
 		$mybb->input['filter']['mod_username'] = htmlspecialchars_uni($mybb->input['filter']['mod_username']);
 	}
 	else
@@ -3557,7 +3577,7 @@ if($mybb->input['action'] == "ipsearch")
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
 					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql}
+					WHERE {$post_ip_sql} AND visibility >= -1
 				");
 
 				$post_results = $db->fetch_field($query, "count");
@@ -3667,23 +3687,23 @@ if($mybb->input['action'] == "ipsearch")
 				{
 					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
 					{
-						$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
+						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 					}
 					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
 					{
-						$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 					}
 				}
 				elseif($ipaddress['regip'] == $ip_range)
 				{
-					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
+					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 				}
 				elseif($ipaddress['lastip'] == $ip_range)
 				{
-					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 				}
 				if($ip)
@@ -3712,7 +3732,7 @@ if($mybb->input['action'] == "ipsearch")
 			$query = $db->query("
 				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
 				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql}
+				WHERE {$post_ip_sql} AND visibility >= -1
 				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
@@ -3748,7 +3768,12 @@ if($mybb->input['action'] == "ipsearch")
 					{
 						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 					}
-					$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> {$lang->by} ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
+
+					$ipaddress['postlink'] = get_post_link($ipaddress['pid'], $ipaddress['tid']);
+					$ipaddress['subject'] = htmlspecialchars_uni($ipaddress['subject']);
+					$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
+
+					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
 				}
 			}
@@ -3768,9 +3793,12 @@ if($mybb->input['action'] == "ipsearch")
 			$lang->ipsearch_results = $lang->ipsearch;
 		}
 
+		$ipaddress = $ipaddress_url = $misc_info_link = '';
 		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], "/"))
 		{
-			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."'); return false;\">{$lang->info_on_ip}</a>)</div>";
+			$ipaddress = htmlspecialchars_uni($mybb->input['ipaddress']);
+			$ipaddress_url = urlencode($mybb->input['ipaddress']);
+			eval("\$misc_info_link = \"".$templates->get("modcp_ipsearch_results_information")."\";");
 		}
 
 		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
@@ -4272,23 +4300,24 @@ if($mybb->input['action'] == "banuser")
 	$liftlist = '';
 	foreach($bantimes as $time => $title)
 	{
-		$liftlist .= "<option value=\"{$time}\"";
+		$selected = '';
 		if(isset($banned['bantime']) && $banned['bantime'] == $time)
 		{
-			$liftlist .= " selected=\"selected\"";
+			$selected = " selected=\"selected\"";
 		}
-		if($time == '---' || !isset($banned['dateline']))
-		{
-			$liftlist .= ">{$title}</option>\n";
-		}
-		else
+
+		$thattime = '';
+		if($time != '---' && !isset($banned['dateline']))
 		{
 			$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $banned['dateline']));
-			$liftlist .= ">{$title} ({$thatime})</option>\n";
+			$thattime = " ({$thatime})";
 		}
+
+		eval("\$liftlist .= \"".$templates->get("modcp_banuser_liftlist")."\";");
 	}
 
-	$bangroups = '';
+	$bangroup_option = $bangroups = '';
+	$numgroups = 0;
 	$groupscache = $cache->read("usergroups");
 
 	foreach($groupscache as $key => $group)
@@ -4302,8 +4331,18 @@ if($mybb->input['action'] == "banuser")
 			}
 
 			$group['title'] = htmlspecialchars_uni($group['title']);
-			eval("\$bangroups .= \"".$templates->get("modcp_banuser_group")."\";");
+			eval("\$bangroup_option .= \"".$templates->get("modcp_banuser_bangroups_group")."\";");
+			++$numgroups;
 		}
+	}
+
+	if($numgroups > 1)
+	{
+		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups")."\";");
+	}
+	else
+	{
+		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
 	}
 
 	if(!empty($user['uid']))
@@ -4528,7 +4567,7 @@ if(!$mybb->input['action'])
 			// Edited a user or managed announcement?
 			if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
 			{
-				$data = unserialize($logitem['data']);
+				$data = my_unserialize($logitem['data']);
 				if($data['uid'])
 				{
 					$information = $lang->sprintf($lang->edited_user_info, htmlspecialchars_uni($data['username']), get_profile_link($data['uid']));

@@ -139,7 +139,7 @@ $mybb->session = &$session;
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
-$groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
+$groupzerogreater = array("pmquota", "maxpmrecipients", "maxreputationsday", "attachquota", "maxemails", "maxwarningsday", "maxposts", "edittimelimit", "canusesigxposts", "maxreputationsperthread");
 $displaygroupfields = array("title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostreplys", "canpostattachments", "canratethreads", "caneditposts", "candeleteposts", "candeletethreads", "caneditattachments", "canpostpolls", "canvotepolls", "cansearch");
 
@@ -186,8 +186,11 @@ else
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
 		}
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->get_input('username'))."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
+		$options = array(
+			'fields' => array('username', 'password', 'salt', 'loginkey')
+		);
+		$user = get_user_by_username($mybb->get_input('username'), $options);
+
 		if(!$user['uid'])
 		{
 			$output->print_error("The username you have entered appears to be invalid.");
@@ -222,31 +225,31 @@ else
 
 	if($mybb->user['uid'] == 0)
 	{
-		$output->print_header("Please Login", "errormsg", 0, 1);
+		$output->print_header($lang->please_login, "errormsg", 0, 1);
 
-		$output->print_contents('<p>Please enter your username and password to begin the upgrade process. You must be a valid forum administrator to perform the upgrade.</p>
+		$output->print_contents('<p>'.$lang->login_desc.'</p>
 <form action="upgrade.php" method="post">
 	<div class="border_wrapper">
 		<table class="general" cellspacing="0">
 		<thead>
 			<tr>
-				<th colspan="2" class="first last">Login</th>
+				<th colspan="2" class="first last">'.$lang->login.'</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="first">
-				<td class="first">Username:</td>
+				<td class="first">'.$lang->login_username.':</td>
 				<td class="last alt_col"><input type="text" class="textbox" name="username" size="25" maxlength="'.$mybb->settings['maxnamelength'].'" style="width: 200px;" /></td>
 			</tr>
 			<tr class="alt_row last">
-				<td class="first">Password:<br /><small>Please note that passwords are case sensitive.</small></td>
+				<td class="first">'.$lang->login_password.':<br /><small>'.$lang->login_password_desc.'</small></td>
 				<td class="last alt_col"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" /></td>
 			</tr>
 		</tbody>
 		</table>
 	</div>
 	<div id="next_button">
-		<input type="submit" class="submit_button" name="submit" value="Login" />
+		<input type="submit" class="submit_button" name="submit" value="'.$lang->login.'" />
 		<input type="hidden" name="action" value="do_login" />
 	</div>
 </form>');
@@ -256,7 +259,7 @@ else
 	}
 	else if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['cancp'] != 'yes')
 	{
-		$output->print_error("You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}\">here</a>. From there you will be able to log in again under your administrator account.");
+		$output->print_error($lang->sprintf($lang->no_permision, $mybb->user['logoutkey']));
 	}
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
@@ -573,11 +576,14 @@ function buildcaches()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
+	$cache->update_statistics();
 	$cache->update_moderators();
 	$cache->update_forums();
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
+	$cache->update_awaitingactivation();
 	$cache->update_mycode();
+	$cache->update_profilefields();
 	$cache->update_posticons();
 	$cache->update_update_check();
 	$cache->update_tasks();
@@ -731,7 +737,7 @@ function get_upgrade_store($title)
 
 	$query = $db->simple_select("upgrade_data", "*", "title='".$db->escape_string($title)."'");
 	$data = $db->fetch_array($query);
-	return unserialize($data['contents']);
+	return my_unserialize($data['contents']);
 }
 
 function add_upgrade_store($title, $contents)

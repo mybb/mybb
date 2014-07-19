@@ -64,7 +64,7 @@ $done_shutdown = 1;
 
 // Include the necessary contants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
-$groupzerogreater = array('pmquota', 'maxreputationsday', 'attachquota');
+$groupzerogreater = array('pmquota', 'maxpmrecipients', 'maxreputationsday', 'attachquota', 'maxemails', 'maxwarningsday', 'maxposts', 'edittimelimit', 'canusesigxposts', 'maxreputationsperthread');
 $displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 'canpostpolls', 'canvotepolls', 'cansearch');
 
@@ -122,7 +122,7 @@ if(class_exists('PDO'))
 	}
 }
 
-if(file_exists('lock'))
+if(file_exists('lock') && $mybb->dev_mode != true)
 {
 	$output->print_error($lang->locked);
 }
@@ -1709,8 +1709,8 @@ function insert_templates()
 	$query = $db->simple_select("themes", "stylesheets, properties", "tid='{$tid}'", array('limit' => 1));
 
 	$theme = $db->fetch_array($query);
-	$properties = unserialize($theme['properties']);
-	$stylesheets = unserialize($theme['stylesheets']);
+	$properties = my_unserialize($theme['properties']);
+	$stylesheets = my_unserialize($theme['stylesheets']);
 
 	$properties['templateset'] = $templateset;
 	unset($properties['inherited']['templateset']);
@@ -1811,23 +1811,27 @@ function configure()
 		if($_SERVER['HTTP_HOST'])
 		{
 			$hostname = $protocol.$_SERVER['HTTP_HOST'];
-			$cookiedomain = '.'.$_SERVER['HTTP_HOST'];
+			$cookiedomain = $_SERVER['HTTP_HOST'];
 		}
 		elseif($_SERVER['SERVER_NAME'])
 		{
 			$hostname = $protocol.$_SERVER['SERVER_NAME'];
-			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
+			$cookiedomain = $_SERVER['SERVER_NAME'];
 		}
 
-		if(substr($cookiedomain, 0, 5) == ".www.")
+		if(substr($cookiedomain, 0, 4) == "www.")
 		{
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
 
 		// IP addresses and hostnames are not valid
-		if($cookiedomain == '.localhost' || my_inet_pton($cookiedomain) === false || strpos($cookiedomain, '.') !== false)
+		if(my_inet_pton($cookiedomain) !== false || strpos($cookiedomain, '.') === false)
 		{
 			$cookiedomain = '';
+		}
+		else
+		{
+			$cookiedomain = ".{$cookiedomain}";
 		}
 
 		if($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != 80 && !preg_match("#:[0-9]#i", $hostname))
@@ -2022,7 +2026,7 @@ function create_admin_user()
 					if(!$condition['value']) continue;
 					if($condition['attributes']['is_serialized'] == 1)
 					{
-						$condition['value'] = unserialize($condition['value']);
+						$condition['value'] = my_unserialize($condition['value']);
 					}
 					$conditions[$condition['attributes']['name']] = $condition['value'];
 				}
@@ -2263,11 +2267,14 @@ function install_done()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
+	$cache->update_statistics();
 	$cache->update_forums();
 	$cache->update_moderators();
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
+	$cache->update_awaitingactivation();
 	$cache->update_mycode();
+	$cache->update_profilefields();
 	$cache->update_posticons();
 	$cache->update_spiders();
 	$cache->update_bannedips();

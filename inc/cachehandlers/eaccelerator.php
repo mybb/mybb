@@ -66,7 +66,7 @@ class eacceleratorCacheHandler
 			return false;
 		}
 
-		return @unserialize($data);
+		return my_unserialize($data);
 	}
 
 	/**

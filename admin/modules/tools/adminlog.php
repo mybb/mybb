@@ -31,13 +31,14 @@ $plugins->run_hooks("admin_tools_adminlog_begin");
 
 if($mybb->input['action'] == 'prune')
 {
-	$plugins->run_hooks("admin_tools_adminlog_prune");
-
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=tools-adminlog");
 	}
+
+	$plugins->run_hooks("admin_tools_adminlog_prune");
+
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
@@ -135,8 +136,6 @@ if($mybb->input['action'] == 'prune')
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_adminlog_start");
-
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
 
@@ -147,6 +146,8 @@ if(!$mybb->input['action'])
 	}
 
 	$where = '';
+
+	$plugins->run_hooks("admin_tools_adminlog_start");
 
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])
@@ -233,7 +234,7 @@ if(!$mybb->input['action'])
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 
-		$logitem['data'] = unserialize($logitem['data']);
+		$logitem['data'] = my_unserialize($logitem['data']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		$logitem['dateline'] = my_date('relative', $logitem['dateline']);
 
@@ -470,7 +471,7 @@ function get_admin_log_action($logitem)
 			$logitem['data'][0] = '...'.substr($logitem['data'][0], -20);
 			break;
 		case 'admin_log_tools_optimizedb_': // Optimize DB
-			$logitem['data'][0] = @implode(', ', unserialize($logitem['data'][0]));
+			$logitem['data'][0] = @implode(', ', my_unserialize($logitem['data'][0]));
 			break;
 		case 'admin_log_tools_recount_rebuild_': // Recount and rebuild
 			$detail_lang_string = $lang_string.$logitem['data'][0];

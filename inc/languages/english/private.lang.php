@@ -134,6 +134,7 @@ $l['you_forwarded'] = "You forwarded this message {1}";
 $l['select_from_buddies'] = "Select from Buddies";
 $l['no_readmessages'] = "You currently do not have any read messages being tracked.";
 $l['no_unreadmessages'] = "You currently do not have any unread messages being tracked.";
+$l['stop_tracking_all'] = "Stop Tracking all messages";
 
 $l['enter_keywords'] = "Enter Keywords";
 $l['advanced_search'] = "Advanced Search";
@@ -170,6 +171,7 @@ $l['error_recipientpmturnedoff'] = "{1} has chosen not to receive private messag
 $l['error_pmsturnedoff'] = "You currently have private messages disabled in your profile.<br />To be able to use the private messaging system this setting must be enabled.";
 $l['error_recipientignoring'] = "We are sorry but we cannot process your private message to {1}. You do not have permission to perform this action.";
 $l['error_pm_already_submitted'] = "You have already submitted the same private message to the same recipient within the last 5 minutes.";
+$l['error_nopms'] = "You must have one or more private messages in order to access this function.";
 
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";
 $l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
@@ -182,6 +184,7 @@ $l['error_invalidsearch'] = "An invalid search was specified.  Please go back an
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
 $l['redirect_pmstrackingcanceled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
+$l['redirect_allpmstrackingstopped'] = "Tracking of all read PMs has been stopped.";
 $l['redirect_pmsmoved'] = "The selected private messages have been moved.";
 $l['redirect_pmsdeleted'] = "The selected private messages have been deleted.";
 $l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";

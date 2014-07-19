@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'managegroup.php');
 
 $templatelist = "managegroup_leaders_bit,managegroup_leaders,postbit_pm,postbit_email,managegroup_user_checkbox,managegroup_user,managegroup_adduser,managegroup_removeusers,managegroup,managegroup_joinrequests_request,managegroup_joinrequests";
-$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage_prevpage,multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
+$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 
@@ -56,8 +56,12 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("managegroup_do_add_start");
 
-	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->get_input('username'))."'", array("limit" => 1));
-	$user = $db->fetch_array($query);
+	$options = array(
+		'fields' => array('additionalgroups', 'usergroup')
+	);
+
+	$user = get_user_by_username($mybb->get_input('username'), $options);
+
 	if($user['uid'])
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
@@ -90,8 +94,12 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("managegroup_do_invite_start");
 
-	$query = $db->simple_select("users", "uid, additionalgroups, usergroup", "username = '".$db->escape_string($mybb->get_input('inviteusername'))."'", array("limit" => 1));
-	$user = $db->fetch_array($query);
+	$options = array(
+		'fields' => array('additionalgroups', 'usergroup', 'language')
+	);
+
+	$user = get_user_by_username($mybb->get_input('inviteusername'), $options);
+
 	if($user['uid'])
 	{
 		$additionalgroups = explode(',', $user['additionalgroups']);
@@ -116,23 +124,20 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 				);
 				$db->insert_query("joinrequests", $joinrequest);
 
+				$lang_var = 'invite_pm_message';
 				if($mybb->settings['deleteinvites'] != 0)
 				{
-					$expires = $lang->sprintf($lang->invite_expires, $mybb->settings['deleteinvites']);
+					$lang_var .= '_expires';
 				}
-				else
-				{
-					$expires = $lang->does_not_expire;
-				}
-
-				$lang->invite_pm_subject = $lang->sprintf($lang->invite_pm_subject, $usergroup['title']);
-				$lang->invite_pm_message = $lang->sprintf($lang->invite_pm_message, $usergroup['title'], $mybb->settings['bburl'], $expires);
 
 				$pm = array(
-					'subject' => $lang->invite_pm_subject,
-					'message' => $lang->invite_pm_message,
-					'touid' => $user['uid']
+					'subject' => array('invite_pm_subject', $usergroup['title']),
+					'message' => array($lang_var, $usergroup['title'], $mybb->settings['bburl'], $mybb->settings['deleteinvites']),
+					'touid' => $user['uid'],
+					'language' => $user['language'],
+					'language_file' => 'managegroup'
 				);
+
 				send_pm($pm, $mybb->user['uid'], 1);
 
 				$plugins->run_hooks("managegroup_do_invite_end");

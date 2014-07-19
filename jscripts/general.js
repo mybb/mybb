@@ -12,7 +12,7 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
-		
+
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
 			$(this).change(function() {
@@ -26,7 +26,7 @@ var MyBB = {
 		});
 
 		// Initialise "initial focus" field if we have one
-		var initialfocus = $("input.initial_focus");
+		var initialfocus = $(".initial_focus");
 		if(initialfocus.length > 0)
 		{
 			initialfocus.focus();
@@ -34,7 +34,7 @@ var MyBB = {
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
-			mark_read_imgs = $("img.ajax_mark_read");
+			mark_read_imgs = $(".ajax_mark_read");
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
@@ -75,7 +75,7 @@ var MyBB = {
 		if(!options) options = { fadeDuration: 250, zIndex: 5 }
 		if(root != true)
 			url = rootpath + url;
-		
+
 		$.get(url, function(html)
 		{
 			$(html).appendTo('body').modal(options);
@@ -212,7 +212,7 @@ var MyBB = {
 				}
 			}
 		});
-		
+
 		return false;
 	},
 
@@ -333,9 +333,9 @@ var MyBB = {
 		}
 	},
 
-	dismissPMNotice: function()
+	dismissPMNotice: function(bburl)
 	{
-		var pm_notice = $("#content").find("div#pm_notice");
+		var pm_notice = $("#content").find("#pm_notice");
 		if(!pm_notice)
 		{
 			return false;
@@ -349,7 +349,7 @@ var MyBB = {
 		$.ajax(
 		{
 			type: 'post',
-			url: 'private.php?action=dismiss_notice',
+			url: bburl + 'private.php?action=dismiss_notice',
 			data: { ajax: 1, my_post_key: my_post_key },
 			async: true
 		});
@@ -384,7 +384,7 @@ var MyBB = {
 
 		return false;
 	},
-	
+
 	deleteAnnouncement: function(data)
 	{
 		$.prompt(announcement_quickdelete_confirm, {
@@ -408,7 +408,7 @@ var expandables = {
 
 	init: function()
 	{
-		var expanders = $("div.expcolimage img.expander");
+		var expanders = $(".expcolimage .expander");
 		if(expanders.length)
 		{
 			expanders.each(function()
@@ -474,6 +474,7 @@ var expandables = {
 				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
+				element.parent().parent('td').removeClass('tcat_collapse_collapsed');
 				element.parent().parent('.thead').removeClass('thead_collapsed');
 				this.saveCollapsed(controls);
 			}
@@ -484,6 +485,7 @@ var expandables = {
 				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
+				element.parent().parent('td').addClass('tcat_collapse_collapsed');
 				element.parent().parent('.thead').addClass('thead_collapsed');
 				this.saveCollapsed(controls, 1);
 			}

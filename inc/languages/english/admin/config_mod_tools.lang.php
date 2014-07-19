@@ -41,6 +41,8 @@ $l['error_invalid_thread_tool'] = "The specified thread tool does not exist.";
 $l['general_options'] = "General Options";
 $l['short_description'] = "Short Description";
 $l['available_in_forums'] = "Available in forums";
+$l['available_to_groups'] = "Available to groups";
+$l['show_confirmation'] = "Show Confirmation Page";
 $l['save_thread_tool'] = "Save Thread Tool";
 
 $l['title'] = "Title";
@@ -81,6 +83,7 @@ $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
 $l['delete_redirects'] = "Delete redirects?";
 $l['remove_subscriptions'] = "Remove thread subscriptions?";
+$l['recount_rebuild'] = "Recount & Rebuild?";
 $l['apply_thread_prefix'] = "Apply thread prefix?";
 $l['new_subject'] = "New subject?";
 $l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
@@ -124,5 +127,6 @@ $l['private_message_subject_desc'] = 'Enter the subject of the Private Message.'
 $l['error_missing_title'] = "Please enter a name for this tool.";
 $l['error_missing_description'] = "Please enter a short description for this tool.";
 $l['error_no_forums_selected'] = "Please select the forums in which this tool will be available.";
+$l['error_no_groups_selected'] = "Please select the groups to which this tool will be available.";
 $l['error_forum_is_category'] = "You can't pick a category-type forum as a destination forum.";
 ?>

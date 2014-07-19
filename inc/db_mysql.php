@@ -441,7 +441,6 @@ class DB_MySQL
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Return a result array for a query.
 	 *
@@ -590,7 +589,6 @@ class DB_MySQL
 			return false;
 		}
 	}
-
 
 	/**
 	 * Returns the number of affected rows in a query.
@@ -762,6 +760,11 @@ class DB_MySQL
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$array[$field] = $value;
 			}
 			else
@@ -806,6 +809,11 @@ class DB_MySQL
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
+					if($value[0] != 'X') // Not escaped?
+					{
+						$value = $this->escape_binary($value);
+					}
+				
 					$values[$field] = $value;
 				}
 				else
@@ -856,6 +864,11 @@ class DB_MySQL
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$query .= $comma."`".$field."`={$value}";
 			}
 			else
@@ -1239,6 +1252,11 @@ class DB_MySQL
 		{
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$values .= $comma."`".$column."`=".$value;
 			}
 			else

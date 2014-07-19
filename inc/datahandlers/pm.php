@@ -54,6 +54,13 @@ class PMDataHandler extends DataHandler
 	public $pmid = 0;
 
 	/**
+	 * Values to be returned after inserting a PM.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies a private message subject.
 	 *
 	 * @return boolean True when valid, false when invalid.
@@ -606,6 +613,8 @@ class PMDataHandler extends DataHandler
 			);
 		}
 
+		$this->pmid = array();
+
 		// Save a copy of the PM for each of our recipients
 		foreach($pm['recipients'] as $recipient)
 		{
@@ -669,7 +678,7 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
 			$plugins->run_hooks("datahandler_pm_insert", $this);
-			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
+			$this->pmid[] = $db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If PM noices/alerts are on, show!
 			if($recipient['pmnotice'] == 1)
@@ -731,9 +740,14 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Return back with appropriate data
-		return array(
-			"messagesent" => 1
+		$this->return_values = array(
+			"messagesent" => 1,
+			"pmids" => $this->pmid
 		);
+
+		$plugins->run_hooks("datahandler_pm_insert_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>

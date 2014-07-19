@@ -39,17 +39,11 @@ function username_exists($username)
 {
 	global $db;
 
-	$username = $db->escape_string(my_strtolower($username));
-	$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+	$options = array(
+		'username_method' => 2
+	);
 
-	if($db->fetch_field($query, 'user') == 1)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (bool)get_user_by_username($username, $options);
 }
 
 /**
@@ -63,32 +57,19 @@ function validate_password_from_username($username, $password)
 {
 	global $db, $mybb;
 
-	$username = $db->escape_string(my_strtolower($username));
-	switch($mybb->settings['username_method'])
-	{
-		case 0:
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$username."'", array('limit' => 1));
-			break;
-		case 1:
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(email)='".$username."'", array('limit' => 1));
-			break;
-		case 2:
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
-			break;
-		default:
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$username."'", array('limit' => 1));
-			break;
-	}
+	$options = array(
+		'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
+		'username_method' => $mybb->settings['username_method'],
+	);
 
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($username, $options);
+
 	if(!$user['uid'])
 	{
 		return false;
 	}
-	else
-	{
-		return validate_password_from_uid($user['uid'], $password, $user);
-	}
+
+	return validate_password_from_uid($user['uid'], $password, $user);
 }
 
 /**
@@ -449,7 +430,7 @@ function usercp_menu_messenger()
 		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
 	}
 
-	$folderlinks = '';
+	$folderlinks = $folder_id = $folder_name = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -468,7 +449,10 @@ function usercp_menu_messenger()
 			$class = "usercp_nav_pmfolder";
 		}
 
-		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
+		$folder_id = $folderinfo[0];
+		$folder_name = $folderinfo[1];
+
+		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
 	}
 
 	if(!isset($collapsedimg['usercppms']))
@@ -677,5 +661,67 @@ function get_pm_folder_name($fid, $name="")
 		default:
 			return $lang->folder_untitled;
 	}
+}
+
+/**
+ * Generates a security question for registration.
+ *
+ * @return string The question session id.
+ */
+function generate_question()
+{
+	global $db;
+
+	$query = $db->query("
+		SELECT qid, shown
+		FROM ".TABLE_PREFIX."questions
+		WHERE active='1'
+		ORDER BY RAND()
+		LIMIT 1
+	");
+	$question = $db->fetch_array($query);
+
+	if(!$db->num_rows($query))
+	{
+		// No active questions exist
+		return false;
+	}
+	else
+	{
+		$sessionid = random_str(32);
+
+		$sql_array = array(
+			"sid" => $sessionid,
+			"qid" => $question['qid'],
+			"dateline" => TIME_NOW
+		);
+		$db->insert_query("questionsessions", $sql_array);
+
+		$update_question = array(
+			"shown" => $question['shown'] + 1
+		);
+		$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
+
+		return $sessionid;
+	}
+}
+
+/**
+ * Check whether we can show the Purge Spammer Feature
+ *
+ * @param int The users post count
+ * @param int The usergroup of our user
+ * @return boolean Whether or not to show the feature
+ */
+function purgespammer_show($post_count, $usergroup)
+{
+		global $mybb, $cache;
+
+		// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
+		$groups = explode(",", $mybb->settings['purgespammergroups']);
+		$bangroup = $mybb->settings['purgespammerbangroup'];
+		$usergroups = $cache->read('usergroups');
+
+		return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
 }
 ?>

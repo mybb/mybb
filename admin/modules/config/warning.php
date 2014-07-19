@@ -152,7 +152,7 @@ if($mybb->input['action'] == "add_level")
 	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -185,7 +185,7 @@ if($mybb->input['action'] == "add_level")
 		</dd>
 	</dl>
 	<script type=\"text/javascript\">
-	checkAction();
+	checkAction('action');
 	</script>";
 	$form_container->output_row($lang->action_to_be_taken, $lang->action_to_be_taken_desc, $actions);
 	$form_container->end();
@@ -200,8 +200,6 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$plugins->run_hooks("admin_config_warning_edit_level");
-
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -211,6 +209,8 @@ if($mybb->input['action'] == "edit_level")
 		flash_message($lang->error_invalid_warning_level, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_edit_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -281,10 +281,11 @@ if($mybb->input['action'] == "edit_level")
 	}
 	else
 	{
-		$mybb->input = array(
-			"percentage" => $level['percentage'],
+		$mybb->input = array_merge($mybb->input, array(
+				"percentage" => $level['percentage'],
+			)
 		);
-		$action = unserialize($level['action']);
+		$action = my_unserialize($level['action']);
 		if($action['type'] == 1)
 		{
 			$mybb->input['action_1_usergroup'] = $action['usergroup'];
@@ -347,7 +348,7 @@ if($mybb->input['action'] == "edit_level")
 	}
 	</script>
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -360,7 +361,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"2\" {$action_checked[2]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->suspend_posting_privileges}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -369,7 +370,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"3\" {$action_checked[3]} class=\"actions_check\" onclick=\"checkAction('action');\" style=\"vertical-align: middle;\" /> <strong>{$lang->moderate_posts}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -380,7 +381,7 @@ if($mybb->input['action'] == "edit_level")
 		</dd>
 	</dl>
 	<script type=\"text/javascript\">
-	checkAction();
+	checkAction('action');
 	</script>";
 	$form_container->output_row($lang->action_to_be_taken, $lang->action_to_be_taken_desc, $actions);
 	$form_container->end();
@@ -395,8 +396,6 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$plugins->run_hooks("admin_config_warning_delete_level");
-
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -412,6 +411,8 @@ if($mybb->input['action'] == "delete_level")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_delete_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -443,7 +444,7 @@ if($mybb->input['action'] == "add_type")
 			$errors[] = $lang->error_missing_type_title;
 		}
 
-		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] < 0)
+		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] <= 0)
 		{
 			$errors[] = $lang->sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
 		}
@@ -469,10 +470,11 @@ if($mybb->input['action'] == "add_type")
 	}
 	else
 	{
-		$mybb->input = array(
-			"points" => "2",
-			"expire_time" => 1,
-			"expire_period" => "days"
+		$mybb->input = array_merge($mybb->input, array(
+				"points" => "2",
+				"expire_time" => 1,
+				"expire_period" => "days"
+			)
 		);
 	}
 
@@ -511,8 +513,6 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$plugins->run_hooks("admin_config_warning_edit_type");
-
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -522,6 +522,8 @@ if($mybb->input['action'] == "edit_type")
 		flash_message($lang->error_invalid_warning_type, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_edit_type");
 
 	if($mybb->request_method == "post")
 	{
@@ -557,11 +559,12 @@ if($mybb->input['action'] == "edit_type")
 	else
 	{
 		$expiration = fetch_friendly_expiration($type['expirationtime']);
-		$mybb->input = array(
-			"title" => $type['title'],
-			"points" => $type['points'],
-			"expire_time" => $expiration['time'],
-			"expire_period" => $expiration['period']
+		$mybb->input = array_merge($mybb->input, array(
+				"title" => $type['title'],
+				"points" => $type['points'],
+				"expire_time" => $expiration['time'],
+				"expire_period" => $expiration['period']
+			)
 		);
 	}
 
@@ -606,8 +609,6 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$plugins->run_hooks("admin_config_warning_delete_type");
-
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -623,6 +624,8 @@ if($mybb->input['action'] == "delete_type")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
+
+	$plugins->run_hooks("admin_config_warning_delete_type");
 
 	if($mybb->request_method == "post")
 	{
@@ -660,7 +663,7 @@ if($mybb->input['action'] == "levels")
 	while($level = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong>{$level['percentage']}%</strong>", array("class" => "align_center"));
-		$action = unserialize($level['action']);
+		$action = my_unserialize($level['action']);
 		$period = fetch_friendly_expiration($action['length']);
 
 		// Get the right language for the ban period

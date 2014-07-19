@@ -75,7 +75,6 @@ class FeedGenerator
 		$this->items[] = $item;
 	}
 
-
 	/**
 	 * Generate and echo XML for the feed.
 	 *

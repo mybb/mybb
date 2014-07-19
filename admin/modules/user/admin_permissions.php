@@ -43,11 +43,9 @@ $plugins->run_hooks("admin_user_admin_permissions_begin");
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_admin_permissions_delete");
-
-	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
+	if(is_super_admin($uid))
 	{
-		flash_message($lang->error_delete_super_admin, 'error');
+		flash_message($lang->error_super_admin, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
 
@@ -68,6 +66,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_delete_invalid_uid, 'error');
 		admin_redirect("index.php?module=user-admin_permissions");
 	}
+
+	$plugins->run_hooks("admin_user_admin_permissions_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -109,6 +109,12 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
+	if(is_super_admin($uid))
+	{
+		flash_message($lang->error_super_admin, 'error');
+		admin_redirect("index.php?module=user-admin_permissions");
+	}
+
 	$plugins->run_hooks("admin_user_admin_permissions_edit");
 
 	if($mybb->request_method == "post")
@@ -218,7 +224,7 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$query = $db->simple_select("adminoptions", "permissions", "uid='0'");
-		$permission_data = unserialize($db->fetch_field($query, "permissions"));
+		$permission_data = my_unserialize($db->fetch_field($query, "permissions"));
 		$page->add_breadcrumb_item($lang->default_permissions);
 		$title = $lang->default;
 	}
@@ -485,14 +491,17 @@ if(!$mybb->input['action'])
 		$table->construct_cell(my_date('relative', $admin['lastactive']), array("class" => "align_center"));
 
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
-		if($admin['permissions'] != "")
+		if(!is_super_admin($admin['uid']))
 		{
-			$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
-			$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$admin['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
-		}
-		else
-		{
-			$popup->add_item($lang->set_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			if($admin['permissions'] != "")
+			{
+				$popup->add_item($lang->edit_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+				$popup->add_item($lang->revoke_permissions, "index.php?module=user-admin_permissions&amp;action=delete&amp;uid={$admin['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
+			}
+			else
+			{
+				$popup->add_item($lang->set_permissions, "index.php?module=user-admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			}
 		}
 		$popup->add_item($lang->view_log, "index.php?module=tools-adminlog&amp;uid={$admin['uid']}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));

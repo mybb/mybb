@@ -86,7 +86,7 @@ if($loadstyle == "def='1'")
 	$theme = $cache->read('default_theme');
 }
 
-$theme = @array_merge($theme, unserialize($theme['properties']));
+$theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
@@ -156,6 +156,8 @@ if($mybb->input['action'] == "get_users")
 		"limit" => $limit
 	);
 
+	$plugins->run_hooks("xmlhttp_get_users_start");
+
 	$query = $db->simple_select("users", "uid, username", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
 	if($limit == 1)
 	{
@@ -172,6 +174,8 @@ if($mybb->input['action'] == "get_users")
 			$data[] = array('id' => $user['username'], 'text' => $user['username']);
 		}
 	}
+
+	$plugins->run_hooks("xmlhttp_get_users_end");
 
 	echo json_encode($data);
 	exit;
@@ -204,7 +208,6 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			xmlhttp_error($lang->thread_doesnt_exist);
 		}
 	}
-
 	// We're editing a thread subject.
 	else if($mybb->get_input('tid', 1))
 	{
@@ -227,6 +230,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		exit;
 	}
+
 	// Fetch the specific forum this thread/post is in.
 	$forum = get_forum($thread['fid']);
 
@@ -238,6 +242,8 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
+
+	$plugins->run_hooks("xmlhttp_edit_subject_start");
 
 	// If this user is not a moderator with "caneditposts" permissions.
 	if(!is_moderator($forum['fid'], "caneditposts"))
@@ -322,6 +328,8 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
 
+	$plugins->run_hooks("xmlhttp_edit_subject_end");
+
 	$mybb->input['value'] = $parser->parse_badwords($mybb->get_input('value'));
 
 	// Spit the subject back to the browser.
@@ -357,6 +365,8 @@ else if($mybb->input['action'] == "edit_post")
 	// Fetch forum permissions.
 	$forumpermissions = forum_permissions($forum['fid']);
 
+	$plugins->run_hooks("xmlhttp_edit_post_start");
+
 	// If this user is not a moderator with "caneditposts" permissions.
 	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
@@ -388,6 +398,9 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 	}
+
+	$plugins->run_hooks("xmlhttp_edit_post_end");
+
 	if($mybb->get_input('do') == "get_post")
 	{
 		// Send our headers.
@@ -535,6 +548,8 @@ else if($mybb->input['action'] == "edit_post")
 			$editedmsg_response = str_replace(array("\r", "\n"), "", $editedmsg);
 		}
 
+		$plugins->run_hooks("xmlhttp_update_post");
+
 		echo json_encode(array("message" => $post['message']."\n", "editedmsg" => $editedmsg_response));
 		exit;
 	}
@@ -549,6 +564,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}
 	// Divide up the cookie using our delimeter
 	$multiquoted = explode("|", $mybb->cookies['multiquote']);
+
+	$plugins->run_hooks("xmlhttp_get_multiquoted_start");
 
 	// No values - exit
 	if(!is_array($multiquoted))
@@ -567,9 +584,14 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Fetch unviewable forums
 	$unviewable_forums = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if($unviewable_forums)
 	{
 		$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+	}
+	if($inactiveforums)
+	{
+		$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 	}
 	$message = '';
 
@@ -588,13 +610,15 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	require_once MYBB_ROOT."inc/functions_posting.php";
 
+	$plugins->run_hooks("xmlhttp_get_multiquoted_intermediate");
+
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
 		SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, t.fid, p.visible, u.username AS userusername
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums}
+		WHERE {$from_tid}p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums}
 		ORDER BY p.dateline
 	");
 	while($quoted_post = $db->fetch_array($query))
@@ -613,6 +637,9 @@ else if($mybb->input['action'] == "get_multiquoted")
 
 	// Send our headers.
 	header("Content-type: application/json; charset={$charset}");
+
+	$plugins->run_hooks("xmlhttp_get_multiquoted_end");
+
 	echo json_encode(array("message" => $message));
 	exit;
 }
@@ -632,6 +659,9 @@ else if($mybb->input['action'] == "refresh_captcha")
 		"imagestring" => $randomstr,
 		"dateline" => TIME_NOW
 	);
+
+	$plugins->run_hooks("xmlhttp_refresh_captcha");
+
 	$db->insert_query("captcha", $regimagearray);
 	header("Content-type: application/json; charset={$charset}");
 	echo json_encode(array("imagehash" => $imagehash));
@@ -648,6 +678,8 @@ else if($mybb->input['action'] == "validate_captcha")
 		exit;
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
+
+	$plugins->run_hooks("xmlhttp_validate_captcha");
 
 	if(my_strtolower($imagestring) == my_strtolower($mybb->get_input('imagestring')))
 	{
@@ -667,6 +699,9 @@ else if($mybb->input['action'] == "complex_password")
 	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
 	header("Content-type: application/json; charset={$charset}");
+
+	$plugins->run_hooks("xmlhttp_complex_password");
+
 	if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $password))
 	{
 		echo json_encode($lang->complex_password_fails);
@@ -720,8 +755,9 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check if the username is actually already in use
-	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($username);
+
+	$plugins->run_hooks("xmlhttp_username_availability");
 
 	if($user['uid'])
 	{
@@ -755,8 +791,9 @@ else if($mybb->input['action'] == "username_exists")
 	}
 
 	// Check if the username actually exists
-	$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'");
-	$user = $db->fetch_array($query);
+	$user = get_user_by_username($username);
+
+	$plugins->run_hooks("xmlhttp_username_exists");
 
 	if($user['uid'])
 	{
@@ -782,6 +819,9 @@ else if($mybb->input['action'] == "get_buddyselect")
 			"order_by" => "username",
 			"order_dir" => "asc"
 		);
+
+		$plugins->run_hooks("xmlhttp_get_buddyselect_start");
+
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, lastactive, lastvisit, invisible", "uid IN ({$mybb->user['buddylist']})", $query_options);
 		$online = array();
@@ -801,6 +841,9 @@ else if($mybb->input['action'] == "get_buddyselect")
 		}
 		$online = implode("", $online);
 		$offline = implode("", $offline);
+
+		$plugins->run_hooks("xmlhttp_get_buddyselect_end");
+
 		eval("\$buddy_select = \"".$templates->get("xmlhttp_buddyselect")."\";");
 		echo $buddy_select;
 	}

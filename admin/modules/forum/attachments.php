@@ -298,26 +298,26 @@ if($mybb->input['action'] == "orphans")
 		// Incoming attachments which exist as files but not in database
 		if($mybb->input['bad_attachments'])
 		{
-			$bad_attachments = unserialize($mybb->input['bad_attachments']);
+			$bad_attachments = my_unserialize($mybb->input['bad_attachments']);
 			$results = count($bad_attachments);
 		}
 
 		$aids = array();
 		if($mybb->input['missing_attachment_files'])
 		{
-			$missing_attachment_files = unserialize($mybb->input['missing_attachment_files']);
+			$missing_attachment_files = my_unserialize($mybb->input['missing_attachment_files']);
 			$aids = array_merge($aids, $missing_attachment_files);
 		}
 
 		if($mybb->input['missing_threads'])
 		{
-			$missing_threads = unserialize($mybb->input['missing_threads']);
+			$missing_threads = my_unserialize($mybb->input['missing_threads']);
 			$aids = array_merge($aids, $missing_threads);
 		}
 
 		if($mybb->input['incomplete_attachments'])
 		{
-			$incomplete_attachments = unserialize($mybb->input['incomplete_attachments']);
+			$incomplete_attachments = my_unserialize($mybb->input['incomplete_attachments']);
 			$aids = array_merge($aids, $incomplete_attachments);
 		}
 
@@ -626,8 +626,8 @@ if(!$mybb->input['action'])
 		// Username matching
 		if($mybb->input['username'])
 		{
-			$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
-			$user = $db->fetch_array($query);
+			$user = get_user_by_username($mybb->input['username']);
+
 			if(!$user['uid'])
 			{
 				$errors[] = $lang->error_invalid_username;

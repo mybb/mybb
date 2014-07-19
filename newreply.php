@@ -11,13 +11,13 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add";
-$templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm";
-$templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
-$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature";
-$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar,post_attachments_update";
-$templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password";
+$templatelist = "newreply,previewpost,loginbox,changeuserbox,posticons,newreply_threadreview,newreply_threadreview_post,forumdisplay_rules_link,newreply_multiquote_external,post_attachments_add,post_subscription_method,postbit_warninglevel_formatted";
+$templatelist .= ",smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online";
+$templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit";
+$templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
+$templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";
+$templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -95,9 +95,22 @@ if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
 	error_no_permission();
+}
+
+if($mybb->user['suspendposting'] == 1)
+{
+	$suspendedpostingtype = $lang->error_suspendedposting_permanent;
+	if($mybb->user['suspensiontime'])
+	{
+		$suspendedpostingtype = $lang->sprintf($lang->error_suspendedposting_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspensiontime']));
+	}
+
+	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
+
+	error($lang->error_suspendedposting);
 }
 
 if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
@@ -132,7 +145,7 @@ check_forum_password($forum['fid']);
 
 if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
-	$codebuttons = build_mycode_inserter();
+	$codebuttons = build_mycode_inserter("message", $forum['allowsmilies']);
 	if($forum['allowsmilies'] != 0)
 	{
 		$smilieinserter = build_clickable_smilies();
@@ -451,16 +464,16 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				$data .= "</captcha>";
 
-				header("Content-type: application/json; charset={$lang->settings['charset']}");
-				echo json_encode(array("data" => $data));
+				//header("Content-type: application/json; charset={$lang->settings['charset']}");
+				$json_data = array("data" => $data);
 			}
 			else if($post_captcha->type == 2)
 			{
 				//header("Content-type: text/html; charset={$lang->settings['charset']}");
 				$data = "<captcha>reload</captcha>";
 
-				header("Content-type: application/json; charset={$lang->settings['charset']}");
-				echo json_encode(array("data" => $data));
+				//header("Content-type: application/json; charset={$lang->settings['charset']}");
+				$json_data = array("data" => $data);
 			}
 		}
 	}
@@ -468,7 +481,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// One or more errors returned, fetch error list and throw to newreply page
 	if(count($post_errors) > 0)
 	{
-		$reply_errors = inline_error($post_errors);
+		$reply_errors = inline_error($post_errors, '', $json_data);
 		$mybb->input['action'] = "newreply";
 	}
 	else
@@ -707,9 +720,14 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$external_quotes = 0;
 			$quoted_posts = implode(",", $quoted_posts);
 			$unviewable_forums = get_unviewable_forums();
+			$inactiveforums = get_inactive_forums();
 			if($unviewable_forums)
 			{
 				$unviewable_forums = "AND t.fid NOT IN ({$unviewable_forums})";
+			}
+			if($inactiveforums)
+			{
+				$inactiveforums = "AND t.fid NOT IN ({$inactiveforums})";
 			}
 			if(is_moderator($fid))
 			{
@@ -726,7 +744,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+				WHERE p.pid IN ({$quoted_posts}) {$unviewable_forums} {$inactiveforums} {$visible_where}
 			");
 			$load_all = $mybb->get_input('load_all_quotes', 1);
 			while($quoted_post = $db->fetch_array($query))
@@ -1309,15 +1327,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
+
 	// Can we disable smilies or are they disabled already?
+	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies")."\";");
 	}
 	else
 	{
-		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
+		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies_hidden")."\";");
 	}
+
 	$modoptions = '';
 	// Show the moderator options.
 	if(is_moderator($fid))
@@ -1407,6 +1428,25 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
 		}
+	}
+
+	$moderation_notice = '';
+	if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+	{
+		$moderation_text = $lang->moderation_forum_attachments;
+		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+	}
+
+	if($forumpermissions['modposts'] == 1)
+	{
+		$moderation_text = $lang->moderation_forum_posts;
+		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+	}
+
+	if($mybb->user['moderateposts'] == 1)
+	{
+		$moderation_text = $lang->moderation_user_posts;
+		eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 	}
 
 	$plugins->run_hooks("newreply_end");

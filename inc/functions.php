@@ -163,7 +163,6 @@ function run_shutdown()
 		$mybb->settings = &$settings;
 	}
 
-
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
@@ -189,7 +188,6 @@ function run_shutdown()
 				default:
 					$db = new DB_MySQL;
 			}
-
 
 			$db->connect($config['database']);
 			if(!defined("TABLE_PREFIX"))
@@ -286,7 +284,7 @@ function parse_page($contents)
 {
 	global $lang, $theme, $mybb, $htmldoctype, $archive_url, $error_handler;
 
-	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
+	$contents = str_replace('<navigation>', build_breadcrumb(), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
 
 	if($htmldoctype)
@@ -786,9 +784,10 @@ function error($error="", $title="")
  *
  * @param array Array of errors to be shown
  * @param string The title of the error message
+ * @param string JSON data to be encoded (we may want to send more data; e.g. newreply.php uses this for CAPTCHA)
  * @return string The inline error HTML
  */
-function inline_error($errors, $title="")
+function inline_error($errors, $title="", $json_data=array())
 {
 	global $theme, $mybb, $db, $lang, $templates;
 
@@ -807,7 +806,15 @@ function inline_error($errors, $title="")
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		echo json_encode(array("errors" => $errors));
+		
+		if(empty($json_data))
+		{
+			echo json_encode(array("errors" => $errors));
+		}
+		else
+		{
+			echo json_encode(array_merge(array("errors" => $errors), $json_data));
+		}
 		exit;
 	}
 
@@ -1078,6 +1085,12 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		$next = $page+1;
 		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
+	}
+
+	$jumptopage = '';
+	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
+	{
+		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
@@ -1653,6 +1666,15 @@ function is_moderator($fid="0", $action="", $uid="0")
 	$user_perms = user_permissions($uid);
 	if($user_perms['issupermod'] == 1)
 	{
+		if($fid)
+		{
+			$forumpermissions = forum_permissions($fid);
+			if($forumpermissions['canview'] && $forumpermissions['canviewthreads'] && !$forumpermissions['canonlyviewownthreads'])
+			{
+				return true;
+			}
+			return false;
+		}
 		return true;
 	}
 	else
@@ -1728,18 +1750,21 @@ function get_post_icons()
 
 	foreach($posticons as $dbicon)
 	{
+		$dbicon['path'] = str_replace("{theme}", $theme['imgdir'], $dbicon['path']);
 		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
 		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
 
 		if($icon == $dbicon['iid'])
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
-			$no_icons_checked = "";
+			$checked = " checked=\"checked\"";
+			$no_icons_checked = '';
 		}
 		else
 		{
-			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
+			$checked = '';
 		}
+
+		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 
 		++$listed;
 		if($listed == 10)
@@ -2410,8 +2435,6 @@ function update_thread_data($tid)
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
-
-
 /**
  * Updates the user counters with a specific value (or addition/subtraction of the previous value)
  *
@@ -2739,7 +2762,7 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	}
 
 	$avatars[$avatar] = array(
-		'image' => $avatar,
+		'image' => $mybb->get_asset_url($avatar),
 		'width_height' => $avatar_width_height
 	);
 
@@ -2751,65 +2774,95 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
  *
  * @return string The MyCode inserter
  */
-function build_mycode_inserter($bind="message")
+function build_mycode_inserter($bind="message", $smilies = true)
 {
-	global $db, $mybb, $theme, $templates, $lang, $plugins;
+	global $db, $mybb, $theme, $templates, $lang, $plugins, $smiliecache, $cache;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(
-			"editor_title_bold",
-			"editor_title_italic",
-			"editor_title_underline",
-			"editor_title_left",
-			"editor_title_center",
-			"editor_title_right",
-			"editor_title_justify",
-			"editor_title_numlist",
-			"editor_title_bulletlist",
-			"editor_title_image",
-			"editor_title_hyperlink",
-			"editor_title_email",
-			"editor_title_quote",
-			"editor_title_code",
-			"editor_title_php",
-			"editor_title_close_tags",
-			"editor_enter_list_item",
-			"editor_enter_url",
-			"editor_enter_url_title",
-			"editor_enter_email",
-			"editor_enter_email_title",
-			"editor_enter_image",
-			"editor_enter_video_url",
-			"editor_video_dailymotion",
-			"editor_video_metacafe",
-			"editor_video_myspacetv",
-			"editor_video_vimeo",
-			"editor_video_yahoo",
-			"editor_video_youtube",
-			"editor_size_xx_small",
-			"editor_size_x_small",
-			"editor_size_small",
-			"editor_size_medium",
-			"editor_size_large",
-			"editor_size_x_large",
-			"editor_size_xx_large",
-			"editor_font",
-			"editor_size",
-			"editor_color"
+			"editor_bold" => "Bold",
+			"editor_italic" => "Italic",
+			"editor_underline" => "Underline",
+			"editor_strikethrough" => "Strikethrough",
+			"editor_subscript" => "Subscript",
+			"editor_superscript" => "Superscript",
+			"editor_alignleft" => "Align left",
+			"editor_center" => "Center",
+			"editor_alignright" => "Align right",
+			"editor_justify" => "Justify",
+			"editor_fontname" => "Font Name",
+			"editor_fontsize" => "Font Size",
+			"editor_fontcolor" => "Font Color",
+			"editor_removeformatting" => "Remove Formatting",
+			"editor_cut" => "Cut",
+			"editor_cutnosupport" => "Your browser does not allow the cut command. Please use the keyboard shortcut Ctrl/Cmd-X",
+			"editor_copy" => "Copy",
+			"editor_copynosupport" => "Your browser does not allow the copy command. Please use the keyboard shortcut Ctrl/Cmd-C",
+			"editor_paste" => "Paste",
+			"editor_pastenosupport" => "Your browser does not allow the paste command. Please use the keyboard shortcut Ctrl/Cmd-V",
+			"editor_pasteentertext" => "Paste your text inside the following box:",
+			"editor_pastetext" => "PasteText",
+			"editor_numlist" => "Numbered list",
+			"editor_bullist" => "Bullet list",
+			"editor_undo" => "Undo",
+			"editor_redo" => "Redo",
+			"editor_rows" => "Rows:",
+			"editor_cols" => "Cols:",
+			"editor_inserttable" => "Insert a table",
+			"editor_inserthr" => "Insert a horizontal rule",
+			"editor_code" => "Code",
+			"editor_width" => "Width (optional):",
+			"editor_height" => "Height (optional):",
+			"editor_insertimg" => "Insert an image",
+			"editor_email" => "E-mail:",
+			"editor_insertemail" => "Insert an email",
+			"editor_url" => "URL:",
+			"editor_insertlink" => "Insert a link",
+			"editor_unlink" => "Unlink",
+			"editor_more" => "More",
+			"editor_insertemoticon" => "Insert an emoticon",
+			"editor_videourl" => "Video URL:",
+			"editor_videotype" => "Video Type:",
+			"editor_insert" => "Insert",
+			"editor_insertyoutubevideo" => "Insert a YouTube video",
+			"editor_currentdate" => "Insert current date",
+			"editor_currenttime" => "Insert current time",
+			"editor_print" => "Print",
+			"editor_viewsource" => "View source",
+			"editor_description" => "Description (optional):",
+			"editor_enterimgurl" => "Enter the image URL:",
+			"editor_enteremail" => "Enter the e-mail address:",
+			"editor_enterdisplayedtext" => "Enter the displayed text:",
+			"editor_enterurl" => "Enter URL:",
+			"editor_enteryoutubeurl" => "Enter the YouTube video URL or ID:",
+			"editor_insertquote" => "Insert a Quote",
+			"editor_invalidyoutube" => "Invalid YouTube video",
+			"editor_dailymotion" => "Dailymotion",
+			"editor_metacafe" => "MetaCafe",
+			"editor_veoh" => "Veoh",
+			"editor_vimeo" => "Vimeo",
+			"editor_youtube" => "Youtube",
+			"editor_facebook" => "Facebook",
+			"editor_liveleak" => "LiveLeak",
+			"editor_insertvideo" => "Insert a video",
+			"editor_php" => "PHP",
+			"editor_maximize" => "Maximize"
 		);
-		$editor_language = "var editor_language = {\n";
+		$editor_language = "(function ($) {\n$.sceditor.locale[\"mybblang\"] = {\n";
 
 		$editor_lang_strings = $plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
 
-		foreach($editor_lang_strings as $key => $lang_string)
+		$editor_languages_count = count($editor_lang_strings);
+		$i = 0;
+		foreach($editor_lang_strings as $lang_string => $key)
 		{
-			// Strip initial editor_ off language string if it exists - ensure case sensitivity does not matter.
-			$js_lang_string = preg_replace("#^editor_#i", "", $lang_string);
+			$i++;
+			$js_lang_string = str_replace("\"", "\\\"", $key);
 			$string = str_replace("\"", "\\\"", $lang->$lang_string);
-			$editor_language .= "\t{$js_lang_string}: \"{$string}\"";
+			$editor_language .= "\t\"{$js_lang_string}\": \"{$string}\"";
 
-			if(isset($editor_lang_strings[$key+1]))
+			if($i < $editor_languages_count)
 			{
 				$editor_language .= ",";
 			}
@@ -2817,16 +2870,67 @@ function build_mycode_inserter($bind="message")
 			$editor_language .= "\n";
 		}
 
-		$editor_language .= "};";
+		$editor_language .= "}})(jQuery);";
 
 		if(defined("IN_ADMINCP"))
 		{
 			global $page;
-			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language);
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language, $smilies);
 		}
 		else
 		{
-			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = "";
+			// Smilies		
+			$emoticon = "";
+			$emoticons_enabled = "false";
+			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+			{
+				$emoticon = ",emoticon";
+				$emoticons_enabled = "true";
+
+				if(!$smiliecache)
+				{
+					if(!is_array($smilie_cache))
+					{
+						$smilie_cache = $cache->read("smilies");
+					}
+					foreach($smilie_cache as $smilie)
+					{
+						if($smilie['showclickable'] != 0)
+						{
+							$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+							$smiliecache[$smilie['sid']] = $smilie;
+						}
+					}
+				}
+
+				unset($smilie);
+
+				if(is_array($smiliecache))
+				{
+					reset($smiliecache);
+
+					$dropdownsmilies = "";
+					$moresmilies = "";
+					$i = 0;
+
+					foreach($smiliecache as $smilie)
+					{
+						$find = htmlspecialchars_uni($smilie['find']);
+						$image = htmlspecialchars_uni($smilie['image']);
+						if($i < $mybb->settings['smilieinsertertot'])
+						{
+							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						else
+						{
+							$moresmilies .= '"'.$find.'": "'.$image.'",';
+						}
+						++$i;
+					}
+				}
+			}
+
+			$basic1 = $basic2 = $align = $font = $size = $color = $removeformat = $email = $link = $list = $code = $sourcemode = "";
 
 			if($mybb->settings['allowbasicmycode'] == 1)
 			{
@@ -2876,7 +2980,12 @@ function build_mycode_inserter($bind="message")
 
 			if($mybb->settings['allowcodemycode'] == 1)
 			{
-				$code = "code,";
+				$code = "code,php,";
+			}
+
+			if($mybb->user['sourceeditor'] == 1)
+			{
+				$sourcemode = "MyBBEditor.sourceMode(true);";
 			}
 
 			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
@@ -2913,7 +3022,8 @@ function build_clickable_smilies()
 			{
 				if($smilie['showclickable'] != 0)
 				{
-					$smiliecache[$smilie['find']] = $smilie['image'];
+					$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
+					$smiliecache[$smilie['sid']] = $smilie;
 				}
 			}
 		}
@@ -2939,7 +3049,8 @@ function build_clickable_smilies()
 			$counter = 0;
 			$i = 0;
 
-			foreach($smiliecache as $find => $image)
+			$extra_class = '';
+			foreach($smiliecache as $smilie)
 			{
 				if($i < $mybb->settings['smilieinsertertot'])
 				{
@@ -2949,6 +3060,9 @@ function build_clickable_smilies()
 					}
 
 					$find = htmlspecialchars_uni($find);
+
+					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
+					eval('$smilie = "'.$templates->get('smilie').'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
@@ -3044,7 +3158,7 @@ function build_prefixes($pid=0)
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
-	global $cache, $db, $lang, $mybb;
+	global $cache, $db, $lang, $mybb, $templates;
 
 	if($fid != 'all')
 	{
@@ -3109,15 +3223,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		return false;
 	}
 
-	$prefixselect = "";
-	if($multiple != 0)
-	{
-		$prefixselect = "<select name=\"threadprefix[]\" multiple=\"multiple\" size=\"5\">\n";
-	}
-	else
-	{
-		$prefixselect = "<select name=\"threadprefix\">\n";
-	}
+	$prefixselect = $prefixselect_prefix = '';
 
 	if($multiple == 1)
 	{
@@ -3126,8 +3232,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		{
 			$any_selected = " selected=\"selected\"";
 		}
-
-		$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
 	}
 
 	$default_selected = "";
@@ -3135,8 +3239,6 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	{
 		$default_selected = " selected=\"selected\"";
 	}
-
-	$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
 
 	foreach($prefixes as $prefix)
 	{
@@ -3146,11 +3248,88 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 			$selected = " selected=\"selected\"";
 		}
 
-		$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
 	}
 
-	$prefixselect .= "</select>\n&nbsp;";
+	if($multiple != 0)
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
+	}
+	else
+	{
+		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
+	}
 
+	return $prefixselect;
+}
+
+/**
+ * Build the thread prefix selection menu for a forum
+ *
+ *  @param mixed The forum ID (integer ID)
+ *  @param mixed The selected prefix ID (integer ID)
+ */
+function build_forum_prefix_select($fid, $selected_pid=0)
+{
+	global $cache, $db, $lang, $mybb, $templates;
+
+	$fid = intval($fid);
+
+	$prefix_cache = build_prefixes(0);
+	if(!$prefix_cache)
+	{
+		return false; // We've got no prefixes to show
+	}
+
+	// Go through each of our prefixes and decide which ones we can use
+	$prefixes = array();
+	foreach($prefix_cache as $prefix)
+	{
+		if($prefix['forums'] != "-1")
+		{
+			// Decide whether this prefix can be used in our forum
+			$forums = explode(",", $prefix['forums']);
+
+			if(in_array($fid, $forums))
+			{
+				// This forum can use this prefix!
+				$prefixes[$prefix['pid']] = $prefix;
+			}
+		}
+		else
+		{
+			// This prefix is for anybody to use...
+			$prefixes[$prefix['pid']] = $prefix;
+		}
+	}
+
+	if(empty($prefixes))
+	{
+		return false;
+	}
+
+	$prefixselect = $prefixselect_prefix = '';
+
+	$default_selected = '';
+	if(intval($selected_pid) == 0)
+	{
+		$default_selected = " selected=\"selected\"";
+	}
+
+	foreach($prefixes as $prefix)
+	{
+		$selected = '';
+		if($prefix['pid'] == $selected_pid)
+		{
+			$selected = " selected=\"selected\"";
+		}
+
+		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
+		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+	}
+
+	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
 	return $prefixselect;
 }
 
@@ -3216,24 +3395,17 @@ function log_moderator_action($data, $action="")
 {
 	global $mybb, $db, $session;
 
-	// If the fid or tid is not set, set it at 0 so MySQL doesn't choke on it.
-	if(empty($data['fid']))
+	$fid = 0;
+	if(isset($data['fid']))
 	{
-		$fid = 0;
-	}
-	else
-	{
-		$fid = $data['fid'];
+		$fid = (int)$data['fid'];
 		unset($data['fid']);
 	}
 
-	if(empty($data['tid']))
+	$tid = 0;
+	if(isset($data['tid']))
 	{
-		$tid = 0;
-	}
-	else
-	{
-		$tid = $data['tid'];
+		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
 
@@ -3243,12 +3415,10 @@ function log_moderator_action($data, $action="")
 		$data = serialize($data);
 	}
 
-	$time = TIME_NOW;
-
 	$sql_array = array(
-		"uid" => $mybb->user['uid'],
-		"dateline" => $time,
-		"fid" => $fid,
+		"uid" => (int)$mybb->user['uid'],
+		"dateline" => TIME_NOW,
+		"fid" => (int)$fid,
 		"tid" => $tid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
@@ -3266,35 +3436,29 @@ function log_moderator_action($data, $action="")
  */
 function get_reputation($reputation, $uid=0)
 {
-	global $theme;
+	global $theme, $templates;
 
-	$display_reputation = '';
-
-	if($uid != 0)
-	{
-		$display_reputation = "<a href=\"reputation.php?uid={$uid}\">";
-	}
-
-	$display_reputation .= "<strong class=\"";
-
+	$display_reputation = $reputation_class = '';
 	if($reputation < 0)
 	{
-		$display_reputation .= "reputation_negative";
+		$reputation_class = "reputation_negative";
 	}
 	elseif($reputation > 0)
 	{
-		$display_reputation .= "reputation_positive";
+		$reputation_class = "reputation_positive";
 	}
 	else
 	{
-		$display_reputation .= "reputation_neutral";
+		$reputation_class = "reputation_neutral";
 	}
-
-	$display_reputation .= "\">{$reputation}</strong>";
 
 	if($uid != 0)
 	{
-		$display_reputation .= "</a>";
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+	}
+	else
+	{
+		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
 	}
 
 	return $display_reputation;
@@ -3308,22 +3472,28 @@ function get_reputation($reputation, $uid=0)
  */
 function get_colored_warning_level($level)
 {
+	global $templates;
+
+	$warning_class = '';
 	if($level >= 80)
 	{
-		return "<span class=\"high_warning\">{$level}%</span>";
+		$warning_class = "high_warning";
 	}
 	else if($level >= 50)
 	{
-		return "<span class=\"moderate_warning\">{$level}%</span>";
+		$warning_class = "moderate_warning";
 	}
 	else if($level >= 25)
 	{
-		return "<span class=\"low_warning\">{$level}%</span>";
+		$warning_class = "low_warning";
 	}
 	else
 	{
-		return $level."%";
+		$warning_class = "normal_warning";
 	}
+
+	eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
+	return $level;
 }
 
 /**
@@ -3488,7 +3658,7 @@ function format_time_duration($time)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes, $theme;
+	global $cache, $attachtypes, $theme, $templates, $lang;
 
 	if(!$attachtypes)
 	{
@@ -3516,7 +3686,8 @@ function get_attachment_icon($ext)
 		{
 			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"{$icon}\" title=\"{$attachtypes[$ext]['name']}\" border=\"0\" alt=\".{$ext}\" />";
+
+		$name = htmlspecialchars_uni($attachtypes[$ext]['name']);
 	}
 	else
 	{
@@ -3530,8 +3701,12 @@ function get_attachment_icon($ext)
 			$theme['imgdir'] = "{$change_dir}/images";
 		}
 
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.png\" border=\"0\" alt=\".{$ext}\" />";
+		$icon = "{$theme['imgdir']}/attachtypes/unknown.png";
+		$name = $lang->unknown;
 	}
+
+	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
+	return $attachment_icon;
 }
 
 /**
@@ -3668,7 +3843,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						$multipage_dropdown = " <img src=\"{$theme['imgdir']}/arrow_down.png\" alt=\"v\" title=\"\" class=\"pagination_breadcrumb_link\" id=\"breadcrumb_multipage\" />{$multipage}";
+						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
@@ -3805,7 +3980,7 @@ function reset_breadcrumb()
  * @param int The ID of the item
  * @return string The URL
  */
-function build_archive_link($type, $id="")
+function build_archive_link($type="", $id="")
 {
 	global $mybb;
 
@@ -4432,30 +4607,22 @@ function get_current_location($fields=false, $ignore=array())
  * @param int The current selection depth
  * @param boolean Whether or not to override usergroup permissions (true to override)
  * @param boolean Whether or not theme select is in the footer (true if it is)
+ * @param boolean Whether or not to override output based on theme count (true to override)
  * @return string The theme selection list
  */
-function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false)
+function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_override=false, $footer=false, $count_override=false)
 {
-	global $db, $themeselect, $tcache, $lang, $mybb, $limit;
+	global $db, $themeselect, $tcache, $lang, $mybb, $limit, $templates, $num_themes, $themeselect_option;
 
 	if($tid == 0)
 	{
-		if($footer == true)
+		$tid = 1;
+		$num_themes = 0;
+		$themeselect_option = '';
+
+		if(!isset($lang->use_default))
 		{
-			$themeselect = "<select name=\"$name\" onchange=\"MyBB.changeTheme();\">\n";
-			$themeselect .= "<optgroup label=\"{$lang->select_theme}\">\n";
-			$tid = 1;
-		}
-		else
-		{
-			if(!isset($lang->use_default))
-			{
-				$lang->use_default = $lang->lang_select_default;
-			}
-			$themeselect = "<select name=\"$name\">";
-			$themeselect .= "<option value=\"0\">{$lang->use_default}</option>\n";
-			$themeselect .= "<option value=\"0\">-----------</option>\n";
-			$tid = 1;
+			$lang->use_default = $lang->lang_select_default;
 		}
 	}
 
@@ -4507,7 +4674,9 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 
 				if($theme['pid'] != 0)
 				{
-					$themeselect .= "<option value=\"".$theme['tid']."\"$sel>".$depth.htmlspecialchars_uni($theme['name'])."</option>\n";
+					$theme['name'] = htmlspecialchars_uni($theme['name']);
+					eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+					++$num_themes;
 					$depthit = $depth."--";
 				}
 
@@ -4519,17 +4688,23 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 1)
+	if($tid == 1 && ($num_themes > 1 || $count_override == true))
 	{
 		if($footer == true)
 		{
-			$themeselect .= "</optgroup>\n";
+			eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
+		}
+		else
+		{
+			eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
 		}
 
-		$themeselect .= "</select>";
+		return $themeselect;
 	}
-
-	return $themeselect;
+	else
+	{
+		return false;
+	}
 }
 
 /**
@@ -5395,7 +5570,7 @@ function get_calendar_week_link($calendar, $week)
 }
 
 /**
- * Get the user data of a user id.
+ * Get the user data of an user id.
  *
  * @param int The user id of the user.
  * @return array The users data
@@ -5423,6 +5598,54 @@ function get_user($uid)
 		return $user_cache[$uid];
 	}
 	return array();
+}
+
+/**
+ * Get the user data of an user username.
+ *
+ * @param string The user username of the user.
+ * @return array The users data
+ */
+function get_user_by_username($username, $options=array())
+{
+	global $mybb, $db;
+
+	$username = $db->escape_string(my_strtolower($username));
+
+	if(!isset($options['username_method']))
+	{
+		$options['username_method'] = 0;
+	}
+
+	switch($options['username_method'])
+	{
+		case 1:
+			$sqlwhere = 'LOWER(email)=\''.$username.'\'';
+			break;
+		case 2:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\' OR LOWER(email)=\''.$username.'\'';
+			break;
+		default:
+			$sqlwhere = 'LOWER(username)=\''.$username.'\'';
+			break;
+	}
+
+	$fields = array('uid');
+	if(isset($options['fields']))
+	{
+		$fields = array_merge((array)$options['fields'], $fields);
+	}
+
+	$fields = array_flip($fields);
+
+	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+
+	if(isset($options['exists']))
+	{
+		return (bool)$db->num_rows($query);
+	}
+
+	return $db->fetch_array($query);
 }
 
 /**
@@ -5575,9 +5798,8 @@ function get_inactive_forums()
 
 /**
  * Checks to make sure a user has not tried to login more times than permitted
- * Will stop execution with call to error() unless
  *
- * @param bool (Optional) The function will stop execution if it finds an error with the login. Default is True
+ * @param bool (Optional) Stop execution if it finds an error with the login. Default is True
  * @return bool Number of logins when success, false if failed.
  */
 function login_attempt_check($fatal = true)
@@ -5708,14 +5930,6 @@ function email_already_in_use($email, $uid="")
 	}
 
 	return false;
-}
-
-/*
- * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
- */
-function rebuildsettings()
-{
-	rebuild_settings();
 }
 
 /**
@@ -6051,7 +6265,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
  */
 function build_timezone_select($name, $selected=0, $short=false)
 {
-	global $mybb, $lang;
+	global $mybb, $lang, $templates;
 
 	$timezones = array(
 		"-12" => $lang->timezone_gmt_minus_1200,
@@ -6096,7 +6310,6 @@ function build_timezone_select($name, $selected=0, $short=false)
 	);
 
 	$selected = str_replace("+", "", $selected);
-	$select = "<select name=\"{$name}\" id=\"{$name}\">\n";
 	foreach($timezones as $timezone => $label)
 	{
 		$selected_add = "";
@@ -6128,9 +6341,11 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
-		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";
+
+		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
 	}
-	$select .= "</select>";
+
+	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
 	return $select;
 }
 
@@ -6251,10 +6466,15 @@ function fetch_remote_file($url, $post_data=array())
  */
 function is_super_admin($uid)
 {
-	global $mybb;
+	static $super_admins;
 
-	$mybb->config['super_admins'] = str_replace(" ", "", $mybb->config['super_admins']);
-	if(my_strpos(",{$mybb->config['super_admins']},", ",{$uid},") === false)
+	if(!isset($super_admins))
+	{
+		global $mybb;
+		$super_admins = str_replace(" ", "", $mybb->config['super_admins']);
+	}
+
+	if(my_strpos(",{$super_admins},", ",{$uid},") === false)
 	{
 		return false;
 	}
@@ -6483,45 +6703,15 @@ function ban_date2timestamp($date, $stamp=0)
  */
 function expire_warnings()
 {
-	global $db;
+	global $warningshandler;
 
-	$users = array();
-
-	$query = $db->query("
-		SELECT w.wid, w.uid, w.points, u.warningpoints
-		FROM ".TABLE_PREFIX."warnings w
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.uid)
-		WHERE expires<".TIME_NOW." AND expires!=0 AND expired!=1
-	");
-	while($warning = $db->fetch_array($query))
+	if(!is_object($warningshandler))
 	{
-		$updated_warning = array(
-			"expired" => 1
-		);
-		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-
-		if(array_key_exists($warning['uid'], $users))
-		{
-			$users[$warning['uid']] -= $warning['points'];
-		}
-		else
-		{
-			$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
-		}
+		require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+		$warningshandler = new WarningsHandler('update');
 	}
 
-	foreach($users as $uid => $warningpoints)
-	{
-		if($warningpoints < 0)
-		{
-			$warningpoints = 0;
-		}
-
-		$updated_user = array(
-			"warningpoints" => intval($warningpoints)
-		);
-		$db->update_query("users", $updated_user, "uid='".intval($uid)."'");
-	}
+	return $warningshandler->expire_warnings();
 }
 
 /**
@@ -6882,7 +7072,6 @@ function get_execution_time()
 		return $total;
 	}
 }
-
 
 /**
  * Processes a checksum list on MyBB files and returns a result set
@@ -7452,12 +7641,47 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	if (!is_array($pm))
+	if(!is_array($pm))
 	{
 		return false;
 	}
 
-	if (!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
+	if(isset($pm['language']))
+	{
+		$revert = false;
+		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
+		{
+			// Load language
+			$lang->set_language($pm['language']);
+			$lang->load($pm['language_file']);
+
+			$revert = true;
+		}
+
+		foreach(array('subject', 'message') as $key)
+		{
+			if(is_array($pm[$key]))
+			{
+				$num_args = count($pm[$key]);
+
+				for($i = 1; $i < $num_args; $i++)
+				{
+					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
+				}
+			}
+
+			$pm[$key] = $lang->{$pm[$key][0]};
+		}
+
+		if($revert)
+		{
+			// Load language
+			$lang->set_language($mybb->user['language']);
+			$lang->load($pm['language_file']);
+		}
+	}
+
+	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
 	{
 		return false;
 	}
@@ -7473,7 +7697,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$toid = $pm['touid'];
 
 	// Our recipients
-	if (is_array($toid))
+	if(is_array($toid))
 	{
 		$recipients_to = $toid;
 	}
@@ -7485,11 +7709,11 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$recipients_bcc = array();
 
 	// Determine user ID
-	if ((int)$fromid == 0)
+	if((int)$fromid == 0)
 	{
 		$fromid = (int)$mybb->user['uid'];
 	}
-	elseif ((int)$fromid < 0)
+	elseif((int)$fromid < 0)
 	{
 		$fromid = 0;
 	}
@@ -7524,15 +7748,13 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 	$pmhandler->admin_override = (int)$admin_override;
 
 	$pmhandler->set_data($pm);
+
 	if($pmhandler->validate_pm())
 	{
 		$pmhandler->insert_pm();
-	}
-	else
-	{
-		return false;
+		return true;
 	}
 
-	return true;
+	return false;
 }
 ?>

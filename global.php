@@ -289,15 +289,35 @@ foreach($stylesheet_scripts as $stylesheet_script)
 				{
 					continue;
 				}
-				if($mybb->settings['minifycss'])
+
+				if(strpos($page_stylesheet, 'css.php') !== false)
 				{
-					$page_stylesheet_min = str_replace('.css', '.min.css', $page_stylesheet);
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet_min}\" />\n";
+					$stylesheet_url = $mybb->settings['bburl'] . '/' . $page_stylesheet;
 				}
 				else
 				{
-					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+					$stylesheet_url = $mybb->get_asset_url($page_stylesheet);
 				}
+
+				if($mybb->settings['minifycss'])
+				{
+					$stylesheet_url = str_replace('.css', '.min.css', $stylesheet_url);
+				}
+
+				if(strpos($page_stylesheet, 'css.php') !== false)
+				{
+					// We need some modification to get it working with the displayorder
+					$query_string = parse_url($stylesheet_url, PHP_URL_QUERY);
+					$id = (int) my_substr($query_string, 11);
+					$query = $db->simple_select("themestylesheets", "name", "sid={$id}");
+					$real_name = $db->fetch_field($query, "name");
+					$theme_stylesheets[$real_name] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+				else
+				{
+					$theme_stylesheets[basename($page_stylesheet)] = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$stylesheet_url}\" />\n";
+				}
+
 				$already_loaded[$page_stylesheet] = 1;
 			}
 		}
@@ -340,35 +360,45 @@ if(my_substr($theme['imgdir'], 0, 7) == 'http://' || my_substr($theme['imgdir'],
 }
 else
 {
-	if(!@is_dir($theme['imgdir']))
-	{
-		$theme['imgdir'] = 'images';
-	}
+    $img_directory = $theme['imgdir'];
 
-	// If a language directory for the current language exists within the theme - we use it
-	if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
-	{
-		$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
-	}
-	else
-	{
-		// Check if a custom language directory exists for this theme
-		if(is_dir($theme['imgdir'].'/'.$mybb->settings['bblanguage']))
-		{
-			$theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
-		}
-		// Otherwise, the image language directory is the same as the language directory for the theme
-		else
-		{
-			$theme['imglangdir'] = $theme['imgdir'];
-		}
-	}
+    if($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+    {
+        $img_directory = rtrim($mybb->settings['cdnpath'], '/') . '/' . ltrim($theme['imgdir'], '/');
+    }
+
+    if(!@is_dir($img_directory))
+    {
+        $theme['imgdir'] = 'images';
+    }
+
+    // If a language directory for the current language exists within the theme - we use it
+    if(!empty($mybb->user['language']) && is_dir($img_directory.'/'.$mybb->user['language']))
+    {
+        $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->user['language'];
+    }
+    else
+    {
+        // Check if a custom language directory exists for this theme
+        if(is_dir($img_directory.'/'.$mybb->settings['bblanguage']))
+        {
+            $theme['imglangdir'] = $theme['imgdir'].'/'.$mybb->settings['bblanguage'];
+        }
+        // Otherwise, the image language directory is the same as the language directory for the theme
+        else
+        {
+            $theme['imglangdir'] = $theme['imgdir'];
+        }
+    }
+
+    $theme['imgdir'] = $mybb->get_asset_url($theme['imgdir']);
+    $theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
 if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && substr($theme['logo'], 0, 1) != '/')
 {
-	$theme['logo'] = $mybb->settings['bburl'].'/'.$theme['logo'];
+	$theme['logo'] = $mybb->get_asset_url($theme['logo']);
 }
 
 // Load Main Templates and Cached Templates
@@ -381,9 +411,9 @@ else
 	$templatelist = '';
 }
 
-$templatelist .= 'headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option';
-$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar';
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_memberlist";
+$templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
+$templatelist .= ",global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -401,6 +431,8 @@ else
 {
 	$lastvisit = $lang->lastvisit_never;
 }
+
+$plugins->run_hooks('global_intermediate');
 
 // If the board is closed and we have a usergroup allowed to view the board when closed, then show board closed warning
 $bbclosedwarning = '';
@@ -456,7 +488,7 @@ else
 }
 
 // Display menu links and quick search if user has permission
-$menu_search = $menu_memberlist = $menu_calendar = $quicksearch = '';
+$menu_search = $menu_memberlist = $menu_portal = $menu_calendar = $quicksearch = '';
 if($mybb->usergroup['cansearch'] == 1)
 {
 	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
@@ -471,6 +503,11 @@ if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberli
 if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
 {
 	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
+}
+
+if($mybb->settings['portal'] == 1)
+{
+	eval('$menu_portal = "'.$templates->get('header_menu_portal').'";');
 }
 
 // See if there are any pending join requests for group leaders
@@ -633,13 +670,39 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 
 	if($mybb->user['pms_unread'] == 1)
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	else
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
+}
+$cache->update('awaitingactivation', 50);
+if($mybb->usergroup['cancp'] == 1)
+{
+	$awaitingusers = $cache->read('awaitingactivation');
+	if(empty($awaitingusers))
+	{
+		$awaitingusers = 0;
+	}
+	else
+	{
+		$awaitingusers = my_number_format($awaitingusers);
+	}
+	
+	if($awaitingusers > 0)
+	{
+		if($awaitingusers == 1)
+		{
+			$awaiting_message = $lang->awaiting_message_single;
+		}
+		else
+		{
+			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
+		}
+		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
+	}
 }
 
 // Set up some of the default templates
@@ -667,7 +730,7 @@ if(!$task_cache['nextrun'])
 
 if($task_cache['nextrun'] <= TIME_NOW)
 {
-	$task_image = '<img src="'.$mybb->settings['bburl'].'/task.php" border="0" width="1" height="1" alt="" />';
+	eval("\$task_image = \"".$templates->get("task_image")."\";");
 }
 
 // Are we showing the quick language selection box?
@@ -706,8 +769,23 @@ if($mybb->settings['showthemeselect'] != 0)
 {
 	$theme_options = build_theme_select("theme", $mybb->user['style'], 0, '', false, true);
 
-	$theme_redirect_url = get_current_location(true, 'theme');
-	eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	if(!empty($theme_options))
+	{
+		$theme_redirect_url = get_current_location(true, 'theme');
+		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+	}
+}
+
+// If we use the contact form, show 'Contact Us' link when appropriate
+$contact_us = '';
+if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
+{
+	if(my_substr($mybb->settings['contactlink'], 0, 1) != "/" && !in_array(my_substr($mybb->settings['contactlink'], 0, 7), array('http://', 'https://')))
+	{
+		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
+	}
+
+	eval('$contact_us = "'.$templates->get('footer_contactus').'";');
 }
 
 // DST Auto detection enabled?
@@ -724,7 +802,7 @@ $navbits[0]['name'] = $mybb->settings['bbname_orig'];
 $navbits[0]['url'] = $mybb->settings['bburl'].'/index.php';
 
 // Set the link to the archive.
-$archive_url = $mybb->settings['bburl'].'/archive/index.php';
+$archive_url = build_archive_link();
 
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress, true))
@@ -755,6 +833,31 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
 	error($lang->error_boardclosed);
+	exit;
+}
+
+$force_bypass = array(
+	'member.php' => array(
+		'login',
+		'do_login',
+		'logout',
+		'register',
+		'do_register',
+		'lostpw',
+		'do_lostpw',
+		'activate',
+		'resendactivation',
+		'do_resendactivation',
+		'resetpassword',
+	),
+	'captcha.php',
+);
+
+// If the board forces user to login/register, and the user is a guest, show the force login message
+if($mybb->settings['forcelogin'] == 1 && $mybb->user['uid'] == 0 && !in_array($current_page, $force_bypass) && (!is_array($force_bypass[$current_page]) || !in_array($mybb->get_input('action'), $force_bypass[$current_page])))
+{
+	// Show error
+	error_no_permission();
 	exit;
 }
 

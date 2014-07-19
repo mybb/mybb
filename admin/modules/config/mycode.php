@@ -26,8 +26,6 @@ if($mybb->input['action'] == "toggle_status")
 		admin_redirect("index.php?module=config-mycode");
 	}
 
-	$plugins->run_hooks("admin_config_mycode_toggle_status");
-
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
@@ -36,6 +34,8 @@ if($mybb->input['action'] == "toggle_status")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
+
+	$plugins->run_hooks("admin_config_mycode_toggle_status");
 
 	if($mycode['active'] == 1)
 	{
@@ -203,8 +203,6 @@ $(function(){
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_mycode_edit");
-
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
@@ -213,6 +211,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
+
+	$plugins->run_hooks("admin_config_mycode_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -287,7 +287,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $mycode;
+		$mybb->input = array_merge($mybb->input, $mycode);
 	}
 
 	$form_container = new FormContainer($lang->edit_mycode);
@@ -328,8 +328,6 @@ $(function(){
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_mycode_delete");
-
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
@@ -338,6 +336,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
+
+	$plugins->run_hooks("admin_config_mycode_delete");
 
 	// User clicked no
 	if($mybb->input['no'])

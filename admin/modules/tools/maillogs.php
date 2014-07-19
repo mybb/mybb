@@ -56,8 +56,6 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$plugins->run_hooks("admin_tools_maillogs_view");
-
 	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -65,6 +63,8 @@ if($mybb->input['action'] == "view")
 	{
 		exit;
 	}
+
+	$plugins->run_hooks("admin_tools_maillogs_view");
 
 	$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 	$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
@@ -119,8 +119,6 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_maillogs_start");
-
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
@@ -140,6 +138,8 @@ if(!$mybb->input['action'])
 	}
 
 	$additional_criteria = array();
+
+	$plugins->run_hooks("admin_tools_maillogs_start");
 
 	// Filter form was submitted - play around with the values
 	if($mybb->request_method == "post")
@@ -223,8 +223,7 @@ if(!$mybb->input['action'])
 	}
 	else if($mybb->input['toname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username)='".my_strtolower($toname)."'");
-		$user = $db->fetch_array($query);
+		$user = get_user_by_username($toname, array('fields' => 'username'));
 		$to_filter = $user['username'];
 
 		if(!$user['uid'])
@@ -271,6 +270,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
+	$table->construct_header($lang->ip_address, array("class" => "align_center", 'width' => '10%'));
 
 	$query = $db->query("
 		SELECT l.*, r.username AS to_username, f.username AS from_username, t.subject AS thread_subject
@@ -287,7 +287,8 @@ if(!$mybb->input['action'])
 		$table->construct_cell($form->generate_check_box("log[{$log['mid']}]", $log['mid'], ''), array("width" => 1));
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
-		if($log['tid'] > 0)
+
+		if($log['type'] == 2)
 		{
 			if($log['thread_subject'])
 			{
@@ -300,32 +301,53 @@ if(!$mybb->input['action'])
 			}
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.png\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
 			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
-			if(!$log['from_username'])
+
+			if($log['fromuid'] > 0)
+			{
+				$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			}
+
+			if(!$log['from_username'] && $log['fromuid'] > 0)
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
+			}
+			elseif($log['fromuid'] == 0)
+			{
+				$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
+				$table->construct_cell("{$find_from}<div>{$log['fromemail']}</div>");
 			}
 			else
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
+
 			$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 			$table->construct_cell($log['toemail']);
-			$table->construct_cell($log['dateline'], array("class" => "align_center"));
 		}
-		else
+		elseif($log['type'] == 1)
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.png\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
 			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
-			if(!$log['from_username'])
+
+			if($log['fromuid'] > 0)
+			{
+				$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			}
+
+			if(!$log['from_username'] && $log['fromuid'] > 0)
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
+			}
+			elseif($log['fromuid'] == 0)
+			{
+				$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
+				$table->construct_cell("{$find_from}<div>{$log['fromemail']}</div>");
 			}
 			else
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
+
 			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['to_username'])
 			{
@@ -335,8 +357,37 @@ if(!$mybb->input['action'])
 			{
 				$table->construct_cell("{$find_to}<div><a href=\"../".get_profile_link($log['touid'])."\">{$log['to_username']}</a></div>");
 			}
-			$table->construct_cell($log['dateline'], array("class" => "align_center"));
 		}
+		elseif($log['type'] == 3)
+		{
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_contact.png\" title=\"{$lang->email_sent_using_contact_form}\" alt=\"\" />", array("width" => 1));
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools-maillogs&amp;action=view&amp;mid={$log['mid']}', null, true);\">{$log['subject']}</a>");
+
+			if($log['fromuid'] > 0)
+			{
+				$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools-maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.png\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			}
+
+			if(!$log['from_username'] && $log['fromuid'] > 0)
+			{
+				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
+			}
+			elseif($log['fromuid'] == 0)
+			{
+				$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
+				$table->construct_cell("{$find_from}<div>{$log['fromemail']}</div>");
+			}
+			else
+			{
+				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
+			}
+
+			$log['toemail'] = htmlspecialchars_uni($log['toemail']);
+			$table->construct_cell($log['toemail']);
+		}
+
+		$table->construct_cell($log['dateline'], array("class" => "align_center"));
+		$table->construct_cell(my_inet_ntop($db->unescape_binary($log['ipaddress'])), array("class" => "align_center"));
 		$table->construct_row();
 	}
 
@@ -387,6 +438,7 @@ if(!$mybb->input['action'])
 	}
 	$form_container->output_row($lang->to, "", $form->generate_select_box('to_type', $user_email, $to_type)." ".$form->generate_text_box('to_value', $to_filter, array('id' => 'to_value')), 'to_value');
 	$form_container->end();
+	$buttons = array();
 	$buttons[] = $form->generate_submit_button($lang->filter_user_email_log);
 	$form->output_submit_wrapper($buttons);
 	$form->end();

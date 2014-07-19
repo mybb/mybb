@@ -87,10 +87,11 @@ $l['can_manage_polls'] = "Can manage polls?";
 $l['can_post_closed_threads'] = "Can post in closed threads?";
 $l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['can_use_custom_tools'] = "Can use custom moderator tools?";
-$l['can_manage_announcements'] = "Can manage announcements?";
-$l['can_manage_reported_posts'] = "Can manage reported posts?";
-$l['can_view_mod_log'] = "Can view moderator log?";
+$l['can_manage_announcements'] = "Can manage announcements in this forum?";
+$l['can_manage_reported_posts'] = "Can manage reported posts in this forum?";
+$l['can_view_mod_log'] = "Can view moderator log entries for this forum?";
 $l['moderator_cp_permissions'] = "Moderator CP Permissions";
+$l['moderator_cp_permissions_desc'] = "This user must be able to access the Mod CP and have usergroup permission to access these functions in order for these permissions to take effect.";
 
 $l['save_mod'] = "Save Moderator";
 
@@ -151,11 +152,6 @@ $l['copy_settings_and_properties_desc'] = "Only applies if the destination forum
 $l['copy_user_group_permissions'] = "Copy User Group Permissions";
 $l['copy_user_group_permissions_desc'] = "Use CTRL to select multiple groups.";
 
-$l['moderation_options'] = "Moderation Options";
-$l['mod_new_posts'] = "Yes, moderate new posts";
-$l['mod_new_threads'] = "Yes, moderate new threads";
-$l['mod_new_attachments'] = "Yes, moderate new attachments";
-$l['mod_after_edit'] = "Yes, moderate posts after they've been edited";
 $l['override_user_style'] = "Yes, override the user's selected style for this forum";
 $l['style_options'] = "Style Options";
 $l['forum_specific_style'] = "Forum-Specific Style:";
@@ -216,6 +212,7 @@ $l['allow_thread_ratings'] = "Yes, allow threads to be rated";
 $l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
 $l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
 $l['use_threadcounts'] = "Yes, threads in this forum should count towards user thread counts";
+$l['require_thread_prefix'] = "Yes, require a thread prefix for all threads";
 
 $l['use_permissions'] = "Use Permissions";
 $l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";
@@ -247,6 +244,7 @@ $l['error_invalid_destination_forum'] = "Invalid destination forum.";
 $l['group_viewing'] = "Viewing";
 $l['group_posting_rating'] = "Posting / Rating";
 $l['group_editing'] = "Editing";
+$l['group_moderate'] = "Moderation";
 $l['group_polls'] = "Polls";
 $l['group_misc'] = "Miscellaneous";
 
@@ -265,6 +263,11 @@ $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";
 $l['editing_field_candeletethreads'] = "Can delete own threads?";
 $l['editing_field_caneditattachments'] = "Can update own attachments?";
+
+$l['moderate_field_modposts'] = "Moderate new posts?";
+$l['moderate_field_modthreads'] = "Moderate new threads?";
+$l['moderate_field_modattachments'] = "Moderate new attachments?";
+$l['moderate_field_mod_edit_posts'] = "Moderate posts after they've been edited?";
 
 $l['polls_field_canpostpolls'] = "Can post polls?";
 $l['polls_field_canvotepolls'] = "Can vote in polls?";

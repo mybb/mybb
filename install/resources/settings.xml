@@ -196,10 +196,18 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="statstopreferrer">
+			<title>Show Top Referrer on Statistics Page</title>
+			<description><![CDATA[Do you want to show the top referrer on the stats.php page. This adds an additional query.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -207,7 +215,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
 			<description><![CDATA[The punctuation you want to use. For example, a setting of ',' with the number 1200 will give you 1,200.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -215,7 +223,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board. If you only have one language installed this setting will be ignored.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -223,7 +231,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showthemeselect">
 			<title>Show Theme Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the theme selection area in the footer of all pages in the board.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -231,15 +239,23 @@ email=Sent via Email]]></optionscode>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="jumptopagemultipage">
+			<title>Show Jump To Page form in Pagination</title>
+			<description><![CDATA[Whther if to show a Jump To Page form in pagination if number of pages exists Maximum Page Links in Pagination setting value.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="no_plugins">
 			<title>Disable All Plugins</title>
 			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of ./inc/init.php.]]></description>
-			<disporder>14</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -247,7 +263,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
 			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
-			<disporder>15</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -255,7 +271,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="helpsearch">
 			<title>Enable Help Documents Search</title>
 			<description><![CDATA[If enabled it will allow users to search through the help documents.]]></description>
-			<disporder>16</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -263,7 +279,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="deleteinvites">
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
-			<disporder>17</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -271,7 +287,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestimages">
 			<title>Show Posted Images To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
-			<disporder>18</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -279,9 +295,25 @@ email=Sent via Email]]></optionscode>
 		<setting name="guestvideos">
 			<title>Show Posted Videos To Guests</title>
 			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
-			<disporder>19</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="hidewebsite">
+			<title>Hide Websites To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="hidesignatures">
+			<title>Hide Signatures To Groups</title>
+			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
+			<disporder>23</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -442,6 +474,34 @@ none=Hide Errors and Warnings
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="usecdn">
+			<title>Use a CDN?</title>
+			<description><![CDATA[You can utilise a CDN (Content Delivery Network) to offload the loading of static files such as Stylesheets, JavaScript and Images. Do you wish to enable this functionality?]]></description>
+			<disporder>19</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnurl">
+			<title>URL to use for static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please enter the base URL to serve static content from. This should be a valid URL without a trailing slash.]]></description>
+			<disporder>20</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="cdnpath">
+			<title>Path to store static files</title>
+			<description><![CDATA[If you have enabled the CDN option above, please optionally enter a full path to store static files. This is only useful for "Push" type CDNs or local sub-domain setups. This path should not have a trailing slash.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="5" isdefault="1">
@@ -492,6 +552,7 @@ none=Hide Errors and Warnings
 <option value=\"-7\" ".($setting['value'] == -7?"selected=\"selected\"":"").">GMT -7:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -7).")</option>
 <option value=\"-6\" ".($setting['value'] == -6?"selected=\"selected\"":"").">GMT -6:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -6).")</option>
 <option value=\"-5\" ".($setting['value'] == -5?"selected=\"selected\"":"").">GMT -5:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -5).")</option>
+<option value=\"-4.5\" ".($setting['value'] == -4.5?"selected=\"selected\"":"").">GMT -4:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -4.5).")</option>
 <option value=\"-4\" ".($setting['value'] == -4?"selected=\"selected\"":"").">GMT -4:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -4).")</option>
 <option value=\"-3.5\" ".($setting['value'] == -3.5?"selected=\"selected\"":"").">GMT -3:30 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -3.5).")</option>
 <option value=\"-3\" ".($setting['value'] == -3?"selected=\"selected\"":"").">GMT -3:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -3).")</option>
@@ -828,10 +889,18 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="forcelogin">
+			<title>Force Users to Login</title>
+			<description><![CDATA[Setting this to yes will force guests to login or register in order to access the board.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="minnamelength">
 			<title>Minimum Username Length</title>
 			<description><![CDATA[The minimum number of characters a username can be when a user registers.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -839,7 +908,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxnamelength">
 			<title>Maximum Username Length</title>
 			<description><![CDATA[The maximum number of characters a username can be when a user registers.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -847,7 +916,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="minpasswordlength">
 			<title>Minimum Password Length</title>
 			<description><![CDATA[The minimum number of characters a password should contain.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[6]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -855,7 +924,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxpasswordlength">
 			<title>Maximum Password Length</title>
 			<description><![CDATA[The maximum number of characters a password should contain.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -863,7 +932,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="requirecomplexpasswords">
 			<title>Require a complex password?</title>
 			<description><![CDATA[Do you want users to use complex passwords? Complex passwords require an upper case letter, lower case letter and a number.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -871,7 +940,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="betweenregstime">
 			<title>Time Between Registrations</title>
 			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -879,7 +948,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="maxregsbetweentime">
 			<title>Maximum Registrations Per IP Address</title>
 			<description><![CDATA[This option allows you to set the maximum amount of times a certain user can register within the timeframe specified above.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -887,7 +956,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="allowmultipleemails">
 			<title><![CDATA[Allow emails to be registered multiple times?]]></title>
 			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -895,7 +964,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should they be allowed to keep it?]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -903,7 +972,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="hiddencaptchaimage">
 			<title>Display a hidden CAPTCHA</title>
 			<description><![CDATA[Do you want to display a hidden CAPTCHA field when a user registers? This may prevent spambots from registering on your forum.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -911,7 +980,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="hiddencaptchaimagefield">
 			<title>Hidden CAPTCHA field</title>
 			<description><![CDATA[You can choose a name for your hidden CAPTCHA field below.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[email3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -919,7 +988,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="usereferrals">
 			<title>Use Referrals System</title>
 			<description><![CDATA[Do you want to use the user referrals system on these forums?]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -927,7 +996,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
 			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
 deny=Deny users under the age of 13
@@ -938,7 +1007,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[select
 0=Username Only
 1=Email Only
@@ -949,7 +1018,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedcaptchalogincount">
 			<title>Number of failed logins before verification required</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. 0 to disable]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -957,7 +1026,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -965,7 +1034,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -973,7 +1042,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -981,9 +1050,17 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="regtime">
 			<title>Minimum Registration Time</title>
 			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form.  Used to prevent automated bot signups.  Setting this to 0 to disables the function.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="securityquestion">
+			<title>Show Security Question</title>
+			<description><![CDATA[Do you wish to show a question that users must answer when registering?]]></description>
+			<disporder>23</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -1709,18 +1786,26 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 	</settinggroup>
 	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="20" isdefault="1">
+		<setting name="portal">
+			<title>Enable Portal</title>
+			<description><![CDATA[If you wish to disable the portal on your board, set this option to no.]]></description>
+  			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="portal_announcementsfid">
-			<title>Forum ID to pull announcements from</title>
-			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.]]></description>
-			<disporder>1</disporder>
+			<title>Forums to pull announcements from</title>
+			<description><![CDATA[Please select the forums you wish to pull the announcements from.]]></description>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[forumselect]]></optionscode>
-			<settingvalue><![CDATA[2]]></settingvalue>
+			<settingvalue><![CDATA[-1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 		<setting name="portal_numannouncements">
 			<title>Number of announcements to show</title>
-			<description><![CDATA[Please enter the number of announcements to show on the main page.]]></description>
-			<disporder>2</disporder>
+			<description><![CDATA[Please enter the number of announcements to show per page on the main page.]]></description>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1728,7 +1813,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showwelcome">
 			<title>Show the Welcome box</title>
 			<description><![CDATA[Do you want to show the welcome box to visitors / users.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1736,7 +1821,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showpms">
 			<title>Show the number of PMs to users</title>
 			<description><![CDATA[Do you want to show the number of private messages the current user has in their pm system.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1744,7 +1829,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showstats">
 			<title>Show forum statistics</title>
 			<description><![CDATA[Do you want to show the total number of posts, threads, members and the last registered member on the portal page?]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1752,7 +1837,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showwol">
 			<title>Show Who's Online</title>
 			<description><![CDATA[Do you want to show the 'Who's online' information to users when they visit the portal page?]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1760,7 +1845,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showsearch">
 			<title>Show Search Box</title>
 			<description><![CDATA[Do you want to show the search box, allowing users to quickly search the forums on the portal?]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1768,7 +1853,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showdiscussions">
 			<title>Show Latest Discussions</title>
 			<description><![CDATA[Do you wish to show the current forum discussions on the portal page?]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1776,9 +1861,17 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="portal_showdiscussionsnum">
 			<title>Number of latest discussions to show</title>
 			<description><![CDATA[Please enter the number of current forum discussions to show on the portal page.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="portal_excludediscussion">
+			<title>Forums to exclude latest discussions from</title>
+			<description><![CDATA[Please select the forums you wish to exclude from the current forum discussions box.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[forumselect]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
@@ -1817,97 +1910,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mycode" title="MyCode Settings" description="This section allows you to control the default MyCodes." disporder="22" isdefault="1">
-		<setting name="allowbasicmycode">
-			<title>Allow Basic MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowcolormycode">
-			<title>Allow Color MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowsizemycode">
-			<title>Allow Size MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
-			<disporder>3</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowfontmycode">
-			<title>Allow Font MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
-			<disporder>4</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowlinkmycode">
-			<title>Allow Link MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowemailmycode">
-			<title>Allow Email MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowalignmycode">
-			<title>Allow Alignment MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
-			<disporder>7</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowlistmycode">
-			<title>Allow List MyCode</title>
-			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
-			<disporder>8</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowcodemycode">
-			<title>Allow Code MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
-			<disporder>9</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowsymbolmycode">
-			<title>Allow Symbol MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
-			<disporder>10</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="allowmemycode">
-			<title>Allow Me MyCodes</title>
-			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
-			<disporder>11</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="23" isdefault="1">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears and control the default MyCodes." disporder="22" isdefault="1">
 		<setting name="bbcodeinserter">
 			<title>Clickable MyCode Editor</title>
 			<description><![CDATA[Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.]]></description>
@@ -1916,10 +1919,18 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="partialmode">
+			<title>Clickable MyCode Editor in Partial Mode</title>
+			<description><![CDATA[Editor will be in partial mode if this option is set to 'yes'. Several MyCodes, such as [quote] and [img], will be inserted into it as plain text tags.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>0</isdefault>
+		</setting>
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
 			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'on'.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1927,7 +1938,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="smilieinsertertot">
 			<title>No. of Smilies to show</title>
 			<description><![CDATA[Enter the total number of smilies to show on the clickable smilie inserter.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1935,13 +1946,101 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		<setting name="smilieinsertercols">
 			<title>No. of Smilie Cols to Show</title>
 			<description><![CDATA[Enter the number of columns you wish to show on the clickable smilie inserter.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowbasicmycode">
+			<title>Allow Basic MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the basic MyCodes, such as Bold, Italic, Underline, Strike-through and HR.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcolormycode">
+			<title>Allow Color MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Color MyCode.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsizemycode">
+			<title>Allow Size MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Size MyCode]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowfontmycode">
+			<title>Allow Font MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Font MyCode.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlinkmycode">
+			<title>Allow Link MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the URL MyCode.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowemailmycode">
+			<title>Allow Email MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Email MyCode.]]></description>
+			<disporder>11</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowalignmycode">
+			<title>Allow Alignment MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the Align MyCode.]]></description>
+			<disporder>12</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowlistmycode">
+			<title>Allow List MyCode</title>
+			<description><![CDATA[Setting this to yes allows users to use the List MyCode.]]></description>
+			<disporder>13</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowcodemycode">
+			<title>Allow Code MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the Code and PHP MyCodes.]]></description>
+			<disporder>14</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowsymbolmycode">
+			<title>Allow Symbol MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the (tm), (c) and (r) MyCodes.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="allowmemycode">
+			<title>Allow Me MyCodes</title>
+			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 	</settinggroup>
-	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="24" isdefault="1">
+	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="23" isdefault="1">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -1975,7 +2074,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="25" isdefault="1">
+	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="24" isdefault="1">
 		<setting name="mail_handler">
 			<title>Mail handler</title>
 			<description><![CDATA[The medium through which MyBB will send outgoing emails.]]></description>
@@ -2057,7 +2156,7 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 		</setting>
 	</settinggroup>
-	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="26" isdefault="1">
+	<settinggroup name="contactsettings" title="Contact Settings" description="The various options to change the behaviour of the contact page (contact.php)." disporder="25" isdefault="1">
 		<setting name="contact">
 			<title>Enable Contact Page</title>
 			<description><![CDATA[Setting this to yes will allow access to the contact page.]]></description>
@@ -2105,6 +2204,122 @@ smtp=SMTP mail]]></optionscode>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
 			<isdefault>1</isdefault>
+		</setting>
+	</settinggroup>
+	<settinggroup name="purgespammer" title="Purge Spammer" description="This section allows you to change the settings of the Purge Spammer feature." disporder="26" isdefault="1">
+		<setting name="purgespammergroups">
+			<title>Allowed Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use Purge Spammer.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[3,4,6]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="purgespammerpostlimit">
+			<title>Post Limit</title>
+			<description><![CDATA[This setting stops this tool being used on users who have more than a certain amount of posts, to prevent it being used on active members. Setting the value to 0 will disable the post check, however this is not recommended.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="purgespammerbandelete">
+			<title>Ban or Delete Spammers</title>
+			<description><![CDATA[Do you want to ban or delete spammers with this tool? It will still be optional on the Purge Spammer page.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[radio
+ban=Ban (Permanent)
+delete=Delete]]></optionscode>
+			<settingvalue><![CDATA[ban]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="purgespammerbangroup">
+			<title>Ban Usergroup</title>
+			<description><![CDATA[Enter the ID of the usergroup (not the name) to put users into when they get banned. Defaults to 7, the default Banned usergroup. The above setting must be set to 'Ban' for this to take effect.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[7]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="purgespammerapikey">
+			<title>Stop Forum Spam API Key</title>
+			<description><![CDATA[In order to be able to submit information on a spammer to the Stop Forum Spam database, you need an API key. You can get one of these <a href="http://stopforumspam.com/signup" target="_blank">here</a>. When you have your key, paste it into the box below.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="27" isdefault="1">
+		<setting name="allowicqfield">
+			<title>Allow ICQ Number Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowaimfield">
+			<title>Allow AIM Screen Name To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the AIM Screen Name contact field.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowyahoofield">
+			<title>Allow Yahoo ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Yahoo ID contact field.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowskypefield">
+			<title>Allow Skype ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Skype ID contact field.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="allowgooglefield">
+			<title>Allow Google Talk ID Field To Usergroups</title>
+			<description><![CDATA[Select the usergroups who are allowed to use the Google Talk ID contact field.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[groupselect]]></optionscode>
+			<settingvalue><![CDATA[-1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
+	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
+		<setting name="statsenabled">
+			<title>Enable Statistics Pages</title>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no. 0 to disable caching.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="statscachetime">
+			<title>Statistics Cache Time</title>
+			<description><![CDATA[Inser the interval of time to refresh the statistics page cache in hours.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[24]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
 </settings>

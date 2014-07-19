@@ -167,6 +167,7 @@ $l['membdayage'] = "({1} years old)";
 $l['mod_options'] = "Moderator Options";
 $l['edit_in_mcp'] = "Edit this user in Mod CP";
 $l['ban_in_mcp'] = "Ban this user in Mod CP";
+$l['purgespammer'] = "Purge Spammer";
 $l['edit_usernotes'] = "Edit user notes in Mod CP";
 $l['no_usernotes'] = "There are currently no notes on this user";
 $l['view_all_notes'] = "View all notes";
@@ -221,6 +222,10 @@ $l['js_validator_checking_username'] = "Checking if username is available";
 $l['js_validator_username_length'] = "Usernames must be between {1} and {2} characters long";
 $l['js_validator_checking_referrer'] = "Checking if referrer username exists.";
 $l['js_validator_captcha_valid'] = "Checking whether or not you entered the correct image verification code.";
+
+$l['security_question'] = "Security Question";
+$l['question_note'] = "Please answer the question provided. This process is used to prevent automated processes.";
+$l['error_question_wrong'] = "The answer you provided for the security question is wrong. Please try again.";
 
 $l['subscription_method'] = "Default Thread Subscription Mode:";
 $l['no_auto_subscribe'] = "Do not subscribe";

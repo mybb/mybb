@@ -706,7 +706,6 @@ function upgrade17_redoconfig()
 ";
 		}
 
-
 		$configdata = "<?php
 /**
  * Database configuration

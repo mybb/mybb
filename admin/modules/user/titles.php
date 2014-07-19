@@ -78,9 +78,10 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			'stars' => '1',
-			'starimage' => '{theme}/star.png',
+		$mybb->input = array_merge($mybb->input, array(
+				'stars' => '1',
+				'starimage' => '{theme}/star.png',
+			)
 		);
 	}
 
@@ -113,8 +114,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_titles_edit");
-
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -123,6 +122,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
+
+	$plugins->run_hooks("admin_user_titles_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -184,7 +185,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $usertitle;
+		$mybb->input = array_merge($mybb->input, $usertitle);
 	}
 
 	$form_container = new FormContainer($lang->edit_user_title);
@@ -205,8 +206,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_titles_delete");
-
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -221,6 +220,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=user-titles");
 	}
+
+	$plugins->run_hooks("admin_user_titles_delete");
 
 	if($mybb->request_method == "post")
 	{

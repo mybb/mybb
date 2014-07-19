@@ -56,6 +56,13 @@ class UserDataHandler extends DataHandler
 	public $uid = 0;
 
 	/**
+	 * Values to be returned after inserting/deleting an user.
+	 *
+	 * @var array
+	 */
+	public $return_values = array();
+
+	/**
 	 * Verifies if a username is valid or invalid.
 	 *
 	 * @param boolean True when valid, false when invalid.
@@ -133,28 +140,22 @@ class UserDataHandler extends DataHandler
 	 */
 	function verify_username_exists()
 	{
-		global $db;
-
 		$username = &$this->data['username'];
 
-		$uid_check = "";
-		if(!empty($this->data['uid']))
+		$user = get_user_by_username(trim($username));
+
+		if(!empty($this->data['uid']) && !empty($user['uid']) && $user['uid'] == $this->data['uid'])
 		{
-			$uid_check = " AND uid!='{$this->data['uid']}'";
+			unset($user);
 		}
 
-		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
-
-		$user_count = $db->fetch_field($query, "count");
-		if($user_count > 0)
+		if(!empty($user['uid']))
 		{
 			$this->set_error("username_exists", array($username));
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -304,6 +305,12 @@ class UserDataHandler extends DataHandler
 		{
 			// Website does not start with http://, let's see if the user forgot.
 			$website = "http://".$website;
+		}
+
+		if(!filter_var($website, FILTER_VALIDATE_URL))
+		{
+			$this->set_error('invalid_website');
+			return false;
 		}
 
 		return true;
@@ -478,7 +485,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_profile_fields()
 	{
-		global $db;
+		global $db, $cache;
 
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
@@ -486,99 +493,99 @@ class UserDataHandler extends DataHandler
 		// Loop through profile fields checking if they exist or not and are filled in.
 		$userfields = array();
 		$comma = '';
-		$editable = '';
-
-		if(empty($this->data['profile_fields_editable']))
-		{
-			$editable = "editable !='0'";
-		}
 
 		// Fetch all profile fields first.
-		$options = array(
-			'order_by' => 'disporder'
-		);
-		$query = $db->simple_select('profilefields', 'name, postnum, type, fid, required, maxlength', $editable, $options);
+		$pfcache = $cache->read('profilefields');
 
-		// Then loop through the profile fields.
-		while($profilefield = $db->fetch_array($query))
+		if(is_array($pfcache))
 		{
-			// Does this field have a minimum post count?
-			if(!$this->data['profile_fields_editable'] && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+			// Then loop through the profile fields.
+			foreach($pfcache as $profilefield)
 			{
-				continue;
-			}
+				if(isset($this->data['profile_fields_editable']) || isset($this->data['registration']) && ($profilefield['required'] == 1 || $profilefield['registration'] == 1))
+				{
+					$profilefield['editableby'] = -1;
+				}
 
-			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
-			$thing = explode("\n", $profilefield['type'], "2");
-			$type = trim($thing[0]);
-			$field = "fid{$profilefield['fid']}";
+				if(empty($profilefield['editableby']) || ($profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups']))))
+				{
+					continue;
+				}
 
-			if(!isset($profile_fields[$field]))
-			{
-				$profile_fields[$field] = '';
-			}
+				// Does this field have a minimum post count?
+				if(!isset($this->data['profile_fields_editable']) && !empty($profilefield['postnum']) && $profilefield['postnum'] > $user['postnum'])
+				{
+					continue;
+				}
 
-			// If the profile field is required, but not filled in, present error.
-			if($type != "multiselect" && $type != "checkbox")
-			{
-				if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+				$thing = explode("\n", $profilefield['type'], "2");
+				$type = trim($thing[0]);
+				$field = "fid{$profilefield['fid']}";
+
+				if(!isset($profile_fields[$field]))
+				{
+					$profile_fields[$field] = '';
+				}
+
+				// If the profile field is required, but not filled in, present error.
+				if($type != "multiselect" && $type != "checkbox")
+				{
+					if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
+					{
+						$this->set_error('missing_required_profile_field', array($profilefield['name']));
+					}
+				}
+				elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
 				{
 					$this->set_error('missing_required_profile_field', array($profilefield['name']));
 				}
-			}
-			elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
-			{
-				$this->set_error('missing_required_profile_field', array($profilefield['name']));
-			}
 
-			// Sort out multiselect/checkbox profile fields.
-			$options = '';
-			if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				foreach($profile_fields[$field] as $value)
+				// Sort out multiselect/checkbox profile fields.
+				$options = '';
+				if(($type == "multiselect" || $type == "checkbox") && is_array($profile_fields[$field]))
 				{
-					if(!in_array(htmlspecialchars_uni($value), $expoptions))
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					foreach($profile_fields[$field] as $value)
+					{
+						if(!in_array(htmlspecialchars_uni($value), $expoptions))
+						{
+							$this->set_error('bad_profile_field_values', array($profilefield['name']));
+						}
+						if($options)
+						{
+							$options .= "\n";
+						}
+						$options .= $db->escape_string($value);
+					}
+				}
+				elseif($type == "select" || $type == "radio")
+				{
+					$expoptions = explode("\n", $thing[1]);
+					$expoptions = array_map('trim', $expoptions);
+					if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
 					{
 						$this->set_error('bad_profile_field_values', array($profilefield['name']));
 					}
-					if($options)
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				else
+				{
+					if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
 					{
-						$options .= "\n";
+						$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
 					}
-					$options .= $db->escape_string($value);
-				}
-			}
-			elseif($type == "select" || $type == "radio")
-			{
-				$expoptions = explode("\n", $thing[1]);
-				$expoptions = array_map('trim', $expoptions);
-				if(!in_array(htmlspecialchars_uni($profile_fields[$field]), $expoptions) && trim($profile_fields[$field]) != "")
-				{
-					$this->set_error('bad_profile_field_values', array($profilefield['name']));
-				}
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			elseif($type == "textarea")
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
 
-				$options = $db->escape_string($profile_fields[$field]);
-			}
-			else
-			{
-				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
-				{
-					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
-				}
+					if(!empty($profilefield['regex']) && !preg_match("#".$profilefield['regex']."#i", $profile_fields[$field]))
+					{
+						$this->set_error('bad_profile_field_value', array($profilefield['name']));
+					}
 
-				$options = $db->escape_string($profile_fields[$field]);
+					$options = $db->escape_string($profile_fields[$field]);
+				}
+				$user['user_fields'][$field] = $options;
 			}
-			$user['user_fields'][$field] = $options;
 		}
 
 		return true;
@@ -598,13 +605,14 @@ class UserDataHandler extends DataHandler
 		// Does the referrer exist or not?
 		if($mybb->settings['usereferrals'] == 1 && $user['referrer'] != '')
 		{
-			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", array('limit' => 1));
-			$referrer = $db->fetch_array($query);
-			if(!$referrer['uid'])
+			$referrer = get_user_by_username($user['referrer']);
+
+			if(empty($referrer['uid']))
 			{
 				$this->set_error('invalid_referrer', array($user['referrer']));
 				return false;
 			}
+
 			$user['referrer_uid'] = $referrer['uid'];
 		}
 		else
@@ -640,6 +648,8 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
+		$this->verify_yesno_option($options, 'showcodebuttons', 1);
+		$this->verify_yesno_option($options, 'sourceeditor', 1);
 
 		if($mybb->settings['postlayout'] == 'classic')
 		{
@@ -654,7 +664,7 @@ class UserDataHandler extends DataHandler
 		{
 			// Value out of range
 			$options['subscriptionmethod'] = intval($options['subscriptionmethod']);
-			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
+			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 3)
 			{
 				$options['subscriptionmethod'] = 0;
 			}
@@ -678,19 +688,6 @@ class UserDataHandler extends DataHandler
 		{
 			$options['dst'] = 0;
 		}
-
-		if(isset($options['showcodebuttons']))
-        {
-            $options['showcodebuttons'] = intval($options['showcodebuttons']);
-            if($options['showcodebuttons'] != 0)
-            {
-                $options['showcodebuttons'] = 1;
-            }
-        }
-        else if($this->method == "insert")
-        {
-            $options['showcodebuttons'] = 1;
-        }
 
 		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
 		{
@@ -1028,8 +1025,7 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim',
-			'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
+		$array = array('postnum', 'threadnum', 'avatar', 'avatartype', 'additionalgroups', 'displaygroup', 'icq', 'aim', 'yahoo', 'skype', 'google', 'bday', 'signature', 'style', 'dateformat', 'timeformat', 'notepad');
 		foreach($array as $value)
 		{
 			if(!isset($user[$value]))
@@ -1055,12 +1051,12 @@ class UserDataHandler extends DataHandler
 			"regdate" => intval($user['regdate']),
 			"lastactive" => intval($user['lastactive']),
 			"lastvisit" => intval($user['lastvisit']),
-			"website" => $db->escape_string(htmlspecialchars($user['website'])),
+			"website" => $db->escape_string($user['website']),
 			"icq" => intval($user['icq']),
-			"aim" => $db->escape_string(htmlspecialchars($user['aim'])),
-			"yahoo" => $db->escape_string(htmlspecialchars($user['yahoo'])),
-			"skype" => $db->escape_string(htmlspecialchars($user['skype'])),
-			"google" => $db->escape_string(htmlspecialchars($user['google'])),
+			"aim" => $db->escape_string($user['aim']),
+			"yahoo" => $db->escape_string($user['yahoo']),
+			"skype" => $db->escape_string($user['skype']),
+			"google" => $db->escape_string($user['google']),
 			"birthday" => $user['bday'],
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
@@ -1089,6 +1085,7 @@ class UserDataHandler extends DataHandler
 			"regip" => $db->escape_binary($user['regip']),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
+			"sourceeditor" => $user['options']['sourceeditor'],
 			"away" => $user['away']['away'],
 			"awaydate" => $user['away']['date'],
 			"returndate" => $user['away']['returndate'],
@@ -1125,14 +1122,18 @@ class UserDataHandler extends DataHandler
 
 		$user['user_fields']['ufid'] = $this->uid;
 
-		$query = $db->simple_select("profilefields", "fid");
-		while($profile_field = $db->fetch_array($query))
+		$pfcache = $cache->read('profilefields');
+
+		if(is_array($pfcache))
 		{
-			if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+			foreach($pfcache as $profile_field)
 			{
-				continue;
+				if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
+				{
+					continue;
+				}
+				$user['user_fields']["fid{$profile_field['fid']}"] = '';
 			}
-			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
 		$db->insert_query("userfields", $user['user_fields'], false);
@@ -1149,7 +1150,12 @@ class UserDataHandler extends DataHandler
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
 
-		return array(
+		if(intval($user['usergroup']) == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
+		$this->return_values = array(
 			"uid" => $this->uid,
 			"username" => $user['username'],
 			"loginkey" => $user['loginkey'],
@@ -1157,6 +1163,10 @@ class UserDataHandler extends DataHandler
 			"password" => $user['password'],
 			"usergroup" => $user['usergroup']
 		);
+
+		$plugins->run_hooks("datahandler_user_insert_end", $this);
+
+		return $this->return_values;
 	}
 
 	/**
@@ -1222,7 +1232,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usertitle']))
 		{
-			$this->user_update_data['usertitle'] = $db->escape_string(htmlspecialchars_uni($user['usertitle']));
+			$this->user_update_data['usertitle'] = $db->escape_string($user['usertitle']);
 		}
 		if(isset($user['regdate']))
 		{
@@ -1242,7 +1252,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['website']))
 		{
-			$this->user_update_data['website'] = $db->escape_string(htmlspecialchars_uni($user['website']));
+			$this->user_update_data['website'] = $db->escape_string($user['website']);
 		}
 		if(isset($user['icq']))
 		{
@@ -1250,19 +1260,19 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['aim']))
 		{
-			$this->user_update_data['aim'] = $db->escape_string(htmlspecialchars_uni($user['aim']));
+			$this->user_update_data['aim'] = $db->escape_string($user['aim']);
 		}
 		if(isset($user['yahoo']))
 		{
-			$this->user_update_data['yahoo'] = $db->escape_string(htmlspecialchars_uni($user['yahoo']));
+			$this->user_update_data['yahoo'] = $db->escape_string($user['yahoo']);
 		}
 		if(isset($user['skype']))
 		{
-			$this->user_update_data['skype'] = $db->escape_string(htmlspecialchars_uni($user['skype']));
+			$this->user_update_data['skype'] = $db->escape_string($user['skype']);
 		}
 		if(isset($user['google']))
 		{
-			$this->user_update_data['google'] = $db->escape_string(htmlspecialchars_uni($user['google']));
+			$this->user_update_data['google'] = $db->escape_string($user['google']);
 		}
 		if(isset($user['bday']))
 		{
@@ -1350,6 +1360,11 @@ class UserDataHandler extends DataHandler
 			$cache->update_birthdays();
 		}
 
+		if(isset($user['usergroup']) && intval($user['usergroup']) == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
 		// Maybe some userfields need to be updated?
 		if(isset($user['user_fields']) && is_array($user['user_fields']))
 		{
@@ -1397,6 +1412,8 @@ class UserDataHandler extends DataHandler
 				update_stats(array("numusers" => "+0"));
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -1448,6 +1465,14 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
 		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
 
+		
+		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
+		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
+		
+		// Update the reports made by the deleted users by setting the uid to 0
+		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+
 		// Remove any of the user(s) uploaded avatars
 		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
 		while($avatar = $db->fetch_field($query, 'avatar'))
@@ -1473,10 +1498,18 @@ class UserDataHandler extends DataHandler
 			}
 
 			// Posts
+			$pids = array();
 			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
 			while($pid = $db->fetch_field($query, 'pid'))
 			{
 				$moderation->delete_post($pid);
+				$pids[] = (int)$pid;
+			}
+			
+			// Delete Reports made to users's posts/threads
+			if(!empty($pids))
+			{
+				$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
 			}
 		}
 		else
@@ -1508,15 +1541,24 @@ class UserDataHandler extends DataHandler
 		$db->update_query('forums', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 		$db->update_query('threads', array('lastposteruid' => 0), 'lastposteruid IN('.$this->delete_uids.')');
 
-		$plugins->run_hooks('datahandler_user_delete_end', $this);
-
 		$cache->update_banned();
 		$cache->update_moderators();
 
 		// Update forum stats
 		update_stats(array('numusers' => '-'.(int)$this->deleted_users));
 
-		return $this->deleted_users;
+		$this->return_values = array(
+			"deleted_users" => $this->deleted_users
+		);
+		
+		// Update reports cache
+		$cache->update_reportedcontent();
+
+		$cache->update_awaitingactivation();
+
+		$plugins->run_hooks("datahandler_user_delete_end", $this);
+
+		return $this->return_values;
 	}
 }
 ?>

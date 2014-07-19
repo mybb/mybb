@@ -40,6 +40,13 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
+		if(in_array('threadcount', $requirements) && intval($promotion['threads']) >= 0 && !empty($promotion['threadtype']))
+		{
+			$sql_where .= "{$and}threadnum {$promotion['threadtype']} '{$promotion['threads']}'";
+
+			$and = " AND ";
+		}
+
 		if(in_array('reputation', $requirements) && !empty($promotion['reputationtype']))
 		{
 			$sql_where .= "{$and}reputation {$promotion['reputationtype']} '{$promotion['reputations']}'";
@@ -87,6 +94,32 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
+		if(in_array('timeonline', $requirements) && intval($promotion['online']) > 0 && !empty($promotion['onlinetype']))
+		{
+			switch($promotion['onlinetype'])
+			{
+				case "hours":
+					$timeonline = $promotion['online']*60*60;
+					break;
+				case "days":
+					$timeonline = $promotion['online']*60*60*24;
+					break;
+				case "weeks":
+					$timeonline = $promotion['online']*60*60*24*7;
+					break;
+				case "months":
+					$timeonline = $promotion['online']*60*60*24*30;
+					break;
+				case "years":
+					$timeonline = $promotion['online']*60*60*24*365;
+					break;
+				default:
+					$timeonline = $promotion['online']*60*60*24;
+			}
+			$sql_where .= "{$and}timeonline <= '".(TIME_NOW-$timeonline)."'";
+			$and = " AND ";
+		}
+
 		if(!empty($promotion['originalusergroup']) && $promotion['originalusergroup'] != '*')
 		{
 			$sql_where .= "{$and}usergroup IN ({$promotion['originalusergroup']})";
@@ -110,6 +143,9 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
+		// Exclude super admins
+		$sql_where .= not_super_admins(true);
+
 		$uid = array();
 		$log_inserts = array();
 
@@ -127,7 +163,9 @@ function task_promotions($task)
 			$args = array(
 				'task' => &$task,
 				'promotion' => &$promotion,
-				'sql_where' => &$sql_where
+				'sql_where' => &$sql_where,
+				'and' => &$and,
+				'usergroup_select' => &$usergroup_select
 			);
 			$plugins->run_hooks('task_promotions', $args);
 		}

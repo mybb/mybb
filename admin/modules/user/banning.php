@@ -52,8 +52,6 @@ $plugins->run_hooks("admin_user_banning_begin");
 
 if($mybb->input['action'] == "prune")
 {
-	$plugins->run_hooks("admin_user_banning_prune");
-
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -76,6 +74,8 @@ if($mybb->input['action'] == "prune")
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_prune");
 
 	if($mybb->request_method == "post")
 	{
@@ -111,8 +111,6 @@ if($mybb->input['action'] == "prune")
 
 if($mybb->input['action'] == "lift")
 {
-	$plugins->run_hooks("admin_user_banning_lift");
-
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -135,6 +133,8 @@ if($mybb->input['action'] == "lift")
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_lift");
 
 	if($mybb->request_method == "post")
 	{
@@ -165,8 +165,6 @@ if($mybb->input['action'] == "lift")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_banning_edit");
-
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
@@ -177,6 +175,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user-banning");
 	}
+
+	$plugins->run_hooks("admin_user_banning_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -262,7 +262,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $ban;
+		$mybb->input = array_merge($mybb->input, $ban);
 	}
 
 	$form_container = new FormContainer($lang->edit_ban);
@@ -301,91 +301,112 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$where_sql_full = $where_sql = '';
+
 	$plugins->run_hooks("admin_user_banning_start");
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
+		$options = array(
+			'fields' => array('username', 'usergroup', 'additionalgroups', 'displaygroup')
+		);
 
-		if(!$user['uid'])
+		$user = get_user_by_username($mybb->input['username'], $options);
+		
+		// Are we searching a user?
+		if(isset($mybb->input['search']) && $mybb->get_input('search') != '')
 		{
-			$errors[] = $lang->error_invalid_username;
-		}
-		// Is the user we're trying to ban a super admin and we're not?
-		else if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
-		{
-			$errors[] = $lang->error_no_perm_to_ban;
+			$where_sql = 'uid=\''.(int)$user['uid'].'\'';
+			$where_sql_full = 'WHERE b.uid=\''.(int)$user['uid'].'\'';
 		}
 		else
 		{
-			$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
-			if($db->fetch_field($query, "uid"))
+			if(!$user['uid'])
 			{
-				$errors[] = $lang->error_already_banned;
+				$errors[] = $lang->error_invalid_username;
 			}
-		}
-
-		if($user['uid'] == $mybb->user['uid'])
-		{
-			$errors[] = $lang->error_ban_self;
-		}
-
-		// No errors? Insert
-		if(!$errors)
-		{
-			// Ban the user
-			if($mybb->input['bantime'] == '---')
+			// Is the user we're trying to ban a super admin and we're not?
+			else if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
 			{
-				$lifted = 0;
+				$errors[] = $lang->error_no_perm_to_ban;
 			}
 			else
 			{
-				$lifted = ban_date2timestamp($mybb->input['bantime']);
+				$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
+				if($db->fetch_field($query, "uid"))
+				{
+					$errors[] = $lang->error_already_banned;
+				}
+				
+				// Get PRIMARY usergroup information
+				$usergroups = $cache->read("usergroups");
+				if(!empty($usergroups[$user['usergroup']]) && $usergroups[$user['usergroup']]['isbannedgroup'] == 1)
+				{
+					$errors[] = $lang->error_already_banned;
+				}
 			}
 
-			$reason = my_substr($mybb->input['reason'], 0, 255);
-
-			if(count($banned_groups) == 1)
+			if($user['uid'] == $mybb->user['uid'])
 			{
-				$group = array_keys($banned_groups);
-				$mybb->input['usergroup'] = $group[0];
+				$errors[] = $lang->error_ban_self;
 			}
 
-			$insert_array = array(
-				'uid' => $user['uid'],
-				'gid' => intval($mybb->input['usergroup']),
-				'oldgroup' => $user['usergroup'],
-				'oldadditionalgroups' => $user['additionalgroups'],
-				'olddisplaygroup' => $user['displaygroup'],
-				'admin' => intval($mybb->user['uid']),
-				'dateline' => TIME_NOW,
-				'bantime' => $db->escape_string($mybb->input['bantime']),
-				'lifted' => $db->escape_string($lifted),
-				'reason' => $db->escape_string($reason)
-			);
-			$db->insert_query('banned', $insert_array);
+			// No errors? Insert
+			if(!$errors)
+			{
+				// Ban the user
+				if($mybb->input['bantime'] == '---')
+				{
+					$lifted = 0;
+				}
+				else
+				{
+					$lifted = ban_date2timestamp($mybb->input['bantime']);
+				}
 
-			// Move the user to the banned group
-			$update_array = array(
-				'usergroup' => intval($mybb->input['usergroup']),
-				'displaygroup' => 0,
-				'additionalgroups' => '',
-			);
-			$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
+				$reason = my_substr($mybb->input['reason'], 0, 255);
 
-			$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
-			$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
+				if(count($banned_groups) == 1)
+				{
+					$group = array_keys($banned_groups);
+					$mybb->input['usergroup'] = $group[0];
+				}
 
-			$cache->update_banned();
+				$insert_array = array(
+					'uid' => $user['uid'],
+					'gid' => intval($mybb->input['usergroup']),
+					'oldgroup' => $user['usergroup'],
+					'oldadditionalgroups' => $user['additionalgroups'],
+					'olddisplaygroup' => $user['displaygroup'],
+					'admin' => intval($mybb->user['uid']),
+					'dateline' => TIME_NOW,
+					'bantime' => $db->escape_string($mybb->input['bantime']),
+					'lifted' => $db->escape_string($lifted),
+					'reason' => $db->escape_string($reason)
+				);
+				$db->insert_query('banned', $insert_array);
 
-			$plugins->run_hooks("admin_user_banning_start_commit");
+				// Move the user to the banned group
+				$update_array = array(
+					'usergroup' => intval($mybb->input['usergroup']),
+					'displaygroup' => 0,
+					'additionalgroups' => '',
+				);
+				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
 
-			// Log admin action
-			log_admin_action($user['uid'], $user['username'], $lifted);
+				$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
+				$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
-			flash_message($lang->success_banned, 'success');
-			admin_redirect("index.php?module=user-banning");
+				$cache->update_banned();
+
+				$plugins->run_hooks("admin_user_banning_start_commit");
+
+				// Log admin action
+				log_admin_action($user['uid'], $user['username'], $lifted);
+
+				flash_message($lang->success_banned, 'success');
+				admin_redirect("index.php?module=user-banning");
+			}
 		}
 	}
 
@@ -393,7 +414,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, "bans");
 
-	$query = $db->simple_select("banned", "COUNT(*) AS ban_count");
+	$query = $db->simple_select("banned", "COUNT(*) AS ban_count", $where_sql);
 	$ban_count = $db->fetch_field($query, "ban_count");
 
 	$per_page = 20;
@@ -431,6 +452,7 @@ if(!$mybb->input['action'])
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
+		{$where_sql_full}
 		ORDER BY dateline DESC
 		LIMIT {$start}, {$per_page}
 	");
@@ -572,6 +594,7 @@ if(!$mybb->input['action'])
 	</script>';
 
 	$buttons[] = $form->generate_submit_button($lang->ban_user);
+	$buttons[] = $form->generate_submit_button($lang->search_user, array('name' => 'search'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

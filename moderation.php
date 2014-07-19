@@ -15,7 +15,7 @@ $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodto
 $templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
-$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error';
+$templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option,moderation_purgespammer_option_textbox,moderation_purgespammer,moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month';
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -111,7 +111,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
@@ -234,12 +234,34 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$mybb->input['delay'] = $mybb->get_input('delay', 1);
-			if($mybb->input['delay'] < 1)
+			if($mybb->input['date_day'] > 31 || $mybb->input['date_day'] < 1)
 			{
-				$mybb->input['delay'] = 1;
-				$errors[] = $lang->error_delayedmoderation_invalid_delay;
+				$errors[] = $lang->error_delayedmoderation_invalid_date_day;
 			}
+
+			if($mybb->input['date_month'] > 12 || $mybb->input['date_month'] < 1)
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_month;
+			}
+
+			if($mybb->input['date_year'] < gmdate('Y', TIME_NOW))
+			{
+				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
+			}
+
+			$enddate = explode(' ', (string)$mybb->input['date_time']);
+			$enddate = explode(':', (string)$enddate[0]);
+
+			if(stristr($mybb->input['date_time'], 'pm'))
+			{
+				$enddate[0] = 12+$enddate[0];
+				if($enddate[0] >= 24)
+				{
+					$enddate[0] = '00';
+				}
+			}
+
+			$rundate = mktime((int)$enddate[0], (int)$enddate[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
 
 			if(!$errors)
 			{
@@ -249,7 +271,7 @@ switch($mybb->input['action'])
 				}
 				$db->insert_query("delayedmoderation", array(
 					'type' => $db->escape_string($mybb->input['type']),
-					'delaydateline' => TIME_NOW+($mybb->input['delay']*24*60*60),
+					'delaydateline' => (int)$rundate,
 					'uid' => $mybb->user['uid'],
 					'tids' => $db->escape_string($mybb->input['tids']),
 					'fid' => $fid,
@@ -449,7 +471,7 @@ switch($mybb->input['action'])
 			{
 				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
 			}
-			$delayedmod['inputs'] = unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
@@ -510,6 +532,30 @@ switch($mybb->input['action'])
 		}
 		$mybb->input['redirect_expire'] = $mybb->get_input('redirect_expire');
 		eval("\$moderation_delayedmoderation_move = \"".$templates->get("moderation_delayedmoderation_move")."\";");
+
+		// Generate form elements for date form
+		$dateday = '';
+		for($day = 1; $day <= 31; ++$day)
+		{
+			$selected = '';
+			if($endday == $day)
+			{
+				$selected = ' selected="selected"';
+			}
+			eval('$dateday .= "'.$templates->get('moderation_delayedmoderation_date_day').'";');
+		}
+
+		$datemonth = array();
+		foreach(array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') as $month)
+		{
+			$datemonth[$month] = '';
+		}
+		$datemonth[$endmonth] = ' selected="selected"';
+
+		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
+
+		$dateyear = gmdate('Y', TIME_NOW);
+		$datetime = gmdate('g:i a', TIME_NOW);
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
@@ -991,7 +1037,7 @@ switch($mybb->input['action'])
 			{
 				$info .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($delayedmod['fid'])."\">".htmlspecialchars_uni($delayedmod['fname'])."</a><br />";
 			}
-			$delayedmod['inputs'] = unserialize($delayedmod['inputs']);
+			$delayedmod['inputs'] = my_unserialize($delayedmod['inputs']);
 
 			if($delayedmod['type'] == 'move')
 			{
@@ -2664,6 +2710,378 @@ switch($mybb->input['action'])
 		}
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postssoftdeleted);
 		break;
+	case "do_purgespammer":
+	case "purgespammer":
+		require_once MYBB_ROOT."inc/functions_user.php";
+
+		$groups = explode(",", $mybb->settings['purgespammergroups']);
+		if(!in_array($mybb->user['usergroup'], $groups))
+		{
+			error_no_permission();
+		}
+
+		$uid = $mybb->input['uid'];
+		$user = get_user($uid);
+		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup']))
+		{
+			error($lang->purgespammer_invalid_user);
+		}
+
+		if($mybb->input['action'] == "do_purgespammer")
+		{
+			verify_post_check($mybb->get_input('my_post_key'));
+
+			$user_deleted = false;
+
+			// Run the hooks first to avoid any issues when we delete the user
+			$plugins->run_hooks("moderation_purgespammer_purge");
+
+			// loop through what was submitted
+			foreach($mybb->get_input('actions', 2) as $action => $value)
+			{
+				switch($action)
+				{
+					case "deletethreads":
+						$query = $db->simple_select("threads", "tid", "uid = '{$uid}'");
+						while($tid = $db->fetch_field($query, "tid"))
+						{
+							$moderation->delete_thread($tid);
+						}
+						break;
+					case "deleteposts":
+						$query = $db->simple_select("posts", "pid", "uid = '{$uid}'");
+						while($pid = $db->fetch_field($query, "pid"))
+						{
+							$moderation->delete_post($pid);
+						}
+						break;
+					case "removesig":
+						$update['signature'] = "";
+						break;
+					case "removeavatar":
+						$update['avatar'] = "";
+						break;
+					case "clearprofile":
+						$db->delete_query("userfields", "ufid = '{$uid}'");
+						$update = array(
+							"website" => "",
+							"birthday" => "",
+							"icq" => "",
+							"aim" => "",
+							"yahoo" => "",
+							"skype" => "",
+							"google" => "",
+							"usertitle" => "",
+							"away" => 0,
+							"awaydate" => 0,
+							"returndate" => "",
+							"awayreason" => "",
+						);
+						break;
+					case "deletepms":
+						$query = $db->simple_select("privatemessages", "pmid, uid, toid", "uid='{$uid}' OR fromid='{$uid}'");
+						$pms = array();
+						$users = array();
+						while($pm = $db->fetch_array($query))
+						{
+							$pms[] = $pm['pmid'];
+							$users[$pm['uid']] = $pm['uid'];
+							$users[$pm['toid']] = $pm['toid'];
+						}
+						$pms = implode(",", array_map("intval", $pms));
+						$db->delete_query("privatemessages", "pmid IN (" . $db->escape_string($pms) . ")");
+						require_once MYBB_ROOT . "inc/functions_user.php";
+						foreach($users as $user_id)
+						{
+							update_pm_count($user_id);
+						}
+						break;
+					case "deletereps":
+						$query = $db->simple_select("reputation", "rid, uid", "uid = '{$uid}' OR adduid = '{$uid}'");
+						$reps = array();
+						$users = array();
+						while($rep = $db->fetch_array($query))
+						{
+							$reps[] = $rep['rid'];
+							$users[] = $rep['uid'];
+						}
+						$reps = implode(",", array_map("intval", $reps));
+						$db->delete_query("reputation", "rid IN (" . $db->escape_string($reps) . ")");
+						foreach($users as $user_id)
+						{
+							$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid = '" . intval($user_id) . "'");
+							$reputation_count = $db->fetch_field($query, "reputation_count");
+							$repupdate = array(
+								"reputation" => intval($reputation_count)
+							);
+							$db->update_query("users", $repupdate, "uid = '" . intval($user_id) . "'");
+						}
+						break;
+					case "deletereportedcontent":
+						$db->delete_query("reportedcontent", "uid = '{$uid}' OR rid = '{$uid}'");
+						break;
+					case "deleteevents":
+						$db->delete_query("events", "uid = '{$uid}'");
+						break;
+					case "bandelete":
+						if($mybb->settings['purgespammerbandelete'] == "ban")
+						{
+							$query = $db->simple_select("banned", "uid", "uid = '{$uid}'");
+							if($db->num_rows($query) > 0)
+							{
+								$banupdate = array(
+									"reason" => $db->escape_string($mybb->input['actions']['banreason'])
+								);
+								$db->update_query('banned', $banupdate, "uid = '{$uid}'");
+							}
+							else
+							{
+								$insert = array(
+									"uid" => $uid,
+									"gid" => intval($mybb->settings['purgespammerbangroup']),
+									"oldgroup" => 2,
+									"oldadditionalgroups" => "",
+									"olddisplaygroup" => 0,
+									"admin" => intval($mybb->user['uid']),
+									"dateline" => TIME_NOW,
+									"bantime" => "---",
+									"lifted" => 0,
+									"reason" => $db->escape_string($mybb->input['actions']['banreason'])
+								);
+								$db->insert_query('banned', $insert);
+							}
+
+							foreach(array($user['regip'], $user['lastip']) as $ip)
+							{
+								$query = $db->simple_select("banfilters", "*", "type = '1' AND filter = '".$db->escape_string($ip)."'");
+								if($db->num_rows($query) == 0)
+								{
+									$insert = array(
+										"filter" => $db->escape_string($ip),
+										"type" => 1,
+										"dateline" => TIME_NOW
+									);
+									$db->insert_query("banfilters", $insert);
+								}
+							}
+
+							$update['usergroup'] = intval($mybb->settings['purgespammerbangroup']);
+							$update['additionalgroups'] = "";
+							$update['displaygroup'] = 0;
+
+							$cache->update_banned();
+							$cache->update_bannedips();
+						}
+						elseif($mybb->settings['purgespammerbandelete'] == "delete")
+						{
+							require_once MYBB_ROOT.'inc/datahandlers/user.php';
+							$userhandler = new UserDataHandler('delete');
+
+							$user_deleted = $userhandler->delete_user($uid);
+						}
+						break;
+					case "stopforumspam":
+						$sfs = @fetch_remote_file("http://stopforumspam.com/add.php?username=" . urlencode($user['username']) . "&ip_addr=" . urlencode($user['lastip']) . "&email=" . urlencode($user['email']) . "&api_key=" . urlencode($mybb->settings['purgespammerapikey']));
+						break;
+				}
+			}
+
+			$cache->update_reportedcontent();
+
+			log_moderator_action(array(), $lang->sprintf($lang->purgespammer_modlog, htmlspecialchars_uni($user['username'])));
+
+			if($user_deleted)
+			{
+				redirect($mybb->settings['bburl'], $lang->purgespammer_success);
+			}
+			else
+			{
+				$db->update_query("users", $update, "uid = '{$uid}'");
+
+				redirect(get_profile_link($uid), $lang->purgespammer_success);
+			}
+		}
+		else if($mybb->input['action'] == "purgespammer")
+		{
+			$options = "";
+			$actions = array(
+				"deletethreads",
+				"deleteposts",
+				"removesig",
+				"removeavatar",
+				"clearprofile",
+				"deletepms",
+				"deletereps",
+				"deletereportedcontent",
+				"deleteevents",
+				"bandelete",
+				"stopforumspam"
+			);
+			foreach($actions as $action)
+			{
+				$title_var = "purgespammer_" . $action;
+				$description_var = $title_var . "_desc";
+				$title = $lang->$title_var;
+				$description = $lang->$description_var;
+
+				switch($action)
+				{
+					case "deletethreads":
+						$query = $db->simple_select("threads", "tid", "uid = '{$uid}'");
+						$threads = $db->num_rows($query);
+						if($threads > 0)
+						{
+							$title .= " (" . $threads . ")";
+
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "deleteposts":
+						$query = $db->simple_select("posts", "pid", "uid = '{$uid}'");
+						$posts = $db->num_rows($query);
+						if($threads > 0)
+						{
+							$posts -= $threads;
+						}
+						if($posts > 0)
+						{
+							$title .= " (" . $posts . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "removesig":
+						if(!empty($user['signature']))
+						{
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "removeavatar":
+						if(!empty($user['avatar']))
+						{
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "clearprofile":
+						$query = $db->simple_select("profilefields", "fid");
+						$profilefields = array();
+						while($fid = $db->fetch_field($query, "fid"))
+						{
+							$profilefields[] = "fid" . intval($fid);
+						}
+						$profilefields_string = implode(", ", $profilefields);
+						if(!empty($profilefields_string))
+						{
+							$query = $db->simple_select("userfields", $profilefields_string, "ufid = '{$uid}'");
+							$userfields = $db->fetch_array($query);
+						}
+						if(isset($userfields))
+						{
+							foreach($userfields as $userfield)
+							{
+								if(!empty($userfield))
+								{
+									$used = true;
+								}
+							}
+						}
+						if(!$used)
+						{
+							if(!empty($user['website']) || !empty($user['birthday']) || !empty($user['icq']) || !empty($user['aim']) || !empty($user['yahoo']) || !empty($user['msn']) || !empty($user['usertitle']) || $user['away'])
+							{
+								$used = true;
+							}
+						}
+						if(isset($used))
+						{
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "deletepms":
+						$query = $db->simple_select("privatemessages", "pmid", "uid = '{$uid}' OR fromid = '{$uid}'");
+						$pms = $db->num_rows($query);
+						if($pms > 0)
+						{
+							$title .= " (" . $pms . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "deletereps":
+						$query = $db->simple_select("reputation", "rid", "uid = '{$uid}' OR adduid = '{$uid}'");
+						$reps = $db->num_rows($query);
+						if($reps > 0)
+						{
+							$title .= " (" . $reps . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "deletereportedcontent":
+						$query = $db->simple_select("reportedcontent", "rid", "uid = '{$uid}' OR rid = '{$uid}'");
+						$reportedcontent = $db->num_rows($query);
+						if($reportedcontent > 0)
+						{
+							$title .= " (" . $reportedcontent . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "deleteevents":
+						$query = $db->simple_select("events", "eid", "uid = '{$uid}'");
+						$events = $db->num_rows($query);
+						if($events > 0)
+						{
+							$title .= " (" . $events . ")";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+					case "bandelete":
+						if($mybb->settings['purgespammerbandelete'] == "delete")
+						{
+							$title = $lang->purgespammer_delete;
+							$description = $lang->purgespammer_delete_desc;
+						}
+						else
+						{
+							$title = $lang->purgespammer_ban;
+							$description = $lang->purgespammer_ban_desc;
+						}
+						$altbg = alt_trow();
+						eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						if($mybb->settings['purgespammerbandelete'] == "ban")
+						{
+							$title = $lang->purgespammer_ban_reason;
+							$description = $lang->purgespammer_ban_reason_desc;
+							$text = $lang->purgespammer_ban_reason_reason;
+							$action = "banreason";
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option_textbox')."\";");
+						}
+						break;
+					case "stopforumspam":
+						if(!empty($mybb->settings['purgespammerapikey']))
+						{
+							$altbg = alt_trow();
+							eval("\$options .= \"".$templates->get('moderation_purgespammer_option')."\";");
+						}
+						break;
+				}
+			}
+
+			$plugins->run_hooks("moderation_purgespammer_show");
+
+			add_breadcrumb($lang->purgespammer);
+			$lang->purgespammer_actionstotake = $lang->sprintf($lang->purgespammer_actionstotake, $user['username']);
+			eval("\$purgespammer .= \"".$templates->get('moderation_purgespammer')."\";");
+			output_page($purgespammer);
+		}
+		break;
 	default:
 		require_once MYBB_ROOT."inc/class_custommoderation.php";
 		$custommod = new CustomModeration;
@@ -2672,6 +3090,27 @@ switch($mybb->input['action'])
 		{
 			// Verify incoming POST request
 			verify_post_check($mybb->get_input('my_post_key'));
+
+			$options = my_unserialize($tool['threadoptions']);
+
+			if(!empty($tool['groups']) && !is_member($tool['groups']))
+			{
+				error_no_permission();
+			}
+
+			if(!empty($options['confirmation']) && empty($mybb->input['confirm']))
+			{
+				add_breadcrumb($lang->confirm_execute_tool);
+
+				$lang->confirm_execute_tool_desc = $lang->sprintf($lang->confirm_execute_tool_desc, htmlspecialchars_uni($tool['name']));
+
+				$plugins->run_hooks('moderation_confirmation');
+
+				eval('$page = "'.$templates->get('moderation_confirmation').'";');
+
+				output_page($page);
+				exit;
+			}
 
 			if($tool['type'] == 't' && $mybb->get_input('modtype') == 'inlinethread')
 			{
@@ -2692,7 +3131,7 @@ switch($mybb->input['action'])
 					error_no_permission();
 				}
 
-				$thread_options = unserialize($tool['threadoptions']);
+				$thread_options = my_unserialize($tool['threadoptions']);
 				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
 				{
 					error($lang->error_movetocategory);
@@ -2723,7 +3162,7 @@ switch($mybb->input['action'])
 					error_no_permission();
 				}
 
-				$thread_options = unserialize($tool['threadoptions']);
+				$thread_options = my_unserialize($tool['threadoptions']);
 				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
 				{
 					error($lang->error_movetocategory);

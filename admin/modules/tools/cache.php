@@ -20,16 +20,33 @@ $plugins->run_hooks("admin_tools_cache_begin");
 
 if($mybb->input['action'] == 'view')
 {
-	$plugins->run_hooks("admin_tools_cache_view");
-
 	if(!trim($mybb->input['title']))
 	{
 		flash_message($lang->error_no_cache_specified, 'error');
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	$query = $db->simple_select("datacache", "*", "title = '".$db->escape_string($mybb->input['title'])."'");
-	$cacheitem = $db->fetch_array($query);
+	$plugins->run_hooks("admin_tools_cache_view");
+
+	// Rebuilds forum settings
+	if($mybb->input['title'] == 'settings')
+	{
+		$cachedsettings = (array)$mybb->settings;
+		if(isset($cachedsettings['internal']))
+		{
+			unset($cachedsettings['internal']);
+		}
+
+		$cacheitem = array(
+			'title'	=> 'settings',
+			'cache'	=> serialize($cachedsettings)
+		);
+	}
+	else
+	{
+		$query = $db->simple_select("datacache", "*", "title = '".$db->escape_string($mybb->input['title'])."'");
+		$cacheitem = $db->fetch_array($query);
+	}
 
 	if(!$cacheitem)
 	{
@@ -37,7 +54,7 @@ if($mybb->input['action'] == 'view')
 		admin_redirect("index.php?module=tools-cache");
 	}
 
-	$cachecontents = unserialize($cacheitem['cache']);
+	$cachecontents = my_unserialize($cacheitem['cache']);
 	if(empty($cachecontents))
 	{
 		$cachecontents = $lang->error_empty_cache;
@@ -49,7 +66,6 @@ if($mybb->input['action'] == 'view')
 
 	$page->add_breadcrumb_item($lang->view);
 	$page->output_header($lang->cache_manager);
-
 
 	$table = new Table;
 
@@ -70,6 +86,20 @@ if($mybb->input['action'] == "rebuild" || $mybb->input['action'] == "reload")
 	}
 
 	$plugins->run_hooks("admin_tools_cache_rebuild");
+
+	// Rebuilds forum settings
+	if($mybb->input['title'] == 'settings')
+	{
+		rebuild_settings();
+
+		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
+
+		// Log admin action
+		log_admin_action($mybb->input['title']);
+
+		flash_message($lang->success_cache_reloaded, 'success');
+		admin_redirect("index.php?module=tools-cache");
+	}
 
 	if(method_exists($cache, "update_{$mybb->input['title']}"))
 	{
@@ -165,6 +195,9 @@ if($mybb->input['action'] == "rebuild_all")
 		}
 	}
 
+	// Rebuilds forum settings
+	rebuild_settings();
+
 	$plugins->run_hooks("admin_tools_cache_rebuild_all_commit");
 
 	// Log admin action
@@ -176,8 +209,6 @@ if($mybb->input['action'] == "rebuild_all")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_cache_start");
-
 	$page->output_header($lang->cache_manager);
 
 	$sub_tabs['cache_manager'] = array(
@@ -185,6 +216,8 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=tools-cache",
 		'description' => $lang->cache_manager_description
 	);
+
+	$plugins->run_hooks("admin_tools_cache_start");
 
 	$page->output_nav_tabs($sub_tabs, 'cache_manager');
 
@@ -222,6 +255,20 @@ if(!$mybb->input['action'])
 
 		$table->construct_row();
 	}
+
+	// Rebuilds forum settings
+	$cachedsettings = (array)$mybb->settings;
+	if(isset($cachedsettings['internal']))
+	{
+		unset($cachedsettings['internal']);
+	}
+
+	$table->construct_cell("<strong><a href=\"index.php?module=tools-cache&amp;action=view&amp;title=settings\">settings</a></strong>");
+	$table->construct_cell(get_friendly_size(strlen(serialize($cachedsettings))), array("class" => "align_center"));
+	$table->construct_cell("<a href=\"index.php?module=tools-cache&amp;action=reload&amp;title=settings&amp;my_post_key={$mybb->post_code}\">".$lang->reload_cache."</a>", array("class" => "align_center"));
+
+	$table->construct_row();
+
 	$table->output("<div style=\"float: right;\"><small><a href=\"index.php?module=tools-cache&amp;action=rebuild_all&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_reload_all."</a></small></div>".$lang->cache_manager);
 
 	$page->output_footer();

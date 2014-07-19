@@ -25,7 +25,7 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('pid', 'aid', 'pmid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
+	foreach(array('pid', 'aid', 'pmid', 'posturl', 'button_multiquote', 'subject_extra', 'attachments', 'button_rep', 'button_warn', 'button_purgespammer', 'button_pm', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm', 'replink', 'warninglevel') as $post_field)
 	{
 		if(empty($post[$post_field]))
 		{
@@ -38,6 +38,11 @@ function build_postbit($post, $post_type=0)
 	{
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser;
+	}
+
+	if(!function_exists("purgespammer_show"))
+	{
+		require_once MYBB_ROOT."inc/functions_user.php";
 	}
 
 	$unapproved_shade = '';
@@ -279,7 +284,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				$post['userstars'] .= "<img src=\"{$post['starimage']}\" border=\"0\" alt=\"*\" />";
+				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
 			}
 
 			$post['userstars'] .= "<br />";
@@ -336,7 +341,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if($post['website'] != "")
+		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1)
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
@@ -388,6 +393,11 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
 		}
 
+		if(purgespammer_show($post['postnum'], $post['usergroup']))
+		{
+			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
+		}
+
 		// Display profile fields on posts - only if field is filled in
 		if(is_array($profile_fields))
 		{
@@ -403,29 +413,47 @@ function build_postbit($post, $post_type=0)
 					$type = trim($thing[0]);
 					$useropts = explode("\n", $post[$fieldfid]);
 
-					// Skip over texa area fields, as they might break layout
-					if($type == "textarea")
-					{
-						continue;
-					}
-
 					if(is_array($useropts) && ($type == "multiselect" || $type == "checkbox"))
 					{
 						foreach($useropts as $val)
 						{
 							if($val != '')
 							{
-								$post['fieldvalue'] .= "<li style=\"margin-left: 0;\">{$val}</li>";
+								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
 							}
 						}
-						if($post['fieldvalue'] != '')
+						if($post['fieldvalue_option'] != '')
 						{
-							$post['fieldvalue'] = "<ul style=\"margin: 0; padding-left: 15px;\">{$post['fieldvalue']}</ul>";
+							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
 						}
 					}
 					else
 					{
-						$post['fieldvalue'] = htmlspecialchars_uni($parser->parse_badwords($post[$fieldfid]));
+						$parser_options = array(
+							"allow_html" => $field['allowhtml'],
+							"allow_mycode" => $field['allowmycode'],
+							"allow_smilies" => $field['allowsmilies'],
+							"allow_imgcode" => $field['allowimgcode'],
+							"allow_videocode" => $field['allowvideocode'],
+							#"nofollow_on" => 1,
+							"filter_badwords" => 1
+						);
+
+						if($customfield['type'] == "textarea")
+						{
+							$parser_options['me_username'] = $post['username'];
+						}
+						else
+						{
+							$parser_options['nl2br'] = 0;
+						}
+
+						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
+						{
+							$parser_options['allow_imgcode'] = 0;
+						}
+
+						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $parser_options);
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
@@ -688,7 +716,7 @@ function build_postbit($post, $post_type=0)
 		get_post_attachments($id, $post);
 	}
 
-	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
+	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -724,8 +752,9 @@ function build_postbit($post, $post_type=0)
 		$icon = $icon_cache[$post['icon']];
 
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
+		$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
+		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
 	}
 	else
 	{

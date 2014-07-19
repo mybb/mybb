@@ -47,6 +47,8 @@ if($mybb->input['action'] == "version_check")
 		admin_redirect('index.php');
 	}
 
+	$plugins->run_hooks("admin_home_version_check");
+
 	$page->add_breadcrumb_item($lang->version_check, "index.php?module=home-version_check");
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
@@ -189,8 +191,15 @@ elseif(!$mybb->input['action'])
 	$users = my_number_format($db->fetch_field($query, "numusers"));
 
 	// Get the number of users awaiting validation
-	$query = $db->simple_select("users", "COUNT(uid) AS awaitingusers", "usergroup='5'");
-	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers"));
+	$awaitingusers = $cache->read('awaitingactivation');
+	if(empty($awaitingusers))
+	{
+		$awaitingusers = 0;
+	}
+	else
+	{
+		$awaitingusers = my_number_format($awaitingusers);
+	}
 
 	// Get the number of new users for today
 	$timecut = TIME_NOW - 86400;
@@ -225,6 +234,14 @@ elseif(!$mybb->input['action'])
 	// Get the number of new posts for today
 	$query = $db->simple_select("posts", "COUNT(*) AS newposts", "dateline > '$timecut' AND visible='1'");
 	$newposts = my_number_format($db->fetch_field($query, "newposts"));
+
+	// Get the number of reported post
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS reported_posts", "type = 'post' OR type = ''");
+	$reported_posts = my_number_format($db->fetch_field($query, "reported_posts"));
+
+	// Get the number of reported posts that haven't been marked as read yet
+	$query = $db->simple_select("reportedcontent", "COUNT(*) AS new_reported_posts", "reportstatus='0' AND (type = 'post' OR type = '')");
+	$new_reported_posts = my_number_format($db->fetch_field($query, "new_reported_posts"));
 
 	// Get the number and total file size of attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
@@ -270,7 +287,7 @@ elseif(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(PHP_VERSION, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum-moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a><br /><strong>{$reported_posts}</strong> {$lang->reported_posts}<br /><strong>{$new_reported_posts}</strong> {$lang->unread_reports}", array('width' => '25%'));
 	$table->construct_row();
 
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));

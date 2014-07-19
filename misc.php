@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -706,21 +706,27 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
-		while($smilie = $db->fetch_array($query))
+		$smilies_cache = $cache->read("smilies");
+		if(is_array($smilies_cache))
 		{
-			$smilie['insert'] = addslashes($smilie['find']);
-			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
-			if($e == 2)
+			$extra_class = ' smilie_pointer';
+			foreach($smilies_cache as $smilie)
 			{
-				$smilies .= "</tr><tr>";
-				$e = 1;
-				$class = alt_trow();
-			}
-			else
-			{
-				$e = 2;
+				$smilie['insert'] = addslashes($smilie['find']);
+				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
+				eval('$smilie_image = "'.$templates->get('smilie').'";');
+				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
+				if($e == 2)
+				{
+					$smilies .= "</tr><tr>";
+					$e = 1;
+					$class = alt_trow();
+				}
+				else
+				{
+					$e = 2;
+				}
 			}
 		}
 		if($e == 2)
@@ -734,12 +740,17 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
-		while($smilie = $db->fetch_array($query))
+		$smilies_cache = $cache->read("smilies");
+		if(is_array($smilies_cache))
 		{
-			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-			eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
-			$class = alt_trow();
+			$extra_class = $onclick = '';
+			foreach($smilies_cache as $smilie)
+			{
+				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				eval('$smilie_image = "'.$templates->get('smilie').'";');
+				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
+				$class = alt_trow();
+			}
 		}
 		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
 		output_page($smiliespage);
@@ -759,11 +770,18 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		error($lang->error_invaliduser);
 	}
+
 	if(empty($user[$mybb->input['imtype']]))
 	{
 		error($lang->error_invalidimtype);
 	}
 
+	$settingkey = 'allow'.$mybb->input['imtype'].'field';
+	if(!($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], $user)))
+	{
+		error($lang->error_invaliduser);
+	}
+	
 	// Build IM navigation bar
 	$navigationbar = $navsep = $imtype = $imtype_lang = '';
 	if($user['aim'])
@@ -811,13 +829,21 @@ elseif($mybb->input['action'] == "syndication")
 
 	add_breadcrumb($lang->nav_syndication);
 	$unviewable = get_unviewable_forums();
+	$inactiveforums = get_inactive_forums();
 	if(is_array($forums))
 	{
-		$unexp = explode(",", $unviewable);
+		$unexp = explode(",", str_replace("'", '', $unviewable));
 		foreach($unexp as $fid)
 		{
 			$unview[$fid] = true;
 		}
+
+		$unexp = explode(",", $inactiveforums);
+		foreach($unexp as $fid)
+		{
+			$unview[$fid] = true;
+		}
+
 		$syndicate = '';
 		$comma = '';
 		$all = false;
@@ -920,7 +946,7 @@ elseif($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $templates;
+	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $inactiveforums, $templates;
 	static $unviewableforums;
 
 	$pid = intval($pid);
@@ -947,7 +973,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!$unviewableforums)
 	{
 		// Save our unviewable forums in an array
-		$unviewableforums = explode(",", str_replace("'", "", $unviewable));
+		$unviewableforums = explode(",", str_replace("'", '', $unviewable.','.$inactiveforums));
 	}
 
 	if(is_array($forumcache[$pid]))

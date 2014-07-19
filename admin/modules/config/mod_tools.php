@@ -20,8 +20,6 @@ $plugins->run_hooks("admin_config_mod_tools_begin");
 
 if($mybb->input['action'] == "delete_post_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_delete_post_tool");
-
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 
@@ -37,6 +35,8 @@ if($mybb->input['action'] == "delete_post_tool")
 	{
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_delete_post_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -60,8 +60,6 @@ if($mybb->input['action'] == "delete_post_tool")
 
 if($mybb->input['action'] == "delete_thread_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool");
-
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 
@@ -77,6 +75,8 @@ if($mybb->input['action'] == "delete_thread_tool")
 	{
 		admin_redirect("index.php?module=config-mod_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -97,7 +97,6 @@ if($mybb->input['action'] == "delete_thread_tool")
 		$page->output_confirm_action("index.php?module=config-mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}", $lang->confirm_thread_tool_deletion);
 	}
 }
-
 
 if($mybb->input['action'] == "post_tools")
 {
@@ -152,14 +151,14 @@ if($mybb->input['action'] == "post_tools")
 
 if($mybb->input['action'] == "edit_thread_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool");
-
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='t'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_thread_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -191,6 +190,23 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$mybb->input['forum_1_forums'] = '';
 		}
 
+		if($mybb->input['group_type'] == 2)
+		{
+			$group_checked[1] = '';
+			$group_checked[2] = "checked=\"checked\"";
+
+			if(count($mybb->input['group_1_groups']) < 1)
+			{
+				$errors[] = $lang->error_no_groups_selected;
+			}
+		}
+		else
+		{
+			$group_checked[1] = "checked=\"checked\"";
+			$group_checked[2] = '';
+
+			$mybb->input['group_1_groups'] = '';
+		}
 
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
@@ -280,11 +296,13 @@ if($mybb->input['action'] == "edit_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'removesubscriptions' => $mybb->input['removesubscriptions'],
+				'recountrebuild' => $mybb->input['recountrebuild'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -306,14 +324,30 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$update_tool['name'] = $db->escape_string($mybb->input['title']);
 			$update_tool['description'] = $db->escape_string($mybb->input['description']);
 			$update_tool['forums'] = '';
+			$update_tool['groups'] = '';
 
 			if(is_array($mybb->input['forum_1_forums']))
 			{
+				$checked = array();
+
 				foreach($mybb->input['forum_1_forums'] as $fid)
 				{
-					$checked[] = intval($fid);
+					$checked[] = (int)$fid;
 				}
+
 				$update_tool['forums'] = implode(',', $checked);
+			}
+
+			if(is_array($mybb->input['group_1_groups']))
+			{
+				$checked = array();
+
+				foreach($mybb->input['group_1_groups'] as $gid)
+				{
+					$checked[] = (int)$gid;
+				}
+
+				$update_tool['groups'] = implode(',', $checked);
 			}
 
 			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
@@ -351,11 +385,12 @@ if($mybb->input['action'] == "edit_thread_tool")
 	{
 		$query = $db->simple_select("modtools", "*", "tid = '{$mybb->input['tid']}'");
 		$modtool = $db->fetch_array($query);
-		$thread_options = unserialize($modtool['threadoptions']);
+		$thread_options = my_unserialize($modtool['threadoptions']);
 
 		$mybb->input['title'] = $modtool['name'];
 		$mybb->input['description'] = $modtool['description'];
 		$mybb->input['forum_1_forums'] = explode(",", $modtool['forums']);
+		$mybb->input['group_1_groups'] = explode(",", $modtool['groups']);
 
 		if(!$modtool['forums'] || $modtool['forums'] == -1)
 		{
@@ -368,6 +403,18 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$forum_checked[2] = "checked=\"checked\"";
 		}
 
+		if(!$modtool['groups'] || $modtool['groups'] == -1)
+		{
+			$group_checked[1] = "checked=\"checked\"";
+			$group_checked[2] = '';
+		}
+		else
+		{
+			$group_checked[1] = '';
+			$group_checked[2] = "checked=\"checked\"";
+		}
+
+		$mybb->input['confirmation'] = $thread_options['confirmation'];
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
@@ -404,6 +451,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
 		$mybb->input['removeredirects'] = $thread_options['removeredirects'];
 		$mybb->input['removesubscriptions'] = $thread_options['removesubscriptions'];
+		$mybb->input['recountrebuild'] = $thread_options['recountrebuild'];
 		$mybb->input['threadprefix'] = $thread_options['threadprefix'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
@@ -415,7 +463,6 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container = new FormContainer($lang->general_options);
 	$form_container->output_row($lang->name." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description." <em>*</em>", '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-
 
 	$actions = "<script type=\"text/javascript\">
 	function checkAction(id)
@@ -455,6 +502,24 @@ if($mybb->input['action'] == "edit_thread_tool")
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums." <em>*</em>", '', $actions);
+
+	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"2\" {$group_checked[2]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"group_2\" class=\"groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+	</dl>
+	<script type=\"text/javascript\">
+	checkAction('group');
+	</script>";
+	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -541,6 +606,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -613,6 +679,23 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['forum_1_forums'] = '';
 		}
 
+		if($mybb->input['group_type'] == 2)
+		{
+			$group_checked[1] = '';
+			$group_checked[2] = "checked=\"checked\"";
+
+			if(count($mybb->input['group_1_groups']) < 1)
+			{
+				$errors[] = $lang->error_no_groups_selected;
+			}
+		}
+		else
+		{
+			$group_checked[1] = "checked=\"checked\"";
+			$group_checked[2] = '';
+
+			$mybb->input['group_1_groups'] = '';
+		}
 
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
@@ -697,11 +780,13 @@ if($mybb->input['action'] == "add_thread_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'mergethreads' => $mybb->input['mergethreads'],
 				'deletepoll' => $mybb->input['deletepoll'],
 				'removeredirects' => $mybb->input['removeredirects'],
 				'removesubscriptions' => $mybb->input['removesubscriptions'],
+				'recountrebuild' => $mybb->input['recountrebuild'],
 				'approvethread' => $mybb->input['approvethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
@@ -723,22 +808,45 @@ if($mybb->input['action'] == "add_thread_tool")
 			$new_tool['name'] = $db->escape_string($mybb->input['title']);
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';
+			$new_tool['groups'] = '';
 			$new_tool['postoptions'] = '';
 
 			if($mybb->input['forum_type'] == 2)
 			{
 				if(is_array($mybb->input['forum_1_forums']))
 				{
+					$checked = array();
+
 					foreach($mybb->input['forum_1_forums'] as $fid)
 					{
-						$checked[] = intval($fid);
+						$checked[] = (int)$fid;
 					}
+
 					$new_tool['forums'] = implode(',', $checked);
 				}
 			}
 			else
 			{
 				$new_tool['forums'] = "-1";
+			}
+
+			if($mybb->input['group_type'] == 2)
+			{
+				if(is_array($mybb->input['group_1_groups']))
+				{
+					$checked = array();
+
+					foreach($mybb->input['group_1_groups'] as $gid)
+					{
+						$checked[] = (int)$gid;
+					}
+
+					$new_tool['groups'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$new_tool['groups'] = "-1";
 			}
 
 			if(intval($mybb->input['threadprefix']) >= 0)
@@ -795,6 +903,10 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['forum_1_forums'] = '';
 		$forum_checked[1] = "checked=\"checked\"";
 		$forum_checked[2] = '';
+		$mybb->input['group_1_groups'] = '';
+		$group_checked[1] = "checked=\"checked\"";
+		$group_checked[2] = '';
+		$mybb->input['confirmation'] = '0';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
@@ -812,6 +924,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		$mybb->input['deletepoll'] = '0';
 		$mybb->input['removeredirects'] = '0';
 		$mybb->input['removesubscriptions'] = '0';
+		$mybb->input['recountrebuild'] = '0';
 		$mybb->input['threadprefix'] = '-1';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
@@ -823,7 +936,6 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container = new FormContainer($lang->general_options);
 	$form_container->output_row($lang->name." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description." <em>*</em>", '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-
 
 	$actions = "<script type=\"text/javascript\">
 	function checkAction(id)
@@ -863,6 +975,24 @@ if($mybb->input['action'] == "add_thread_tool")
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums." <em>*</em>", '', $actions);
+
+	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"2\" {$group_checked[2]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"group_2\" class=\"groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+	</dl>
+	<script type=\"text/javascript\">
+	checkAction('group');
+	</script>";
+	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -949,6 +1079,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->remove_subscriptions." <em>*</em>", '', $form->generate_yes_no_radio('removesubscriptions', $mybb->input['removesubscriptions'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->recount_rebuild." <em>*</em>", '', $form->generate_yes_no_radio('recountrebuild', $mybb->input['recountrebuild'], array('style' => 'width: 2em;')));
 
 	$threadprefixes = build_prefixes();
 	if(!empty($threadprefixes))
@@ -989,14 +1120,14 @@ if($mybb->input['action'] == "add_thread_tool")
 
 if($mybb->input['action'] == "edit_post_tool")
 {
-	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool");
-
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='p'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_post_tool, 'error');
 		admin_redirect("index.php?module=config-mod_tools&action=post_tools");
 	}
+
+	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool");
 
 	if($mybb->request_method == 'post')
 	{
@@ -1022,6 +1153,18 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['forum_1_forums'] = '';
 		}
 
+		if($mybb->input['group_type'] == 2)
+		{
+			if(count($mybb->input['group_1_groups']) < 1)
+			{
+				$errors[] = $lang->error_no_groups_selected;
+			}
+		}
+		else
+		{
+			$mybb->input['group_1_groups'] = '';
+		}
+	
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
 			$mybb->input['approvethread'] = '';
@@ -1130,6 +1273,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
@@ -1141,7 +1285,9 @@ if($mybb->input['action'] == "edit_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message']
 			);
 
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1169,14 +1315,30 @@ if($mybb->input['action'] == "edit_post_tool")
 			$update_tool['name'] = $db->escape_string($mybb->input['title']);
 			$update_tool['description'] = $db->escape_string($mybb->input['description']);
 			$update_tool['forums'] = '';
+			$update_tool['groups'] = '';
 
 			if(is_array($mybb->input['forum_1_forums']))
 			{
+				$checked = array();
+
 				foreach($mybb->input['forum_1_forums'] as $fid)
 				{
-					$checked[] = intval($fid);
+					$checked[] = (int)$fid;
 				}
+
 				$update_tool['forums'] = implode(',', $checked);
+			}
+
+			if(is_array($mybb->input['group_1_groups']))
+			{
+				$checked = array();
+
+				foreach($mybb->input['group_1_groups'] as $gid)
+				{
+					$checked[] = (int)$gid;
+				}
+
+				$update_tool['groups'] = implode(',', $checked);
 			}
 
 			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
@@ -1214,12 +1376,13 @@ if($mybb->input['action'] == "edit_post_tool")
 	{
 		$query = $db->simple_select("modtools", "*", "tid = '{$mybb->input['tid']}'");
 		$modtool = $db->fetch_array($query);
-		$thread_options = unserialize($modtool['threadoptions']);
-		$post_options = unserialize($modtool['postoptions']);
+		$thread_options = my_unserialize($modtool['threadoptions']);
+		$post_options = my_unserialize($modtool['postoptions']);
 
 		$mybb->input['title'] = $modtool['name'];
 		$mybb->input['description'] = $modtool['description'];
 		$mybb->input['forum_1_forums'] = explode(",", $modtool['forums']);
+		$mybb->input['group_1_groups'] = explode(",", $modtool['groups']);
 
 		if(!$modtool['forums'] || $modtool['forums'] == -1)
 		{
@@ -1232,6 +1395,18 @@ if($mybb->input['action'] == "edit_post_tool")
 			$forum_checked[2] = "checked=\"checked\"";
 		}
 
+		if(!$modtool['groups'] || $modtool['groups'] == -1)
+		{
+			$group_checked[1] = "checked=\"checked\"";
+			$group_checked[2] = '';
+		}
+		else
+		{
+			$group_checked[1] = '';
+			$group_checked[2] = "checked=\"checked\"";
+		}
+
+		$mybb->input['confirmation'] = $thread_options['confirmation'];
 		$mybb->input['approvethread'] = $thread_options['approvethread'];
 		$mybb->input['softdeletethread'] = $thread_options['softdeletethread'];
 		$mybb->input['openthread'] = $thread_options['openthread'];
@@ -1267,6 +1442,8 @@ if($mybb->input['action'] == "edit_post_tool")
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
+		$mybb->input['pm_subject'] = $thread_options['pm_subject'];
+		$mybb->input['pm_message'] = $thread_options['pm_message'];
 
 		if($post_options['splitposts'] == '-1')
 		{
@@ -1322,7 +1499,6 @@ if($mybb->input['action'] == "edit_post_tool")
 	$form_container->output_row($lang->name." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description." <em>*</em>", '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 
-
 	$actions = "<script type=\"text/javascript\">
 	function checkAction(id)
 	{
@@ -1361,6 +1537,24 @@ if($mybb->input['action'] == "edit_post_tool")
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums." <em>*</em>", '', $actions);
+
+	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"2\" {$group_checked[2]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"group_2\" class=\"groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+	</dl>
+	<script type=\"text/javascript\">
+	checkAction('group');
+	</script>";
+	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -1471,6 +1665,11 @@ if($mybb->input['action'] == "edit_post_tool")
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
+	$form_container->end();
+
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
 
 	$form->output_submit_wrapper($buttons);
@@ -1513,6 +1712,23 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['forum_1_forums'] = '';
 		}
 
+		if($mybb->input['group_type'] == 2)
+		{
+			$group_checked[1] = '';
+			$group_checked[2] = "checked=\"checked\"";
+
+			if(count($mybb->input['group_1_groups']) < 1)
+			{
+				$errors[] = $lang->error_no_groups_selected;
+			}
+		}
+		else
+		{
+			$group_checked[1] = "checked=\"checked\"";
+			$group_checked[2] = '';
+
+			$mybb->input['group_1_groups'] = '';
+		}
 
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
@@ -1634,6 +1850,7 @@ if($mybb->input['action'] == "add_post_tool")
 		if(!$errors)
 		{
 			$thread_options = array(
+				'confirmation' => $mybb->input['confirmation'],
 				'deletethread' => $mybb->input['deletethread'],
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'approvethread' => $mybb->input['approvethread'],
@@ -1645,7 +1862,9 @@ if($mybb->input['action'] == "add_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'pm_subject' => $mybb->input['pm_subject'],
+				'pm_message' => $mybb->input['pm_message']
 			);
 
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1673,14 +1892,30 @@ if($mybb->input['action'] == "add_post_tool")
 			$new_tool['name'] = $db->escape_string($mybb->input['title']);
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';
+			$new_tool['groups'] = '';
 
 			if(is_array($mybb->input['forum_1_forums']))
 			{
+				$checked = array();
+
 				foreach($mybb->input['forum_1_forums'] as $fid)
 				{
-					$checked[] = intval($fid);
+					$checked[] = (int)$fid;
 				}
+
 				$new_tool['forums'] = implode(',', $checked);
+			}
+
+			if(is_array($mybb->input['group_1_groups']))
+			{
+				$checked = array();
+
+				foreach($mybb->input['group_1_groups'] as $gid)
+				{
+					$checked[] = (int)$gid;
+				}
+
+				$new_tool['groups'] = implode(',', $checked);
 			}
 
 			$tid = $db->insert_query("modtools", $new_tool);
@@ -1732,6 +1967,10 @@ if($mybb->input['action'] == "add_post_tool")
 		$mybb->input['forum_1_forums'] = '';
 		$forum_checked[1] = "checked=\"checked\"";
 		$forum_checked[2] = '';
+		$mybb->input['group_1_groups'] = '';
+		$group_checked[1] = "checked=\"checked\"";
+		$group_checked[2] = '';
+		$mybb->input['confirmation'] = '0';
 		$mybb->input['approvethread'] = '';
 		$mybb->input['softdeletethread'] = '';
 		$mybb->input['openthread'] = '';
@@ -1766,7 +2005,6 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container = new FormContainer($lang->general_options);
 	$form_container->output_row($lang->name." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description." <em>*</em>", '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-
 
 	$actions = "<script type=\"text/javascript\">
 	function checkAction(id)
@@ -1806,6 +2044,24 @@ if($mybb->input['action'] == "add_post_tool")
 	checkAction('forum');
 	</script>";
 	$form_container->output_row($lang->available_in_forums." <em>*</em>", '', $actions);
+
+	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"1\" {$group_checked[1]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->all_groups}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"group_type\" value=\"2\" {$group_checked[2]} class=\"groups_check\" onclick=\"checkAction('group');\" style=\"vertical-align: middle;\" /> <strong>{$lang->select_groups}</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"group_2\" class=\"groups\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td valign=\"top\"><small>{$lang->groups_colon}</small></td>
+					<td>".$form->generate_group_select('group_1_groups[]', $mybb->input['group_1_groups'], array('multiple' => true, 'size' => 5))."</td>
+				</tr>
+			</table>
+		</dd>
+	</dl>
+	<script type=\"text/javascript\">
+	checkAction('group');
+	</script>";
+	$form_container->output_row($lang->available_to_groups." <em>*</em>", '', $actions);
+	$form_container->output_row($lang->show_confirmation." <em>*</em>", '', $form->generate_yes_no_radio('confirmation', $mybb->input['confirmation'], array('style' => 'width: 2em;')));
 	$form_container->end();
 
 	$approve_unapprove = array(
@@ -1915,6 +2171,11 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container = new FormContainer($lang->add_new_reply);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
 	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
+	$form_container->end();
+
+	$form_container = new FormContainer($lang->send_private_message);
+	$form_container->output_row($lang->private_message_message, $lang->private_message_message_desc, $form->generate_text_area('pm_message', $mybb->input['pm_message'], array('id' => 'pm_message')), 'pm_message');
+	$form_container->output_row($lang->private_message_subject, $lang->private_message_subject_desc, $form->generate_text_box('pm_subject', $mybb->input['pm_subject'], array('id' => 'pm_subject')), 'pm_subject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);

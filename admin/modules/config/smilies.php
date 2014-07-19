@@ -126,8 +126,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_smilies_edit");
-
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -137,6 +135,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_smilie, 'error');
 		admin_redirect("index.php?module=config-smilies");
 	}
+
+	$plugins->run_hooks("admin_config_smilies_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input = $smilie;
+		$mybb->input = array_merge($mybb->input, $smilie);
 	}
 
 	$form_container = new FormContainer($lang->edit_smilie);
@@ -230,8 +230,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_smilies_delete");
-
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -247,6 +245,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-smilies");
 	}
+
+	$plugins->run_hooks("admin_config_smilies_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -638,7 +638,6 @@ if(!$mybb->input['action'])
 		$pagenum = 1;
 	}
 
-
 	$table = new Table;
 	$table->construct_header($lang->image, array("class" => "align_center", "width" => 1));
 	$table->construct_header($lang->name, array("width" => "35%"));
@@ -655,10 +654,11 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
+			$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 			$image = "../".$smilie['image'];
 		}
 
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
 		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
 

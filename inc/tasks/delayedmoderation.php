@@ -32,7 +32,7 @@ function task_delayedmoderation($task)
 		}
 
 		$tids = explode(',', $delayedmoderation['tids']);
-		$input = unserialize($delayedmoderation['inputs']);
+		$input = my_unserialize($delayedmoderation['inputs']);
 
 		if(my_strpos($delayedmoderation['type'], "modtool") !== false)
 		{

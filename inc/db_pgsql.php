@@ -404,7 +404,6 @@ class DB_PgSQL
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
 
-
 	/**
 	 * Return a result array for a query.
 	 *
@@ -568,7 +567,6 @@ class DB_PgSQL
 			}
 		}
 	}
-
 
 	/**
 	 * Returns the number of affected rows in a query.

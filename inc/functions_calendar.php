@@ -333,7 +333,7 @@ function fetch_calendar_permissions($cid, $gid, $calendar_permissions)
  */
 function build_calendar_jump($selected=0)
 {
-	global $db, $mybb;
+	global $db, $mybb, $templates, $lang, $gobutton;
 
 	$calendar_permissions = get_calendar_permissions();
 
@@ -358,9 +358,12 @@ function build_calendar_jump($selected=0)
 		{
 			$sel = "selected=\"selected\"";
 		}
-		$jump_options .= "<option value=\"{$calendar['cid']}\" $sel>{$calendar['name']}</option>\n";
+
+		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
 	}
-	return "<select name=\"calendar\">\n{$jump_options}</select>";
+
+	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
+	return $calendar_jump;
 }
 
 /**
@@ -472,7 +475,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 
 			$start_day = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 
-			$event['repeats'] = @unserialize($event['repeats']);
+			$event['repeats'] = my_unserialize($event['repeats']);
 
 			// Event does not repeat - just goes over a few days
 			if($event['repeats']['repeats'] == 0)
@@ -943,7 +946,7 @@ function fetch_friendly_repetition($event)
 
 	if(!is_array($event['repeats']))
 	{
-		$event['repeats'] = @unserialize($event['repeats']);
+		$event['repeats'] = my_unserialize($event['repeats']);
 		if(!is_array($event['repeats']))
 		{
 			return false;

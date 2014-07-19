@@ -35,7 +35,7 @@ var inlineModeration = {
 					if(inlineIds.indexOf(id) != -1 || (inlineIds.indexOf('ALL') != -1 && removedIds.indexOf(id) == -1))
 					{
 						element.prop('checked', true);
-						var post = element.parents('div.post_content');
+						var post = element.parents('.post_content');
 						var thread = element.parents('tr');
 						var fieldset = element.parents('fieldset');
 						if(post.length > 0)
@@ -79,7 +79,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'table-row');
+				allSelectedRow.show();
 			}
 		}
 		else if(inlineIds.indexOf('ALL') == -1 && allChecked == true)
@@ -87,7 +87,7 @@ var inlineModeration = {
 			var selectRow = $('#selectAllrow');
 			if(selectRow)
 			{
-				selectRow.css('display', 'table-row');
+				selectRow.show();
 			}
 		}
 		return true;
@@ -127,11 +127,11 @@ var inlineModeration = {
 					var allSelectedRow = $('#allSelectedrow');
 					if(allSelectedRow)
 					{
-						allSelectedRow.css('display', 'table-row');
+						allSelectedRow.show();
 					}
 				}
 			}
-			var post = element.parents('div.post_content');
+			var post = element.parents('.post_content');
 			var thread = element.parents('tr');
 			if(post.length > 0)
 			{
@@ -150,7 +150,7 @@ var inlineModeration = {
 				var selectRow = $('#selectAllrow');
 				if(selectRow)
 				{
-					selectRow.css('display', 'none');
+					selectRow.hide();
 				}
 			}
 			else
@@ -159,10 +159,10 @@ var inlineModeration = {
 				var allSelectedRow = $('#allSelectedrow');
 				if(allSelectedRow)
 				{
-					allSelectedRow.css('display', 'none');
+					allSelectedRow.hide();
 				}
 			}
-			var post = element.parents('div.post_content');
+			var post = element.parents('.post_content');
 			var thread = element.parents('tr');
 			if(post.length > 0)
 			{
@@ -184,13 +184,13 @@ var inlineModeration = {
 		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', 'none');
+			selectRow.hide();
 		}
 
 		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', 'none');
+			allSelectedRow.hide();
 		}
 
 		var inputs = $('input');
@@ -209,11 +209,7 @@ var inlineModeration = {
 			}
 		});
 
-		$('div.trow_selected').each(function() {
-			$(this).removeClass('trow_selected');
-		});
-
-		$('td.trow_selected').each(function() {
+		$('.trow_selected').each(function() {
 			$(this).removeClass('trow_selected');
 		});
 
@@ -252,7 +248,7 @@ var inlineModeration = {
 				var changed = (element.prop('checked') != master.prop('checked'));
 				element.prop('checked', master.prop('checked'));
 
-				var post = element.parents('div.post_content');
+				var post = element.parents('.post_content');
 				var fieldset = element.parents('fieldset');
 				var thread = element.parents('tr');
 				if(post.length > 0)
@@ -327,11 +323,11 @@ var inlineModeration = {
 			{
 				if(master.prop('checked') == true)
 				{
-					selectRow.css('display', 'table-row');
+					selectRow.show();
 				}
 				else
 				{
-					selectRow.css('display', 'none');
+					selectRow.hide();
 				}
 			}
 		}
@@ -341,7 +337,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'none');
+				allSelectedRow.hide();
 			}
 		}
 		else if(inlineIds.indexOf('ALL') != -1 && removedIds.length == 0)
@@ -349,7 +345,7 @@ var inlineModeration = {
 			var allSelectedRow = $('#allSelectedrow');
 			if(allSelectedRow)
 			{
-				allSelectedRow.css('display', 'table-row');
+				allSelectedRow.show();
 			}
 		}
 	},
@@ -361,13 +357,13 @@ var inlineModeration = {
 		var selectRow = $('#selectAllrow');
 		if(selectRow)
 		{
-			selectRow.css('display', 'none');
+			selectRow.hide();
 		}
 
 		var allSelectedRow = $('#allSelectedrow');
 		if(allSelectedRow)
 		{
-			allSelectedRow.css('display', 'table-row');
+			allSelectedRow.show();
 		}
 	},
 

@@ -6,6 +6,7 @@
  */
 
 $l['nav_stats'] = "Board Statistics";
+$l['stats_disabled'] = "You cannot view the statistics page as it has been disabled by the Administrator.";
 
 $l['board_stats'] = "Board Statistics";
 $l['none'] = "None";
@@ -32,5 +33,6 @@ $l['most_viewed_threads'] = "Most Viewed Threads";
 $l['not_enough_info_stats'] = "Sorry, but there is not enough information on this board to generate statistics. Before statistics can be generated this board needs to contain at least 1 member and 1 thread.";
 $l['replies'] = "replies";
 $l['views'] = "views";
+$l['top_referrer'] = "Top referrer: <strong>{1}</strong> (<strong>{2}</strong> referrals)";
 
 ?>

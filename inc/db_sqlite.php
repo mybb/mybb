@@ -431,7 +431,6 @@ class DB_SQLite
 		}
 	}
 
-
 	/**
 	 * Returns the number of affected rows in a query.
 	 *
@@ -600,7 +599,6 @@ class DB_SQLite
 		return $this->query($query);
 	}
 
-
 	/**
 	 * Build an insert query from an array.
 	 *
@@ -621,6 +619,11 @@ class DB_SQLite
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$array[$field] = $value;
 			}
 			else
@@ -665,6 +668,11 @@ class DB_SQLite
 			{
 				if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 				{
+					if($value[0] != 'X') // Not escaped?
+					{
+						$value = $this->escape_binary($value);
+					}
+				
 					$values[$field] = $value;
 				}
 				else
@@ -715,6 +723,11 @@ class DB_SQLite
 		{
 			if(isset($mybb->binary_fields[$table][$field]) && $mybb->binary_fields[$table][$field])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$query .= $comma.$field."=".$value;
 			}
 			else
@@ -1005,6 +1018,11 @@ class DB_SQLite
 			$columns .= $comma.$column;
 			if(isset($mybb->binary_fields[$table][$column]) && $mybb->binary_fields[$table][$column])
 			{
+				if($value[0] != 'X') // Not escaped?
+				{
+					$value = $this->escape_binary($value);
+				}
+				
 				$values .= $comma.$value;
 			}
 			else
@@ -1231,7 +1249,6 @@ class DB_SQLite
 
 					$prevword = $defparts[sizeof($defparts)-1];
 				}
-
 
 				// This block of code generates a test table simply to verify that the columns specifed are valid in an sql statement
 				// This ensures that no reserved words are used as columns, for example

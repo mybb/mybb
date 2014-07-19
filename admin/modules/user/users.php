@@ -183,32 +183,30 @@ if($mybb->input['action'] == 'iplookup')
 
 	?>
 	<div class="modal">
-	<div style="overflow-y: auto; max-height: 400px;">
+		<div style="overflow-y: auto; max-height: 400px;">
 
-	<?php
+			<?php
 
-	$table = new Table();
+			$table = new Table();
 
-	$table->construct_cell($lang->ipaddress_host_name.":");
-	$table->construct_cell($ipaddress_host_name);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_host_name.":");
+			$table->construct_cell($ipaddress_host_name);
+			$table->construct_row();
 
-	$table->construct_cell($lang->ipaddress_location.":");
-	$table->construct_cell($ipaddress_location);
-	$table->construct_row();
+			$table->construct_cell($lang->ipaddress_location.":");
+			$table->construct_cell($ipaddress_location);
+			$table->construct_row();
 
-	$table->output($lang->ipaddress_misc_info);
+			$table->output($lang->ipaddress_misc_info);
 
-	?>
-</div>
-</div>
-	<?php
+			?>
+		</div>
+	</div>
+<?php
 }
 
 if($mybb->input['action'] == "activate_user")
 {
-	$plugins->run_hooks("admin_user_users_coppa_activate");
-
 	if(!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -223,6 +221,8 @@ if($mybb->input['action'] == "activate_user")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_activate");
 
 	$updated_user['usergroup'] = $user['usergroup'];
 
@@ -293,6 +293,8 @@ if($mybb->input['action'] == "activate_user")
 	{
 		$url = "index.php?module=user-users&action=edit&uid={$user['uid']}";
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_end");
 
 	admin_redirect($url);
 }
@@ -385,9 +387,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input = array(
-			"usergroup" => 2
-		);
+		$mybb->input = array_merge($mybb->input, array('usergroup' => 2));
 	}
 
 	$form_container = new FormContainer($lang->required_profile_info);
@@ -422,8 +422,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_users_edit");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -432,6 +430,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -562,7 +562,8 @@ if($mybb->input['action'] == "edit")
 			"receivefrombuddy" => $mybb->input['receivefrombuddy'],
 			"pmnotice" => $mybb->input['pmnotice'],
 			"daysprune" => $mybb->input['daysprune'],
-			"showcodebuttons" => intval($mybb->input['showcodebuttons']),
+			"showcodebuttons" => $mybb->input['showcodebuttons'],
+			"sourceeditor" => $mybb->input['sourceeditor'],
 			"pmnotify" => $mybb->input['pmnotify'],
 			"showredirect" => $mybb->input['showredirect']
 		);
@@ -811,6 +812,9 @@ if($mybb->input['action'] == "edit")
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
+
+				$plugins->run_hooks("admin_user_users_edit_commit_start");
+
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
 
 				// if we're updating the user's signature preferences, do so now
@@ -836,7 +840,7 @@ if($mybb->input['action'] == "edit")
 	if(!$errors)
 	{
 		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
-		$mybb->input = $user;
+		$mybb->input = array_merge($mybb->input, $user);
 
 		$options = array(
 			'bday1', 'bday2', 'bday3',
@@ -847,7 +851,7 @@ if($mybb->input['action'] == "edit")
 
 		foreach($options as $option)
 		{
-			if(!isset($mybb->input[$option]))
+			if(!isset($input_user[$option]))
 			{
 				$mybb->input[$option] = '';
 			}
@@ -911,10 +915,8 @@ if($mybb->input['action'] == "edit")
 	$page->extra_header .= <<<EOF
 
 	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/mybb.css" type="text/css" media="all" />
-	<link rel="stylesheet" href="../jscripts/sceditor/editor_themes/extrabuttons.css" type="text/css" media="all" />
 	<script type="text/javascript" src="../jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 	<script type="text/javascript" src="../jscripts/bbcodes_sceditor.js"></script>
-	<script type="text/javascript" src="../jscripts/sceditor/editor_languages/{$lang->settings['htmllang']}.js"></script>
 EOF;
 	$page->output_header($lang->edit_user);
 
@@ -1302,12 +1304,13 @@ EOF;
 	);
 	$form_container->output_row($lang->thread_view_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
-	$languages = array_merge(array('' => $lang->use_default), $lang->get_languages());
+	$languages = array_merge($lang->get_languages(), array('' => $lang->use_default));
 
 	$other_options = array(
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->input['showcodebuttons'])),
-		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true),
+		$form->generate_check_box("sourceeditor", "1", $lang->source_editor, array("checked" => $mybb->input['sourceeditor'])),
+		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", true, false, true),
 		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->input['language'], array('id' => 'language'))
 	);
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
@@ -1569,7 +1572,7 @@ EOF;
 
 	$form->end();
 
-echo '<script type="text/javascript">
+	echo '<script type="text/javascript">
 <!--
 
 function toggleBox(action)
@@ -1630,8 +1633,6 @@ else
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_users_delete");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -1653,6 +1654,8 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-users");
 	}
 
+	$plugins->run_hooks("admin_user_users_delete");
+
 	if($mybb->request_method == "post")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
@@ -1668,6 +1671,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$plugins->run_hooks("admin_user_users_delete_commit_end");
+
 		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
@@ -1681,8 +1686,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "referrers")
 {
-	$plugins->run_hooks("admin_user_users_referrers");
-
 	$page->add_breadcrumb_item($lang->show_referrers);
 	$page->output_header($lang->show_referrers);
 
@@ -1691,6 +1694,8 @@ if($mybb->input['action'] == "referrers")
 		'link' => "index.php?module=user-users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_referrers_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_referrers");
 
 	$page->output_nav_tabs($sub_tabs, 'referrers');
 
@@ -1708,7 +1713,7 @@ if($mybb->input['action'] == "referrers")
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
 
-	$admin_view['conditions'] = unserialize($admin_view['conditions']);
+	$admin_view['conditions'] = my_unserialize($admin_view['conditions']);
 	$admin_view['conditions']['referrer'] = $mybb->input['uid'];
 
 	$view = build_users_view($admin_view);
@@ -1731,8 +1736,6 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
-	$plugins->run_hooks("admin_user_users_ipaddresses");
-
 	$page->add_breadcrumb_item($lang->ip_addresses);
 	$page->output_header($lang->ip_addresses);
 
@@ -1741,6 +1744,8 @@ if($mybb->input['action'] == "ipaddresses")
 		'link' => "index.php?module=user-users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_ip_addresses_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_ipaddresses");
 
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
 
@@ -1765,7 +1770,7 @@ if($mybb->input['action'] == "ipaddresses")
 		$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
 		$popup = new PopupMenu("user_last", $lang->options);
 		$popup->add_item($lang->show_users_regged_with_ip,
-"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
+			"index.php?module=user-users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
 		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user-users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->info_on_ip, "index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}", "MyBB.popupWindow('index.php?module=user-users&amp;action=iplookup&ipaddress={$user['lastip']}', null, true); return false;");
 		$popup->add_item($lang->ban_ip, "index.php?module=config-banning&amp;filter={$user['lastip']}");
@@ -1824,15 +1829,13 @@ if($mybb->input['action'] == "merge")
 
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['source_username']))."'");
-		$source_user = $db->fetch_array($query);
+		$source_user = get_user_by_username($mybb->input['source_username'], array('fields' => '*'));
 		if(!$source_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_source;
 		}
 
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['destination_username']))."'");
-		$destination_user = $db->fetch_array($query);
+		$destination_user = get_user_by_username($mybb->input['destination_username'], array('fields' => '*'));
 		if(!$destination_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_destination;
@@ -2086,7 +2089,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2104,7 +2107,7 @@ if($mybb->input['action'] == "merge")
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	$("#destination_username").select2({
 		placeholder: "Search for a user",
@@ -2116,7 +2119,7 @@ if($mybb->input['action'] == "merge")
 			dataType: \'json\',
 			data: function (term, page) {
 				return {
-					query: term, // search term
+					query: term // search term
 				};
 			},
 			results: function (data, page) { // parse the results into the format expected by Select2.
@@ -2134,7 +2137,7 @@ if($mybb->input['action'] == "merge")
 					dataType: "json"
 				}).done(function(data) { callback(data); });
 			}
-		},
+		}
 	});
 	// -->
 	</script>';
@@ -2221,6 +2224,8 @@ if($mybb->input['action'] == "search")
 		{
 			$admin_view['custom_profile_fields'] = $mybb->input['profile_fields'];
 		}
+
+		$plugins->run_hooks("admin_user_users_search_commit");
 
 		$results = build_users_view($admin_view);
 
@@ -3052,15 +3057,15 @@ function build_users_view($view)
 	}
 	if(!is_array($view['conditions']))
 	{
-		$view['conditions'] = unserialize($view['conditions']);
+		$view['conditions'] = my_unserialize($view['conditions']);
 	}
 	if(!is_array($view['fields']))
 	{
-		$view['fields'] = unserialize($view['fields']);
+		$view['fields'] = my_unserialize($view['fields']);
 	}
 	if(!is_array($view['custom_profile_fields']))
 	{
-		$view['custom_profile_fields'] = unserialize($view['custom_profile_fields']);
+		$view['custom_profile_fields'] = my_unserialize($view['custom_profile_fields']);
 	}
 	if(isset($mybb->input['username']))
 	{
@@ -3312,6 +3317,8 @@ function build_users_view($view)
 			{
 				continue;
 			}
+
+			$additional_sql = '';
 
 			switch($db->type)
 			{
@@ -3915,6 +3922,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$radio_options[''] = $lang->na;
 				}
 				$radio_options += explode("\n", $options);
+				$code = '';
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
@@ -3940,6 +3948,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$select_options[''] = $lang->na;
 				}
 				$select_options += explode("\n", $options);
+				$code = '';
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
@@ -3982,17 +3991,17 @@ function user_search_conditions($input=array(), &$form)
 
 	if(!is_array($input['conditions']))
 	{
-		$input['conditions'] = unserialize($input['conditions']);
+		$input['conditions'] = my_unserialize($input['conditions']);
 	}
 
 	if(!is_array($input['profile_fields']))
 	{
-		$input['profile_fields'] = unserialize($input['profile_fields']);
+		$input['profile_fields'] = my_unserialize($input['profile_fields']);
 	}
 
 	if(!is_array($input['fields']))
 	{
-		$input['fields'] = unserialize($input['fields']);
+		$input['fields'] = my_unserialize($input['fields']);
 	}
 
 	$form_container = new FormContainer($lang->find_users_where);
@@ -4071,7 +4080,7 @@ $("#username").select2({
 		dataType: \'json\',
 		data: function (term, page) {
 			return {
-				query: term, // search term
+				query: term // search term
 			};
 		},
 		results: function (data, page) { // parse the results into the format expected by Select2.
@@ -4089,7 +4098,7 @@ $("#username").select2({
 				dataType: "json"
 			}).done(function(data) { callback(data); });
 		}
-	},
+	}
 });
 // -->
 </script>';

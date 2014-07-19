@@ -417,7 +417,6 @@ a:active {
 	color: #fff;
 }
 
-
 .pagination a:hover {
 	background-color: #ffea9c;
 	color: #000;

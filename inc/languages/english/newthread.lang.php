@@ -45,4 +45,9 @@ $l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options
 $l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing.";
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
+$l['error_suspendedposting'] = "Your posting privileges are currently suspended {1}.<br /><br />
+
+Suspension Date: {2}";
+$l['error_suspendedposting_temporal'] = "until {1}";
+$l['error_suspendedposting_permanent'] = "permanently";
 ?>

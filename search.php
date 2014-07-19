@@ -12,14 +12,13 @@ define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
 
-$templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post";
-$templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
+$templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon,search_forumlist_forum,search_forumlist";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
 $templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,multipage_prevpage";
+$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple";
 
 require_once "./global.php";
-
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_search.php";
 require_once MYBB_ROOT."inc/class_parser.php";
@@ -418,7 +417,8 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$thread['icon']]))
 			{
 				$posticon = $icon_cache[$thread['icon']];
-				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
+				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
+				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
 			}
 			else
 			{
@@ -829,7 +829,8 @@ if($mybb->input['action'] == "results")
 			if(isset($icon_cache[$post['icon']]))
 			{
 				$posticon = $icon_cache[$post['icon']];
-				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
+				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
+				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
 			}
 			else
 			{
@@ -1327,7 +1328,7 @@ elseif($mybb->input['action'] == "getdaily")
 	}
 	else
 	{
-		$days = $mybb->get_input('fid', 1);
+		$days = $mybb->get_input('days', 1);
 	}
 	$datecut = TIME_NOW-(86400*$days);
 
