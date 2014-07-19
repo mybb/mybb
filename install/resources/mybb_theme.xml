@@ -1356,7 +1356,7 @@ form #message {
 }
 
 .smilie_pointer {
-	cursor: smilie_pointer;
+	cursor: pointer;
 }
 
 /** jGrowl Start **/
@@ -13551,6 +13551,6 @@ $(function() {
 		<template name="sendthread_fromemail_hidden" version="1800"><![CDATA[<input type="hidden" name="fromname" value="{$mybb->user['username']}" />
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
-		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" border="0" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
+		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
 	</templates>
 </theme>
