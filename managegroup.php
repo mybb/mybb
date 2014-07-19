@@ -138,7 +138,7 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 					'language_file' => 'managegroup'
 				);
 
-				send_pm($pm, $mybb->user['uid'], 1);
+				send_pm($pm, $mybb->user['uid'], true);
 
 				$plugins->run_hooks("managegroup_do_invite_end");
 

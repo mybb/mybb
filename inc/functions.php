@@ -7648,10 +7648,9 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	if(isset($pm['language']))
 	{
-		$revert = false;
 		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
 		{
-			// Load language
+			// Load user language
 			$lang->set_language($pm['language']);
 			$lang->load($pm['language_file']);
 
@@ -7660,6 +7659,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 		foreach(array('subject', 'message') as $key)
 		{
+			$lang_string = $pm[$key];
 			if(is_array($pm[$key]))
 			{
 				$num_args = count($pm[$key]);
@@ -7668,14 +7668,16 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 				{
 					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
 				}
+
+				$lang_string = $pm[$key][0];
 			}
 
-			$pm[$key] = $lang->{$pm[$key][0]};
+			$pm[$key] = $lang->{$lang_string};
 		}
 
-		if($revert)
+		if(isset($revert))
 		{
-			// Load language
+			// Revert language
 			$lang->set_language($mybb->user['language']);
 			$lang->load($pm['language_file']);
 		}
