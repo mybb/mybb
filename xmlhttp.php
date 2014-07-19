@@ -693,6 +693,91 @@ else if($mybb->input['action'] == "validate_captcha")
 		exit;
 	}
 }
+else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securityquestion'])
+{
+	header("Content-type: application/json; charset={$charset}");
+	
+	$sid = $db->escape_string($mybb->get_input('question_id'));
+	$query = $db->query("
+		SELECT q.*, s.sid
+		FROM ".TABLE_PREFIX."questionsessions s
+		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+		WHERE q.active='1' AND s.sid='{$sid}'
+	");
+	if($db->num_rows($query) == 0)
+	{
+		echo $lang->answer_valid_not_exists;
+		exit;
+	}
+	// Delete previous question session
+	$db->delete_query("questionsessions", "sid='$sid'");
+	
+	require_once MYBB_ROOT."inc/functions_user.php";
+	
+	$sid = generate_question();
+	$query = $db->query("
+		SELECT q.question, s.sid
+		FROM ".TABLE_PREFIX."questionsessions s
+		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+		WHERE q.active='1' AND s.sid='{$sid}'
+	");
+	if($db->num_rows($query) > 0)
+	{
+		$question = $db->fetch_array($query);
+	}
+	
+	$plugins->run_hooks("xmlhttp_refresh_question");
+
+	echo json_encode(array("question" => htmlspecialchars_uni($question['question']), 'sid' => htmlspecialchars_uni($question['sid'])));
+	exit;
+}
+elseif($mybb->input['action'] == "validate_question" && $mybb->settings['securityquestion'])
+{
+	header("Content-type: application/json; charset={$charset}");
+	$sid = $db->escape_string($mybb->get_input('question'));
+	$answer = $db->escape_string($mybb->get_input('answer'));
+	
+	$query = $db->query("
+		SELECT q.*, s.sid
+		FROM ".TABLE_PREFIX."questionsessions s
+		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
+		WHERE q.active='1' AND s.sid='{$sid}'
+	");
+	if($db->num_rows($query) == 0)
+	{
+		echo $lang->answer_valid_not_exists;
+		exit;
+	}
+	else
+	{
+		$question = $db->fetch_array($query);
+		$valid_answers = preg_split("/\r\n|\n|\r/", $question['answer']);
+		$validated = 0;
+
+		foreach($valid_answers as $answers)
+		{
+			if(my_strtolower($answers) == my_strtolower($answer))
+			{
+				$validated = 1;
+			}
+		}
+		
+		$plugins->run_hooks("xmlhttp_validate_question");
+
+		if($validated != 1)
+		{
+			echo json_encode($lang->answer_does_not_match);
+			exit;
+		}
+		else
+		{
+			echo json_encode("true");
+			exit;
+		}
+	}
+
+	exit;
+}
 else if($mybb->input['action'] == "complex_password")
 {
 	$password = trim($mybb->get_input('password'));

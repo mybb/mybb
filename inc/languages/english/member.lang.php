@@ -214,6 +214,7 @@ $l['js_validator_no_username'] = "You must enter a username";
 $l['js_validator_invalid_email'] = "You need to enter a valid email address";
 $l['js_validator_email_match'] = "You need to enter the same email address again";
 $l['js_validator_no_image_text'] = "You need to enter the text in the image above";
+$l['js_validator_no_security_question'] = "You need to enter the answer to the question above";
 $l['js_validator_password_matches'] = "The passwords you enter must match";
 $l['js_validator_password_complexity'] = "Checking password complexity";
 $l['js_validator_password_length'] = "Your password must be {1} or more characters long";

@@ -417,6 +417,7 @@ $l['invalid_captcha'] = "Please fill out the image verification code to continue
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
+$l['question_fetch_failure'] = 'There was an error fetching the new question.';
 $l['invalid_ayah_result'] = "The Are You a Human game was not completed. Please try again.";
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Marshall Islands";
