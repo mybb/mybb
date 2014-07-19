@@ -1344,101 +1344,134 @@ a.button.report_user_button span {
 
 /** jGrowl Start **/
 
-div.jGrowl {
-	z-index: 9999;
-	color: #fff;
-	font-size: 12px;
+
+/** Special IE6 Style Positioning **/
+.ie6 {
+	position: 			absolute;
 }
 
-div.jGrowl {
-	position: absolute;
+.ie6.top-right {
+	right: 				auto;
+	bottom: 			auto;
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
 }
 
-body > div.jGrowl {
-	position: fixed;
+.ie6.top-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
 }
 
-div.jGrowl.top-left {
-	left: 0px;
-	top: 0px;
+.ie6.bottom-right {
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
 }
 
-div.jGrowl.top-right {
-	right: 0px;
-	top: 0px;
+.ie6.bottom-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
 }
 
-div.jGrowl.bottom-left {
-	left: 0px;
-	bottom: 0px;
+.ie6.center {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	width: 				100%;
 }
 
-div.jGrowl.bottom-right {
-	right: 0px;
-	bottom: 0px;
+
+/** jGrowl Styling **/
+.jGrowl {
+	z-index: 			9999;
+	color: 				#fff;
+	font-size: 			12px;
+	position:			fixed;
 }
 
-div.jGrowl.center {
-	top: 0px;
-	width: 50%;
-	left: 25%;
+.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
 }
 
-div.center div.jGrowl-notification,
-div.center div.jGrowl-closer {
-	margin-left:  auto;
-	margin-right: auto;
+.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
 }
 
-div.jGrowl div.jGrowl-notification,
-div.jGrowl div.jGrowl-closer {
-	background-color: #000;
-	opacity: .85;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85);
-	zoom: 1;
-	width: 235px;
-	padding: 10px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	font-family: Tahoma, Arial, Helvetica, sans-serif;
-	font-size: 1em;
-	text-align: left;
-	display: none;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-    border-radius: 5px;
+.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
 }
 
-div.jGrowl div.jGrowl-notification {
-	min-height: 40px;
+.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
 }
 
-div.jGrowl div.jGrowl-notification,
-div.jGrowl div.jGrowl-closer {
-	margin: 10px;
+.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
 }
 
-div.jGrowl div.jGrowl-notification div.jGrowl-header {
-	font-weight: bold;
-	font-size: .85em;
+/** Cross Browser Styling **/
+.center .jGrowl-notification, .center .jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
 }
 
-div.jGrowl div.jGrowl-notification div.jGrowl-close {
-	z-index: 99;
-	float: right;
-	font-weight: bold;
-	font-size: 1em;
-	cursor:	pointer;
+.jGrowl .jGrowl-notification, .jGrowl .jGrowl-closer {
+	background-color: 		#000;
+	opacity: 				.85;
+	-ms-filter: 			"progid:DXImageTransform.Microsoft.Alpha(Opacity=85)"; 
+	filter: 				progid:DXImageTransform.Microsoft.Alpha(Opacity=85); 
+	zoom: 					1;
+	width: 					235px;
+	padding: 				10px;
+	margin-top: 			5px;
+	margin-bottom: 			5px;
+	font-family: 			Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 				1em;
+	text-align: 			left;
+	display: 				none;
+	border-radius:			5px;
 }
 
-div.jGrowl div.jGrowl-closer {
-	padding-top: 4px;
-	padding-bottom: 4px;
-	cursor: pointer;
-	font-size: .9em;
-	font-weight: bold;
-	text-align: center;
+.jGrowl .jGrowl-notification {
+	min-height: 			40px;
+}
+
+.jGrowl .jGrowl-notification,
+.jGrowl .jGrowl-closer {
+	margin: 				10px;
+}
+
+.jGrowl .jGrowl-notification .jGrowl-header {
+	font-weight: 			bold;
+	font-size:				.85em;
+}
+
+.jGrowl .jGrowl-notification .jGrowl-close {
+	z-index:				99;
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				1em;
+	cursor:					pointer;
+}
+
+.jGrowl .jGrowl-closer {
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				.9em;
+	font-weight: 			bold;
+	text-align: 			center;
+}
+
+/** Hide jGrowl when printing **/
+@media print {
+	.jGrowl {
+		display: 			none;
+	}
 }
 
 /** jGrowl End **/
@@ -1493,94 +1526,86 @@ div.jGrowl div.jGrowl-closer {
 /** Modal End **/
 
 /** Impromptu Start **/
-/*! jQuery-Impromptu - v5.2.3 - 2014-03-09
+
+/*! jQuery-Impromptu - v5.2.4 - 2014-05-26
 * http://trentrichardson.com/Impromptu
 * Copyright (c) 2014 Trent Richardson; Licensed MIT */
-
-.jqifade {
-	position: absolute;
-	background-color: #777777;
+.jqifade{
+	position: absolute; 
+	background-color: #777777; 
 }
-
-div.jqi {
-	width: 400px;
+div.jqi{ 
+	width: 400px; 
 	max-width:90%;
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-	position: absolute;
-	background-color: #ffffff;
-	font-size: 11px;
-	text-align: left;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+	position: absolute; 
+	background-color: #ffffff; 
+	font-size: 11px; 
+	text-align: left; 
 	border: solid 1px #eeeeee;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 	padding: 7px;
 }
-
-div.jqi .jqiclose {
-	position: absolute;
-	top: 4px; right: -2px;
-	width: 18px;
-	cursor: default;
-	color: #bbbbbb;
-	font-weight: bold;
+div.jqi .jqicontainer{ 
 }
-
-div.jqi .jqistate {
+div.jqi .jqiclose{ 
+	position: absolute;
+	top: 4px; right: -2px; 
+	width: 18px; 
+	cursor: default; 
+	color: #bbbbbb; 
+	font-weight: bold; 
+}
+div.jqi .jqistate{
 	background-color: #fff;
 }
-
-div.jqi .jqititle {
+div.jqi .jqititle{
 	padding: 5px 10px;
-	font-size: 16px;
-	line-height: 20px;
+	font-size: 16px; 
+	line-height: 20px; 
 	border-bottom: solid 1px #eeeeee;
 }
-
-div.jqi .jqimessage {
-	padding: 10px;
-	line-height: 20px;
-	color: #444444;
+div.jqi .jqimessage{ 
+	padding: 10px; 
+	line-height: 20px; 
+	color: #444444; 
 }
-
-div.jqi .jqibuttons {
-	text-align: right;
+div.jqi .jqibuttons{ 
+	text-align: right; 
 	margin: 0 -7px -7px -7px;
-	border-top: solid 1px #e4e4e4;
+	border-top: solid 1px #e4e4e4; 
 	background-color: #f4f4f4;
 	border-radius: 0 0 6px 6px;
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-
-div.jqi .jqibuttons button {
+div.jqi .jqibuttons button{ 
 	margin: 0;
 	padding: 15px 20px;
 	background-color: transparent;
-	font-weight: normal;
+	font-weight: normal; 
 	border: none;
-	border-left: solid 1px #e4e4e4;
-	color: #777;
-	font-weight: bold;
-	font-size: 12px;
+	border-left: solid 1px #e4e4e4; 
+	color: #777; 
+	font-weight: bold; 
+	font-size: 12px; 
 }
-
-div.jqi .jqibuttons button.jqidefaultbutton {
+div.jqi .jqibuttons button.jqidefaultbutton{
 	color: #489afe;
 }
-
 div.jqi .jqibuttons button:hover,
-div.jqi .jqibuttons button:focus {
+div.jqi .jqibuttons button:focus{
 	color: #287ade;
 	outline: none;
 }
-
-.jqiwarning .jqi .jqibuttons {
+.jqiwarning .jqi .jqibuttons{ 
 	background-color: #b95656;
 }
 
 /* sub states */
-div.jqi .jqiparentstate::after {
+div.jqi .jqiparentstate::after{ 
 	background-color: #777;
 	opacity: 0.6;
 	filter: alpha(opacity=60);
@@ -1591,8 +1616,7 @@ div.jqi .jqiparentstate::after {
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
 }
-
-div.jqi .jqisubstate {
+div.jqi .jqisubstate{
 	position: absolute;
 	top:0;
 	left: 20%;
@@ -1604,95 +1628,28 @@ div.jqi .jqisubstate {
 	-moz-border-radius: 0 0 6px 6px;
 	-webkit-border-radius: 0 0 6px 6px;
 }
-
-div.jqi .jqisubstate .jqibuttons button {
+div.jqi .jqisubstate .jqibuttons button{
 	padding: 10px 18px;
 }
 
 /* arrows for tooltips/tours */
-.jqi .jqiarrow {
-	position: absolute;
-	height: 0; width:0;
-	line-height: 0;
-	font-size: 0;
-	border: solid 10px transparent;
-}
+.jqi .jqiarrow{ position: absolute; height: 0; width:0; line-height: 0; font-size: 0; border: solid 10px transparent;}
 
-.jqi .jqiarrowtl {
-	left: 10px;
-	top: -20px;
-	border-bottom-color: #ffffff;
-}
+.jqi .jqiarrowtl{ left: 10px; top: -20px; border-bottom-color: #ffffff; }
+.jqi .jqiarrowtc{ left: 50%; top: -20px; border-bottom-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowtr{ right: 10px; top: -20px; border-bottom-color: #ffffff; }
 
-.jqi .jqiarrowtc {
-	left: 50%;
-	top: -20px;
-	border-bottom-color: #ffffff;
-	margin-left: -10px;
-}
+.jqi .jqiarrowbl{ left: 10px; bottom: -20px; border-top-color: #ffffff; }
+.jqi .jqiarrowbc{ left: 50%; bottom: -20px; border-top-color: #ffffff; margin-left: -10px; }
+.jqi .jqiarrowbr{ right: 10px; bottom: -20px; border-top-color: #ffffff; }
 
-.jqi .jqiarrowtr {
-	right: 10px;
-	top: -20px;
-	border-bottom-color: #ffffff;
-}
+.jqi .jqiarrowlt{ left: -20px; top: 10px; border-right-color: #ffffff; }
+.jqi .jqiarrowlm{ left: -20px; top: 50%; border-right-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowlb{ left: -20px; bottom: 10px; border-right-color: #ffffff; }
 
-.jqi .jqiarrowbl {
-	left: 10px;
-	bottom: -20px;
-	border-top-color: #ffffff;
-}
-
-.jqi .jqiarrowbc {
-	left: 50%;
-	bottom: -20px;
-	border-top-color: #ffffff;
-	margin-left: -10px;
-}
-
-.jqi .jqiarrowbr {
-	right: 10px;
-	bottom: -20px;
-	border-top-color: #ffffff;
-}
-
-.jqi .jqiarrowlt {
-	left: -20px;
-	top: 10px;
-	border-right-color: #ffffff;
-}
-
-.jqi .jqiarrowlm {
-	left: -20px;
-	top: 50%;
-	border-right-color: #ffffff;
-	margin-top: -10px;
-}
-
-.jqi .jqiarrowlb {
-	left: -20px;
-	bottom: 10px;
-	border-right-color: #ffffff;
-}
-
-.jqi .jqiarrowrt {
-	right: -20px;
-	top: 10px;
-	border-left-color: #ffffff;
-}
-
-.jqi .jqiarrowrm {
-	right: -20px;
-	top: 50%;
-	border-left-color: #ffffff;
-	margin-top: -10px;
-}
-
-.jqi .jqiarrowrb {
-	right: -20px;
-	bottom: 10px;
-	border-left-color: #ffffff;
-}
+.jqi .jqiarrowrt{ right: -20px; top: 10px; border-left-color: #ffffff; }
+.jqi .jqiarrowrm{ right: -20px; top: 50%; border-left-color: #ffffff; margin-top: -10px; }
+.jqi .jqiarrowrb{ right: -20px; bottom: 10px; border-left-color: #ffffff; }
 
 /** Impromptu End */
 
