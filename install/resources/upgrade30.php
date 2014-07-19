@@ -757,6 +757,14 @@ function upgrade30_dbchanges5()
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0'
 			);");
+			$db->write_query("CREATE TABLE mybb_spamlog (
+				sid INTEGER PRIMARY KEY,
+				username varchar(120) NOT NULL DEFAULT '',
+				email varchar(220) NOT NULL DEFAULT '',
+				ipaddress blob(16) NOT NULL default ''
+				dateline int unsigned NOT NULL default '0' PRIMARY KEY,
+				data TEXT NOT NULL
+			) ENGINE=MyISAM;");
 			break;
 		case "pgsql":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
@@ -775,6 +783,15 @@ function upgrade30_dbchanges5()
 				dateline int unsigned NOT NULL default '0',
 				UNIQUE (sid)
 			);");
+			$db->write_query("CREATE TABLE mybb_spamlog (
+				sid serial,
+				username varchar(120) NOT NULL DEFAULT '',
+				email varchar(220) NOT NULL DEFAULT '',
+				ipaddress bytea NOT NULL default '',
+				dateline numeric(30,0) NOT NULL default '0',
+				data text NOT NULL default ''
+				PRIMARY KEY (sid)
+			);");
 			break;
 		default:
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
@@ -791,6 +808,15 @@ function upgrade30_dbchanges5()
 				sid varchar(32) NOT NULL default '',
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0',
+				PRIMARY KEY (sid)
+			) ENGINE=MyISAM;");
+			$db->write_query("CREATE TABLE mybb_spamlog (
+				sid int unsigned NOT NULL auto_increment,
+				username varchar(120) NOT NULL DEFAULT '',
+				email varchar(220) NOT NULL DEFAULT '',
+				ipaddress varbinary(16) NOT NULL default '',
+				dateline int unsigned NOT NULL default '0',
+				data text NOT NULL DEFAULT '',
 				PRIMARY KEY (sid)
 			) ENGINE=MyISAM;");
 	}
