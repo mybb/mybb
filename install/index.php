@@ -1778,6 +1778,41 @@ function configure()
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
+	
+	echo <<<EOF
+		<script type="text/javascript">	
+		function warnUser(inp, warn)
+		{
+			var parenttr = $('#'+inp.id).closest('tr');
+			if(inp.value != inp.defaultValue)
+			{
+				if(!parenttr.next('.setting_peeker').length)
+				{
+					var revertlink = ' <a href="javascript:revertSetting(\''+inp.defaultValue+'\', \'#'+inp.id+'\');">{$lang->config_step_revert}</a>';
+					parenttr.removeClass('last').after('<tr class="setting_peeker"><td colspan="2">'+warn+revertlink+'</td></tr>');
+				}
+			} else {
+				parenttr.next('.setting_peeker').remove();
+				if(parenttr.is(':last-child'))
+				{
+					parenttr.addClass('last');
+				}
+			}
+		}
+			
+		function revertSetting(defval, inpid)
+		{
+			$(inpid).val(defval);			
+			var parenttr = $(inpid).closest('tr');
+			parenttr.next('.setting_peeker').remove();
+			if(parenttr.is(':last-child'))
+			{
+				parenttr.addClass('last');
+			}			
+		}
+		</script>
+		
+EOF;
 
 	// If board configuration errors
 	if(is_array($errors))
@@ -1894,6 +1929,26 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
+	
+	echo <<<EOF
+		<script type="text/javascript">	
+		function comparePass()
+		{
+			var parenttr = $('#adminpass2').closest('tr');
+			var passval = $('#adminpass2').val();
+			if(passval && passval != $('#adminpass').val())
+			{
+				if(!parenttr.next('.pass_peeker').length)
+				{
+					parenttr.removeClass('last').after('<tr class="pass_peeker"><td colspan="2">{$lang->admin_step_nomatch}</td></tr>');
+				}
+			} else {
+				parenttr.addClass('last').next('.pass_peeker').remove();
+			}
+		}
+		</script>
+		
+EOF;
 
 	if(is_array($errors))
 	{
