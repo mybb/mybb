@@ -1362,6 +1362,7 @@ form #message {
 /** jGrowl Start **/
 
 
+
 /** Special IE6 Style Positioning **/
 .ie6 {
 	position: 			absolute;
