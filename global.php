@@ -678,7 +678,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
-$cache->update('awaitingactivation', 50);
+
 if($mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
