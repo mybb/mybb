@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'editpost.php');
 $templatelist = "editpost,previewpost,changeuserbox,codebuttons,smilieinsert,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,post_attachments_attachment_postinsert,post_attachments_attachment_mod_unapprove";
 $templatelist .= ",editpost_delete,error_attacherror,forumdisplay_password_wrongpass,forumdisplay_password,editpost_reason,post_attachments_attachment_remove,post_attachments_update,postbit_author_guest,post_subscription_method";
 $templatelist .= ",posticons_icon,post_prefixselect_prefix,post_prefixselect_single,newthread_postpoll,editpost_disablesmilies,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_new";
-$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_disablesmilies_hidden,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,posticons";
+$templatelist .= ",postbit_warninglevel_formatted,postbit_reputation_formatted_link,editpost_disablesmilies_hidden,attachment_icon,post_attachments_attachment,post_attachments_add,post_attachments,posticons,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -888,6 +888,25 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	else
 	{
 		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies_hidden")."\";");
+	}
+
+	$moderation_notice = '';
+	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
+	{
+		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+		{
+			$moderation_text = $lang->moderation_forum_attachments;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+	}
+
+	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
+	{
+		if($forumpermissions['mod_edit_posts'] == 1)
+		{
+			$moderation_text = $lang->moderation_forum_edits;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
 	}
 
 	$plugins->run_hooks("editpost_end");

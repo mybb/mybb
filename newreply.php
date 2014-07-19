@@ -17,7 +17,7 @@ $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warningl
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -95,9 +95,22 @@ if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
 	error_no_permission();
+}
+
+if($mybb->user['suspendposting'] == 1)
+{
+	$suspendedpostingtype = $lang->error_suspendedposting_permanent;
+	if($mybb->user['suspensiontime'])
+	{
+		$suspendedpostingtype = $lang->sprintf($lang->error_suspendedposting_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspensiontime']));
+	}
+
+	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
+
+	error($lang->error_suspendedposting);
 }
 
 if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
@@ -1442,6 +1455,30 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		else if($forum['rulestype'] == 2)
 		{
 			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
+		}
+	}
+
+	$moderation_notice = '';
+	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
+	{
+		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+		{
+			$moderation_text = $lang->moderation_forum_attachments;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+	}
+	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
+	{
+		if($forumpermissions['modposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_forum_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+
+		if($mybb->user['moderateposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_user_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
 		}
 	}
 

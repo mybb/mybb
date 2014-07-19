@@ -11,8 +11,8 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'memberlist.php');
 
-$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,multipage_prevpage,memberlist_user_userstar";
-$templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,memberlist_referrals,memberlist_referrals_bit,memberlist_error";
+$templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,memberlist_user_userstar";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,memberlist_referrals,memberlist_referrals_bit,memberlist_error";
 
 require_once "./global.php";
 

@@ -1150,6 +1150,11 @@ class UserDataHandler extends DataHandler
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
 
+		if(intval($user['usergroup']) == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
 		$this->return_values = array(
 			"uid" => $this->uid,
 			"username" => $user['username'],
@@ -1355,6 +1360,11 @@ class UserDataHandler extends DataHandler
 			$cache->update_birthdays();
 		}
 
+		if(isset($user['usergroup']) && intval($user['usergroup']) == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
 		// Maybe some userfields need to be updated?
 		if(isset($user['user_fields']) && is_array($user['user_fields']))
 		{
@@ -1543,6 +1553,8 @@ class UserDataHandler extends DataHandler
 		
 		// Update reports cache
 		$cache->update_reportedcontent();
+
+		$cache->update_awaitingactivation();
 
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 

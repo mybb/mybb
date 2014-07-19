@@ -274,6 +274,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-
-$plugins->run_hooks("admin_tools_spamlog_end");
 ?>

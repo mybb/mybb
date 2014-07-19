@@ -149,7 +149,7 @@ class StopForumSpamChecker
 		if($this->log_blocks && $is_spammer)
 		{
 			log_spam_block(
-				$username, $email, array(
+				$username, $email, $ip_address, array(
 					'confidence' => (double)$confidence,
 				)
 			);

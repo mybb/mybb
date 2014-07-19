@@ -48,4 +48,10 @@ $l['invalidthread'] = "The specified draft does not exist or you don't have perm
 
 $l['error_stop_forum_spam_spammer'] = 'Sorry, your username or IP address matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
 $l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
+
+$l['error_suspendedposting'] = "Your posting privileges are currently suspended {1}.<br /><br />
+
+Suspension Date: {2}";
+$l['error_suspendedposting_temporal'] = "until {1}";
+$l['error_suspendedposting_permanent'] = "permanently";
 ?>

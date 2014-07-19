@@ -855,7 +855,8 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']))
+			$ismod = is_moderator($post['fid'], "", $post['uid']);
+			if($ismod)
 			{
 				$lang->load($this->language_file, true);
 
@@ -927,7 +928,7 @@ class PostDataHandler extends DataHandler
 
 			// Decide on the visibility of this post.
 			$forumpermissions = forum_permissions($post['fid'], $post['uid']);
-			if($forumpermissions['modposts'] == 1)
+			if($forumpermissions['modposts'] == 1 && !$ismod)
 			{
 				$visible = 0;
 			}
@@ -1381,7 +1382,7 @@ class PostDataHandler extends DataHandler
 		{
 			$forumpermissions = forum_permissions($thread['fid'], $thread['uid']);
 			// Decide on the visibility of this post.
-			if($forumpermissions['modthreads'] == 1)
+			if($forumpermissions['modthreads'] == 1 && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -1765,9 +1766,10 @@ class PostDataHandler extends DataHandler
 		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
 		// Decide on the visibility of this post.
+		$ismod = is_moderator($post['fid'], "", $post['uid']);
 		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
 		{
-			if($forumpermissions['mod_edit_posts'] == 1)
+			if($forumpermissions['mod_edit_posts'] == 1 && !$ismod)
 			{
 				if($existing_post['visible'] == 1)
 				{
@@ -1812,7 +1814,7 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			$visible = 0;
-			if($forumpermissions['mod_edit_posts'] != 1)
+			if($forumpermissions['mod_edit_posts'] != 1 && !$ismod)
 			{
 				$visible = 1;
 			}

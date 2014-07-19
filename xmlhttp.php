@@ -674,7 +674,7 @@ else if($mybb->input['action'] == "validate_captcha")
 	$query = $db->simple_select("captcha", "imagestring", "imagehash='$imagehash'");
 	if($db->num_rows($query) == 0)
 	{
-		echo json_encode(array("fail" => $lang->captcha_valid_not_exists));
+		echo $lang->captcha_valid_not_exists;
 		exit;
 	}
 	$imagestring = $db->fetch_field($query, 'imagestring');
@@ -804,7 +804,7 @@ else if($mybb->input['action'] == "username_exists")
 	else
 	{
 		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
-		echo json_encode(array("fail" => $lang->invalid_username));
+		echo $lang->invalid_username;
 		exit;
 	}
 }

@@ -608,7 +608,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forumpermissions['modattachments'] == 1)
+	if($forumpermissions['modattachments'] == 1 && !is_moderator($forum['fid'], "canapproveunapproveattachs"))
 	{
 		$attacharray['visible'] = 0;
 	}

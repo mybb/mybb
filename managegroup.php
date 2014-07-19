@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'managegroup.php');
 
 $templatelist = "managegroup_leaders_bit,managegroup_leaders,postbit_pm,postbit_email,managegroup_user_checkbox,managegroup_user,managegroup_adduser,managegroup_removeusers,managegroup,managegroup_joinrequests_request,managegroup_joinrequests";
-$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage_prevpage,multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
+$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 
