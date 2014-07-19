@@ -4991,7 +4991,10 @@ $().ready(function() {
           },
 		},
 		messages: {
-            username: "{$lang->js_validator_username_length}",
+            username: {
+              		minlength: "{$lang->js_validator_username_length}",
+              		maxlength: "{$lang->js_validator_username_length}",
+            },
           	email: "{$lang->js_validator_invalid_email}",
 			email2: "{$lang->js_validator_email_match}",
 		}
