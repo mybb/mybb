@@ -8494,7 +8494,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_jump_page" version="1400"><![CDATA[<form action="{$page_url}" method="post">
+		<template name="multipage_jump_page" version="1800"><![CDATA[<form action="{$page_url}" method="post">
 <input type="text" class="textbox" name="page" value="{$page}" size="3" />
 <input type="submit" class="button" value="{$lang->go}" />
 </form>]]></template>
@@ -11379,7 +11379,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="stats_thread" version="1400"><![CDATA[<a href="{$thread['threadlink']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
+		<template name="stats_thread" version="1800"><![CDATA[<a href="{$thread['threadlink']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
 		<template name="usercp" version="1600"><![CDATA[<html>
 <head>
 <title>{$lang->user_cp}</title>
