@@ -703,6 +703,10 @@ if($mybb->usergroup['cancp'] == 1)
 		}
 		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
 	}
+	else
+	{
+		$awaitingusers = '';
+	}
 }
 
 // Set up some of the default templates
