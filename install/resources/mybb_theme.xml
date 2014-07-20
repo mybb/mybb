@@ -412,7 +412,7 @@ table {
 	background: #E8DEFF;
 }
 
-.trow_selected {
+.trow_selected, tr.trow_selected td {
 	background: #FFFBD9;
 	color: #333;
 	border-right-color: #F7E86A;
@@ -3773,7 +3773,7 @@ a.button {
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_thread" version="1800"><![CDATA[<tr>
+		<template name="forumdisplay_thread" version="1800"><![CDATA[<tr class="thread">
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%"><span class="thread_status {$folder}" title="{$folder_label}">&nbsp;</span></td>
 	<td align="center" class="{$bgcolor}{$thread_type_class}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}{$thread_type_class}">
