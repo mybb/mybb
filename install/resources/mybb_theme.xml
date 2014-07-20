@@ -5393,9 +5393,9 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" width="1%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
 <td class="tcat"><span class="smalltext"><a href="{$sorturl}&amp;sort=username&amp;order=ascending"><strong>{$lang->username}</strong></a> {$orderarrow['username']}</span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=regdate&amp;order=ascending"><strong>{$lang->joined}</strong></a> {$orderarrow['regdate']}</span></td>
-<td class="tcat" width="15%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=lastvisit&amp;order=ascending"><strong>{$lang->lastvisit}</strong></a> {$orderarrow['lastvisit']}</span></td>
-<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=postnum&amp;order=ascending"><strong>{$lang->posts}</strong></a> {$orderarrow['postnum']}</span></td>
-<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=threadnum&amp;order=ascending"><strong>{$lang->threads}</strong></a> {$orderarrow['threadnum']}</span></td>
+<td class="tcat" width="15%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=lastvisit&amp;order=descending"><strong>{$lang->lastvisit}</strong></a> {$orderarrow['lastvisit']}</span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=postnum&amp;order=descending"><strong>{$lang->posts}</strong></a> {$orderarrow['postnum']}</span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=threadnum&amp;order=descending"><strong>{$lang->threads}</strong></a> {$orderarrow['threadnum']}</span></td>
 {$referral_header}
 </tr>
 {$users}
@@ -5498,7 +5498,7 @@ if(use_xmlhttprequest == "1")
 </script>
 </body>
 </html>]]></template>
-		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=ascending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
+		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
 		<template name="memberlist_search" version="1800"><![CDATA[<html>
 <head>
