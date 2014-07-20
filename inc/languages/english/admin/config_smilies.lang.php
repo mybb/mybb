@@ -22,6 +22,7 @@ $l['no_smilies'] = "There are no smilies on your forum at this time.";
 $l['image'] = "Image";
 $l['name'] = "Name";
 $l['text_replace'] = "Text to Replace";
+$l['text_replace_desc'] = "This is the text to replace with the smilie (enter one per line).";
 $l['image_path'] = "Image Path";
 $l['image_path_desc'] = "This is the path to the smilie image. If you want to use different smilie images for different themes, please use <strong>{theme}</strong> to represent the image directory of each theme.";
 $l['order'] = "Order";

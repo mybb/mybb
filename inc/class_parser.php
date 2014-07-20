@@ -521,10 +521,15 @@ class postParser
 			$extra_class = $onclick = '';
 			foreach($smilies as $sid => $smilie)
 			{
+				$smilie['find'] = explode("\n", $smilie['find']);
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie').'";');
+				foreach($smilie['find'] as $s)
+				{
+					eval('$this->smilies_cache[\''.$s.'\'] = "'.$templates->get('smilie').'";');
+				}
+
 			}
 		}
 	}

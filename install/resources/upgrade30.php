@@ -1535,6 +1535,73 @@ function upgrade30_dbchanges_optimize4()
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("30_dbchanges_smilies");
+}
+
+function upgrade30_dbchanges_smilies()
+{
+	global $cache, $output, $db;
+
+	$output->print_header("Updating Smilies");
+
+	echo "<p>Performing necessary upgrade queries...</p>";
+	flush();
+
+
+	if($db->type == 'sqlite')
+	{
+		$db->modify_column("smilies", "find", "TEXT NOT NULL");
+	}
+	else
+	{
+		$db->modify_column("smilies", "find", "text NOT NULL");
+	}
+
+	$query = $db->simple_select('smilies', 'sid, image, find', '', array('order_by' => 'image, sid'));
+	$last_image = null;
+	$last_sid = 0;
+	$skip = array();
+	while($smilie = $db->fetch_array($query))
+	{
+		if(in_array($smilie['sid'], $skip))
+		{
+			continue;
+		}
+
+		if($smilie['image'] == $last_image && $smilie['image'] != null)
+		{
+			$dupe_query = $db->simple_select('smilies', 'sid, find', 'image = "'.$db->escape_string($smilie['image']).'"');
+			$dupes = '';
+			$find = array();
+			$skip = array();
+			while($dupe = $db->fetch_array($dupe_query))
+			{
+				if($dupe['sid'] != $last_sid)
+				{
+					$dupes .= (int)$dupe['sid'].',';
+					$find[] = trim($dupe['find']);
+					$skip[] = (int)$dupe['sid'];
+				}
+				else
+				{
+					$find[] = $dupe['find'];
+				}
+			}
+			$dupes = rtrim($dupes, ',');
+			$db->delete_query('smilies', 'sid IN('.$dupes.')');
+			$db->update_query('smilies', array('find' => implode("\n", $find)), 'sid = "'.(int)$last_sid.'"');
+			$db->free_result($dupe_query);
+		}
+		else
+		{
+			$last_sid = $smilie['sid'];
+			$last_image = $smilie['image'];
+		}
+	}
+
+	$cache->update_smilies();
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("30_dbchanges_ip");
 }
 

@@ -58,6 +58,10 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
+			$mybb->input['find'] = str_replace('\\', '\\\\', $mybb->input['find']);
+			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
+			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
+
 			$new_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"find" => $db->escape_string($mybb->input['find']),
@@ -122,7 +126,7 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->add_smilie);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->text_replace." <em>*</em>", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
+	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
@@ -186,6 +190,10 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
+			$mybb->input['find'] = str_replace('\\', '\\\\' $mybb->input['find']);
+			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
+			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
+
 			$updated_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"find" => $db->escape_string($mybb->input['find']),
@@ -237,7 +245,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_smilie);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->text_replace." <em>*</em>", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
+	$form_container->output_row($lang->text_replace." <em>*</em>", $lang->text_replace_desc, $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
@@ -437,6 +445,9 @@ if($mybb->input['action'] == "add_multiple")
 
 			foreach($mybb->input['include'] as $image => $insert)
 			{
+				$find[$image] = str_replace('\\', '\\\\' $find[$image]);
+				$find[$image] = str_replace('$', '\$', $find[$image]);
+				$find[$image] = str_replace("'", "\'", $find[$image]);
 				if($insert)
 				{
 					$new_smilie = array(
@@ -624,9 +635,11 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 
+		$smilie['find'] = implode(', ', explode("\n", $smilie['find']));
+
 		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
-		$form_container->output_cell($form->generate_text_box("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
+		$form_container->output_cell($form->generate_text_area("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
 		$form_container->output_cell($form->generate_text_box("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
 		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
 		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->input['delete']), array("class" => "align_center"));
@@ -687,6 +700,7 @@ if(!$mybb->input['action'])
 		$pagenum = 1;
 	}
 
+
 	$table = new Table;
 	$table->construct_header($lang->image, array("class" => "align_center", "width" => 1));
 	$table->construct_header($lang->name, array("width" => "35%"));
@@ -700,11 +714,14 @@ if(!$mybb->input['action'])
 		if(my_strpos($smilie['image'], "p://") || substr($smilie['image'], 0, 1) == "/")
 		{
 			$image = $smilie['image'];
+			$smilie['image'] = str_replace("{theme}", "images", $smilie['image']);
 		}
 		else
 		{
 			$image = "../".$smilie['image'];
 		}
+
+		$smilie['find'] = implode(', ', explode("\n", $smilie['find']));
 
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
