@@ -1228,11 +1228,12 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	$plugins->run_hooks("calendar_do_move_start");
-
 	$updated_event = array(
 		"cid" => $new_calendar['cid']
 	);
+
+	$plugins->run_hooks("calendar_do_move_start");
+
 	$db->update_query("events", $updated_event, "eid='{$event['eid']}'");
 
 	$plugins->run_hooks("calendar_do_move_end");
@@ -1275,11 +1276,12 @@ if($mybb->input['action'] == "approve")
 		error_no_permission();
 	}
 
-	$plugins->run_hooks("calendar_approve_start");
-
 	$updated_event = array(
 		"visible" => 1
 	);
+
+	$plugins->run_hooks("calendar_approve_start");
+
 	$db->update_query("events", $updated_event, "eid='{$event['eid']}'");
 
 	$plugins->run_hooks("calendar_approve_end");
@@ -1322,11 +1324,12 @@ if($mybb->input['action'] == "unapprove")
 		error_no_permission();
 	}
 
-	$plugins->run_hooks("calendar_unapprove_start");
-
 	$updated_event = array(
 		"visible" => 0
 	);
+
+	$plugins->run_hooks("calendar_unapprove_start");
+
 	$db->update_query("events", $updated_event, "eid='{$event['eid']}'");
 
 	$plugins->run_hooks("calendar_unapprove_end");
@@ -2227,6 +2230,8 @@ if(!$mybb->input['action'])
 	{
 		error_no_permission();
 	}
+
+	$plugins->run_hooks("calendar_main_view");
 
 	// Incoming year?
 	$mybb->input['year'] = $mybb->get_input('year', 1);

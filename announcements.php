@@ -20,11 +20,11 @@ $lang->load("announcements");
 
 $aid = $mybb->get_input('aid', 1);
 
-$plugins->run_hooks("announcements_start");
-
 // Get announcement fid
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
+
+$plugins->run_hooks("announcements_start");
 
 if(!$announcement)
 {
