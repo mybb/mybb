@@ -481,12 +481,15 @@
 */
 (function($){
 	var current_popup = '';
-	var PopupMenu = function(el)
+	var PopupMenu = function(el, close_in_popupmenu)
 	{
 		var el = $(el);
 		var popup = this;
 		var popup_menu = $("#" + el.attr('id') + "_popup");
-
+		if(typeof close_in_popupmenu == 'undefined')
+		{
+			var close_in_popupmenu = true;
+		}
 		// Opening Popup
 		this.open = function(e)
 		{
@@ -519,8 +522,17 @@
 			// Closes the popup if we click outside the button (this doesn't seem to work properly - couldn't find any solutions that actually did - if we click the first item on the menu)
 			// Credits: http://stackoverflow.com/questions/1160880/detect-click-outside-element
 			$('body, .popup_item').bind('click.close_popup', function(e) {
-				if($(e.target).closest("#" + el.attr('id')).length == 0) {
-					popup.close();
+				if(close_in_popupmenu)
+				{
+					if($(e.target).closest("#" + el.attr('id')).length == 0) {
+						popup.close();
+					}
+				}
+				else
+				{
+					if($(e.target).closest("#" + el.attr('id')).length == 0 && $(e.target).closest("#" + el.attr('id') + '_popup').length == 0) {
+						popup.close();
+					}
 				}
 			});
 		}
@@ -529,11 +541,11 @@
 			popup_menu.hide();
 		}
 	}
-	$.fn.popupMenu = function(el)
+	$.fn.popupMenu = function(close_in_popupmenu)
 	{
 		return this.each(function()
 		{
-			var popup = new PopupMenu(this);
+			var popup = new PopupMenu(this, close_in_popupmenu);
 			$(this).click(popup.open);
 		});
 	}

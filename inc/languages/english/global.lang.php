@@ -142,6 +142,7 @@ $l['multipage_next'] = "Next";
 $l['multipage_previous'] = "Previous";
 $l['multipage_link_start'] = " ...";
 $l['multipage_link_end'] = "... ";
+$l['multipage_jump'] = "Jump to page";
 
 $l['editor_bold'] = "Bold";
 $l['editor_italic'] = "Italic";

@@ -933,6 +933,15 @@ div.error ul {
 	text-decoration: none;
 }
 
+.pagination .go_page img {
+	margin-bottom: -4px;
+}
+
+.drop_go_page {
+	background: #f5f5f5;
+	padding: 4px;
+}
+
 .pagination_breadcrumb {
 	background-color: #efefef;
 	border: 1px solid #fff;
@@ -8453,7 +8462,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}">{$info}</td>
 </tr>]]></template>
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
-		<template name="multipage" version="1400"><![CDATA[<div class="pagination">
+		<template name="multipage" version="1800"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}{$jumptopage}
 </div>]]></template>
@@ -8469,10 +8478,24 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_jump_page" version="1800"><![CDATA[<form action="{$page_url}" method="post">
-<input type="text" class="textbox" name="page" value="{$page}" size="3" />
-<input type="submit" class="button" value="{$lang->go}" />
-</form>]]></template>
+		<template name="multipage_jump_page" version="1800"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
+	<form action="{$page_url}" method="post">
+		<label for="page">{$lang->multipage_jump}:</label> <input type="text" class="textbox" name="page" value="{$page}" size="4" />
+		<input type="submit" class="button" value="{$lang->go}" />
+	</form>
+</div>
+<a href="javascript:;" class="go_page" title="{$lang->multipage_jump}"><img src="{$theme['imgdir']}/arrow_down.png" alt="{$lang->multipage_jump}" /></a>&nbsp;
+<script type="text/javascript">
+	var go_page = 'go_page_' + $(".go_page").length;
+	$(".go_page").last().attr('id', go_page);
+	$(".drop_go_page").last().attr('id', go_page + '_popup');
+	$('#' + go_page).popupMenu(false).click(function() {
+		var drop_go_page = $(this).prev('.drop_go_page');
+		if (drop_go_page.is(':visible')) {
+			drop_go_page.find('.textbox').focus();
+		}
+	});
+</script>]]></template>
 		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">{$lang->next} &raquo;</a>]]></template>
 		<template name="multipage_page" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
 		<template name="multipage_page_current" version="1400"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
