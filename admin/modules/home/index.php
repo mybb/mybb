@@ -192,7 +192,17 @@ elseif(!$mybb->input['action'])
 
 	// Get the number of users awaiting validation
 	$awaitingusers = $cache->read('awaitingactivation');
-	if(empty($awaitingusers))
+
+	if(!empty($awaitingusers['users']))
+	{
+		$awaitingusers = (int)$awaitingusers['users'];
+	}
+	else
+	{
+		$awaitingusers = 0;
+	}
+
+	if($awaitingusers < 1)
 	{
 		$awaitingusers = 0;
 	}
