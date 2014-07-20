@@ -128,24 +128,27 @@ function upgrade30_dbchanges()
 		$db->drop_column("templategroups", "isdefault");
 	}
 
-	if($db->field_exists('type', 'reportedposts'))
+	if($db->table_exists('reportedposts'))
 	{
-		$db->drop_column("reportedposts", "type");
-	}
+		if($db->field_exists('type', 'reportedposts'))
+		{
+			$db->drop_column("reportedposts", "type");
+		}
 
-	if($db->field_exists('reports', 'reportedposts'))
-	{
-		$db->drop_column("reportedposts", "reports");
-	}
+		if($db->field_exists('reports', 'reportedposts'))
+		{
+			$db->drop_column("reportedposts", "reports");
+		}
 
-	if($db->field_exists('reporters', 'reportedposts'))
-	{
-		$db->drop_column("reportedposts", "reporters");
-	}
+		if($db->field_exists('reporters', 'reportedposts'))
+		{
+			$db->drop_column("reportedposts", "reporters");
+		}
 
-	if($db->field_exists('lastreport', 'reportedposts'))
-	{
-		$db->drop_column("reportedposts", "lastreport");
+		if($db->field_exists('lastreport', 'reportedposts'))
+		{
+			$db->drop_column("reportedposts", "lastreport");
+		}
 	}
 
 	if($db->field_exists('warnings', 'promotions'))
@@ -247,10 +250,13 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
 			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "smallint NOT NULL default '0'");
-			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
-			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
-			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			if($db->table_exists('reportedposts'))
+			{
+				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+				$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+				$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			}
 			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
 			$db->add_column("promotions", "threadtype", "varchar(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
@@ -275,10 +281,13 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL");
 			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
-			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
-			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			if($db->table_exists('reportedposts'))
+			{
+				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+				$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+				$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			}
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
@@ -299,10 +308,13 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL");
 			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
-			$db->add_column("reportedposts", "reporters", "text NOT NULL");
-			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			if($db->table_exists('reportedposts'))
+			{
+				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+				$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
+				$db->add_column("reportedposts", "reporters", "text NOT NULL");
+				$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			}
 			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
 			$db->add_column("promotions", "threadtype", "char(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
@@ -416,6 +428,11 @@ function upgrade30_dbchanges2()
 	if($db->field_exists('threadnum', 'users'))
 	{
 		$db->drop_column("users", "threadnum");
+	}
+
+	if($db->field_exists('canchangewebsite', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canchangewebsite");
 	}
 
 	switch($db->type)
@@ -910,6 +927,16 @@ function upgrade30_dbchanges6()
 		$db->drop_column("users", "sourceeditor");
 	}
 
+	if($db->field_exists('buddyrequestspm', 'users'))
+	{
+		$db->drop_column("users", "buddyrequestspm");
+	}
+
+	if($db->field_exists('buddyrequestsauto', 'users'))
+	{
+		$db->drop_column("users", "buddyrequestsauto");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -962,7 +989,10 @@ function upgrade30_dbchanges6()
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
 
-	$db->update_query("reportedposts", array('type' => 'post'));
+	if($db->table_exists('reportedposts'))
+	{
+		$db->update_query("reportedposts", array('type' => 'post'));
+	}
 
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
@@ -1008,49 +1038,56 @@ function upgrade30_dbchanges6()
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
-	if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+	if($db->table_exists('reportedposts'))
 	{
-		switch($db->type)
+		if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
 		{
-			case "pgsql":
-				$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
-				break;
-			default:
-				$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
+			switch($db->type)
+			{
+				case "pgsql":
+					$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
+					break;
+				default:
+					$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
+			}
+		}
+
+		if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+		{
+			switch($db->type)
+			{
+				case "pgsql":
+					$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
+					break;
+				default:
+					$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
+			}
+		}
+
+		if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+		{
+			switch($db->type)
+			{
+				case "pgsql":
+					$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
+					break;
+				default:
+					$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
+			}
 		}
 	}
 
-	if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
+	if($db->table_exists('reportedposts'))
 	{
-		switch($db->type)
+		if($db->table_exists("reportedcontent"))
 		{
-			case "pgsql":
-				$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
-				break;
-			default:
-				$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
+			$db->drop_table("reportedcontent");
 		}
-	}
 
-	if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
-	{
-		switch($db->type)
-		{
-			case "pgsql":
-				$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
-				break;
-			default:
-				$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
-		}
-	}
+		$db->rename_table("reportedposts", "reportedcontent");
 
-	if($db->table_exists("reportedcontent"))
-	{
-		$db->drop_table("reportedcontent");
+		$cache->delete('reportedposts');
 	}
-
-	$db->rename_table("reportedposts", "reportedcontent");
-	$cache->delete('reportedposts');
 
 	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
 	$db->update_query("settings", array('optionscode' => 'select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation\r\nboth=Email Verification & Administrator Activation'), "name='regtype'");
@@ -1285,20 +1322,46 @@ function upgrade30_dbchanges_optimize2()
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminlog ADD INDEX ( `uid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banfilters ADD INDEX ( `type` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD INDEX ( `cid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD INDEX `fid` ( `fid` , `gid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumsubscriptions ADD INDEX ( `uid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `uid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `fid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ADD INDEX ( `tid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."reportedcontent ADD INDEX ( `reportstatus` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX `location` ( `location1` , `location2` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings ADD INDEX ( `gid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD INDEX `sid` ( `sid` , `title` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themestylesheets ADD INDEX ( `tid` )");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ADD INDEX ( `uid` )");
+		$update_data = array(
+			'adminlog' => 'uid',
+			'banfilters' => 'type',
+			'events' => 'cid',
+			'forumsubscriptions' => 'uid',
+			'moderatorlog' => array('uid', 'fid'),
+			'polls' => 'tid',
+			'reportedcontent' => 'reportstatus',
+			'settings' => 'gid',
+			'themestylesheets' => 'tid',
+			'warnings' => 'uid',
+			'forumpermissions' => array('fid' => array('fid', 'gid')),
+			'sessions' => array('location' => array('location1', 'location2')),
+			'templates' => array('sid' => array('sid', 'title'))
+		);
+
+		foreach($update_data as $table => $index)
+		{
+			if(!$db->index_exists($table, $index))
+			{
+				if(!is_array($index))
+				{
+					$index = array($index);
+				}
+
+				foreach($index as $_index)
+				{
+					if(!is_array($_index))
+					{
+						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX (`{$_index}`)");
+						continue;
+					}
+
+					foreach($index as $_index => $keys)
+					{
+						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$index}`(`".implode('`, `', $keys)."`)");
+					}
+				}
+			}
+		}
 	}
 
 	echo "<p>Dropping old indexes from tables...</p>";
