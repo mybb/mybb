@@ -715,7 +715,7 @@ elseif($mybb->input['action'] == "smilies")
 				$smilie['insert'] = addslashes($smilie['find']);
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
-				eval('$smilie_image = "'.$templates->get('smilie').'";');
+				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
 				{

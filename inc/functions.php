@@ -3062,7 +3062,7 @@ function build_clickable_smilies()
 					$find = htmlspecialchars_uni($find);
 
 					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
-					eval('$smilie = "'.$templates->get('smilie').'";');
+					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
