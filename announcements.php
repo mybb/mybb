@@ -18,7 +18,7 @@ require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = $mybb->get_input('aid');
+$aid = $mybb->get_input('aid', 1);
 
 $plugins->run_hooks("announcements_start");
 
