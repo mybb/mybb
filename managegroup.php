@@ -39,7 +39,8 @@ if($mybb->input['action'] == "joinrequests")
 // Check that this user is actually a leader of this group
 $query = $db->simple_select("groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
-if(!$groupleader['uid'] && $mybb->user['cancp'] != 1)
+
+if(!$groupleader['uid'] && $mybb->usergroup['cancp'] != 1)
 {
 	error($lang->not_leader_of_this_group);
 }
@@ -113,8 +114,8 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 			}
 			else
 			{
-				$query = $db->simple_select("usergroups", "gid, title", "gid = '".intval($gid)."'", array("limit" => 1));
-				$usergroup = $db->fetch_array($query);
+				$usergroups_cache = $cache->read('usergroups');
+				$usergroup = $usergroups_cache[$gid];
 
 				$joinrequest = array(
 					"uid" => $user['uid'],

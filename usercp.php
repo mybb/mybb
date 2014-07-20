@@ -3106,6 +3106,8 @@ if($mybb->input['action'] == "usergroups")
 	$plugins->run_hooks("usercp_usergroups_start");
 	$ingroups = ",".$mybb->user['usergroup'].",".$mybb->user['additionalgroups'].",".$mybb->user['displaygroup'].",";
 
+	$usergroups = $mybb->cache->read('usergroups');
+
 	// Changing our display group
 	if($mybb->get_input('displaygroup', 1))
 	{
@@ -3116,8 +3118,8 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->not_member_of_group);
 		}
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('displaygroup', 1)."'");
-		$dispgroup = $db->fetch_array($query);
+
+		$dispgroup = $usergroups[$mybb->get_input('displaygroup', 1)];
 		if($dispgroup['candisplaygroup'] != 1)
 		{
 			error($lang->cannot_set_displaygroup);
@@ -3143,8 +3145,8 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->cannot_leave_primary_group);
 		}
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('leavegroup', 1)."'");
-		$usergroup = $db->fetch_array($query);
+
+		$usergroup = $usergroups[$mybb->get_input('leavegroup', 1)];
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
 			error($lang->cannot_leave_group);
@@ -3169,16 +3171,13 @@ if($mybb->input['action'] == "usergroups")
 		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
 	}
 
-	$usergroups = $mybb->cache->read('usergroups');
-
 	// Joining a group
 	if($mybb->get_input('joingroup', 1))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('joingroup', 1)."'");
-		$usergroup = $db->fetch_array($query);
+		$usergroup = $usergroups[$mybb->get_input('joingroup', 1)];
 
 		if($usergroup['type'] == 5)
 		{
@@ -3258,8 +3257,7 @@ if($mybb->input['action'] == "usergroups")
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('acceptinvite', 1)."'");
-		$usergroup = $db->fetch_array($query);
+		$usergroup = $usergroups[$mybb->get_input('acceptinvite', 1)];
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', 1).",") !== false)
 		{
