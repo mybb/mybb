@@ -13368,6 +13368,7 @@ if(use_xmlhttprequest == "1")
 						<td><textarea name="pm_message" id="message" rows="20" cols="70">{$message}</textarea>
 						{$codebuttons}</td>
 					</tr>
+					{$anonymous_pm}
 				</table>
 				<script type="text/javascript">
 				<!--
@@ -13378,6 +13379,10 @@ if(use_xmlhttprequest == "1")
 				</script>
 			</td>
 		</tr>]]></template>
+		<template name="warnings_warn_pm_anonymous" version="1800"><![CDATA[<tr>
+	<td><strong>{$lang->send_pm_options}</strong></td>
+	<td><label><input type="checkbox" class="checkbox" name="pm_anonymous" value="1"{$checked} />&nbsp;{$lang->send_pm_options_anonymous}</label></td>
+</tr>]]></template>
 		<template name="warnings_warn_post" version="1400"><![CDATA[		<tr>
 			<td width="20%" class="trow2"><strong>{$lang->post}</strong></td>
 			<td class="trow2"><input type="hidden" name="pid" value="{$post['pid']}" /><a href="{$post_link}">{$post['subject']}</a></td>
