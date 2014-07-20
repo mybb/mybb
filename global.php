@@ -682,7 +682,17 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 if($mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
-	if(empty($awaitingusers))
+
+	if(!empty($awaitingusers['users']))
+	{
+		$awaitingusers = (int)$awaitingusers['users'];
+	}
+	else
+	{
+		$awaitingusers = 0;
+	}
+
+	if($awaitingusers < 1)
 	{
 		$awaitingusers = 0;
 	}
