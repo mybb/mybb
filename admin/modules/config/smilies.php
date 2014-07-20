@@ -39,9 +39,21 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_path;
 		}
 
-		if(!trim($mybb->input['disporder']))
+		$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
+
+		if(!trim($mybb->input['disporder']) || !$mybb->input['disporder'])
 		{
 			$errors[] = $lang->error_missing_order;
+		}
+		else
+		{
+			$query = $db->simple_select('smilies', 'sid', 'disporder=\''.$mybb->input['disporder'].'\'');
+			$duplicate_disporder = (int)$db->fetch_field($query, 'sid');
+
+			if($duplicate_disporder)
+			{
+				$errors[] = $lang->error_duplicate_order;
+			}
 		}
 
 		if(!$errors)
@@ -155,9 +167,21 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_path;
 		}
 
-		if(!isset($mybb->input['disporder']))
+		$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
+
+		if(!trim($mybb->input['disporder']) || !$mybb->input['disporder'])
 		{
 			$errors[] = $lang->error_missing_order;
+		}
+		else
+		{
+			$query = $db->simple_select('smilies', 'sid', 'disporder=\''.$mybb->input['disporder'].'\'');
+			$duplicate_disporder = (int)$db->fetch_field($query, 'sid');
+
+			if($duplicate_disporder)
+			{
+				$errors[] = $lang->error_duplicate_order;
+			}
 		}
 
 		if(!$errors)
@@ -408,6 +432,9 @@ if($mybb->input['action'] == "add_multiple")
 				admin_redirect("index.php?module=config-smilies&action=add_multiple");
 			}
 
+			$query = $db->simple_select('smilies', 'MAX(disporder) as max_disporder');
+			$disporder = (int)$db->fetch_field($query, 'max_disporder');
+
 			foreach($mybb->input['include'] as $image => $insert)
 			{
 				if($insert)
@@ -416,8 +443,10 @@ if($mybb->input['action'] == "add_multiple")
 						"name" => $db->escape_string($name[$image]),
 						"find" => $db->escape_string($find[$image]),
 						"image" => $db->escape_string($path.$image),
+						"disporder" => ++$disporder,
 						"showclickable" => 1
 					);
+
 					$db->insert_query("smilies", $new_smilie);
 				}
 			}
@@ -482,11 +511,25 @@ if($mybb->input['action'] == "mass_edit")
 
 	if($mybb->request_method == "post")
 	{
+		$disporder_list = array();
+		$query = $db->simple_select('smilies', 'disporder');
+		while($disporder = (int)$db->fetch_field($query, 'disporder'))
+		{
+			$disporder_list[$disporder] = $disporder;
+		}
+
 		foreach($mybb->input['name'] as $sid => $name)
 		{
+			$disporder = (int)$mybb->input['disporder'][$sid];
+
 			$sid = intval($sid);
 			if($mybb->input['delete'][$sid] == 1)
 			{
+				if(isset($disporder_list[$disporder]))
+				{
+					unset($disporder_list[$disporder]);
+				}
+
 				$db->delete_query("smilies", "sid = '{$sid}'", 1);
 			}
 			else
@@ -494,12 +537,18 @@ if($mybb->input['action'] == "mass_edit")
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),
-					"disporder" => intval($mybb->input['disporder'][$sid]),
 					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
 				);
 
+				if(!isset($disporder_list[$disporder]))
+				{
+					$smilie['disporder'] = $disporder;
+				}
+
 				$db->update_query("smilies", $smilie, "sid = '{$sid}'");
 			}
+
+			$disporder_list[$disporder] = $disporder;
 		}
 
 		$cache->update_smilies();
