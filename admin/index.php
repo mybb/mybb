@@ -173,6 +173,13 @@ elseif($mybb->input['do'] == "login")
 	{
 		if(login_attempt_check_acp($mybb->user['uid']) == true)
 		{
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$mybb->user['uid'],
+					'username' => $mybb->user['username'],
+				)
+			);
+
 			$default_page->show_lockedout();
 		}
 
@@ -246,16 +253,16 @@ elseif($mybb->input['do'] == "login")
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 			case 1:
-				$query = $db->simple_select("users", "uid,email", "LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			case 2:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			default:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 		}
 		$login_user = $db->fetch_array($query);
@@ -292,6 +299,13 @@ elseif($mybb->input['do'] == "login")
 				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
 				my_mail($login_user['email'], $subject, $message);
 			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$login_user['uid'],
+					'username' => $login_user['username'],
+				)
+			);
 
 			$default_page->show_lockedout();
 		}
