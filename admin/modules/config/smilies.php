@@ -49,6 +49,14 @@ if($mybb->input['action'] == "add")
 			$mybb->input['find'] = str_replace('\\', '\\\\', $mybb->input['find']);
 			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
 			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
+			$mybb->input['find'] = str_replace("\r\n", "\n", $mybb->input['find']);
+			$mybb->input['find'] = str_replace("\r", "\n", $mybb->input['find']);
+			$mybb->input['find'] = explode("\n", $mybb->input['find']);
+			foreach(array_merge(array_keys($mybb->input['find'], ""), array_keys($mybb->input['find'], " ")) as $key)
+			{
+				unset($mybb->input['find'][$key]);
+			}
+			$mybb->input['find'] = implode("\n", $mybb->input['find']);
 
 			$new_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
@@ -166,9 +174,17 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$mybb->input['find'] = str_replace('\\', '\\\\' $mybb->input['find']);
+			$mybb->input['find'] = str_replace('\\', '\\\\', $mybb->input['find']);
 			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
 			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
+			$mybb->input['find'] = str_replace("\r\n", "\n", $mybb->input['find']);
+			$mybb->input['find'] = str_replace("\r", "\n", $mybb->input['find']);
+			$mybb->input['find'] = explode("\n", $mybb->input['find']);
+			foreach(array_merge(array_keys($mybb->input['find'], ""), array_keys($mybb->input['find'], " ")) as $key)
+			{
+				unset($mybb->input['find'][$key]);
+			}
+			$mybb->input['find'] = implode("\n", $mybb->input['find']);
 
 			$updated_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
@@ -418,9 +434,18 @@ if($mybb->input['action'] == "add_multiple")
 
 			foreach($mybb->input['include'] as $image => $insert)
 			{
-				$find[$image] = str_replace('\\', '\\\\' $find[$image]);
+				$find[$image] = str_replace('\\', '\\\\', $find[$image]);
 				$find[$image] = str_replace('$', '\$', $find[$image]);
 				$find[$image] = str_replace("'", "\'", $find[$image]);
+				$find[$image] = str_replace("\r\n", "\n", $find[$image]);
+				$find[$image] = str_replace("\r", "\n", $find[$image]);
+				$find[$image] = explode("\n", $find[$image]);
+				foreach(array_merge(array_keys($find[$image], ""), array_keys($find[$image], " ")) as $key)
+				{
+					unset($find[$image][$key]);
+				}
+				$find[$image] = implode("\n", $find[$image]);
+
 				if($insert)
 				{
 					$new_smilie = array(
@@ -673,7 +698,7 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = implode(', ', explode("\n", $smilie['find']));
+		$smilie['find'] = str_replace("\n", ", ", $smilie['find']);
 
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));

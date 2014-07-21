@@ -527,9 +527,8 @@ class postParser
 
 				foreach($smilie['find'] as $s)
 				{
-					eval('$this->smilies_cache[\''.$s.'\'] = "'.$templates->get('smilie').'";');
+					eval('$this->smilies_cache[\''.$s.'\'] = "'.$templates->get('smilie', 1, 0).'";');
 				}
-
 			}
 		}
 	}
