@@ -271,4 +271,3 @@ function create_graph($type, $range=null)
 	$graph->render();
 	$graph->output();
 }
-?>

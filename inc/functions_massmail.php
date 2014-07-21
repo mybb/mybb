@@ -219,5 +219,3 @@ function make_pretty_links($message_html)
 	} while(true);
 	return $message_html;
 }
-
-?>

@@ -1489,4 +1489,4 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	output_page($newreply);
 }
-?>
+

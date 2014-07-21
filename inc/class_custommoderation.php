@@ -492,4 +492,3 @@ class CustomModeration extends Moderation
 		return true;
 	}
 }
-?>

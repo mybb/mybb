@@ -704,4 +704,3 @@ $plugins->run_hooks("portal_end");
 
 eval("\$portal = \"".$templates->get("portal")."\";");
 output_page($portal);
-?>

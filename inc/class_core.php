@@ -576,4 +576,3 @@ $fpermfields = array(
 	'cansearch'
 );
 
-?>

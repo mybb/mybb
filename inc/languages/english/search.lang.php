@@ -108,4 +108,3 @@ $l['error_nosearchterms'] = "You did not enter any search terms. At a minimum, y
 $l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
 $l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
-?>

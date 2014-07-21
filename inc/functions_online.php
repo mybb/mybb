@@ -1172,4 +1172,3 @@ function build_wol_row($user)
 	}
 	return $online_row;
 }
-?>

@@ -179,4 +179,3 @@ else
 	}
 	fclose($handle);
 }
-?>

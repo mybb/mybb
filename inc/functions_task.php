@@ -368,4 +368,3 @@ function run_time_exists($data, $bit)
 	}
 	return false;
 }
-?>

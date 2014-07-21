@@ -39,4 +39,3 @@ $l['online_guest_plural'] = "guests";
 $l['online_guest_singular'] = "guest";
 $l['online_note'] = "{1} {2} active in the past {3} minutes ({4} {5}, {6} of whom {7} invisible, and {8} {9}).";
 $l['subforums'] = "<strong>Sub Forums:</strong>";
-?>

@@ -244,4 +244,3 @@ $l['redirect_delayed_moderation_forum'] = "The selected moderation tool has been
 $l['redirect_delayed_moderation_search'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the search.";
 $l['redirect_delayed_moderation_cancelled'] = "The selected delayed moderation action has been canceled.<br />You will now be returned to the delayed moderation page.";
 
-?>

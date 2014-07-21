@@ -419,4 +419,3 @@ else
 	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
 	output_page($manageusers);
 }
-?>

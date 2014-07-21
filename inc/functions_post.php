@@ -922,4 +922,3 @@ function get_post_attachments($id, &$post)
 		}
 	}
 }
-?>

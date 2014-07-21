@@ -603,4 +603,3 @@ EOF;
 		return $backtrace;
 	}
 }
-?>

@@ -1036,4 +1036,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes TEXT NOT NULL
 );";
 
-?>
+

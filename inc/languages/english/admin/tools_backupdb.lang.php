@@ -56,4 +56,3 @@ $l['confirm_backup_deletion'] = "Are you sure you wish to delete this backup?";
 $l['success_backup_deleted'] = "The backup has been deleted successfully.";
 $l['success_backup_created'] = "The backup has been created successfully.";
 
-?>

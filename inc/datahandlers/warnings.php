@@ -756,4 +756,3 @@ class WarningsHandler extends DataHandler
 
 }
 
-?>

@@ -61,4 +61,3 @@ $l['success_mass_edit_updated'] = "The smilies have been updated successfully.";
 
 $l['confirm_smilie_deletion'] = "Are you sure you wish to delete this smilie?";
 
-?>

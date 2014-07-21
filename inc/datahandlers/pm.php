@@ -750,4 +750,3 @@ class PMDataHandler extends DataHandler
 		return $this->return_values;
 	}
 }
-?>

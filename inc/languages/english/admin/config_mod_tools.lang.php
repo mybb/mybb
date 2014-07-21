@@ -129,4 +129,3 @@ $l['error_missing_description'] = "Please enter a short description for this too
 $l['error_no_forums_selected'] = "Please select the forums in which this tool will be available.";
 $l['error_no_groups_selected'] = "Please select the groups to which this tool will be available.";
 $l['error_forum_is_category'] = "You can't pick a category-type forum as a destination forum.";
-?>

@@ -2122,4 +2122,4 @@ function recache_existing_styles()
 
 	return $num_updated;
 }
-?>
+

@@ -535,4 +535,3 @@ $l['moderation_forum_edits_quick'] = "Please note edited posts in this forum mus
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the users.";
 $l['awaiting_message_plural'] = "There is {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
-?>

@@ -1005,4 +1005,3 @@ if(!$mybb->input['action'])
 	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	output_page($reputation);
 }
-?>

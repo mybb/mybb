@@ -1938,4 +1938,3 @@ class PostDataHandler extends DataHandler
 		return $this->return_values;
 	}
 }
-?>

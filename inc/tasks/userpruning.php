@@ -84,4 +84,3 @@ function task_userpruning($task)
 
 	add_task_log($task, $lang->task_userpruning_ran);
 }
-?>

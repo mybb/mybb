@@ -297,4 +297,3 @@ $time_formats = array(
 	3 => "H:i"
 );
 
-?>

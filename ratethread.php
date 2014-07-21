@@ -161,4 +161,3 @@ if(!empty($mybb->input['ajax']))
 }
 
 redirect(get_thread_link($thread['tid']), $lang->redirect_threadrated);
-?>

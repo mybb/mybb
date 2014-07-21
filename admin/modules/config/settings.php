@@ -1650,4 +1650,4 @@ function print_selection_javascript()
 	}
 </script>";
 }
-?>
+

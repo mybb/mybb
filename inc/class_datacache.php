@@ -1306,4 +1306,3 @@ class datacache
 		admin_redirect('index.php?module=home-credits&amp;fetch_new=-2');
 	}
 }
-?>

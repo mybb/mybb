@@ -137,4 +137,3 @@ function rebuild_poll_counters($pid)
 	);
 	$db->update_query("polls", $updatedpoll, "pid='{$poll['pid']}'");
 }
-?>

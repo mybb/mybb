@@ -43,4 +43,4 @@ $l['can_view_php_info'] = "Can view PHP info?";
 $l['can_manage_file_verification'] = "Can manage file verification?";
 $l['can_view_statistics'] = "Can view statistics?";
 
-?>
+

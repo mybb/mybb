@@ -9,4 +9,3 @@ $l['forum'] = "Forum:";
 $l['printable_version'] = "Printable Version";
 $l['pages'] = "Pages:";
 $l['thread'] = "Thread:";
-?>

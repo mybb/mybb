@@ -1632,4 +1632,3 @@ else
 	output_page($search);
 }
 
-?>

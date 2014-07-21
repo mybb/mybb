@@ -23,4 +23,3 @@ $upgrade_detail = array(
 
 /* Nothing to do from 1.2.3 to 1.2.7 */
 
-?>

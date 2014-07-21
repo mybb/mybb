@@ -1129,4 +1129,3 @@ if($mybb->input['action'] == "do_undovote")
 	redirect(get_thread_link($poll['tid']), $lang->redirect_unvoted);
 }
 
-?>

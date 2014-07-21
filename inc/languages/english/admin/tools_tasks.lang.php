@@ -74,4 +74,3 @@ $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled ta
 $l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via cron (Please see the <a href=\"http://docs.mybb.com/Help-Task_System.html\" target=\"_blank\">MyBB Docs</a> for more information). Continue?";
 $l['no_tasks'] = "There are no tasks on your forum at this time.";
 
-?>

@@ -527,4 +527,3 @@ LEGEND;
 	$page->output_footer();
 }
 
-?>

@@ -625,4 +625,4 @@ $lang->load("{$run_module}_{$page->active_action}", false, true);
 $plugins->run_hooks("admin_load");
 
 require $modules_dir."/".$run_module."/".$action_file;
-?>
+

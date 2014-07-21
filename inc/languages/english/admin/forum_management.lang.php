@@ -274,4 +274,3 @@ $l['polls_field_canvotepolls'] = "Can vote in polls?";
 
 $l['misc_field_cansearch'] = "Can search forum?";
 
-?>

@@ -13,4 +13,3 @@ $l['templates'] = "Templates";
 $l['can_manage_themes'] = "Can manage themes?";
 $l['can_manage_templates'] = "Can manage templates?";
 
-?>

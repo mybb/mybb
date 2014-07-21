@@ -1161,4 +1161,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	PRIMARY KEY (wid)
 ) ENGINE=MyISAM;";
 
-?>
+

@@ -943,4 +943,3 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 	$table->construct_cell($date, array("class" => "align_center"));
 	$table->construct_row();
 }
-?>

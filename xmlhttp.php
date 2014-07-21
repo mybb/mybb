@@ -971,4 +971,3 @@ function xmlhttp_error($message)
 	exit;
 }
 
-?>

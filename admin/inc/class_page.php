@@ -1150,4 +1150,3 @@ class DefaultPopupMenu
 		echo $this->fetch();
 	}
 }
-?>

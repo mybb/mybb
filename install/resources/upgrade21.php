@@ -102,4 +102,3 @@ function upgrade21_dbchanges()
 	$output->print_footer("21_done");
 }
 
-?>

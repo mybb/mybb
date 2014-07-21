@@ -555,4 +555,3 @@ class session
 		return $array;
 	}
 }
-?>

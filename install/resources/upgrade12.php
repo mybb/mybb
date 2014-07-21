@@ -1990,4 +1990,3 @@ function upgrade12_redothemes()
 
 	$output->print_footer("12_done");
 }
-?>

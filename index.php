@@ -388,4 +388,3 @@ $plugins->run_hooks('index_end');
 
 eval('$index = "'.$templates->get('index').'";');
 output_page($index);
-?>

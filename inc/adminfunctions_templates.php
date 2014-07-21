@@ -105,4 +105,3 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 
 	return $return;
 }
-?>

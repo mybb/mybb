@@ -22,4 +22,3 @@ $l['use_codemirror_desc'] = "This preference allows you to turn off Code Mirror 
 
 $l['success_preferences_updated'] = "The preferences have been successfully updated.";
 
-?>

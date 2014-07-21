@@ -2918,4 +2918,4 @@ if(!$mybb->input['action'])
 {
 	header("Location: index.php");
 }
-?>
+

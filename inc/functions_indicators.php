@@ -324,4 +324,3 @@ function mark_all_forums_read()
 		my_unsetcookie("mybb[forumread]");
 	}
 }
-?>

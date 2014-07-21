@@ -824,4 +824,3 @@ function upgrade3_dbchanges3()
 	$output->print_contents($contents);
 	$output->print_footer("3_done");
 }
-?>

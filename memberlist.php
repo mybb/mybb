@@ -424,4 +424,3 @@ else
 	eval("\$memberlist = \"".$templates->get("memberlist")."\";");
 	output_page($memberlist);
 }
-?>

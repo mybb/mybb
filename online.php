@@ -272,4 +272,3 @@ else
 	eval("\$online = \"".$templates->get("online")."\";");
 	output_page($online);
 }
-?>

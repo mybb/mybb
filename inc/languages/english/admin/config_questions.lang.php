@@ -37,4 +37,3 @@ $l['success_question_deleted'] = "The question has been deleted successfully.";
 
 $l['confirm_question_deletion'] = "Are you sure you wish to delete this question?";
 
-?>

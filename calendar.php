@@ -2485,4 +2485,3 @@ if(!$mybb->input['action'])
 	eval("\$calendar = \"".$templates->get("calendar")."\";");
 	output_page($calendar);
 }
-?>

@@ -2929,4 +2929,3 @@ function retrieve_single_permissions_row($gid, $fid)
 	return $form_container->output_row_cells(0, true);
 }
 
-?>

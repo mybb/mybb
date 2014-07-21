@@ -119,4 +119,4 @@ function tools_admin_permissions()
 
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
-?>
+

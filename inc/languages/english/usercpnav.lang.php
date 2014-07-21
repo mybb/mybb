@@ -31,4 +31,3 @@ $l['ucp_nav_view_profile'] = "View Profile";
 $l['ucp_nav_home'] = "User CP Home";
 $l['ucp_nav_usergroups'] = "Group Memberships";
 $l['ucp_nav_attachments'] = "Manage Attachments";
-?>

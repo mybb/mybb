@@ -44,4 +44,3 @@ $l['success_perms_deleted'] = 'The admin user/usergroup permissions has been rev
 $l['confirm_perms_deletion'] = "Are you sure you wish to revoked this admin user/usergroup permissions?";
 $l['confirm_perms_deletion2'] = "Are you sure you wish to revoke this user\'s permissions?";
 
-?>

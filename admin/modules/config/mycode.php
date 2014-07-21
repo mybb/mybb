@@ -435,4 +435,3 @@ function test_regex($regex, $replacement, $test)
 	$array['html'] = htmlspecialchars_uni($array['actual']);
 	return $array;
 }
-?>

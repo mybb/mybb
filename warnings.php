@@ -831,4 +831,3 @@ if(!$mybb->input['action'])
 	output_page($warnings);
 }
 
-?>

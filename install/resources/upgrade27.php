@@ -22,4 +22,3 @@ $upgrade_detail = array(
 
 
 /* Nothing to do for 1.6.10 */
-?>

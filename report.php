@@ -258,4 +258,3 @@ if(!$mybb->input['action'])
 	echo $report;
 	exit;
 }
-?>

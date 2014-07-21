@@ -42,4 +42,3 @@ $l['online'] = "Online";
 $l['offline'] = "Offline";
 $l['edited_post'] = "Edited Post";
 $l['usergroup'] = "Usergroup";
-?>

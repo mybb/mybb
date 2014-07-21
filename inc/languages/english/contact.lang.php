@@ -25,4 +25,4 @@ $l['message_too_long'] = 'The message is too long. Please enter a message shorte
 
 $l['error_stop_forum_spam_spammer'] = 'Sorry, your email or IP address matches that of a known spammer and therefore your contact submission has been blocked.';
 $l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your message against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
-?>
+

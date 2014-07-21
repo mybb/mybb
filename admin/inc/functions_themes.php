@@ -1529,4 +1529,3 @@ function upgrade_css_120_to_140($css)
 
 	return $css;
 }
-?>

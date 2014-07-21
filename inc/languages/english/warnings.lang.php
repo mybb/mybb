@@ -85,4 +85,3 @@ $l['expires'] = "Expires:";
 $l['new_warning_level'] = "New warning level:";
 $l['error_cant_warn_user'] = "You do not have permission to warn this user.";
 $l['existing_post_warnings'] = "Existing Warnings for this Post";
-?>

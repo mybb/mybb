@@ -1561,4 +1561,3 @@ class UserDataHandler extends DataHandler
 		return $this->return_values;
 	}
 }
-?>

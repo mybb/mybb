@@ -104,4 +104,3 @@ class xcacheCacheHandler
 		return $lang->na;
 	}
 }
-?>

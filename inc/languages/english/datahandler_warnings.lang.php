@@ -15,4 +15,3 @@ $l['warnings_error_invalid_type'] = "You have selected an invalid warning type."
 $l['warnings_error_cant_custom_warn'] = "You do not have permission to give custom warnings to users.";
 $l['warnings_error_no_custom_reason'] = "You did not enter a reason for your custom warning.";
 $l['warnings_error_invalid_custom_points'] = "You did not enter a valid number of points to add to this users warning level. You need to enter a numeric value greater than 0 but not greater than {1}.";
-?>

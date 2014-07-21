@@ -1466,4 +1466,3 @@ $foruminfo['name'] = strip_tags($foruminfo['name']);
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
 output_page($forums);
-?>

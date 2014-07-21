@@ -572,4 +572,4 @@ function get_admin_log_action($logitem)
 	return $string;
 }
 
-?>
+

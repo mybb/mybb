@@ -1131,4 +1131,4 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);
 }
-?>
+

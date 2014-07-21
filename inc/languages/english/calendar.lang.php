@@ -141,4 +141,3 @@ $l['redirect_eventadded_moderation'] = "Your event has been added successfully b
 $l['redirect_eventunapproved'] = "The event has been unapproved successfully.<br />You will now be taken to it.";
 $l['redirect_eventapproved'] = "The event has been approved successfully.<br />You will now be taken to it.";
 $l['redirect_eventmoved'] = "The event has been successfully been moved.<br />You will now be returned to it.";
-?>

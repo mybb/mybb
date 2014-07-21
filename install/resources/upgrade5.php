@@ -618,4 +618,3 @@ function upgrade5_indexes()
 	$output->print_contents($contents);
 	$output->print_footer("5_done");
 }
-?>

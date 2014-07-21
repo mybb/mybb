@@ -307,4 +307,3 @@ class LoginDataHandler extends DataHandler
 		return true;
 	}
 }
-?>

@@ -364,4 +364,3 @@ $l['no_permision'] = "You do not have permissions to run this process. You need 
 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 
-?>

@@ -124,4 +124,3 @@ $plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
 output_page($forumannouncement);
-?>

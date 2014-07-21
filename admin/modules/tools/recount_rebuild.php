@@ -714,4 +714,3 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-?>

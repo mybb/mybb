@@ -1707,4 +1707,3 @@ class postParser
 		return $message;
 	}
 }
-?>

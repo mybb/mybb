@@ -1528,4 +1528,3 @@ class DB_MySQL
 	}
 }
 
-?>

@@ -282,4 +282,3 @@ function update_report($report)
 	$db->update_query("reportedcontent", $update_array, "rid = '{$report['rid']}'");
 	return true;
 }
-?>

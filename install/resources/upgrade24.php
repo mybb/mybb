@@ -21,4 +21,3 @@ $upgrade_detail = array(
 @set_time_limit(0);
 
 /* Nothing to do for 1.6.7 */
-?>

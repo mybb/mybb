@@ -256,4 +256,3 @@ function task_delayedmoderation($task)
 
 	add_task_log($task, $lang->task_delayedmoderation_ran);
 }
-?>

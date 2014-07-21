@@ -235,4 +235,3 @@ function upgrade13_dbchanges2()
 	$output->print_footer($nextact);
 }
 
-?>

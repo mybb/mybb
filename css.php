@@ -38,4 +38,3 @@ if($stylesheet)
 	echo $stylesheet;
 }
 exit;
-?>

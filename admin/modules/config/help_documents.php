@@ -622,4 +622,3 @@ if(!$mybb->input['action'])
 	$table->output($lang->help_documents);
 	$page->output_footer();
 }
-?>

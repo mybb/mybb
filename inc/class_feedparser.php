@@ -238,4 +238,3 @@ class FeedParser
 		return $stamp;
 	}
 }
-?>

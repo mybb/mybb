@@ -666,4 +666,3 @@ function fetch_default_view($type)
 	}
 	return $default_views[$type];
 }
-?>

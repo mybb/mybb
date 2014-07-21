@@ -756,4 +756,3 @@ function delete_user_posts($uid, $date)
 		}
 	}
 }
-?>

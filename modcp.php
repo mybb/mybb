@@ -4681,4 +4681,3 @@ if(!$mybb->input['action'])
 	eval("\$modcp = \"".$templates->get("modcp")."\";");
 	output_page($modcp);
 }
-?>

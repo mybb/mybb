@@ -255,4 +255,3 @@ function scale_image($width, $height, $maxwidth, $maxheight)
 	$ret['height'] = $newheight;
 	return $ret;
 }
-?>

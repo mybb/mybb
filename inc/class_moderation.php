@@ -3634,4 +3634,3 @@ class Moderation
 		return true;
 	}
 }
-?>

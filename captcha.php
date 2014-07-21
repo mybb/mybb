@@ -310,4 +310,3 @@ function draw_string(&$im, $string)
 	}
 }
 
-?>

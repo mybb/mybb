@@ -1539,4 +1539,3 @@ class DB_PgSQL
 	}
 }
 
-?>

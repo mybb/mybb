@@ -945,4 +945,3 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 	}
 }
 
-?>

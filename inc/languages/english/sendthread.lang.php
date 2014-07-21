@@ -18,4 +18,3 @@ $l['verification_note'] = "Please enter the text contained within the image into
 $l['error_nosubject'] = "You are required to enter a subject for the message to send your thread";
 $l['error_nomessage'] = "You are required to enter a message before you can send this thread to your friend";
 
-?>

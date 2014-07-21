@@ -3455,4 +3455,3 @@ function moderation_redirect($url, $message="", $title="")
 	}
 	redirect($url, $message, $title);
 }
-?>

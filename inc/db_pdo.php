@@ -237,4 +237,3 @@ class dbpdoEngine {
 	}
 }
 
-?>

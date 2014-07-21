@@ -633,4 +633,3 @@ class EventDataHandler extends DataHandler
 	}
 }
 
-?>

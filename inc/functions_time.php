@@ -876,4 +876,3 @@ global $ADODB_DATE_LOCALE;
 	return $ret;
 }
 
-?>

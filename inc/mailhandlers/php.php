@@ -71,4 +71,3 @@ class PhpMail extends MailHandler
 		return true;
 	}
 }
-?>

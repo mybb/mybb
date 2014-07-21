@@ -408,4 +408,3 @@ class MailHandler
 		return $string;
 	}
 }
-?>

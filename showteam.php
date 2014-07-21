@@ -202,4 +202,3 @@ $plugins->run_hooks("showteam_end");
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");
 output_page($showteam);
-?>

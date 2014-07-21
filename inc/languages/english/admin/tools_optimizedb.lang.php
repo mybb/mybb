@@ -18,4 +18,3 @@ $l['error_no_tables_selected'] = "You did not select any database tables to opti
 
 $l['success_tables_optimized'] = "The selected tables have been optimized and analyzed successfully.";
 
-?>

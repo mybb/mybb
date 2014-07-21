@@ -977,4 +977,3 @@ if($colcookie)
 $plugins->run_hooks('global_end');
 
 $globaltime = $maintimer->getTime();
-?>

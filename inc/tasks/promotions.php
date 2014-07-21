@@ -250,4 +250,3 @@ function task_promotions($task)
 
 	add_task_log($task, $lang->task_promotions_ran);
 }
-?>

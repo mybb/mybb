@@ -49,4 +49,3 @@ $l['date_revoked'] = "Date Revoked:";
 $l['error_already_revoked'] = "This warning has already been revoked.";
 $l['error_no_revoke_reason'] = "You did not enter a reason as to why you want to revoke this warning.";
 $l['redirect_warning_revoked'] = "This warning has been revoked and the users warning points decreased successfully.";
-?>

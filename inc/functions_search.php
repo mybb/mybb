@@ -1732,4 +1732,3 @@ function perform_search_mysql_ft($search)
 		"querycache" => ''
 	);
 }
-?>

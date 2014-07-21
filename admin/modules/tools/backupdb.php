@@ -471,4 +471,3 @@ if(!$mybb->input['action'])
 	$table->output($lang->existing_database_backups);
 	$page->output_footer();
 }
-?>

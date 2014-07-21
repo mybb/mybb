@@ -118,4 +118,3 @@ function fetch_time_length($time, $period)
 	}
 	return $time;
 }
-?>

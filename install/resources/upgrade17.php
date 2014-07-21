@@ -959,4 +959,3 @@ function upgrade_css_140_to_160($name, $css)
 	return $css;
 }
 
-?>

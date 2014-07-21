@@ -565,4 +565,3 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 $page->output_header($lang->moderation_queue);
 echo "<p class=\"notice\">{$lang->error_no_threads}</p>";
 $page->output_footer();
-?>

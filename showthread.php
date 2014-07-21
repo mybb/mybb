@@ -1533,4 +1533,3 @@ function buildtree($replyto="0", $indent="0")
 	}
 	return $posts;
 }
-?>

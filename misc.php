@@ -1025,4 +1025,3 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 
 	return $forumlist;
 }
-?>

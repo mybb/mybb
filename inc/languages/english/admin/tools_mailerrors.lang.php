@@ -29,4 +29,3 @@ $l['to_address_contains'] = "To Address contains";
 $l['from_address_contains'] = "From Address contains";
 $l['find_emails_to_addr'] = "Find all emails sent to this address";
 
-?>

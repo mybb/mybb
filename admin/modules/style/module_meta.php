@@ -66,4 +66,3 @@ function style_admin_permissions()
 
 	return array("name" => $lang->templates_and_style, "permissions" => $admin_permissions, "disporder" => 40);
 }
-?>

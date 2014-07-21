@@ -304,4 +304,3 @@ if(!$mybb->input['action'])
 	$table->output($lang->spiders_bots);
 	$page->output_footer();
 }
-?>

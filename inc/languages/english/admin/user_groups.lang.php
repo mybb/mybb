@@ -217,4 +217,3 @@ $l['success_group_leader_deleted'] = "The selected user has been removed from th
 $l['confirm_group_deletion'] = "Are you sure you want to delete this user group?";
 $l['confirm_group_leader_deletion'] = "Are you sure you want to delete this group leader?";
 
-?>

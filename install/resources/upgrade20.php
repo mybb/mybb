@@ -49,4 +49,3 @@ function upgrade20_dbchanges()
 	$output->print_footer("20_done");
 }
 
-?>

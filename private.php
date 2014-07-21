@@ -2463,4 +2463,3 @@ if(!$mybb->input['action'])
 	eval("\$folder = \"".$templates->get("private")."\";");
 	output_page($folder);
 }
-?>

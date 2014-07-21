@@ -85,4 +85,3 @@ function task_checktables($task)
 		add_task_log($task, $lang->task_checktables_ran);
 	}
 }
-?>

@@ -1514,4 +1514,3 @@ class DB_MySQLi
 	}
 }
 
-?>

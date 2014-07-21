@@ -211,4 +211,3 @@ if($mybb->usergroup['canview'] == 0)
 {
 	archive_error_no_permission();
 }
-?>

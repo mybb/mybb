@@ -249,4 +249,3 @@ function printthread_multipage($count, $perpage, $current_page, $url)
 	return $multipage;
 }
 
-?>

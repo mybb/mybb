@@ -54,4 +54,4 @@ $l['error_suspendedposting'] = "Your posting privileges are currently suspended 
 Suspension Date: {2}";
 $l['error_suspendedposting_temporal'] = "until {1}";
 $l['error_suspendedposting_permanent'] = "permanently";
-?>
+

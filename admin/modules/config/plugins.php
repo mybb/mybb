@@ -684,4 +684,3 @@ function build_plugin_list($plugin_list)
 		$table->construct_row();
 	}
 }
-?>

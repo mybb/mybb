@@ -274,4 +274,4 @@ $plugins->run_hooks('contact_end');
 
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);
-?>
+

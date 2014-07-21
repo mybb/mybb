@@ -769,4 +769,3 @@ function upload_file($file, $path, $filename="")
 
 	return $upload;
 }
-?>

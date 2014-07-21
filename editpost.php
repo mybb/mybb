@@ -916,4 +916,3 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	eval("\$editpost = \"".$templates->get("editpost")."\";");
 	output_page($editpost);
 }
-?>

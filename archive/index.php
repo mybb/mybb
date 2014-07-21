@@ -509,4 +509,3 @@ function build_archive_forumbits($pid=0)
 	}
 	return $forums;
 }
-?>

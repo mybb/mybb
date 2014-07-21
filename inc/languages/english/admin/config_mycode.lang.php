@@ -56,4 +56,3 @@ $l['confirm_mycode_deletion'] = "Are you sure you wish to delete this MyCode?";
 
 $l['mycode_sandbox_test_error'] = 'There was an error fetching the test results.';
 
-?>

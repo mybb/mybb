@@ -1005,4 +1005,3 @@ class DefaultFormContainer
 	}
 }
 
-?>
