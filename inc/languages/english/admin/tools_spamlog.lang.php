@@ -21,3 +21,11 @@ $l['all_usernames'] = 'All usernames';
 $l['all_emails'] = ' All Email Addresses';
 $l['date_range'] = "Date range:";
 $l['days'] = "days";
+$l['filter_spam_logs'] = 'Filter Spam Logs';
+$l['asc'] = "Ascending";
+$l['desc'] = "Descending";
+
+$l['in'] = "in";
+$l['order'] = "order";
+$l['sort_by'] = "Sort By";
+$l['results_per_page'] = "Results Per Page";
