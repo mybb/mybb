@@ -109,7 +109,7 @@ function tools_admin_permissions()
 		"maillogs" => $lang->can_manage_user_mail_log,
 		"mailerrors" => $lang->can_manage_system_mail_log,
 		"warninglog" => $lang->can_manage_user_warning_log,
-		"spamlog" => $lang->can_manage_user_spam_log,
+		"spamlog" => $lang->can_manage_spam_log,
 		"php_info" => $lang->can_view_php_info,
 		"file_verification" => $lang->can_manage_file_verification,
 		"statistics" => $lang->can_view_statistics,
