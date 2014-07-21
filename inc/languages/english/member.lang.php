@@ -241,4 +241,13 @@ $l['add_to_buddy_list'] = "Add to Buddy List";
 $l['remove_from_ignore_list'] = "Remove from Ignore List";
 $l['add_to_ignore_list'] = "Add to Ignore List";
 $l['report_user'] = "Report User";
-?>
+
+$l['newregistration_subject'] = "New registration at {1}";
+$l['newregistration_message'] = "{1},
+
+There is a new user at {2} who is pending admin activation.
+
+Username: {3}
+
+Thank you,
+{2} Staff";
