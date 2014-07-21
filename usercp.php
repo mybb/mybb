@@ -2068,9 +2068,9 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	else // remote avatar
 	{
 		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
-        if(validate_email_format($mybb->input['avatarurl']) != false)
+        	if(validate_email_format($mybb->input['avatarurl']) != false)
         {
-            $mybb->input['avatarurl'] = my_strtolower($mybb->input['avatarurl']);
+            	$mybb->input['avatarurl'] = my_strtolower($mybb->input['avatarurl']);
 			// Gravatar
 			// If user image does not exist, or is a higher rating, use the mystery man
 			$email = md5($mybb->input['avatarurl']);
