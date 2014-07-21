@@ -2119,25 +2119,13 @@ tr td.trow_shaded:last-child {
 	border-bottom: 0px none;
 }
 
-.tborder tbody tr:last-child td:first-child {
+.last_tr-first_td {
 	-moz-border-radius-bottomleft: 6px;
 	-webkit-border-bottom-left-radius: 6px;
 	border-bottom-left-radius: 6px;
 }
 
-.tborder tbody tr:last-child td:first-child {
-	-moz-border-radius-bottomright: 6px;
-	-webkit-border-bottom-right-radius: 6px;
-	border-bottom-right-radius: 6px;
-}
-
-.tborder tbody tr:last-child td:last-child {
-	-moz-border-radius-bottomleft: 6px;
-	-webkit-border-bottom-left-radius: 6px;
-	border-bottom-left-radius: 6px;
-}
-
-.tborder tbody tr:last-child td:last-child {
+.last_tr-last_td {
 	-moz-border-radius-bottomright: 6px;
 	-webkit-border-bottom-right-radius: 6px;
 	border-bottom-right-radius: 6px;
