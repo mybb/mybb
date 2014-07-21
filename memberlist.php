@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'memberlist.php');
 
 $templatelist = "memberlist,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar,memberlist_user_userstar";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,memberlist_referrals,memberlist_referrals_bit,memberlist_error";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,memberlist_referrals,memberlist_referrals_bit,memberlist_error,memberlist_orderarrow";
 
 require_once "./global.php";
 
@@ -45,13 +45,6 @@ else
 {
 	$colspan = 6;
 	$search_url = '';
-
-	// Referral?
-	if($mybb->settings['usereferrals'] == 1)
-	{
-		$colspan = 7;
-		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
-	}
 
 	// Incoming sort field?
 	if(isset($mybb->input['sort']))
@@ -113,11 +106,17 @@ else
 	if($mybb->input['order'] == "ascending" || (!$mybb->input['order'] && $mybb->input['sort'] == 'username'))
 	{
 		$sort_order = "ASC";
+		$sortordernow = "ascending";
+		$oppsort = $lang->desc;
+		$oppsortnext = "descending";
 		$mybb->input['order'] = "ascending";
 	}
 	else
 	{
 		$sort_order = "DESC";
+		$sortordernow = "descending";
+		$oppsort = $lang->asc;
+		$oppsortnext = "ascending";
 		$mybb->input['order'] = "descending";
 	}
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
@@ -138,7 +137,7 @@ else
 	}
 
 	$search_query = '1=1';
-	$search_url = "memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}";
+	$search_url = "";
 
 	// Limiting results to a certain letter
 	if(isset($mybb->input['letter']))
@@ -245,6 +244,9 @@ else
 
 		$search_query .= " AND u.usergroup NOT IN ($hiddengroup)";
 	}
+  
+	$sorturl = htmlspecialchars_uni("memberlist.php?perpage={$mybb->input['perpage']}{$search_url}");
+	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$search_url}");
 
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
@@ -259,7 +261,17 @@ else
 		$start = 0;
 		$page = 1;
 	}
-	$search_url = htmlspecialchars_uni($search_url);
+
+	$sort = htmlspecialchars_uni($mybb->input['sort']);
+	eval("\$orderarrow['{$sort}'] = \"".$templates->get("memberlist_orderarrow")."\";");
+
+	// Referral?
+	if($mybb->settings['usereferrals'] == 1)
+	{
+		$colspan = 7;
+		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
+	}
+
 	$multipage = multipage($num_users, $per_page, $page, $search_url);
 
 	// Cache a few things

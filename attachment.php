@@ -28,8 +28,6 @@ else
 	$aid = $mybb->get_input('aid', 1);
 }
 
-$plugins->run_hooks("attachment_start");
-
 $pid = $mybb->get_input('pid', 1);
 
 // Select attachment data from database
@@ -42,6 +40,9 @@ else
 	$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 }
 $attachment = $db->fetch_array($query);
+
+$plugins->run_hooks("attachment_start");
+
 if(!$attachment)
 {
 	error($lang->error_invalidattachment);

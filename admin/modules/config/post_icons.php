@@ -464,13 +464,13 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("icons", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'name'));
 	while($icon = $db->fetch_array($query))
 	{
+		$icon['path'] = str_replace("{theme}", "images", $icon['path']);
 		if(my_strpos($icon['path'], "p://") || substr($icon['path'], 0, 1) == "/")
 		{
 			$image = $icon['path'];
 		}
 		else
 		{
-			$icon['path'] = str_replace("{theme}", "images", $icon['path']);
 			$image = "../".$icon['path'];
 		}
 

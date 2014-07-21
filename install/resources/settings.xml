@@ -1595,10 +1595,18 @@ descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
+		<setting name="allowanonwarningpms">
+			<title>Allow Anonymous Warning PMs</title>
+			<description><![CDATA[Whether or not if to allow moderators to send anonymous warning PMs.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
 		<setting name="maxwarningpoints">
 			<title>Maximum Warning Points</title>
 			<description><![CDATA[The maximum warning points that can be given to a user before it is considered a warning level of 100%.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>

@@ -13,7 +13,7 @@ define('THIS_SCRIPT', 'warnings.php');
 
 $templatelist = "warnings,warnings_warn_post,warnings_active_header,warnings_expired_header,warnings_warning,warnings_warn_existing,warnings_warn_type,warnings_warn_custom,warnings_warn_pm";
 $templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,warnings_view_revoked,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,smilieinsert,warnings_warn_type_result";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view,warnings_warn_pm_anonymous";
 
 require_once "./global.php";
 require_once MYBB_ROOT."/inc/functions_warnings.php";
@@ -92,10 +92,12 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		}
 	}
 
-	$warningshandler->set_data($warning)
+	$warningshandler->set_data($warning);
 
 	if($warningshandler->validate_warning())
 	{
+		$warninginfo = $warningshandler->insert_warning();
+
 		// Are we notifying the user?
 		if($mybb->get_input('send_pm', 1) == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 		{
@@ -106,11 +108,18 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				'touid' => $user['uid']
 			);
 
-			// No friendly errors whatsoever
-			send_pm($pm, $mybb->user['uid'], 1)
-		}
+			$sender_uid = $mybb->user['uid'];
+			if($mybb->settings['allowanonwarningpms'] == 1 && $mybb->get_input('pm_anonymous', 1))
+			{
+				$sender_uid = -1;
+			}
 
-		$warninginfo = $warningshandler->insert_warning();
+			// Some kind of friendly error notification
+			if(!send_pm($pm, $sender_uid, true))
+			{
+				$warningshandler->friendly_action .= $lang->redirect_warned_pmerror;
+			}
+		}
 	
 		$plugins->run_hooks("warnings_do_warn_end");
 
@@ -187,19 +196,23 @@ if($mybb->input['action'] == "warn")
 	if($mybb->get_input('pid', 1))
 	{
 		$post = get_post($mybb->get_input('pid', 1));
+
 		if($post)
 		{
 			$thread = get_thread($post['tid']);
 		}
+
 		if(!$post || !$thread)
 		{
 			error($lang->error_invalid_post);
 		}
+
 		$forum_permissions = forum_permissions($thread['fid']);
 		if($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
+
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post_link = get_post_link($post['pid']);
@@ -417,7 +430,7 @@ if($mybb->input['action'] == "warn")
 
 	if($mybb->settings['allowcustomwarnings'] != 0)
 	{
-		if(empty($types) && empty($warn_errors))
+		if(empty($types) && empty($warn_errors) || $mybb->get_input('type') == 'custom')
 		{
 			$type_checked['custom'] = "checked=\"checked\"";
 		}
@@ -439,6 +452,19 @@ if($mybb->input['action'] == "warn")
 				$smilieinserter = build_clickable_smilies();
 			}
 		}
+
+		$anonymous_pm = '';
+		if($mybb->settings['allowanonwarningpms'] == 1)
+		{
+			$checked = '';
+			if($mybb->get_input('pm_anonymous', 1))
+			{
+				$checked = ' checked="checked"';
+			}
+
+			eval('$anonymous_pm = "'.$templates->get('warnings_warn_pm_anonymous').'";');
+		}
+
 		eval("\$pm_notify = \"".$templates->get("warnings_warn_pm")."\";");
 	}
 
@@ -460,8 +486,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
-	$query = $db->simple_select("warnings", "*", "wid='".intval($mybb->input['wid'])."'");
-	$warning = $db->fetch_array($query);
+	$warning = $warningshandler->get($mybb->input['wid']);
 
 	if(!$warning)
 	{
@@ -490,124 +515,17 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	}
 	else
 	{
-		// Warning is still active, lower users point count
-		if($warning['expired'] != 1)
-		{
-			$new_warning_points = $user['warningpoints']-$warning['points'];
-			if($new_warning_points < 0)
-			{
-				$new_warning_points = 0;
-			}
-
-			$updated_user = array(
-				"warningpoints" => $new_warning_points
-			);
-
-
-			// check if we need to revoke any consequences with this warning
-			$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
-			$new_warning_level = round($new_warning_points/$mybb->settings['maxwarningpoints']*100);
-			$query = $db->simple_select("warninglevels", "action", "percentage>$new_warning_level AND percentage<=$current_level");
-			if($db->num_rows($query))
-			{
-				// we have some warning levels we need to revoke
-				$max_expiration_times = $check_levels = array();
-				find_warnlevels_to_check($query, $max_expiration_times, $check_levels);
-
-				// now check warning levels already applied to this user to see if we need to lower any expiration times
-				$query = $db->simple_select("warninglevels", "action", "percentage<=$new_warning_level");
-				$lower_expiration_times = $lower_levels = array();
-				find_warnlevels_to_check($query, $lower_expiration_times, $lower_levels);
-
-				// now that we've got all the info, do necessary stuff
-				for($i = 1; $i <= 3; ++$i)
-				{
-					if($check_levels[$i])
-					{
-						switch($i)
-						{
-							case 1: // Ban
-								// we'll have to resort to letting the admin/mod remove the ban manually, since there's an issue if stacked bans are in force...
-								continue;
-							case 2: // Revoke posting
-								$current_expiry_field = 'suspensiontime';
-								$current_inforce_field = 'suspendposting';
-								break;
-							case 3:
-								$current_expiry_field = 'moderationtime';
-								$current_inforce_field = 'moderateposts';
-								break;
-						}
-
-						// if the thing isn't in force, don't bother with trying to update anything
-						if(!$user[$current_inforce_field])
-						{
-							continue;
-						}
-
-						if($lower_levels[$i])
-						{
-							// lessen the expiration time if necessary
-
-							if(!$lower_expiration_times[$i])
-							{
-								// doesn't expire - enforce this
-								$updated_user[$current_expiry_field] = 0;
-								continue;
-							}
-
-							if($max_expiration_times[$i])
-							{
-								// if the old level did have an expiry time...
-								if($max_expiration_times[$i] <= $lower_expiration_times[$i])
-								{
-									// if the lower expiration time is actually higher than the upper expiration time -> skip
-									continue;
-								}
-								// both new and old max expiry times aren't infinite, so we can take a difference
-								$expire_offset = ($lower_expiration_times[$i] - $max_expiration_times[$i]);
-							}
-							else
-							{
-								// the old level never expired, not much we can do but try to estimate a new expiry time... which will just happen to be starting from today...
-								$expire_offset = TIME_NOW + $lower_expiration_times[$i];
-								// if the user's expiry time is already less than what we're going to set it to, skip
-								if($user[$current_expiry_field] <= $expire_offset)
-								{
-									continue;
-								}
-							}
-
-							$updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
-							// double-check if it's expired already
-							if($updated_user[$current_expiry_field] < TIME_NOW)
-							{
-								$updated_user[$current_expiry_field] = 0;
-								$updated_user[$current_inforce_field] = 0;
-							}
-						}
-						else
-						{
-							// there's no lower level for this type - remove the consequence entirely
-							$updated_user[$current_expiry_field] = 0;
-							$updated_user[$current_inforce_field] = 0;
-						}
-					}
-				}
-			}
-
-			// Update user
-			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
-		}
-
-		// Update warning
-		$updated_warning = array(
-			"expired" => 1,
-			"daterevoked" => TIME_NOW,
-			"revokedby" => $mybb->user['uid'],
-			"revokereason" => $db->escape_string($mybb->get_input('reason'))
+		$warning_data = array(
+			'wid' => $warning['wid'],
+			'reason' => $mybb->get_input('reason'),
+			'expired' => $warning['expired'],
+			'uid' => $warning['uid'],
+			'points' => $warning['points']
 		);
-		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
+
+		$warningshandler->set_data($warning_data);
+
+		$warningshandler->update_warning();
 
 		redirect("warnings.php?action=view&wid={$warning['wid']}", $lang->redirect_warning_revoked);
 	}
@@ -764,6 +682,7 @@ if(!$mybb->input['action'])
 	{
 		error($lang->error_invalid_user);
 	}
+
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
 	{

@@ -214,10 +214,10 @@ if($mybb->request_method == "post")
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);
 		$message = $lang->sprintf($lang->email_contact, $user, $session->ipaddress, $mybb->input['message']);
 
-		$plugins->run_hooks('contact_do_end');
-
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
+
+		$plugins->run_hooks('contact_do_end');
 
 		if($mybb->settings['mail_logging'] > 0)
 		{

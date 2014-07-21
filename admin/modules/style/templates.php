@@ -116,6 +116,8 @@ if($mybb->input['action'] == "add_set")
 		{
 			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])));
 
+			$plugins->run_hooks("admin_style_templates_add_set_commit");
+
 			// Log admin action
 			log_admin_action($sid, $mybb->input['title']);
 
@@ -425,6 +427,8 @@ if($mybb->input['action'] == "edit_set")
 		{
 			$query = $db->update_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])), "sid='{$sid}'");
 
+			$plugins->run_hooks("admin_style_templates_edit_set_commit");
+
 			// Log admin action
 			log_admin_action($sid, $set['title']);
 
@@ -519,9 +523,11 @@ if($mybb->input['action'] == "edit_template")
 			$query = $db->simple_select("templates", "tid", "title='".$db->escape_string($template['title'])."' AND (sid = '-2' OR sid = '{$template['sid']}')", array('order_by' => 'sid', 'order_dir' => 'desc', 'limit' => 1));
 			$template['tid'] = $db->fetch_field($query, "tid");
 
+			$plugins->run_hooks("admin_style_templates_edit_template_commit_start");
+
 			if($sid > 0)
 			{
-				// Check to see if it's never been edited before (i.e. master) of if this a new template (i.e. we've renamed it)  or if it's a custom template
+				// Check to see if it's never been edited before (i.e. master) or if this a new template (i.e. we've renamed it)  or if it's a custom template
 				$query = $db->simple_select("templates", "sid", "title='".$db->escape_string($mybb->input['title'])."' AND (sid = '-2' OR sid = '{$sid}' OR sid='{$template['sid']}')", array('order_by' => 'sid', 'order_dir' => 'desc'));
 				$existing_sid = $db->fetch_field($query, "sid");
 				$existing_rows = $db->num_rows($query);
@@ -760,9 +766,9 @@ if($mybb->input['action'] == "edit_template_group")
 					'isdefault' => 0
 				);
 
-				$db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
-
 				$plugins->run_hooks('admin_style_templates_edit_template_group_commit');
+
+				$db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
 
 				log_admin_action($template_group['gid'], $title);
 				flash_message($lang->success_template_group_saved, 'success');
@@ -825,6 +831,8 @@ if($mybb->input['action'] == "search_replace")
 				$page->add_breadcrumb_item($lang->search_replace);
 
 				$page->output_header($lang->search_replace);
+
+				$plugins->run_hooks("admin_style_templates_search_replace_find");
 
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
 
@@ -1003,6 +1011,8 @@ if($mybb->input['action'] == "search_replace")
 				// Get the names of all template sets
 				$template_sets[-2] = $lang->master_templates;
 				$template_sets[-1] = $lang->global_templates;
+
+				$plugins->run_hooks("admin_style_templates_search_replace_title");
 
 				$query = $db->simple_select("templatesets", "sid, title");
 				while($set = $db->fetch_array($query))
@@ -1209,8 +1219,6 @@ if($mybb->input['action'] == "search_replace")
 
 if($mybb->input['action'] == "find_updated")
 {
-	$plugins->run_hooks("admin_style_templates_find_updated");
-
 	// Finds templates that are old and have been updated by MyBB
 	$compare_version = $mybb->version_code;
 	$query = $db->query("
@@ -1226,6 +1234,8 @@ if($mybb->input['action'] == "find_updated")
 		flash_message($lang->no_updated_templates, 'success');
 		admin_redirect("index.php?module=style-templates");
 	}
+
+	$plugins->run_hooks("admin_style_templates_find_updated");
 
 	$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 

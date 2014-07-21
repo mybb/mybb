@@ -524,7 +524,7 @@ class postParser
 				$smilie['image'] = str_replace("{theme}", $theme['imgdir'], $smilie['image']);
 				$smilie['image'] = $mybb->get_asset_url($smilie['image']);
 
-				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie').'";');
+				eval('$this->smilies_cache[$smilie[\'find\']] = "'.$templates->get('smilie', 1, 0).'";');
 			}
 		}
 	}

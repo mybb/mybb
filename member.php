@@ -504,6 +504,8 @@ if($mybb->input['action'] == "coppa_form")
 		$mybb->settings['faxno'] = "&nbsp;";
 	}
 
+	$plugins->run_hooks("member_coppa_form");
+
 	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
 	output_page($coppa_form);
 }
@@ -972,6 +974,23 @@ if($mybb->input['action'] == "register")
 				$question = $db->fetch_array($query);
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
+			
+			$validator_extra .= "
+				$(\"#answer\").rules(\"add\", {
+					remote:{
+						url: \"xmlhttp.php?action=validate_question\",
+						type: \"post\",
+						dataType: \"json\",
+						data:
+						{
+							question: $('#question_id').val(),
+							my_post_key: my_post_key
+						},
+					},
+					messages: {
+						remote: \"{$lang->js_validator_no_security_question}\"
+					}
+				});\n";
 		}
 
 		$hiddencaptcha = '';
@@ -1200,6 +1219,8 @@ if($mybb->input['action'] == "resendactivation")
 	{
 		error($lang->error_activated_by_admin);
 	}
+
+	$plugins->run_hooks("member_resendactivation_end");
 
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
@@ -1611,6 +1632,9 @@ if($mybb->input['action'] == "login")
 		default:
 			break;
 	}
+
+	$plugins->run_hooks("member_login_end");
+
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	output_page($login);
 }
@@ -1647,6 +1671,7 @@ if($mybb->input['action'] == "logout")
 	}
 
 	$plugins->run_hooks("member_logout_end");
+
 	redirect("index.php", $lang->redirect_loggedout);
 }
 

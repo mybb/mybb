@@ -794,7 +794,7 @@ class datacache
 		$query = $db->simple_select('users', 'COUNT(uid) AS awaitingusers', 'usergroup=\'5\'');
 		$awaitingusers = (int)$db->fetch_field($query, 'awaitingusers');
 
-		$this->update('awaitingactivation', $awaitingusers);
+		$this->update('awaitingactivation', array('users' => $awaitingusers));
 	}
 
 	/**

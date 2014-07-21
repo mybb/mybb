@@ -1,11 +1,11 @@
 /**
- * jGrowl 1.2.12
+ * jGrowl 1.3.0
  *
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
  * Written by Stan Lemon <stosh1985@gmail.com>
- * Last updated: 2013.02.14
+ * Last updated: 2014.04.18
  */
 (function($) {
 	/** Compatibility holdover for 1.9 to check IE6 **/
@@ -16,12 +16,13 @@
 	/** jGrowl Wrapper - Establish a base jGrowl Container for compatibility with older releases. **/
 	$.jGrowl = function( m , o ) {
 		// To maintain compatibility with older version that only supported one instance we'll create the base container.
-		if ( $('#jGrowl').size() == 0 )
+		if ( $('#jGrowl').size() === 0 )
 			$('<div id="jGrowl"></div>').addClass( (o && o.position) ? o.position : $.jGrowl.defaults.position ).appendTo('body');
 
 		// Create a notification on the container.
 		$('#jGrowl').jGrowl(m,o);
 	};
+
 
 	/** Raise jGrowl Notification on a jGrowl Container **/
 	$.fn.jGrowl = function( m , o ) {
@@ -30,7 +31,7 @@
 
 			return this.each(function() {
 				/** Create a jGrowl Instance on the Container if it does not exist **/
-				if ( $(this).data('jGrowl.instance') == undefined ) {
+				if ( $(this).data('jGrowl.instance') === undefined ) {
 					$(this).data('jGrowl.instance', $.extend( new $.fn.jGrowl(), { notifications: [], element: null, interval: null } ));
 					$(this).data('jGrowl.instance').startup( this );
 				}
@@ -42,54 +43,55 @@
 					$(this).data('jGrowl.instance').create( m , o );
 				}
 			});
-		};
+		}
 	};
 
 	$.extend( $.fn.jGrowl.prototype , {
+
 		/** Default JGrowl Settings **/
 		defaults: {
 			pool:				0,
 			header:				'',
 			group:				'',
 			sticky:				false,
-			position: 			'top-right',
+			position:			'top-right',
 			glue:				'after',
 			theme:				'default',
 			themeState:			'highlight',
 			corners:			'10px',
 			check:				250,
 			life:				3000,
-			closeDuration: 		'normal',
-			openDuration: 		'normal',
-			easing: 			'swing',
-			closer: 			true,
-			closeTemplate: 		'&times;',
-			closerTemplate: 	'<div>[ close all ]</div>',
+			closeDuration:		'normal',
+			openDuration:		'normal',
+			easing:				'swing',
+			closer:				true,
+			closeTemplate:		'&times;',
+			closerTemplate:		'<div>[ close all ]</div>',
 			log:				function() {},
 			beforeOpen:			function() {},
 			afterOpen:			function() {},
 			open:				function() {},
-			beforeClose: 		function() {},
+			beforeClose:		function() {},
 			close:				function() {},
-			animateOpen: 		{
-				opacity:	 'show'
+			animateOpen:		{
+				opacity:		'show'
 			},
-			animateClose: 		{
-				opacity:	 'hide'
+			animateClose:		{
+				opacity:		'hide'
 			}
 		},
 
 		notifications: [],
 
 		/** jGrowl Container Node **/
-		element:	 null,
+		element:				null,
 
 		/** Interval Function **/
-		interval:   null,
+		interval:				null,
 
 		/** Create a Notification **/
-		create:	 function( message , o ) {
-			var o = $.extend({}, this.defaults, o);
+		create: function( message , options ) {
+			var o = $.extend({}, this.defaults, options);
 
 			/* To keep backward compatibility with 1.24 and earlier, honor 'speed' if the user has set it */
 			if (typeof o.speed !== 'undefined') {
@@ -102,16 +104,16 @@
 			o.log.apply( this.element , [this.element,message,o] );
 		},
 
-		render:		 function( notification ) {
+		render: function( n ) {
 			var self = this;
-			var message = notification.message;
-			var o = notification.options;
+			var message = n.message;
+			var o = n.options;
 
 			// Support for jQuery theme-states, if this is not used it displays a widget header
-			o.themeState = (o.themeState == '') ? '' : 'ui-state-' + o.themeState;
+			o.themeState = (o.themeState === '') ? '' : 'ui-state-' + o.themeState;
 
 			var notification = $('<div/>')
-				.addClass('jGrowl-notification ' + o.themeState + ' ui-corner-all' + ((o.group != undefined && o.group != '') ? ' ' + o.group : ''))
+				.addClass('jGrowl-notification ' + o.themeState + ' ui-corner-all' + ((o.group !== undefined && o.group !== '') ? ' ' + o.group : ''))
 				.append($('<div/>').addClass('jGrowl-close').html(o.closeTemplate))
 				.append($('<div/>').addClass('jGrowl-header').html(o.header))
 				.append($('<div/>').addClass('jGrowl-message').html(message))
@@ -168,11 +170,11 @@
 			}).trigger('jGrowl.beforeOpen');
 
 			/** Optional Corners Plugin **/
-			if ( o.corners != '' && $.fn.corner != undefined ) $(notification).corner( o.corners );
+			if ( o.corners !== '' && $.fn.corner !== undefined ) $(notification).corner( o.corners );
 
 			/** Add a Global Closer if more than one notification exists **/
-			if ( $('div.jGrowl-notification:parent', self.element).size() > 1 &&
-				 $('div.jGrowl-closer', self.element).size() == 0 && this.defaults.closer !== false ) {
+			if ($('div.jGrowl-notification:parent', self.element).size() > 1 &&
+				$('div.jGrowl-closer', self.element).size() === 0 && this.defaults.closer !== false ) {
 				$(this.defaults.closerTemplate).addClass('jGrowl-closer ' + this.defaults.themeState + ' ui-corner-all').addClass(this.defaults.theme)
 					.appendTo(self.element).animate(this.defaults.animateOpen, this.defaults.speed, this.defaults.easing)
 					.bind("click.jGrowl", function() {
@@ -182,27 +184,27 @@
 							self.defaults.closer.apply( $(this).parent()[0] , [$(this).parent()[0]] );
 						}
 					});
-			};
+			}
 		},
 
 		/** Update the jGrowl Container, removing old jGrowl notifications **/
-		update:	 function() {
+		update: function() {
 			$(this.element).find('div.jGrowl-notification:parent').each( function() {
-				if ( $(this).data("jGrowl") != undefined && $(this).data("jGrowl").created !== undefined &&
-					 ($(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life))  < (new Date()).getTime() &&
-					 $(this).data("jGrowl").sticky !== true &&
-					 ($(this).data("jGrowl.pause") == undefined || $(this).data("jGrowl.pause") !== true) ) {
+				if ($(this).data("jGrowl") !== undefined && $(this).data("jGrowl").created !== undefined &&
+					($(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life, 10))  < (new Date()).getTime() &&
+					$(this).data("jGrowl").sticky !== true &&
+					($(this).data("jGrowl.pause") === undefined || $(this).data("jGrowl.pause") !== true) ) {
 
 					// Pause the notification, lest during the course of animation another close event gets called.
 					$(this).trigger('jGrowl.beforeClose');
 				}
 			});
 
-			if ( this.notifications.length > 0 &&
-				 (this.defaults.pool == 0 || $(this.element).find('div.jGrowl-notification:parent').size() < this.defaults.pool) )
+			if (this.notifications.length > 0 &&
+				(this.defaults.pool === 0 || $(this.element).find('div.jGrowl-notification:parent').size() < this.defaults.pool) )
 				this.render( this.notifications.shift() );
 
-			if ( $(this.element).find('div.jGrowl-notification:parent').size() < 2 ) {
+			if ($(this.element).find('div.jGrowl-notification:parent').size() < 2 ) {
 				$(this.element).find('div.jGrowl-closer').animate(this.defaults.animateClose, this.defaults.speed, this.defaults.easing, function() {
 					$(this).remove();
 				});
@@ -210,11 +212,11 @@
 		},
 
 		/** Setup the jGrowl Notification Container **/
-		startup:	function(e) {
+		startup: function(e) {
 			this.element = $(e).addClass('jGrowl').append('<div class="jGrowl-notification"></div>');
 			this.interval = setInterval( function() {
 				$(e).data('jGrowl.instance').update();
-			}, parseInt(this.defaults.check));
+			}, parseInt(this.defaults.check, 10));
 
 			if ($ie6) {
 				$(this.element).addClass('ie6');
@@ -222,13 +224,16 @@
 		},
 
 		/** Shutdown jGrowl, removing it and clearing the interval **/
-		shutdown:   function() {
+		shutdown: function() {
 			$(this.element).removeClass('jGrowl')
 				.find('div.jGrowl-notification').trigger('jGrowl.close')
 				.parent().empty()
+			;
+
+			clearInterval(this.interval);
 		},
 
-		close:	 function() {
+		close: function() {
 			$(this.element).find('div.jGrowl-notification').each(function(){
 				$(this).trigger('jGrowl.beforeClose');
 			});
@@ -237,11 +242,12 @@
 
 	/** Reference the Defaults Object for compatibility with older versions of jGrowl **/
 	$.jGrowl.defaults = $.fn.jGrowl.prototype.defaults;
+
 })(jQuery);
 
 /*
     A simple jQuery modal (http://github.com/kylefox/jquery-modal)
-    Version 0.5.4
+    Version 0.5.5
 */
 (function($) {
 
@@ -338,7 +344,7 @@
     unblock: function() {
       if(this.options.doFade) {
         this.blocker.fadeOut(this.options.fadeDuration, function() {
-          this.remove();
+          $(this).remove();
         });
       } else {
         this.blocker.remove();
@@ -348,7 +354,7 @@
     show: function() {
       this.$elm.trigger($.modal.BEFORE_OPEN, [this._ctx()]);
       if (this.options.showClose) {
-        this.closeButton = $('<a href="#close-modal" rel="modal:close" class="close-modal">' + this.options.closeText + '</a>');
+        this.closeButton = $('<a href="#close-modal" rel="modal:close" class="close-modal ' + this.options.closeClass + '">' + this.options.closeText + '</a>');
         this.$elm.append(this.closeButton);
       }
       this.$elm.addClass(this.options.modalClass + ' current');
@@ -420,6 +426,11 @@
     current.resize();
   };
 
+  // Returns if there currently is an active modal
+  $.modal.isActive = function () {
+    return current ? true : false;
+  }
+
   $.modal.defaults = {
     overlay: "#000",
     opacity: 0.75,
@@ -427,6 +438,7 @@
     escapeClose: true,
     clickClose: true,
     closeText: 'Close',
+    closeClass: '',
     modalClass: "modal",
     spinnerHtml: null,
     showSpinner: true,
@@ -463,17 +475,21 @@
   });
 })(jQuery);
 
+
 /*
 	Conversion of 1.6.x popup_menu.js
 */
 (function($){
 	var current_popup = '';
-	var PopupMenu = function(el)
+	var PopupMenu = function(el, close_in_popupmenu)
 	{
 		var el = $(el);
 		var popup = this;
 		var popup_menu = $("#" + el.attr('id') + "_popup");
-
+		if(typeof close_in_popupmenu == 'undefined')
+		{
+			var close_in_popupmenu = true;
+		}
 		// Opening Popup
 		this.open = function(e)
 		{
@@ -506,8 +522,17 @@
 			// Closes the popup if we click outside the button (this doesn't seem to work properly - couldn't find any solutions that actually did - if we click the first item on the menu)
 			// Credits: http://stackoverflow.com/questions/1160880/detect-click-outside-element
 			$('body, .popup_item').bind('click.close_popup', function(e) {
-				if($(e.target).closest("#" + el.attr('id')).length == 0) {
-					popup.close();
+				if(close_in_popupmenu)
+				{
+					if($(e.target).closest("#" + el.attr('id')).length == 0) {
+						popup.close();
+					}
+				}
+				else
+				{
+					if($(e.target).closest("#" + el.attr('id')).length == 0 && $(e.target).closest("#" + el.attr('id') + '_popup').length == 0) {
+						popup.close();
+					}
 				}
 			});
 		}
@@ -516,17 +541,17 @@
 			popup_menu.hide();
 		}
 	}
-	$.fn.popupMenu = function(el)
+	$.fn.popupMenu = function(close_in_popupmenu)
 	{
 		return this.each(function()
 		{
-			var popup = new PopupMenu(this);
+			var popup = new PopupMenu(this, close_in_popupmenu);
 			$(this).click(popup.open);
 		});
 	}
 })(jQuery);
 
-/*! jQuery-Impromptu - v5.2.3 - 2014-03-09
+/*! jQuery-Impromptu - v5.2.4 - 2014-05-26
 * http://trentrichardson.com/Impromptu
 * Copyright (c) 2014 Trent Richardson; Licensed MIT */
 (function($) {
@@ -565,7 +590,7 @@
 			msgbox +='<div class="'+ opts.prefix +'fade '+ opts.classes.fade +'"></div>';
 		}
 		msgbox += '<div class="'+ opts.prefix +' '+ opts.classes.prompt +'">'+
-					'<form action="javascript:false;" onsubmit="return false;" class="'+ opts.prefix +'form">'+
+					'<form action="javascript:false;" onsubmit="return false;" class="'+ opts.prefix +'form '+ opts.classes.form +'">'+
 						'<div class="'+ opts.prefix +'close '+ opts.classes.close +'">'+ opts.closeText +'</div>'+
 						'<div class="'+ opts.prefix +'states"></div>'+
 					'</form>'+
@@ -744,6 +769,7 @@
 			box: '',
 			fade: '',
 			prompt: '',
+			form: '',
 			close: '',
 			title: '',
 			message: '',
@@ -1014,11 +1040,12 @@
 	};
 	
 	/**
-	* removeState - Removes a state from the promt
+	* removeState - Removes a state from the prompt
 	* @param state String - Name of the state
+	* @param newState String - Name of the state to transition to
 	* @return Boolean - returns true on success, false on failure
 	*/
-	$.prompt.removeState = function(state) {
+	$.prompt.removeState = function(state, newState) {
 		var $state = $.prompt.getState(state),
 			rm = function(){ $state.remove(); };
 
@@ -1028,11 +1055,17 @@
 		
 		// transition away from it before deleting
 		if($state.css('display') !== 'none'){
-			if($state.next().length > 0){
+			if(newState !== undefined && $.prompt.getState(newState).length > 0){
+				$.prompt.goToState(newState, false, rm);
+			}
+			else if($state.next().length > 0){
 				$.prompt.nextState(rm);
 			}
-			else{
+			else if($state.prev().length > 0){
 				$.prompt.prevState(rm);
+			}
+			else{
+				$.prompt.close();
 			}
 		}
 		else{
@@ -1193,6 +1226,7 @@
 				$(window).off('resize',$.prompt.position);
 			});
 		}
+		$.prompt.currentStateName = "";
 	};
 	
 	/**
@@ -1211,3 +1245,4 @@
 	};
 	
 })(jQuery);
+

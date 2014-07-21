@@ -363,4 +363,5 @@ $l['locked'] = 'The installer is currently locked, please remove \'lock\' from t
 $l['no_permision'] = "You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={1}\">here</a>. From there you will be able to log in again under your administrator account.";
 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
+
 ?>

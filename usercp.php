@@ -2123,10 +2123,12 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	}
 	else // remote avatar
 	{
-		$mybb->input['avatarurl'] = my_strtolower(trim($mybb->get_input('avatarurl')));
+		$mybb->input['avatarurl'] = trim($mybb->get_input('avatarurl'));
 		if(validate_email_format($mybb->input['avatarurl']) != false)
 		{
 			// Gravatar
+			$mybb->input['avatarurl'] = my_strtolower($mybb->input['avatarurl']);
+
 			// If user image does not exist, or is a higher rating, use the mystery man
 			$email = md5($mybb->input['avatarurl']);
 
@@ -2381,13 +2383,14 @@ if($mybb->input['action'] == "acceptrequest")
 		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
 	
 		$pm = array(
+			'subject' => 'buddyrequest_accepted_request',
+			'message' => 'buddyrequest_accepted_request_message',
 			'touid' => $user['uid'],
-			'subject' => $lang->buddyrequest_accepted_request,
-			'message' => $lang->buddyrequest_accepted_request_message,
-			'receivepms' => 1 // Should be later validated by the PM handler
+			'language' => $user['language'],
+			'language_file' => 'usercp'
 		);
 	
-		send_pm($pm);
+		send_pm($pm, $mybb->user['uid'], true);
 		
 		$db->delete_query('buddyrequests', 'id='.(int)$request['id']);
 	}
@@ -2600,12 +2603,14 @@ if($mybb->input['action'] == "do_editlists")
 				if($user['buddyrequestsauto'] == 1 && $mybb->get_input('manage') != "ignored")
 				{
 					$existing_users[] = $user['uid'];
-					
+	
 					$pm = array(
+						'subject' => 'buddyrequest_new_buddy',
+						'message' => 'buddyrequest_new_buddy_message',
 						'touid' => $user['uid'],
-						'subject' => $lang->buddyrequest_new_buddy,
-						'message' => $lang->buddyrequest_new_buddy_message,
-						'receivepms' => $user['buddyrequestspm']
+						'receivepms' => (int)$user['buddyrequestspm'],
+						'language' => $user['language'],
+						'language_file' => 'usercp'
 					);
 					
 					send_pm($pm);
@@ -2614,12 +2619,14 @@ if($mybb->input['action'] == "do_editlists")
 				{
 					// Send request
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
-					
+	
 					$pm = array(
+						'subject' => 'buddyrequest_received',
+						'message' => 'buddyrequest_received_message',
 						'touid' => $user['uid'],
-						'subject' => $lang->buddyrequest_received,
-						'message' => $lang->buddyrequest_received_message,
-						'receivepms' => $user['buddyrequestspm']
+						'receivepms' => (int)$user['buddyrequestspm'],
+						'language' => $user['language'],
+						'language_file' => 'usercp'
 					);
 					
 					send_pm($pm);
@@ -3101,6 +3108,8 @@ if($mybb->input['action'] == "usergroups")
 	$plugins->run_hooks("usercp_usergroups_start");
 	$ingroups = ",".$mybb->user['usergroup'].",".$mybb->user['additionalgroups'].",".$mybb->user['displaygroup'].",";
 
+	$usergroups = $mybb->cache->read('usergroups');
+
 	// Changing our display group
 	if($mybb->get_input('displaygroup', 1))
 	{
@@ -3111,8 +3120,8 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->not_member_of_group);
 		}
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('displaygroup', 1)."'");
-		$dispgroup = $db->fetch_array($query);
+
+		$dispgroup = $usergroups[$mybb->get_input('displaygroup', 1)];
 		if($dispgroup['candisplaygroup'] != 1)
 		{
 			error($lang->cannot_set_displaygroup);
@@ -3138,8 +3147,8 @@ if($mybb->input['action'] == "usergroups")
 		{
 			error($lang->cannot_leave_primary_group);
 		}
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('leavegroup', 1)."'");
-		$usergroup = $db->fetch_array($query);
+
+		$usergroup = $usergroups[$mybb->get_input('leavegroup', 1)];
 		if($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 		{
 			error($lang->cannot_leave_group);
@@ -3164,16 +3173,13 @@ if($mybb->input['action'] == "usergroups")
 		$groupleaders[$leader['gid']][$leader['uid']] = $leader;
 	}
 
-	$usergroups = $mybb->cache->read('usergroups');
-
 	// Joining a group
 	if($mybb->get_input('joingroup', 1))
 	{
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('joingroup', 1)."'");
-		$usergroup = $db->fetch_array($query);
+		$usergroup = $usergroups[$mybb->get_input('joingroup', 1)];
 
 		if($usergroup['type'] == 5)
 		{
@@ -3253,8 +3259,7 @@ if($mybb->input['action'] == "usergroups")
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
-		$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('acceptinvite', 1)."'");
-		$usergroup = $db->fetch_array($query);
+		$usergroup = $usergroups[$mybb->get_input('acceptinvite', 1)];
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('acceptinvite', 1).",") !== false)
 		{

@@ -45,14 +45,17 @@ You have received a warning from the staff of {2}.
 --
 
 --";
+$l['send_pm_options'] = "Options:";
+$l['send_pm_options_anonymous'] = "<strong>Anonymous PM</strong>: send this private message as an anonymous user.";
 $l['expiration_never'] = "permanently";
 $l['expiration_hours'] = "hours";
 $l['expiration_days'] = "days";
 $l['expiration_weeks'] = "weeks";
 $l['expiration_months'] = "months";
-$l['redirect_warned_banned'] = "The user has also been moved to the {1} group {2}.";
-$l['redirect_warned_suspended'] = "This users posting privileges have been suspended {1}.";
-$l['redirect_warned_moderate'] = "All posts by this user will now be moderated {1}.";
+$l['redirect_warned_banned'] = "<br /><br />The user has also been moved to the {1} group {2}.";
+$l['redirect_warned_suspended'] = "<br /><br />This users posting privileges have been suspended {1}.";
+$l['redirect_warned_moderate'] = "<br /><br />All posts by this user will now be moderated {1}.";
+$l['redirect_warned_pmerror'] = "<br /><br />Please note that the PM was not sent.";
 $l['redirect_warned'] = "The warning level of {1} has been increased to {2}%.{3}<br /><br />You will now be taken back to where you came from.";
 $l['error_warning_system_disabled'] = "You cannot use the warning system as it has been disabled by the board administrator.";
 $l['error_cant_warn_group'] = "You do not have permission to warn users of this group.";

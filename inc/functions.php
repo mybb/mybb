@@ -806,7 +806,7 @@ function inline_error($errors, $title="", $json_data=array())
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		
+
 		if(empty($json_data))
 		{
 			echo json_encode(array("errors" => $errors));
@@ -2879,7 +2879,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 		}
 		else
 		{
-			// Smilies		
+			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
 			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
@@ -3062,7 +3062,7 @@ function build_clickable_smilies()
 					$find = htmlspecialchars_uni($find);
 
 					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
-					eval('$smilie = "'.$templates->get('smilie').'";');
+					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
 					++$counter;
@@ -7648,10 +7648,9 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	if(isset($pm['language']))
 	{
-		$revert = false;
 		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
 		{
-			// Load language
+			// Load user language
 			$lang->set_language($pm['language']);
 			$lang->load($pm['language_file']);
 
@@ -7660,6 +7659,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 		foreach(array('subject', 'message') as $key)
 		{
+			$lang_string = $pm[$key];
 			if(is_array($pm[$key]))
 			{
 				$num_args = count($pm[$key]);
@@ -7668,14 +7668,16 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 				{
 					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
 				}
+
+				$lang_string = $pm[$key][0];
 			}
 
-			$pm[$key] = $lang->{$pm[$key][0]};
+			$pm[$key] = $lang->{$lang_string};
 		}
 
-		if($revert)
+		if(isset($revert))
 		{
-			// Load language
+			// Revert language
 			$lang->set_language($mybb->user['language']);
 			$lang->load($pm['language_file']);
 		}
@@ -7794,4 +7796,3 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 
 	return (bool)$db->insert_array('spamlog', $insert_array);
 }
-?>
