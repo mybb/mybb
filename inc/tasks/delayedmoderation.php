@@ -163,7 +163,7 @@ function task_delayedmoderation($task)
 						$mergetid = $parameters['tid'];
 					}
 
-					$mergetid = intval($mergetid);
+					$mergetid = (int)$mergetid;
 					$mergethread = get_thread($mergetid);
 
 					if(!$mergethread['tid'])

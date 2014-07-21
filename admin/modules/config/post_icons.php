@@ -301,7 +301,7 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
+	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])
@@ -331,7 +331,7 @@ if($mybb->input['action'] == "edit")
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->update_query("icons", $updated_icon, "iid='".intval($mybb->input['iid'])."'");
+			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
 
 			$cache->update_posticons();
 
@@ -384,7 +384,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
+	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])
@@ -445,7 +445,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_icons');
 
-	$pagenum = intval($mybb->input['page']);
+	$pagenum = (int)$mybb->input['page'];
 	if($pagenum)
 	{
 		$start = ($pagenum - 1) * 20;

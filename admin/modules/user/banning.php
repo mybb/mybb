@@ -217,7 +217,7 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$update_array = array(
-				'gid' => intval($mybb->input['usergroup']),
+				'gid' => (int)$mybb->input['usergroup'],
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->input['bantime']),
 				'lifted' => $db->escape_string($lifted),
@@ -228,7 +228,7 @@ if($mybb->input['action'] == "edit")
 
 			// Move the user to the banned group
 			$update_array = array(
-				'usergroup' => intval($mybb->input['usergroup']),
+				'usergroup' => (int)$mybb->input['usergroup'],
 				'displaygroup' => 0,
 				'additionalgroups' => '',
 			);
@@ -374,11 +374,11 @@ if(!$mybb->input['action'])
 
 				$insert_array = array(
 					'uid' => $user['uid'],
-					'gid' => intval($mybb->input['usergroup']),
+					'gid' => (int)$mybb->input['usergroup'],
 					'oldgroup' => $user['usergroup'],
 					'oldadditionalgroups' => $user['additionalgroups'],
 					'olddisplaygroup' => $user['displaygroup'],
-					'admin' => intval($mybb->user['uid']),
+					'admin' => (int)$mybb->user['uid'],
 					'dateline' => TIME_NOW,
 					'bantime' => $db->escape_string($mybb->input['bantime']),
 					'lifted' => $db->escape_string($lifted),
@@ -388,7 +388,7 @@ if(!$mybb->input['action'])
 
 				// Move the user to the banned group
 				$update_array = array(
-					'usergroup' => intval($mybb->input['usergroup']),
+					'usergroup' => (int)$mybb->input['usergroup'],
 					'displaygroup' => 0,
 					'additionalgroups' => '',
 				);
@@ -421,7 +421,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = intval($mybb->input['page']);
+		$current_page = (int)$mybb->input['page'];
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);

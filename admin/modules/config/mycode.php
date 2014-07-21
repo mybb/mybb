@@ -26,7 +26,7 @@ if($mybb->input['action'] == "toggle_status")
 		admin_redirect("index.php?module=config-mycode");
 	}
 
-	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "toggle_status")
 		'active' => $new_status,
 	);
 
-	$db->update_query("mycode", $mycode_update, "cid='".intval($mybb->input['cid'])."'");
+	$db->update_query("mycode", $mycode_update, "cid='".(int)$mybb->input['cid']."'");
 
 	$cache->update_mycode();
 
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => intval($mybb->input['parseorder'])
+				'parseorder' => (int)$mybb->input['parseorder']
 			);
 
 			$cid = $db->insert_query("mycode", $new_mycode);
@@ -203,7 +203,7 @@ $(function(){
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -245,10 +245,10 @@ if($mybb->input['action'] == "edit")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => intval($mybb->input['parseorder'])
+				'parseorder' => (int)$mybb->input['parseorder']
 			);
 
-			$db->update_query("mycode", $updated_mycode, "cid='".intval($mybb->input['cid'])."'");
+			$db->update_query("mycode", $updated_mycode, "cid='".(int)$mybb->input['cid']."'");
 
 			$cache->update_mycode();
 
@@ -328,7 +328,7 @@ $(function(){
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])

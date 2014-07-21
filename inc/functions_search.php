@@ -20,7 +20,7 @@
 function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth='')
 {
 	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
-	$pid = intval($pid);
+	$pid = (int)$pid;
 
 	if(!is_array($pforumcache))
 	{
@@ -96,7 +96,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 {
 	global $db, $forum_cache, $permissioncache, $mybb, $unsearchableforums, $unsearchable, $templates, $forumpass;
 
-	$pid = intval($pid);
+	$pid = (int)$pid;
 
 	if(!is_array($forum_cache))
 	{
@@ -631,7 +631,7 @@ function privatemessage_perform_search_mysql($search)
 	{
 		$folderids = array();
 
-		$search['folder'] = array_map("intval", $search['folder']);
+		$search['folder'] = array_map("(int), $search['folder'];
 
 		$folderids = implode(',', $search['folder']);
 
@@ -1077,13 +1077,13 @@ function perform_search_mysql($search)
 	$thread_replycut = '';
 	if($search['numreplies'] != '' && $search['findthreadst'])
 	{
-		if(intval($search['findthreadst']) == 1)
+		if((int)$search['findthreadst'] == 1)
 		{
-			$thread_replycut = " AND t.replies >= '".intval($search['numreplies'])."'";
+			$thread_replycut = " AND t.replies >= '".(int)$search['numreplies']."'";
 		}
 		else
 		{
-			$thread_replycut = " AND t.replies <= '".intval($search['numreplies'])."'";
+			$thread_replycut = " AND t.replies <= '".(int)$search['numreplies']."'";
 		}
 	}
 
@@ -1093,7 +1093,7 @@ function perform_search_mysql($search)
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
-			$threadprefix = intval($threadprefix);
+			$threadprefix = (int)$threadprefix;
 			$prefixlist[] = $threadprefix;
 		}
 	}
@@ -1116,7 +1116,7 @@ function perform_search_mysql($search)
 	{
 		if(!is_array($search['forums']))
 		{
-			$search['forums'] = array(intval($search['forums']));
+			$search['forums'] = array((int)$search['forums']);
 		}
 		// Generate a comma separated list of all groups the user belongs to
 		$user_groups = $mybb->user['usergroup'];
@@ -1130,7 +1130,7 @@ function perform_search_mysql($search)
 		}
 		foreach($search['forums'] as $forum)
 		{
-			$forum = intval($forum);
+			$forum = (int)$forum;
 			if(empty($searchin[$forum]))
 			{
 				if(isset($add_groups) && is_array($add_groups))
@@ -1253,13 +1253,13 @@ function perform_search_mysql($search)
 	$tidsql = '';
 	if(!empty($search['tid']))
 	{
-		$tidsql = " AND t.tid='".intval($search['tid'])."'";
+		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
 
 	$limitsql = '';
-	if(intval($mybb->settings['searchhardlimit']) > 0)
+	if((int)$mybb->settings['searchhardlimit'] > 0)
 	{
-		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+		$limitsql = "LIMIT ".(int)$mybb->settings['searchhardlimit'];
 	}
 
 	// Searching both posts and thread titles
@@ -1481,13 +1481,13 @@ function perform_search_mysql_ft($search)
 	$thread_replycut = '';
 	if($search['numreplies'] != '' && $search['findthreadst'])
 	{
-		if(intval($search['findthreadst']) == 1)
+		if((int)$search['findthreadst'] == 1)
 		{
-			$thread_replycut = " AND t.replies >= '".intval($search['numreplies'])."'";
+			$thread_replycut = " AND t.replies >= '".(int)$search['numreplies']."'";
 		}
 		else
 		{
-			$thread_replycut = " AND t.replies <= '".intval($search['numreplies'])."'";
+			$thread_replycut = " AND t.replies <= '".(int)$search['numreplies']."'";
 		}
 	}
 
@@ -1497,7 +1497,7 @@ function perform_search_mysql_ft($search)
 	{
 		foreach($search['threadprefix'] as $threadprefix)
 		{
-			$threadprefix = intval($threadprefix);
+			$threadprefix = (int)$threadprefix;
 			$prefixlist[] = $threadprefix;
 		}
 	}
@@ -1520,7 +1520,7 @@ function perform_search_mysql_ft($search)
 	{
 		if(!is_array($search['forums']))
 		{
-			$search['forums'] = array(intval($search['forums']));
+			$search['forums'] = array((int)$search['forums']);
 		}
 		// Generate a comma separated list of all groups the user belongs to
 		$user_groups = $mybb->user['usergroup'];
@@ -1530,7 +1530,7 @@ function perform_search_mysql_ft($search)
 		}
 		foreach($search['forums'] as $forum)
 		{
-			$forum = intval($forum);
+			$forum = (int)$forum;
 			if(empty($searchin[$forum]))
 			{
 				switch($db->type)
@@ -1638,13 +1638,13 @@ function perform_search_mysql_ft($search)
 	// Searching a specific thread?
 	if($search['tid'])
 	{
-		$tidsql = " AND t.tid='".intval($search['tid'])."'";
+		$tidsql = " AND t.tid='".(int)$search['tid']."'";
 	}
 
 	$limitsql = '';
-	if(intval($mybb->settings['searchhardlimit']) > 0)
+	if((int)$mybb->settings['searchhardlimit'] > 0)
 	{
-		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+		$limitsql = "LIMIT ".(int)$mybb->settings['searchhardlimit'];
 	}
 
 	// Searching both posts and thread titles

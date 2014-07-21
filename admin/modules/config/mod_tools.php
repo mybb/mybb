@@ -240,7 +240,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			else
 			{
 				// Check that the destination forum is not a category
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['move_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['move_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -278,7 +278,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			}
 			else
 			{
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['copy_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['copy_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -307,16 +307,16 @@ if($mybb->input['action'] == "edit_thread_tool")
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
-				'movethread' => intval($mybb->input['move_1_forum']),
+				'movethread' => (int)$mybb->input['move_1_forum'],
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
-				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
-				'copythread' => intval($mybb->input['copy_1_forum']),
+				'movethreadredirectexpire' => (int)$mybb->input['move_3_redirecttime'],
+				'copythread' => (int)$mybb->input['copy_1_forum'],
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
 				'pm_subject' => $mybb->input['pm_subject'],
 				'pm_message' => $mybb->input['pm_message'],
-				'threadprefix' => intval($mybb->input['threadprefix'])
+				'threadprefix' => (int)$mybb->input['threadprefix']
 			);
 
 			$update_tool['type'] = 't';
@@ -621,7 +621,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$thread_prefixes[$prefix['pid']] = $prefix['prefix'];
 		}
 
-		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, array(intval($mybb->input['threadprefix'])), array('id' => 'threadprefix')), 'threadprefix');
+		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, array((int)$mybb->input['threadprefix']), array('id' => 'threadprefix')), 'threadprefix');
 	}
 
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject'], array('id' => 'newsubject')));
@@ -717,7 +717,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['stickthread'] = '';
 		}
 
-		if(!intval($mybb->input['threadprefix']))
+		if(!(int)$mybb->input['threadprefix'])
 		{
 			$mybb->input['threadprefix'] = '';
 		}
@@ -734,7 +734,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			else
 			{
 				// Check that the destination forum is not a category
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['move_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['move_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -762,7 +762,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			}
 			else
 			{
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['copy_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['copy_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -791,10 +791,10 @@ if($mybb->input['action'] == "add_thread_tool")
 				'softdeletethread' => $mybb->input['softdeletethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
-				'movethread' => intval($mybb->input['move_1_forum']),
+				'movethread' => (int)$mybb->input['move_1_forum'],
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
-				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
-				'copythread' => intval($mybb->input['copy_1_forum']),
+				'movethreadredirectexpire' => (int)$mybb->input['move_3_redirecttime'],
+				'copythread' => (int)$mybb->input['copy_1_forum'],
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
@@ -849,9 +849,9 @@ if($mybb->input['action'] == "add_thread_tool")
 				$new_tool['groups'] = "-1";
 			}
 
-			if(intval($mybb->input['threadprefix']) >= 0)
+			if((int)$mybb->input['threadprefix'] >= 0)
 			{
-				$thread_options['threadprefix'] = intval($mybb->input['threadprefix']);
+				$thread_options['threadprefix'] = (int)$mybb->input['threadprefix'];
 			}
 
 			$tid = $db->insert_query("modtools", $new_tool);
@@ -1194,7 +1194,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			else
 			{
 				// Check that the destination forum is not a category
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['move_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['move_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -1216,7 +1216,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			}
 			else
 			{
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['copy_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['copy_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -1279,10 +1279,10 @@ if($mybb->input['action'] == "edit_post_tool")
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
-				'movethread' => intval($mybb->input['move_1_forum']),
+				'movethread' => (int)$mybb->input['move_1_forum'],
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
-				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
-				'copythread' => intval($mybb->input['copy_1_forum']),
+				'movethreadredirectexpire' => (int)$mybb->input['move_3_redirecttime'],
+				'copythread' => (int)$mybb->input['copy_1_forum'],
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
@@ -1300,7 +1300,7 @@ if($mybb->input['action'] == "edit_post_tool")
 				'softdeleteposts' => $mybb->input['softdeleteposts'],
 				'mergeposts' => $mybb->input['mergeposts'],
 				'approveposts' => $mybb->input['approveposts'],
-				'splitposts' => intval($mybb->input['splitposts']),
+				'splitposts' => (int)$mybb->input['splitposts'],
 				'splitpostsclose' => $mybb->input['splitpostsclose'],
 				'splitpostsstick' => $mybb->input['splitpostsstick'],
 				'splitpostsunapprove' => $mybb->input['splitpostsunapprove'],
@@ -1762,7 +1762,7 @@ if($mybb->input['action'] == "add_post_tool")
 			else
 			{
 				// Check that the destination forum is not a category
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['move_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['move_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -1790,7 +1790,7 @@ if($mybb->input['action'] == "add_post_tool")
 			}
 			else
 			{
-				$query = $db->simple_select("forums", "type", "fid = '".intval($mybb->input['copy_1_forum'])."'");
+				$query = $db->simple_select("forums", "type", "fid = '".(int)$mybb->input['copy_1_forum']."'");
 				if($db->fetch_field($query, "type") == "c")
 				{
 					$errors[] = $lang->error_forum_is_category;
@@ -1856,10 +1856,10 @@ if($mybb->input['action'] == "add_post_tool")
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'stickthread' => $mybb->input['stickthread'],
-				'movethread' => intval($mybb->input['move_1_forum']),
+				'movethread' => (int)$mybb->input['move_1_forum'],
 				'movethreadredirect' => $mybb->input['move_2_redirect'],
-				'movethreadredirectexpire' => intval($mybb->input['move_3_redirecttime']),
-				'copythread' => intval($mybb->input['copy_1_forum']),
+				'movethreadredirectexpire' => (int)$mybb->input['move_3_redirecttime'],
+				'copythread' => (int)$mybb->input['copy_1_forum'],
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
 				'replysubject' => $mybb->input['newreplysubject'],
@@ -1877,7 +1877,7 @@ if($mybb->input['action'] == "add_post_tool")
 				'softdeleteposts' => $mybb->input['softdeleteposts'],
 				'mergeposts' => $mybb->input['mergeposts'],
 				'approveposts' => $mybb->input['approveposts'],
-				'splitposts' => intval($mybb->input['splitposts']),
+				'splitposts' => (int)$mybb->input['splitposts'],
 				'splitpostsclose' => $mybb->input['splitpostsclose'],
 				'splitpostsstick' => $mybb->input['splitpostsstick'],
 				'splitpostsunapprove' => $mybb->input['splitpostsunapprove'],

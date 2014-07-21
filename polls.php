@@ -301,7 +301,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		"dateline" => TIME_NOW,
 		"options" => $db->escape_string($optionslist),
 		"votes" => $db->escape_string($voteslist),
-		"numoptions" => intval($optioncount),
+		"numoptions" => (int)$optioncount,
 		"numvotes" => 0,
 		"timeout" => $timeout,
 		"closed" => 0,
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "editpoll")
 			$counter = $i + 1;
 			$option = $optionsarray[$i];
 			$option = htmlspecialchars_uni($option);
-			$optionvotes = intval($votesarray[$i]);
+			$optionvotes = (int)$votesarray[$i];
 
 			if(!$optionvotes)
 			{
@@ -484,7 +484,7 @@ if($mybb->input['action'] == "editpoll")
 			{
 				$votes[$i] = 0;
 			}
-			$optionvotes = intval($votes[$i]);
+			$optionvotes = (int)$votes[$i];
 
 			if(!$optionvotes)
 			{
@@ -631,7 +631,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 			}
 
 			$optionslist .= trim($options[$i]);
-			if(!isset($votes[$i]) || intval($votes[$i]) <= 0)
+			if(!isset($votes[$i]) || (int)$votes[$i] <= 0)
 			{
 				$votes[$i] = "0";
 			}
@@ -653,7 +653,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"question" => $db->escape_string($mybb->input['question']),
 		"options" => $db->escape_string($optionslist),
 		"votes" => $db->escape_string($voteslist),
-		"numoptions" => intval($optioncount),
+		"numoptions" => (int)$optioncount,
 		"numvotes" => $numvotes,
 		"timeout" => $timeout,
 		"closed" => $postoptions['closed'],
@@ -663,7 +663,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 
-	$db->update_query("polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
+	$db->update_query("polls", $updatedpoll, "pid='".(int)$mybb->input['pid']."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
@@ -851,7 +851,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 
-	$query = $db->simple_select("threads", "*", "poll='".intval($poll['pid'])."'");
+	$query = $db->simple_select("threads", "*", "poll='".(int)$poll['pid']."'");
 	$thread = $db->fetch_array($query);
 
 	if(!$thread || $thread['visible'] == 0)
@@ -977,7 +977,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	}
 	$updatedpoll = array(
 		"votes" => $db->escape_string($voteslist),
-		"numvotes" => intval($numvotes),
+		"numvotes" => (int)$numvotes,
 	);
 
 	$plugins->run_hooks("polls_vote_process");
@@ -1116,7 +1116,7 @@ if($mybb->input['action'] == "do_undovote")
 	$voteslist = implode("||~|~||", $votesarray);
 	$updatedpoll = array(
 		"votes" => $db->escape_string($voteslist),
-		"numvotes" => intval($poll['numvotes']),
+		"numvotes" => (int)$poll['numvotes'],
 	);
 
 	$plugins->run_hooks("polls_do_undovote_process");

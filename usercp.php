@@ -202,9 +202,9 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 
-			$return_month = intval(substr($mybb->get_input('awaymonth'), 0, 2));
-			$return_day = intval(substr($mybb->get_input('awayday'), 0, 2));
-			$return_year = min(intval($mybb->get_input('awayyear')), 9999);
+			$return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
+			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
+			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -393,7 +393,7 @@ if($mybb->input['action'] == "profile")
 
 	if($user['icq'] != "0")
 	{
-		$user['icq'] = intval($user['icq']);
+		$user['icq'] = (int)$user['icq'];
 	}
 
 	if($user['icq'] == 0)
@@ -2140,7 +2140,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 
 			// Because Gravatars are square, hijack the width
 			list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-			$maxheight = intval($maxwidth);
+			$maxheight = (int)$maxwidth;
 
 			// Rating?
 			$types = array('g', 'pg', 'r', 'x');
@@ -2210,7 +2210,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			{
 				if($width > 0 && $height > 0)
 				{
-					$avatar_dimensions = intval($width)."|".intval($height);
+					$avatar_dimensions = (int)$width."|".(int)$height;
 				}
 				$updated_avatar = array(
 					"avatar" => $db->escape_string($mybb->input['avatarurl'].'?dateline='.TIME_NOW),
@@ -3072,11 +3072,11 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	{
 		if($val == "post")
 		{
-			$pidin[] = "'".intval($id)."'";
+			$pidin[] = "'".(int)$id."'";
 		}
 		elseif($val == "thread")
 		{
-			$tidin[] = "'".intval($id)."'";
+			$tidin[] = "'".(int)$id."'";
 		}
 	}
 	if($tidin)

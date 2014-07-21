@@ -84,18 +84,18 @@ if($mybb->input['action'] == "add")
 			$new_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => intval($mybb->input['disporder']),
+				"disporder" => (int)$mybb->input['disporder'],
 				"type" => $db->escape_string($thing),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => intval($mybb->input['length']),
-				"maxlength" => intval($mybb->input['maxlength']),
+				"length" => (int)$mybb->input['length'],
+				"maxlength" => (int)$mybb->input['maxlength'],
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => intval($mybb->input['postnum']),
+				"postnum" => (int)$mybb->input['postnum'],
 				"allowhtml" => (int)$mybb->input['allowhtml'],
 				"allowmycode" => (int)$mybb->input['allowmycode'],
 				"allowsmilies" => (int)$mybb->input['allowsmilies'],
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select("profilefields", "*", "fid = '".(int)$mybb->input['fid']."'");
 	$profile_field = $db->fetch_array($query);
 
 	if(!$profile_field['fid'])
@@ -403,18 +403,18 @@ if($mybb->input['action'] == "edit")
 			$updated_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => intval($mybb->input['disporder']),
+				"disporder" => (int)$mybb->input['disporder'],
 				"type" => $db->escape_string($type),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => intval($mybb->input['length']),
-				"maxlength" => intval($mybb->input['maxlength']),
+				"length" => (int)$mybb->input['length'],
+				"maxlength" => (int)$mybb->input['maxlength'],
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => intval($mybb->input['postnum']),
+				"postnum" => (int)$mybb->input['postnum'],
 				"allowhtml" => (int)$mybb->input['allowhtml'],
 				"allowmycode" => (int)$mybb->input['allowmycode'],
 				"allowsmilies" => (int)$mybb->input['allowsmilies'],
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
-			$db->update_query("profilefields", $updated_profile_field, "fid = '".intval($mybb->input['fid'])."'");
+			$db->update_query("profilefields", $updated_profile_field, "fid = '".(int)$mybb->input['fid']."'");
 
 			$cache->update_profilefields();
 
@@ -441,7 +441,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
+		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".(int)$mybb->input['fid'],
 		'description' => $lang->edit_profile_field_desc
 	);
 
@@ -650,7 +650,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select("profilefields", "*", "fid='".(int)$mybb->input['fid']."'");
 	$profile_field = $db->fetch_array($query);
 
 	// Does the profile field not exist?

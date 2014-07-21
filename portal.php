@@ -437,7 +437,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
 	$announcementcount = $db->fetch_field($query, "threads");
 
-	$numannouncements = intval($mybb->settings['portal_numannouncements']);
+	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
 	if(!$numannouncements)
 	{
 		$numannouncements = 10; // Default back to 10

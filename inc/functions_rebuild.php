@@ -99,7 +99,7 @@ function rebuild_poll_counters($pid)
 {
 	global $db;
 
-	$query = $db->simple_select("polls", "pid, numoptions", "pid='".intval($pid)."'");
+	$query = $db->simple_select("polls", "pid, numoptions", "pid='".(int)$pid."'");
 	$poll = $db->fetch_array($query);
 
 	$votes = array();
@@ -123,7 +123,7 @@ function rebuild_poll_counters($pid)
 			$voteslist .= "||~|~||";
 		}
 
-		if(!isset($votes[$i]) || intval($votes[$i]) <= 0)
+		if(!isset($votes[$i]) || (int)$votes[$i] <= 0)
 		{
 			$votes[$i] = "0";
 		}
@@ -133,7 +133,7 @@ function rebuild_poll_counters($pid)
 
 	$updatedpoll = array(
 		"votes" => $db->escape_string($voteslist),
-		"numvotes" => intval($numvotes)
+		"numvotes" => (int)$numvotes
 	);
 	$db->update_query("polls", $updatedpoll, "pid='{$poll['pid']}'");
 }

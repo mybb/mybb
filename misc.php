@@ -885,7 +885,7 @@ elseif($mybb->input['action'] == "syndication")
 			$url .= "type=atom1.0";
 			$add = true;
 		}
-		if(intval($limit) > 0)
+		if((int)$limit > 0)
 		{
 			if($limit > 100)
 			{
@@ -949,7 +949,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $inactiveforums, $templates;
 	static $unviewableforums;
 
-	$pid = intval($pid);
+	$pid = (int)$pid;
 	if(!$permissions)
 	{
 		$permissions = $mybb->usergroup;

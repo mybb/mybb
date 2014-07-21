@@ -1978,7 +1978,7 @@ EOF;
 				'name' => $db->escape_string($settinggroup['attributes']['name']),
 				'title' => $db->escape_string($settinggroup['attributes']['title']),
 				'description' => $db->escape_string($settinggroup['attributes']['description']),
-				'disporder' => intval($settinggroup['attributes']['disporder']),
+				'disporder' => (int)$settinggroup['attributes']['disporder'],
 				'isdefault' => $settinggroup['attributes']['isdefault'],
 			);
 			$gid = $db->insert_query('settinggroups', $groupdata);
@@ -1991,7 +1991,7 @@ EOF;
 					'description' => $db->escape_string($setting['description'][0]['value']),
 					'optionscode' => $db->escape_string($setting['optionscode'][0]['value']),
 					'value' => $db->escape_string($setting['settingvalue'][0]['value']),
-					'disporder' => intval($setting['disporder'][0]['value']),
+					'disporder' => (int)$setting['disporder'][0]['value'],
 					'gid' => $gid,
 					'isdefault' => 1
 				);
@@ -2099,14 +2099,14 @@ EOF;
 			$new_view = array(
 				"uid" => 0,
 				"type" => $db->escape_string($view['attributes']['type']),
-				"visibility" => intval($view['attributes']['visibility']),
+				"visibility" => (int)$view['attributes']['visibility'],
 				"title" => $db->escape_string($view['title'][0]['value']),
 				"fields" => $db->escape_string(serialize($fields)),
 				"conditions" => $db->escape_string(serialize($conditions)),
 				"custom_profile_fields" => $db->escape_string(serialize($custom_profile_fields)),
 				"sortby" => $db->escape_string($view['sortby'][0]['value']),
 				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
-				"perpage" => intval($view['perpage'][0]['value']),
+				"perpage" => (int)$view['perpage'][0]['value'],
 				"view_type" => $db->escape_string($view['view_type'][0]['value'])
 			);
 			$db->insert_query("adminviews", $new_view);
@@ -2283,7 +2283,7 @@ function install_done()
 		}
 
 		$adminoptiondata = array(
-			'uid' => intval($uid),
+			'uid' => (int)$uid,
 			'cpstyle' => '',
 			'notes' => '',
 			'permissions' => $db->escape_string(serialize($insertmodule)),

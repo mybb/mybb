@@ -1771,22 +1771,22 @@ function upgrade30_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".intval($data['uid'])."'");
+						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".(int)$data['uid']."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".intval($data['rid'])."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".(int)$data['rid']."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".intval($data['sid'])."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".(int)$data['sid']."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".intval($data['pid'])."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".(int)$data['pid']."'");
 						break;
 					case 3:
 						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".intval($data['mid'])."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".(int)$data['mid']."'");
 						break;
 					default:
 						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");

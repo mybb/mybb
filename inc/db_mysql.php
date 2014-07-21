@@ -1013,7 +1013,7 @@ class DB_MySQL
 		if($version)
 		{
 			$version = explode(".", $version, 3);
-			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
+			$this->version = (int)$version[0].".".(int)$version[1].".".(int)$version[2];
 		}
 		return $this->version;
 	}

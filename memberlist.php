@@ -122,14 +122,14 @@ else
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 
 	// Incoming results per page?
-	$mybb->input['perpage'] = intval($mybb->get_input('perpage'));
+	$mybb->input['perpage'] = (int)$mybb->get_input('perpage');
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
 	{
 		$per_page = $mybb->input['perpage'];
 	}
 	else if($mybb->settings['membersperpage'])
 	{
-		$per_page = $mybb->input['perpage'] = intval($mybb->settings['membersperpage']);
+		$per_page = $mybb->input['perpage'] = (int)$mybb->settings['membersperpage'];
 	}
 	else
 	{

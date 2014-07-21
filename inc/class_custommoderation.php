@@ -34,7 +34,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", "*", 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select("modtools", "*", 'tid="'.(int)$tool_id.'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -59,7 +59,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select("modtools", '*', 'tid="'.(int)$tool_id.'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -110,7 +110,7 @@ class CustomModeration extends Moderation
 
 		if(is_array($tid))
 		{
-			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
+			$tid = (int)$tid[0]; // There's only 1 thread when doing inline post moderation
 			// The thread chosen is the first thread in the array of tids.
 			// It is recommended that this be the tid of the oldest post
 		}
@@ -127,7 +127,7 @@ class CustomModeration extends Moderation
 			}
 
 			$delete_tids = array();
-			$imploded_pids = implode(",", array_map("intval", $pids));
+			$imploded_pids = implode(",", array_map("(int), $pids);
 			$query = $db->simple_select("threads", "tid", "firstpost IN ({$imploded_pids})");
 			while($threadid = $db->fetch_field($query, "tid"))
 			{
@@ -270,7 +270,7 @@ class CustomModeration extends Moderation
 	{
 		global $db, $mybb;
 
-		$tid = intval($tids[0]); // Take the first thread to get thread data from
+		$tid = (int)$tids[0]; // Take the first thread to get thread data from
 		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 

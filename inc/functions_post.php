@@ -102,7 +102,7 @@ function build_postbit($post, $post_type=0)
 		default: // Regular post
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
-			$id = intval($post['pid']);
+			$id = (int)$post['pid'];
 			$idtype = 'pid';
 			$parser_options['allow_html'] = $forum['allowhtml'];
 			$parser_options['allow_mycode'] = $forum['allowmycode'];

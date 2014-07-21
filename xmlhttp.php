@@ -67,7 +67,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 }
 
 // Load the language pack for this file.
-if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
+if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$loadstyle = "tid='".$mybb->user['style']."'";
 }
@@ -576,7 +576,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 	// Loop through each post ID and sanitize it before querying
 	foreach($multiquoted as $post)
 	{
-		$quoted_posts[$post] = intval($post);
+		$quoted_posts[$post] = (int)$post;
 	}
 
 	// Join the post IDs back together

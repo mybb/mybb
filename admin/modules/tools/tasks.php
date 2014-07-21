@@ -132,8 +132,8 @@ if($mybb->input['action'] == "add")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => intval($mybb->input['enabled']),
-				"logging" => intval($mybb->input['logging'])
+				"enabled" => (int)$mybb->input['enabled'],
+				"logging" => (int)$mybb->input['logging']
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -331,8 +331,8 @@ if($mybb->input['action'] == "edit")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => intval($mybb->input['enabled']),
-				"logging" => intval($mybb->input['logging'])
+				"enabled" => (int)$mybb->input['enabled'],
+				"logging" => (int)$mybb->input['logging']
 			);
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
@@ -446,7 +446,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "run")
 
 	$plugins->run_hooks("admin_tools_tasks_run");
 
-	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -645,7 +645,7 @@ if($mybb->input['action'] == "logs")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = intval($mybb->input['page']);
+		$current_page = (int)$mybb->input['page'];
 		$start = ($current_page-1)*$per_page;
 		$pages = $log_count / $per_page;
 		$pages = ceil($pages);

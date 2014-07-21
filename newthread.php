@@ -34,7 +34,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".(int)$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -516,7 +516,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
 			{
-				$quoted_posts[$post] = intval($post);
+				$quoted_posts[$post] = (int)$post;
 			}
 		}
 

@@ -319,8 +319,8 @@ switch($mybb->input['action'])
 						$mybb->input['delayedmoderation'][$value] = '';
 					}
 				}
-				$mybb->input['delayedmoderation']['redirect_expire'] = intval($mybb->input['delayedmoderation']['redirect_expire']);
-				$mybb->input['delayedmoderation']['new_forum'] = intval($mybb->input['delayedmoderation']['new_forum']);
+				$mybb->input['delayedmoderation']['redirect_expire'] = (int)$mybb->input['delayedmoderation']['redirect_expire'];
+				$mybb->input['delayedmoderation']['new_forum'] = (int)$mybb->input['delayedmoderation']['new_forum'];
 				$mybb->input['delayedmoderation']['subject'] = htmlspecialchars_uni($mybb->input['delayedmoderation']['subject']);
 				$mybb->input['delayedmoderation']['threadurl'] = htmlspecialchars_uni($mybb->input['delayedmoderation']['threadurl']);
 
@@ -478,13 +478,13 @@ switch($mybb->input['action'])
 				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
-					if(intval($delayedmod['inputs']['redirect_expire']) == 0)
+					if((int)$delayedmod['inputs']['redirect_expire'] == 0)
 					{
 						$redirect_expire_bit = $lang->redirect_forever;
 					}
 					else
 					{
-						$redirect_expire_bit = intval($delayedmod['inputs']['redirect_expire'])." {$lang->days}";
+						$redirect_expire_bit = (int)$delayedmod['inputs']['redirect_expire']." {$lang->days}";
 					}
 					$info .= "<strong>{$lang->leave_redirect_for}</strong> {$redirect_expire_bit}<br />";
 				}
@@ -1044,7 +1044,7 @@ switch($mybb->input['action'])
 				$info .= "<strong>{$lang->new_forum}</strong>  <a href=\"".get_forum_link($delayedmod['inputs']['new_forum'])."\">".htmlspecialchars_uni($forum_cache[$delayedmod['inputs']['new_forum']]['name'])."</a><br />";
 				if($delayedmod['inputs']['method'] == "redirect")
 				{
-					$info .= "<strong>{$lang->leave_redirect_for}</strong> ".intval($delayedmod['inputs']['redirect_expire'])." {$lang->days}<br />";
+					$info .= "<strong>{$lang->leave_redirect_for}</strong> ".(int)$delayedmod['inputs']['redirect_expire']." {$lang->days}<br />";
 				}
 			}
 			else if($delayedmod['type'] == 'merge')
@@ -1229,11 +1229,11 @@ switch($mybb->input['action'])
 		if(!empty($parameters['pid']) && empty($parameters['tid']))
 		{
 			$post = get_post($parameters['pid']);
-			$mergetid = intval($post['tid']);
+			$mergetid = (int)$post['tid'];
 		}
 		elseif(!empty($parameters['tid']))
 		{
-			$mergetid = intval($parameters['tid']);
+			$mergetid = (int)$parameters['tid'];
 		}
 		else
 		{
@@ -1454,7 +1454,7 @@ switch($mybb->input['action'])
 		}
 		foreach($threadlist as $tid)
 		{
-			$tid = intval($tid);
+			$tid = (int)$tid;
 			$moderation->delete_thread($tid);
 			$tlist[] = $tid;
 		}
@@ -1867,7 +1867,7 @@ switch($mybb->input['action'])
 		}
 		foreach($threadlist as $tid)
 		{
-			$tids[] = intval($tid);
+			$tids[] = (int)$tid;
 		}
 		// Make sure moderator has permission to move to the new forum
 		$newperms = forum_permissions($moveto);
@@ -1953,7 +1953,7 @@ switch($mybb->input['action'])
 		$deletecount = 0;
 		foreach($postlist as $pid)
 		{
-			$pid = intval($pid);
+			$pid = (int)$pid;
 			$moderation->delete_post($pid);
 			$plist[] = $pid;
 			$deletecount++;
@@ -2013,11 +2013,11 @@ switch($mybb->input['action'])
 				$inlinepostlist = explode("|", $mybb->cookies[$key]);
 				foreach($inlinepostlist as $p)
 				{
-					$p = intval($p);
+					$p = (int)$p;
 
 					if(!empty($p))
 					{
-						$posts[] = intval($p);
+						$posts[] = (int)$p;
 					}
 				}
 				// Remove the cookie once its data is retrieved
@@ -2096,7 +2096,7 @@ switch($mybb->input['action'])
 
 		foreach($mergepost as $pid => $yes)
 		{
-			$postlist[] = intval($pid);
+			$postlist[] = (int)$pid;
 		}
 
 		if(!is_moderator_by_pids($postlist, "canmanagethreads"))
@@ -2148,7 +2148,7 @@ switch($mybb->input['action'])
 		$threads = $pcheck = array();
 		while($tcheck = $db->fetch_array($query))
 		{
-			if(intval($tcheck['count']) <= 1)
+			if((int)$tcheck['count'] <= 1)
 			{
 				error($lang->error_cantsplitonepost);
 			}
@@ -2205,7 +2205,7 @@ switch($mybb->input['action'])
 		$postlist = explode("|", $mybb->get_input('posts'));
 		foreach($postlist as $pid)
 		{
-			$pid = intval($pid);
+			$pid = (int)$pid;
 			$plist[] = $pid;
 		}
 
@@ -2244,7 +2244,7 @@ switch($mybb->input['action'])
 		$pcheck = array();
 		while($tcheck = $db->fetch_array($query))
 		{
-			if(intval($tcheck['count']) <= 1)
+			if((int)$tcheck['count'] <= 1)
 			{
 				error($lang->error_cantsplitonepost);
 			}
@@ -2336,7 +2336,7 @@ switch($mybb->input['action'])
 		$threads = $pcheck = array();
 		while($tcheck = $db->fetch_array($query))
 		{
-			if(intval($tcheck['count']) <= 1)
+			if((int)$tcheck['count'] <= 1)
 			{
 				error($lang->error_cantsplitonepost);
 			}
@@ -2430,7 +2430,7 @@ switch($mybb->input['action'])
 
 		if(!empty($parameters['pid']) && empty($parameters['tid']))
 		{
-			$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");
+			$query = $db->simple_select("posts", "*", "pid='".(int)$parameters['pid']."'");
 			$post = $db->fetch_array($query);
 			$newtid = $post['tid'];
 		}
@@ -2442,7 +2442,7 @@ switch($mybb->input['action'])
 		{
 			$newtid = 0;
 		}
-		$newtid = intval($newtid);
+		$newtid = (int)$newtid;
 		$newthread = get_thread($newtid);
 		if(!$newthread)
 		{
@@ -2457,7 +2457,7 @@ switch($mybb->input['action'])
 		$plist = array();
 		foreach($postlist as $pid)
 		{
-			$pid = intval($pid);
+			$pid = (int)$pid;
 			$plist[] = $pid;
 		}
 
@@ -2496,7 +2496,7 @@ switch($mybb->input['action'])
 		$threads = $pcheck = array();
 		while($tcheck = $db->fetch_array($query))
 		{
-			if(intval($tcheck['count']) <= 1)
+			if((int)$tcheck['count'] <= 1)
 			{
 				error($lang->error_cantsplitonepost);
 			}
@@ -2562,7 +2562,7 @@ switch($mybb->input['action'])
 		$pids = array();
 		foreach($posts as $pid)
 		{
-			$pids[] = intval($pid);
+			$pids[] = (int)$pid;
 		}
 
 		$moderation->approve_posts($pids);
@@ -2606,7 +2606,7 @@ switch($mybb->input['action'])
 		}
 		foreach($posts as $pid)
 		{
-			$pids[] = intval($pid);
+			$pids[] = (int)$pid;
 		}
 
 		$moderation->unapprove_posts($pids);
@@ -2650,7 +2650,7 @@ switch($mybb->input['action'])
 		$pids = array();
 		foreach($posts as $pid)
 		{
-			$pids[] = intval($pid);
+			$pids[] = (int)$pid;
 		}
 
 		$moderation->restore_posts($pids);
@@ -2694,7 +2694,7 @@ switch($mybb->input['action'])
 		}
 		foreach($posts as $pid)
 		{
-			$pids[] = intval($pid);
+			$pids[] = (int)$pid;
 		}
 
 		$moderation->soft_delete_posts($pids);
@@ -2788,7 +2788,7 @@ switch($mybb->input['action'])
 							$users[$pm['uid']] = $pm['uid'];
 							$users[$pm['toid']] = $pm['toid'];
 						}
-						$pms = implode(",", array_map("intval", $pms));
+						$pms = implode(",", array_map("(int), $pms);
 						$db->delete_query("privatemessages", "pmid IN (" . $db->escape_string($pms) . ")");
 						require_once MYBB_ROOT . "inc/functions_user.php";
 						foreach($users as $user_id)
@@ -2805,16 +2805,16 @@ switch($mybb->input['action'])
 							$reps[] = $rep['rid'];
 							$users[] = $rep['uid'];
 						}
-						$reps = implode(",", array_map("intval", $reps));
+						$reps = implode(",", array_map("(int), $reps);
 						$db->delete_query("reputation", "rid IN (" . $db->escape_string($reps) . ")");
 						foreach($users as $user_id)
 						{
-							$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid = '" . intval($user_id) . "'");
+							$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid = '" . (int)$user_id . "'");
 							$reputation_count = $db->fetch_field($query, "reputation_count");
 							$repupdate = array(
-								"reputation" => intval($reputation_count)
+								"reputation" => (int)$reputation_count
 							);
-							$db->update_query("users", $repupdate, "uid = '" . intval($user_id) . "'");
+							$db->update_query("users", $repupdate, "uid = '" . (int)$user_id . "'");
 						}
 						break;
 					case "deletereportedcontent":
@@ -2838,11 +2838,11 @@ switch($mybb->input['action'])
 							{
 								$insert = array(
 									"uid" => $uid,
-									"gid" => intval($mybb->settings['purgespammerbangroup']),
+									"gid" => (int)$mybb->settings['purgespammerbangroup'],
 									"oldgroup" => 2,
 									"oldadditionalgroups" => "",
 									"olddisplaygroup" => 0,
-									"admin" => intval($mybb->user['uid']),
+									"admin" => (int)$mybb->user['uid'],
 									"dateline" => TIME_NOW,
 									"bantime" => "---",
 									"lifted" => 0,
@@ -2865,7 +2865,7 @@ switch($mybb->input['action'])
 								}
 							}
 
-							$update['usergroup'] = intval($mybb->settings['purgespammerbangroup']);
+							$update['usergroup'] = (int)$mybb->settings['purgespammerbangroup'];
 							$update['additionalgroups'] = "";
 							$update['displaygroup'] = 0;
 
@@ -2970,7 +2970,7 @@ switch($mybb->input['action'])
 						$profilefields = array();
 						while($fid = $db->fetch_field($query, "fid"))
 						{
-							$profilefields[] = "fid" . intval($fid);
+							$profilefields[] = "fid" . (int)$fid;
 						}
 						$profilefields_string = implode(", ", $profilefields);
 						if(!empty($profilefields_string))
@@ -3271,7 +3271,7 @@ function getids($id, $type)
 			}
 			else
 			{
-				$newids[] = intval($cookie_id);
+				$newids[] = (int)$cookie_id;
 			}
 		}
 	}
@@ -3301,7 +3301,7 @@ function getallids($id, $type)
 	// "Select all Threads in this forum" only supported by forumdisplay and search
 	if($type == 'forum')
 	{
-		$query = $db->simple_select("threads", "tid", "fid='".intval($id)."'");
+		$query = $db->simple_select("threads", "tid", "fid='".(int)$id."'");
 		while($tid = $db->fetch_field($query, "tid"))
 		{
 			if(in_array($tid, $removed_ids))

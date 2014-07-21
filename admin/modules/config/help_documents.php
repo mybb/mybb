@@ -56,9 +56,9 @@ if($mybb->input['action'] == "add")
 				$sql_array = array(
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
-					"usetranslation" => intval($mybb->input['usetranslation']),
-					"enabled" => intval($mybb->input['enabled']),
-					"disporder" => intval($mybb->input['disporder'])
+					"usetranslation" => (int)$mybb->input['usetranslation'],
+					"enabled" => (int)$mybb->input['enabled'],
+					"disporder" => (int)$mybb->input['disporder']
 				);
 
 				$sid = $db->insert_query("helpsections", $sql_array);
@@ -163,13 +163,13 @@ if($mybb->input['action'] == "add")
 			if(!is_array($errors))
 			{
 				$sql_array = array(
-					"sid" => intval($mybb->input['sid']),
+					"sid" => (int)$mybb->input['sid'],
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
 					"document" => $db->escape_string($mybb->input['document']),
-					"usetranslation" => intval($mybb->input['usetranslation']),
-					"enabled" => intval($mybb->input['enabled']),
-					"disporder" => intval($mybb->input['disporder'])
+					"usetranslation" => (int)$mybb->input['usetranslation'],
+					"enabled" => (int)$mybb->input['enabled'],
+					"disporder" => (int)$mybb->input['disporder']
 				);
 
 				$hid = $db->insert_query("helpdocs", $sql_array);
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "edit")
 	// Edit a section
 	if($mybb->input['sid'] && !$mybb->input['hid'])
 	{
-		$query = $db->simple_select("helpsections", "*", "sid = '".intval($mybb->input['sid'])."'");
+		$query = $db->simple_select("helpsections", "*", "sid = '".(int)$mybb->input['sid']."'");
 		$section = $db->fetch_array($query);
 
 		$plugins->run_hooks("admin_config_help_documents_edit_section");
@@ -262,7 +262,7 @@ if($mybb->input['action'] == "edit")
 		// Do edit?
 		if($mybb->request_method == "post")
 		{
-			$sid = intval($mybb->input['sid']);
+			$sid = (int)$mybb->input['sid'];
 
 			if(empty($sid))
 			{
@@ -294,9 +294,9 @@ if($mybb->input['action'] == "edit")
 				$sql_array = array(
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
-					"usetranslation" => intval($mybb->input['usetranslation']),
-					"enabled" => intval($mybb->input['enabled']),
-					"disporder" => intval($mybb->input['disporder'])
+					"usetranslation" => (int)$mybb->input['usetranslation'],
+					"enabled" => (int)$mybb->input['enabled'],
+					"disporder" => (int)$mybb->input['disporder']
 				);
 
 				$plugins->run_hooks("admin_config_help_documents_edit_section_commit");
@@ -317,7 +317,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_section'] = array(
 			'title'	=> $lang->edit_section,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;sid=".intval($mybb->input['sid']),
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;sid=".(int)$mybb->input['sid'],
 			'description' => $lang->edit_section_desc
 		);
 
@@ -342,7 +342,7 @@ if($mybb->input['action'] == "edit")
 		echo $form->generate_hidden_field("sid", $mybb->input['sid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
-		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".intval($mybb->input['sid']).")");
+		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".(int)$mybb->input['sid'].")");
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
@@ -363,7 +363,7 @@ if($mybb->input['action'] == "edit")
 		// Do edit?
 		if($mybb->request_method == "post")
 		{
-			$hid = intval($mybb->input['hid']);
+			$hid = (int)$mybb->input['hid'];
 
 			if(empty($hid))
 			{
@@ -398,13 +398,13 @@ if($mybb->input['action'] == "edit")
 			if(!is_array($errors))
 			{
 				$sql_array = array(
-					"sid" => intval($mybb->input['sid']),
+					"sid" => (int)$mybb->input['sid'],
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
 					"document" => $db->escape_string($mybb->input['document']),
-					"usetranslation" => intval($mybb->input['usetranslation']),
-					"enabled" => intval($mybb->input['enabled']),
-					"disporder" => intval($mybb->input['disporder'])
+					"usetranslation" => (int)$mybb->input['usetranslation'],
+					"enabled" => (int)$mybb->input['enabled'],
+					"disporder" => (int)$mybb->input['disporder']
 				);
 
 				$plugins->run_hooks("admin_config_help_documents_edit_page_commit");
@@ -425,7 +425,7 @@ if($mybb->input['action'] == "edit")
 
 		$sub_tabs['edit_help_document'] = array(
 			'title'	=> $lang->edit_document,
-			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".intval($mybb->input['hid']),
+			'link'	=> "index.php?module=config-help_documents&amp;action=edit&amp;hid=".(int)$mybb->input['hid'],
 			'description' => $lang->edit_document_desc
 		);
 
@@ -437,7 +437,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("helpdocs", "*", "hid = '".intval($mybb->input['hid'])."'");
+			$query = $db->simple_select("helpdocs", "*", "hid = '".(int)$mybb->input['hid']."'");
 			$doc = $db->fetch_array($query);
 			$mybb->input['hid'] = $doc['hid'];
 			$mybb->input['sid'] = $doc['sid'];
@@ -454,7 +454,7 @@ if($mybb->input['action'] == "edit")
 		echo $form->generate_hidden_field("hid", $mybb->input['hid']);
 		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 
-		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".intval($mybb->input['hid']).")");
+		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".(int)$mybb->input['hid'].")");
 
 		$sections = array();
 		$query = $db->simple_select("helpsections", "sid, name");
@@ -496,7 +496,7 @@ if($mybb->input['action'] == "delete")
 		// Delete section
 		if(isset($mybb->input['sid']))
 		{
-			$sid = intval($mybb->input['sid']);
+			$sid = (int)$mybb->input['sid'];
 
 			$query = $db->simple_select("helpsections", "*", "sid='{$sid}'");
 			$section = $db->fetch_array($query);
@@ -524,7 +524,7 @@ if($mybb->input['action'] == "delete")
 		// Delete document
 		else
 		{
-			$hid = intval($mybb->input['hid']);
+			$hid = (int)$mybb->input['hid'];
 
 			$query = $db->simple_select("helpdocs", "*", "hid='{$hid}'");
 			$doc = $db->fetch_array($query);
@@ -553,13 +553,13 @@ if($mybb->input['action'] == "delete")
 		// Section
 		if(isset($mybb->input['sid']))
 		{
-			$sid = intval($mybb->input['sid']);
+			$sid = (int)$mybb->input['sid'];
 			$page->output_confirm_action("index.php?module=config-help_documents&amp;action=delete&amp;sid={$sid}", $lang->confirm_section_deletion);
 		}
 		// Document
 		else
 		{
-			$hid = intval($mybb->input['hid']);
+			$hid = (int)$mybb->input['hid'];
 			$page->output_confirm_action("index.php?module=config-help_documents&amp;action=delete&amp;hid={$hid}", $lang->confirm_document_deletion);
 		}
 	}

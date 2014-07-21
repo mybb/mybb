@@ -453,7 +453,7 @@ else
 	$datecut = $mybb->get_input('datecut', 1);
 }
 
-$datecut = intval($datecut);
+$datecut = (int)$datecut;
 $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut > 0 && $datecut != 9999)
 {
@@ -900,8 +900,8 @@ $selectall = '';
 if(is_moderator($fid) && $threadcount > $perpage)
 {
 	$lang->page_selected = $lang->sprintf($lang->page_selected, count($threadcache));
-	$lang->select_all = $lang->sprintf($lang->select_all, intval($threadcount));
-	$lang->all_selected = $lang->sprintf($lang->all_selected, intval($threadcount));
+	$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
+	$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
 	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
 }
 
@@ -1072,8 +1072,8 @@ if(!empty($threadcache) && is_array($threadcache))
 			else
 			{
 				$thread['averagerating'] = floatval(round($thread['averagerating'], 2));
-				$thread['width'] = intval(round($thread['averagerating']))*20;
-				$thread['numratings'] = intval($thread['numratings']);
+				$thread['width'] = (int)round($thread['averagerating'])*20;
+				$thread['numratings'] = (int)$thread['numratings'];
 
 				$not_rated = '';
 				if(!isset($thread['rated']) || empty($thread['rated']))

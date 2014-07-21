@@ -24,7 +24,7 @@ function task_promotions($task)
 			$update = array(
 				"enabled" => 0
 			);
-			$db->update_query("promotions", $update, "pid = '" . intval($promotion['pid']) . "'");
+			$db->update_query("promotions", $update, "pid = '" . (int)$promotion['pid'] . "'");
 			continue;
 		}
 
@@ -33,14 +33,14 @@ function task_promotions($task)
 
 		// Based on the promotion generate criteria for user selection
 		$requirements = explode(',', $promotion['requirements']);
-		if(in_array('postcount', $requirements) && intval($promotion['posts']) >= 0 && !empty($promotion['posttype']))
+		if(in_array('postcount', $requirements) && (int)$promotion['posts'] >= 0 && !empty($promotion['posttype']))
 		{
 			$sql_where .= "{$and}postnum {$promotion['posttype']} '{$promotion['posts']}'";
 
 			$and = " AND ";
 		}
 
-		if(in_array('threadcount', $requirements) && intval($promotion['threads']) >= 0 && !empty($promotion['threadtype']))
+		if(in_array('threadcount', $requirements) && (int)$promotion['threads'] >= 0 && !empty($promotion['threadtype']))
 		{
 			$sql_where .= "{$and}threadnum {$promotion['threadtype']} '{$promotion['threads']}'";
 
@@ -54,21 +54,21 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
-		if(in_array('referrals', $requirements) && intval($promotion['referrals']) >= 0 && !empty($promotion['referralstype']))
+		if(in_array('referrals', $requirements) && (int)$promotion['referrals'] >= 0 && !empty($promotion['referralstype']))
 		{
 			$sql_where .= "{$and}referrals {$promotion['referralstype']} '{$promotion['referrals']}'";
 
 			$and = " AND ";
 		}
 
-		if(in_array('warnings', $requirements) && intval($promotion['warnings']) >= 0 && !empty($promotion['warningstype']))
+		if(in_array('warnings', $requirements) && (int)$promotion['warnings'] >= 0 && !empty($promotion['warningstype']))
 		{
 			$sql_where .= "{$and}warningpoints {$promotion['warningstype']} '{$promotion['warnings']}'";
 
 			$and = " AND ";
 		}
 
-		if(in_array('timeregistered', $requirements) && intval($promotion['registered']) > 0 && !empty($promotion['registeredtype']))
+		if(in_array('timeregistered', $requirements) && (int)$promotion['registered'] > 0 && !empty($promotion['registeredtype']))
 		{
 			switch($promotion['registeredtype'])
 			{
@@ -94,7 +94,7 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
-		if(in_array('timeonline', $requirements) && intval($promotion['online']) > 0 && !empty($promotion['onlinetype']))
+		if(in_array('timeonline', $requirements) && (int)$promotion['online'] > 0 && !empty($promotion['onlinetype']))
 		{
 			switch($promotion['onlinetype'])
 			{

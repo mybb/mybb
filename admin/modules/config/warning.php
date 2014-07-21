@@ -62,7 +62,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => intval($mybb->input['action_1_usergroup']),
+					"usergroup" => (int)$mybb->input['action_1_usergroup'],
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -83,7 +83,7 @@ if($mybb->input['action'] == "add_level")
 				);
 			}
 			$new_level = array(
-				"percentage" => intval($mybb->input['percentage']),
+				"percentage" => (int)$mybb->input['percentage'],
 				"action" => serialize($action)
 			);
 
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -226,7 +226,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => intval($mybb->input['action_1_usergroup']),
+					"usergroup" => (int)$mybb->input['action_1_usergroup'],
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "edit_level")
 				);
 			}
 			$updated_level = array(
-				"percentage" => intval($mybb->input['percentage']),
+				"percentage" => (int)$mybb->input['percentage'],
 				"action" => serialize($action)
 			);
 
@@ -396,7 +396,7 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -453,7 +453,7 @@ if($mybb->input['action'] == "add_type")
 		{
 			$new_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => intval($mybb->input['points']),
+				"points" => (int)$mybb->input['points'],
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -513,7 +513,7 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".(int)$mybb->input['tid']."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -541,7 +541,7 @@ if($mybb->input['action'] == "edit_type")
 		{
 			$updated_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => intval($mybb->input['points']),
+				"points" => (int)$mybb->input['points'],
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -609,7 +609,7 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".(int)$mybb->input['tid']."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?

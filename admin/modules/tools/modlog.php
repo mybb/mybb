@@ -41,12 +41,12 @@ if($mybb->input['action'] == 'prune')
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
+		$where = 'dateline < '.(TIME_NOW-((int)$mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
 		{
-			$where .= " AND uid='".intval($mybb->input['uid'])."'";
+			$where .= " AND uid='".(int)$mybb->input['uid']."'";
 		}
 
 		// Searching for entries in a specific module
@@ -132,7 +132,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'mod_logs');
 
-	$perpage = intval($mybb->input['perpage']);
+	$perpage = (int)$mybb->input['perpage'];
 	if(!$perpage)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
@@ -143,13 +143,13 @@ if(!$mybb->input['action'])
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])
 	{
-		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
+		$where .= " AND l.uid='".(int)$mybb->input['uid']."'";
 	}
 
 	// Searching for entries in a specific forum
 	if($mybb->input['fid'] > 0)
 	{
-		$where .= " AND l.fid='".intval($mybb->input['fid'])."'";
+		$where .= " AND l.fid='".(int)$mybb->input['fid']."'";
 	}
 
 	// Order?
@@ -183,10 +183,10 @@ if(!$mybb->input['action'])
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
-		$pagecnt = intval($mybb->input['page']);
+		$pagecnt = (int)$mybb->input['page'];
 	}
 
-	$postcount = intval($rescount);
+	$postcount = (int)$rescount;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 

@@ -554,7 +554,7 @@ if($mybb->input['action'] == "view")
 		error($lang->error_invalid_warning);
 	}
 
-	$user = get_user(intval($warning['uid']));
+	$user = get_user((int)$warning['uid']);
 	if(!$user)
 	{
 		$user['username'] = $lang->guest;

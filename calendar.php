@@ -323,7 +323,7 @@ if($mybb->input['action'] == "addevent")
 			{
 				continue;
 			}
-			$day = intval($day);
+			$day = (int)$day;
 			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
 		$repeats_4_type = array();
@@ -830,7 +830,7 @@ if($mybb->input['action'] == "editevent")
 			{
 				continue;
 			}
-			$day = intval($day);
+			$day = (int)$day;
 			$repeats_3_days[$day] = " checked=\"checked\"";
 		}
 		$repeats_4_type = array();

@@ -449,7 +449,7 @@ if($mybb->input['action'] == "edit")
 		echo $form->generate_hidden_field("file", $file);
 		echo $form->generate_hidden_field("lang", $editlang);
 		echo $form->generate_hidden_field("editwith", $editwith);
-		echo $form->generate_hidden_field("inadmin", intval($mybb->input['inadmin']));
+		echo $form->generate_hidden_field("inadmin", (int)$mybb->input['inadmin']);
 		if($errors)
 		{
 			$page->output_inline_error($errors);

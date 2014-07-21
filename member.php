@@ -144,7 +144,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	$coppauser = 0;
 	if(isset($mybb->cookies['coppauser']))
 	{
-		$coppauser = intval($mybb->cookies['coppauser']);
+		$coppauser = (int)$mybb->cookies['coppauser'];
 	}
 
 	// Set the data for the new user.
@@ -814,13 +814,13 @@ if($mybb->input['action'] == "register")
 		{
 			if(isset($mybb->cookies['mybb']['referrer']))
 			{
-				$query = $db->simple_select("users", "uid,username", "uid='".intval($mybb->cookies['mybb']['referrer'])."'");
+				$query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif(isset($referrer))
 			{
-				$query = $db->simple_select("users", "username", "uid='".intval($referrer['uid'])."'");
+				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
@@ -1566,7 +1566,7 @@ if($mybb->input['action'] == "resetpassword")
 		$username = $user['username'];
 
 		// Generate a new password, then update it
-		$password_length = intval($mybb->settings['minpasswordlength']);
+		$password_length = (int)$mybb->settings['minpasswordlength'];
 
 		if($password_length < 8)
 		{
@@ -1661,7 +1661,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$errors = $loginhandler->get_friendly_errors();
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
+		if($mybb->settings['failedcaptchalogincount'] > 0 && (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount'])
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;
@@ -2099,7 +2099,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.(int)$memprofile['uid'].'\'');
 
 				// Update our status to "not away"
 				$memprofile['away'] = 0;

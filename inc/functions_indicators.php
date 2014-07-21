@@ -87,7 +87,7 @@ function fetch_unread_count($fid)
 		{
 			foreach($threadsread as $key => $value)
 			{
-				$tids .= $comma.intval($key);
+				$tids .= $comma.(int)$key;
 				$comma = ',';
 			}
 		}
@@ -101,7 +101,7 @@ function fetch_unread_count($fid)
 
 			while($thread = $db->fetch_array($query))
 			{
-				if(isset($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($threadsread[$thread['tid']]) && isset($forumsread[$thread['fid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
+				if(isset($threadsread[$thread['tid']]) && $thread['lastpost'] > (int)$threadsread[$thread['tid']] && isset($forumsread[$thread['fid']]) && $thread['lastpost'] > (int)$forumsread[$thread['fid']])
 				{
 					++$count;
 				}

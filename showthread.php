@@ -185,7 +185,7 @@ if($mybb->input['action'] == "newpost")
 	}
 	else
 	{
-		$forum_read = intval(my_get_array_cookie("forumread", $fid));
+		$forum_read = (int)my_get_array_cookie("forumread", $fid);
 	}
 
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "newpost")
 
 	if(!$lastread)
 	{
-		$readcookie = $threadread = intval(my_get_array_cookie("threadread", $thread['tid']));
+		$readcookie = $threadread = (int)my_get_array_cookie("threadread", $thread['tid']);
 		if($readcookie > $forum_read)
 		{
 			$lastread = $readcookie;
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "newpost")
 		"order_dir" => "asc"
 	);
 
-	$lastread = intval($lastread);
+	$lastread = (int)$lastread;
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}' {$visibleonly}", $options);
 	$newpost = $db->fetch_array($query);
 
@@ -402,13 +402,13 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 			$query = $db->query("
 				SELECT COUNT(tid) as threads
 				FROM ".TABLE_PREFIX."threads
-				WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
+				WHERE fid = '$fid' AND (lastpost >= '".(int)$thread['lastpost']."'{$stickybit}) {$visibleonly} {$uid_only}
 				GROUP BY lastpost
 				ORDER BY lastpost DESC
 			");
 			break;
 		default:
-			$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
+			$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".(int)$thread['lastpost']."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
 	}
 
 	$thread_position = $db->fetch_field($query, "threads");
@@ -524,7 +524,7 @@ if($mybb->input['action'] == "thread")
 			// If the user already voted or if the results need to be shown, do so; else show voting screen.
 			if(isset($alreadyvoted) || isset($showresults))
 			{
-				if(intval($votes) == "0")
+				if((int)$votes == "0")
 				{
 					$percent = "0";
 				}
@@ -697,8 +697,8 @@ if($mybb->input['action'] == "thread")
 		else
 		{
 			$thread['averagerating'] = floatval(round($thread['totalratings']/$thread['numratings'], 2));
-			$thread['width'] = intval(round($thread['averagerating']))*20;
-			$thread['numratings'] = intval($thread['numratings']);
+			$thread['width'] = (int)round($thread['averagerating'])*20;
+			$thread['numratings'] = (int)$thread['numratings'];
 		}
 
 		if($thread['numratings'])
@@ -898,7 +898,7 @@ if($mybb->input['action'] == "thread")
 				}
 				else
 				{
-					$page = intval($result / $perpage) + 1;
+					$page = (int)$result / $perpage + 1;
 				}
 			}
 		}
@@ -919,7 +919,7 @@ if($mybb->input['action'] == "thread")
 			}
 		}
 
-		$postcount = intval($thread['replies'])+1;
+		$postcount = (int)$thread['replies']+1;
 		$pages = $postcount / $perpage;
 		$pages = ceil($pages);
 
@@ -1382,7 +1382,7 @@ if($mybb->input['action'] == "thread")
 
 	if($mybb->user['uid'])
 	{
-		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
+		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".(int)$tid."' AND uid='".(int)$mybb->user['uid']."'", array('limit' => 1));
 
 		if($db->fetch_field($query, 'tid'))
 		{

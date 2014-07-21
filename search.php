@@ -48,9 +48,9 @@ $now = TIME_NOW;
 $mybb->input['keywords'] = trim($mybb->get_input('keywords'));
 
 $limitsql = "";
-if(intval($mybb->settings['searchhardlimit']) > 0)
+if((int)$mybb->settings['searchhardlimit'] > 0)
 {
-	$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	$limitsql = "LIMIT ".(int)$mybb->settings['searchhardlimit'];
 }
 
 if($mybb->input['action'] == "results")
@@ -651,8 +651,8 @@ if($mybb->input['action'] == "results")
 		{
 			// If user has moderation tools available, prepare the Select All feature
 			$lang->page_selected = $lang->sprintf($lang->page_selected, count($thread_cache));
-			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($threadcount));
-			$lang->select_all = $lang->sprintf($lang->select_all, intval($threadcount));
+			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
+			$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
 			eval("\$selectall = \"".$templates->get("search_threads_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = '';
@@ -720,9 +720,9 @@ if($mybb->input['action'] == "results")
 		}
 
 		$post_cache_options = array();
-		if(intval($mybb->settings['searchhardlimit']) > 0)
+		if((int)$mybb->settings['searchhardlimit'] > 0)
 		{
-			$post_cache_options['limit'] = intval($mybb->settings['searchhardlimit']);
+			$post_cache_options['limit'] = (int)$mybb->settings['searchhardlimit'];
 		}
 
 		if(strpos($sortfield, 'p.') !== false)
@@ -1016,9 +1016,9 @@ if($mybb->input['action'] == "results")
 		{
 			// If user has moderation tools available, prepare the Select All feature
 			$num_results = $db->num_rows($query);
-			$lang->page_selected = $lang->sprintf($lang->page_selected, intval($num_results));
-			$lang->select_all = $lang->sprintf($lang->select_all, intval($postcount));
-			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($postcount));
+			$lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
+			$lang->select_all = $lang->sprintf($lang->select_all, (int)$postcount);
+			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = $customposttools = '';
@@ -1090,7 +1090,7 @@ elseif($mybb->input['action'] == "findguest")
 	// Do we have a hard search limit?
 	if($mybb->settings['searchhardlimit'] > 0)
 	{
-		$options['limit'] = intval($mybb->settings['searchhardlimit']);
+		$options['limit'] = (int)$mybb->settings['searchhardlimit'];
 	}
 
 	$pids = '';
@@ -1167,7 +1167,7 @@ elseif($mybb->input['action'] == "finduser")
 	// Do we have a hard search limit?
 	if($mybb->settings['searchhardlimit'] > 0)
 	{
-		$options['limit'] = intval($mybb->settings['searchhardlimit']);
+		$options['limit'] = (int)$mybb->settings['searchhardlimit'];
 	}
 
 	$pids = '';
@@ -1255,7 +1255,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 elseif($mybb->input['action'] == "getnew")
 {
 
-	$where_sql = "t.lastpost >= '".intval($mybb->user['lastvisit'])."'";
+	$where_sql = "t.lastpost >= '".(int)$mybb->user['lastvisit']."'";
 
 	if($mybb->get_input('fid', 1))
 	{
@@ -1266,7 +1266,7 @@ elseif($mybb->input['action'] == "getnew")
 		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
-			$fids[$key] = intval($fid);
+			$fids[$key] = (int)$fid;
 		}
 
 		if(!empty($fids))
@@ -1343,7 +1343,7 @@ elseif($mybb->input['action'] == "getdaily")
 		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
-			$fids[$key] = intval($fid);
+			$fids[$key] = (int)$fid;
 		}
 
 		if(!empty($fids))

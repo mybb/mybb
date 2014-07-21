@@ -375,9 +375,9 @@ class WarningsHandler extends DataHandler
 			}
 
 			$updated_user = array(
-				"warningpoints" => intval($warningpoints)
+				"warningpoints" => (int)$warningpoints
 			);
-			$db->update_query("users", $updated_user, "uid='".intval($uid)."'");
+			$db->update_query("users", $updated_user, "uid='".(int)$uid."'");
 		}
 
 		return true;
@@ -482,7 +482,7 @@ class WarningsHandler extends DataHandler
 							}
 
 							$new_ban = array(
-								"uid" => intval($user['uid']),
+								"uid" => (int)$user['uid'],
 								"gid" => $db->escape_string($action['usergroup']),
 								"oldgroup" => $db->escape_string($user['usergroup']),
 								"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),

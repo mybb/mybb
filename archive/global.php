@@ -85,7 +85,7 @@ if($endpart != "index.php")
 	}
 	if(!empty($todo[2]))
 	{
-		$page = intval($todo[2]);
+		$page = (int)$todo[2];
 	}
 	else
 	{
@@ -93,7 +93,7 @@ if($endpart != "index.php")
 	}
 	if(!empty($todo[1]))
 	{
-		$id = intval($todo[1]);
+		$id = (int)$todo[1];
 	}
 	else
 	{

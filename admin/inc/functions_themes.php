@@ -289,7 +289,7 @@ function import_theme_xml($xml, $options=array())
 				"tid" => $theme_id,
 				"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
 				"stylesheet" => $db->escape_string($stylesheet['value']),
-				"lastmodified" => intval($stylesheet['attributes']['lastmodified']),
+				"lastmodified" => (int)$stylesheet['attributes']['lastmodified'],
 				"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 			);
 			$sid = $db->insert_query("themestylesheets", $new_stylesheet);
@@ -555,7 +555,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 
 	$new_theme = array(
 		"name" => $db->escape_string($name),
-		"pid" => intval($parent),
+		"pid" => (int)$parent,
 		"def" => 0,
 		"allowedgroups" => "all",
 		"properties" => "",
@@ -567,7 +567,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 	$stylesheets = array();
 	if($parent > 0)
 	{
-		$query = $db->simple_select("themes", "*", "tid='".intval($parent)."'");
+		$query = $db->simple_select("themes", "*", "tid='".(int)$parent."'");
 		$parent_theme = $db->fetch_array($query);
 		if(count($properties) == 0 || !is_array($properties))
 		{
@@ -865,7 +865,7 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 		$actual_occurance = 0;
 		if($break !== false)
 		{
-			$actual_occurance = intval(substr($selector, ($break+1)));
+			$actual_occurance = (int)substr($selector, ($break+1));
 		}
 
 		if(!$actual_occurance)
@@ -1219,11 +1219,11 @@ function build_theme_list($parent=0, $depth=0)
 
 			if($themes[$user_themes['style']]['users'] > 0)
 			{
-				$themes[$user_themes['style']]['users'] += intval($user_themes['users']);
+				$themes[$user_themes['style']]['users'] += (int)$user_themes['users'];
 			}
 			else
 			{
-				$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
+				$themes[$user_themes['style']]['users'] = (int)$user_themes['users'];
 			}
 		}
 

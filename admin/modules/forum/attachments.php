@@ -45,11 +45,11 @@ if($mybb->input['action'] == "delete")
 
 	if(!is_array($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array(intval($mybb->input['aid']));
+		$mybb->input['aids'] = array((int)$mybb->input['aid']);
 	}
 	else
 	{
-		$mybb->input['aids'] = array_map("intval", $mybb->input['aids']);
+		$mybb->input['aids'] = array_map("(int), $mybb->input['aids'];
 	}
 
 	if(count($mybb->input['aids']) < 1)
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting physical attachments which exist in database
 	if(is_array($mybb->input['orphaned_attachments']))
 	{
-		$mybb->input['orphaned_attachments'] = array_map("intval", $mybb->input['orphaned_attachments']);
+		$mybb->input['orphaned_attachments'] = array_map("(int), $mybb->input['orphaned_attachments'];
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
 		$query = $db->simple_select("attachments", "aid,pid,posthash", "aid IN (".implode(",", $mybb->input['orphaned_attachments']).")");
@@ -323,7 +323,7 @@ if($mybb->input['action'] == "orphans")
 
 		foreach($aids as $key => $aid)
 		{
-			$aids[$key] = intval($aid);
+			$aids[$key] = (int)$aid;
 		}
 
 		$results += count($aids);
@@ -718,13 +718,13 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = intval($mybb->input['perpage']);
+			$mybb->input['perpage'] = (int)$mybb->input['perpage'];
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
 
-			$mybb->input['page'] = intval($mybb->input['page']);
+			$mybb->input['page'] = (int)$mybb->input['page'];
 			if($mybb->input['page'])
 			{
 				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];

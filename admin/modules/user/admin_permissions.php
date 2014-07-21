@@ -37,7 +37,7 @@ if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->inpu
 	);
 }
 
-$uid = intval($mybb->input['uid']);
+$uid = (int)$mybb->input['uid'];
 
 $plugins->run_hooks("admin_user_admin_permissions_begin");
 
@@ -137,16 +137,16 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// Does an options row exist for this admin already?
-		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".intval($mybb->input['uid'])."'");
+		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".(int)$mybb->input['uid']."'");
 		$existing_options = $db->fetch_field($query, "existing_options");
 		if($existing_options > 0)
 		{
-			$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
+			$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".(int)$mybb->input['uid']."'");
 		}
 		else
 		{
 			$insert_array = array(
-				"uid" => intval($mybb->input['uid']),
+				"uid" => (int)$mybb->input['uid'],
 				"permissions" => $db->escape_string(serialize($mybb->input['permissions'])),
 				"notes" => '',
 				"defaultviews" => ''
@@ -293,7 +293,7 @@ if($mybb->input['action'] == "edit")
 		$form_container = new FormContainer("{$module['name']}");
 		foreach($module['permissions'] as $action => $title)
 		{
-			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$key][$action]), array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
+			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', (int)$permission_data[$key][$action], array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
 		echo "</div>\n";

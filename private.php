@@ -1365,7 +1365,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 				$sql_array = array(
 					"receipt" => 0
 				);
-				$db->update_query("privatemessages", $sql_array, "pmid=".intval($key)." AND fromid=".$mybb->user['uid']);
+				$db->update_query("privatemessages", $sql_array, "pmid=".(int)$key." AND fromid=".$mybb->user['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -1381,7 +1381,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 				$sql_array = array(
 					"receipt" => 0
 				);
-				$db->update_query("privatemessages", $sql_array, "pmid=".intval($key)." AND fromid=".$mybb->user['uid']);
+				$db->update_query("privatemessages", $sql_array, "pmid=".(int)$key." AND fromid=".$mybb->user['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
@@ -1394,7 +1394,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 		{
 			foreach($mybb->input['unreadcheck'] as $pmid => $val)
 			{
-				$pmids[$pmid] = intval($pmid);
+				$pmids[$pmid] = (int)$pmid;
 			}
 
 			$pmids = implode(",", $pmids);
@@ -1489,7 +1489,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			if(my_substr($key, 0, 3) == "new") // Create a new folder
 			{
 				++$highestid;
-				$fid = intval($highestid);
+				$fid = (int)$highestid;
 			}
 			else // Editing an existing folder
 			{
@@ -1498,7 +1498,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 					$highestid = $key;
 				}
 
-				$fid = intval($key);
+				$fid = (int)$key;
 				// Use default language strings if empty or value is language string
 				switch($fid)
 				{
@@ -1622,7 +1622,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 		{
 			if($val == 1)
 			{
-				$key = intval($key);
+				$key = (int)$key;
 				if($emptyq)
 				{
 					$emptyq .= " OR ";
@@ -1665,7 +1665,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$sql_array = array(
 					"folder" => $mybb->input['fid']
 				);
-				$db->update_query("privatemessages", $sql_array, "pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
+				$db->update_query("privatemessages", $sql_array, "pmid='".(int)$key."' AND uid='".$mybb->user['uid']."'");
 			}
 		}
 		// Update PM count
@@ -1692,7 +1692,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				{
 					$pmssql .= ",";
 				}
-				$pmssql .= "'".intval($key)."'";
+				$pmssql .= "'".(int)$key."'";
 			}
 
 			$deletepms = array();
@@ -1704,7 +1704,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 			foreach($mybb->input['check'] as $key => $val)
 			{
-				$key = intval($key);
+				$key = (int)$key;
 				if(!empty($deletepms[$key]))
 				{
 					$db->delete_query("privatemessages", "pmid='$key' AND uid='".$mybb->user['uid']."'");
@@ -2407,7 +2407,7 @@ if(!$mybb->input['action'])
 		{
 			$spaceused_severity = "low";
 			$belowhalf = round($spaceused, 0)."%";
-			if(intval($belowhalf) > 100)
+			if((int)$belowhalf > 100)
 			{
 				$belowhalf = "100%";
 			}
@@ -2425,7 +2425,7 @@ if(!$mybb->input['action'])
 			}
 			
 			$overhalf = round($spaceused, 0)."%";
-			if(intval($overhalf) > 100)
+			if((int)$overhalf > 100)
 			{
 				$overhalf = "100%";
 			}

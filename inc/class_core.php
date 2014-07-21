@@ -423,7 +423,7 @@ class MyBB {
 				{
 					return 0;
 				}
-				return intval($this->input[$name]);
+				return (int)$this->input[$name];
 			default:
 				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
 				{

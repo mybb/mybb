@@ -1806,7 +1806,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	}
 	else
 	{
-		$expires = TIME_NOW + intval($expires);
+		$expires = TIME_NOW + (int)$expires;
 	}
 
 	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
@@ -2074,7 +2074,7 @@ function update_stats($changes=array(), $force=false)
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				if(intval($changes[$counter]) != 0)
+				if((int)$changes[$counter] != 0)
 				{
 					$new_stats[$counter] = $stats[$counter] + $changes[$counter];
 					if(!$force && (substr($stats[$counter], 0, 1) == "+" || substr($stats[$counter], 0, 1) == "-"))
@@ -2169,7 +2169,7 @@ function update_forum_counters($fid, $changes=array())
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				if(intval($changes[$counter]) != 0)
+				if((int)$changes[$counter] != 0)
 				{
 					$update_query[$counter] = $forum[$counter] + $changes[$counter];
 				}
@@ -2190,7 +2190,7 @@ function update_forum_counters($fid, $changes=array())
 	// Only update if we're actually doing something
 	if(count($update_query) > 0)
 	{
-		$db->update_query("forums", $update_query, "fid='".intval($fid)."'");
+		$db->update_query("forums", $update_query, "fid='".(int)$fid."'");
 	}
 
 	// Guess we should update the statistics too?
@@ -2299,10 +2299,10 @@ function update_forum_lastpost($fid)
 	$lastpost = $db->fetch_array($query);
 
 	$updated_forum = array(
-		"lastpost" => intval($lastpost['lastpost']),
+		"lastpost" => (int)$lastpost['lastpost'],
 		"lastposter" => $db->escape_string($lastpost['lastposter']),
-		"lastposteruid" => intval($lastpost['lastposteruid']),
-		"lastposttid" => intval($lastpost['tid']),
+		"lastposteruid" => (int)$lastpost['lastposteruid'],
+		"lastposttid" => (int)$lastpost['tid'],
 		"lastpostsubject" => $db->escape_string($lastpost['subject'])
 	);
 
@@ -2320,7 +2320,7 @@ function update_thread_counters($tid, $changes=array())
 	global $db;
 
 	$update_query = array();
-	$tid = intval($tid);
+	$tid = (int)$tid;
 
 	$counters = array('replies', 'unapprovedposts', 'attachmentcount', 'deletedposts', 'attachmentcount');
 
@@ -2335,7 +2335,7 @@ function update_thread_counters($tid, $changes=array())
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				if(intval($changes[$counter]) != 0)
+				if((int)$changes[$counter] != 0)
 				{
 					$update_query[$counter] = $thread[$counter] + $changes[$counter];
 				}
@@ -2424,13 +2424,13 @@ function update_thread_data($tid)
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
 	$update_array = array(
-		'firstpost' => intval($firstpost['pid']),
+		'firstpost' => (int)$firstpost['pid'],
 		'username' => $firstpost['username'],
-		'uid' => intval($firstpost['uid']),
-		'dateline' => intval($firstpost['dateline']),
-		'lastpost' => intval($lastpost['dateline']),
+		'uid' => (int)$firstpost['uid'],
+		'dateline' => (int)$firstpost['dateline'],
+		'lastpost' => (int)$lastpost['dateline'],
 		'lastposter' => $lastpost['username'],
-		'lastposteruid' => intval($lastpost['uid']),
+		'lastposteruid' => (int)$lastpost['uid'],
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
@@ -2448,7 +2448,7 @@ function update_user_counters($uid, $changes=array())
 	$update_query = array();
 
 	$counters = array('postnum', 'threadnum');
-	$uid = intval($uid);
+	$uid = (int)$uid;
 
 	// Fetch above counters for this user
 	$query = $db->simple_select("users", implode(",", $counters), "uid='{$uid}'");
@@ -2461,7 +2461,7 @@ function update_user_counters($uid, $changes=array())
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
-				if(intval($changes[$counter]) != 0)
+				if((int)$changes[$counter] != 0)
 				{
 					$update_query[$counter] = $user[$counter] + $changes[$counter];
 				}
@@ -2541,7 +2541,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 {
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
-	$pid = intval($pid);
+	$pid = (int)$pid;
 	$jumpsel['default'] = '';
 
 	if($permissions)
@@ -3162,7 +3162,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 
 	if($fid != 'all')
 	{
-		$fid = intval($fid);
+		$fid = (int)$fid;
 	}
 
 	$prefix_cache = build_prefixes(0);
@@ -3235,7 +3235,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	}
 
 	$default_selected = "";
-	if((intval($selected_pid) == 0) && $selected_pid != 'any')
+	if(((int)$selected_pid == 0) && $selected_pid != 'any')
 	{
 		$default_selected = " selected=\"selected\"";
 	}
@@ -3274,7 +3274,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 {
 	global $cache, $db, $lang, $mybb, $templates;
 
-	$fid = intval($fid);
+	$fid = (int)$fid;
 
 	$prefix_cache = build_prefixes(0);
 	if(!$prefix_cache)
@@ -3312,7 +3312,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$prefixselect = $prefixselect_prefix = '';
 
 	$default_selected = '';
-	if(intval($selected_pid) == 0)
+	if((int)$selected_pid == 0)
 	{
 		$default_selected = " selected=\"selected\"";
 	}
@@ -4088,7 +4088,7 @@ function debug_page()
 	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">GZip Encoding Status:</span></b></td>\n";
 	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">$gzipen</span></td>\n";
 	echo "<td bgcolor=\"#efefef\" width=\"25%\"><b><span style=\"font-family: tahoma; font-size: 12px;\">No. Templates Used:</span></b></td>\n";
-	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</span></td>\n";
+	echo "<td bgcolor=\"#fefefe\" width=\"25%\"><span style=\"font-family: tahoma; font-size: 12px;\">".count($templates->cache)." (".(int)count(explode(",", $templatelist))." Cached / ".(int)count($templates->uncached_templates)." Manually Loaded)</span></td>\n";
 	echo "</tr>\n";
 
 	$memory_usage = get_memory_usage();
@@ -4407,7 +4407,7 @@ function join_usergroup($uid, $joingroup)
 	}
 	else
 	{
-		$query = $db->simple_select("users", "additionalgroups, usergroup", "uid='".intval($uid)."'");
+		$query = $db->simple_select("users", "additionalgroups, usergroup", "uid='".(int)$uid."'");
 		$user = $db->fetch_array($query);
 	}
 
@@ -4434,7 +4434,7 @@ function join_usergroup($uid, $joingroup)
 	// What's the point in updating if they're the same?
 	if($groupslist != $user['additionalgroups'])
 	{
-		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".intval($uid)."'");
+		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".(int)$uid."'");
 		return true;
 	}
 	else
@@ -4490,7 +4490,7 @@ function leave_usergroup($uid, $leavegroup)
 	$db->write_query("
 		UPDATE ".TABLE_PREFIX."users
 		SET additionalgroups='$groupslist' $dispupdate
-		WHERE uid='".intval($uid)."'
+		WHERE uid='".(int)$uid."'
 	");
 
 	$cache->update_moderators();
@@ -5064,10 +5064,10 @@ function update_first_post($tid)
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
 	$update_array = array(
-		'firstpost' => intval($firstpost['pid']),
+		'firstpost' => (int)$firstpost['pid'],
 		'username' => $firstpost['username'],
-		'uid' => intval($firstpost['uid']),
-		'dateline' => intval($firstpost['dateline'])
+		'uid' => (int)$firstpost['uid'],
+		'dateline' => (int)$firstpost['dateline']
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
@@ -5116,9 +5116,9 @@ function update_last_post($tid)
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 
 	$update_array = array(
-		'lastpost' => intval($lastpost['dateline']),
+		'lastpost' => (int)$lastpost['dateline'],
 		'lastposter' => $lastpost['username'],
-		'lastposteruid' => intval($lastpost['uid'])
+		'lastposteruid' => (int)$lastpost['uid']
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
@@ -5580,7 +5580,7 @@ function get_user($uid)
 	global $mybb, $db;
 	static $user_cache;
 
-	$uid = intval($uid);
+	$uid = (int)$uid;
 
 	if(!empty($mybb->user) && $uid == $mybb->user['uid'])
 	{
@@ -5700,7 +5700,7 @@ function get_thread($tid, $recache = false)
 	global $db;
 	static $thread_cache;
 
-	$tid = intval($tid);
+	$tid = (int)$tid;
 
 	if(isset($thread_cache[$tid]) && !$recache)
 	{
@@ -5737,7 +5737,7 @@ function get_post($pid)
 	global $db;
 	static $post_cache;
 
-	$pid = intval($pid);
+	$pid = (int)$pid;
 
 	if(isset($post_cache[$pid]))
 	{
@@ -5920,7 +5920,7 @@ function email_already_in_use($email, $uid="")
 	$uid_string = "";
 	if($uid)
 	{
-		$uid_string = " AND uid != '".intval($uid)."'";
+		$uid_string = " AND uid != '".(int)$uid."'";
 	}
 	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string($email)."'{$uid_string}");
 
@@ -6973,7 +6973,7 @@ function fetch_ip_range($ipaddress)
 	{
 		$ipaddress = explode('/', $ipaddress);
 		$ip_address = $ipaddress[0];
-		$ip_range = intval($ipaddress[1]);
+		$ip_range = (int)$ipaddress[1];
 
 		if(empty($ip_address) || empty($ip_range))
 		{

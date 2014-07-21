@@ -120,7 +120,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 			my_unsetcookie('mybbtheme');
 		}
 
-		$db->update_query('users', array('style' => intval($mybb->user['style'])), "uid = '{$mybb->user['uid']}'");
+		$db->update_query('users', array('style' => (int)$mybb->user['style']), "uid = '{$mybb->user['uid']}'");
 	}
 	// Guest = cookie
 	else

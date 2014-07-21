@@ -25,8 +25,8 @@ function acp_rebuild_forum_counters()
 	$query = $db->simple_select("forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['forumcounters']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['forumcounters'];
 	if($per_page <= 0)
 	{
 		$per_page = 50;
@@ -52,8 +52,8 @@ function acp_rebuild_thread_counters()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['threadcounters']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['threadcounters'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -77,8 +77,8 @@ function acp_rebuild_poll_counters()
 	$query = $db->simple_select("polls", "COUNT(*) as num_polls");
 	$num_polls = $db->fetch_field($query, 'num_polls');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['pollcounters']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['pollcounters'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -102,8 +102,8 @@ function acp_recount_user_posts()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['userposts']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['userposts'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -140,7 +140,7 @@ function acp_recount_user_posts()
 		");
 		$num_posts = $db->fetch_field($query2, "post_count");
 
-		$db->update_query("users", array("postnum" => intval($num_posts)), "uid='{$user['uid']}'");
+		$db->update_query("users", array("postnum" => (int)$num_posts), "uid='{$user['uid']}'");
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "userposts", "do_recountuserposts", $lang->success_rebuilt_user_post_counters);
@@ -153,8 +153,8 @@ function acp_recount_user_threads()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['userthreads']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['userthreads'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -190,7 +190,7 @@ function acp_recount_user_threads()
 		");
 		$num_threads = $db->fetch_field($query2, "thread_count");
 
-		$db->update_query("users", array("threadnum" => intval($num_threads)), "uid='{$user['uid']}'");
+		$db->update_query("users", array("threadnum" => (int)$num_threads), "uid='{$user['uid']}'");
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "userthreads", "do_recountuserthreads", $lang->success_rebuilt_user_thread_counters);
@@ -203,8 +203,8 @@ function acp_recount_reputation()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['reputation']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['reputation'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -222,7 +222,7 @@ function acp_recount_reputation()
 		");
 		$total_rep = $db->fetch_field($query2, "total_rep");
 
-		$db->update_query("users", array("reputation" => intval($total_rep)), "uid='{$user['uid']}'");
+		$db->update_query("users", array("reputation" => (int)$total_rep), "uid='{$user['uid']}'");
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "reputation", "do_recountreputation", $lang->success_rebuilt_reputation);
@@ -235,8 +235,8 @@ function acp_recount_warning()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['warning']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['warning'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -254,7 +254,7 @@ function acp_recount_warning()
 		");
 		$warn_lev = $db->fetch_field($query2, "warn_lev");
 
-		$db->update_query("users", array("warningpoints" => intval($warn_lev)), "uid='{$user['uid']}'");
+		$db->update_query("users", array("warningpoints" => (int)$warn_lev), "uid='{$user['uid']}'");
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "warning", "do_recountwarning", $lang->success_rebuilt_warning);
@@ -267,8 +267,8 @@ function acp_recount_private_messages()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['privatemessages']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['privatemessages'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -294,8 +294,8 @@ function acp_recount_referrals()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['referral']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['referral'];
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 
@@ -309,7 +309,7 @@ function acp_recount_referrals()
 		");
 		$num_referrers = $db->fetch_field($query2, "num_referrers");
 
-		$db->update_query("users", array("referrals" => intval($num_referrers)), "uid='{$user['uid']}'");
+		$db->update_query("users", array("referrals" => (int)$num_referrers), "uid='{$user['uid']}'");
 	}
 
 	check_proceed($num_users, $end, ++$page, $per_page, "referral", "do_recountreferral", $lang->success_rebuilt_referral);
@@ -322,8 +322,8 @@ function acp_recount_thread_ratings()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['threadrating']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['threadrating'];
 	if($per_page <= 0)
 	{
 		$per_page = 500;
@@ -341,7 +341,7 @@ function acp_recount_thread_ratings()
 		");
 		$recount = $db->fetch_array($query2);
 
-		$db->update_query("threads", array("numratings" => intval($recount['num_ratings']), "totalratings" => intval($recount['total_rating'])), "tid='{$thread['tid']}'");
+		$db->update_query("threads", array("numratings" => (int)$recount['num_ratings'], "totalratings" => (int)$recount['total_rating']), "tid='{$thread['tid']}'");
 	}
 
 	check_proceed($num_threads, $end, ++$page, $per_page, "threadrating", "do_recountthreadrating", $lang->success_rebuilt_thread_ratings);
@@ -354,8 +354,8 @@ function acp_rebuild_attachment_thumbnails()
 	$query = $db->simple_select("attachments", "COUNT(aid) as num_attachments");
 	$num_attachments = $db->fetch_field($query, 'num_attachments');
 
-	$page = intval($mybb->input['page']);
-	$per_page = intval($mybb->input['attachmentthumbs']);
+	$page = (int)$mybb->input['page'];
+	$per_page = (int)$mybb->input['attachmentthumbs'];
 	if($per_page <= 0)
 	{
 		$per_page = 20;
@@ -426,7 +426,7 @@ if(!$mybb->input['action'])
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 
-		if(!isset($mybb->input['page']) || intval($mybb->input['page']) < 1)
+		if(!isset($mybb->input['page']) || (int)$mybb->input['page'] < 1)
 		{
 			$mybb->input['page'] = 1;
 		}
@@ -440,7 +440,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("forum");
 			}
-			if(!intval($mybb->input['forumcounters']))
+			if(!(int)$mybb->input['forumcounters'])
 			{
 				$mybb->input['forumcounters'] = 50;
 			}
@@ -456,7 +456,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("thread");
 			}
-			if(!intval($mybb->input['threadcounters']))
+			if(!(int)$mybb->input['threadcounters'])
 			{
 				$mybb->input['threadcounters'] = 500;
 			}
@@ -472,7 +472,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userposts");
 			}
-			if(!intval($mybb->input['userposts']))
+			if(!(int)$mybb->input['userposts'])
 			{
 				$mybb->input['userposts'] = 500;
 			}
@@ -488,7 +488,7 @@ if(!$mybb->input['action'])
 				// Log admin action
 				log_admin_action("userthreads");
 			}
-			if(!intval($mybb->input['userthreads']))
+			if(!(int)$mybb->input['userthreads'])
 			{
 				$mybb->input['userthreads'] = 500;
 			}
@@ -505,7 +505,7 @@ if(!$mybb->input['action'])
 				log_admin_action("attachmentthumbs");
 			}
 
-			if(!intval($mybb->input['attachmentthumbs']))
+			if(!(int)$mybb->input['attachmentthumbs'])
 			{
 				$mybb->input['attachmentthumbs'] = 500;
 			}
@@ -522,7 +522,7 @@ if(!$mybb->input['action'])
 				log_admin_action("reputation");
 			}
 
-			if(!intval($mybb->input['reputation']))
+			if(!(int)$mybb->input['reputation'])
 			{
 				$mybb->input['reputation'] = 500;
 			}
@@ -539,7 +539,7 @@ if(!$mybb->input['action'])
 				log_admin_action("warning");
 			}
 
-			if(!intval($mybb->input['warning']))
+			if(!(int)$mybb->input['warning'])
 			{
 				$mybb->input['warning'] = 500;
 			}
@@ -556,7 +556,7 @@ if(!$mybb->input['action'])
 				log_admin_action("privatemessages");
 			}
 
-			if(!intval($mybb->input['privatemessages']))
+			if(!(int)$mybb->input['privatemessages'])
 			{
 				$mybb->input['privatemessages'] = 500;
 			}
@@ -573,7 +573,7 @@ if(!$mybb->input['action'])
 				log_admin_action("referral");
 			}
 
-			if(!intval($mybb->input['referral']))
+			if(!(int)$mybb->input['referral'])
 			{
 				$mybb->input['referral'] = 500;
 			}
@@ -590,7 +590,7 @@ if(!$mybb->input['action'])
 				log_admin_action("threadrating");
 			}
 
-			if(!intval($mybb->input['threadrating']))
+			if(!(int)$mybb->input['threadrating'])
 			{
 				$mybb->input['threadrating'] = 500;
 			}
@@ -607,7 +607,7 @@ if(!$mybb->input['action'])
 				log_admin_action("poll");
 			}
 
-			if(!intval($mybb->input['pollcounters']))
+			if(!(int)$mybb->input['pollcounters'])
 			{
 				$mybb->input['pollcounters'] = 500;
 			}

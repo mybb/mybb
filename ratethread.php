@@ -148,8 +148,8 @@ if(!empty($mybb->input['ajax']))
 	if($fetch['numratings'] >= 0)
 	{
 		$averagerating = floatval(round($fetch['totalratings']/$fetch['numratings'], 2));
-		$width = intval(round($averagerating))*20;
-		$fetch['numratings'] = intval($fetch['numratings']);
+		$width = (int)round($averagerating)*20;
+		$fetch['numratings'] = (int)$fetch['numratings'];
 		$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $fetch['numratings'], $averagerating);
 		$json = $json + array("average" => $ratingvotesav);
 	}

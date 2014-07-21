@@ -32,7 +32,7 @@ function remove_message_quotes(&$text, $rmdepth=null)
 		global $mybb;
 		$rmdepth = $mybb->settings['maxquotedepth'];
 	}
-	$rmdepth = intval($rmdepth);
+	$rmdepth = (int)$rmdepth;
 
 	// find all tokens
 	// note, at various places, we use the prefix "s" to denote "start" (ie [quote]) and "e" to denote "end" (ie [/quote])
@@ -199,7 +199,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 	if($remove_message_quotes)
 	{
 		global $mybb;
-		$max_quote_depth = intval($mybb->settings['maxquotedepth']);
+		$max_quote_depth = (int)$mybb->settings['maxquotedepth'];
 		if($max_quote_depth)
 		{
 			$quoted_post['message'] = remove_message_quotes($quoted_post['message'], $max_quote_depth-1); // we're wrapping the message in a [quote] tag, so take away one quote depth level

@@ -624,7 +624,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				}
 				else
 				{
-					$post_page = intval(($postcounter) / $mybb->settings['postsperpage']) + 1;
+					$post_page = (int)($postcounter / $mybb->settings['postsperpage']) + 1;
 				}
 
 				if($post_page > $mybb->get_input('from_page', 1))
@@ -733,7 +733,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
 			{
-				$quoted_posts[$post] = intval($post);
+				$quoted_posts[$post] = (int)$post;
 			}
 		}
 		// Handle incoming 'quote' button
@@ -1378,12 +1378,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$mybb->input['modoptions']['closethread'] = 0;
 			}
-			$closed = intval($mybb->input['modoptions']['closethread']);
+			$closed = (int)$mybb->input['modoptions']['closethread'];
 			if(!isset($mybb->input['modoptions']['stickthread']))
 			{
 				$mybb->input['modoptions']['stickthread'] = 0;
 			}
-			$stuck = intval($mybb->input['modoptions']['stickthread']);
+			$stuck = (int)$mybb->input['modoptions']['stickthread'];
 		}
 		else
 		{

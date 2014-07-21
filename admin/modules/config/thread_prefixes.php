@@ -91,7 +91,7 @@ if($mybb->input['action'] == 'add_prefix')
 					$checked = array();
 					foreach($mybb->input['forum_1_forums'] as $fid)
 					{
-						$checked[] = intval($fid);
+						$checked[] = (int)$fid;
 					}
 
 					$new_prefix['forums'] = implode(',', $checked);
@@ -109,7 +109,7 @@ if($mybb->input['action'] == 'add_prefix')
 					$checked = array();
 					foreach($mybb->input['group_1_groups'] as $gid)
 					{
-						$checked[] = intval($gid);
+						$checked[] = (int)$gid;
 					}
 
 					$new_prefix['groups'] = implode(',', $checked);
@@ -293,7 +293,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					$checked = array();
 					foreach($mybb->input['forum_1_forums'] as $fid)
 					{
-						$checked[] = intval($fid);
+						$checked[] = (int)$fid;
 					}
 
 					$update_prefix['forums'] = implode(',', $checked);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					$checked = array();
 					foreach($mybb->input['group_1_groups'] as $gid)
 					{
-						$checked[] = intval($gid);
+						$checked[] = (int)$gid;
 					}
 
 					$update_prefix['groups'] = implode(',', $checked);

@@ -53,7 +53,7 @@ function build_mass_mail_query($conditions)
 				default:
 					$direction = "=";
 			}
-			$search_sql .= " AND u.{$search_field}{$direction}'".intval($conditions[$search_field])."'";
+			$search_sql .= " AND u.{$search_field}{$direction}'".(int)$conditions[$search_field]."'";
 		}
 	}
 

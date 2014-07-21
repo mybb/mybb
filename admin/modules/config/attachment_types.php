@@ -46,7 +46,7 @@ if($mybb->input['action'] == "add")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
-			$maxsize = intval($mybb->input['maxsize']);
+			$maxsize = (int)$mybb->input['maxsize'];
 
 			if($maxsize == 0)
 			{
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".(int)$mybb->input['atid']."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
-				"maxsize" => intval($mybb->input['maxsize']),
+				"maxsize" => (int)$mybb->input['maxsize'],
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config-attachment_types");
 	}
 
-	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".(int)$mybb->input['atid']."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])

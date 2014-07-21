@@ -685,13 +685,13 @@ function adodb_mktime($hr,$min,$sec,$mon=false,$day=false,$year=false,$is_dst=fa
 	/*
 	# disabled because some people place large values in $sec.
 	# however we need it for $mon because we use an array...
-	$hr = intval($hr);
-	$min = intval($min);
-	$sec = intval($sec);
+	$hr = (int)$hr;
+	$min = (int)$min;
+	$sec = (int)$sec;
 	*/
-	$mon = intval($mon);
-	$day = intval($day);
-	$year = intval($year);
+	$mon = (int)$mon;
+	$day = (int)$day;
+	$year = (int)$year;
 
 
 	$year = adodb_year_digit_check($year);

@@ -16,7 +16,7 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->template_sets, "index.php?module=style-templates");
 
-$sid = intval($mybb->input['sid']);
+$sid = (int)$mybb->input['sid'];
 
 $expand_str = "";
 $expand_str2 = "";
@@ -24,7 +24,7 @@ $expand_array = array();
 if(isset($mybb->input['expand']))
 {
 	$expand_array = explode("|", $mybb->input['expand']);
-	$expand_array = array_map("intval", $expand_array);
+	$expand_array = array_map("(int), $expand_array;
 	$expand_str = "&amp;expand=".implode("|", $expand_array);
 	$expand_str2 = "&expand=".implode("|", $expand_array);
 }
@@ -572,11 +572,11 @@ if($mybb->input['action'] == "edit_template")
 			{
 				if($mybb->input['from'] == "diff_report")
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".intval($mybb->input['sid']).$expand_str2."&amp;from=diff_report");
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".(int)$mybb->input['sid'].$expand_str2."&amp;from=diff_report");
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".intval($mybb->input['sid']).$expand_str2);
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".(int)$mybb->input['sid'].$expand_str2);
 				}
 			}
 			else
@@ -587,7 +587,7 @@ if($mybb->input['action'] == "edit_template")
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&sid=".intval($mybb->input['sid']).$expand_str2."#group_{$group}");
+					admin_redirect("index.php?module=style-templates&sid=".(int)$mybb->input['sid'].$expand_str2."#group_{$group}");
 				}
 			}
 		}
@@ -648,7 +648,7 @@ if($mybb->input['action'] == "edit_template")
 
 		$sub_tabs['diff_report'] = array(
 			'title' => $lang->diff_report,
-			'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($template['title'])."&amp;sid1=".intval($template['sid'])."&amp;sid2=-2",
+			'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($template['title'])."&amp;sid1=".(int)$template['sid']."&amp;sid2=-2",
 		);
 	}
 
@@ -712,7 +712,7 @@ if($mybb->input['action'] == "edit_template")
 
 if($mybb->input['action'] == "edit_template_group")
 {
-	$query = $db->simple_select("templategroups", "*", "gid = '".intval($mybb->input['gid'])."'");
+	$query = $db->simple_select("templategroups", "*", "gid = '".(int)$mybb->input['gid']."'");
 
 	if(!$db->num_rows($query))
 	{
@@ -1320,7 +1320,7 @@ LEGEND;
 
 if($mybb->input['action'] == "delete_template_group")
 {
-	$gid = intval($mybb->input['gid']);
+	$gid = (int)$mybb->input['gid'];
 	$query = $db->simple_select("templategroups", "*", "gid='{$gid}'");
 
 	if(!$db->num_rows($query))
@@ -1486,30 +1486,30 @@ if($mybb->input['action'] == "diff_report")
 
 	$sub_tabs['diff_report'] = array(
 		'title' => $lang->diff_report,
-		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']),
+		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".(int)$mybb->input['sid1']."&amp;sid2=".(int)$mybb->input['sid2'],
 		'description' => $lang->diff_report_desc
 	);
 
 	$plugins->run_hooks("admin_style_templates_diff_report");
 
-	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".intval($mybb->input['sid1'])."'");
+	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".(int)$mybb->input['sid1']."'");
 	$template1 = $db->fetch_array($query);
 
-	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".intval($mybb->input['sid2'])."'");
+	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".(int)$mybb->input['sid2']."'");
 	$template2 = $db->fetch_array($query);
 
 	if($mybb->input['sid2'] == -2)
 	{
 		$sub_tabs['full_edit'] = array(
 			'title' => $lang->full_edit,
-			'link' => "index.php?module=style-templates&action=edit_template&title=".urlencode($template1['title'])."&sid=".intval($mybb->input['sid1'])."&amp;from=diff_report",
+			'link' => "index.php?module=style-templates&action=edit_template&title=".urlencode($template1['title'])."&sid=".(int)$mybb->input['sid1']."&amp;from=diff_report",
 		);
 	}
 
 	if($template1['template'] == $template2['template'])
 	{
 		flash_message($lang->templates_the_same, 'error');
-		admin_redirect("index.php?module=style-templates&sid=".intval($mybb->input['sid2']).$expand_str);
+		admin_redirect("index.php?module=style-templates&sid=".(int)$mybb->input['sid2'].$expand_str);
 	}
 
 	$template1['template'] = explode("\n", $template1['template']);
@@ -1534,7 +1534,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
+	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".(int)$mybb->input['sid1']."&amp;sid2=".(int)$mybb->input['sid2']);
 
 	$page->output_header($lang->template_sets);
 
@@ -1565,7 +1565,7 @@ if($mybb->input['action'] == "revert")
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(s.sid=t.sid)
-		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."'
+		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".(int)$mybb->input['sid']."'
 	");
 	$template = $db->fetch_array($query);
 
@@ -1700,7 +1700,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	);
 
 	// Load the list of templates
-	$query = $db->simple_select("templates", "*", "sid='".intval($mybb->input['sid'])."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
+	$query = $db->simple_select("templates", "*", "sid='".(int)$mybb->input['sid']."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
 	while($template = $db->fetch_array($query))
 	{
 		$exploded = explode("_", $template['title'], 2);

@@ -106,7 +106,7 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 		$additionalgroups = explode(',', $user['additionalgroups']);
 		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
-			$query = $db->simple_select("joinrequests", "rid", "uid = '".intval($user['uid'])."' AND gid = '".intval($gid)."'", array("limit" => 1));
+			$query = $db->simple_select("joinrequests", "rid", "uid = '".(int)$user['uid']."' AND gid = '".(int)$gid."'", array("limit" => 1));
 			$pendinginvite = $db->fetch_array($query);
 			if($pendinginvite['rid'])
 			{
@@ -177,11 +177,11 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 			if($what == "accept")
 			{
 				join_usergroup($uid, $gid);
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 			elseif($what == "decline")
 			{
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 		}
 	}

@@ -37,7 +37,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['log']))
 	{
-		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
+		$log_ids = implode(",", array_map("(int), $mybb->input['log']);
 		if($log_ids)
 		{
 			$db->delete_query("mailerrors", "eid IN ({$log_ids})");
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
+	$query = $db->simple_select("mailerrors", "*", "eid='".(int)$mybb->input['eid']."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['eid'])
@@ -137,7 +137,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = intval($mybb->input['page']);
+		$mybb->input['page'] = (int)$mybb->input['page'];
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else

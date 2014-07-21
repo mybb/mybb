@@ -373,8 +373,8 @@ lang.saved = \"{$lang->saved}\";
 		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
 		if(isset($lang->login_field_width))
         {
-        	$login_label_width = " style=\"width: ".(intval($lang->login_field_width)+100)."px;\"";
-			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
+        	$login_label_width = " style=\"width: ".((int)$lang->login_field_width+100)."px;\"";
+			$login_container_width = " style=\"width: ".(410+((int)$lang->login_field_width))."px;\"";
         }
 
 		$login_page .= <<<EOF
@@ -514,7 +514,7 @@ EOF;
 		global $lang, $mybb, $cp_style;
 
 		$copy_year = COPY_YEAR;
-		$allowed_attempts = intval($mybb->settings['maxloginattempts']);
+		$allowed_attempts = (int)$mybb->settings['maxloginattempts'];
 		$lockedout_message = $lang->sprintf($lang->error_mybb_admin_lockedout_message, $allowed_attempts);
 
 		print <<<EOF

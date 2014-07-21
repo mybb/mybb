@@ -718,7 +718,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->total_database_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size($db->fetch_size()), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->attachment_space_used}</strong>", array('width' => '200'));
-	$table->construct_cell(get_friendly_size(intval($attachs['spaceused'])), array('width' => '200'));
+	$table->construct_cell(get_friendly_size((int)$attachs['spaceused']), array('width' => '200'));
 	$table->construct_row();
 
 	if($attachs['spaceused'] > 0)

@@ -37,7 +37,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['log']))
 	{
-		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
+		$log_ids = implode(",", array_map("(int), $mybb->input['log']);
 		if($log_ids)
 		{
 			$db->delete_query("maillogs", "mid IN ({$log_ids})");
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
+	$query = $db->simple_select("maillogs", "*", "mid='".(int)$mybb->input['mid']."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['mid'])
@@ -128,7 +128,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = intval($mybb->input['page']);
+		$mybb->input['page'] = (int)$mybb->input['page'];
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -163,11 +163,11 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$touid = intval($mybb->input['touid']);
+	$touid = (int)$mybb->input['touid'];
 	$toname = $db->escape_string($mybb->input['toname']);
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
-	$fromuid = intval($mybb->input['fromuid']);
+	$fromuid = (int)$mybb->input['fromuid'];
 	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 

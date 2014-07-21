@@ -121,7 +121,7 @@ switch($action)
 
 		// Paginate this thread
 		$perpage = $mybb->settings['postsperpage'];
-		$postcount = intval($thread['replies'])+1;
+		$postcount = (int)$thread['replies']+1;
 		$pages = ceil($postcount/$perpage);
 
 		if($page > $pages)
