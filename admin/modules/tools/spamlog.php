@@ -138,12 +138,6 @@ if(!$mybb->input['action'])
 
 	$page->output_header($lang->spam_logs);
 
-	$sub_tabs['spam_logs'] = array(
-		'title'       => $lang->spam_logs,
-		'link'        => "index.php?module=tools-spamlog",
-		'description' => $lang->spam_logs_desc
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'spam_logs');
 
 	// Pagination stuff
@@ -185,7 +179,7 @@ if(!$mybb->input['action'])
 	{
 		$username   = htmlspecialchars_uni($row['username']);
 		$email      = htmlspecialchars_uni($row['email']);
-		$ip_address = htmlspecialchars_uni($row['ipaddress']);
+		$ip_address = my_inet_ntop($db->unescape_binary($row['ipaddress']));
 
 		$dateline = '';
 		if($row['dateline'] > 0)
@@ -205,7 +199,7 @@ if(!$mybb->input['action'])
 
 		$table->construct_cell($username);
 		$table->construct_cell($email);
-		$table->construct_cell($ipaddress);
+		$table->construct_cell($ip_address);
 		$table->construct_cell($dateline);
 		$table->construct_cell($confidence);
 		$table->construct_row();
