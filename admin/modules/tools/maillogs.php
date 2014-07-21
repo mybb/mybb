@@ -37,7 +37,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['log']))
 	{
-		$log_ids = implode(",", array_map("intval", $mybb->input['log']);
+		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
 		if($log_ids)
 		{
 			$db->delete_query("maillogs", "mid IN ({$log_ids})");
@@ -393,7 +393,7 @@ if(!$mybb->input['action'])
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_logs, array("colspan" => "6"));
+		$table->construct_cell($lang->no_logs, array("colspan" => "7"));
 		$table->construct_row();
 		$table->output($lang->user_email_log);
 	}
