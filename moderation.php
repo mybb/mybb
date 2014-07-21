@@ -2788,7 +2788,7 @@ switch($mybb->input['action'])
 							$users[$pm['uid']] = $pm['uid'];
 							$users[$pm['toid']] = $pm['toid'];
 						}
-						$pms = implode(",", array_map("intval", $pms);
+						$pms = implode(",", array_map("intval", $pms));
 						$db->delete_query("privatemessages", "pmid IN (" . $db->escape_string($pms) . ")");
 						require_once MYBB_ROOT . "inc/functions_user.php";
 						foreach($users as $user_id)
@@ -2805,7 +2805,7 @@ switch($mybb->input['action'])
 							$reps[] = $rep['rid'];
 							$users[] = $rep['uid'];
 						}
-						$reps = implode(",", array_map("intval", $reps);
+						$reps = implode(",", array_map("intval", $reps));
 						$db->delete_query("reputation", "rid IN (" . $db->escape_string($reps) . ")");
 						foreach($users as $user_id)
 						{

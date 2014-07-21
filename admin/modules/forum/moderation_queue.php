@@ -49,7 +49,7 @@ if($mybb->request_method == "post")
 	{
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads']))."){$flist}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads'])))."){$flist}");
 		while($thread = $db->fetch_array($query))
 		{
 			$action = $mybb->input['threads'][$thread['tid']];
@@ -87,7 +87,7 @@ if($mybb->request_method == "post")
 	{
 		$posts_to_approve = $posts_to_delete = array();
 		// Fetch posts
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts']))."){$flist}");
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts'])))."){$flist}");
 		while($post = $db->fetch_array($query))
 		{
 			$action = $mybb->input['posts'][$post['pid']];
@@ -124,7 +124,7 @@ if($mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['attachments']))
 	{
-		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments']))."){$flist}");
+		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}");
 		while($attachment = $db->fetch_array($query))
 		{
 			$action = $mybb->input['attachments'][$attachment['aid']];

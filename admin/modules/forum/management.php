@@ -619,7 +619,7 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)(int)$mybb->input['gid']."&amp;fid=".(int)(int)$mybb->input['gid'], "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)$mybb->input['gid']."&amp;fid=".(int)$mybb->input['gid'], "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 

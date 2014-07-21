@@ -631,7 +631,7 @@ function privatemessage_perform_search_mysql($search)
 	{
 		$folderids = array();
 
-		$search['folder'] = array_map("intval", $search['folder'];
+		$search['folder'] = array_map("intval", $search['folder']);
 
 		$folderids = implode(',', $search['folder']);
 
