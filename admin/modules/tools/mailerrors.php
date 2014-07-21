@@ -37,7 +37,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	}
 	else if(is_array($mybb->input['log']))
 	{
-		$log_ids = implode(",", array_map("(int), $mybb->input['log']);
+		$log_ids = implode(",", array_map("intval", $mybb->input['log']);
 		if($log_ids)
 		{
 			$db->delete_query("mailerrors", "eid IN ({$log_ids})");

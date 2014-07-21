@@ -127,7 +127,7 @@ class CustomModeration extends Moderation
 			}
 
 			$delete_tids = array();
-			$imploded_pids = implode(",", array_map("(int), $pids);
+			$imploded_pids = implode(",", array_map("intval", $pids);
 			$query = $db->simple_select("threads", "tid", "firstpost IN ({$imploded_pids})");
 			while($threadid = $db->fetch_field($query, "tid"))
 			{

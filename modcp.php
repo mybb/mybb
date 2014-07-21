@@ -300,7 +300,7 @@ if($mybb->input['action'] == "do_reports")
 	$sql = '1=1';
 	if(empty($mybb->input['allbox']))
 	{
-		$mybb->input['reports'] = array_map("(int), $mybb->input['reports'];
+		$mybb->input['reports'] = array_map("intval", $mybb->input['reports'];
 		$rids = implode("','", $mybb->input['reports']);
 
 		$sql = "rid IN ('0','{$rids}')";
@@ -1891,7 +1891,7 @@ if($mybb->input['action'] == "do_modqueue")
 	$mybb->input['attachments'] = $mybb->get_input('attachments', 2);
 	if(!empty($mybb->input['threads']))
 	{
-		$threads = array_map("(int), array_keys($mybb->input['threads']);
+		$threads = array_map("intval", array_keys($mybb->input['threads']);
 		$threads_to_approve = $threads_to_delete = array();
 		// Fetch threads
 		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", $threads)."){$flist_queue_threads}");
@@ -1939,7 +1939,7 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['posts']))
 	{
-		$posts = array_map("(int), array_keys($mybb->input['posts']);
+		$posts = array_map("intval", array_keys($mybb->input['posts']);
 		// Fetch posts
 		$posts_to_approve = $posts_to_delete = array();
 		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", $posts)."){$flist_queue_posts}");
@@ -1987,7 +1987,7 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(!empty($mybb->input['attachments']))
 	{
-		$attachments = array_map("(int), array_keys($mybb->input['attachments']);
+		$attachments = array_map("intval", array_keys($mybb->input['attachments']);
 		$query = $db->query("
 			SELECT a.pid, a.aid
 			FROM  ".TABLE_PREFIX."attachments a

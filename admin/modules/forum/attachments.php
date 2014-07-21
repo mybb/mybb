@@ -49,7 +49,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		$mybb->input['aids'] = array_map("(int), $mybb->input['aids'];
+		$mybb->input['aids'] = array_map("intval", $mybb->input['aids'];
 	}
 
 	if(count($mybb->input['aids']) < 1)
@@ -244,7 +244,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting physical attachments which exist in database
 	if(is_array($mybb->input['orphaned_attachments']))
 	{
-		$mybb->input['orphaned_attachments'] = array_map("(int), $mybb->input['orphaned_attachments'];
+		$mybb->input['orphaned_attachments'] = array_map("intval", $mybb->input['orphaned_attachments'];
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
 		$query = $db->simple_select("attachments", "aid,pid,posthash", "aid IN (".implode(",", $mybb->input['orphaned_attachments']).")");
