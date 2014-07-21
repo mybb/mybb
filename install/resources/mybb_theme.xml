@@ -9349,6 +9349,7 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_replyall_pm" version="1480"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall" title="{$lang->reply_to_all}" class="postbit_reply_all"><span>{$lang->postbit_button_reply_all}</span></a>]]></template>
 		<template name="postbit_report" version="1800"><![CDATA[<a href="javascript:Report.reportPost({$post['pid']});" title="{$lang->postbit_report}" class="postbit_report"><span>{$lang->postbit_button_report}</span></a>]]></template>
 		<template name="postbit_reputation" version="1400"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
+		<template name="postbit_reputation_formatted" version="1800"><![CDATA[<strong class="{$reputation_class}">{$reputation}</strong>]]></template>
 		<template name="postbit_reputation_formatted_link" version="1800"><![CDATA[<a href="reputation.php?uid={$uid}"><strong class="{$reputation_class}">{$reputation}</strong></a>]]></template>
 		<template name="postbit_signature" version="1800"><![CDATA[<div class="signature scaleimages">
 {$post['signature']}
