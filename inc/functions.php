@@ -806,7 +806,7 @@ function inline_error($errors, $title="", $json_data=array())
 	{
 		// Send our headers.
 		@header("Content-type: application/json; charset={$lang->settings['charset']}");
-		
+
 		if(empty($json_data))
 		{
 			echo json_encode(array("errors" => $errors));
@@ -2879,7 +2879,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 		}
 		else
 		{
-			// Smilies		
+			// Smilies
 			$emoticon = "";
 			$emoticons_enabled = "false";
 			if($smilies && $mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
@@ -7759,4 +7759,40 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 
 	return false;
 }
-?>
+
+/**
+ * Log a user spam block from StopForumSpam (or other spam service providers...)
+ *
+ * @param string $username The username that the user was using.
+ * @param string $email    The email address the user was using.
+ * @param string $ip_address THe IP addres of the user.
+ * @param array  $data     An array of extra data to go with the block (eg: confidence rating).
+ * @return bool Whether the action was logged successfully.
+ */
+function log_spam_block($username = '', $email = '', $ip_address = '', $data = array())
+{
+	global $db, $session;
+
+	if(!is_array($data))
+	{
+		$data = array($data);
+	}
+
+	if(!$ip_address)
+	{
+		$ip_address = get_ip();
+		$session->packedip;
+	}
+
+	$ip_address = my_inet_pton($ip_address);
+
+	$insert_array = array(
+		'username'  => $db->escape_string($username),
+		'email'     => $db->escape_string($email),
+		'ipaddress' => $db->escape_binary($ip_address),
+		'dateline'  => (int)TIME_NOW,
+		'data'      => $db->escape_string(@serialize($data)),
+	);
+
+	return (bool)$db->insert_array('spamlog', $insert_array);
+}

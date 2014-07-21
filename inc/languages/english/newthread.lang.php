@@ -45,6 +45,10 @@ $l['redirect_newthread_poll'] = "<br />You will now be taken to the poll options
 $l['redirect_newthread_moderation'] = "<br />The administrator has specified that all new threads require moderation. You will now be returned to the thread listing.";
 $l['redirect_newthread_thread'] = "<br />You will now be taken to the new thread.";
 $l['invalidthread'] = "The specified draft does not exist or you don't have permission to view it.";
+
+$l['error_stop_forum_spam_spammer'] = 'Sorry, your username or IP address matches that of a known spammer. If you feel this is a mistake, please contact an administrator';
+$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your thread against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
+
 $l['error_suspendedposting'] = "Your posting privileges are currently suspended {1}.<br /><br />
 
 Suspension Date: {2}";

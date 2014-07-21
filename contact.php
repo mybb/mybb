@@ -161,6 +161,34 @@ if($mybb->request_method == "post")
 		}
 	}
 
+	if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_contact'])
+	{
+		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
+
+		$stop_forum_spam_checker = new StopForumSpamChecker(
+			$plugins,
+			$mybb->settings['stopforumspam_min_weighting_before_spam'],
+			$mybb->settings['stopforumspam_check_usernames'],
+			$mybb->settings['stopforumspam_check_emails'],
+			$mybb->settings['stopforumspam_check_ips'],
+			$mybb->settings['stopforumspam_log_blocks']
+		);
+
+		try {
+			if($stop_forum_spam_checker->is_user_a_spammer('', $mybb->input['email'], get_ip()))
+			{
+				$errors[] = $lang->error_stop_forum_spam_spammer;
+			}
+		}
+		catch (Exception $e)
+		{
+			if($mybb->settings['stopforumspam_block_on_error'])
+			{
+				$errors[] = $lang->error_stop_forum_spam_fetching;
+			}
+		}
+	}
+
 	if(empty($errors))
 	{
 		if($mybb->settings['contact_badwords'] == 1)
