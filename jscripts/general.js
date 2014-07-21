@@ -68,6 +68,13 @@ var MyBB = {
 				$("body").css("overflow", "auto");
 			});
 		}
+
+		// Bottom corners of tables appear to have square corners on round corners
+		$('.tborder').each(function()
+		{
+			$(this).find('tr').last().find('td').first().addClass("last_tr-first_td");
+			$(this).find('tr').last().find('td').last().addClass("last_tr-last_td");
+		});
 	},
 
 	popupWindow: function(url, options, root)
