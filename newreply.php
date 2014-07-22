@@ -517,6 +517,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
+		$closed = $postinfo['closed'];
 
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
@@ -684,7 +685,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					});
 				}\n";
 
-				if($thread['closed'] != 1)
+				if($closed == 1)
 				{
 					$data .= "$('#quick_reply_form .trow1').removeClass('trow1 trow2').addClass('trow_shaded');\n";
 				}

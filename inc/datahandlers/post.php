@@ -826,6 +826,8 @@ class PostDataHandler extends DataHandler
 		// Fetch the thread
 		$thread = get_thread($post['tid']);
 
+		$closed = $thread['closed'];
+
 		// This post is being saved as a draft.
 		if($post['savedraft'])
 		{
@@ -876,6 +878,7 @@ class PostDataHandler extends DataHandler
 				{
 					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
+					$closed = 1;
 				}
 
 				// Open the thread.
@@ -883,6 +886,7 @@ class PostDataHandler extends DataHandler
 				{
 					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
+					$closed = 0;
 				}
 
 				if(!isset($modoptions['stickthread']))
@@ -1246,7 +1250,8 @@ class PostDataHandler extends DataHandler
 		// Return the post's pid and whether or not it is visible.
 		$this->return_values = array(
 			"pid" => $this->pid,
-			"visible" => $visible
+			"visible" => $visible,
+			"closed" => $closed
 		);
 
 		$plugins->run_hooks("datahandler_post_insert_post_end", $this);
