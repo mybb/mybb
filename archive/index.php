@@ -296,7 +296,7 @@ switch($action)
 		}
 
 		// Show subforums.
-		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
+		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}'");
 		$subforumcount = $db->fetch_field($query, "subforums");
 		if($subforumcount > 0)
 		{
