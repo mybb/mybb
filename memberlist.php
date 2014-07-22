@@ -122,7 +122,7 @@ else
 	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 
 	// Incoming results per page?
-	$mybb->input['perpage'] = (int)$mybb->get_input('perpage');
+	$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
 	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
 	{
 		$per_page = $mybb->input['perpage'];
@@ -234,7 +234,7 @@ else
 	{
 		if($groupcache['showmemberlist'] == 0)
 		{
-			$group[] = $gid;
+			$group[] = (int)$gid;
 		}
 	}
 
@@ -242,11 +242,27 @@ else
 	{
 		$hiddengroup = implode(',', $group);
 
-		$search_query .= " AND u.usergroup NOT IN ($hiddengroup)";
+		$search_query .= " AND u.usergroup NOT IN ({$hiddengroup})";
+
+		foreach($group as $hidegid)
+		{
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$search_query .= " AND ','||u.additionalgroups||',' NOT LIKE '%,{$hidegid},%'";
+					break;
+				default:
+					$search_query .= " AND CONCAT(',',u.additionalgroups,',') NOT LIKE '%,{$hidegid},%'";
+					break;
+			}
+		}
 	}
   
 	$sorturl = htmlspecialchars_uni("memberlist.php?perpage={$mybb->input['perpage']}{$search_url}");
 	$search_url = htmlspecialchars_uni("memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}{$search_url}");
+
+	$plugins->run_hooks('memberlist_intermediate');
 
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
@@ -293,10 +309,6 @@ else
 	while($user = $db->fetch_array($query))
 	{
 		$user = $plugins->run_hooks("memberlist_user", $user);
-		if(!$user['username'])
-		{
-			continue;
-		}
 
 		$alt_bg = alt_trow();
 
