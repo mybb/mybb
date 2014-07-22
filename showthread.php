@@ -898,7 +898,7 @@ if($mybb->input['action'] == "thread")
 				}
 				else
 				{
-					$page = (int)$result / $perpage + 1;
+					$page = (int)($result / $perpage) + 1;
 				}
 			}
 		}
