@@ -179,7 +179,6 @@ a:active {
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #ccc;
 	padding: 5px;
-	overflow: hidden;
 }
 
 #panel .lower a:link,
@@ -4174,6 +4173,7 @@ a.button {
 			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
 		</ul>
 	</div>
+	<br class="clear" />
 </div>]]></template>
 		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
