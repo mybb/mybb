@@ -316,7 +316,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		$userhandler->update_user();
 
 		$plugins->run_hooks("usercp_do_profile_end");
-		redirect("usercp.php", $lang->redirect_profileupdated);
+		redirect("usercp.php?action=profile", $lang->redirect_profileupdated);
 	}
 }
 
@@ -847,7 +847,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 
 		$plugins->run_hooks("usercp_do_options_end");
 
-		redirect("usercp.php", $lang->redirect_optionsupdated);
+		redirect("usercp.php?action=options", $lang->redirect_optionsupdated);
 	}
 }
 
@@ -1258,7 +1258,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
 				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
 				$plugins->run_hooks("usercp_do_email_changed");
-				redirect("usercp.php", $lang->redirect_emailupdated);
+				redirect("usercp.php?action=email", $lang->redirect_emailupdated);
 			}
 		}
 	}
@@ -1329,7 +1329,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 			my_mail($mybb->user['email'], $lang->emailsubject_changepassword, $mail_message);
 
 			$plugins->run_hooks("usercp_do_password_end");
-			redirect("usercp.php", $lang->redirect_passwordupdated);
+			redirect("usercp.php?action=password", $lang->redirect_passwordupdated);
 		}
 	}
 	if(count($errors) > 0)
@@ -1383,7 +1383,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 		{
 			$userhandler->update_user();
 			$plugins->run_hooks("usercp_do_changename_end");
-			redirect("usercp.php", $lang->redirect_namechanged);
+			redirect("usercp.php?action=changename", $lang->redirect_namechanged);
 
 		}
 	}
@@ -2226,7 +2226,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	if(empty($avatar_error))
 	{
 		$plugins->run_hooks("usercp_do_avatar_end");
-		redirect("usercp.php", $lang->redirect_avatarupdated);
+		redirect("usercp.php?action=avatar", $lang->redirect_avatarupdated);
 	}
 	else
 	{
