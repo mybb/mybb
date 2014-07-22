@@ -9959,7 +9959,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
-<table border="0" style="width: 100%; text-align: center;">
+<table border="0" style="width: 100%;">
 <tr>
 {$usercpnav}
 <td style="vertical-align: top;">
