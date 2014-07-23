@@ -1859,7 +1859,18 @@ if($mybb->input['action'] == "deletemod")
 		{
 			$query = $db->simple_select("users","usergroup", "uid='{$mod['id']}'");
 			$basegid = $db->fetch_field($query, "usergroup");
-			$updatequery = $basegid ? array("usergroup" => $basegid) : array("usergroup" => "2");
+			if($basegid)
+ +		   	{
+ +				$updatequery = array(
+ +					"usergroup" => $basegid
+ +				);
+ +		 	} 
+ +		 	else
+ +		   	{
+ +				$updatequery = array(
+ +					"usergroup" => "2"
+ +				);
+ +		 	}
 			
 			$db->update_query("users", $updatequery, "uid='{$mod['id']}' AND usergroup != '4' AND usergroup != '3'");
 		}
