@@ -635,6 +635,10 @@ if($mybb->input['action'] == "warn")
 					$lang_str = "expiration_".$ban_length['period'];
 					$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
 				}
+				else
+				{
+					$period = $lang->result_period_perm;
+				}
 				$group_name = $groupscache[$level['action']['usergroup']]['title'];
 				$level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
 				break;
@@ -645,6 +649,10 @@ if($mybb->input['action'] == "warn")
 					$lang_str = "expiration_".$period['period'];
 					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
 				}
+				else
+				{
+					$period = $lang->result_period_perm;
+				}
 				$level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
 				break;
 			case 3:
@@ -653,6 +661,10 @@ if($mybb->input['action'] == "warn")
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
 					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+				}
+				else
+				{
+					$period = $lang->result_period_perm;
 				}
 				$level['friendly_action'] = $lang->sprintf($lang->result_moderated, $period);
 				break;
