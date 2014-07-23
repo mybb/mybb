@@ -9228,7 +9228,8 @@ if(use_xmlhttprequest == "1")
       </td>
 	</tr>
 </table>
-</td>]]></template>
+</td>
+</tr>]]></template>
 		<template name="post_captcha_ayah" version="1800"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
