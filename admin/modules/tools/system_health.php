@@ -679,11 +679,11 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 		elseif($encodings[$key] == 'utf8mb4')
 		{
-			$utf8mb4 = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt=\"{$lang->ok}\" />";
+			$utf8mb4 = "<img src=\"styles/{$page->style}/images/icons/tick.png\" alt=\"{$lang->ok}\" />";
 		}
 		elseif($encodings[$key] == 'utf-8')
 		{
-			$utf8mb4 = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}&amp;mb4=1\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
+			$utf8mb4 = "<a href=\"index.php?module=tools-system_health&amp;action=utf8_conversion&amp;table={$tablename}&amp;mb4=1\" style=\"background: url(styles/{$page->style}/images/icons/cross.png) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{
