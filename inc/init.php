@@ -48,6 +48,8 @@ if(!function_exists('json_encode') || !function_exists('json_decode'))
 
 require_once MYBB_ROOT."inc/functions.php";
 
+require_once MYBB_ROOT."inc/class_api.php";
+
 require_once MYBB_ROOT."inc/class_timers.php";
 $maintimer = new timer();
 
