@@ -16,7 +16,7 @@ $templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,wa
 $templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view,warnings_warn_pm_anonymous";
 
 require_once "./global.php";
-require_once MYBB_ROOT."/inc/functions_warnings.php";
+require_once MYBB_ROOT."inc/functions_warnings.php";
 require_once MYBB_ROOT."inc/functions_modcp.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
