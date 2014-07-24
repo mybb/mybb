@@ -2383,8 +2383,8 @@ if($mybb->input['action'] == "acceptrequest")
 		$db->update_query("users", array('buddylist' => $mybb->user['buddylist']), "uid='".(int)$mybb->user['uid']."'");
 	
 		$pm = array(
-			'subject' => 'buddyrequest_accepted_request',
-			'message' => 'buddyrequest_accepted_request_message',
+			'subject' => $lang->buddyrequest_accepted_request,
+			'message' => $lang->buddyrequest_accepted_request_message,
 			'touid' => $user['uid'],
 			'language' => $user['language'],
 			'language_file' => 'usercp'
@@ -2605,8 +2605,8 @@ if($mybb->input['action'] == "do_editlists")
 					$existing_users[] = $user['uid'];
 	
 					$pm = array(
-						'subject' => 'buddyrequest_new_buddy',
-						'message' => 'buddyrequest_new_buddy_message',
+						'subject' => $lang->buddyrequest_new_buddy,
+						'message' => $lang->buddyrequest_new_buddy_message,
 						'touid' => $user['uid'],
 						'receivepms' => (int)$user['buddyrequestspm'],
 						'language' => $user['language'],
@@ -2621,8 +2621,8 @@ if($mybb->input['action'] == "do_editlists")
 					$id = $db->insert_query('buddyrequests', array('uid' => (int)$mybb->user['uid'], 'touid' => (int)$user['uid'], 'date' => TIME_NOW));
 	
 					$pm = array(
-						'subject' => 'buddyrequest_received',
-						'message' => 'buddyrequest_received_message',
+						'subject' => $lang->buddyrequest_received,
+						'message' => $lang->buddyrequest_received_message,
 						'touid' => $user['uid'],
 						'receivepms' => (int)$user['buddyrequestspm'],
 						'language' => $user['language'],
