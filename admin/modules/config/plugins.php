@@ -562,14 +562,21 @@ if(!$mybb->input['action'])
 			// Plugin is installed but not active
 			else if($installed == true)
 			{
-				$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
-				if($uninstall_button)
+				if($compatibility_warning && !$uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					$table->construct_cell("{$compatibility_warning}", array("class" => "align_center", "colspan" => 2));
 				}
 				else
 				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+					$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=activate&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
+					if($uninstall_button)
+					{
+						$table->construct_cell("<a href=\"index.php?module=config-plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}&amp;my_post_key={$mybb->post_code}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					}
+					else
+					{
+						$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
+					}
 				}
 			}
 			$table->construct_row();
