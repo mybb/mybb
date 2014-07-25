@@ -273,7 +273,7 @@ if($mybb->user['uid'] && !$mybb->get_input('email'))
 {
     $mybb->input['email'] = htmlspecialchars_uni($mybb->user['email']);
 } else {
-    $mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+    $mybb->input['email'] = $mybb->get_input('email');
 }
 
 $plugins->run_hooks('contact_end');
