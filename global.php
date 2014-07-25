@@ -459,6 +459,10 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 			}
 		}
 	}
+	else
+	{
+		$can_access_moderationqueue = false;
+	}
 	
 	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp']))
 	{
