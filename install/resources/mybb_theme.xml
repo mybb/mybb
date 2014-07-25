@@ -9210,7 +9210,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
-		<td style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
 		</td>
 	</tr>
 	<tr>
