@@ -505,7 +505,7 @@ if($mybb->input['action'] == "results")
 			}
 			$folder .= "folder";
 
-			if(!$mybb->settings['postsperpage'])
+			if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 			{
 				$mybb->settings['postsperpage'] = 20;
 			}

@@ -975,7 +975,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
-	if(!$mybb->settings['postsperpage'])
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 	{
 		$mybb->settings['postsperpage'] = 20;
 	}
