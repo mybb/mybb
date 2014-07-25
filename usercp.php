@@ -1240,7 +1240,7 @@ if($mybb->input['action'] == "subscriptions")
 	");
 	$threadcount = $db->fetch_field($query, "threads");
 
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -2892,7 +2892,7 @@ if($mybb->input['action'] == "attachments")
 	$attachments = '';
 
 	// Pagination
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}

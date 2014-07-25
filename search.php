@@ -129,7 +129,7 @@ if($mybb->input['action'] == "results")
 		$oppsort = $lang->desc;		
 	}
 	
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -491,9 +491,9 @@ if($mybb->input['action'] == "results")
 			}
 			$folder .= "folder";
 			
-			if(!$mybb->settings['postsperpage'])
+			if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 			{
-				$mybb->settings['postperpage'] = 20;
+				$mybb->settings['postsperpage'] = 20;
 			}
 
 			$thread['pages'] = 0;

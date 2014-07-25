@@ -1139,6 +1139,11 @@ if($mybb->input['action'] == "tracking")
 	$plugins->run_hooks("private_tracking_start");
 	$readmessages = '';
 	$unreadmessages = '';
+	
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+	{
+		$mybb->settings['postsperpage'] = 20;
+	}
 
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['postsperpage'];

@@ -42,6 +42,16 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 	error_no_permission();
 }
 
+if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+{
+	$mybb->settings['threadsperpage'] = 20;
+}
+
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
+
 $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();

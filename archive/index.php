@@ -119,6 +119,11 @@ switch($action)
 		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/".get_thread_link($thread['tid'], $page));
 
 		$plugins->run_hooks("archive_thread_start");
+		
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+		{
+			$mybb->settings['postsperpage'] = 20;
+		}
 
 		// Paginate this thread
 		$perpage = $mybb->settings['postsperpage'];
@@ -264,7 +269,7 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'])
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}
