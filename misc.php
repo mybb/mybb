@@ -262,7 +262,7 @@ elseif($mybb->input['action'] == "helpresults")
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 	add_breadcrumb($lang->search_results, "misc.php?action=helpresults&sid={$sid}");
 
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}

@@ -43,6 +43,11 @@ if($mybb->get_input('action') == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
 	$invis_count = $db->fetch_field($query, "users");
 
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+	
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -167,6 +172,11 @@ else
 			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
 			$online_count = $db->fetch_field($query, "online");
 			break;
+	}
+	
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
 	}
 
 	// How many pages are there?

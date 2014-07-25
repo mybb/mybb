@@ -3839,6 +3839,11 @@ function build_breadcrumb()
 				$multipage_dropdown = null;
 				if(!empty($navbit['multipage']))
 				{
+					if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+					{
+						$mybb->settings['threadsperpage'] = 20;
+					}
+		
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
 					{
