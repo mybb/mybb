@@ -928,9 +928,9 @@ if(!empty($threadcache))
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
-	if(!$mybb->settings['postsperpage'])
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 	{
-		$mybb->settings['postperpage'] = 20;
+		$mybb->settings['postsperpage'] = 20;
 	}
 
 	foreach($threadcache as $thread)

@@ -1048,9 +1048,9 @@ if(!$mybb->input['action'])
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 
-	if(!$mybb->settings['postsperpage'])
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 	{
-		$mybb->settings['postperpage'] = 20;
+		$mybb->settings['postsperpage'] = 20;
 	}
 		
 	// Figure out if we need to display multiple pages.

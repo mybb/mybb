@@ -815,9 +815,9 @@ if($mybb->input['action'] == "thread")
 	else // Linear display
 	{
 		$threadexbox = '';
-		if(!$mybb->settings['postsperpage'])
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
-			$mybb->settings['postperpage'] = 20;
+			$mybb->settings['postsperpage'] = 20;
 		}
 		
 		// Figure out if we need to display multiple pages.

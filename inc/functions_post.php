@@ -130,7 +130,7 @@ function build_postbit($post, $post_type=0)
 	{ // Used to show the # of the post
 		if($page > 1)
 		{
-			if(!$mybb->settings['postsperpage'])
+			if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 			{
 				$mybb->settings['postsperpage'] = 20;
 			}

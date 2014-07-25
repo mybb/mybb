@@ -85,6 +85,11 @@ check_forum_password($forum['fid']);
 
 $page = intval($mybb->input['page']);
 
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
+
 // Paginate this thread
 $perpage = $mybb->settings['postsperpage'];
 $postcount = intval($thread['replies'])+1;
