@@ -128,6 +128,11 @@ if(!$mybb->input['action'])
 	$perpage = intval($mybb->input['perpage']);
 	if(!$perpage)
 	{
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 

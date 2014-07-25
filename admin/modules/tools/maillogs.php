@@ -136,6 +136,11 @@ if(!$mybb->input['action'])
 
 	if(!$per_page)
 	{
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+		
 		$per_page = 20;
 	}
 

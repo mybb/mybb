@@ -341,7 +341,7 @@ $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}

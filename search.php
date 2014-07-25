@@ -129,7 +129,7 @@ if($mybb->input['action'] == "results")
 		$oppsort = $lang->desc;		
 	}
 	
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}

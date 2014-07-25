@@ -264,7 +264,7 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'])
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}
