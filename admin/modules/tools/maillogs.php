@@ -119,6 +119,11 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+		
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
