@@ -550,45 +550,84 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)
+if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 {
-	// Read the reported content cache
-	$reported = $cache->read('reportedcontent');
-
-	// 0 or more reported items currently exist
-	if($reported['unread'] > 0)
+	// Only worth checking if we are here because we have ACP permissions and the other condition fails
+	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
 	{
-		// We want to avoid one extra query for users that can moderate any forum
-		if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+		// First we check if the user's a super admin: if yes, we don't care about permissions
+		$can_access_moderationqueue = true;
+		$is_super_admin = is_super_admin($recipient['uid']);
+		if(!$is_super_admin)
 		{
-			$unread = (int)$reported['unread'];
-		}
-		else
-		{
-			$unread = 0;
-			$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
-
-			while($fid = $db->fetch_field($query, 'id3'))
+			// Include admin functions
+			if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
 			{
-				if(is_moderator($fid, "canmanagereportedposts"))
+				$can_access_moderationqueue = false;
+			}
+
+			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
+
+			// Verify if we have permissions to access forum-moderation_queue
+			require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/forum/module_meta.php";
+			if(function_exists("forum_admin_permissions"))
+			{
+				// Get admin permissions
+				$adminperms = get_admin_permissions($mybb->user['uid']);
+
+				$permissions = forum_admin_permissions();
+				if(array_key_exists('moderation_queue', $permissions['permissions']) && $adminperms['forum']['moderation_queue'] != 1)
 				{
-					++$unread;
+					$can_access_moderationqueue = false;
 				}
 			}
 		}
+	}
+	else
+	{
+		$can_access_moderationqueue = false;
+	}
+	
+	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
+	{
+		// Read the reported content cache
+		$reported = $cache->read('reportedcontent');
 
-		if($unread > 0)
+		// 0 or more reported items currently exist
+		if($reported['unread'] > 0)
 		{
-			if($unread == 1)
+			// We want to avoid one extra query for users that can moderate any forum
+			if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
 			{
-				$lang->unread_reports = $lang->unread_report;
+				$unread = (int)$reported['unread'];
 			}
 			else
 			{
-				$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
+				$unread = 0;
+				$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
+
+				while($fid = $db->fetch_field($query, 'id3'))
+				{
+					if(is_moderator($fid, "canmanagereportedposts"))
+					{
+						++$unread;
+					}
+				}
 			}
 
-			eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+			if($unread > 0)
+			{
+				if($unread == 1)
+				{
+					$lang->unread_reports = $lang->unread_report;
+				}
+				else
+				{
+					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
+				}
+
+				eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+			}
 		}
 	}
 }
