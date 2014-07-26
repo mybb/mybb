@@ -606,7 +606,7 @@ function privatemessage_perform_search_mysql($search)
 		$userids = array();
 		$search['sender'] = my_strtolower($search['sender']);
 
-		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['sender']))."%'");
+		$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['sender']))."%'");
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
@@ -827,7 +827,7 @@ function perform_search_mysql($search)
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{
@@ -1218,7 +1218,7 @@ function perform_search_mysql_ft($search)
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($search['author'])."%'");
 		}
 
 		while($user = $db->fetch_array($query))
