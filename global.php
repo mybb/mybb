@@ -426,23 +426,62 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'])
+if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp']))
 {
-	// Read the reported posts cache
-	$reported = $cache->read("reportedposts");
-
-	// 0 or more reported posts currently exist
-	if($reported['unread'] > 0)
+	// Only worth checking if we are here because we have ACP permissions and the other condition fails
+	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp']))
 	{
-		if($reported['unread'] == 1)
+		// First we check if the user's a super admin: if yes, we don't care about permissions
+		$can_access_moderationqueue = true;
+		$is_super_admin = is_super_admin($recipient['uid']);
+		if(!$is_super_admin)
 		{
-			$lang->unread_reports = $lang->unread_report;
+			// Include admin functions
+			if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+			{
+				$can_access_moderationqueue = false;
+			}
+
+			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
+
+			// Verify if we have permissions to access forum-moderation_queue
+			require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/forum/module_meta.php";
+			if(function_exists("forum_admin_permissions"))
+			{
+				// Get admin permissions
+				$adminperms = get_admin_permissions($mybb->user['uid']);
+
+				$permissions = forum_admin_permissions();
+				if(array_key_exists('moderation_queue', $permissions['permissions']) && $adminperms['forum']['moderation_queue'] != 1)
+				{
+					$can_access_moderationqueue = false;
+				}
+			}
 		}
-		else
+	}
+	else
+	{
+		$can_access_moderationqueue = false;
+	}
+	
+	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp']))
+	{
+		// Read the reported posts cache
+		$reported = $cache->read("reportedposts");
+
+		// 0 or more reported posts currently exist
+		if($reported['unread'] > 0)
 		{
-			$lang->unread_reports = $lang->sprintf($lang->unread_reports, $reported['unread']);
+			if($reported['unread'] == 1)
+			{
+				$lang->unread_reports = $lang->unread_report;
+			}
+			else
+			{
+				$lang->unread_reports = $lang->sprintf($lang->unread_reports, $reported['unread']);
+			}
+			eval("\$unreadreports = \"".$templates->get("global_unreadreports")."\";");
 		}
-		eval("\$unreadreports = \"".$templates->get("global_unreadreports")."\";");
 	}
 }
 
