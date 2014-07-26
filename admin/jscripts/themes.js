@@ -46,9 +46,15 @@ var ThemeSelector = (function() {
 		this.font_style = $("#css_bits\\[font_style\\]").val();
 		this.font_weight = $("#css_bits\\[font_weight\\]").val();
 
-		$(window).unload($.proxy(this, 'saveCheck', event, false));
-		$("#save").click($.proxy(this, 'save', event, true));
-		$("#save_close").click($.proxy(this, 'saveClose', event));
+		$("#save").on('click', function(event) { $.proxy(this, 'save', event, true); } );
+		$("#save_close").on('click', function(event) { $.proxy(this, 'saveClose', event); } );
+		
+		ThemeSelector.that = this; // I know this is cheating :D
+		
+		window.onbeforeunload = function(event) { saveCheck(event, false, ThemeSelector.that); }
+		window.onunload = function(event) { save(false, false); }
+		
+		
 		this.selector.on("change", $.proxy(this, 'updateSelector'));
 		this.selectorForm.on("submit", $.proxy(this, 'updateSelector'));
     }
@@ -74,7 +80,7 @@ var ThemeSelector = (function() {
 
 		e.preventDefault()
 
-		this.saveCheck(e, true);
+		this.saveCheck(e, true, null);
 
 		postData = "file=" + fn(this.file) + "&tid=" + fn(this.tid) + "&selector=" + fn(this.selector.val()) + "&my_post_key=" + fn(my_post_key);
 
@@ -142,30 +148,46 @@ var ThemeSelector = (function() {
 	 * @param  bool true if AJAX, false if not
 	 * @return true
 	 */
-	function saveCheck(e, isAjax) {
-		if (this.isClosing == true) {
+	function saveCheck(e, isAjax, that) {
+
+		if(that == null)
+			that = this;
+	
+		if (that.isClosing == true) {
 			return true;
 		}
 
-		e.preventDefault();
+		if(e != null && isAjax == true)
+			e.preventDefault();
 
-		if (this.background != $("#css_bits\\[background\\]").val() ||
-		    this.width != $("#css_bits\\[width\\]").val() ||
-			this.color != $("#css_bits\\[color\\]").val() ||
-			this.extra != $("#css_bits\\[extra\\]").val() ||
-			this.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
-			this.font_family != $("#css_bits\\[font_family\\]").val() ||
-			this.font_size != $("#css_bits\\[font_size\\]").val() ||
-			this.font_style != $("#css_bits\\[font_style\\]").val() ||
-			this.font_weight != $("#css_bits\\[font_weight\\]").val()) {
-			confirmReturn = confirm(save_changes_lang_string);
-			if (confirmReturn == true) {
-				this.save(false, isAjax);
-				$.jGrowl('Saved');
+		if (that.background != $("#css_bits\\[background\\]").val() ||
+		    that.width != $("#css_bits\\[width\\]").val() ||
+			that.color != $("#css_bits\\[color\\]").val() ||
+			that.extra != $("#css_bits\\[extra\\]").val() ||
+			that.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
+			that.font_family != $("#css_bits\\[font_family\\]").val() ||
+			that.font_size != $("#css_bits\\[font_size\\]").val() ||
+			that.font_style != $("#css_bits\\[font_style\\]").val() ||
+			that.font_weight != $("#css_bits\\[font_weight\\]").val()) {
+			
+			e.preventDefault();
+			
+			if(isAjax == false)
+				return save_changes_lang_string;
+			else
+			{
+				confirmReturn = confirm(save_changes_lang_string);
+				if (confirmReturn == true) {
+					that.save(false, isAjax);
+					$.jGrowl('Saved');
+				}
 			}
 		}
-		this.selectorPrevOpt = this.selector.val();
-		return true;
+		else if(isAjax == true)
+		{
+			that.selectorPrevOpt = that.selector.val();
+			return true;
+		}
 	}
 
 	/**
