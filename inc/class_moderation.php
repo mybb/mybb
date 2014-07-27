@@ -2060,7 +2060,7 @@ class Moderation
 					}
 				}
 				update_thread_counters($tid, $counters);
-				update_last_post($post['tid']);
+				update_last_post($tid);
 			}
 		}
 
