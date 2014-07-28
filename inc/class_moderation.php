@@ -1266,7 +1266,6 @@ class Moderation
 		// Get the icon for the first split post
 		$query = $db->simple_select("posts", "icon, visible", "pid=".intval($pids[0]));
 		$post_info = $db->fetch_array($query);
-		$last_post_info = get_post(end($pids));
 
 		$icon = $post_info['icon'];
 		$visible = $post_info['visible'];
@@ -1284,9 +1283,8 @@ class Moderation
 				"uid" => intval($thread['uid']),
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
-				"lastpost" => (int)$last_post_info['dateline'],
-				"lastposter" => $db->escape_string($last_post_info['username']),
-				"lastposteruid" => (int)$last_post_info['uid'],
+				"lastpost" => intval($thread['lastpost']),
+				"lastposter" => $db->escape_string($thread['lastposter']),
 				"replies" => count($pids)-1,
 				"visible" => intval($visible),
 				"notes" => ''
