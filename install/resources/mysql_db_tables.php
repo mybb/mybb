@@ -61,7 +61,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 
 $tables[] = "CREATE TABLE mybb_announcements (
   aid int unsigned NOT NULL auto_increment,
-  fid smallint unsigned NOT NULL default '0',
+  fid int NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   subject varchar(120) NOT NULL default '',
   message text NOT NULL,
