@@ -1039,7 +1039,8 @@ if($mybb->input['action'] == "edit_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'threadprefix' => intval($mybb->input['threadprefix'])
 			);
 			
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1159,6 +1160,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		
 		$mybb->input['copy_1_forum'] = $thread_options['copythread'];
 		$mybb->input['deletethread'] = $thread_options['deletethread'];
+		$mybb->input['threadprefix'] = $thread_options['threadprefix'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
@@ -1339,6 +1341,23 @@ if($mybb->input['action'] == "edit_post_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
+
+	$query = $db->simple_select('threadprefixes', 'pid, prefix');
+	if($db->num_rows($query) > 0)
+	{
+		$thread_prefixes = array(
+			'-1' => $lang->no_change,
+			'0' => $lang->no_prefix
+		);
+
+		while($prefix = $db->fetch_array($query))
+		{
+			$thread_prefixes[$prefix['pid']] = $prefix['prefix'];
+		}
+
+		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, $mybb->input['threadprefix'], array('id' => 'threadprefix')), 'threadprefix');
+	}
+
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 	
@@ -1399,7 +1418,12 @@ if($mybb->input['action'] == "add_post_tool")
 		{
 			$mybb->input['openthread'] = '';
 		}
-		
+
+		if(!intval($mybb->input['threadprefix']))
+		{
+			$mybb->input['threadprefix'] = '';
+		}
+
 		if($mybb->input['move_type'] == 2)
 		{
 			$move_checked[1] = '';
@@ -1504,7 +1528,8 @@ if($mybb->input['action'] == "add_post_tool")
 				'copythread' => intval($mybb->input['copy_1_forum']),
 				'newsubject' => $mybb->input['newsubject'],
 				'addreply' => $mybb->input['newreply'],
-				'replysubject' => $mybb->input['newreplysubject']
+				'replysubject' => $mybb->input['newreplysubject'],
+				'threadprefix' => $mybb->input['threadprefix']
 			);
 			
 			if(stripos($mybb->input['splitpostsnewsubject'], '{subject}') === false)
@@ -1601,6 +1626,7 @@ if($mybb->input['action'] == "add_post_tool")
 		$copy_checked[2] = '';
 		$mybb->input['copy_1_forum'] = '';
 		$mybb->input['deletethread'] = '0';
+		$mybb->input['threadprefix'] = '-1';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
 		$mybb->input['newreplysubject'] = '{subject}';
@@ -1745,6 +1771,23 @@ if($mybb->input['action'] == "add_post_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
+
+	$query = $db->simple_select('threadprefixes', 'pid, prefix');
+	if($db->num_rows($query) > 0)
+	{
+		$thread_prefixes = array(
+			'-1' => $lang->no_change,
+			'0' => $lang->no_prefix
+		);
+
+		while($prefix = $db->fetch_array($query))
+		{
+			$thread_prefixes[$prefix['pid']] = $prefix['prefix'];
+		}
+
+		$form_container->output_row($lang->apply_thread_prefix." <em>*</em>", '', $form->generate_select_box('threadprefix', $thread_prefixes, $mybb->input['threadprefix'], array('id' => 'threadprefix')), 'threadprefix');
+	}
+
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 	
