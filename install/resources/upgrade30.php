@@ -681,6 +681,11 @@ function upgrade30_dbchanges4()
 		$db->drop_column("maillogs", "type");
 	}
 
+	if($db->field_exists('groups', 'modtools'))
+	{
+		$db->drop_column("modtools", "groups");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -694,6 +699,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "smallint NOT NULL default '0'");
+			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 		default:
 			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
@@ -706,6 +712,7 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "tinyint(1) NOT NULL default '0'");
+			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 	}
 
@@ -1265,7 +1272,6 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
 			$db->modify_column("announcements", "fid", "smallint NOT NULL default '0'");
-			$db->modify_column("attachments", "pid", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
@@ -1290,7 +1296,6 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("adminoptions", "loginattempts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint(4) NOT NULL default '0'");
 			$db->modify_column("announcements", "fid", "smallint unsigned NOT NULL default '0'");
-			$db->modify_column("attachments", "pid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
@@ -1457,7 +1462,7 @@ function upgrade30_dbchanges_optimize3()
 		"sessions" => array("anonymous", "nopermission"),
 		"settinggroups" => array("isdefault"),
 		"settings" => array("isdefault"),
-		"smilies" => array("sid", "showclickable"),
+		"smilies" => array("showclickable"),
 		"tasks" => array("enabled", "logging"),
 		"themes" => array("def"),
 		"threads" => array("sticky", "visible"),
