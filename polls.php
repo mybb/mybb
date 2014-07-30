@@ -166,6 +166,15 @@ if($mybb->input['action'] == "newpoll")
 	{
 		$timeout = 0;
 	}
+	
+	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $polloptions)
+	{
+		$maxoptions = $mybb->get_input('maxoptions', 1);
+	}
+	else
+	{
+		$maxoptions = 0;
+	}
 
 	$plugins->run_hooks("polls_newpoll_end");
 
@@ -295,6 +304,15 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		$timeout = 0;
 	}
 
+	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $polloptions)
+	{
+		$maxoptions = $mybb->get_input('maxoptions', 1);
+	}
+	else
+	{
+		$maxoptions = 0;
+	}
+	
 	$newpoll = array(
 		"tid" => $thread['tid'],
 		"question" => $db->escape_string($mybb->input['question']),
@@ -306,7 +324,8 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		"timeout" => $timeout,
 		"closed" => 0,
 		"multiple" => $postoptions['multiple'],
-		"public" => $postoptions['public']
+		"public" => $postoptions['public'],
+		"maxoptions" => $maxoptions
 	);
 
 	$plugins->run_hooks("polls_do_newpoll_process");
@@ -436,6 +455,15 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = $poll['timeout'];
 		}
+		
+		if(!$poll['maxoptions'])
+		{
+			$maxoptions = 0;
+		}
+		else
+		{
+			$maxoptions = $poll['maxoptions'];
+		}
 	}
 	else
 	{
@@ -502,6 +530,15 @@ if($mybb->input['action'] == "editpoll")
 		else
 		{
 			$timeout = 0;
+		}
+		
+		if(!$poll['maxoptions'])
+		{
+			$maxoptions = 0;
+		}
+		else
+		{
+			$maxoptions = $poll['maxoptions'];
 		}
 	}
 
@@ -648,6 +685,15 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
+	
+	if($mybb->get_input('maxoptions', 1) > 0 && $mybb->get_input('maxoptions', 1) < $numoptions)
+	{
+		$maxoptions = $mybb->get_input('maxoptions', 1);
+	}
+	else
+	{
+		$maxoptions = 0;
+	}
 
 	$updatedpoll = array(
 		"question" => $db->escape_string($mybb->input['question']),
@@ -658,7 +704,8 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"timeout" => $timeout,
 		"closed" => $postoptions['closed'],
 		"multiple" => $postoptions['multiple'],
-		"public" => $postoptions['public']
+		"public" => $postoptions['public'],
+		"maxoptions" => $maxoptions
 	);
 
 	$plugins->run_hooks("polls_do_editpoll_process");
@@ -930,6 +977,8 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	{
 		if(is_array($option))
 		{
+			$total_options = 0;
+		
 			foreach($option as $voteoption => $vote)
 			{
 				if($vote == 1 && isset($votesarray[$voteoption-1]))
@@ -941,7 +990,13 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 					$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($voteoption)."','$now')";
 					$votesarray[$voteoption-1]++;
 					$numvotes = $numvotes+1;
+					$total_options++;
 				}
+			}
+			
+			if($total_options > $poll['maxoptions'] && $poll['maxoptions'] != 0)
+			{
+				error($lang->sprintf($lang->error_maxpolloptions, $poll['maxoptions']));
 			}
 		}
 	}
