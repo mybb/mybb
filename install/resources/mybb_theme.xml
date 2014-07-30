@@ -7317,8 +7317,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
 </tr>]]></template>
 		<template name="modcp_modlogs_result_announcement" version="1800"><![CDATA[<strong>{$lang->announcement}:</strong> <a href="{$data['announcement']}" target="_blank">{$data['subject']}</a>]]></template>
-		<template name="modcp_modlogs_result_forum" version="1800"><![CDATA[<strong>{$lang->forum}</strong> <a href="{$logitem['forum']}" target="_blank">{$logitem['fname']}</a><br />]]></template>
-		<template name="modcp_modlogs_result_post" version="1800"><![CDATA[<strong>{$lang->post}</strong> <a href="{$logitem['post']}#pid{$logitem['pid']}">{$logitem['psubject']}</a>]]></template>
+		<template name="modcp_modlogs_result_forum" version="1800"><![CDATA[<strong>{$lang->forum}:</strong> <a href="{$logitem['forum']}" target="_blank">{$logitem['fname']}</a><br />]]></template>
+		<template name="modcp_modlogs_result_post" version="1800"><![CDATA[<strong>{$lang->post}:</strong> <a href="{$logitem['post']}#pid{$logitem['pid']}">{$logitem['psubject']}</a>]]></template>
 		<template name="modcp_modlogs_result_thread" version="1800"><![CDATA[<strong>{$lang->thread}:</strong> <a href="{$logitem['thread']}" target="_blank">{$logitem['tsubject']}</a><br />]]></template>
 		<template name="modcp_modlogs_user" version="1800"><![CDATA[<option value="{$user['uid']}"{$selected}>{$user['username']}</option>]]></template>
 		<template name="modcp_modqueue_attachments" version="1800"><![CDATA[<html>
