@@ -3378,11 +3378,6 @@ if($mybb->input['action'] == "usergroups")
 			{
 				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
-
-			if(!$usergroup['usertitle'])
-			{
-				// fetch title here
-			}
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
