@@ -3056,8 +3056,8 @@ function build_clickable_smilies()
 				{
 					if($counter == 0)
 					{
-						$smilies .=  "<tr>\n";
-					}
+				          	$smilies .= $templates->get("smilieinsert_wrapper_start");
+				 	}
 
 					$find = htmlspecialchars_uni($find);
 
@@ -3070,7 +3070,7 @@ function build_clickable_smilies()
 					if($counter == $mybb->settings['smilieinsertercols'])
 					{
 						$counter = 0;
-						$smilies .= "</tr>\n";
+				        	 $smilies .= $templates->get("smilieinsert_wrapper_end");
 					}
 				}
 			}
@@ -3078,7 +3078,7 @@ function build_clickable_smilies()
 			if($counter != 0)
 			{
 				$colspan = $mybb->settings['smilieinsertercols'] - $counter;
-				$smilies .= "<td colspan=\"{$colspan}\">&nbsp;</td>\n</tr>\n";
+				 $smilies .= $templates->get("smilieinsert_empty");
 			}
 
 			eval("\$clickablesmilies = \"".$templates->get("smilieinsert")."\";");
