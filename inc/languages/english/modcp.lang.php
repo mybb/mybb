@@ -97,6 +97,7 @@ $l['info_on_ip'] = "Information on This IP Address";
 $l['information']  = "Information";
 $l['filter_modlogs'] = "Filter Moderator Logs";
 $l['forum'] = "Forum";
+$l['post'] = "Post";
 $l['from_moderator'] = "From Moderator:";
 $l['na_deleted'] = "N/A - Been Deleted";
 $l['sort_by'] = "Sort by:";
