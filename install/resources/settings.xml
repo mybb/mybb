@@ -284,26 +284,10 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="guestimages">
-			<title>Show Posted Images To Guests</title>
-			<description><![CDATA[Setting this to yes will allow guests to see images that have been posted.]]></description>
-			<disporder>20</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="guestvideos">
-			<title>Show Posted Videos To Guests</title>
-			<description><![CDATA[Setting this to yes will allow guests to see videos that have been posted.]]></description>
-			<disporder>21</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="hidewebsite">
 			<title>Hide Websites To Groups</title>
 			<description><![CDATA[Select the usergroups you wish to hide websites from.]]></description>
-			<disporder>22</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -311,7 +295,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="hidesignatures">
 			<title>Hide Signatures To Groups</title>
 			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
-			<disporder>23</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2043,6 +2027,22 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Allow Me MyCodes</title>
 			<description><![CDATA[Setting this to yes allows users to use the /me and /slap MyCodes.]]></description>
 			<disporder>16</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="guestimages">
+			<title>Parse [img] MyCode To Guests</title>
+			<description><![CDATA[Setting this to yes will parse posted images to guests. If no, a link will be shown instead.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+		</setting>
+		<setting name="guestvideos">
+			<title>Parse [video] MyCode To Guests</title>
+			<description><![CDATA[Setting this to yes will parse posted videos to guests. If no, a link will be shown instead.]]></description>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
