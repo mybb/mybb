@@ -247,6 +247,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 		$modlogdata['fid'] = $fid;
 		$modlogdata['tid'] = $tid;
+		$modlogdata['pid'] = $pid;
 		if($firstpost)
 		{
 			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))

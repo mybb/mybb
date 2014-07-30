@@ -48,6 +48,7 @@ $fid = intval($mybb->input['fid']);
 
 if($pid)
 {
+	$modlogdata['pid'] = $pid;
 	$post = get_post($pid);
 	$tid = $post['tid'];
 	if(!$post['pid'])

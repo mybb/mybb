@@ -2896,6 +2896,16 @@ function log_moderator_action($data, $action="")
 		$tid = $data['tid'];
 		unset($data['tid']);
 	}
+	
+	if($data['pid'] == '')
+	{
+		$pid = 0;
+	}
+	else
+	{
+		$pid = $data['pid'];
+		unset($data['pid']);
+	}
 
 	// Any remaining extra data - we serialize and insert in to its own column
 	if(is_array($data))
@@ -2910,6 +2920,7 @@ function log_moderator_action($data, $action="")
 		"dateline" => $time,
 		"fid" => $fid,
 		"tid" => $tid,
+		"pid" => $pid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
 		"ipaddress" => $db->escape_string($session->ipaddress)
