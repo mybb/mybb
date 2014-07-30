@@ -1759,7 +1759,6 @@ class Moderation
 
 		// Get the first split post
 		$post_info = get_post($pids[0]);
-		$last_post_info = get_post(end($pids));
 		$visible = $post_info['visible'];
 
 		$forum_counters[$moveto] = array(
@@ -1783,9 +1782,8 @@ class Moderation
 				"uid" => (int)$post_info['uid'],
 				"username" => $db->escape_string($post_info['username']),
 				"dateline" => (int)$post_info['dateline'],
-				"lastpost" => $last_post_info['dateline'],
-				"lastposter" => $db->escape_string($last_post_info['username']),
-				"lastposteruid" => $last_post_info['uid'],
+				"lastpost" => 0,
+				"lastposter" => '',
 				"visible" => (int)$visible,
 				"notes" => ''
 			);
@@ -2061,9 +2059,8 @@ class Moderation
 						$counters[$key] = "+{$counter}";
 					}
 				}
-				update_thread_data($tid);
 				update_thread_counters($tid, $counters);
-				update_last_post($post['tid']);
+				update_last_post($tid);
 			}
 		}
 

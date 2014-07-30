@@ -1474,7 +1474,7 @@ if($mybb->input['action'] == "subscriptions")
 	");
 	$threadcount = $db->fetch_field($query, "threads");
 
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -3378,11 +3378,6 @@ if($mybb->input['action'] == "usergroups")
 			{
 				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
 			}
-
-			if(!$usergroup['usertitle'])
-			{
-				// fetch title here
-			}
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
@@ -3503,7 +3498,7 @@ if($mybb->input['action'] == "attachments")
 	$attachments = '';
 
 	// Pagination
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}

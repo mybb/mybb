@@ -110,6 +110,7 @@ $l['split_to_same_forum'] = "Split to same forum";
 $l['close_split_thread'] = "Close split thread?";
 $l['stick_split_thread'] = "Stick split thread?";
 $l['unapprove_split_thread'] = "Unapprove split thread?";
+$l['split_thread_prefix'] = "Split thread prefix";
 $l['split_thread_subject'] = "Split thread subject";
 $l['split_thread_subject_desc'] = "{subject} represents the original subject. Only required if splitting posts.";
 $l['add_new_split_reply'] = "Add reply to split thread";

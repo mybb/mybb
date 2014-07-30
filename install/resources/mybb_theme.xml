@@ -13691,6 +13691,7 @@ $(function() {
   	var yes_confirm = "{$lang->yes}";
 	var no_confirm = "{$lang->no}";
 	var MyBBEditor = null;
+	var spinner_image = "{$theme['imgdir']}/spinner.gif";
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>

@@ -120,6 +120,10 @@ switch($action)
 		$plugins->run_hooks("archive_thread_start");
 
 		// Paginate this thread
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+		{
+			$mybb->settings['postsperpage'] = 20;
+		}
 		$perpage = $mybb->settings['postsperpage'];
 		$postcount = (int)$thread['replies']+1;
 		$pages = ceil($postcount/$perpage);
@@ -263,7 +267,7 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'])
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}

@@ -215,6 +215,10 @@ class CustomModeration extends Moderation
 				{
 					$this->unapprove_threads($new_tid, $thread['fid']);
 				}
+				if($post_options['splitthreadprefix'] != '0')
+				{
+					$this->apply_thread_prefix($new_tid, $post_options['splitthreadprefix']); // Add thread prefix to new thread
+				}
 				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
 				{
 					require_once MYBB_ROOT."inc/datahandlers/post.php";

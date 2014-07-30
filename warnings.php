@@ -16,7 +16,7 @@ $templatelist .= ",warnings_view_post,warnings_view_user,warnings_view_revoke,wa
 $templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,warnings_no_warnings,codebuttons,warnings_warn,warnings_view,warnings_warn_pm_anonymous";
 
 require_once "./global.php";
-require_once MYBB_ROOT."/inc/functions_warnings.php";
+require_once MYBB_ROOT."inc/functions_warnings.php";
 require_once MYBB_ROOT."inc/functions_modcp.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
@@ -355,6 +355,10 @@ if($mybb->input['action'] == "warn")
 					$lang_str = "expiration_".$ban_length['period'];
 					$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
 				}
+				else
+				{
+					$period = $lang->result_period_perm;
+				}
 				$group_name = $groupscache[$level['action']['usergroup']]['title'];
 				$level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
 				break;
@@ -365,6 +369,10 @@ if($mybb->input['action'] == "warn")
 					$lang_str = "expiration_".$period['period'];
 					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
 				}
+				else
+				{
+					$period = $lang->result_period_perm;
+				}
 				$level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
 				break;
 			case 3:
@@ -373,6 +381,10 @@ if($mybb->input['action'] == "warn")
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
 					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+				}
+				else
+				{
+					$period = $lang->result_period_perm;
 				}
 				$level['friendly_action'] = $lang->sprintf($lang->result_moderated, $period);
 				break;
@@ -693,7 +705,7 @@ if(!$mybb->input['action'])
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 
-	if(!$mybb->settings['postsperpage'])
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 	{
 		$mybb->settings['postsperpage'] = 20;
 	}
