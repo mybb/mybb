@@ -11024,10 +11024,10 @@ if(use_xmlhttprequest == "1")
 </head>
 <body>
 	{$header}
+	{$threadnotesbox}
 	{$pollbox}
 	<div class="float_left">
 		{$multipage}
-
 	</div>
 	<div class="float_right">
 		{$newreply}
@@ -11370,6 +11370,22 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$threadedbits}</td>
 </tr>
 </table>]]></template>
+		<template name="showthread_threadnotes" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
+		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['threadnotes_e']}" id="threadnotes_e">
+<tr>
+	<td class="trow1">
+		{$thread['notes']}
+	</td>
+</tr>
+</tbody>
+</table>
+<br />]]></template>
 		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
