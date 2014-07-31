@@ -274,7 +274,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 
 	$mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
-	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'])
+	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', 1) == 0)
 	{
 		$message = $lang->add_no_comment;
 		if($mybb->input['nomodal'])
