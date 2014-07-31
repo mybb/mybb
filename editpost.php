@@ -263,13 +263,14 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 		$modlogdata['fid'] = $fid;
 		$modlogdata['tid'] = $tid;
-		$modlogdata['pid'] = $pid;
 		if($firstpost)
 		{
 			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))
 			{
 				if($mybb->settings['soft_delete'] == 1)
 				{
+					$modlogdata['pid'] = $pid;
+				
 					require_once MYBB_ROOT."inc/class_moderation.php";
 					$moderation = new Moderation;
 					$moderation->soft_delete_threads(array($tid));
@@ -311,6 +312,8 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				// Select the first post before this
 				if($mybb->settings['soft_delete'] == 1)
 				{
+					$modlogdata['pid'] = $pid;
+					
 					require_once MYBB_ROOT."inc/class_moderation.php";
 					$moderation = new Moderation;
 					$moderation->soft_delete_posts(array($pid));

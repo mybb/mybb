@@ -37,7 +37,6 @@ $pmid = $mybb->get_input('pmid', 1);
 
 if($pid)
 {
-	$modlogdata['pid'] = $pid;
 	$post = get_post($pid);
 	if(!$post)
 	{
