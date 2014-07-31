@@ -792,7 +792,7 @@ class Moderation
 				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($movedthread = $db->fetch_array($query))
 				{
-					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'");
 				}				
  				break;
 			case "copy":// copy thread
@@ -984,7 +984,7 @@ class Moderation
 				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($movedthread = $db->fetch_array($query))
 				{
-					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'");
 				}
 				break;
 		}
@@ -1907,8 +1907,8 @@ class Moderation
 			$new_subject = array(
 				"subject" => $db->escape_string($subject)
 			);
-			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'", 1);
-			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
+			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'");
+			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'");
 		}
 
 		$arguments = array("tids" => $tids, "format" => $format);
