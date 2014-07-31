@@ -516,10 +516,6 @@ if($mybb->input['action'] == "modlogs")
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">{$logitem['fname']}</a><br />";
 		}
-		if($logitem['psubject'])
-		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
-		}
 
 		// Edited a user or managed announcement?
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
