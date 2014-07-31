@@ -743,7 +743,7 @@ function error_no_permission()
 		"location2" => 0
 	);
 
-	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
+	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
 
 	if($mybb->input['ajax'])
 	{
