@@ -2374,7 +2374,8 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
 				lineNumbers: true,
 				tabMode: \"indent\",
-				theme: \"mybb\"
+				theme: \"mybb\",
+				lineWrapping: true
 			});</script>";
 	}
 
@@ -2831,7 +2832,8 @@ if($mybb->input['action'] == "add_stylesheet")
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
 				lineNumbers: true,
 				tabMode: \"indent\",
-				theme: \"mybb\"
+				theme: \"mybb\",
+				lineWrapping: true
 			});</script>";
 	}
 
