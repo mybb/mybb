@@ -8542,6 +8542,18 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$modaction['action']}</td>
 <td class="{$trow}">{$info}</td>
 </tr>]]></template>
+		<template name="moderation_viewthreadnotes" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->view_notes_for}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$thread['notes']}</td>
+</tr>
+</table>
+</div>
+</div>]]></template>
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1800"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
@@ -11386,6 +11398,7 @@ if(use_xmlhttprequest == "1")
 </tbody>
 </table>
 <br />]]></template>
+		<template name="showthread_threadnotes_viewnotes" version="1800"><![CDATA[[<a href="javascript:Thread.viewNotes({$thread['tid']});">{$lang->view_all_notes}</a>]]]></template>
 		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
