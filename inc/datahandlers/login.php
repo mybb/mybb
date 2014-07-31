@@ -178,7 +178,7 @@ class LoginDataHandler extends DataHandler
 					"password" => $this->login_data['password']
 				);
 
-				$db->update_query("users", $sql_array, "uid = '{$this->login_data['uid']}'", 1);
+				$db->update_query("users", $sql_array, "uid = '{$this->login_data['uid']}'");
 			}
 
 			if(!$this->login_data['loginkey'])
@@ -189,7 +189,7 @@ class LoginDataHandler extends DataHandler
 					"loginkey" => $this->login_data['loginkey']
 				);
 
-				$db->update_query("users", $sql_array, "uid = '{$this->login_data['uid']}'", 1);
+				$db->update_query("users", $sql_array, "uid = '{$this->login_data['uid']}'");
 			}
 		}
 
