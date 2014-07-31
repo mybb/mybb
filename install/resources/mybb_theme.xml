@@ -5239,22 +5239,29 @@ $().ready(function() {
 <td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{$question['question']}</span></td>
 </tr>
 <tr>
-<td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
-<input type="hidden" name="question_id" value="{$sid}" id="question_id" />
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "1")
-	{
-		document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return question.refresh();" \/>');
-	}
-// -->
-</script></td>
+<td width="60%">
+	<input type="text" class="textbox" name="answer" value="" id="answer" style="width: 70%;" />
+	<input type="hidden" name="question_id" value="{$sid}" id="question_id" />
+</td>
+<td width="40%">
+	{$refresh}
+</td>
 </tr>
 <tr>
 	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
 </tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_question_refresh" version="1800"><![CDATA[
+		<script type="text/javascript">
+		<!--
+			if(use_xmlhttprequest == "1")
+			{
+				document.write('<input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return question.refresh();" \/>');
+			}
+		// -->
+		</script>
+		]]></template>
 		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>

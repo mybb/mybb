@@ -20,7 +20,7 @@ $templatelist .= ",member_profile_email,member_profile_offline,member_profile_re
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
+$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1131,6 +1131,15 @@ if($mybb->input['action'] == "register")
 			");
 			if($db->num_rows($query) > 0)
 			{
+				$refresh = '';
+				// Total questions
+				$q = $db->simple_select('questions', 'COUNT(qid) as num');
+				$num = $db->fetch_field($q, 'num');
+				if($num > 1)
+				{
+					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
+				}
+				
 				$question = $db->fetch_array($query);
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
