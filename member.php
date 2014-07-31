@@ -1131,16 +1131,17 @@ if($mybb->input['action'] == "register")
 			");
 			if($db->num_rows($query) > 0)
 			{
+				$question = $db->fetch_array($query);
+
 				$refresh = '';
 				// Total questions
-				$q = $db->simple_select('questions', 'COUNT(qid) as num');
+				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
 				$num = $db->fetch_field($q, 'num');
 				if($num > 1)
 				{
 					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
 				}
 				
-				$question = $db->fetch_array($query);
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 			}
 			

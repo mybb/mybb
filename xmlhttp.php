@@ -706,9 +706,11 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 	");
 	if($db->num_rows($query) == 0)
 	{
-		echo $lang->answer_valid_not_exists;
-		exit;
+		xmlhttp_error($lang->answer_valid_not_exists);
 	}
+	
+	$qsession = $db->fetch_array($query);
+	
 	// Delete previous question session
 	$db->delete_query("questionsessions", "sid='$sid'");
 	
@@ -719,7 +721,7 @@ else if($mybb->input['action'] == "refresh_question" && $mybb->settings['securit
 		SELECT q.question, s.sid
 		FROM ".TABLE_PREFIX."questionsessions s
 		LEFT JOIN ".TABLE_PREFIX."questions q ON (q.qid=s.qid)
-		WHERE q.active='1' AND s.sid='{$sid}'
+		WHERE q.active='1' AND s.sid='{$sid}' AND q.qid!='{$qsession['qid']}'
 	");
 	if($db->num_rows($query) > 0)
 	{
