@@ -1271,7 +1271,8 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("forums", "lastposttid", "int", "set", "'0'");
 			$db->modify_column("mailerrors", "smtpcode", "smallint", "set", "'0'");
 			$db->modify_column("maillogs", "touid", "int", "set", "'0'");
-//			$db->modify_column("polls", "numvotes", "int", "set", "'0'"); // TODO: Find a way to do this with PostgreSQL (can't cast text to int)
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ALTER COLUMN numvotes DROP DEFAULT"); // We need to drop the default first as PostgreSQL can't cast default values
+			$db->modify_column("polls", "numvotes", "int USING (trim(numvotes)::int)", "set", "'0'");
 			$db->modify_column("profilefields", "postnum", "smallint", "set", "'0'");
 			$db->modify_column("reputation", "reputation", "smallint", "set", "'0'");
 			$db->modify_column("spiders", "theme", "smallint", "set", "'0'");
