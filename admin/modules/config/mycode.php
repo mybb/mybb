@@ -26,7 +26,7 @@ if($mybb->input['action'] == "toggle_status")
 		admin_redirect("index.php?module=config-mycode");
 	}
 
-	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "toggle_status")
 		'active' => $new_status,
 	);
 
-	$db->update_query("mycode", $mycode_update, "cid='".(int)$mybb->input['cid']."'");
+	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', 1)."'");
 
 	$cache->update_mycode();
 
@@ -203,7 +203,7 @@ $(function(){
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "edit")
 				'parseorder' => (int)$mybb->input['parseorder']
 			);
 
-			$db->update_query("mycode", $updated_mycode, "cid='".(int)$mybb->input['cid']."'");
+			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', 1)."'");
 
 			$cache->update_mycode();
 
@@ -328,7 +328,7 @@ $(function(){
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])

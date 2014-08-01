@@ -526,7 +526,7 @@ class session
 		$array = array('1' => '', '2' => '');
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', 1) > 0)
 		{
-			$array[1] = (int)$mybb->input['fid'];
+			$array[1] = $mybb->get_input('fid', 1);
 			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
@@ -535,7 +535,7 @@ class session
 
 			if($mybb->get_input('tid', 1) > 0)
 			{
-				$array[2] = (int)$mybb->input['tid'];
+				$array[2] = $mybb->get_input('tid', 1);
 			}
 
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.

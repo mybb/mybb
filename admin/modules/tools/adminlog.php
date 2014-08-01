@@ -52,7 +52,7 @@ if($mybb->input['action'] == 'prune')
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
 		{
-			$where .= " AND uid='".(int)$mybb->input['uid']."'";
+			$where .= " AND uid='".$mybb->get_input('uid', 1)."'";
 		}
 
 		// Searching for entries in a specific module
@@ -139,7 +139,7 @@ if(!$mybb->input['action'])
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
 
-	$perpage = (int)$mybb->input['perpage'];
+	$perpage = $mybb->get_input('perpage', 1);
 	if(!$perpage)
 	{
 		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
@@ -157,7 +157,7 @@ if(!$mybb->input['action'])
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])
 	{
-		$where .= " AND l.uid='".(int)$mybb->input['uid']."'";
+		$where .= " AND l.uid='".$mybb->get_input('uid', 1)."'";
 	}
 
 	// Searching for entries in a specific module
@@ -192,7 +192,7 @@ if(!$mybb->input['action'])
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
-		$pagecnt = (int)$mybb->input['page'];
+		$pagecnt = $mybb->get_input('page', 1);
 	}
 
 	$postcount = (int)$rescount;

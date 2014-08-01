@@ -54,7 +54,7 @@ if($mybb->input['action'] == "browse")
 
 	if($mybb->input['page'])
 	{
-		$url_page = "&page=".(int)$mybb->input['page'];
+		$url_page = "&page=".$mybb->get_input('page', 1);
 	}
 	else
 	{

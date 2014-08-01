@@ -25,7 +25,7 @@ function acp_rebuild_forum_counters()
 	$query = $db->simple_select("forums", "COUNT(*) as num_forums");
 	$num_forums = $db->fetch_field($query, 'num_forums');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['forumcounters'];
 	if($per_page <= 0)
 	{
@@ -52,7 +52,7 @@ function acp_rebuild_thread_counters()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['threadcounters'];
 	if($per_page <= 0)
 	{
@@ -77,7 +77,7 @@ function acp_rebuild_poll_counters()
 	$query = $db->simple_select("polls", "COUNT(*) as num_polls");
 	$num_polls = $db->fetch_field($query, 'num_polls');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['pollcounters'];
 	if($per_page <= 0)
 	{
@@ -102,7 +102,7 @@ function acp_recount_user_posts()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['userposts'];
 	if($per_page <= 0)
 	{
@@ -153,7 +153,7 @@ function acp_recount_user_threads()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['userthreads'];
 	if($per_page <= 0)
 	{
@@ -203,7 +203,7 @@ function acp_recount_reputation()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['reputation'];
 	if($per_page <= 0)
 	{
@@ -235,7 +235,7 @@ function acp_recount_warning()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['warning'];
 	if($per_page <= 0)
 	{
@@ -267,7 +267,7 @@ function acp_recount_private_messages()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['privatemessages'];
 	if($per_page <= 0)
 	{
@@ -294,7 +294,7 @@ function acp_recount_referrals()
 	$query = $db->simple_select("users", "COUNT(uid) as num_users");
 	$num_users = $db->fetch_field($query, 'num_users');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['referral'];
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
@@ -322,7 +322,7 @@ function acp_recount_thread_ratings()
 	$query = $db->simple_select("threads", "COUNT(*) as num_threads");
 	$num_threads = $db->fetch_field($query, 'num_threads');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['threadrating'];
 	if($per_page <= 0)
 	{
@@ -354,7 +354,7 @@ function acp_rebuild_attachment_thumbnails()
 	$query = $db->simple_select("attachments", "COUNT(aid) as num_attachments");
 	$num_attachments = $db->fetch_field($query, 'num_attachments');
 
-	$page = (int)$mybb->input['page'];
+	$page = $mybb->get_input('page', 1);
 	$per_page = (int)$mybb->input['attachmentthumbs'];
 	if($per_page <= 0)
 	{
@@ -426,7 +426,7 @@ if(!$mybb->input['action'])
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
 
-		if(!isset($mybb->input['page']) || (int)$mybb->input['page'] < 1)
+		if(!isset($mybb->input['page']) || $mybb->get_input('page', 1) < 1)
 		{
 			$mybb->input['page'] = 1;
 		}

@@ -334,7 +334,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("profilefields", "*", "fid = '".(int)$mybb->input['fid']."'");
+	$query = $db->simple_select("profilefields", "*", "fid = '".$mybb->get_input('fid', 1)."'");
 	$profile_field = $db->fetch_array($query);
 
 	if(!$profile_field['fid'])
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
-			$db->update_query("profilefields", $updated_profile_field, "fid = '".(int)$mybb->input['fid']."'");
+			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', 1)."'");
 
 			$cache->update_profilefields();
 
@@ -441,7 +441,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".(int)$mybb->input['fid'],
+		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".$mybb->get_input('fid', 1),
 		'description' => $lang->edit_profile_field_desc
 	);
 
@@ -650,7 +650,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("profilefields", "*", "fid='".(int)$mybb->input['fid']."'");
+	$query = $db->simple_select("profilefields", "*", "fid='".$mybb->get_input('fid', 1)."'");
 	$profile_field = $db->fetch_array($query);
 
 	// Does the profile field not exist?

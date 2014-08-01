@@ -134,7 +134,7 @@ if($mybb->input['action'] == "permissions")
 {
 	$usergroups = array();
 
-	$query = $db->simple_select("calendars", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "permissions")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("calendars", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -317,7 +317,7 @@ if($mybb->input['action'] == "edit")
 
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
 
-			$db->update_query("calendars", $updated_calendar, "cid = '".(int)$mybb->input['cid']."'");
+			$db->update_query("calendars", $updated_calendar, "cid = '".$mybb->get_input('cid', 1)."'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
@@ -375,7 +375,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("calendars", "*", "cid='".(int)$mybb->input['cid']."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?

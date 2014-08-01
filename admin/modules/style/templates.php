@@ -16,7 +16,7 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->template_sets, "index.php?module=style-templates");
 
-$sid = (int)$mybb->input['sid'];
+$sid = $mybb->get_input('sid', 1);
 
 $expand_str = "";
 $expand_str2 = "";
@@ -572,11 +572,11 @@ if($mybb->input['action'] == "edit_template")
 			{
 				if($mybb->input['from'] == "diff_report")
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".(int)$mybb->input['sid'].$expand_str2."&amp;from=diff_report");
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', 1).$expand_str2."&amp;from=diff_report");
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".(int)$mybb->input['sid'].$expand_str2);
+					admin_redirect("index.php?module=style-templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$mybb->get_input('sid', 1).$expand_str2);
 				}
 			}
 			else
@@ -587,7 +587,7 @@ if($mybb->input['action'] == "edit_template")
 				}
 				else
 				{
-					admin_redirect("index.php?module=style-templates&sid=".(int)$mybb->input['sid'].$expand_str2."#group_{$group}");
+					admin_redirect("index.php?module=style-templates&sid=".$mybb->get_input('sid', 1).$expand_str2."#group_{$group}");
 				}
 			}
 		}
@@ -1565,7 +1565,7 @@ if($mybb->input['action'] == "revert")
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(s.sid=t.sid)
-		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".(int)$mybb->input['sid']."'
+		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".$mybb->get_input('sid', 1)."'
 	");
 	$template = $db->fetch_array($query);
 
@@ -1700,7 +1700,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	);
 
 	// Load the list of templates
-	$query = $db->simple_select("templates", "*", "sid='".(int)$mybb->input['sid']."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
+	$query = $db->simple_select("templates", "*", "sid='".$mybb->get_input('sid', 1)."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
 	while($template = $db->fetch_array($query))
 	{
 		$exploded = explode("_", $template['title'], 2);

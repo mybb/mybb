@@ -421,7 +421,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = (int)$mybb->input['page'];
+		$current_page = $mybb->get_input('page', 1);
 		$start = ($current_page-1)*$per_page;
 		$pages = $ban_count / $per_page;
 		$pages = ceil($pages);

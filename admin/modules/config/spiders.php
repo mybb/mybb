@@ -114,7 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("spiders", "*", "sid='".(int)$mybb->input['sid']."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("spiders", "*", "sid='".(int)$mybb->input['sid']."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?

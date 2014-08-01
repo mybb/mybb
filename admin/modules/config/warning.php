@@ -513,7 +513,7 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -609,7 +609,7 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
