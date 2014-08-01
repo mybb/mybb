@@ -1100,6 +1100,7 @@ if($mybb->input['action'] == "register")
 					// JS validator extra for our default CAPTCHA
 					$validator_extra .= "
 					$(\"#imagestring\").rules(\"add\", {
+						required: true,
 						remote:{
 							url: \"xmlhttp.php?action=validate_captcha\",
 							type: \"post\",
@@ -1146,6 +1147,7 @@ if($mybb->input['action'] == "register")
 				
 				$validator_extra .= "
 				$(\"#answer\").rules(\"add\", {
+					required: true,
 					remote:{
 						url: \"xmlhttp.php?action=validate_question\",
 						type: \"post\",
@@ -1180,7 +1182,7 @@ if($mybb->input['action'] == "register")
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				
 				$validator_extra .= "
 				$(\"#password\").rules(\"add\", {
 					required: true,
