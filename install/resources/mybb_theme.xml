@@ -9197,7 +9197,10 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
 		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
-<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
+  <br/>
+  <span class="smalltext">{$lang->verification_note}</span>
+  </td>
 <td class="trow1">
 <script type="text/javascript">
 <!--
@@ -9207,20 +9210,22 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		</td>
+	</tr>
+	<tr>
+		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" size="16" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" />
+      
 		<script type="text/javascript">
 		<!--
 			if(use_xmlhttprequest == "1")
 			{
-				document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+				document.write('<input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
 			}
 		// -->
 		</script>
-		</td>
-		<td><span class="smalltext">{$lang->verification_note}</span></td>
-	</tr>
-	<tr>
-		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+      
+      </td>
 	</tr>
 </table>
 </td>
@@ -13602,30 +13607,30 @@ $(function() {
 <body>
 {$header}
 <form action="contact.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-{$errors}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$lang->contact}</strong></td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong></td>
-<td class="trow1"><input type="text" name="subject" class="textbox" value="{$mybb->input['subject']}" /></td>
-</tr>
-<tr>
-<td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong></td>
-<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
-<td class="trow1"><input type="text" name="email" class="textbox" value="{$mybb->input['email']}" /></td>
-</tr>
-{$captcha}
-</table>
-<br />
-<div align="center">
-<input type="submit" class="button" name="submit" value="{$lang->contact_send}" />
-</div>
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	{$errors}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+		<td class="thead" colspan="2"><strong>{$lang->contact}</strong></td>
+		</tr>
+		<tr>
+		<td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong><br /><span class="smalltext">{$lang->contact_subject_desc}</span></td>
+		<td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{$mybb->input['subject']}" /></td>
+		</tr>
+		<tr>
+		<td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong><br /><span class="smalltext">{$lang->contact_message_desc}</span></td>
+		<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
+		</tr>
+		<tr>
+		<td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
+		<td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{$mybb->input['email']}" /></td>
+		</tr>
+		{$captcha}
+	</table>
+	<br />
+	<div align="center">
+		<input type="submit" class="button" name="submit" value="{$lang->contact_send}" />
+	</div>
 </form>
 {$footer}
 </body>
