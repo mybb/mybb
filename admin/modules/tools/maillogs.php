@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$query = $db->simple_select("maillogs", "*", "mid='".(int)$mybb->input['mid']."'");
+	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', 1)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['mid'])
@@ -133,7 +133,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = (int)$mybb->input['page'];
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else

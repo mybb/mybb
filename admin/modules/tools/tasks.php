@@ -246,7 +246,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -446,7 +446,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "run")
 
 	$plugins->run_hooks("admin_tools_tasks_run");
 
-	$query = $db->simple_select("tasks", "*", "tid='".(int)$mybb->input['tid']."'");
+	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -645,7 +645,7 @@ if($mybb->input['action'] == "logs")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = (int)$mybb->input['page'];
+		$current_page = $mybb->get_input('page', 1);
 		$start = ($current_page-1)*$per_page;
 		$pages = $log_count / $per_page;
 		$pages = ceil($pages);

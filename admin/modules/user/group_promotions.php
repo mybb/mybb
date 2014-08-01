@@ -49,7 +49,7 @@ if($mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".(int)$mybb->input['pid']."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".(int)$mybb->input['pid']."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -138,7 +138,7 @@ if($mybb->input['action'] == "enable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$query = $db->simple_select("promotions", "*", "pid='".(int)$mybb->input['pid']."'");
+	$query = $db->simple_select("promotions", "*", "pid='".$mybb->get_input('pid', 1)."'");
 	$promotion = $db->fetch_array($query);
 
 	if(!$promotion['pid'])
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "edit")
 				"logging" => (int)$mybb->input['logging']
 			);
 
-			$db->update_query("promotions", $update_promotion, "pid = '".(int)$mybb->input['pid']."'");
+			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', 1)."'");
 
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
 

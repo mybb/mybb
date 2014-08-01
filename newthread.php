@@ -34,7 +34,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".(int)$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', 1)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])

@@ -138,7 +138,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("smilies", "*", "sid='".(int)$mybb->input['sid']."'");
+	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
@@ -194,7 +194,7 @@ if($mybb->input['action'] == "edit")
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 
-			$db->update_query("smilies", $updated_smilie, "sid = '".(int)$mybb->input['sid']."'");
+			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', 1)."'");
 
 			$cache->update_smilies();
 
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("smilies", "*", "sid='".(int)$mybb->input['sid']."'");
+	$query = $db->simple_select("smilies", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$smilie = $db->fetch_array($query);
 
 	// Does the smilie not exist?
@@ -676,7 +676,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_smilies');
 
-	$pagenum = (int)$mybb->input['page'];
+	$pagenum = $mybb->get_input('page', 1);
 	if($pagenum)
 	{
 		$start = ($pagenum-1) * 20;

@@ -238,7 +238,7 @@ if($mybb->input['action'] == "join_requests")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = (int)$mybb->input['page'];
+		$current_page = $mybb->get_input('page', 1);
 		$start = ($current_page-1)*$per_page;
 		$pages = $num_requests / $per_page;
 		$pages = ceil($pages);
@@ -809,7 +809,7 @@ if($mybb->input['action'] == "edit")
 			}
 
 			$updated_group = array(
-				"type" => (int)$mybb->input['type'],
+				"type" => $mybb->get_input('type', 1),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),

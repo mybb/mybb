@@ -663,7 +663,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 
-	$db->update_query("polls", $updatedpoll, "pid='".(int)$mybb->input['pid']."'");
+	$db->update_query("polls", $updatedpoll, "pid='".$mybb->get_input('pid', 1)."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
