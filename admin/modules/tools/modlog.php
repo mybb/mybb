@@ -213,7 +213,6 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 		{$where}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$perpage}
