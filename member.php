@@ -1143,9 +1143,8 @@ if($mybb->input['action'] == "register")
 				}
 				
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
-			}
-			
-			$validator_extra .= "
+				
+				$validator_extra .= "
 				$(\"#answer\").rules(\"add\", {
 					remote:{
 						url: \"xmlhttp.php?action=validate_question\",
@@ -1161,6 +1160,7 @@ if($mybb->input['action'] == "register")
 						remote: \"{$lang->js_validator_no_security_question}\"
 					}
 				});\n";
+			}
 		}
 
 		$hiddencaptcha = '';
