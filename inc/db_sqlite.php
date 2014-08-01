@@ -172,10 +172,11 @@ class DB_SQLite
 			}
 			else
 			{
-				// SQLITE 3 supports ADD Alter statements
-				if(strtolower(substr(ltrim($alterdefs), 0, 3)) == 'add')
+				// SQLITE 3 supports ADD and RENAME TO alter statements
+				if(strtolower(substr(ltrim($alterdefs), 0, 3)) == 'add' || strtolower(substr(ltrim($alterdefs), 0, 9)) == "rename to")
 				{
 					$query = $this->db->query($string);
+					$query->closeCursor();
 				}
 				else
 				{
@@ -269,7 +270,15 @@ class DB_SQLite
 	 */
 	function write_query($query, $hide_errors=0)
 	{
-		return $this->query($query, $hide_errors);
+		$result = $this->query($query, $hide_errors);
+
+		if(strtolower(substr(ltrim($query), 0, 6)) == "create")
+		{
+			$result->closeCursor();
+			return;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -485,6 +494,7 @@ class DB_SQLite
 		{
 			$tables[] = $table['tbl_name'];
 		}
+		$query->closeCursor();
 		return $tables;
 	}
 
@@ -498,6 +508,7 @@ class DB_SQLite
 	{
 		$query = $this->query("SELECT COUNT(name) as count FROM sqlite_master WHERE type='table' AND name='{$this->table_prefix}{$table}'");
 		$exists = $this->fetch_field($query, "count");
+		$query->closeCursor();
 
 		if($exists > 0)
 		{
@@ -842,10 +853,14 @@ class DB_SQLite
 	{
 		$old_tbl_prefix = $this->table_prefix;
 		$this->set_table_prefix("");
-		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}' ORDER BY type DESC, name");
+		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$old_tbl_prefix}{$table}' ORDER BY type DESC, name");
 		$this->set_table_prefix($old_tbl_prefix);
 
-		return $this->fetch_field($query, 'sql');
+		$result = $this->fetch_field($query, 'sql');
+
+		$query->closeCursor();
+
+		return $result;
 	}
 
 	/**
@@ -861,6 +876,7 @@ class DB_SQLite
 		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$old_tbl_prefix}{$table}'");
 		$this->set_table_prefix($old_tbl_prefix);
 		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
+		$query->closeCursor();
 
 		preg_match('#\((.*)\)#s', $table, $matches);
 
@@ -968,12 +984,17 @@ class DB_SQLite
 		{
 			if($this->table_exists($table))
 			{
-				$this->query('DROP TABLE '.$table_prefix.$table);
+				$query = $this->query('DROP TABLE '.$table_prefix.$table);
 			}
 		}
 		else
 		{
-			$this->query('DROP TABLE '.$table_prefix.$table);
+			$query = $this->query('DROP TABLE '.$table_prefix.$table);
+		}
+
+		if(isset($query))
+		{
+			$query->closeCursor();
 		}
 	}
 
@@ -1063,6 +1084,7 @@ class DB_SQLite
 			else
 			{
 				$query = $this->write_query("SELECT {$default_field} FROM {$this->table_prefix}{$table}");
+				$search_bit = "{$default_field}='".$replacements[$default_field]."'";
 
 				while($column = $this->fetch_array($query))
 				{
@@ -1137,6 +1159,7 @@ class DB_SQLite
 			if($this->num_rows($result) > 0)
 			{
 				$row = $this->fetch_array($result); // Table sql
+				$result->closeCursor();
 				$tmpname = 't'.TIME_NOW;
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/","( ", $row['sql'], 1))));
 				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'".$table."'", $tmpname, $origsql, 1)), 6);
@@ -1325,8 +1348,8 @@ class DB_SQLite
 	 */
 	function modify_column($table, $column, $new_definition)
 	{
-		// Yes, $column is repeated twice for a reason. It simulates a rename sql query, which SQLite supports.
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$column} {$column} {$new_definition}");
+		// We use a rename query as both need to duplicate the table etc...
+		$this->rename_column($table, $column, $column, $new_definition);
 	}
 
 	/**
@@ -1339,7 +1362,56 @@ class DB_SQLite
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$old_column} {$new_column} {$new_definition}");
+		// We need to recreate the table, but with the modified column
+		$create = $this->show_create_table($table);
+		$fields = explode(",", substr($create, strpos($create, "(")+1));
+		$names = array();
+
+		// All columns in the table
+		foreach($fields as $key => $field)
+		{
+			$field = trim($field);
+			$name = substr($field, 0, strpos($field, " "));
+
+			if($name == $old_column)
+			{
+				// This is the column we need to rename/modify!
+				$field = $new_column." ".$new_definition;
+				$names[$name] = $new_column;
+			}
+			else
+			{
+				$names[$name] = $name;
+			}
+			$fields[$key] = $field;
+		}
+		// Recreate the create statement
+		$create = substr($create, 0, strpos($create, "(")+1)."\n".implode(",\n", $fields);
+
+		// Now work with the database - first: rename the old one
+		$this->write_query("ALTER TABLE {$this->table_prefix}{$table} RENAME TO {$this->table_prefix}{$table}_rename");
+		// Second: create the new one
+		$this->write_query($create);
+		// Third: Get all old data and move it to the new table
+		// Problem: The cursor isn't closed for some reason (both queries) so the drop statement fails
+//		$query = $this->write_query("INSERT INTO {$this->table_prefix}{$table}(".implode(", ", $names).") SELECT ".implode(", ", array_keys($names))." FROM {$this->table_prefix}{$table}_rename");
+		$query = $this->write_query("SELECT * FROM {$this->table_prefix}{$table}_rename");
+		if($this->num_rows($query) > 0)
+		{
+			$inserts = array();
+			while($data = $this->fetch_array($query)) {
+				$data[$new_column] = $data[$old_column];
+				unset($data[$old_column]);
+				$inserts[] = $data;
+			}
+			$this->insert_query_multiple($table, $inserts);
+		}
+		$query->closeCursor();
+		$query = null;
+		unset($query);
+
+		// Last: delete the old table
+		$query = $this->write_query("DROP TABLE {$this->table_prefix}{$table}_rename");
 	}
 
 	/**

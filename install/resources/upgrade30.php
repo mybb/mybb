@@ -278,8 +278,8 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "allowsmilies", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowimgcode", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowvideocode", "tinyint(1) NOT NULL default '0'");
-			$db->add_column("profilefields", "viewableby", "text NOT NULL");
-			$db->add_column("profilefields", "editableby", "text NOT NULL");
+			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
+			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
 			if($db->table_exists('reportedposts'))
 			{
@@ -785,10 +785,10 @@ function upgrade30_dbchanges5()
 				sid INTEGER PRIMARY KEY,
 				username varchar(120) NOT NULL DEFAULT '',
 				email varchar(220) NOT NULL DEFAULT '',
-				ipaddress blob(16) NOT NULL default ''
-				dateline int unsigned NOT NULL default '0' PRIMARY KEY,
+				ipaddress blob(16) NOT NULL default '',
+				dateline int unsigned NOT NULL default '0',
 				data TEXT NOT NULL
-			) ENGINE=MyISAM;");
+			);");
 			break;
 		case "pgsql":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
@@ -882,9 +882,9 @@ function upgrade30_dbchanges6()
 		case "sqlite":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id INTEGER PRIMARY KEY,
-				 uid bigint(30) UNSIGNED NOT NULL,
-				 touid bigint(30) UNSIGNED NOT NULL,
-				 date int(11) UNSIGNED NOT NULL
+				 uid bigint unsigned NOT NULL,
+				 touid bigint unsigned NOT NULL,
+				 date int unsigned NOT NULL
 			);");
 			break;
 		default:
@@ -968,6 +968,11 @@ function upgrade30_dbchanges6()
 	if($db->field_exists('buddyrequestsauto', 'users'))
 	{
 		$db->drop_column("users", "buddyrequestsauto");
+	}
+
+	if($db->field_exists('ipaddress', 'privatemessages'))
+	{
+		$db->drop_column("privatemessages", "ipaddress");
 	}
 
 	switch($db->type)
@@ -1321,7 +1326,16 @@ function upgrade30_dbchanges_optimize1()
 	if($db->type != "pgsql")
 	{
 		// PgSQL doesn't support longtext
-		$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
+		if($db->type == "sqlite")
+		{
+			// And SQLite doesn't like text columns without a default value...
+			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL default ''");
+		}
+		else
+		{
+			// ...while MySQL hates text columns with a default value
+			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
+		}
 	}
 
 	global $footer_extra;
