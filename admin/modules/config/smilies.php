@@ -39,16 +39,15 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_path;
 		}
 
-		$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
-
-		if(!trim($mybb->input['disporder']) || !$mybb->input['disporder'])
+		if(!trim($mybb->input['disporder']))
 		{
 			$errors[] = $lang->error_missing_order;
 		}
 		else
 		{
+			$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
 			$query = $db->simple_select('smilies', 'sid', 'disporder=\''.$mybb->input['disporder'].'\'');
-			$duplicate_disporder = (int)$db->fetch_field($query, 'sid');
+			$duplicate_disporder = $db->fetch_field($query, 'sid');
 
 			if($duplicate_disporder)
 			{
@@ -176,16 +175,15 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_path;
 		}
 
-		$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
-
-		if(!trim($mybb->input['disporder']) || !$mybb->input['disporder'])
+		if(!trim($mybb->input['disporder']))
 		{
 			$errors[] = $lang->error_missing_order;
 		}
 		else
 		{
+			$mybb->input['disporder'] = $mybb->get_input('disporder', 1);
 			$query = $db->simple_select("smilies", "sid", "disporder= '".$mybb->input['disporder']."' AND sid != '".$mybb->input['sid']."'");
-			$duplicate_disporder = (int)$db->fetch_field($query, 'sid');
+			$duplicate_disporder = $db->fetch_field($query, 'sid');
 
 			if($duplicate_disporder)
 			{
@@ -451,7 +449,7 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$query = $db->simple_select('smilies', 'MAX(disporder) as max_disporder');
-			$disporder = (int)$db->fetch_field($query, 'max_disporder');
+			$disporder = $db->fetch_field($query, 'max_disporder');
 
 			foreach($mybb->input['include'] as $image => $insert)
 			{
@@ -538,13 +536,6 @@ if($mybb->input['action'] == "mass_edit")
 
 	if($mybb->request_method == "post")
 	{
-		$disporder_list = array();
-		$query = $db->simple_select('smilies', 'disporder');
-		while($disporder = (int)$db->fetch_field($query, 'disporder'))
-		{
-			$disporder_list[$disporder] = $disporder;
-		}
-
 		foreach($mybb->input['name'] as $sid => $name)
 		{
 			$disporder = (int)$mybb->input['disporder'][$sid];
@@ -552,10 +543,8 @@ if($mybb->input['action'] == "mass_edit")
 			$sid = (int)$sid;
 			if($mybb->input['delete'][$sid] == 1)
 			{
-				if(isset($disporder_list[$disporder]))
-				{
-					unset($disporder_list[$disporder]);
-				}
+				// Dirty hack to get the disporder working. Note: this doesn't work in every case
+				unset($mybb->input['disporder'][$sid]);
 
 				$db->delete_query("smilies", "sid = '{$sid}'", 1);
 			}
@@ -567,7 +556,10 @@ if($mybb->input['action'] == "mass_edit")
 					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
 				);
 
-				if(!isset($disporder_list[$disporder]))
+				// $test contains all disporders except the actual one so we can check whether we have multiple disporders
+				$test = $mybb->input['disporder'];
+				unset($test[$sid]);
+				if(!in_array($disporder, $test))
 				{
 					$smilie['disporder'] = $disporder;
 				}
