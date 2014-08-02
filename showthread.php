@@ -593,7 +593,6 @@ if($mybb->input['action'] == "thread")
 				$closeon = $lang->sprintf($lang->poll_closes, my_date($mybb->settings['dateformat'], $expiretime));
 			}
 
-
 			$publicnote = '&nbsp;';
 			if($poll['public'] == 1)
 			{
