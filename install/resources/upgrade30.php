@@ -764,6 +764,11 @@ function upgrade30_dbchanges5()
 		$db->drop_table("questionsessions");
 	}
 
+	if($db->table_exists("spamlog"))
+	{
+		$db->drop_table("spamlog");
+	}
+
 	switch($db->type)
 	{
 		case "sqlite":
