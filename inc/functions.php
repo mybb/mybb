@@ -2909,12 +2909,17 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				{
 					reset($smiliecache);
 
-					$dropdownsmilies = "";
-					$moresmilies = "";
+					$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 					$i = 0;
 
 					foreach($smiliecache as $smilie)
 					{
+						$finds = explode("\n", $smilie['find']);
+						$finds_count = count($finds);
+
+						// Only show the first text to replace in the box
+						$smilie['find'] = $finds[0];
+
 						$find = htmlspecialchars_uni($smilie['find']);
 						$image = htmlspecialchars_uni($smilie['image']);
 						if($i < $mybb->settings['smilieinsertertot'])
@@ -2924,6 +2929,12 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						else
 						{
 							$moresmilies .= '"'.$find.'": "'.$image.'",';
+						}
+
+						for($j = 1; $j < $finds_count; ++$j)
+						{
+							$find = htmlspecialchars_uni($finds[$j]);
+							$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 						}
 						++$i;
 					}
@@ -3059,9 +3070,12 @@ function build_clickable_smilies()
 						$smilies .=  "<tr>\n";
 					}
 
-					$find = htmlspecialchars_uni($find);
+					// Only show the first text to replace in the box
+					$smilie['find'] = explode("\n", $smilie['find'])[0];
 
-					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$smilie['find'].'\');"';
+					$find = htmlspecialchars_uni($smilie['find']);
+
+					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$find.'\');"';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;

@@ -13654,6 +13654,10 @@ opt_editor = {
 		// Emoticons to be included in the more section
 		more: {
 			{$moresmilies}
+		},
+		// Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
+		hidden: {
+			{$hiddensmilies}
 		}
 	},
 	emoticonsCompat: true,

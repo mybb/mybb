@@ -878,13 +878,16 @@ EOF;
 			{
 				reset($smiliecache);
 
-				$dropdownsmilies = "";
-				$moresmilies = "";
+				$dropdownsmilies = $moresmilies = $hiddensmilies = "";
 				$i = 0;
 
 				foreach($smiliecache as $find => $image)
 				{
-					$find = htmlspecialchars_uni($find);
+					$finds = explode("\n", $find);
+					$finds_count = count($finds);
+					
+					// Only show the first text to replace in the box
+					$find = htmlspecialchars_uni($finds[0]);
 					$image = htmlspecialchars_uni($image);
 					if(substr($image, 0, 4) != "http")
 					{
@@ -897,6 +900,12 @@ EOF;
 					else
 					{
 						$moresmilies .= '"'.$find.'": "'.$image.'",';
+					}
+
+					for($j = 1; $j < $finds_count; ++$j)
+					{
+						$find = htmlspecialchars_uni($finds[$j]);
+						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
 					++$i;
 				}
@@ -979,6 +988,10 @@ opt_editor = {
 		// Emoticons to be included in the more section
 		more: {
 			{$moresmilies}
+		},
+		// Emoticons that are not shown in the dropdown but will still be converted. Can be used for things like aliases
+		hidden: {
+			{$hiddensmilies}
 		}
 	},
 	emoticonsCompat: true,
