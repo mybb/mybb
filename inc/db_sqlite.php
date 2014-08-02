@@ -215,6 +215,13 @@ class DB_SQLite
 		{
 			$this->explain_query($string, $query_time);
 		}
+
+		if(strtolower(substr(ltrim($string), 0, 6)) == "create")
+		{
+			$query->closeCursor();
+			return;
+		}
+
 		return $query;
 	}
 
@@ -270,15 +277,7 @@ class DB_SQLite
 	 */
 	function write_query($query, $hide_errors=0)
 	{
-		$result = $this->query($query, $hide_errors);
-
-		if(strtolower(substr(ltrim($query), 0, 6)) == "create")
-		{
-			$result->closeCursor();
-			return;
-		}
-
-		return $result;
+		return $this->query($query, $hide_errors);
 	}
 
 	/**
@@ -541,6 +540,8 @@ class DB_SQLite
 			}
 		}
 
+		$query->closeCursor();
+
 		if($exists > 0)
 		{
 			return true;
@@ -645,11 +646,12 @@ class DB_SQLite
 
 		$fields = implode(",", array_keys($array));
 		$values = implode(",", $array);
-		$this->write_query("
+		$query = $this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} (".$fields.")
 			VALUES (".$values.")
 		");
+		$query->closeCursor();
 		return $this->insert_id();
 	}
 
@@ -695,11 +697,12 @@ class DB_SQLite
 		}
 		$insert_rows = implode(", ", $insert_rows);
 
-		$this->write_query("
+		$query = $this->write_query("
 			INSERT
 			INTO {$this->table_prefix}{$table} ({$fields})
 			VALUES {$insert_rows}
 		");
+		$query->closeCursor();
 	}
 
 	/**
@@ -753,7 +756,9 @@ class DB_SQLite
 			$query .= " WHERE $where";
 		}
 
-		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
+		$query = $this->query("UPDATE {$this->table_prefix}$table SET $query");
+		$query->closeCursor();
+		return $query;
 	}
 
 	/**
@@ -772,7 +777,9 @@ class DB_SQLite
 			$query .= " WHERE $where";
 		}
 
-		return $this->query("DELETE FROM {$this->table_prefix}$table $query");
+		$query = $this->query("DELETE FROM {$this->table_prefix}$table $query");
+		$query->closeCursor();
+		return $query;
 	}
 
 	/**
@@ -830,7 +837,8 @@ class DB_SQLite
 	 */
 	function optimize_table($table)
 	{
-		$this->query("VACUUM ".$this->table_prefix.$table."");
+		$query = $this->query("VACUUM ".$this->table_prefix.$table."");
+		$query->closeCursor();
 	}
 
 	/**
@@ -840,7 +848,8 @@ class DB_SQLite
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE ".$this->table_prefix.$table."");
+		$query = $this->query("ANALYZE ".$this->table_prefix.$table."");
+		$query->closeCursor();
 	}
 
 	/**
@@ -948,7 +957,8 @@ class DB_SQLite
 	 */
 	function drop_index($table, $name)
 	{
-		$this->query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
+		$query = $this->query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
+		$query->closeCursor();
 	}
 
 	/**
@@ -1016,7 +1026,9 @@ class DB_SQLite
 			$table_prefix = $this->table_prefix;
 		}
 
-		return $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
+		$query = $this->write_query("ALTER TABLE {$table_prefix}{$old_table} RENAME TO {$table_prefix}{$new_table}");
+		$query->closeCursor();
+		return $query;
 	}
 
 	/**
@@ -1061,7 +1073,9 @@ class DB_SQLite
 
 		if($default_field == "")
 		{
-			return $this->query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
+			$query = $this->query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
+			$query->closeCursor();
+			return $query;
 		}
 		else
 		{
@@ -1278,10 +1292,12 @@ class DB_SQLite
 				$this->query($createtesttableSQL);
 
 				$droptempsql = 'DROP TABLE '.$tmpname;
-				if($this->query($droptempsql, 0) === false)
+				$query = $this->query($droptempsql, 0);	
+				if($query === false)
 				{
 					return false;
 				}
+				$query->closeCursor();
 				// End block
 
 
@@ -1300,12 +1316,16 @@ class DB_SQLite
 
 
 				$this->query($createtemptableSQL); // Create temp table
-				$this->query($copytotempsql); // Copy to table
-				$this->query($dropoldsql); // Drop old table
+				$query = $this->query($copytotempsql); // Copy to table
+				$query->closeCursor();
+				$query = $this->query($dropoldsql); // Drop old table
+				$query->closeCursor();
 
 				$this->query($createnewtableSQL); // Recreate original table
-				$this->query($copytonewsql); // Copy back to original table
-				$this->query($droptempsql); // Drop temp table
+				$query = $this->query($copytonewsql); // Copy back to original table
+				$query->closeCursor();
+				$query = $this->query($droptempsql); // Drop temp table
+				$query->closeCursor();
 			}
 			else
 			{
@@ -1336,7 +1356,9 @@ class DB_SQLite
 	 */
 	function add_column($table, $column, $definition)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
+		$query = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ADD {$column} {$definition}");
+		$query->closeCursor();
+		return $query;
 	}
 
 	/**
@@ -1362,56 +1384,8 @@ class DB_SQLite
 	 */
 	function rename_column($table, $old_column, $new_column, $new_definition)
 	{
-		// We need to recreate the table, but with the modified column
-		$create = $this->show_create_table($table);
-		$fields = explode(",", substr($create, strpos($create, "(")+1));
-		$names = array();
-
-		// All columns in the table
-		foreach($fields as $key => $field)
-		{
-			$field = trim($field);
-			$name = substr($field, 0, strpos($field, " "));
-
-			if($name == $old_column)
-			{
-				// This is the column we need to rename/modify!
-				$field = $new_column." ".$new_definition;
-				$names[$name] = $new_column;
-			}
-			else
-			{
-				$names[$name] = $name;
-			}
-			$fields[$key] = $field;
-		}
-		// Recreate the create statement
-		$create = substr($create, 0, strpos($create, "(")+1)."\n".implode(",\n", $fields);
-
-		// Now work with the database - first: rename the old one
-		$this->write_query("ALTER TABLE {$this->table_prefix}{$table} RENAME TO {$this->table_prefix}{$table}_rename");
-		// Second: create the new one
-		$this->write_query($create);
-		// Third: Get all old data and move it to the new table
-		// Problem: The cursor isn't closed for some reason (both queries) so the drop statement fails
-//		$query = $this->write_query("INSERT INTO {$this->table_prefix}{$table}(".implode(", ", $names).") SELECT ".implode(", ", array_keys($names))." FROM {$this->table_prefix}{$table}_rename");
-		$query = $this->write_query("SELECT * FROM {$this->table_prefix}{$table}_rename");
-		if($this->num_rows($query) > 0)
-		{
-			$inserts = array();
-			while($data = $this->fetch_array($query)) {
-				$data[$new_column] = $data[$old_column];
-				unset($data[$old_column]);
-				$inserts[] = $data;
-			}
-			$this->insert_query_multiple($table, $inserts);
-		}
-		$query->closeCursor();
-		$query = null;
-		unset($query);
-
-		// Last: delete the old table
-		$query = $this->write_query("DROP TABLE {$this->table_prefix}{$table}_rename");
+		// This will trigger the "alter_table_parse" function which will copy the table and rename the column
+		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} CHANGE {$old_column} {$new_column} {$new_definition}");
 	}
 
 	/**

@@ -699,7 +699,6 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "smallint NOT NULL default '0'");
-			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 		default:
 			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
@@ -712,6 +711,15 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "tinyint(1) NOT NULL default '0'");
+			break;
+	}
+
+	switch($db->type)
+	{
+		case "sqlite":
+			$db->add_column("modtools", "groups", "text NOT NULL default ''");
+			break;
+		default:
 			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 	}
@@ -1044,11 +1052,21 @@ function upgrade30_dbchanges6()
 	{
 		$db->insert_query("attachtypes", array('name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
 	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
+	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_video>', 'isdefault' => '1'));
+	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='php'");
@@ -1056,11 +1074,21 @@ function upgrade30_dbchanges6()
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
+	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
 	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
+	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
@@ -1528,6 +1556,10 @@ function upgrade30_dbchanges_optimize3()
 			{
 				$db->modify_column($table, $column, "smallint", "set", "'0'");
 			}
+			else if($db->type == "sqlite")
+			{
+				$change_column[] = "CHANGE {$column} {$column} tinyint(1) NOT NULL default '0'";
+			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
@@ -1605,6 +1637,10 @@ function upgrade30_dbchanges_optimize4()
 			if($db->type == "pgsql")
 			{
 				$db->modify_column($table, $column, "int", "set", "'0'");
+			}
+			else if($db->type == "sqlite")
+			{
+				$change_column[] = "CHANGE {$column} {$column} int unsigned NOT NULL default '0'";
 			}
 			else
 			{
