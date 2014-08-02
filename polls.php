@@ -467,7 +467,7 @@ if($mybb->input['action'] == "editpoll")
 	}
 	else
 	{
-		if($mybb->settings['maxpolloptions'] && $mybb->get_input('numoptions', 1) > $mybb->settings['maxpolloptions'])
+		if($mybb->settings['maxpolloptions'] && $mybb->input['numoptions'] > $mybb->settings['maxpolloptions'])
 		{
 			$numoptions = $mybb->settings['maxpolloptions'];
 		}
