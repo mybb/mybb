@@ -48,6 +48,8 @@ $l['you_voted'] = "* You voted for this item.";
 $l['poll_closed'] = "This poll is closed.";
 $l['poll_closes'] = "This poll will close on: {1}";
 $l['already_voted'] = "You have already voted on this poll.";
+$l['already_voted_multiple'] = "You have already voted {1} time(s) on this poll.";
+$l['votes_remaining'] = "You have {1} vote(s) remaining.";
 $l['undo_vote'] = "Undo vote";
 $l['quick_reply'] = "Quick Reply";
 $l['message_note'] = "Type your reply to this message here.";
@@ -98,6 +100,7 @@ $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['view_thread_notes'] = "Thread Notes";
+$l['view_all_notes'] = "View All Notes";
 
 $l['save_changes'] = 'Save Changes';
 $l['cancel_edit'] = 'Cancel Edit';
