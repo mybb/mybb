@@ -2235,7 +2235,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="purgespammerbandelete">
 			<title>Ban or Delete Spammers</title>
-			<description><![CDATA[Do you want to ban or delete spammers with this tool? It will still be optional on the Purge Spammer page.]]></description>
+			<description><![CDATA[Do you want to ban or delete spammers with this tool?]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[radio
 ban=Ban (Permanent)

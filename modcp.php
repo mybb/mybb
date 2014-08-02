@@ -3579,12 +3579,7 @@ if($mybb->input['action'] == "ipsearch")
 
 			if($post_ip_sql)
 			{
-				$query = $db->query("
-					SELECT COUNT(pid) AS count
-					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql} AND visible >= -1
-				");
-
+				$query = $db->simple_select('posts', 'COUNT(pid) AS count', "$post_ip_sql AND visible >= -1");
 				$post_results = $db->fetch_field($query, "count");
 			}
 		}

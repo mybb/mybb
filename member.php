@@ -2523,7 +2523,8 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageuser = '';
-	if($mybb->usergroup['canmodcp'] == 1)
+	$can_purge_spammer = purgespammer_show($memprofile['postnum'], $memprofile['usergroup'], $memprofile['uid']);
+	if($mybb->usergroup['canmodcp'] == 1 || $can_purge_spammer)
 	{
 		$memprofile['usernotes'] = nl2br(htmlspecialchars_uni($memprofile['usernotes']));
 
@@ -2551,7 +2552,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
 		}
 
-		if(purgespammer_show($memprofile['postnum'], $memprofile['usergroup']))
+		if($can_purge_spammer)
 		{
 			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
 		}
@@ -2930,4 +2931,3 @@ if(!$mybb->input['action'])
 {
 	header("Location: index.php");
 }
-
