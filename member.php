@@ -20,7 +20,7 @@ $templatelist .= ",member_profile_email,member_profile_offline,member_profile_re
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
+$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1100,6 +1100,7 @@ if($mybb->input['action'] == "register")
 					// JS validator extra for our default CAPTCHA
 					$validator_extra .= "
 					$(\"#imagestring\").rules(\"add\", {
+						required: true,
 						remote:{
 							url: \"xmlhttp.php?action=validate_captcha\",
 							type: \"post\",
@@ -1132,11 +1133,21 @@ if($mybb->input['action'] == "register")
 			if($db->num_rows($query) > 0)
 			{
 				$question = $db->fetch_array($query);
+
+				$refresh = '';
+				// Total questions
+				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
+				$num = $db->fetch_field($q, 'num');
+				if($num > 1)
+				{
+					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
+				}
+				
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
-			}
-			
-			$validator_extra .= "
+				
+				$validator_extra .= "
 				$(\"#answer\").rules(\"add\", {
+					required: true,
 					remote:{
 						url: \"xmlhttp.php?action=validate_question\",
 						type: \"post\",
@@ -1151,6 +1162,7 @@ if($mybb->input['action'] == "register")
 						remote: \"{$lang->js_validator_no_security_question}\"
 					}
 				});\n";
+			}
 		}
 
 		$hiddencaptcha = '';
@@ -1170,7 +1182,7 @@ if($mybb->input['action'] == "register")
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
+				
 				$validator_extra .= "
 				$(\"#password\").rules(\"add\", {
 					required: true,
