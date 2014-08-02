@@ -1027,6 +1027,8 @@ function upgrade30_dbchanges6()
 		$db->update_query("reportedposts", array('type' => 'post'));
 	}
 
+	$db->insert_query("questions", array('question' => 'What does 2 + 2 equal?', 'answer' => '4\nFour', 'active' => '1'));
+
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
