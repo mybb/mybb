@@ -2909,7 +2909,7 @@ switch($mybb->input['action'])
 
 			$cache->update_reportedcontent();
 
-			log_moderator_action(array('uid' => $uid), $lang->purgespammer_modlog);
+			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
 
 			if($user_deleted)
 			{
