@@ -46,6 +46,7 @@ $l['error_missing_path'] = "You did not enter a path for this smilie";
 $l['error_missing_path_multiple'] = "You did not enter a path";
 $l['error_missing_order'] = "You did not enter a display order for this smilie";
 $l['error_missing_clickable'] = "You did not specify yes or no for the \"Show Clickable\" option";
+$l['error_duplicate_order'] = "You did not enter a valid display order for this smilie.";
 $l['error_no_smilies'] = "There are no smilies in the specified directory, or all smilies in the directory have already been added.";
 $l['error_no_images'] = "There are no images in the specified directory";
 $l['error_none_included'] = "You did not select any smilies to include.";
