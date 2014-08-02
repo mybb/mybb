@@ -1897,14 +1897,6 @@ if($mybb->input['action'] == "deletemod")
 		$mod = $db->fetch_array($query);
 
 		$db->delete_query("moderators", "mid='{$mid}'");
-		$query = $db->simple_select("moderators", "*", "id='{$mod['id']}' AND isgroup='0'");
-		if($db->num_rows($query) == 0)
-		{
-			$updatequery = array(
-				"usergroup" => "2"
-			);
-			$db->update_query("users", $updatequery, "uid='{$mod['id']}' AND usergroup != '4' AND usergroup != '3'");
-		}
 		$cache->update_moderators();
 
 		$plugins->run_hooks("admin_forum_management_deletemod_commit");
@@ -1979,40 +1971,6 @@ if($mybb->input['action'] == "delete")
 			$stats['unapprovedposts'] += $forum['unapprovedposts'];
 			$stats['threads'] += $forum['threads'];
 			$stats['unapprovedthreads'] += $forum['unapprovedthreads'];
-		}
-
-		/**
-		 * This slab of code pulls out the moderators for this forum,
-		 * checks if they moderate any other forums, and if they don't
-		 * it moves them back to the registered usergroup
-		 */
-
-		$query = $db->simple_select("moderators", "*", "fid='$fid' AND isgroup='0'");
-		while($mod = $db->fetch_array($query))
-		{
-			$moderators[$mod['id']] = $mod['id'];
-		}
-
-		if(is_array($moderators))
-		{
-			$mod_list = implode(",", $moderators);
-			$query = $db->simple_select("moderators", "*", "fid != '$fid' AND id IN ($mod_list) AND isgroup='0'");
-			while($mod = $db->fetch_array($query))
-			{
-				unset($moderators[$mod['id']]);
-			}
-		}
-
-		if(is_array($moderators))
-		{
-			$mod_list = implode(",", $moderators);
-			if($mod_list)
-			{
-				$updatequery = array(
-					"usergroup" => "2"
-				);
-				$db->update_query("users", $updatequery, "uid IN ($mod_list) AND usergroup='6'");
-			}
 		}
 
 		switch($db->type)
