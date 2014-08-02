@@ -82,7 +82,7 @@ $l['no_moderators'] = "There are no moderators found.";
 
 $l['success_forum_disporder_updated'] = "The forum display orders have been updated successfully.";
 $l['success_forum_deleted'] = "The selected forum has been deleted successfully.";
-$l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.";
+$l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.<br />Please remember that this hasn't changed his group permission, he may still have all powers.";
 $l['success_forum_permissions_updated'] = "The forum permissions have been updated successfully.";
 $l['success_forum_updated'] = "The forum settings have been updated successfully.";
 $l['success_moderator_updated'] = "The selected moderator has been updated successfully.";
