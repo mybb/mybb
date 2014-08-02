@@ -44,6 +44,17 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_order;
 		}
+		else
+		{
+			$mybb->input['disporder'] = intval($mybb->input['disporder']);
+			$query = $db->simple_select("smilies", "sid", "disporder='".$mybb->input['disporder']."'");
+			$duplicate_disporder = $db->fetch_field($query, "sid");
+
+			if($duplicate_disporder)
+			{
+				$errors[] = $lang->error_duplicate_order;
+			}
+		}
 		
 		if(!$errors)
 		{
@@ -159,6 +170,17 @@ if($mybb->input['action'] == "edit")
 		if(!isset($mybb->input['disporder']))
 		{
 			$errors[] = $lang->error_missing_order;
+		}
+		else
+		{
+			$mybb->input['disporder'] = intval($mybb->input['disporder']);
+			$query = $db->simple_select("smilies", "sid", "disporder='".$mybb->input['disporder']."' AND sid != '".$mybb->input['sid']."'");
+			$duplicate_disporder = $db->fetch_field($query, "sid");
+
+			if($duplicate_disporder)
+			{
+				$errors[] = $lang->error_duplicate_order;
+			}
 		}
 		
 		if(!$errors)
@@ -405,7 +427,10 @@ if($mybb->input['action'] == "add_multiple")
 				flash_message($lang->error_none_included, 'error');
 				admin_redirect("index.php?module=config-smilies&action=add_multiple");
 			}
-			
+
+			$query = $db->simple_select("smilies", "MAX(disporder) as max_disporder");
+			$disporder = $db->fetch_field($query, "max_disporder");
+
 			foreach($mybb->input['include'] as $image => $insert)
 			{
 				if($insert)
@@ -414,6 +439,7 @@ if($mybb->input['action'] == "add_multiple")
 						"name" => $db->escape_string($name[$image]),
 						"find" => $db->escape_string($find[$image]),
 						"image" => $db->escape_string($path.$image),
+						"disporder" => ++$disporder,
 						"showclickable" => 1
 					);
 					$db->insert_query("smilies", $new_smilie);
@@ -482,9 +508,14 @@ if($mybb->input['action'] == "mass_edit")
 	{
 		foreach($mybb->input['name'] as $sid => $name)
 		{
+			$disporder = intval($mybb->input['disporder'][$sid]);
+
 			$sid = intval($sid);
 			if($mybb->input['delete'][$sid] == 1)
 			{
+				// Dirty hack to get the disporder working. Note: this doesn't work in every case
+				unset($mybb->input['disporder'][$sid]);
+
 				$db->delete_query("smilies", "sid = '{$sid}'", 1);
 			}
 			else
@@ -492,10 +523,17 @@ if($mybb->input['action'] == "mass_edit")
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
 					"find" => $db->escape_string($mybb->input['find'][$sid]),
-					"disporder" => intval($mybb->input['disporder'][$sid]),
 					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
 				);
-					
+
+				// $test contains all disporders except the actual one so we can check whether we have multiple disporders
+				$test = $mybb->input['disporder'];
+				unset($test[$sid]);
+				if(!in_array($disporder, $test))
+				{
+					$smilie['disporder'] = $disporder;
+				}
+
 				$db->update_query("smilies", $smilie, "sid = '{$sid}'");
 			}
 		}
