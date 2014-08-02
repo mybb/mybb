@@ -456,10 +456,15 @@ if($mybb->input['action'] == "thread")
 		if($mybb->user['uid'] != 0)
 		{
 			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+			$numvotes = 0;
 			while($votecheck = $db->fetch_array($query))
 			{
-				$alreadyvoted = 1;
-				$votedfor[$votecheck['voteoption']] = 1;
+				$numvotes++;
+				++$votedfor[$votecheck['voteoption']];
+				if($numvotes >= $poll['maxvotes'])
+				{
+					$alreadyvoted = 1;
+				}
 			}
 		}
 		else
@@ -467,6 +472,7 @@ if($mybb->input['action'] == "thread")
 			if(isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
 			{
 				$alreadyvoted = 1;
+				$numvotes = 1;
 			}
 		}
 		$optionsarray = explode("||~|~||", $poll['options']);
@@ -513,7 +519,7 @@ if($mybb->input['action'] == "thread")
 			if(!empty($votedfor[$number]))
 			{
 				$optionbg = "trow2";
-				$votestar = "*";
+				$votestar = '* (' . $votedfor[$number] . ')';
 			}
 			else
 			{
@@ -570,7 +576,14 @@ if($mybb->input['action'] == "thread")
 		{
 			if($alreadyvoted)
 			{
-				$pollstatus = $lang->already_voted;
+				if($poll['maxvotes'] > 1)
+				{
+					$pollstatus = $lang->sprintf($lang->already_voted_multiple, $numvotes);
+				}
+				else
+				{
+					$pollstatus = $lang->already_voted;
+				}
 
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
@@ -587,6 +600,14 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
+			if($numvotes > 0)
+			{
+				$pollstatus = $lang->sprintf($lang->votes_remaining, ($poll['maxvotes'] - $numvotes));
+				if($mybb->usergroup['canundovotes'] == 1)
+				{
+					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+				}
+			}
 			$publicnote = '&nbsp;';
 			if($poll['public'] == 1)
 			{

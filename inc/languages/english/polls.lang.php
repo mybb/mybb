@@ -24,6 +24,7 @@ $l['options'] = "Options:";
 $l['option_multiple'] = "<b>Allow multiple choice:</b> Users have the ability to vote on more than one option.";
 $l['option_public'] = "<b>Public Poll:</b> Give users the ability to see which user voted on which option(s).";
 $l['option_closed'] = "<b>Poll is Closed:</b> If checked the poll will be closed from voting.";
+$l['max_votes'] = "Maximum Votes per User:";
 $l['poll_timeout'] = "Poll Timeout:";
 $l['timeout_note'] = "The number of day(s) which people can vote on this poll.<br />(Set to 0 to if this poll should not timeout.)";
 $l['days_after'] = "days after:";

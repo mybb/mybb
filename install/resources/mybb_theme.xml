@@ -8902,6 +8902,10 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>
 <tr>
+<td class="trow2" valign="top"><strong>{$lang->max_votes}</strong></td>
+<td class="trow2"><input type="text" class="textbox" name="maxvotes" value="{$maxvotes}" /></td>
+</tr>
+<tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
 <td class="trow2"><input type="text" class="textbox" name="timeout" value="{$timeout}" /> {$lang->days_after} {$polldate}</td>
 </tr>
@@ -8959,6 +8963,10 @@ if(use_xmlhttprequest == "1")
 <label><input type="checkbox" class="checkbox" name="postoptions[public]" value="1" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}</label>
 </span>
 </td>
+</tr>
+<tr>
+<td class="trow2" valign="top"><strong>{$lang->max_votes}</strong></td>
+<td class="trow2"><input type="text" class="textbox" name="maxvotes" value="0" /></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->poll_timeout}</strong><br /><span class="smalltext">{$lang->timeout_note}</span></td>
@@ -11223,7 +11231,7 @@ if(use_xmlhttprequest == "1")
 <col style="width: 3%;" />
 </colgroup>
 <tr>
-<td colspan="2" class="thead" style="text-align: center;"><strong>{$lang->poll} {$poll['question']}</strong></td>
+<td colspan="2" class="thead" style="text-align: center;"><strong>{$lang->poll} {$poll['question']}</strong><br /><span class="smalltext">{$pollstatus}</span></td>
 </tr>
 {$polloptions}
 </table>

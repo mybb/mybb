@@ -1008,12 +1008,15 @@ function upgrade30_dbchanges6()
 	{
 		case "pgsql":
 			$db->add_column("privatemessages", "ipaddress", "bytea NOT NULL default ''");
+			$db->add_column("polls", "maxvotes", "smallint NOT NULL default '0'");
 			break;
 		case "sqlite":
 			$db->add_column("privatemessages", "ipaddress", "blob(16) NOT NULL default ''");
+			$db->add_column("polls", "maxvotes", "smallint NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("privatemessages", "ipaddress", "varbinary(16) NOT NULL default ''");
+			$db->add_column("polls", "maxvotes", "smallint unsigned NOT NULL default '0'");
 			break;
 	}
 
