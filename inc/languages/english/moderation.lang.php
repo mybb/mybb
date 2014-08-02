@@ -144,6 +144,7 @@ $l['actions'] = "Actions";
 $l['cancel'] = "Cancel";
 $l['leave_redirect_for'] = "Leave redirect for:";
 $l['redirect_forever'] = "Forever";
+$l['view_notes_for'] = "Viewing Notes for {1}";
 
 $l['purgespammer'] = "Purge Spammer";
 $l['purgespammer_desc'] = "This is a list of actions that will be performed. A number in brackets indicates how many items will be deleted.";
