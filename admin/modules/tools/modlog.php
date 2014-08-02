@@ -208,12 +208,11 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->ipaddress, array("class" => "align_center", 'width' => '10%'));
 
 	$query = $db->query("
-		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 		{$where}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$perpage}
@@ -234,12 +233,8 @@ if(!$mybb->input['action'])
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"../".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
-		if($logitem['psubject'])
-		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"../".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\" target=\"_blank\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
-		}
 
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if(!$logitem['tsubject'] || !$logitem['fname'])
 		{
 			$data = unserialize($logitem['data']);
 			if($data['uid'])

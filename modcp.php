@@ -489,12 +489,11 @@ if($mybb->input['action'] == "modlogs")
 		eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
 	}
 	$query = $db->query("
-		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 		WHERE 1=1 {$where}{$tflist}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$perpage}
@@ -516,13 +515,9 @@ if($mybb->input['action'] == "modlogs")
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">{$logitem['fname']}</a><br />";
 		}
-		if($logitem['psubject'])
-		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
-		}
 
 		// Edited a user or managed announcement?
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if(!$logitem['tsubject'] || !$logitem['fname'])
 		{
 			$data = unserialize($logitem['data']);
 			if($data['uid'])
@@ -3450,12 +3445,11 @@ if(!$mybb->input['action'])
 	}
 
 	$query = $db->query("
-		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
 		{$where}
 		ORDER BY l.dateline DESC
 		LIMIT 5
@@ -3478,13 +3472,9 @@ if(!$mybb->input['action'])
 		{
 			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
-		if($logitem['psubject'])
-		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
-		}
 
 		// Edited a user or managed announcement?
-		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
+		if(!$logitem['tsubject'] || !$logitem['fname'])
 		{
 			$data = unserialize($logitem['data']);
 			if($data['uid'])
