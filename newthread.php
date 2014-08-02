@@ -210,6 +210,40 @@ if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
 	}
 }
 
+// If this isn't a logged in user, then we need to do some special validation.
+if($mybb->user['uid'] == 0)
+{
+	$username = htmlspecialchars_uni($mybb->input['username']);
+
+	// Check if username exists.
+	if(username_exists($mybb->input['username']))
+	{
+		// If it does throw back "username is taken"
+		error($lang->error_usernametaken);
+	}
+	// This username does not exist.
+	else
+	{
+		// If they didn't specify a username then give them "Guest"
+		if(!$mybb->input['username'])
+		{
+			$username = $lang->guest;
+		}
+		// Otherwise use the name they specified.
+		else
+		{
+			$username = htmlspecialchars_uni($mybb->input['username']);
+		}
+		$uid = 0;
+	}
+}
+// This user is logged in.
+else
+{
+	$username = $mybb->user['username'];
+	$uid = $mybb->user['uid'];
+}
+
 // Performing the posting of a new thread.
 if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {
@@ -217,40 +251,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("newthread_do_newthread_start");
-
-	// If this isn't a logged in user, then we need to do some special validation.
-	if($mybb->user['uid'] == 0)
-	{
-		$username = htmlspecialchars_uni($mybb->input['username']);
-
-		// Check if username exists.
-		if(username_exists($mybb->input['username']))
-		{
-			// If it does throw back "username is taken"
-			error($lang->error_usernametaken);
-		}
-		// This username does not exist.
-		else
-		{
-			// If they didn't specify a username then give them "Guest"
-			if(!$mybb->input['username'])
-			{
-				$username = $lang->guest;
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = htmlspecialchars_uni($mybb->input['username']);
-			}
-			$uid = 0;
-		}
-	}
-	// This user is logged in.
-	else
-	{
-		$username = $mybb->user['username'];
-		$uid = $mybb->user['uid'];
-	}
 
 	// Attempt to see if this post is a duplicate or not
 	if($uid > 0)
@@ -660,7 +660,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$valid_subject = $posthandler->verify_subject();
 
 		// guest post --> verify author
-		if($post['uid'] == 0)
+		if($new_thread['uid'] == 0)
 		{
 			$valid_username = $posthandler->verify_author();
 		}
