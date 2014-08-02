@@ -487,6 +487,7 @@ $tables[] = "CREATE TABLE mybb_polls (
   closed smallint NOT NULL default '0',
   multiple smallint NOT NULL default '0',
   public smallint NOT NULL default '0',
+  maxoptions smallint NOT NULL default '0',
   PRIMARY KEY (pid)
 );";
 

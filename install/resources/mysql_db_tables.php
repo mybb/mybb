@@ -504,6 +504,7 @@ $tables[] = "CREATE TABLE mybb_polls (
   closed tinyint(1) NOT NULL default '0',
   multiple tinyint(1) NOT NULL default '0',
   public tinyint(1) NOT NULL default '0',
+  maxoptions smallint unsigned NOT NULL default '0',
   KEY tid (tid),
   PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";

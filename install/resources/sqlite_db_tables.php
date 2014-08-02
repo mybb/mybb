@@ -451,7 +451,8 @@ $tables[] = "CREATE TABLE mybb_polls (
 	timeout int unsigned NOT NULL default '0',
 	closed tinyint(1) NOT NULL default '0',
 	multiple tinyint(1) NOT NULL default '0',
-	public tinyint(1) NOT NULL default '0'
+	public tinyint(1) NOT NULL default '0',
+	maxoptions smallint NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_pollvotes (

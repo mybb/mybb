@@ -8896,6 +8896,22 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="postoptions[multiple]" value="1" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}</label><br />
+<span id="maxOptions" style="display: none"><strong>{$lang->option_multiple_maxoptions}</strong> <input type="text" class="textbox" name="maxoptions" value="{$maxoptions}" /><br /></span>
+<script type="text/javascript">
+//<!--
+  	if($("input[name='postoptions[multiple]']").is(":checked")) {
+		$("#maxOptions").css("display", "");
+	}
+  
+ 	$("input[name='postoptions[multiple]']").click(function() {
+ 		if($(this).is(":checked")) {
+ 			$("#maxOptions").css("display", "");
+ 		} else {
+ 	    	$("#maxOptions").css("display", "none");
+ 	  	}
+   	});
+// -->
+</script>
 <label><input type="checkbox" class="checkbox" name="postoptions[public]" value="1" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}</label><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[closed]" value="1" {$postoptionschecked['closed']} />&nbsp;{$lang->option_closed}</label>
 </span>
@@ -8956,6 +8972,22 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" valign="top"><strong>{$lang->options}</strong></td>
 <td class="trow1"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="postoptions[multiple]" value="1" {$postoptionschecked['multiple']} />&nbsp;{$lang->option_multiple}</label><br />
+<span id="maxOptions" style="display: none"><strong>{$lang->option_multiple_maxoptions}</strong> <input type="text" class="textbox" name="maxoptions" value="0" /><br /></span>
+<script type="text/javascript">
+//<!--
+	if($("input[name='postoptions[multiple]']").is(":checked")) {
+		$("#maxOptions").css("display", "");
+	}
+  
+ 	$("input[name='postoptions[multiple]']").click(function() {
+ 		if($(this).is(":checked")) {
+ 	    	$("#maxOptions").css("display", "");
+		} else {
+ 	    	$("#maxOptions").css("display", "none");
+ 	   	}
+    });
+// -->
+</script>
 <label><input type="checkbox" class="checkbox" name="postoptions[public]" value="1" {$postoptionschecked['public']} />&nbsp;{$lang->option_public}</label>
 </span>
 </td>
