@@ -19,7 +19,7 @@ $page->add_breadcrumb_item($lang->forum_management, "index.php?module=forum-mana
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
-	if(isset($mybb->input['fid']) && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
+	if(!empty($mybb->input['fid']) && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
 	{
 		$sub_tabs['view_forum'] = array(
 			'title' => $lang->view_forum,
