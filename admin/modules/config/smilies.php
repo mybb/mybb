@@ -46,9 +46,6 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			$mybb->input['find'] = str_replace('\\', '\\\\', $mybb->input['find']);
-			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
-			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
 			$mybb->input['find'] = str_replace("\r\n", "\n", $mybb->input['find']);
 			$mybb->input['find'] = str_replace("\r", "\n", $mybb->input['find']);
 			$mybb->input['find'] = explode("\n", $mybb->input['find']);
@@ -174,9 +171,6 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$mybb->input['find'] = str_replace('\\', '\\\\', $mybb->input['find']);
-			$mybb->input['find'] = str_replace('$', '\$', $mybb->input['find']);
-			$mybb->input['find'] = str_replace("'", "\'", $mybb->input['find']);
 			$mybb->input['find'] = str_replace("\r\n", "\n", $mybb->input['find']);
 			$mybb->input['find'] = str_replace("\r", "\n", $mybb->input['find']);
 			$mybb->input['find'] = explode("\n", $mybb->input['find']);
@@ -434,9 +428,6 @@ if($mybb->input['action'] == "add_multiple")
 
 			foreach($mybb->input['include'] as $image => $insert)
 			{
-				$find[$image] = str_replace('\\', '\\\\', $find[$image]);
-				$find[$image] = str_replace('$', '\$', $find[$image]);
-				$find[$image] = str_replace("'", "\'", $find[$image]);
 				$find[$image] = str_replace("\r\n", "\n", $find[$image]);
 				$find[$image] = str_replace("\r", "\n", $find[$image]);
 				$find[$image] = explode("\n", $find[$image]);
