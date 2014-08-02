@@ -36,7 +36,7 @@ class session
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=".$db->escape_binary($this->packedip), array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip=".$db->escape_binary($this->packedip));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{

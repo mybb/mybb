@@ -262,7 +262,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 		return;
 	}
 
-	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'", array('limit' => 1));
+	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'");
 	$subscription = $db->fetch_array($query);
 	if(!$subscription['tid'])
 	{
