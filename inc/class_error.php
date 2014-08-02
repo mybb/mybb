@@ -386,6 +386,8 @@ class errorHandler {
 			$error_message = "<p>MyBB has experienced an internal SQL error and cannot continue.</p>";
 			if($mybb->settings['errortypemedium'] == "both" || $mybb->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
+				$message['query'] = htmlspecialchars_uni($message['query']);
+				$message['error'] = htmlspecialchars_uni($message['error']);
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>SQL Error:</dt>\n<dd>{$message['error_no']} - {$message['error']}</dd>\n";
 				if($message['query'] != "")
