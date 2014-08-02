@@ -159,7 +159,7 @@ function update_password($uid, $password, $salt="")
 	// If no salt was specified, check in database first, if still doesn't exist, create one
 	if(!$salt)
 	{
-		$query = $db->simple_select("users", "salt", "uid='$uid'", array('limit' => 1));
+		$query = $db->simple_select("users", "salt", "uid='$uid'");
 		$user = $db->fetch_array($query);
 		if($user['salt'])
 		{
