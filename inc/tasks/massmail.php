@@ -35,7 +35,7 @@ function task_massmail($task)
 
 		if($mass_email['status'] == 1)
 		{
-			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'", 1);
+			$db->update_query("massemails", array('status' => 2), "mid='{$mass_email['mid']}'");
 		}
 
 		$sentcount = 0;
@@ -143,7 +143,7 @@ function task_massmail($task)
 			$update_array['status'] = 3;
 		}
 
-		$db->update_query("massemails", $update_array, "mid='{$mass_email['mid']}'", 1);
+		$db->update_query("massemails", $update_array, "mid='{$mass_email['mid']}'");
 	}
 
 	add_task_log($task, $lang->task_massmail_ran);

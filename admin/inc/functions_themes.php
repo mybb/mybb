@@ -495,7 +495,7 @@ function resync_stylesheet($stylesheet)
 	if(!$stylesheet['cachefile'] && $stylesheet['name'])
 	{
 		$stylesheet['cachefile'] = $stylesheet['name'];
-		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
+		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'");
 	}
 
 	// Still don't have the cache file name or is it not a flat file? Return false
@@ -508,13 +508,13 @@ function resync_stylesheet($stylesheet)
 	{
 		if(cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']) !== false)
 		{
-			$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
+			$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'");
 
 			update_theme_stylesheet_list($stylesheet['tid']);
 
 			if($stylesheet['sid'] != 1)
 			{
-				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
+				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'");
 			}
 		}
 

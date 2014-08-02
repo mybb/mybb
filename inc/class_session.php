@@ -372,7 +372,7 @@ class session
 		global $mybb, $time, $db, $lang;
 
 		// Fetch the spider preferences from the database
-		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'", array('limit' => 1));
+		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'");
 		$spider = $db->fetch_array($query);
 
 		// Set up some defaults
