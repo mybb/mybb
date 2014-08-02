@@ -511,6 +511,11 @@ var Thread = {
 		});
 		
 		return false;
+	},
+
+	viewNotes: function(tid)
+	{
+		MyBB.popupWindow("/moderation.php?action=viewthreadnotes&tid="+tid);
 	}
 };
 

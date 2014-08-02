@@ -226,7 +226,7 @@ function upgrade30_dbchanges()
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
+				$db->rename_column("profilefields", "hidden", "profile", "smallint", "set", "'0'");
 				break;
 			default:
 				$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
@@ -781,7 +781,7 @@ function upgrade30_dbchanges5()
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0'
 			);");
-			$db->write_query("CREATE TABLE mybb_spamlog (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
 				sid INTEGER PRIMARY KEY,
 				username varchar(120) NOT NULL DEFAULT '',
 				email varchar(220) NOT NULL DEFAULT '',
@@ -795,25 +795,25 @@ function upgrade30_dbchanges5()
 				qid serial,
 				question varchar(200) NOT NULL default '',
 				answer varchar(150) NOT NULL default '',
-				shown int unsigned NOT NULL default 0,
-				correct int unsigned NOT NULL default 0,
-				incorrect int unsigned NOT NULL default 0,
+				shown int NOT NULL default 0,
+				correct int NOT NULL default 0,
+				incorrect int NOT NULL default 0,
 				active smallint NOT NULL default '0',
 				PRIMARY KEY (qid)
 			);");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
 				sid varchar(32) NOT NULL default '',
-				qid int unsigned NOT NULL default '0',
-				dateline int unsigned NOT NULL default '0',
+				qid int NOT NULL default '0',
+				dateline int NOT NULL default '0',
 				UNIQUE (sid)
 			);");
-			$db->write_query("CREATE TABLE mybb_spamlog (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
 				sid serial,
 				username varchar(120) NOT NULL DEFAULT '',
 				email varchar(220) NOT NULL DEFAULT '',
 				ipaddress bytea NOT NULL default '',
 				dateline numeric(30,0) NOT NULL default '0',
-				data text NOT NULL default ''
+				data text NOT NULL default '',
 				PRIMARY KEY (sid)
 			);");
 			break;
@@ -834,13 +834,13 @@ function upgrade30_dbchanges5()
 				dateline int unsigned NOT NULL default '0',
 				PRIMARY KEY (sid)
 			) ENGINE=MyISAM;");
-			$db->write_query("CREATE TABLE mybb_spamlog (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
 				sid int unsigned NOT NULL auto_increment,
 				username varchar(120) NOT NULL DEFAULT '',
 				email varchar(220) NOT NULL DEFAULT '',
 				ipaddress varbinary(16) NOT NULL default '',
 				dateline int unsigned NOT NULL default '0',
-				data text NOT NULL DEFAULT '',
+				data text NOT NULL,
 				PRIMARY KEY (sid)
 			) ENGINE=MyISAM;");
 	}
@@ -1031,6 +1031,8 @@ function upgrade30_dbchanges6()
 	{
 		$db->update_query("reportedposts", array('type' => 'post'));
 	}
+
+	$db->insert_query("questions", array('question' => 'What does 2 + 2 equal?', 'answer' => '4\nFour', 'active' => '1'));
 
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
@@ -1273,6 +1275,31 @@ function upgrade30_dbchanges_optimize1()
 	switch($db->type)
 	{
 		case "pgsql":
+			$db->modify_column("adminoptions", "loginattempts", "smallint", "set", "'0'");
+			$db->modify_column("adminviews", "perpage", "smallint", "set", "'0'");
+			$db->modify_column("announcements", "fid", "smallint", "set", "'0'");
+			$db->modify_column("attachments", "pid", "smallint", "set", "'0'");
+			$db->modify_column("calendars", "disporder", "smallint", "set", "'0'");
+			$db->modify_column("calendars", "eventlimit", "smallint", "set", "'0'");
+			$db->modify_column("events", "timezone", "varchar(5)", "set", "''");
+			$db->modify_column("forums", "lastposttid", "int", "set", "'0'");
+			$db->modify_column("mailerrors", "smtpcode", "smallint", "set", "'0'");
+			$db->modify_column("maillogs", "touid", "int", "set", "'0'");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ALTER COLUMN numvotes DROP DEFAULT"); // We need to drop the default first as PostgreSQL can't cast default values
+			$db->modify_column("polls", "numvotes", "int USING (trim(numvotes)::int)", "set", "'0'");
+			$db->modify_column("profilefields", "postnum", "smallint", "set", "'0'");
+			$db->modify_column("reputation", "reputation", "smallint", "set", "'0'");
+			$db->modify_column("spiders", "theme", "smallint", "set", "'0'");
+			$db->modify_column("spiders", "usergroup", "smallint", "set", "'0'");
+			$db->modify_column("templates", "sid", "smallint", "set", "'0'");
+			$db->modify_column("themestylesheets", "tid", "smallint", "set", "'0'");
+			$db->modify_column("usergroups", "canusesigxposts", "smallint", "set", "'0'");
+			$db->modify_column("users", "timezone", "varchar(5)", "set", "''");
+			$db->modify_column("users", "reputation", "int", "set", "'0'");
+			$db->modify_column("warninglevels", "percentage", "smallint", "set", "'0'");
+			$db->modify_column("warningtypes", "points", "smallint", "set", "'0'");
+			$db->modify_column("warnings", "points", "smallint", "set", "'0'");
+			break;
 		case "sqlite":
 			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
@@ -1494,14 +1521,17 @@ function upgrade30_dbchanges_optimize3()
 		{
 			if($db->type == "pgsql")
 			{
-				$change_column[] = "MODIFY {$column} smallint NOT NULL default '0'";
+				$db->modify_column($table, $column, "smallint", "set", "'0'");
 			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
 			}
 		}
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+		if($db->type != "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+		}
 	}
 
 	global $footer_extra;
@@ -1569,14 +1599,17 @@ function upgrade30_dbchanges_optimize4()
 		{
 			if($db->type == "pgsql")
 			{
-				$change_column[] = "MODIFY {$column} int NOT NULL default '0'";
+				$db->modify_column($table, $column, "int", "set", "'0'");
 			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} int unsigned NOT NULL default '0'";
 			}
 		}
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+		if($db->type != "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+		}
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");

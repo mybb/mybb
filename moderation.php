@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'moderation.php');
 
 $templatelist = 'changeuserbox,loginbox,moderation_delayedmoderation_custommodtool,moderation_delayedmodaction_notes,moderation_delayedmoderation_merge,moderation_delayedmoderation_move';
-$templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post';
+$templatelist .= ',moderation_delayedmoderation,moderation_deletethread,moderation_deletepoll,moderation_mergeposts_post,moderation_viewthreadnotes';
 $templatelist .= ',moderation_move,moderation_threadnotes_modaction,moderation_threadnotes_delayedmodaction,moderation_threadnotes,moderation_getip_modoptions,moderation_getip,moderation_getpmip,moderation_merge';
 $templatelist .= ',moderation_split_post,moderation_split,moderation_inline_deletethreads,moderation_inline_movethreads,moderation_inline_deleteposts,moderation_inline_mergeposts,moderation_threadnotes_modaction_error';
 $templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,forumjump_advanced,forumdisplay_password_wrongpass,forumdisplay_password,moderation_inline_moveposts,moderation_delayedmodaction_error,moderation_purgespammer_option,moderation_purgespammer_option_textbox,moderation_purgespammer,moderation_delayedmoderation_date_day,moderation_delayedmoderation_date_month';
@@ -111,7 +111,7 @@ if(isset($forum))
 
 eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
 
-$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer");
+$allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
 
 if($mybb->request_method != "post" && !in_array($mybb->input['action'], $allowable_moderation_actions))
 {
@@ -910,6 +910,27 @@ switch($mybb->input['action'])
 		}
 
 		moderation_redirect(get_thread_link($newtid), $lang->redirect_threadmoved);
+		break;
+
+	// Viewing thread notes
+	case "viewthreadnotes":
+		if(!is_moderator($fid))
+		{
+			error_no_permission();
+		}
+
+		// Make sure we are looking at a real thread here.
+		if(!$thread)
+		{
+			error($lang->error_nomember);
+		}
+
+		$lang->view_notes_for = $lang->sprintf($lang->view_notes_for, $thread['subject']);
+
+		$thread['notes'] = nl2br(htmlspecialchars_uni($thread['notes']));
+
+		eval("\$viewthreadnotes = \"".$templates->get("moderation_viewthreadnotes", 1, 0)."\";");
+		echo $viewthreadnotes;
 		break;
 
 	// Thread notes editor
