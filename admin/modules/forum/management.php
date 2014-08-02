@@ -1344,7 +1344,7 @@ if($mybb->input['action'] == "edit")
 			if($pid != $forum_data['pid'])
 			{
 				// Update the parentlist of this forum.
-				$db->update_query("forums", array("parentlist" => make_parent_list($fid)), "fid='{$fid}'", 1);
+				$db->update_query("forums", array("parentlist" => make_parent_list($fid)), "fid='{$fid}'");
 				
 				// Rebuild the parentlist of all of the subforums of this forum
 				switch($db->type)
@@ -1359,7 +1359,7 @@ if($mybb->input['action'] == "edit")
 				
 				while($child = $db->fetch_array($query))
 				{
-					$db->update_query("forums", array("parentlist" => make_parent_list($child['fid'])), "fid='{$child['fid']}'", 1);
+					$db->update_query("forums", array("parentlist" => make_parent_list($child['fid'])), "fid='{$child['fid']}'");
 				}
 			}
 			

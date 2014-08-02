@@ -109,7 +109,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 	}
 	if(!$user['password'])
 	{
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".intval($uid)."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".intval($uid)."'");
 		$user = $db->fetch_array($query);
 	}
 	if(!$user['salt'])
@@ -121,7 +121,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 			"salt" => $user['salt'],
 			"password" => $user['password']
 		);
-		$db->update_query("users", $sql_array, "uid='".$user['uid']."'", 1);
+		$db->update_query("users", $sql_array, "uid='".$user['uid']."'");
 	}
 
 	if(!$user['loginkey'])
@@ -130,7 +130,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 		$sql_array = array(
 			"loginkey" => $user['loginkey']
 		);
-		$db->update_query("users", $sql_array, "uid = ".$user['uid'], 1);
+		$db->update_query("users", $sql_array, "uid = ".$user['uid']);
 	}
 	if(salt_password(md5($password), $user['salt']) == $user['password'])
 	{
@@ -181,7 +181,7 @@ function update_password($uid, $password, $salt="")
 	// Update password and login key in database
 	$newpassword['password'] = $saltedpw;
 	$newpassword['loginkey'] = $loginkey;
-	$db->update_query("users", $newpassword, "uid='$uid'", 1);
+	$db->update_query("users", $newpassword, "uid='$uid'");
 
 	$plugins->run_hooks("password_changed");
 
@@ -234,7 +234,7 @@ function update_salt($uid)
 	$sql_array = array(
 		"salt" => $salt
 	);
-	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
+	$db->update_query("users", $sql_array, "uid='{$uid}'");
 	
 	return $salt;
 }
@@ -253,7 +253,7 @@ function update_loginkey($uid)
 	$sql_array = array(
 		"loginkey" => $loginkey
 	);
-	$db->update_query("users", $sql_array, "uid='{$uid}'", 1);
+	$db->update_query("users", $sql_array, "uid='{$uid}'");
 	
 	return $loginkey;
 
@@ -282,7 +282,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 		return;
 	}
 	
-	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'", array('limit' => 1));
+	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'");
 	$subscription = $db->fetch_array($query);
 	if(!$subscription['tid'])
 	{

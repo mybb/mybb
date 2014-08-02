@@ -179,7 +179,7 @@ elseif($mybb->input['do'] == "login")
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
-		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".intval($mybb->user['uid'])."'", 1);
+		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".intval($mybb->user['uid'])."'");
 		my_setcookie("adminsid", $sid);
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
@@ -242,7 +242,7 @@ elseif($mybb->input['do'] == "login")
 
 		if($login_user['uid'] > 0)
 		{
-			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".intval($login_user['uid'])."'", 1, true);
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".intval($login_user['uid'])."'", '', true);
 		}
 
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
@@ -253,7 +253,7 @@ elseif($mybb->input['do'] == "login")
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
 			{
-				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($login_user['uid'])."'", 1);
+				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($login_user['uid'])."'");
 			}
 
 			// Did we hit lockout for the first time? Send the unlock email to the administrator

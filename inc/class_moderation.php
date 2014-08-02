@@ -1907,8 +1907,8 @@ class Moderation
 			$new_subject = array(
 				"subject" => $db->escape_string($subject)
 			);
-			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'", 1);
-			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
+			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'");
+			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'");
 		}
 
 		$arguments = array("tids" => $tids, "format" => $format);

@@ -35,7 +35,7 @@ class session
 		{
 			$sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
+			$query = $db->simple_select("sessions", "*", "sid='{$sid}' AND ip='".$db->escape_string($this->ipaddress)."'");
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
@@ -372,7 +372,7 @@ class session
 		global $mybb, $time, $db, $lang;
 
 		// Fetch the spider preferences from the database
-		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'", array('limit' => 1));
+		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'");
 		$spider = $db->fetch_array($query);
 
 		// Set up some defaults
