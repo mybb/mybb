@@ -50,4 +50,3 @@ $l['success_rebuilt_thread_ratings'] = "The thread ratings have been recounted s
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
 $l['automatically_redirecting'] = "Automatically Redirecting...";
 
-?>

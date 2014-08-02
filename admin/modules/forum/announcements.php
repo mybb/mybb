@@ -68,7 +68,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_forum;
 		}
 
-		if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])))
+		if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']))
 		{
 			$errors[] = $lang->error_invalid_start_date;
 		}
@@ -97,12 +97,12 @@ if($mybb->input['action'] == "add")
 			}
 		}
 
-		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']);
 
 		if($mybb->input['endtime_type'] != "2")
 		{
-			$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-			if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])))
+			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']);
+			if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']))
 			{
 				$errors[] = $lang->error_invalid_end_date;
 			}
@@ -242,7 +242,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_day'])
 	{
-		$startday = intval($mybb->input['starttime_day']);
+		$startday = (int)$mybb->input['starttime_day'];
 	}
 	else
 	{
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_day'])
 	{
-		$endday = intval($mybb->input['endtime_day']);
+		$endday = (int)$mybb->input['endtime_day'];
 	}
 	else
 	{
@@ -290,7 +290,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_month'])
 	{
-		$startmonth = intval($mybb->input['starttime_month']);
+		$startmonth = (int)$mybb->input['starttime_month'];
 		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	else
@@ -301,7 +301,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_month'])
 	{
-		$endmonth = intval($mybb->input['endtime_month']);
+		$endmonth = (int)$mybb->input['endtime_month'];
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	else
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['starttime_year'])
 	{
-		$startdateyear = intval($mybb->input['starttime_year']);
+		$startdateyear = (int)$mybb->input['starttime_year'];
 	}
 	else
 	{
@@ -346,7 +346,7 @@ if($mybb->input['action'] == "add")
 
 	if($mybb->input['endtime_year'])
 	{
-		$enddateyear = intval($mybb->input['endtime_year']);
+		$enddateyear = (int)$mybb->input['endtime_year'];
 	}
 	else
 	{
@@ -424,13 +424,13 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_forum_announcements_edit");
-
 	if(!trim($mybb->input['aid']))
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
 		admin_redirect("index.php?module=forum-announcements");
 	}
+
+	$plugins->run_hooks("admin_forum_announcements_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -449,7 +449,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_forum;
 		}
 
-		if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])))
+		if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']))
 		{
 			$errors[] = $lang->error_invalid_start_date;
 		}
@@ -478,12 +478,12 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+		$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']);
 
 		if($mybb->input['endtime_type'] != "2")
 		{
-			$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-			if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])))
+			$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']);
+			if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']))
 			{
 				$errors[] = $lang->error_invalid_end_date;
 			}
@@ -776,8 +776,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_forum_announcements_delete");
-
 	$query = $db->simple_select("announcements", "*", "aid='{$mybb->input['aid']}'");
 	$announcement = $db->fetch_array($query);
 
@@ -793,6 +791,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=forum-announcements");
 	}
+
+	$plugins->run_hooks("admin_forum_announcements_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -945,4 +945,3 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 	}
 }
 
-?>

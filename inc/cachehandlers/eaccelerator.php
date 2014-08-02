@@ -110,4 +110,3 @@ class eacceleratorCacheHandler
 		return $lang->na;
 	}
 }
-?>

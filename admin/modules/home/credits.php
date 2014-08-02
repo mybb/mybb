@@ -20,8 +20,6 @@ $plugins->run_hooks("admin_home_credits_begin");
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_home_credits_start");
-
 	$page->output_header($lang->mybb_credits);
 
 	$sub_tabs['credits'] = array(
@@ -40,6 +38,8 @@ if(!$mybb->input['action'])
 		'title' => $lang->check_for_updates,
 		'link' => "index.php?module=home-credits&amp;fetch_new=1",
 	);
+
+	$plugins->run_hooks("admin_home_credits_start");
 
 	$page->output_nav_tabs($sub_tabs, 'credits');
 
@@ -146,4 +146,3 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-?>

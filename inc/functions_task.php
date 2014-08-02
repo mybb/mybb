@@ -103,7 +103,7 @@ function add_task_log($task, $message)
 	}
 
 	$log_entry = array(
-		"tid" => intval($task['tid']),
+		"tid" => (int)$task['tid'],
 		"dateline" => TIME_NOW,
 		"data" => $db->escape_string($message)
 	);
@@ -368,4 +368,3 @@ function run_time_exists($data, $bit)
 	}
 	return false;
 }
-?>

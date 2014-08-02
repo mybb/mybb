@@ -48,4 +48,3 @@ function upgrade8_dbchanges()
 	$output->print_footer("8_done");
 }
 
-?>

@@ -23,4 +23,3 @@ $l['can_manage_admin_permissions'] = "Can manage admin permissions?";
 $l['can_send_mass_mail'] = "Can send mass mail?";
 $l['can_manage_group_promotions'] = "Can manage group promotions?";
 
-?>

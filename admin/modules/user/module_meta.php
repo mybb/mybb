@@ -81,4 +81,3 @@ function user_admin_permissions()
 
 	return array("name" => $lang->users_and_groups, "permissions" => $admin_permissions, "disporder" => 30);
 }
-?>

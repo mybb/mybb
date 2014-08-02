@@ -269,4 +269,3 @@ else
 	error($lang->error_invalidaction);
 }
 
-?>

@@ -145,4 +145,3 @@ function clear_overflow($fp, &$contents)
 
 	$contents = '';
 }
-?>

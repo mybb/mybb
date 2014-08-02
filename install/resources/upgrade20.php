@@ -48,4 +48,4 @@ function upgrade20_dbchanges()
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("20_done");
 }
-?>
+

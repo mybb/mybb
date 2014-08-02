@@ -28,4 +28,3 @@ $langinfo['htmllang'] = "en";
 
 // Sets the character set, blank uses the default.
 $langinfo['charset'] = "UTF-8";
-?>

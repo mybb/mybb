@@ -330,7 +330,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_icq_number");
 			return false;
 		}
-		$icq = intval($icq);
+		$icq = (int)$icq;
 		return true;
 	}
 
@@ -352,9 +352,9 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Sanitize any input we have
-		$birthday['day'] = intval($birthday['day']);
-		$birthday['month'] = intval($birthday['month']);
-		$birthday['year'] = intval($birthday['year']);
+		$birthday['day'] = (int)$birthday['day'];
+		$birthday['month'] = (int)$birthday['month'];
+		$birthday['year'] = (int)$birthday['year'];
 
 		// Error if a day and month exists, and the birthday day and range is not in range
 		if($birthday['day'] != 0 || $birthday['month'] != 0)
@@ -663,8 +663,8 @@ class UserDataHandler extends DataHandler
 		if(array_key_exists('subscriptionmethod', $options))
 		{
 			// Value out of range
-			$options['subscriptionmethod'] = intval($options['subscriptionmethod']);
-			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
+			$options['subscriptionmethod'] = (int)$options['subscriptionmethod'];
+			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 3)
 			{
 				$options['subscriptionmethod'] = 0;
 			}
@@ -673,7 +673,7 @@ class UserDataHandler extends DataHandler
 		if(array_key_exists('dstcorrection', $options))
 		{
 			// Value out of range
-			$options['dstcorrection'] = intval($options['dstcorrection']);
+			$options['dstcorrection'] = (int)$options['dstcorrection'];
 			if($options['dstcorrection'] < 0 || $options['dstcorrection'] > 2)
 			{
 				$options['dstcorrection'] = 0;
@@ -719,7 +719,7 @@ class UserDataHandler extends DataHandler
 					$options['tpp'] = $biggest;
 				}
 			}
-			$options['tpp'] = intval($options['tpp']);
+			$options['tpp'] = (int)$options['tpp'];
 		}
 		// Verify the "posts per page" option.
 		if($this->method == "insert" || (array_key_exists('ppp', $options) && $mybb->settings['userpppoptions']))
@@ -739,7 +739,7 @@ class UserDataHandler extends DataHandler
 					$options['ppp'] = $biggest;
 				}
 			}
-			$options['ppp'] = intval($options['ppp']);
+			$options['ppp'] = (int)$options['ppp'];
 		}
 		// Is our selected "days prune" option valid or not?
 		if($this->method == "insert" || array_key_exists('daysprune', $options))
@@ -748,7 +748,7 @@ class UserDataHandler extends DataHandler
 			{
 				$options['daysprune'] = 0;
 			}
-			$options['daysprune'] = intval($options['daysprune']);
+			$options['daysprune'] = (int)$options['daysprune'];
 			if($options['daysprune'] < 0)
 			{
 				$options['daysprune'] = 0;
@@ -766,7 +766,7 @@ class UserDataHandler extends DataHandler
 	{
 		$regdate = &$this->data['regdate'];
 
-		$regdate = intval($regdate);
+		$regdate = (int)$regdate;
 		// If the timestamp is below 0, set it to the current time.
 		if($regdate <= 0)
 		{
@@ -784,7 +784,7 @@ class UserDataHandler extends DataHandler
 	{
 		$lastvisit = &$this->data['lastvisit'];
 
-		$lastvisit = intval($lastvisit);
+		$lastvisit = (int)$lastvisit;
 		// If the timestamp is below 0, set it to the current time.
 		if($lastvisit <= 0)
 		{
@@ -803,7 +803,7 @@ class UserDataHandler extends DataHandler
 	{
 		$lastactive = &$this->data['lastactive'];
 
-		$lastactive = intval($lastactive);
+		$lastactive = (int)$lastactive;
 		// If the timestamp is below 0, set it to the current time.
 		if($lastactive <= 0)
 		{
@@ -1040,19 +1040,19 @@ class UserDataHandler extends DataHandler
 			"salt" => $user['salt'],
 			"loginkey" => $user['loginkey'],
 			"email" => $db->escape_string($user['email']),
-			"postnum" => intval($user['postnum']),
-			"threadnum" => intval($user['threadnum']),
+			"postnum" => (int)$user['postnum'],
+			"threadnum" => (int)$user['threadnum'],
 			"avatar" => $db->escape_string($user['avatar']),
 			"avatartype" => $db->escape_string($user['avatartype']),
-			"usergroup" => intval($user['usergroup']),
+			"usergroup" => (int)$user['usergroup'],
 			"additionalgroups" => $db->escape_string($user['additionalgroups']),
-			"displaygroup" => intval($user['displaygroup']),
+			"displaygroup" => (int)$user['displaygroup'],
 			"usertitle" => $db->escape_string(htmlspecialchars_uni($user['usertitle'])),
-			"regdate" => intval($user['regdate']),
-			"lastactive" => intval($user['lastactive']),
-			"lastvisit" => intval($user['lastvisit']),
+			"regdate" => (int)$user['regdate'],
+			"lastactive" => (int)$user['lastactive'],
+			"lastvisit" => (int)$user['lastvisit'],
 			"website" => $db->escape_string($user['website']),
-			"icq" => intval($user['icq']),
+			"icq" => (int)$user['icq'],
 			"aim" => $db->escape_string($user['aim']),
 			"yahoo" => $db->escape_string($user['yahoo']),
 			"skype" => $db->escape_string($user['skype']),
@@ -1061,7 +1061,7 @@ class UserDataHandler extends DataHandler
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
 			"hideemail" => $user['options']['hideemail'],
-			"subscriptionmethod" => intval($user['options']['subscriptionmethod']),
+			"subscriptionmethod" => (int)$user['options']['subscriptionmethod'],
 			"receivepms" => $user['options']['receivepms'],
 			"receivefrombuddy" => $user['options']['receivefrombuddy'],
 			"pmnotice" => $user['options']['pmnotice'],
@@ -1072,14 +1072,14 @@ class UserDataHandler extends DataHandler
 			"showavatars" => $user['options']['showavatars'],
 			"showquickreply" => $user['options']['showquickreply'],
 			"showredirect" => $user['options']['showredirect'],
-			"tpp" => intval($user['options']['tpp']),
-			"ppp" => intval($user['options']['ppp']),
+			"tpp" => (int)$user['options']['tpp'],
+			"ppp" => (int)$user['options']['ppp'],
 			"invisible" => $user['options']['invisible'],
-			"style" => intval($user['style']),
+			"style" => (int)$user['style'],
 			"timezone" => $db->escape_string($user['timezone']),
-			"dstcorrection" => intval($user['options']['dstcorrection']),
+			"dstcorrection" => (int)$user['options']['dstcorrection'],
 			"threadmode" => $user['options']['threadmode'],
-			"daysprune" => intval($user['options']['daysprune']),
+			"daysprune" => (int)$user['options']['daysprune'],
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
 			"regip" => $db->escape_binary($user['regip']),
@@ -1091,7 +1091,7 @@ class UserDataHandler extends DataHandler
 			"returndate" => $user['away']['returndate'],
 			"awayreason" => $db->escape_string($user['away']['awayreason']),
 			"notepad" => $db->escape_string($user['notepad']),
-			"referrer" => intval($user['referrer_uid']),
+			"referrer" => (int)$user['referrer_uid'],
 			"referrals" => 0,
 			"buddylist" => '',
 			"ignorelist" => '',
@@ -1102,7 +1102,7 @@ class UserDataHandler extends DataHandler
 			"moderationtime" => 0,
 			"suspendposting" => 0,
 			"suspensiontime" => 0,
-			"coppauser" => intval($user['coppa_user']),
+			"coppauser" => (int)$user['coppa_user'],
 			"classicpostbit" => $user['options']['classicpostbit'],
 			"usernotes" => ''
 		);
@@ -1150,6 +1150,11 @@ class UserDataHandler extends DataHandler
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
 
+		if((int)$user['usergroup'] == 5)
+		{
+			$cache->update_awaitingactivation();
+		}
+
 		$this->return_values = array(
 			"uid" => $this->uid,
 			"username" => $user['username'],
@@ -1182,7 +1187,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
-		$user['uid'] = intval($user['uid']);
+		$user['uid'] = (int)$user['uid'];
 		$this->uid = $user['uid'];
 
 		// Set up the update data.
@@ -1202,11 +1207,11 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['postnum']))
 		{
-			$this->user_update_data['postnum'] = intval($user['postnum']);
+			$this->user_update_data['postnum'] = (int)$user['postnum'];
 		}
 		if(isset($user['threadnum']))
 		{
-			$this->user_update_data['threadnum'] = intval($user['threadnum']);
+			$this->user_update_data['threadnum'] = (int)$user['threadnum'];
 		}
 		if(isset($user['avatar']))
 		{
@@ -1215,7 +1220,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['usergroup']))
 		{
-			$this->user_update_data['usergroup'] = intval($user['usergroup']);
+			$this->user_update_data['usergroup'] = (int)$user['usergroup'];
 		}
 		if(isset($user['additionalgroups']))
 		{
@@ -1223,7 +1228,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['displaygroup']))
 		{
-			$this->user_update_data['displaygroup'] = intval($user['displaygroup']);
+			$this->user_update_data['displaygroup'] = (int)$user['displaygroup'];
 		}
 		if(isset($user['usertitle']))
 		{
@@ -1231,15 +1236,15 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['regdate']))
 		{
-			$this->user_update_data['regdate'] = intval($user['regdate']);
+			$this->user_update_data['regdate'] = (int)$user['regdate'];
 		}
 		if(isset($user['lastactive']))
 		{
-			$this->user_update_data['lastactive'] = intval($user['lastactive']);
+			$this->user_update_data['lastactive'] = (int)$user['lastactive'];
 		}
 		if(isset($user['lastvisit']))
 		{
-			$this->user_update_data['lastvisit'] = intval($user['lastvisit']);
+			$this->user_update_data['lastvisit'] = (int)$user['lastvisit'];
 		}
 		if(isset($user['signature']))
 		{
@@ -1251,7 +1256,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['icq']))
 		{
-			$this->user_update_data['icq'] = intval($user['icq']);
+			$this->user_update_data['icq'] = (int)$user['icq'];
 		}
 		if(isset($user['aim']))
 		{
@@ -1279,7 +1284,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['style']))
 		{
-			$this->user_update_data['style'] = intval($user['style']);
+			$this->user_update_data['style'] = (int)$user['style'];
 		}
 		if(isset($user['timezone']))
 		{
@@ -1325,7 +1330,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(array_key_exists('coppa_user', $user))
 		{
-			$this->user_update_data['coppauser'] = intval($user['coppa_user']);
+			$this->user_update_data['coppauser'] = (int)$user['coppa_user'];
 		}
 		// First, grab the old user details for later use.
 		$old_user = get_user($user['uid']);
@@ -1353,6 +1358,11 @@ class UserDataHandler extends DataHandler
 		if(isset($user['bday']) || isset($user['username']))
 		{
 			$cache->update_birthdays();
+		}
+
+		if(isset($user['usergroup']) && (int)$user['usergroup'] == 5)
+		{
+			$cache->update_awaitingactivation();
 		}
 
 		// Maybe some userfields need to be updated?
@@ -1544,9 +1554,10 @@ class UserDataHandler extends DataHandler
 		// Update reports cache
 		$cache->update_reportedcontent();
 
+		$cache->update_awaitingactivation();
+
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 
 		return $this->return_values;
 	}
 }
-?>

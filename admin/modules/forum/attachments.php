@@ -45,7 +45,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!is_array($mybb->input['aids']))
 	{
-		$mybb->input['aids'] = array(intval($mybb->input['aid']));
+		$mybb->input['aids'] = array((int)$mybb->input['aid']);
 	}
 	else
 	{
@@ -323,7 +323,7 @@ if($mybb->input['action'] == "orphans")
 
 		foreach($aids as $key => $aid)
 		{
-			$aids[$key] = intval($aid);
+			$aids[$key] = (int)$aid;
 		}
 
 		$results += count($aids);
@@ -718,13 +718,13 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
-			$mybb->input['perpage'] = intval($mybb->input['perpage']);
+			$mybb->input['perpage'] = $mybb->get_input('perpage', 1);
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
 
-			$mybb->input['page'] = intval($mybb->input['page']);
+			$mybb->input['page'] = $mybb->get_input('page', 1);
 			if($mybb->input['page'])
 			{
 				$start = ($mybb->input['page'] - 1) * $mybb->input['perpage'];
@@ -943,4 +943,3 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 	$table->construct_cell($date, array("class" => "align_center"));
 	$table->construct_row();
 }
-?>

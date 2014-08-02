@@ -174,4 +174,3 @@ $l['success_template_set_saved'] = "The selected template set has successfully b
 $l['success_template_set_deleted'] = "The selected template set has successfully been deleted.";
 $l['success_template_group_saved'] = "The selected template group has successfully been saved.";
 $l['success_template_group_deleted'] = "The selected template group has successfully been deleted.";
-?>

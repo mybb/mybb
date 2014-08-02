@@ -214,4 +214,3 @@ function upgrade14_dbchanges2()
 	$output->print_footer("14_done");
 }
 
-?>

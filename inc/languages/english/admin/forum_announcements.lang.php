@@ -53,4 +53,3 @@ $l['set_time'] = "Set Time";
 
 $l['announcement_preview'] = 'Announcement Preview';
 
-?>

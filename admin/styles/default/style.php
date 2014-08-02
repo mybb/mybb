@@ -80,4 +80,3 @@ class Form extends DefaultForm
 class FormContainer extends DefaultFormContainer
 {
 }
-?>

@@ -218,4 +218,3 @@ $l['theme_info_save_error'] = 'There was an error saving the style info.';
 
 $l['saving'] = 'Saving...';
 
-?>

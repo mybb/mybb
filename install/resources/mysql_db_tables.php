@@ -744,6 +744,16 @@ $tables[] = "CREATE TABLE mybb_smilies (
   PRIMARY KEY (sid)
 ) ENGINE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_spamlog (
+	sid int unsigned NOT NULL auto_increment,
+	username varchar(120) NOT NULL DEFAULT '',
+	email varchar(220) NOT NULL DEFAULT '',
+	ipaddress varbinary(16) NOT NULL default '',
+	dateline int unsigned NOT NULL default '0',
+	data text NOT NULL,
+	PRIMARY KEY (sid)
+) ENGINE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid int unsigned NOT NULL auto_increment,
 	name varchar(100) NOT NULL default '',
@@ -1151,4 +1161,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	PRIMARY KEY (wid)
 ) ENGINE=MyISAM;";
 
-?>
+

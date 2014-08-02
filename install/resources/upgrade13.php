@@ -198,12 +198,12 @@ function upgrade13_dbchanges2()
 		// Have we already converted this ip?
 		if(my_ip2long($user['regip']) < 0)
 		{
-			$update_array['longregip'] = intval(my_ip2long($user['regip']));
+			$update_array['longregip'] = (int)my_ip2long($user['regip']);
 		}
 
 		if(my_ip2long($user['lastip']) < 0)
 		{
-			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
+			$update_array['longlastip'] = (int)my_ip2long($user['lastip']);
 		}
 
 		if(!empty($update_array))
@@ -235,4 +235,3 @@ function upgrade13_dbchanges2()
 	$output->print_footer($nextact);
 }
 
-?>

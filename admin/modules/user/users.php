@@ -207,8 +207,6 @@ if($mybb->input['action'] == 'iplookup')
 
 if($mybb->input['action'] == "activate_user")
 {
-	$plugins->run_hooks("admin_user_users_coppa_activate");
-
 	if(!verify_post_check($mybb->input['my_post_key']))
 	{
 		flash_message($lang->invalid_post_verify_key2, 'error');
@@ -223,6 +221,8 @@ if($mybb->input['action'] == "activate_user")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_activate");
 
 	$updated_user['usergroup'] = $user['usergroup'];
 
@@ -293,6 +293,8 @@ if($mybb->input['action'] == "activate_user")
 	{
 		$url = "index.php?module=user-users&action=edit&uid={$user['uid']}";
 	}
+
+	$plugins->run_hooks("admin_user_users_coppa_end");
 
 	admin_redirect($url);
 }
@@ -420,8 +422,6 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_user_users_edit");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -430,6 +430,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user-users");
 	}
+
+	$plugins->run_hooks("admin_user_users_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -470,9 +472,9 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['away_year'] = my_date('Y', $awaydate);
 			}
 
-			$return_month = intval(substr($mybb->input['away_month'], 0, 2));
-			$return_day = intval(substr($mybb->input['away_day'], 0, 2));
-			$return_year = min(intval($mybb->input['away_year']), 9999);
+			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
+			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
+			$return_year = min((int)$mybb->input['away_year'], 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -518,8 +520,8 @@ if($mybb->input['action'] == "edit")
 			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
-			"dateformat" => intval($mybb->input['dateformat']),
-			"timeformat" => intval($mybb->input['timeformat']),
+			"dateformat" => (int)$mybb->input['dateformat'],
+			"timeformat" => (int)$mybb->input['timeformat'],
 			"language" => $mybb->input['language'],
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
@@ -568,12 +570,12 @@ if($mybb->input['action'] == "edit")
 
 		if($mybb->settings['usertppoptions'])
 		{
-			$updated_user['options']['tpp'] = intval($mybb->input['tpp']);
+			$updated_user['options']['tpp'] = (int)$mybb->input['tpp'];
 		}
 
 		if($mybb->settings['userpppoptions'])
 		{
-			$updated_user['options']['ppp'] = intval($mybb->input['ppp']);
+			$updated_user['options']['ppp'] = (int)$mybb->input['ppp'];
 		}
 
 		// Set the data of the user in the datahandler.
@@ -637,7 +639,7 @@ if($mybb->input['action'] == "edit")
 					list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
 
 					$s = "?s={$maxwidth}";
-					$maxheight = intval($maxwidth);
+					$maxheight = (int)$maxwidth;
 
 					$extra_user_updates = array(
 						"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}",
@@ -696,7 +698,7 @@ if($mybb->input['action'] == "edit")
 					{
 						if($width > 0 && $height > 0)
 						{
-							$avatar_dimensions = intval($width)."|".intval($height);
+							$avatar_dimensions = (int)$width."|".(int)$height;
 						}
 						$extra_user_updates = array(
 							"avatar" => $db->escape_string($mybb->input['avatar_url'].'?dateline='.TIME_NOW),
@@ -755,7 +757,7 @@ if($mybb->input['action'] == "edit")
 
 				if($mybb->input[$option['action']])
 				{
-					if(intval($mybb->input[$option['time']]) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+					if((int)$mybb->input[$option['time']] == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 					{
 						// User has selected a type of ban, but not entered a valid time frame
 						$string = $option['action']."_error";
@@ -764,7 +766,7 @@ if($mybb->input['action'] == "edit")
 
 					if(!is_array($errors))
 					{
-						$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
+						$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
 						if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 						{
@@ -810,6 +812,9 @@ if($mybb->input['action'] == "edit")
 			if(!$errors)
 			{
 				$user_info = $userhandler->update_user();
+
+				$plugins->run_hooks("admin_user_users_edit_commit_start");
+
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
 
 				// if we're updating the user's signature preferences, do so now
@@ -861,7 +866,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
-		$mybb->input['bday'][2] = intval($mybb->input['bday3']);
+		$mybb->input['bday'][2] = (int)$mybb->input['bday3'];
 	}
 	else
 	{
@@ -875,7 +880,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
 	{
-		$mybb->input['away_year'] = intval($mybb->input['away_year']);
+		$mybb->input['away_year'] = (int)$mybb->input['away_year'];
 	}
 	else
 	{
@@ -1628,8 +1633,6 @@ else
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_user_users_delete");
-
 	$user = get_user($mybb->input['uid']);
 
 	// Does the user not exist?
@@ -1651,6 +1654,8 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=user-users");
 	}
 
+	$plugins->run_hooks("admin_user_users_delete");
+
 	if($mybb->request_method == "post")
 	{
 		$plugins->run_hooks("admin_user_users_delete_commit");
@@ -1666,6 +1671,8 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=user-users");
 		}
 
+		$plugins->run_hooks("admin_user_users_delete_commit_end");
+
 		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
@@ -1679,8 +1686,6 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "referrers")
 {
-	$plugins->run_hooks("admin_user_users_referrers");
-
 	$page->add_breadcrumb_item($lang->show_referrers);
 	$page->output_header($lang->show_referrers);
 
@@ -1689,6 +1694,8 @@ if($mybb->input['action'] == "referrers")
 		'link' => "index.php?module=user-users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_referrers_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_referrers");
 
 	$page->output_nav_tabs($sub_tabs, 'referrers');
 
@@ -1729,8 +1736,6 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
-	$plugins->run_hooks("admin_user_users_ipaddresses");
-
 	$page->add_breadcrumb_item($lang->ip_addresses);
 	$page->output_header($lang->ip_addresses);
 
@@ -1739,6 +1744,8 @@ if($mybb->input['action'] == "ipaddresses")
 		'link' => "index.php?module=user-users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_ip_addresses_desc
 	);
+
+	$plugins->run_hooks("admin_user_users_ipaddresses");
 
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
 
@@ -1929,7 +1936,7 @@ if($mybb->input['action'] == "merge")
 			$query = $db->simple_select("reputation", "SUM(reputation) as total_rep", "uid='{$destination_user['uid']}'");
 			$total_reputation = $db->fetch_field($query, "total_rep");
 
-			$db->update_query("users", array('reputation' => intval($total_reputation)), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array('reputation' => (int)$total_reputation), "uid='{$destination_user['uid']}'");
 
 			// Calculate warning points
 			$query = $db->query("
@@ -1945,7 +1952,7 @@ if($mybb->input['action'] == "merge")
 				WHERE uid='{$destination_user['uid']}' AND expired='0'
 			");
 			$new_warn_level = $db->fetch_field($query, "warn_lev");
-			$db->update_query("users", array("warningpoints" => intval($original_warn_level + $new_warn_level)), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array("warningpoints" => (int)$original_warn_level + $new_warn_level), "uid='{$destination_user['uid']}'");
 
 			// Additional updates for non-uid fields
 			$last_poster = array(
@@ -2151,7 +2158,7 @@ if($mybb->input['action'] == "search")
 		// Build view options from incoming search options
 		if($mybb->input['vid'])
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -2198,7 +2205,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 
-		if(intval($mybb->input['perpage']))
+		if($mybb->get_input('perpage', 1))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
@@ -2217,6 +2224,8 @@ if($mybb->input['action'] == "search")
 		{
 			$admin_view['custom_profile_fields'] = $mybb->input['profile_fields'];
 		}
+
+		$plugins->run_hooks("admin_user_users_search_commit");
 
 		$results = build_users_view($admin_view);
 
@@ -2307,7 +2316,7 @@ if($mybb->input['action'] == "inline_edit")
 	{
 		if($id != '')
 		{
-			$selected[] = intval($id);
+			$selected[] = (int)$id;
 		}
 	}
 
@@ -2474,7 +2483,7 @@ if($mybb->input['action'] == "inline_edit")
 						{
 							// User already has a ban, update it!
 							$update_array = array(
-								"admin" => intval($mybb->user['uid']),
+								"admin" => (int)$mybb->user['uid'],
 								"dateline" => TIME_NOW,
 								"bantime" => $db->escape_string($mybb->input['bantime']),
 								"lifted" => $db->escape_string($lifted),
@@ -2487,11 +2496,11 @@ if($mybb->input['action'] == "inline_edit")
 							// Not currently banned - insert the ban
 							$insert_array = array(
 								'uid' => $user['uid'],
-								'gid' => intval($mybb->input['usergroup']),
+								'gid' => (int)$mybb->input['usergroup'],
 								'oldgroup' => $user['usergroup'],
 								'oldadditionalgroups' => $user['additionalgroups'],
 								'olddisplaygroup' => $user['displaygroup'],
-								'admin' => intval($mybb->user['uid']),
+								'admin' => (int)$mybb->user['uid'],
 								'dateline' => TIME_NOW,
 								'bantime' => $db->escape_string($mybb->input['bantime']),
 								'lifted' => $db->escape_string($lifted),
@@ -2603,9 +2612,9 @@ if($mybb->input['action'] == "inline_edit")
 						$errors[] = $lang->multi_selected_dates;
 					}
 
-					$day = intval($mybb->input['day']);
-					$month = intval($mybb->input['month']);
-					$year = intval($mybb->input['year']);
+					$day = (int)$mybb->input['day'];
+					$month = (int)$mybb->input['month'];
+					$year = (int)$mybb->input['year'];
 
 					// Selected a date - check if the date the user entered is valid
 					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])
@@ -2844,9 +2853,9 @@ if($mybb->input['action'] == "inline_edit")
 
 					// Create an update array
 					$update_array = array(
-						"usergroup" => intval($mybb->input['usergroup']),
+						"usergroup" => (int)$mybb->input['usergroup'],
 						"additionalgroups" => $additionalgroups,
-						"displaygroup" => intval($mybb->input['displaygroup'])
+						"displaygroup" => (int)$mybb->input['displaygroup']
 					);
 
 					// Do the usergroup update for all those selected
@@ -2952,7 +2961,7 @@ if(!$mybb->input['action'])
 		// Showing a specific view
 		if(isset($mybb->input['vid']))
 		{
-			$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
+			$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
 			$admin_view = $db->fetch_array($query);
 			// View does not exist or this view is private and does not belong to the current user
 			if(!$admin_view['vid'] || ($admin_view['visibility'] == 1 && $admin_view['uid'] != $mybb->user['uid']))
@@ -3180,9 +3189,9 @@ function build_users_view($view)
 	$reg_fields = array("regdate");
 	foreach($reg_fields as $search_field)
 	{
-		if(!empty($view['conditions'][$search_field]) && intval($view['conditions'][$search_field]))
+		if(!empty($view['conditions'][$search_field]) && (int)$view['conditions'][$search_field])
 		{
-			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
+			$threshold = TIME_NOW - ((int)$view['conditions'][$search_field] * 24 * 60 * 60);
 
 			$search_sql .= " AND u.{$search_field} >= '{$threshold}'";
 		}
@@ -3302,7 +3311,7 @@ function build_users_view($view)
 
 		foreach($view['conditions']['usergroup'] as $usergroup)
 		{
-			$usergroup = intval($usergroup);
+			$usergroup = (int)$usergroup;
 
 			if(!$usergroup)
 			{
@@ -3357,7 +3366,7 @@ function build_users_view($view)
 		{
 			$view['perpage'] = 20;
 		}
-		$view['perpage'] = intval($view['perpage']);
+		$view['perpage'] = (int)$view['perpage'];
 
 		// Establish which page we're viewing and the starting index for querying
 		if(!isset($mybb->input['page']))
@@ -3366,7 +3375,7 @@ function build_users_view($view)
 		}
 		else
 		{
-			$mybb->input['page'] = intval($mybb->input['page']);
+			$mybb->input['page'] = $mybb->get_input('page', 1);
 		}
 
 		if($mybb->input['page'])
@@ -3547,7 +3556,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&amp;page=".intval($mybb->input['page']);
+		$switch_url .= "&amp;page=".$mybb->get_input('page', 1);
 	}
 	if($view['view_type'] != "card")
 	{

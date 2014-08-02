@@ -17,7 +17,7 @@ $templatelist .= ",postbit_www,postbit_email,postbit_reputation,postbit_warningl
 $templatelist .= ",post_attachments_attachment_postinsert,post_attachments_attachment_remove,post_attachments_attachment_unapproved,post_attachments_attachment,postbit_attachments_attachment,postbit_attachments,newreply_options_signature,postbit_find";
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_away,postbit_offline,postbit_avatar";
 $templatelist .= ",postbit_rep_button,postbit_warn,postbit_author_guest,postbit_signature,postbit_classic,postbit_attachments_thumbnails_thumbnailpostbit_attachments_images_image,postbit_attachments_attachment_unapproved,postbit_pm,post_attachments_update";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_gotopost,forumdisplay_password_wrongpass,forumdisplay_password,posticons_icon,attachment_icon,postbit_reputation_formatted_link,newreply_disablesmilies_hidden,forumdisplay_rules,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -95,9 +95,22 @@ if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0)
 {
 	error_no_permission();
+}
+
+if($mybb->user['suspendposting'] == 1)
+{
+	$suspendedpostingtype = $lang->error_suspendedposting_permanent;
+	if($mybb->user['suspensiontime'])
+	{
+		$suspendedpostingtype = $lang->sprintf($lang->error_suspendedposting_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspensiontime']));
+	}
+
+	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
+
+	error($lang->error_suspendedposting);
 }
 
 if(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
@@ -306,6 +319,34 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			}
 			$uid = 0;
 		}
+
+		if($mybb->settings['stopforumspam_on_newreply'])
+		{
+			require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
+
+			$stop_forum_spam_checker = new StopForumSpamChecker(
+				$plugins,
+				$mybb->settings['stopforumspam_min_weighting_before_spam'],
+				$mybb->settings['stopforumspam_check_usernames'],
+				$mybb->settings['stopforumspam_check_emails'],
+				$mybb->settings['stopforumspam_check_ips'],
+				$mybb->settings['stopforumspam_log_blocks']
+			);
+
+			try {
+				if($stop_forum_spam_checker->is_user_a_spammer($mybb->get_input('username'), '', get_ip()))
+				{
+					error($lang->error_stop_forum_spam_spammer);
+				}
+			}
+			catch (Exception $e)
+			{
+				if($mybb->settings['stopforumspam_block_on_error'])
+				{
+					error($lang->error_stop_forum_spam_fetching);
+				}
+			}
+		}
 	}
 	// This user is logged in.
 	else
@@ -476,6 +517,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
+		$closed = $postinfo['closed'];
 
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
@@ -574,6 +616,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
+				
+				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+				{
+					$mybb->settings['postsperpage'] = 20;
+				}
 
 				// Lets see if this post is on the same page as the one we're viewing or not
 				// if it isn't, redirect us
@@ -583,7 +630,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				}
 				else
 				{
-					$post_page = intval(($postcounter) / $mybb->settings['postsperpage']) + 1;
+					$post_page = (int)($postcounter / $mybb->settings['postsperpage']) + 1;
 				}
 
 				if($post_page > $mybb->get_input('from_page', 1))
@@ -643,7 +690,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					});
 				}\n";
 
-				if($thread['closed'] != 1)
+				if($closed == 1)
 				{
 					$data .= "$('#quick_reply_form .trow1').removeClass('trow1 trow2').addClass('trow_shaded');\n";
 				}
@@ -692,7 +739,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
 			{
-				$quoted_posts[$post] = intval($post);
+				$quoted_posts[$post] = (int)$post;
 			}
 		}
 		// Handle incoming 'quote' button
@@ -971,10 +1018,20 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Now let the post handler do all the hard work.
 		$valid_post = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
+		
+		// guest post --> verify author
+		if($post['uid'] == 0)
+		{
+			$valid_username = $posthandler->verify_author();
+		}
+		else
+		{
+			$valid_username = true;
+		}
 
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_post || !$valid_subject)
+		if(!$valid_post || !$valid_subject || !$valid_username)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
@@ -1216,7 +1273,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$reviewmore = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(!$mybb->settings['postsperpage'])
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
 			$mybb->settings['postsperpage'] = 20;
 		}
@@ -1231,6 +1288,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
+		
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+		{
+			$mybb->settings['postsperpage'] = 20;
+		}
 
 		if($numposts > $mybb->settings['postsperpage'])
 		{
@@ -1337,12 +1399,12 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				$mybb->input['modoptions']['closethread'] = 0;
 			}
-			$closed = intval($mybb->input['modoptions']['closethread']);
+			$closed = (int)$mybb->input['modoptions']['closethread'];
 			if(!isset($mybb->input['modoptions']['stickthread']))
 			{
 				$mybb->input['modoptions']['stickthread'] = 0;
 			}
-			$stuck = intval($mybb->input['modoptions']['stickthread']);
+			$stuck = (int)$mybb->input['modoptions']['stickthread'];
 		}
 		else
 		{
@@ -1417,6 +1479,30 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
+	$moderation_notice = '';
+	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
+	{
+		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
+		{
+			$moderation_text = $lang->moderation_forum_attachments;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+	}
+	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
+	{
+		if($forumpermissions['modposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_forum_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+
+		if($mybb->user['moderateposts'] == 1)
+		{
+			$moderation_text = $lang->moderation_user_posts;
+			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+		}
+	}
+
 	$plugins->run_hooks("newreply_end");
 
 	$forum['name'] = strip_tags($forum['name']);
@@ -1424,4 +1510,4 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	output_page($newreply);
 }
-?>
+

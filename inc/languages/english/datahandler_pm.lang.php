@@ -19,4 +19,3 @@ $l['pmdata_recipient_reached_quota'] = '{1} has reached their private message qu
 
 $l['pmdata_pm_flooding'] = 'You are trying to send a message too quickly after sending a previous message. Please wait {1} more seconds.';
 $l['pmdata_pm_flooding_one_second'] = 'You are trying to send a message too quickly after sending a previous message. Please wait 1 more second.';
-?>

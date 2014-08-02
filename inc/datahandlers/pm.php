@@ -529,7 +529,7 @@ class PMDataHandler extends DataHandler
 		{
 			$pm['pmid'] = 0;
 		}
-		$pm['pmid'] = intval($pm['pmid']);
+		$pm['pmid'] = (int)$pm['pmid'];
 
 		if(empty($pm['icon']) || $pm['icon'] < 0)
 		{
@@ -560,23 +560,23 @@ class PMDataHandler extends DataHandler
 		}
 
 		$this->pm_insert_data = array(
-			'fromid' => intval($pm['sender']['uid']),
+			'fromid' => (int)$pm['sender']['uid'],
 			'folder' => $pm['folder'],
 			'subject' => $db->escape_string($pm['subject']),
-			'icon' => intval($pm['icon']),
+			'icon' => (int)$pm['icon'],
 			'message' => $db->escape_string($pm['message']),
 			'dateline' => TIME_NOW,
 			'status' => 0,
 			'includesig' => $pm['options']['signature'],
 			'smilieoff' => $pm['options']['disablesmilies'],
-			'receipt' => intval($pm['options']['readreceipt']),
+			'receipt' => (int)$pm['options']['readreceipt'],
 			'readtime' => 0,
 			'recipients' => $db->escape_string(serialize($recipient_list)),
 			'ipaddress' => $db->escape_binary($pm['ipaddress'])
 		);
 
 		// Check if we're updating a draft or not.
-		$query = $db->simple_select("privatemessages", "pmid, deletetime", "folder='3' AND uid='".intval($pm['sender']['uid'])."' AND pmid='{$pm['pmid']}'");
+		$query = $db->simple_select("privatemessages", "pmid, deletetime", "folder='3' AND uid='".(int)$pm['sender']['uid']."' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
@@ -726,7 +726,7 @@ class PMDataHandler extends DataHandler
 			{
 				$this->pm_insert_data['toid'] = 0;
 			}
-			$this->pm_insert_data['uid'] = intval($pm['sender']['uid']);
+			$this->pm_insert_data['uid'] = (int)$pm['sender']['uid'];
 			$this->pm_insert_data['folder'] = 2;
 			$this->pm_insert_data['status'] = 1;
 			$this->pm_insert_data['receipt'] = 0;
@@ -750,4 +750,3 @@ class PMDataHandler extends DataHandler
 		return $this->return_values;
 	}
 }
-?>

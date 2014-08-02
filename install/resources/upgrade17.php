@@ -511,7 +511,7 @@ function upgrade17_dbchanges6()
 	$query = $db->simple_select("posts", "ipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
-		$db->update_query("posts", array('longipaddress' => intval(my_ip2long($post['ipaddress']))), "pid = '{$post['pid']}'");
+		$db->update_query("posts", array('longipaddress' => (int)my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
 		$ipaddress = true;
 	}
 
@@ -580,8 +580,8 @@ function upgrade17_dbchanges7()
 	while($user = $db->fetch_array($query))
 	{
 		$update_array = array(
-			'longregip' => intval(my_ip2long($user['regip'])),
-			'longlastip' => intval(my_ip2long($user['lastip']))
+			'longregip' => (int)my_ip2long($user['regip']),
+			'longlastip' => (int)my_ip2long($user['lastip'])
 		);
 
 		$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
@@ -958,4 +958,4 @@ function upgrade_css_140_to_160($name, $css)
 
 	return $css;
 }
-?>
+

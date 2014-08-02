@@ -22,4 +22,3 @@ $l['group_members'] = "Member(s)";
 $l['no_members'] = "No members in this group";
 
 $l['error_noteamstoshow'] = "There are no forum staff to be shown.";
-?>

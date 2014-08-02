@@ -95,8 +95,12 @@ check_forum_password($forum['fid']);
 $page = $mybb->get_input('page', 1);
 
 // Paginate this thread
+if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+{
+	$mybb->settings['postsperpage'] = 20;
+}
 $perpage = $mybb->settings['postsperpage'];
-$postcount = intval($thread['replies'])+1;
+$postcount = (int)$thread['replies']+1;
 $pages = ceil($postcount/$perpage);
 
 if($page > $pages)
@@ -249,4 +253,3 @@ function printthread_multipage($count, $perpage, $current_page, $url)
 	return $multipage;
 }
 
-?>

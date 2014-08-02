@@ -31,13 +31,14 @@ $plugins->run_hooks("admin_tools_adminlog_begin");
 
 if($mybb->input['action'] == 'prune')
 {
-	$plugins->run_hooks("admin_tools_adminlog_prune");
-
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
 		admin_redirect("index.php?module=tools-adminlog");
 	}
+
+	$plugins->run_hooks("admin_tools_adminlog_prune");
+
 	if($mybb->request_method == 'post')
 	{
 		$is_today = false;
@@ -46,12 +47,12 @@ if($mybb->input['action'] == 'prune')
 			$is_today = true;
 			$mybb->input['older_than'] = 1;
 		}
-		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
+		$where = 'dateline < '.(TIME_NOW-((int)$mybb->input['older_than']*86400));
 
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])
 		{
-			$where .= " AND uid='".intval($mybb->input['uid'])."'";
+			$where .= " AND uid='".$mybb->get_input('uid', 1)."'";
 		}
 
 		// Searching for entries in a specific module
@@ -135,23 +136,28 @@ if($mybb->input['action'] == 'prune')
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_adminlog_start");
-
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
 
-	$perpage = intval($mybb->input['perpage']);
+	$perpage = $mybb->get_input('perpage', 1);
 	if(!$perpage)
 	{
+		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		{
+			$mybb->settings['threadsperpage'] = 20;
+		}
+		
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 
 	$where = '';
 
+	$plugins->run_hooks("admin_tools_adminlog_start");
+
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])
 	{
-		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
+		$where .= " AND l.uid='".$mybb->get_input('uid', 1)."'";
 	}
 
 	// Searching for entries in a specific module
@@ -186,10 +192,10 @@ if(!$mybb->input['action'])
 	// Figure out if we need to display multiple pages.
 	if($mybb->input['page'] != "last")
 	{
-		$pagecnt = intval($mybb->input['page']);
+		$pagecnt = $mybb->get_input('page', 1);
 	}
 
-	$postcount = intval($rescount);
+	$postcount = (int)$rescount;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -554,14 +560,21 @@ function get_admin_log_action($logitem)
 	}
 	else
 	{
-		// Build a default string
-		$string = $logitem['module'].' - '.$logitem['action'];
-		if(is_array($logitem['data']) && count($logitem['data']) > 0)
+		if(isset($logitem['data']['type']) && $logitem['data']['type'] == 'admin_locked_out')
 		{
-			$string .= '('.implode(', ', $logitem['data']).')';
+			$string = $lang->sprintf($lang->admin_log_admin_locked_out, (int) $logitem['data']['uid'], htmlspecialchars_uni($logitem['data']['username']));
+		}
+		else
+		{
+			// Build a default string
+			$string = $logitem['module'].' - '.$logitem['action'];
+			if(is_array($logitem['data']) && count($logitem['data']) > 0)
+			{
+				$string .= '('.implode(', ', $logitem['data']).')';
+			}
 		}
 	}
 	return $string;
 }
 
-?>
+

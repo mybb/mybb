@@ -137,4 +137,3 @@ class templates
 		return $res[0];
 	}
 }
-?>

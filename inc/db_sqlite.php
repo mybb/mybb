@@ -1407,4 +1407,3 @@ class DB_SQLite
 	}
 }
 
-?>

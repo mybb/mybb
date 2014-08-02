@@ -85,7 +85,7 @@ if(!empty($forumlist))
 	$forum_ids = "'-1'";
 	foreach($forumlist as $fid)
 	{
-		$forum_ids .= ",'".intval($fid)."'";
+		$forum_ids .= ",'".(int)$fid."'";
 	}
 	$forumlist = "AND fid IN ($forum_ids) $unviewable";
 }
@@ -233,4 +233,3 @@ if(!empty($firstposts))
 
 // Then output the feed XML.
 $feedgenerator->output_feed();
-?>

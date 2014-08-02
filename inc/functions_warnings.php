@@ -89,7 +89,7 @@ function fetch_friendly_expiration($time)
  */
 function fetch_time_length($time, $period)
 {
-	$time = intval($time);
+	$time = (int)$time;
 
 	if($period == "hours")
 	{
@@ -118,4 +118,3 @@ function fetch_time_length($time, $period)
 	}
 	return $time;
 }
-?>

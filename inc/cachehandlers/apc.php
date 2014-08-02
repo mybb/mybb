@@ -106,4 +106,3 @@ class apcCacheHandler
 		return $lang->na;
 	}
 }
-?>

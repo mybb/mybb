@@ -131,5 +131,3 @@ class diskCacheHandler
 		}
 	}
 }
-
-?>

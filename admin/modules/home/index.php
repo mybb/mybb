@@ -47,6 +47,8 @@ if($mybb->input['action'] == "version_check")
 		admin_redirect('index.php');
 	}
 
+	$plugins->run_hooks("admin_home_version_check");
+
 	$page->add_breadcrumb_item($lang->version_check, "index.php?module=home-version_check");
 	$page->output_header($lang->version_check);
 	$page->output_nav_tabs($sub_tabs, 'version_check');
@@ -189,8 +191,25 @@ elseif(!$mybb->input['action'])
 	$users = my_number_format($db->fetch_field($query, "numusers"));
 
 	// Get the number of users awaiting validation
-	$query = $db->simple_select("users", "COUNT(uid) AS awaitingusers", "usergroup='5'");
-	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers"));
+	$awaitingusers = $cache->read('awaitingactivation');
+
+	if(!empty($awaitingusers['users']))
+	{
+		$awaitingusers = (int)$awaitingusers['users'];
+	}
+	else
+	{
+		$awaitingusers = 0;
+	}
+
+	if($awaitingusers < 1)
+	{
+		$awaitingusers = 0;
+	}
+	else
+	{
+		$awaitingusers = my_number_format($awaitingusers);
+	}
 
 	// Get the number of new users for today
 	$timecut = TIME_NOW - 86400;
@@ -341,4 +360,3 @@ elseif(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

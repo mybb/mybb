@@ -90,4 +90,3 @@ function task_dailycleanup($task)
 
 	add_task_log($task, $lang->task_dailycleanup_ran);
 }
-?>

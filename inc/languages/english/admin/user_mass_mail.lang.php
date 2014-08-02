@@ -118,4 +118,3 @@ $l['success_mass_mail_canceled'] = "The mass mailing delivery has been canceled 
 
 $l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass mailing?";
 
-?>

@@ -27,7 +27,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$errors[] = $lang->error_missing_ban_input;
 	}
 
-	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".intval($mybb->input['type'])."'");
+	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".$mybb->get_input('type', 1)."'");
 	if($db->num_rows($query))
 	{
 		$errors[] = $lang->error_filter_already_banned;
@@ -37,7 +37,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$new_filter = array(
 			"filter" => $db->escape_string($mybb->input['filter']),
-			"type" => intval($mybb->input['type']),
+			"type" => $mybb->get_input('type', 1),
 			"dateline" => TIME_NOW
 		);
 		$fid = $db->insert_query("banfilters", $new_filter);
@@ -92,9 +92,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_banning_delete");
-
-	$query = $db->simple_select("banfilters", "*", "fid='".intval($mybb->input['fid'])."'");
+	$query = $db->simple_select("banfilters", "*", "fid='".$mybb->get_input('fid', 1)."'");
 	$filter = $db->fetch_array($query);
 
 	// Does the filter not exist?
@@ -103,6 +101,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_filter, 'error');
 		admin_redirect("index.php?module=config-banning");
 	}
+
+	$plugins->run_hooks("admin_config_banning_delete");
 
 	if($filter['type'] == 3)
 	{
@@ -292,4 +292,3 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-?>

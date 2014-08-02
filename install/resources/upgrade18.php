@@ -56,4 +56,3 @@ function upgrade18_updatecache()
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
  	$output->print_footer("18_done");
 }
-?>

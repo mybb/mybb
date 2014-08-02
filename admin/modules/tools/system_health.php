@@ -38,8 +38,6 @@ $plugins->run_hooks("admin_tools_system_health_begin");
 
 if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("admin_tools_system_health_template_do_check_start");
-
 	$query = $db->simple_select("templates", "*", "", array("order_by" => "sid, title", "order_dir" => "ASC"));
 
 	if(!$db->num_rows($query))
@@ -47,6 +45,8 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 		flash_message($lang->error_invalid_input, 'error');
 		admin_redirect("index.php?module=tools-system_health");
 	}
+
+	$plugins->run_hooks("admin_tools_system_health_template_do_check_start");
 
 	$t_cache = array();
 	while($template = $db->fetch_array($query))
@@ -138,10 +138,10 @@ if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "p
 
 if($mybb->input['action'] == "check_templates")
 {
-	$plugins->run_hooks("admin_tools_system_health_template_check");
-
 	$page->add_breadcrumb_item($lang->check_templates);
 	$page->output_header($lang->check_templates);
+
+	$plugins->run_hooks("admin_tools_system_health_template_check");
 
 	$page->output_nav_tabs($sub_tabs, 'template_check');
 
@@ -169,13 +169,13 @@ if($mybb->input['action'] == "check_templates")
 
 if($mybb->input['action'] == "utf8_conversion")
 {
-	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
-
 	if($db->type == "sqlite" || $db->type == "pgsql")
 	{
 		flash_message($lang->error_not_supported, 'error');
 		admin_redirect("index.php?module=tools-system_health");
 	}
+
+	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
 
 	if($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
 	{
@@ -702,9 +702,9 @@ if($mybb->input['action'] == "utf8_conversion")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_system_health_start");
-
 	$page->output_header($lang->system_health);
+
+	$plugins->run_hooks("admin_tools_system_health_start");
 
 	$page->output_nav_tabs($sub_tabs, 'system_health');
 
@@ -718,7 +718,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->total_database_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size($db->fetch_size()), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->attachment_space_used}</strong>", array('width' => '200'));
-	$table->construct_cell(get_friendly_size(intval($attachs['spaceused'])), array('width' => '200'));
+	$table->construct_cell(get_friendly_size((int)$attachs['spaceused']), array('width' => '200'));
 	$table->construct_row();
 
 	if($attachs['spaceused'] > 0)
@@ -969,4 +969,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

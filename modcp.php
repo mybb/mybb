@@ -19,8 +19,8 @@ $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modc
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue,modcp_banuser_liftlist";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields,modcp_ipsearch_noresults,modcp_ipsearch_results,modcp_ipsearch_misc_info,modcp_nav_announcements,modcp_modqueue_post_link";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs,modcp_banuser_editusername,modcp_lastattachment,modcp_lastpost,modcp_lastthread,modcp_nobanned,modcp_modqueue_thread_link";
-$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement,multipage_prevpage";
-$templatelist .= ",multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions,modcp_nav_banning";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result,modcp_editprofile_signature,forumjump_advanced,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,modcp_announcements_forum_nomod,modcp_announcements_announcement";
+$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,modcp_editprofile_away,modcp_awaitingattachments,modcp_modqueue_attachment_link,modcp_latestfivemodactions,modcp_nav_banning";
 $templatelist .= ",postbit_online,postbit_avatar,postbit_find,postbit_pm,postbit_email,postbit_author_user,announcement_edit,announcement_quickdelete,postbit,preview,postmodcp_nav_announcements,modcp_nav_reportcenter,modcp_nav_modlogs";
 $templatelist .= ",modcp_awaitingmoderation_none,modcp_banning_edit,modcp_banuser_bangroups_group,modcp_banuser_lift,modcp_modlogs_result_announcement,modcp_modlogs_result_forum,modcp_modlogs_result_post,modcp_modlogs_result_thread,modcp_modlogs_user";
 $templatelist .= ",modcp_nav_warninglogs,modcp_nav_ipsearch,modcp_nav_users,modcp_announcements_day,modcp_announcements_month_start,modcp_announcements_month_end,modcp_announcements_announcement_expired,modcp_announcements_announcement_active";
@@ -44,6 +44,11 @@ $lang->load("announcements");
 if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 {
 	error_no_permission();
+}
+
+if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+{
+	$mybb->settings['threadsperpage'] = 20;
 }
 
 $errors = '';
@@ -637,10 +642,10 @@ if($mybb->input['action'] == "allreports")
 		}
 		else
 		{
-			$page = intval($result / $perpage) + 1;
+			$page = (int)$result / $perpage + 1;
 		}
 	}
-	$postcount = intval($report_count);
+	$postcount = (int)$report_count;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -828,7 +833,7 @@ if($mybb->input['action'] == "modlogs")
 		$page = $mybb->get_input('page', 1);
 	}
 
-	$postcount = intval($rescount);
+	$postcount = (int)$rescount;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -1104,9 +1109,8 @@ if($mybb->input['action'] == "do_new_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-
-	if($startdate < 0 || $startdate == false)
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
+	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1123,12 +1127,13 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if($enddate < 0 || $enddate == false)
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1356,9 +1361,9 @@ if($mybb->input['action'] == "new_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => intval($mybb->input['allowhtml']),
-			'allowmycode' => intval($mybb->input['allowmycode']),
-			'allowsmilies' => intval($mybb->input['allowsmilies']),
+			'allowhtml' => (int)$mybb->input['allowhtml'],
+			'allowmycode' => (int)$mybb->input['allowmycode'],
+			'allowsmilies' => (int)$mybb->input['allowsmilies'],
 			'dateline' => TIME_NOW,
 			'userusername' => $mybb->user['username'],
 		);
@@ -1472,8 +1477,8 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-	if($startdate < 0 || $startdate == false)
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
+	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1490,12 +1495,12 @@ if($mybb->input['action'] == "do_edit_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if($enddate < 0 || $enddate == false)
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1571,7 +1576,7 @@ if($mybb->input['action'] == "edit_announcement")
 		error_no_permission();
 	}
 
-	$aid = intval($mybb->input['aid']);
+	$aid = (int)$mybb->input['aid'];
 
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 	add_breadcrumb($lang->edit_announcement, "modcp.php?action=edit_announcements&amp;aid={$aid}");
@@ -1733,7 +1738,7 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 
 	$end_type_sel = array('infinite' => '', 'finite' => '');
-	if(($errored && $mybb->get_input('endtime_type', 1) == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == true)
+	if(($errored && $mybb->get_input('endtime_type', 1) == 2) || (!$errored && (int)$announcement['enddate'] == 0) || $makeshift_end == true)
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
@@ -1754,9 +1759,9 @@ if($mybb->input['action'] == "edit_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => intval($mybb->input['allowhtml']),
-			'allowmycode' => intval($mybb->input['allowmycode']),
-			'allowsmilies' => intval($mybb->input['allowsmilies']),
+			'allowhtml' => (int)$mybb->input['allowhtml'],
+			'allowmycode' => (int)$mybb->input['allowmycode'],
+			'allowsmilies' => (int)$mybb->input['allowsmilies'],
 			'dateline' => TIME_NOW,
 			'userusername' => $mybb->user['username'],
 		);
@@ -2435,9 +2440,9 @@ if($mybb->input['action'] == "do_editprofile")
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 
-			$return_month = intval(substr($mybb->get_input('awaymonth'), 0, 2));
-			$return_day = intval(substr($mybb->get_input('awayday'), 0, 2));
-			$return_year = min(intval($mybb->get_input('awayyear')), 9999);
+			$return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
+			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
+			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -2587,7 +2592,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 				if(!is_array($errors))
 				{
-					$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
+					$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
 
 					if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 					{
@@ -2678,7 +2683,7 @@ if($mybb->input['action'] == "editprofile")
 
 	if($user['icq'] != "0")
 	{
-		$user['icq'] = intval($user['icq']);
+		$user['icq'] = (int)$user['icq'];
 	}
 
 	if(!$errors)
@@ -3343,7 +3348,7 @@ if($mybb->input['action'] == "warninglogs")
 	}
 	if(!empty($mybb->input['filter']['uid']))
 	{
-		$search['uid'] = intval($mybb->input['filter']['uid']);
+		$search['uid'] = (int)$mybb->input['filter']['uid'];
 		$where_sql .= " AND w.uid='{$search['uid']}'";
 		if(!isset($mybb->input['search']['username']))
 		{
@@ -3368,7 +3373,7 @@ if($mybb->input['action'] == "warninglogs")
 	}
 	if(!empty($mybb->input['filter']['mod_uid']))
 	{
-		$search['mod_uid'] = intval($mybb->input['filter']['mod_uid']);
+		$search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
 		$where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
 		if(!isset($mybb->input['search']['mod_username']))
 		{
@@ -3448,9 +3453,9 @@ if($mybb->input['action'] == "warninglogs")
 		$page = 1;
 	}
 	$per_page = 20;
-	if(isset($mybb->input['filter']['per_page']) && intval($mybb->input['filter']['per_page']) > 0)
+	if(isset($mybb->input['filter']['per_page']) && (int)$mybb->input['filter']['per_page'] > 0)
 	{
-		$per_page = intval($mybb->input['filter']['per_page']);
+		$per_page = (int)$mybb->input['filter']['per_page'];
 	}
 	$start = ($page-1) * $per_page;
 	// Build the base URL for pagination links
@@ -3577,7 +3582,7 @@ if($mybb->input['action'] == "ipsearch")
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
 					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql} AND visibility >= -1
+					WHERE {$post_ip_sql} AND visible >= -1
 				");
 
 				$post_results = $db->fetch_field($query, "count");
@@ -3732,7 +3737,7 @@ if($mybb->input['action'] == "ipsearch")
 			$query = $db->query("
 				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
 				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql} AND visibility >= -1
+				WHERE {$post_ip_sql} AND visible >= -1
 				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
@@ -3894,7 +3899,7 @@ if($mybb->input['action'] == "banning")
 	$query = $db->simple_select("banned", "COUNT(uid) AS count");
 	$banned_count = $db->fetch_field($query, "count");
 
-	$postcount = intval($banned_count);
+	$postcount = (int)$banned_count;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -4116,8 +4121,11 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// Check banned group
+	$usergroups_cache = $cache->read('usergroups');
+	$usergroup = $usergroups_cache[$mybb->get_input('usergroup', 1)];
 	$query = $db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".$mybb->get_input('usergroup', 1)."'");
-	if(!$db->fetch_field($query, "gid"))
+
+	if(empty($usergroup['gid']) || empty($usergroup['isbannedgroup']))
 	{
 		$errors[] = $lang->error_nobangroup;
 	}
@@ -4176,7 +4184,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				'oldgroup' => $user['usergroup'],
 				'oldadditionalgroups' => $user['additionalgroups'],
 				'olddisplaygroup' => $user['displaygroup'],
-				'admin' => intval($mybb->user['uid']),
+				'admin' => (int)$mybb->user['uid'],
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
@@ -4678,4 +4686,3 @@ if(!$mybb->input['action'])
 	eval("\$modcp = \"".$templates->get("modcp")."\";");
 	output_page($modcp);
 }
-?>

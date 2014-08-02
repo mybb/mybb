@@ -112,4 +112,3 @@ function config_admin_permissions()
 
 	return array("name" => $lang->configuration, "permissions" => $admin_permissions, "disporder" => 10);
 }
-?>

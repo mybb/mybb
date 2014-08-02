@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'managegroup.php');
 
 $templatelist = "managegroup_leaders_bit,managegroup_leaders,postbit_pm,postbit_email,managegroup_user_checkbox,managegroup_user,managegroup_adduser,managegroup_removeusers,managegroup,managegroup_joinrequests_request,managegroup_joinrequests";
-$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage_prevpage,multipage_start,multipage_page_current,multipage_page,multipage_end,multipage_nextpage,multipage";
+$templatelist .= ",managegroup_requestnote,managegroup_no_users,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 
@@ -39,7 +39,8 @@ if($mybb->input['action'] == "joinrequests")
 // Check that this user is actually a leader of this group
 $query = $db->simple_select("groupleaders", "*", "uid='{$mybb->user['uid']}' AND gid='{$gid}'");
 $groupleader = $db->fetch_array($query);
-if(!$groupleader['uid'] && $mybb->user['cancp'] != 1)
+
+if(!$groupleader['uid'] && $mybb->usergroup['cancp'] != 1)
 {
 	error($lang->not_leader_of_this_group);
 }
@@ -105,7 +106,7 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 		$additionalgroups = explode(',', $user['additionalgroups']);
 		if($user['usergroup'] != $gid && !in_array($gid, $additionalgroups))
 		{
-			$query = $db->simple_select("joinrequests", "rid", "uid = '".intval($user['uid'])."' AND gid = '".intval($gid)."'", array("limit" => 1));
+			$query = $db->simple_select("joinrequests", "rid", "uid = '".(int)$user['uid']."' AND gid = '".(int)$gid."'", array("limit" => 1));
 			$pendinginvite = $db->fetch_array($query);
 			if($pendinginvite['rid'])
 			{
@@ -113,8 +114,8 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 			}
 			else
 			{
-				$query = $db->simple_select("usergroups", "gid, title", "gid = '".intval($gid)."'", array("limit" => 1));
-				$usergroup = $db->fetch_array($query);
+				$usergroups_cache = $cache->read('usergroups');
+				$usergroup = $usergroups_cache[$gid];
 
 				$joinrequest = array(
 					"uid" => $user['uid'],
@@ -138,7 +139,7 @@ elseif($mybb->input['action'] == "do_invite" && $mybb->request_method == "post")
 					'language_file' => 'managegroup'
 				);
 
-				send_pm($pm, $mybb->user['uid'], 1);
+				send_pm($pm, $mybb->user['uid'], true);
 
 				$plugins->run_hooks("managegroup_do_invite_end");
 
@@ -176,11 +177,11 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 			if($what == "accept")
 			{
 				join_usergroup($uid, $gid);
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 			elseif($what == "decline")
 			{
-				$uidin[] = intval($uid);
+				$uidin[] = (int)$uid;
 			}
 		}
 	}
@@ -418,4 +419,3 @@ else
 	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
 	output_page($manageusers);
 }
-?>

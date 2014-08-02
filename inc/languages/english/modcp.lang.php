@@ -325,4 +325,3 @@ $l['you_cannot_use_mod_queue'] = "You do not have sufficient permission to use t
 
 $l['post'] = 'Post';
 $l['search_user'] = "Search for a user";
-?>

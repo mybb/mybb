@@ -161,6 +161,34 @@ if($mybb->request_method == "post")
 		}
 	}
 
+	if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_contact'])
+	{
+		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
+
+		$stop_forum_spam_checker = new StopForumSpamChecker(
+			$plugins,
+			$mybb->settings['stopforumspam_min_weighting_before_spam'],
+			$mybb->settings['stopforumspam_check_usernames'],
+			$mybb->settings['stopforumspam_check_emails'],
+			$mybb->settings['stopforumspam_check_ips'],
+			$mybb->settings['stopforumspam_log_blocks']
+		);
+
+		try {
+			if($stop_forum_spam_checker->is_user_a_spammer('', $mybb->input['email'], get_ip()))
+			{
+				$errors[] = $lang->error_stop_forum_spam_spammer;
+			}
+		}
+		catch (Exception $e)
+		{
+			if($mybb->settings['stopforumspam_block_on_error'])
+			{
+				$errors[] = $lang->error_stop_forum_spam_fetching;
+			}
+		}
+	}
+
 	if(empty($errors))
 	{
 		if($mybb->settings['contact_badwords'] == 1)
@@ -186,10 +214,10 @@ if($mybb->request_method == "post")
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);
 		$message = $lang->sprintf($lang->email_contact, $user, $session->ipaddress, $mybb->input['message']);
 
-		$plugins->run_hooks('contact_do_end');
-
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
+
+		$plugins->run_hooks('contact_do_end');
 
 		if($mybb->settings['mail_logging'] > 0)
 		{
@@ -240,10 +268,18 @@ else
 
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 $mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
-$mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+
+if($mybb->user['uid'] && !$mybb->get_input('email'))
+{
+    $mybb->input['email'] = htmlspecialchars_uni($mybb->user['email']);
+}
+else
+{
+    $mybb->input['email'] = htmlspecialchars_uni($mybb->get_input('email'));
+}
 
 $plugins->run_hooks('contact_end');
 
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);
-?>
+

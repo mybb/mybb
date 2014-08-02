@@ -74,4 +74,3 @@ function forum_admin_permissions()
 	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions, "disporder" => 20);
 }
 
-?>

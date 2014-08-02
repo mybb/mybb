@@ -130,4 +130,3 @@ class timer {
 		return number_format($string, 7);
 	}
 }
-?>

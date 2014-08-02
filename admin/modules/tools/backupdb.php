@@ -51,13 +51,13 @@ $plugins->run_hooks("admin_tools_backupdb_begin");
 
 if($mybb->input['action'] == "dlbackup")
 {
-	$plugins->run_hooks("admin_tools_backupdb_dlbackup");
-
 	if(empty($mybb->input['file']))
 	{
 		flash_message($lang->error_file_not_specified, 'error');
 		admin_redirect("index.php?module=tools-backupdb");
 	}
+
+	$plugins->run_hooks("admin_tools_backupdb_dlbackup");
 
 	$file = basename($mybb->input['file']);
 	$ext = get_extension($file);
@@ -83,8 +83,6 @@ if($mybb->input['action'] == "dlbackup")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_tools_backupdb_delete");
-
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=tools-backupdb");
@@ -97,6 +95,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_backup_doesnt_exist, 'error');
 		admin_redirect("index.php?module=tools-backupdb");
 	}
+
+	$plugins->run_hooks("admin_tools_backupdb_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -396,8 +396,6 @@ if($mybb->input['action'] == "backup")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_backupdb_start");
-
 	$page->add_breadcrumb_item($lang->backups);
 	$page->output_header($lang->database_backups);
 
@@ -411,6 +409,8 @@ if(!$mybb->input['action'])
 		'title' => $lang->new_backup,
 		'link' => "index.php?module=tools-backupdb&amp;action=backup",
 	);
+
+	$plugins->run_hooks("admin_tools_backupdb_start");
 
 	$page->output_nav_tabs($sub_tabs, 'database_backup');
 
@@ -471,4 +471,3 @@ if(!$mybb->input['action'])
 	$table->output($lang->existing_database_backups);
 	$page->output_footer();
 }
-?>

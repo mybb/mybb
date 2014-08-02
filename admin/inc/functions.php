@@ -309,12 +309,12 @@ function save_quick_perms($fid)
 			}
 
 			$insertquery = array(
-				"fid" => intval($fid),
-				"gid" => intval($usergroup['gid']),
-				"canview" => intval($pview),
-				"canpostthreads" => intval($pthreads),
-				"canpostreplys" => intval($preplies),
-				"canpostpolls" => intval($ppolls),
+				"fid" => (int)$fid,
+				"gid" => (int)$usergroup['gid'],
+				"canview" => (int)$pview,
+				"canpostthreads" => (int)$pthreads,
+				"canpostreplys" => (int)$preplies,
+				"canpostpolls" => (int)$ppolls,
 			);
 
 			foreach($permission_fields as $field => $value)
@@ -324,7 +324,7 @@ function save_quick_perms($fid)
 					continue;
 				}
 
-				$insertquery[$db->escape_string($field)] = intval($existing_permissions[$field]);
+				$insertquery[$db->escape_string($field)] = (int)$existing_permissions[$field];
 			}
 
 			$db->insert_query("forumpermissions", $insertquery);
@@ -397,7 +397,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 	if(!$gid)
 	{
 		// Prepare user's groups since the group isn't specified
-		$gid_array[] = (-1) * intval($mybb->user['usergroup']);
+		$gid_array[] = (-1) * (int)$mybb->user['usergroup'];
 
 		if($mybb->user['additionalgroups'])
 		{
@@ -598,7 +598,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 
 	if($uid > 0)
 	{
-		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".intval($uid)."'", 1);
+		$query = $db->simple_select("adminoptions", "loginattempts, loginlockoutexpiry", "uid='".(int)$uid."'", 1);
 		$attempts = $db->fetch_array($query);
 	}
 
@@ -612,7 +612,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 		// Has the expiry dateline been set yet?
 		if($attempts['loginlockoutexpiry'] == 0 && $return_num == false)
 		{
-			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($uid)."'", 1);
+			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$uid."'", 1);
 		}
 
 		// Are we returning the # of login attempts?
@@ -681,7 +681,7 @@ function check_template($template)
 function delete_user_posts($uid, $date)
 {
 	global $db;
-	$uid = intval($uid);
+	$uid = (int)$uid;
 
 	// Build an array of posts to delete
 	$postcache = array();
@@ -756,4 +756,3 @@ function delete_user_posts($uid, $date)
 		}
 	}
 }
-?>

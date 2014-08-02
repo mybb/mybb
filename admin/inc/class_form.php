@@ -399,14 +399,14 @@ class DefaultForm
 			$options['depth'] = 0;
 		}
 
-		$options['depth'] = intval($options['depth']);
+		$options['depth'] = (int)$options['depth'];
 
 		if(!isset($options['pid']))
 		{
 			$options['pid'] = 0;
 		}
 
-		$pid = intval($options['pid']);
+		$pid = (int)$options['pid'];
 
 		if(!is_array($fselectcache))
 		{
@@ -784,9 +784,9 @@ class DefaultForm
 			$year = date("Y", TIME_NOW);
 		}
 
-		$built = $this->generate_select_box($name.'_day', $days, intval($day), array('id' => $name.'_day'))." &nbsp; ";
-		$built .= $this->generate_select_box($name.'_month', $months, intval($month), array('id' => $name.'_month'))." &nbsp; ";
-		$built .= $this->generate_text_box($name.'_year', intval($year), array('id' => $name.'_year', 'style' => 'width: 100px;'));
+		$built = $this->generate_select_box($name.'_day', $days, (int)$day, array('id' => $name.'_day'))." &nbsp; ";
+		$built .= $this->generate_select_box($name.'_month', $months, (int)$month, array('id' => $name.'_month'))." &nbsp; ";
+		$built .= $this->generate_text_box($name.'_year', (int)$year, array('id' => $name.'_year', 'style' => 'width: 100px;'));
 		return $built;
 	}
 
@@ -1005,4 +1005,3 @@ class DefaultFormContainer
 	}
 }
 
-?>

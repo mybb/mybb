@@ -66,4 +66,3 @@ $l['success_calendar_orders_updated'] = "The calendar display orders have been u
 
 $l['confirm_calendar_deletion'] = "Are you sure you wish to delete this calendar?";
 
-?>

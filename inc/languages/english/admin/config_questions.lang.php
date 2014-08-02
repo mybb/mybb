@@ -13,6 +13,8 @@ $l['edit_question'] = "Edit Question";
 $l['edit_question_desc'] = "Here you edit a security question.";
 
 $l['options'] = "Options";
+$l['correct'] = "Correct";
+$l['incorrect'] = "Incorrect";
 $l['disable_question'] = "Disable Question";
 $l['enable_question'] = "Enable Question";
 $l['delete_question'] = "Delete Question";
@@ -37,4 +39,3 @@ $l['success_question_deleted'] = "The question has been deleted successfully.";
 
 $l['confirm_question_deletion'] = "Are you sure you wish to delete this question?";
 
-?>

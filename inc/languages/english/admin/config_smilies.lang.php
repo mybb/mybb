@@ -40,16 +40,17 @@ $l['save_smilies'] = "Save Smilies";
 $l['show_smilies'] = "Show Smilies";
 $l['reset'] = "Reset";
 
-$l['error_missing_name'] = "You did not enter a name for this smilie";
-$l['error_missing_text_replacement'] = "You did not enter a text replacement for this smilie";
-$l['error_missing_path'] = "You did not enter a path for this smilie";
-$l['error_missing_path_multiple'] = "You did not enter a path";
-$l['error_missing_order'] = "You did not enter a display order for this smilie";
-$l['error_missing_clickable'] = "You did not specify yes or no for the \"Show Clickable\" option";
+$l['error_missing_name'] = "You did not enter a name for this smilie.";
+$l['error_missing_text_replacement'] = "You did not enter a text replacement for this smilie.";
+$l['error_missing_path'] = "You did not enter a path for this smilie.";
+$l['error_missing_path_multiple'] = "You did not enter a path.";
+$l['error_missing_order'] = "You did not enter a display order for this smilie.";
+$l['error_duplicate_order'] = "The did not enter a valid display order for this smilie.";
+$l['error_missing_clickable'] = "You did not specify yes or no for the \"Show Clickable\" option.";
 $l['error_no_smilies'] = "There are no smilies in the specified directory, or all smilies in the directory have already been added.";
-$l['error_no_images'] = "There are no images in the specified directory";
+$l['error_no_images'] = "There are no images in the specified directory.";
 $l['error_none_included'] = "You did not select any smilies to include.";
-$l['error_invalid_path'] = "You did not enter a valid path";
+$l['error_invalid_path'] = "You did not enter a valid path.";
 $l['error_invalid_smilie'] = "The specified smilie does not exist.";
 
 $l['success_smilie_added'] = "The smilie has been added successfully.";
@@ -61,4 +62,3 @@ $l['success_mass_edit_updated'] = "The smilies have been updated successfully.";
 
 $l['confirm_smilie_deletion'] = "Are you sure you wish to delete this smilie?";
 
-?>

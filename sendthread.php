@@ -290,4 +290,3 @@ if(!$mybb->input['action'])
 	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
 	output_page($sendtofriend);
 }
-?>

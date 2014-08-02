@@ -53,11 +53,11 @@ if($mybb->input['action'] == "add")
 		{
 			$calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => intval($mybb->input['disporder']),
-				"startofweek" => intval($mybb->input['startofweek']),
-				"eventlimit" => intval($mybb->input['eventlimit']),
-				"showbirthdays" => intval($mybb->input['showbirthdays']),
-				"moderation" => intval($mybb->input['moderation']),
+				"disporder" => (int)$mybb->input['disporder'],
+				"startofweek" => (int)$mybb->input['startofweek'],
+				"eventlimit" => (int)$mybb->input['eventlimit'],
+				"showbirthdays" => (int)$mybb->input['showbirthdays'],
+				"moderation" => (int)$mybb->input['moderation'],
 				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
@@ -65,7 +65,11 @@ if($mybb->input['action'] == "add")
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
 
+			$plugins->run_hooks("admin_config_calendars_add_commit_start");
+
 			$cid = $db->insert_query("calendars", $calendar);
+
+			$plugins->run_hooks("admin_config_calendars_add_commit_end");
 
 			// Log admin action
 			log_admin_action($cid, $mybb->input['name']);
@@ -128,11 +132,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "permissions")
 {
-	$plugins->run_hooks("admin_config_calendars_permissions");
-
 	$usergroups = array();
 
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -141,6 +143,8 @@ if($mybb->input['action'] == "permissions")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_permissions");
 
 	$query = $db->simple_select("usergroups", "*", "", array("order" => "name"));
 	while($usergroup = $db->fetch_array($query))
@@ -159,7 +163,7 @@ if($mybb->input['action'] == "permissions")
 		foreach(array_keys($usergroups) as $group_id)
 		{
 			$permissions = $mybb->input['permissions'][$group_id];
-			$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}' AND gid='".intval($group_id)."'");
+			$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}' AND gid='".(int)$group_id."'");
 
 			if(!$mybb->input['default_permissions'][$group_id])
 			{
@@ -174,7 +178,7 @@ if($mybb->input['action'] == "permissions")
 						$permissions_array[$calendar_permission] = 0;
 					}
 				}
-				$permissions_array['gid'] = intval($group_id);
+				$permissions_array['gid'] = (int)$group_id;
 				$permissions_array['cid'] = $calendar['cid'];
 				$db->insert_query("calendarpermissions", $permissions_array);
 			}
@@ -271,9 +275,7 @@ if($mybb->input['action'] == "permissions")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_calendars_edit");
-
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -282,6 +284,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -299,11 +303,11 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_calendar = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"disporder" => intval($mybb->input['disporder']),
-				"startofweek" => intval($mybb->input['startofweek']),
-				"eventlimit" => intval($mybb->input['eventlimit']),
-				"showbirthdays" => intval($mybb->input['showbirthdays']),
-				"moderation" => intval($mybb->input['moderation']),
+				"disporder" => (int)$mybb->input['disporder'],
+				"startofweek" => (int)$mybb->input['startofweek'],
+				"eventlimit" => (int)$mybb->input['eventlimit'],
+				"showbirthdays" => (int)$mybb->input['showbirthdays'],
+				"moderation" => (int)$mybb->input['moderation'],
 				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
 				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
 				"allowimgcode" => $db->escape_string($mybb->input['allowimgcode']),
@@ -311,9 +315,9 @@ if($mybb->input['action'] == "edit")
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
 
-			$db->update_query("calendars", $updated_calendar, "cid = '".intval($mybb->input['cid'])."'");
-
 			$plugins->run_hooks("admin_config_calendars_edit_commit");
+
+			$db->update_query("calendars", $updated_calendar, "cid = '".$mybb->get_input('cid', 1)."'");
 
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
@@ -371,9 +375,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_calendars_delete");
-
-	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".$mybb->get_input('cid', 1)."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?
@@ -382,6 +384,8 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_calendar, 'error');
 		admin_redirect("index.php?module=config-calendars");
 	}
+
+	$plugins->run_hooks("admin_config_calendars_delete");
 
 	// User clicked no
 	if($mybb->input['no'])
@@ -412,19 +416,19 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("admin_config_calendars_update_order");
-
 	if(!is_array($mybb->input['disporder']))
 	{
 		admin_redirect("index.php?module=config-calendars");
 	}
 
+	$plugins->run_hooks("admin_config_calendars_update_order");
+
 	foreach($mybb->input['disporder'] as $cid => $order)
 	{
 		$update_query = array(
-			"disporder" => intval($order)
+			"disporder" => (int)$order
 		);
-		$db->update_query("calendars", $update_query, "cid='".intval($cid)."'");
+		$db->update_query("calendars", $update_query, "cid='".(int)$cid."'");
 	}
 
 	$plugins->run_hooks("admin_config_calendars_update_order_commit");
@@ -480,4 +484,3 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-?>

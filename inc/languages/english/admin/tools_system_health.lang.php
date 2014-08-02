@@ -88,4 +88,3 @@ $l['success_templates_checked'] = "Templates checked successfully - no security 
 $l['success_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";
 $l['success_table_converted'] = "The selected table \"{1}\" has been converted to UTF-8 successfully.";
 $l['success_chmod'] = "All of the required files and directories have the proper CHMOD settings.";
-?>

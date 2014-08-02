@@ -39,4 +39,4 @@ $l['error_missing_display_style'] = "Please enter a display style for this prefi
 $l['error_no_forums_selected'] = "Please select the forums in which this prefix will be available.";
 $l['error_no_groups_selected'] = "Please select the groups to which this prefix will be available.";
 $l['error_invalid_prefix'] = "The specified thread prefix does not exist.";
-?>
+

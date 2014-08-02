@@ -301,7 +301,7 @@ else
 		}
 		else
 		{
-			$next_update_version = intval(end($version_history)+1);
+			$next_update_version = (int)(end($version_history)+1);
 		}
 
 		$vers = '';
@@ -508,7 +508,7 @@ function upgradethemes()
 		foreach($templates as $template)
 		{
 			$templatename = $db->escape_string($template['attributes']['name']);
-			$templateversion = intval($template['attributes']['version']);
+			$templateversion = (int)$template['attributes']['version'];
 			$templatevalue = $db->escape_string($template['value']);
 			$time = TIME_NOW;
 			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='".$db->escape_string($templatename)."'");
@@ -581,6 +581,7 @@ function buildcaches()
 	$cache->update_forums();
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
+	$cache->update_awaitingactivation();
 	$cache->update_mycode();
 	$cache->update_profilefields();
 	$cache->update_posticons();
@@ -882,7 +883,7 @@ function sync_settings($redo=0)
 			"name" => $db->escape_string($settinggroup['attributes']['name']),
 			"title" => $db->escape_string($settinggroup['attributes']['title']),
 			"description" => $db->escape_string($settinggroup['attributes']['description']),
-			"disporder" => intval($settinggroup['attributes']['disporder']),
+			"disporder" => (int)$settinggroup['attributes']['disporder'],
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
 		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
@@ -910,7 +911,7 @@ function sync_settings($redo=0)
 				"title" => $db->escape_string($setting['title'][0]['value']),
 				"description" => $db->escape_string($setting['description'][0]['value']),
 				"optionscode" => $db->escape_string($setting['optionscode'][0]['value']),
-				"disporder" => intval($setting['disporder'][0]['value']),
+				"disporder" => (int)$setting['disporder'][0]['value'],
 				"gid" => $gid,
 				"isdefault" => 1
 			);

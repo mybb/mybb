@@ -15,4 +15,3 @@ function output_logo()
 	echo base64_decode($mybb_logo);
 	exit;
 }
-?>

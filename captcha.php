@@ -54,9 +54,9 @@ if(function_exists("imagefttext"))
 {
 	// Get a list of the files in the 'catpcha_fonts' directory
 	$ttfdir  = @opendir(MYBB_ROOT."inc/captcha_fonts");
-	if($ttfdir)
+	if($ttfdir !== false)
 	{
-		while($file = readdir($ttfdir))
+		while(($file = readdir($ttfdir)) !== false)
 		{
 			// If this file is a ttf file, add it to the list
 			if(is_file(MYBB_ROOT."inc/captcha_fonts/".$file) && get_extension($file) == "ttf")
@@ -64,6 +64,7 @@ if(function_exists("imagefttext"))
 				$ttf_fonts[] = MYBB_ROOT."inc/captcha_fonts/".$file;
 			}
 		}
+		closedir($ttfdir);
 	}
 }
 
@@ -309,4 +310,3 @@ function draw_string(&$im, $string)
 	}
 }
 
-?>

@@ -719,7 +719,7 @@ class postParser
 	*/
 	function mycode_handle_size($size, $text)
 	{
-		$size = intval($size)+10;
+		$size = (int)$size+10;
 
 		if($size > 50)
 		{
@@ -823,9 +823,9 @@ class postParser
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
-		if(intval($match[1]))
+		if((int)$match[1])
 		{
-			$pid = intval($match[1]);
+			$pid = (int)$match[1];
 			$url = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
 			if(defined("IN_ARCHIVE"))
 			{
@@ -842,11 +842,11 @@ class postParser
 
 		unset($match);
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
-		if(intval($match[1]))
+		if((int)$match[1])
 		{
 			if($match[1] < TIME_NOW)
 			{
-				$postdate = my_date('relative', intval($match[1]));
+				$postdate = my_date('relative', (int)$match[1]);
 				$date = " ({$postdate})";
 			}
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);
@@ -1711,4 +1711,3 @@ class postParser
 		return $message;
 	}
 }
-?>

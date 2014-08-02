@@ -13,7 +13,7 @@ define('THIS_SCRIPT', 'forumdisplay.php');
 
 $templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating";
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_threadlist_inlineedit_js,forumdisplay_orderarrow";
-$templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom,forumbit_subforums,forumbit_moderators,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden";
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumbit_moderators_group";
@@ -453,7 +453,7 @@ else
 	$datecut = $mybb->get_input('datecut', 1);
 }
 
-$datecut = intval($datecut);
+$datecut = (int)$datecut;
 $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut > 0 && $datecut != 9999)
 {
@@ -614,7 +614,7 @@ if($fpermissions['canviewthreads'] != 0)
 }
 
 // How many pages are there?
-if(!$mybb->settings['threadsperpage'])
+if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 {
 	$mybb->settings['threadsperpage'] = 20;
 }
@@ -900,8 +900,8 @@ $selectall = '';
 if(is_moderator($fid) && $threadcount > $perpage)
 {
 	$lang->page_selected = $lang->sprintf($lang->page_selected, count($threadcache));
-	$lang->select_all = $lang->sprintf($lang->select_all, intval($threadcount));
-	$lang->all_selected = $lang->sprintf($lang->all_selected, intval($threadcount));
+	$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
+	$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
 	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
 }
 
@@ -975,7 +975,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
-	if(!$mybb->settings['postsperpage'])
+	if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 	{
 		$mybb->settings['postsperpage'] = 20;
 	}
@@ -1072,8 +1072,8 @@ if(!empty($threadcache) && is_array($threadcache))
 			else
 			{
 				$thread['averagerating'] = floatval(round($thread['averagerating'], 2));
-				$thread['width'] = intval(round($thread['averagerating']))*20;
-				$thread['numratings'] = intval($thread['numratings']);
+				$thread['width'] = (int)round($thread['averagerating'])*20;
+				$thread['numratings'] = (int)$thread['numratings'];
 
 				$not_rated = '';
 				if(!isset($thread['rated']) || empty($thread['rated']))
@@ -1466,4 +1466,3 @@ $foruminfo['name'] = strip_tags($foruminfo['name']);
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
 output_page($forums);
-?>

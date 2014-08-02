@@ -51,4 +51,3 @@ function task_hourlycleanup($task)
 
 	add_task_log($task, $lang->task_hourlycleanup_ran);
 }
-?>

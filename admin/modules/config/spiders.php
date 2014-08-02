@@ -38,9 +38,9 @@ if($mybb->input['action'] == "add")
 		{
 			$new_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => intval($mybb->input['theme']),
+				"theme" => (int)$mybb->input['theme'],
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => intval($mybb->input['usergroup']),
+				"usergroup" => (int)$mybb->input['usergroup'],
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
@@ -114,9 +114,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_spiders_delete");
-
-	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -131,6 +129,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -155,9 +155,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_spiders_edit");
-
-	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("spiders", "*", "sid='".$mybb->get_input('sid', 1)."'");
 	$spider = $db->fetch_array($query);
 
 	// Does the spider not exist?
@@ -166,6 +164,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_bot, 'error');
 		admin_redirect("index.php?module=config-spiders");
 	}
+
+	$plugins->run_hooks("admin_config_spiders_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -183,9 +183,9 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_spider = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"theme" => intval($mybb->input['theme']),
+				"theme" => (int)$mybb->input['theme'],
 				"language" => $db->escape_string($mybb->input['language']),
-				"usergroup" => intval($mybb->input['usergroup']),
+				"usergroup" => (int)$mybb->input['usergroup'],
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
@@ -304,4 +304,3 @@ if(!$mybb->input['action'])
 	$table->output($lang->spiders_bots);
 	$page->output_footer();
 }
-?>

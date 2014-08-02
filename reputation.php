@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'reputation.php');
 
-$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage_page_current,multipage_page,multipage_nextpage,multipage,multipage_prevpage,multipage_start,multipage_end,reputation_vote_delete";
+$templatelist = "reputation_addlink,reputation_no_votes,reputation,reputation_vote,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,reputation_vote_delete";
 $templatelist .= ",reputation_add_delete,reputation_add_neutral,reputation_add_positive,reputation_add_negative,reputation_add_error,reputation_add_error_nomodal,reputation_add,reputation_added,reputation_deleted,reputation_vote_report";
 
 require_once "./global.php";
@@ -267,14 +267,14 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
+		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 		eval("\$error = \"".$templates->get("reputation_deleted", 1, 0)."\";");
 		echo $error;
 		exit;
 	}
 
 	$mybb->input['comments'] = trim($mybb->get_input('comments')); // Trim whitespace to check for length
-	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'])
+	if(my_strlen($mybb->input['comments']) < $mybb->settings['minreplength'] && $mybb->get_input('pid', 1) == 0)
 	{
 		$message = $lang->add_no_comment;
 		if($mybb->input['nomodal'])
@@ -397,7 +397,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
+		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 
 		$lang->vote_added = $lang->vote_updated;
 		$lang->vote_added_message = $lang->vote_updated_message;
@@ -411,7 +411,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
-		$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
+		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 	}
 
 	$plugins->run_hooks("reputation_do_add_end");
@@ -468,7 +468,7 @@ if($mybb->input['action'] == "add")
 		$vote_check = array();
 		$positive_power = '';
 		$negative_power = '';
-		$reputationpower = intval($mybb->usergroup['reputationpower']);
+		$reputationpower = (int)$mybb->usergroup['reputationpower'];
 
 		foreach(range(-$mybb->usergroup['reputationpower'], $mybb->usergroup['reputationpower']) as $value)
 		{
@@ -557,7 +557,7 @@ if($mybb->input['action'] == "delete")
 	// Create moderator log
 	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $existing_reputation['username'], $existing_reputation['adduid']));
 
-	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
+	$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
 
 	redirect("reputation.php?uid={$uid}", $lang->vote_deleted_message);
 }
@@ -700,7 +700,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
 	$reputation = $db->fetch_array($query);
 
-	$sync_reputation = intval($reputation['reputation']);
+	$sync_reputation = (int)$reputation['reputation'];
 	$total_reputation = $reputation['total_reputation'];
 
 	if($sync_reputation != $user['reputation'])
@@ -911,7 +911,7 @@ if(!$mybb->input['action'])
 			$reputation_vote['user_reputation'] = "({$reputation_vote['user_reputation']})";
 		}
 
-		$vote_reputation = intval($reputation_vote['reputation']);
+		$vote_reputation = (int)$reputation_vote['reputation'];
 
 		// This is a negative reputation
 		if($vote_reputation < 0)
@@ -1005,4 +1005,3 @@ if(!$mybb->input['action'])
 	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	output_page($reputation);
 }
-?>

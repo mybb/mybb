@@ -87,4 +87,3 @@ function task_versioncheck($task)
 	$cache->update("update_check", $updated_cache);
 	add_task_log($task, $lang->task_versioncheck_ran);
 }
-?>

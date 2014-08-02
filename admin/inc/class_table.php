@@ -295,4 +295,3 @@ class DefaultTable
 		return $table;
 	}
 }
-?>

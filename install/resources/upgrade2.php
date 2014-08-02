@@ -287,4 +287,3 @@ function upgrade2_dbchanges2()
 	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
 	$output->print_footer("2_done");
 }
-?>

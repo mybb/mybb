@@ -22,8 +22,6 @@ $plugins->run_hooks("admin_config_languages_begin");
 
 if($mybb->input['action'] == "edit_properties")
 {
-	$plugins->run_hooks("admin_config_languages_edit_properties");
-
 	$editlang = basename($mybb->input['lang']);
 	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
 	if(!file_exists($file))
@@ -31,6 +29,8 @@ if($mybb->input['action'] == "edit_properties")
 		flash_message($lang->error_invalid_file, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
+
+	$plugins->run_hooks("admin_config_languages_edit_properties");
 
 	if($mybb->request_method == "post")
 	{
@@ -180,8 +180,6 @@ if($mybb->input['action'] == "edit_properties")
 
 if($mybb->input['action'] == "quick_phrases")
 {
-	$plugins->run_hooks("admin_config_languages_quick_phrases");
-
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
@@ -193,6 +191,8 @@ if($mybb->input['action'] == "quick_phrases")
 		flash_message($lang->error_invalid_set, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
+
+	$plugins->run_hooks("admin_config_languages_quick_phrases");
 
 	$quick_phrases = array(
 		'member.lang.php' => array(
@@ -324,8 +324,6 @@ if($mybb->input['action'] == "quick_phrases")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_languages_edit");
-
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
@@ -345,6 +343,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_set, 'error');
 		admin_redirect("index.php?module=config-languages");
 	}
+
+	$plugins->run_hooks("admin_config_languages_edit");
 
 	if(isset($mybb->input['file']))
 	{
@@ -449,7 +449,7 @@ if($mybb->input['action'] == "edit")
 		echo $form->generate_hidden_field("file", $file);
 		echo $form->generate_hidden_field("lang", $editlang);
 		echo $form->generate_hidden_field("editwith", $editwith);
-		echo $form->generate_hidden_field("inadmin", intval($mybb->input['inadmin']));
+		echo $form->generate_hidden_field("inadmin", (int)$mybb->input['inadmin']);
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -610,8 +610,6 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_config_languages_start");
-
 	$page->output_header($lang->languages);
 
 	$sub_tabs['languages'] = array(
@@ -624,6 +622,8 @@ if(!$mybb->input['action'])
 		'link' => "http://www.mybb.com/downloads/translations",
 		'target' => "_blank"
 	);
+
+	$plugins->run_hooks("admin_config_languages_start");
 
 	$page->output_nav_tabs($sub_tabs, 'languages');
 
@@ -677,4 +677,3 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-?>

@@ -666,3 +666,10 @@ div.sceditor-group:first-child {
   background-image: url(php.png);
     
 }
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+	height: auto;
+	width: auto;
+}

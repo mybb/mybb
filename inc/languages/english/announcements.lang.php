@@ -14,4 +14,3 @@ $l['announcement_edit'] = "Edit this announcement";
 $l['announcement_qdelete'] = "Delete this announcement";
 $l['announcement_quickdelete_confirm'] = "Are you sure you want to delete this announcement?";
 
-?>

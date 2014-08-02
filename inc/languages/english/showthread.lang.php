@@ -98,6 +98,7 @@ $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['view_thread_notes'] = "Thread Notes";
+$l['view_all_notes'] = "View All Notes";
 
 $l['save_changes'] = 'Save Changes';
 $l['cancel_edit'] = 'Cancel Edit';
@@ -109,4 +110,3 @@ $l['quick_delete_thread_success'] = 'The thread was deleted successfully.';
 $l['quick_restore_error'] = 'There was an error restoring your reply:';
 $l['quick_restore_success'] = 'The post was restored successfully.';
 
-?>

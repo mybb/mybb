@@ -130,13 +130,13 @@ if($mybb->input['action'] == "unlock")
 	// Do we have the token? If so let's process it
 	if($mybb->input['token'] && $user['uid'])
 	{
-		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".intval($user['uid'])."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
+		$query = $db->simple_select("awaitingactivation", "COUNT(aid) AS num", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
 
 		// If we're good to go
 		if($db->fetch_field($query, "num") > 0)
 		{
-			$db->delete_query("awaitingactivation", "uid='".intval($user['uid'])."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
-			$db->update_query("adminoptions", array('loginlockoutexpiry' => 0, 'loginattempts' => 0), "uid='".intval($user['uid'])."'");
+			$db->delete_query("awaitingactivation", "uid='".(int)$user['uid']."' AND code='".$db->escape_string($mybb->input['token'])."' AND type='l'");
+			$db->update_query("adminoptions", array('loginlockoutexpiry' => 0, 'loginattempts' => 0), "uid='".(int)$user['uid']."'");
 
 			admin_redirect("index.php");
 		}
@@ -173,6 +173,13 @@ elseif($mybb->input['do'] == "login")
 	{
 		if(login_attempt_check_acp($mybb->user['uid']) == true)
 		{
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$mybb->user['uid'],
+					'username' => $mybb->user['username'],
+				)
+			);
+
 			$default_page->show_lockedout();
 		}
 
@@ -199,7 +206,7 @@ elseif($mybb->input['do'] == "login")
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
-		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".intval($mybb->user['uid'])."'", 1);
+		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".(int)$mybb->user['uid']."'", 1);
 		my_setcookie("adminsid", $sid);
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
@@ -246,23 +253,23 @@ elseif($mybb->input['do'] == "login")
 		switch($mybb->settings['username_method'])
 		{
 			case 0:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 			case 1:
-				$query = $db->simple_select("users", "uid,email", "LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			case 2:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
 				break;
 			default:
-				$query = $db->simple_select("users", "uid,email", "LOWER(username)='".$username."'", array('limit' => 1));
+				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
 				break;
 		}
 		$login_user = $db->fetch_array($query);
 
 		if($login_user['uid'] > 0)
 		{
-			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".intval($login_user['uid'])."'", 1, true);
+			$db->update_query("adminoptions", array("loginattempts" => "loginattempts+1"), "uid='".(int)$login_user['uid']."'", 1, true);
 		}
 
 		$loginattempts = login_attempt_check_acp($login_user['uid'], true);
@@ -273,13 +280,13 @@ elseif($mybb->input['do'] == "login")
 			// Have we set an expiry yet?
 			if($loginattempts['loginlockoutexpiry'] == 0)
 			{
-				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+(intval($mybb->settings['loginattemptstimeout'])*60)), "uid='".intval($login_user['uid'])."'", 1);
+				$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$login_user['uid']."'", 1);
 			}
 
 			// Did we hit lockout for the first time? Send the unlock email to the administrator
 			if($loginattempts['loginattempts'] == $mybb->settings['maxloginattempts'])
 			{
-				$db->delete_query("awaitingactivation", "uid='".intval($login_user['uid'])."' AND type='l'");
+				$db->delete_query("awaitingactivation", "uid='".(int)$login_user['uid']."' AND type='l'");
 				$lockout_array = array(
 					"uid" => $login_user['uid'],
 					"dateline" => TIME_NOW,
@@ -292,6 +299,13 @@ elseif($mybb->input['do'] == "login")
 				$message = $lang->sprintf($lang->locked_out_message, htmlspecialchars_uni($mybb->input['username']), $mybb->settings['bbname'], $mybb->settings['maxloginattempts'], $mybb->settings['bburl'], $mybb->config['admin_dir'], $lockout_array['code'], $lockout_array['uid']);
 				my_mail($login_user['email'], $subject, $message);
 			}
+
+			log_admin_action(array(
+					'type' => 'admin_locked_out',
+					'uid' => (int)$login_user['uid'],
+					'username' => $login_user['username'],
+				)
+			);
 
 			$default_page->show_lockedout();
 		}
@@ -397,7 +411,7 @@ if($mybb->usergroup['cancp'] != 1 && !$is_super_admin || !$mybb->user['uid'])
 	$uid = 0;
 	if(isset($mybb->user['uid']))
 	{
-		$uid = intval($mybb->user['uid']);
+		$uid = (int)$mybb->user['uid'];
 	}
 	$db->delete_query("adminsessions", "uid = '{$uid}'");
 	unset($mybb->user);
@@ -611,4 +625,4 @@ $lang->load("{$run_module}_{$page->active_action}", false, true);
 $plugins->run_hooks("admin_load");
 
 require $modules_dir."/".$run_module."/".$action_file;
-?>
+

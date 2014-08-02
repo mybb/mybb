@@ -448,9 +448,20 @@ class DB_MySQL
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=MYSQL_ASSOC)
 	{
-		$array = mysql_fetch_assoc($query);
+		switch($resulttype)
+		{
+			case MYSQL_NUM:
+			case MYSQL_BOTH:
+				break;
+			default:
+				$resulttype = MYSQL_ASSOC;
+				break;
+		}
+
+		$array = mysql_fetch_array($query, $resulttype);
+
 		return $array;
 	}
 
@@ -1002,7 +1013,7 @@ class DB_MySQL
 		if($version)
 		{
 			$version = explode(".", $version, 3);
-			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
+			$this->version = (int)$version[0].".".(int)$version[1].".".(int)$version[2];
 		}
 		return $this->version;
 	}
@@ -1517,4 +1528,3 @@ class DB_MySQL
 	}
 }
 
-?>

@@ -25,15 +25,16 @@ if($stylesheet)
 	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=".$stylesheet, $options);
 	$stylesheet = $db->fetch_field($query, "stylesheet");
 
+	$plugins->run_hooks("css_start");
+
 	if(!empty($mybb->settings['minifycss']))
 	{
 		$stylesheet = minify_stylesheet($stylesheet);
 	}
 
-	$plugins->run_hooks("css_start");
+	$plugins->run_hooks("css_end");
 
 	header("Content-type: text/css");
 	echo $stylesheet;
 }
 exit;
-?>

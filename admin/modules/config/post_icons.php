@@ -301,9 +301,7 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "edit")
 {
-	$plugins->run_hooks("admin_config_post_icons_edit");
-
-	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
+	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])
@@ -311,6 +309,8 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?module=config-post_icons");
 	}
+
+	$plugins->run_hooks("admin_config_post_icons_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -331,7 +331,7 @@ if($mybb->input['action'] == "edit")
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->update_query("icons", $updated_icon, "iid='".intval($mybb->input['iid'])."'");
+			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
 
 			$cache->update_posticons();
 
@@ -384,9 +384,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$plugins->run_hooks("admin_config_post_icons_delete");
-
-	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
+	$query = $db->simple_select("icons", "*", "iid='".(int)$mybb->input['iid']."'");
 	$icon = $db->fetch_array($query);
 
 	if(!$icon['iid'])
@@ -400,6 +398,8 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-post_icons");
 	}
+
+	$plugins->run_hooks("admin_config_post_icons_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -445,7 +445,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_icons');
 
-	$pagenum = intval($mybb->input['page']);
+	$pagenum = $mybb->get_input('page', 1);
 	if($pagenum)
 	{
 		$start = ($pagenum - 1) * 20;
@@ -464,13 +464,13 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("icons", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'name'));
 	while($icon = $db->fetch_array($query))
 	{
+		$icon['path'] = str_replace("{theme}", "images", $icon['path']);
 		if(my_strpos($icon['path'], "p://") || substr($icon['path'], 0, 1) == "/")
 		{
 			$image = $icon['path'];
 		}
 		else
 		{
-			$icon['path'] = str_replace("{theme}", "images", $icon['path']);
 			$image = "../".$icon['path'];
 		}
 
@@ -497,4 +497,3 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-?>

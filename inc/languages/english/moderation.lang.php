@@ -144,6 +144,7 @@ $l['actions'] = "Actions";
 $l['cancel'] = "Cancel";
 $l['leave_redirect_for'] = "Leave redirect for:";
 $l['redirect_forever'] = "Forever";
+$l['view_notes_for'] = "Viewing Notes for {1}";
 
 $l['purgespammer'] = "Purge Spammer";
 $l['purgespammer_desc'] = "This is a list of actions that will be performed. A number in brackets indicates how many items will be deleted.";
@@ -243,4 +244,4 @@ $l['redirect_delayed_moderation_thread'] = "The selected moderation tool has bee
 $l['redirect_delayed_moderation_forum'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the forum.";
 $l['redirect_delayed_moderation_search'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the search.";
 $l['redirect_delayed_moderation_cancelled'] = "The selected delayed moderation action has been canceled.<br />You will now be returned to the delayed moderation page.";
-?>
+

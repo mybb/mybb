@@ -56,15 +56,15 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
-	$plugins->run_hooks("admin_tools_maillogs_view");
-
-	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
+	$query = $db->simple_select("maillogs", "*", "mid='".$mybb->get_input('mid', 1)."'");
 	$log = $db->fetch_array($query);
 
 	if(!$log['mid'])
 	{
 		exit;
 	}
+
+	$plugins->run_hooks("admin_tools_maillogs_view");
 
 	$log['toemail'] = htmlspecialchars_uni($log['toemail']);
 	$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
@@ -119,8 +119,11 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
-	$plugins->run_hooks("admin_tools_maillogs_start");
-
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+		
 	$per_page = $mybb->settings['threadsperpage'];
 
 	if(!$per_page)
@@ -130,7 +133,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = intval($mybb->input['page']);
+		$mybb->input['page'] = $mybb->get_input('page', 1);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -140,6 +143,8 @@ if(!$mybb->input['action'])
 	}
 
 	$additional_criteria = array();
+
+	$plugins->run_hooks("admin_tools_maillogs_start");
 
 	// Filter form was submitted - play around with the values
 	if($mybb->request_method == "post")
@@ -163,11 +168,11 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$touid = intval($mybb->input['touid']);
+	$touid = (int)$mybb->input['touid'];
 	$toname = $db->escape_string($mybb->input['toname']);
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
-	$fromuid = intval($mybb->input['fromuid']);
+	$fromuid = (int)$mybb->input['fromuid'];
 	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 
@@ -393,7 +398,7 @@ if(!$mybb->input['action'])
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_logs, array("colspan" => "6"));
+		$table->construct_cell($lang->no_logs, array("colspan" => "7"));
 		$table->construct_row();
 		$table->output($lang->user_email_log);
 	}
