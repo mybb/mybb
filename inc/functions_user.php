@@ -725,5 +725,5 @@ function purgespammer_show($post_count, $usergroup, $uid)
 		return ($mybb->user['uid'] != $uid && is_member($mybb->settings['purgespammergroups']) && !is_super_admin($uid)
 			&& !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod']
 			&& (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0)
-			&& !is_member($bangroup, $uid) && $usergroups[$usergroup]['isbannedgroup'] != 1);
+			&& !is_member($bangroup, $uid) && !$usergroups[$usergroup]['isbannedgroup']);
 }
