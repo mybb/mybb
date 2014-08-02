@@ -17,8 +17,8 @@ if(!defined("IN_MYBB"))
 if($mybb->input['action'] == "do_graph")
 {
 	$range = array(
-		'start' => (int)$mybb->input['start'],
-		'end' => (int)$mybb->input['end']
+		'start' => intval($mybb->input['start']),
+		'end' => intval($mybb->input['end'])
 	);
 	create_graph($mybb->input['type'], $range);
 	die;
@@ -36,6 +36,8 @@ $plugins->run_hooks("admin_tools_statistics_begin");
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_statistics_overall_begin");
+
 	$query = $db->simple_select("stats", "COUNT(*) as total");
 	if($db->fetch_field($query, "total") == 0)
 	{
@@ -45,13 +47,11 @@ if(!$mybb->input['action'])
 
 	$per_page = 20;
 
-	$plugins->run_hooks("admin_tools_statistics_overall_begin");
-
 	// Do we have date range criteria?
 	if($mybb->input['from_year'])
 	{
-		$start_dateline = mktime(0, 0, 0, (int)$mybb->input['from_month'], (int)$mybb->input['from_day'], (int)$mybb->input['from_year']);
-		$end_dateline = mktime(23, 59, 59, (int)$mybb->input['to_month'], (int)$mybb->input['to_day'], (int)$mybb->input['to_year']);
+		$start_dateline = mktime(0, 0, 0, intval($mybb->input['from_month']), intval($mybb->input['from_day']), intval($mybb->input['from_year']));
+		$end_dateline = mktime(23, 59, 59, intval($mybb->input['to_month']), intval($mybb->input['to_day']), intval($mybb->input['to_year']));
 		$range = "&amp;start={$start_dateline}&amp;end={$end_dateline}";
 	}
 
@@ -71,7 +71,7 @@ if(!$mybb->input['action'])
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
-		$mybb->input['page'] = $mybb->get_input('page', 1);
+		$mybb->input['page'] = intval($mybb->input['page']);
 		$start = ($mybb->input['page']*$per_page)-$per_page;
 	}
 	else
@@ -80,7 +80,7 @@ if(!$mybb->input['action'])
 		$start = 0;
 	}
 
-	$query = $db->simple_select("stats", "*", "dateline >= '".(int)$start_dateline."' AND dateline <= '".(int)$end_dateline."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
+	$query = $db->simple_select("stats", "*", "dateline >= '".intval($start_dateline)."' AND dateline <= '".intval($end_dateline)."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
 
 	$stats = array();
 	while($stat = $db->fetch_array($query))
@@ -139,7 +139,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->users);
 	$table->construct_header($lang->threads);
 	$table->construct_header($lang->posts);
-	$query = $db->simple_select("stats", "*", "dateline >= '".(int)$start_dateline."' AND dateline <= '".(int)$end_dateline."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $per_page));
+	$query = $db->simple_select("stats", "*", "dateline >= '".intval($start_dateline)."' AND dateline <= '".intval($end_dateline)."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit_start' => $start, 'limit' => $per_page));
 	while($stat = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong>".date($mybb->settings['dateformat'], $stat['dateline'])."</strong>");
@@ -150,8 +150,8 @@ if(!$mybb->input['action'])
 	}
 	$table->output($lang->overall_statistics);
 
-	$url_range = "&amp;from_month=".(int)$mybb->input['from_month']."&amp;from_day=".(int)$mybb->input['from_day']."&amp;from_year=".(int)$mybb->input['from_year'];
-	$url_range .= "&amp;to_month=".(int)$mybb->input['to_month']."&amp;to_day=".(int)$mybb->input['to_day']."&amp;to_year=".(int)$mybb->input['to_year'];
+	$url_range = "&amp;from_month=".intval($mybb->input['from_month'])."&amp;from_day=".intval($mybb->input['from_day'])."&amp;from_year=".intval($mybb->input['from_year']);
+	$url_range .= "&amp;to_month=".intval($mybb->input['to_month'])."&amp;to_day=".intval($mybb->input['to_day'])."&amp;to_year=".intval($mybb->input['to_year']);
 
 	echo draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools-statistics{$url_range}&amp;page={page}");
 
@@ -167,7 +167,7 @@ function generate_growth_string($number)
 		return "";
 	}
 
-	$number = (int)$number;
+	$number = intval($number);
 	$friendly_number = my_number_format(abs($number));
 
 	if($number > 0)
@@ -193,8 +193,8 @@ function create_graph($type, $range=null)
 	// Do we have date range criteria?
 	if($range['end'] || $range['start'])
 	{
-		$start = (int)$range['start'];
-		$end = (int)$range['end'];
+		$start = intval($range['start']);
+		$end = intval($range['end']);
 	}
 	// Otherwise default to the last 30 days
 	else
@@ -214,7 +214,7 @@ function create_graph($type, $range=null)
 	$points = $stats = $datelines = array();
 	if($start == 0)
 	{
-		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline <= '".(int)$end."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 2));
+		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline <= '".intval($end)."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 2));
 		while($stat = $db->fetch_array($query))
 		{
 			$stats[] = $stat['num'.$type];
@@ -227,7 +227,7 @@ function create_graph($type, $range=null)
 	}
 	elseif($end == 0)
 	{
-		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline >= '".(int)$start."'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 2));
+		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline >= '".intval($start)."'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 2));
 		while($stat = $db->fetch_array($query))
 		{
 			$stats[] = $stat['num'.$type];
@@ -240,7 +240,7 @@ function create_graph($type, $range=null)
 	}
 	else
 	{
-		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline >= '".(int)$start."' AND dateline <= '".(int)$end."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
+		$query = $db->simple_select("stats", "dateline,num{$type}", "dateline >= '".intval($start)."' AND dateline <= '".intval($end)."'", array('order_by' => 'dateline', 'order_dir' => 'asc'));
 		while($stat = $db->fetch_array($query))
 		{
 			$points[$stat['dateline']] = $stat['num'.$type];
@@ -271,3 +271,4 @@ function create_graph($type, $range=null)
 	$graph->render();
 	$graph->output();
 }
+?>

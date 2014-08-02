@@ -18,7 +18,7 @@ function user_exists($uid)
 {
 	global $db;
 
-	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".(int)$uid."'", array('limit' => 1));
+	$query = $db->simple_select("users", "COUNT(*) as user", "uid='".intval($uid)."'", array('limit' => 1));
 	if($db->fetch_field($query, 'user') == 1)
 	{
 		return true;
@@ -89,7 +89,7 @@ function validate_password_from_uid($uid, $password, $user = array())
 	}
 	if(!$user['password'])
 	{
-		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".(int)$uid."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid,username,password,salt,loginkey,usergroup", "uid='".intval($uid)."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 	}
 	if(!$user['salt'])
@@ -262,14 +262,14 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 		return;
 	}
 
-	$query = $db->simple_select("threadsubscriptions", "*", "tid='".(int)$tid."' AND uid='".(int)$uid."'", array('limit' => 1));
+	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'", array('limit' => 1));
 	$subscription = $db->fetch_array($query);
 	if(!$subscription['tid'])
 	{
 		$insert_array = array(
-			'uid' => (int)$uid,
-			'tid' => (int)$tid,
-			'notification' => (int)$notification,
+			'uid' => intval($uid),
+			'tid' => intval($tid),
+			'notification' => intval($notification),
 			'dateline' => TIME_NOW,
 			'subscriptionkey' => md5(TIME_NOW.$uid.$tid)
 
@@ -280,7 +280,7 @@ function add_subscribed_thread($tid, $notification=1, $uid="")
 	{
 		// Subscription exists - simply update notification
 		$update_array = array(
-			"notification" => (int)$notification
+			"notification" => intval($notification)
 		);
 		$db->update_query("threadsubscriptions", $update_array, "uid='{$uid}' AND tid='{$tid}'");
 	}
@@ -335,8 +335,8 @@ function add_subscribed_forum($fid, $uid="")
 		return;
 	}
 
-	$fid = (int)$fid;
-	$uid = (int)$uid;
+	$fid = intval($fid);
+	$uid = intval($uid);
 
 	$query = $db->simple_select("forumsubscriptions", "*", "fid='".$fid."' AND uid='{$uid}'", array('limit' => 1));
 	$fsubscription = $db->fetch_array($query);
@@ -593,12 +593,12 @@ function update_pm_count($uid=0, $count_to_update=7)
 	global $db, $mybb;
 
 	// If no user id, assume that we mean the current logged in user.
-	if((int)$uid == 0)
+	if(intval($uid) == 0)
 	{
 		$uid = $mybb->user['uid'];
 	}
 
-	$uid = (int)$uid;
+	$uid = intval($uid);
 	$pmcount = array();
 	if($uid == 0)
 	{
@@ -724,3 +724,4 @@ function purgespammer_show($post_count, $usergroup)
 
 		return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
 }
+?>

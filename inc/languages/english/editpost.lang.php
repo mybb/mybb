@@ -52,3 +52,4 @@ $l['thread_restored'] = "Restored Thread";
 $l['post_restored'] = "Restored Post";
 
 $l['error_already_deleted'] = 'The selected post has already been deleted.';
+?>

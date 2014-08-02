@@ -17,7 +17,7 @@ var inlineEditor = {
 
 			$(this).editable("xmlhttp.php?action=edit_subject&my_post_key=" + my_post_key + "&tid=" + tid,
 			{
-				indicator: '<img src="'+spinner_image+'">',
+				indicator: "<img src='images/spinner.gif'>",
 				type: "text",
 				submit: '',
 				cancel: '',

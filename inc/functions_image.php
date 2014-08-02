@@ -230,8 +230,8 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
  */
 function scale_image($width, $height, $maxwidth, $maxheight)
 {
-	$width = (int)$width;
-	$height = (int)$height;
+	$width = intval($width);
+	$height = intval($height);
 
 	if(!$width) $width = $maxwidth;
 	if(!$height) $height = $maxheight;
@@ -255,3 +255,4 @@ function scale_image($width, $height, $maxwidth, $maxheight)
 	$ret['height'] = $newheight;
 	return $ret;
 }
+?>

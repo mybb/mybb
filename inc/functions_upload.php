@@ -19,7 +19,7 @@
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb, $plugins;
-	$aid = (int)$aid;
+	$aid = intval($aid);
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
 	{
@@ -340,8 +340,8 @@ function upload_avatar($avatar=array(), $uid=0)
 
 	$ret = array(
 		"avatar" => $mybb->settings['avataruploadpath']."/".$filename,
-		"width" => (int)$img_dimensions[0],
-		"height" => (int)$img_dimensions[1]
+		"width" => intval($img_dimensions[0]),
+		"height" => intval($img_dimensions[1])
 	);
 	$ret = $plugins->run_hooks("upload_avatar_end", $ret);
 	return $ret;
@@ -359,7 +359,7 @@ function upload_attachment($attachment, $update_attachment=false)
 	global $mybb, $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 
 	$posthash = $db->escape_string($mybb->get_input('posthash'));
-	$pid = (int)$pid;
+	$pid = intval($pid);
 
 	if(isset($attachment['error']) && $attachment['error'] != 0)
 	{
@@ -531,7 +531,7 @@ function upload_attachment($attachment, $update_attachment=false)
 		"uid" => $mybb->user['uid'],
 		"filename" => $db->escape_string($file['original_filename']),
 		"filetype" => $db->escape_string($file['type']),
-		"filesize" => (int)$file['size'],
+		"filesize" => intval($file['size']),
 		"attachname" => $filename,
 		"downloads" => 0,
 		"dateuploaded" => TIME_NOW
@@ -608,7 +608,7 @@ function upload_attachment($attachment, $update_attachment=false)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forumpermissions['modattachments'] == 1 && !is_moderator($forum['fid'], "canapproveunapproveattachs"))
+	if($forumpermissions['modattachments'] == 1)
 	{
 		$attacharray['visible'] = 0;
 	}
@@ -769,3 +769,4 @@ function upload_file($file, $path, $filename="")
 
 	return $upload;
 }
+?>

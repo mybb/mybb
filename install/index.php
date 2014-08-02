@@ -1778,41 +1778,6 @@ function configure()
 	global $output, $mybb, $errors, $lang;
 
 	$output->print_header($lang->board_config, 'config');
-	
-	echo <<<EOF
-		<script type="text/javascript">	
-		function warnUser(inp, warn)
-		{
-			var parenttr = $('#'+inp.id).closest('tr');
-			if(inp.value != inp.defaultValue)
-			{
-				if(!parenttr.next('.setting_peeker').length)
-				{
-					var revertlink = ' <a href="javascript:revertSetting(\''+inp.defaultValue+'\', \'#'+inp.id+'\');">{$lang->config_step_revert}</a>';
-					parenttr.removeClass('last').after('<tr class="setting_peeker"><td colspan="2">'+warn+revertlink+'</td></tr>');
-				}
-			} else {
-				parenttr.next('.setting_peeker').remove();
-				if(parenttr.is(':last-child'))
-				{
-					parenttr.addClass('last');
-				}
-			}
-		}
-			
-		function revertSetting(defval, inpid)
-		{
-			$(inpid).val(defval);			
-			var parenttr = $(inpid).closest('tr');
-			parenttr.next('.setting_peeker').remove();
-			if(parenttr.is(':last-child'))
-			{
-				parenttr.addClass('last');
-			}			
-		}
-		</script>
-		
-EOF;
 
 	// If board configuration errors
 	if(is_array($errors))
@@ -1929,26 +1894,6 @@ function create_admin_user()
 		}
 	}
 	$output->print_header($lang->create_admin, 'admin');
-	
-	echo <<<EOF
-		<script type="text/javascript">	
-		function comparePass()
-		{
-			var parenttr = $('#adminpass2').closest('tr');
-			var passval = $('#adminpass2').val();
-			if(passval && passval != $('#adminpass').val())
-			{
-				if(!parenttr.next('.pass_peeker').length)
-				{
-					parenttr.removeClass('last').after('<tr class="pass_peeker"><td colspan="2">{$lang->admin_step_nomatch}</td></tr>');
-				}
-			} else {
-				parenttr.addClass('last').next('.pass_peeker').remove();
-			}
-		}
-		</script>
-		
-EOF;
 
 	if(is_array($errors))
 	{
@@ -1978,7 +1923,7 @@ EOF;
 				'name' => $db->escape_string($settinggroup['attributes']['name']),
 				'title' => $db->escape_string($settinggroup['attributes']['title']),
 				'description' => $db->escape_string($settinggroup['attributes']['description']),
-				'disporder' => (int)$settinggroup['attributes']['disporder'],
+				'disporder' => intval($settinggroup['attributes']['disporder']),
 				'isdefault' => $settinggroup['attributes']['isdefault'],
 			);
 			$gid = $db->insert_query('settinggroups', $groupdata);
@@ -1991,7 +1936,7 @@ EOF;
 					'description' => $db->escape_string($setting['description'][0]['value']),
 					'optionscode' => $db->escape_string($setting['optionscode'][0]['value']),
 					'value' => $db->escape_string($setting['settingvalue'][0]['value']),
-					'disporder' => (int)$setting['disporder'][0]['value'],
+					'disporder' => intval($setting['disporder'][0]['value']),
 					'gid' => $gid,
 					'isdefault' => 1
 				);
@@ -2099,14 +2044,14 @@ EOF;
 			$new_view = array(
 				"uid" => 0,
 				"type" => $db->escape_string($view['attributes']['type']),
-				"visibility" => (int)$view['attributes']['visibility'],
+				"visibility" => intval($view['attributes']['visibility']),
 				"title" => $db->escape_string($view['title'][0]['value']),
 				"fields" => $db->escape_string(serialize($fields)),
 				"conditions" => $db->escape_string(serialize($conditions)),
 				"custom_profile_fields" => $db->escape_string(serialize($custom_profile_fields)),
 				"sortby" => $db->escape_string($view['sortby'][0]['value']),
 				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
-				"perpage" => (int)$view['perpage'][0]['value'],
+				"perpage" => intval($view['perpage'][0]['value']),
 				"view_type" => $db->escape_string($view['view_type'][0]['value'])
 			);
 			$db->insert_query("adminviews", $new_view);
@@ -2283,7 +2228,7 @@ function install_done()
 		}
 
 		$adminoptiondata = array(
-			'uid' => (int)$uid,
+			'uid' => intval($uid),
 			'cpstyle' => '',
 			'notes' => '',
 			'permissions' => $db->escape_string(serialize($insertmodule)),
@@ -2327,7 +2272,6 @@ function install_done()
 	$cache->update_moderators();
 	$cache->update_usertitles();
 	$cache->update_reportedcontent();
-	$cache->update_awaitingactivation();
 	$cache->update_mycode();
 	$cache->update_profilefields();
 	$cache->update_posticons();

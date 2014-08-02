@@ -102,7 +102,7 @@ function build_postbit($post, $post_type=0)
 		default: // Regular post
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
-			$id = (int)$post['pid'];
+			$id = intval($post['pid']);
 			$idtype = 'pid';
 			$parser_options['allow_html'] = $forum['allowhtml'];
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
@@ -131,7 +131,7 @@ function build_postbit($post, $post_type=0)
 	{ // Used to show the # of the post
 		if($page > 1)
 		{
-			if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+			if(!$mybb->settings['postsperpage'])
 			{
 				$mybb->settings['postsperpage'] = 20;
 			}
@@ -331,7 +331,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['button_rep'] = '';
-		if($post_type != 3 && $mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'])
+		if($mybb->settings['enablereputation'] == 1 && $mybb->settings['postrep'] == 1 && $mybb->usergroup['cangivereputations'] == 1 && $usergroup['usereputationsystem'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']) && $post['uid'] != $mybb->user['uid'])
 		{
 			if(!$post['pid'])
 			{
@@ -341,7 +341,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
 		}
 
-		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1)
+		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $mybb->usergroup['canchangewebsite'] == 1)
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
 			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
@@ -716,7 +716,7 @@ function build_postbit($post, $post_type=0)
 		get_post_attachments($id, $post);
 	}
 
-	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
+	if(isset($post['includesig']) && $post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -922,3 +922,4 @@ function get_post_attachments($id, &$post)
 		}
 	}
 }
+?>

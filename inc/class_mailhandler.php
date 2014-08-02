@@ -335,7 +335,7 @@ class MailHandler
 			"dateline" => TIME_NOW,
 			"error" => $db->escape_string($error),
 			"smtperror" => $db->escape_string($this->data),
-			"smtpcode" => (int)$this->code
+			"smtpcode" => intval($this->code)
 		);
 		$db->insert_query("mailerrors", $mail_error);
 
@@ -408,3 +408,4 @@ class MailHandler
 		return $string;
 	}
 }
+?>

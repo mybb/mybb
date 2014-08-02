@@ -406,3 +406,4 @@ function upgrade1_dbchanges3()
 	$output->print_contents("$contents<p>Please click next to continue with the upgrade process.</p>");
 	$output->print_footer("1_done");
 }
+?>

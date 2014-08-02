@@ -62,3 +62,4 @@ $l['ban_user'] = "Ban User";
 $l['update_ban'] = "Update Ban";
 $l['search_user'] = 'Search User';
 
+?>

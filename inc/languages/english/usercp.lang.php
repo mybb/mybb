@@ -423,3 +423,4 @@ $l['buddyrequest_declined'] = 'The selected buddy request has been declined.';
 $l['user_doesnt_exist'] = 'The end user no longer exists.';
 $l['buddyrequests_sent_success'] = 'Buddy requests sent successfully.';
 
+?>

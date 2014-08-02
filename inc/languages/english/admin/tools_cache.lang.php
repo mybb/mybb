@@ -20,3 +20,4 @@ $l['error_no_cache_specified'] = "You did not specify a cache to view.";
 $l['success_cache_rebuilt'] = "The cache has been rebuilt successfully.";
 $l['success_cache_reloaded'] = "The cache has been reloaded successfully.";
 
+?>

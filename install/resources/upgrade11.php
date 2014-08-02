@@ -71,3 +71,4 @@ var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', $template['template'
 	$output->print_footer("11_done");
 }
 
+?>

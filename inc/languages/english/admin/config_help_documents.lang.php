@@ -58,3 +58,4 @@ $l['success_document_deleted'] = "The selected help document has been deleted su
 $l['confirm_section_deletion'] = "Are you sure you wish to delete this section?";
 $l['confirm_document_deletion'] = "Are you sure you wish to delete this document?";
 
+?>

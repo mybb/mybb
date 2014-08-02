@@ -21,7 +21,9 @@ $plugins->run_hooks("admin_tools_warninglog_begin");
 // Revoke a warning
 if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("warnings", "*", "wid='".(int)$mybb->input['wid']."'");
+	$plugins->run_hooks("admin_tools_warninglog_do_revoke");
+
+	$query = $db->simple_select("warnings", "*", "wid='".intval($mybb->input['wid'])."'");
 	$warning = $db->fetch_array($query);
 
 	if(!$warning['wid'])
@@ -36,8 +38,6 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	}
 
 	$user = get_user($warning['uid']);
-
-	$plugins->run_hooks("admin_tools_warninglog_do_revoke");
 
 	if(!trim($mybb->input['reason']))
 	{
@@ -81,13 +81,15 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 // Detailed view of a warning
 if($mybb->input['action'] == "view")
 {
+	$plugins->run_hooks("admin_tools_warninglog_view");
+
 	$query = $db->query("
 		SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
 		FROM ".TABLE_PREFIX."warnings w
 		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
-		WHERE w.wid='".(int)$mybb->input['wid']."'
+		WHERE w.wid='".intval($mybb->input['wid'])."'
 	");
 	$warning = $db->fetch_array($query);
 
@@ -97,9 +99,7 @@ if($mybb->input['action'] == "view")
 		admin_redirect("index.php?module=tools-warninglog");
 	}
 
-	$user = get_user((int)$warning['uid']);
-
-	$plugins->run_hooks("admin_tools_warninglog_view");
+	$user = get_user(intval($warning['uid']));
 
 	$page->add_breadcrumb_item($lang->warning_details, "index.php?module=tools-warninglog&amp;action=view&amp;wid={$warning['wid']}");
 
@@ -252,7 +252,7 @@ if(!$mybb->input['action'])
 	}
 	if($mybb->input['filter']['uid'])
 	{
-		$search['uid'] = (int)$mybb->input['filter']['uid'];
+		$search['uid'] = intval($mybb->input['filter']['uid']);
 		$where_sql .= " AND w.uid='{$search['uid']}'";
 		if(!isset($mybb->input['search']['username']))
 		{
@@ -268,7 +268,7 @@ if(!$mybb->input['action'])
 	}
 	if($mybb->input['filter']['mod_uid'])
 	{
-		$search['mod_uid'] = (int)$mybb->input['filter']['mod_uid'];
+		$search['mod_uid'] = intval($mybb->input['filter']['mod_uid']);
 		$where_sql .= " AND w.issuedby='{$search['mod_uid']}'";
 		if(!isset($mybb->input['search']['mod_username']))
 		{
@@ -327,14 +327,14 @@ if(!$mybb->input['action'])
 	$query = $db->query($sql);
 	$total_warnings = $db->fetch_field($query, 'count');
 	$view_page = 1;
-	if(isset($mybb->input['page']) && $mybb->get_input('page', 1) > 0)
+	if(isset($mybb->input['page']) && intval($mybb->input['page']) > 0)
 	{
-		$view_page = $mybb->get_input('page', 1);
+		$view_page = intval($mybb->input['page']);
 	}
 	$per_page = 20;
-	if(isset($mybb->input['filter']['per_page']) && (int)$mybb->input['filter']['per_page'] > 0)
+	if(isset($mybb->input['filter']['per_page']) && intval($mybb->input['filter']['per_page']) > 0)
 	{
-		$per_page = (int)$mybb->input['filter']['per_page'];
+		$per_page = intval($mybb->input['filter']['per_page']);
 	}
 	$start = ($view_page-1) * $per_page;
 	// Build the base URL for pagination links
@@ -470,3 +470,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+?>

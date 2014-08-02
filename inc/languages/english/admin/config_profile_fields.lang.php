@@ -73,3 +73,4 @@ $l['success_profile_field_saved'] = "The custom profile field has been saved suc
 $l['success_profile_field_deleted'] = "The selected custom profile field has been deleted successfully.";
 
 $l['confirm_profile_field_deletion'] = "Are you sure you wish to delete this profile field?";
+?>

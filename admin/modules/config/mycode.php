@@ -26,7 +26,9 @@ if($mybb->input['action'] == "toggle_status")
 		admin_redirect("index.php?module=config-mycode");
 	}
 
-	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
+	$plugins->run_hooks("admin_config_mycode_toggle_status");
+
+	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -34,8 +36,6 @@ if($mybb->input['action'] == "toggle_status")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
-
-	$plugins->run_hooks("admin_config_mycode_toggle_status");
 
 	if($mycode['active'] == 1)
 	{
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "toggle_status")
 		'active' => $new_status,
 	);
 
-	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', 1)."'");
+	$db->update_query("mycode", $mycode_update, "cid='".intval($mybb->input['cid'])."'");
 
 	$cache->update_mycode();
 
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => (int)$mybb->input['parseorder']
+				'parseorder' => intval($mybb->input['parseorder'])
 			);
 
 			$cid = $db->insert_query("mycode", $new_mycode);
@@ -203,7 +203,9 @@ $(function(){
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
+	$plugins->run_hooks("admin_config_mycode_edit");
+
+	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -211,8 +213,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
-
-	$plugins->run_hooks("admin_config_mycode_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -245,10 +245,10 @@ if($mybb->input['action'] == "edit")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => (int)$mybb->input['parseorder']
+				'parseorder' => intval($mybb->input['parseorder'])
 			);
 
-			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', 1)."'");
+			$db->update_query("mycode", $updated_mycode, "cid='".intval($mybb->input['cid'])."'");
 
 			$cache->update_mycode();
 
@@ -328,7 +328,9 @@ $(function(){
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("mycode", "*", "cid='".$mybb->get_input('cid', 1)."'");
+	$plugins->run_hooks("admin_config_mycode_delete");
+
+	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 
 	if(!$mycode['cid'])
@@ -336,8 +338,6 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_mycode, 'error');
 		admin_redirect("index.php?module=config-mycode");
 	}
-
-	$plugins->run_hooks("admin_config_mycode_delete");
 
 	// User clicked no
 	if($mybb->input['no'])
@@ -435,3 +435,4 @@ function test_regex($regex, $replacement, $test)
 	$array['html'] = htmlspecialchars_uni($array['actual']);
 	return $array;
 }
+?>

@@ -331,3 +331,4 @@ function parse_php_info()
 	return $modules;
 }
 
+?>

@@ -13,10 +13,10 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
 
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post,search_results_icon,search_forumlist_forum,search_forumlist";
-$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
+$templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
 $templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple";
+$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,multipage_prevpage,post_prefixselect_prefix,post_prefixselect_multiple";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -48,9 +48,9 @@ $now = TIME_NOW;
 $mybb->input['keywords'] = trim($mybb->get_input('keywords'));
 
 $limitsql = "";
-if((int)$mybb->settings['searchhardlimit'] > 0)
+if(intval($mybb->settings['searchhardlimit']) > 0)
 {
-	$limitsql = "LIMIT ".(int)$mybb->settings['searchhardlimit'];
+	$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
 }
 
 if($mybb->input['action'] == "results")
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "results")
 		$oppsort = $lang->desc;
 	}
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	if(!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "results")
 			}
 			$folder .= "folder";
 
-			if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+			if(!$mybb->settings['postsperpage'])
 			{
 				$mybb->settings['postsperpage'] = 20;
 			}
@@ -651,8 +651,8 @@ if($mybb->input['action'] == "results")
 		{
 			// If user has moderation tools available, prepare the Select All feature
 			$lang->page_selected = $lang->sprintf($lang->page_selected, count($thread_cache));
-			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
-			$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
+			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($threadcount));
+			$lang->select_all = $lang->sprintf($lang->select_all, intval($threadcount));
 			eval("\$selectall = \"".$templates->get("search_threads_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = '';
@@ -720,9 +720,9 @@ if($mybb->input['action'] == "results")
 		}
 
 		$post_cache_options = array();
-		if((int)$mybb->settings['searchhardlimit'] > 0)
+		if(intval($mybb->settings['searchhardlimit']) > 0)
 		{
-			$post_cache_options['limit'] = (int)$mybb->settings['searchhardlimit'];
+			$post_cache_options['limit'] = intval($mybb->settings['searchhardlimit']);
 		}
 
 		if(strpos($sortfield, 'p.') !== false)
@@ -1016,9 +1016,9 @@ if($mybb->input['action'] == "results")
 		{
 			// If user has moderation tools available, prepare the Select All feature
 			$num_results = $db->num_rows($query);
-			$lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
-			$lang->select_all = $lang->sprintf($lang->select_all, (int)$postcount);
-			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
+			$lang->page_selected = $lang->sprintf($lang->page_selected, intval($num_results));
+			$lang->select_all = $lang->sprintf($lang->select_all, intval($postcount));
+			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($postcount));
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 
 			$customthreadtools = $customposttools = '';
@@ -1090,7 +1090,7 @@ elseif($mybb->input['action'] == "findguest")
 	// Do we have a hard search limit?
 	if($mybb->settings['searchhardlimit'] > 0)
 	{
-		$options['limit'] = (int)$mybb->settings['searchhardlimit'];
+		$options['limit'] = intval($mybb->settings['searchhardlimit']);
 	}
 
 	$pids = '';
@@ -1167,7 +1167,7 @@ elseif($mybb->input['action'] == "finduser")
 	// Do we have a hard search limit?
 	if($mybb->settings['searchhardlimit'] > 0)
 	{
-		$options['limit'] = (int)$mybb->settings['searchhardlimit'];
+		$options['limit'] = intval($mybb->settings['searchhardlimit']);
 	}
 
 	$pids = '';
@@ -1255,7 +1255,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 elseif($mybb->input['action'] == "getnew")
 {
 
-	$where_sql = "t.lastpost >= '".(int)$mybb->user['lastvisit']."'";
+	$where_sql = "t.lastpost >= '".intval($mybb->user['lastvisit'])."'";
 
 	if($mybb->get_input('fid', 1))
 	{
@@ -1266,7 +1266,7 @@ elseif($mybb->input['action'] == "getnew")
 		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
-			$fids[$key] = (int)$fid;
+			$fids[$key] = intval($fid);
 		}
 
 		if(!empty($fids))
@@ -1343,7 +1343,7 @@ elseif($mybb->input['action'] == "getdaily")
 		$fids = explode(',', $mybb->get_input('fids'));
 		foreach($fids as $key => $fid)
 		{
-			$fids[$key] = (int)$fid;
+			$fids[$key] = intval($fid);
 		}
 
 		if(!empty($fids))
@@ -1632,3 +1632,4 @@ else
 	output_page($search);
 }
 
+?>

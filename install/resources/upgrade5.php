@@ -535,8 +535,8 @@ function upgrade5_lastposts()
 
 		$query = $db->simple_select("threads", "COUNT(*) as num_threads", "closed NOT LIKE 'moved|%'");
 		$num_threads = $db->fetch_field($query, 'num_threads');
-		$tpp = (int)$_POST['tpp'];
-		$start = (int)$_POST['start'];
+		$tpp = intval($_POST['tpp']);
+		$start = intval($_POST['start']);
 		$end = $start+$tpp;
 		if($end > $num_threads)
 		{
@@ -618,3 +618,4 @@ function upgrade5_indexes()
 	$output->print_contents($contents);
 	$output->print_footer("5_done");
 }
+?>

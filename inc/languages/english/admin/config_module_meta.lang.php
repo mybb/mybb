@@ -43,3 +43,4 @@ $l['can_manage_mod_tools'] = "Can manage moderator tools?";
 $l['can_manage_thread_prefixes'] = "Can manage thread prefixes?";
 $l['can_manage_security_questions'] = "Can manage security questions?";
 
+?>

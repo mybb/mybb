@@ -14,3 +14,4 @@ $l['error_status_missmatch'] = 'The status from server mismatches expected resul
 $l['error_data_not_sent'] = 'This data could not be sent to server: ';
 
 $l['error_occurred'] = 'One or more errors have occurred. Please correct the following errors before continuing.<br />';
+?>

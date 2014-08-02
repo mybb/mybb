@@ -459,3 +459,4 @@ class captcha
 		return $req;
 	}
 }
+?>

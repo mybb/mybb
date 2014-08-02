@@ -84,7 +84,7 @@ function upgrade12_dbchanges()
 
 	$next_act = "12_dbchanges";
 
-	$start = (int)$mybb->input['start'];
+	$start = intval($mybb->input['start']);
 	$count = $mybb->input['count'];
 
 	foreach($to_int as $table => $columns)
@@ -1262,13 +1262,13 @@ function upgrade12_dbchanges5()
 		$new_view = array(
 			"uid" => 0,
 			"type" => $db->escape_string($view['attributes']['type']),
-			"visibility" => (int)$view['attributes']['visibility'],
+			"visibility" => intval($view['attributes']['visibility']),
 			"title" => $db->escape_string($view['title'][0]['value']),
 			"fields" => $db->escape_string(serialize($fields)),
 			"conditions" => $db->escape_string(serialize($conditions)),
 			"sortby" => $db->escape_string($view['sortby'][0]['value']),
 			"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
-			"perpage" => (int)$view['perpage'][0]['value'],
+			"perpage" => intval($view['perpage'][0]['value']),
 			"view_type" => $db->escape_string($view['view_type'][0]['value'])
 		);
 		$db->insert_query("adminviews", $new_view);
@@ -1567,12 +1567,12 @@ function upgrade12_dbchanges7()
 		// Have we already converted this ip?
 		if(!$user['longregip'])
 		{
-			$update_array['longregip'] = (int)my_ip2long($user['regip']);
+			$update_array['longregip'] = intval(my_ip2long($user['regip']));
 		}
 
 		if(!$user['longlastip'])
 		{
-			$update_array['longlastip'] = (int)my_ip2long($user['lastip']);
+			$update_array['longlastip'] = intval(my_ip2long($user['lastip']));
 		}
 
 		if(!empty($update_array))
@@ -1990,3 +1990,4 @@ function upgrade12_redothemes()
 
 	$output->print_footer("12_done");
 }
+?>

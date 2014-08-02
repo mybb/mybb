@@ -91,7 +91,7 @@ if($mybb->input['action'] == 'add_prefix')
 					$checked = array();
 					foreach($mybb->input['forum_1_forums'] as $fid)
 					{
-						$checked[] = (int)$fid;
+						$checked[] = intval($fid);
 					}
 
 					$new_prefix['forums'] = implode(',', $checked);
@@ -109,7 +109,7 @@ if($mybb->input['action'] == 'add_prefix')
 					$checked = array();
 					foreach($mybb->input['group_1_groups'] as $gid)
 					{
-						$checked[] = (int)$gid;
+						$checked[] = intval($gid);
 					}
 
 					$new_prefix['groups'] = implode(',', $checked);
@@ -228,14 +228,14 @@ if($mybb->input['action'] == 'add_prefix')
 
 if($mybb->input['action'] == 'edit_prefix')
 {
+	$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_start');
+
 	$prefix = build_prefixes($mybb->input['pid']);
 	if(!$prefix['pid'])
 	{
 		flash_message($lang->error_invalid_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
-
-	$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_start');
 
 	if($mybb->request_method == 'post')
 	{
@@ -293,7 +293,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					$checked = array();
 					foreach($mybb->input['forum_1_forums'] as $fid)
 					{
-						$checked[] = (int)$fid;
+						$checked[] = intval($fid);
 					}
 
 					$update_prefix['forums'] = implode(',', $checked);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == 'edit_prefix')
 					$checked = array();
 					foreach($mybb->input['group_1_groups'] as $gid)
 					{
-						$checked[] = (int)$gid;
+						$checked[] = intval($gid);
 					}
 
 					$update_prefix['groups'] = implode(',', $checked);
@@ -461,6 +461,8 @@ if($mybb->input['action'] == 'edit_prefix')
 
 if($mybb->input['action'] == 'delete_prefix')
 {
+	$plugins->run_hooks('admin_config_thread_prefixes_delete_prefix');
+
 	$prefix = build_prefixes($mybb->input['pid']);
 	if(!$prefix['pid'])
 	{
@@ -473,8 +475,6 @@ if($mybb->input['action'] == 'delete_prefix')
 	{
 		admin_redirect('index.php?module=config-thread_prefixes');
 	}
-
-	$plugins->run_hooks('admin_config_thread_prefixes_delete_prefix');
 
 	if($mybb->request_method == 'post')
 	{
@@ -533,3 +533,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+?>

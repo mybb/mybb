@@ -32,3 +32,4 @@ $l['eventdata_invalid_repeat_year_interval'] = "You have entered an invalid year
 $l['eventdata_event_wont_occur'] = "Using the start and end times along with the event repetition settings, this event won't occur.";
 
 $l['eventdata_no_permission_private_event'] = "You do not have permission to post private events.";
+?>

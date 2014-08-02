@@ -658,15 +658,6 @@ $tables[] = "CREATE TABLE mybb_smilies (
 	showclickable tinyint(1) NOT NULL default '0'
 );";
 
-$tables[] = "CREATE TABLE mybb_spamlog (
-		sid INTEGER PRIMARY KEY,
-		username varchar(120) NOT NULL DEFAULT '',
-		email varchar(220) NOT NULL DEFAULT '',
-		ipaddress blob(16) NOT NULL default ''
-		dateline int unsigned NOT NULL default '0' PRIMARY KEY,
-		data TEXT NOT NULL
-	) ENGINE=MyISAM;";
-
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid INTEGER PRIMARY KEY,
 	name varchar(100) NOT NULL default '',
@@ -878,7 +869,6 @@ $tables[] = "CREATE TABLE mybb_usergroups (
 	canratemembers tinyint(1) NOT NULL default '0',
 	canchangename tinyint(1) NOT NULL default '0',
 	canbereported tinyint(1) NOT NULL default '0',
-	canchangewebsite tinyint(1) NOT NULL default '1',
 	showforumteam tinyint(1) NOT NULL default '0',
 	usereputationsystem tinyint(1) NOT NULL default '0',
 	cangivereputations tinyint(1) NOT NULL default '0',
@@ -1036,4 +1026,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	notes TEXT NOT NULL
 );";
 
-
+?>

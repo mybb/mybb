@@ -43,8 +43,8 @@ function task_userpruning($task)
 
 		// Exclude super admins
 		$exclude_super_admins = not_super_admins(true);
-		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneregistered']*24*60*60);
-		$query = $db->simple_select("users", "uid", "regdate <= ".(int)$regdate." AND postnum <= ".(int)$mybb->settings['prunepostcount']." AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")".$exclude_super_admins);
+		$regdate = TIME_NOW-(intval($mybb->settings['dayspruneregistered'])*24*60*60);
+		$query = $db->simple_select("users", "uid", "regdate <= ".intval($regdate)." AND postnum <= ".intval($mybb->settings['prunepostcount'])." AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")".$exclude_super_admins);
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['uid']] = $user['uid'];
@@ -54,8 +54,8 @@ function task_userpruning($task)
 	// Are we pruning unactivated users?
 	if($mybb->settings['pruneunactived'] == 1)
 	{
-		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneunactivated']*24*60*60);
-		$query = $db->simple_select("users", "uid", "regdate <= ".(int)$regdate." AND usergroup='5'");
+		$regdate = TIME_NOW-(intval($mybb->settings['dayspruneunactivated'])*24*60*60);
+		$query = $db->simple_select("users", "uid", "regdate <= ".intval($regdate)." AND usergroup='5'");
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['uid']] = $user['uid'];
@@ -84,3 +84,4 @@ function task_userpruning($task)
 
 	add_task_log($task, $lang->task_userpruning_ran);
 }
+?>

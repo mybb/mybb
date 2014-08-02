@@ -11,3 +11,4 @@ $l['posted_by'] = "Posted By:";
 $l['on'] = "on";
 $l['portal'] = "Portal";
 
+?>

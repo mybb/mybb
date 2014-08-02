@@ -20,7 +20,7 @@ $templatelist .= ",member_profile_email,member_profile_offline,member_profile_re
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
+$templatelist .= ",member_register_question,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	$coppauser = 0;
 	if(isset($mybb->cookies['coppauser']))
 	{
-		$coppauser = (int)$mybb->cookies['coppauser'];
+		$coppauser = intval($mybb->cookies['coppauser']);
 	}
 
 	// Set the data for the new user.
@@ -195,34 +195,6 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
-	}
-
-	if($mybb->settings['enablestopforumspam_on_register'])
-	{
-		require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
-
-		$stop_forum_spam_checker = new StopForumSpamChecker(
-			$plugins,
-			$mybb->settings['stopforumspam_min_weighting_before_spam'],
-			$mybb->settings['stopforumspam_check_usernames'],
-			$mybb->settings['stopforumspam_check_emails'],
-			$mybb->settings['stopforumspam_check_ips'],
-			$mybb->settings['stopforumspam_log_blocks']
-		);
-
-		try {
-			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
-			{
-				error($lang->error_stop_forum_spam_spammer);
-			}
-		}
-		catch (Exception $e)
-		{
-			if($mybb->settings['stopforumspam_block_on_error'])
-			{
-				error($lang->error_stop_forum_spam_fetching);
-			}
-		}
 	}
 
 	if($mybb->settings['captchaimage'])
@@ -446,86 +418,6 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "admin")
 		{
-			$groups = $cache->read("usergroups");
-			$admingroups = array();
-			if(!empty($groups)) // Shouldn't be...
-			{
-				foreach($groups as $group)
-				{
-					if($group['cancp'] == 1)
-					{
-						$admingroups[] = (int)$group['gid'];
-					}
-				}
-			}
-
-			if(!empty($admingroups))
-			{
-				$sqlwhere = 'usergroup IN ('.implode(',', $admingroups).')';
-				foreach($admingroups as $admingroup)
-				{
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$sqlwhere .= " OR ','||additionalgroups||',' LIKE '%,{$admingroup},%'";
-							break;
-						default:
-							$sqlwhere .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$admingroup},%'";
-							break;
-					}
-				}
-				$q = $db->simple_select('users', 'uid,username,email,language', $sqlwhere);
-				while($recipient = $db->fetch_array($q))
-				{
-					// First we check if the user's a super admin: if yes, we don't care about permissions
-					$is_super_admin = is_super_admin($recipient['uid']);
-					if(!$is_super_admin)
-					{
-						// Include admin functions
-						if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
-						{
-							continue;
-						}
-
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-
-						// Verify if we have permissions to access user-users
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/user/module_meta.php";
-						if(function_exists("user_admin_permissions"))
-						{
-							// Get admin permissions
-							$adminperms = get_admin_permissions($recipient['uid']);
-
-							$permissions = user_admin_permissions();
-							if(array_key_exists('users', $permissions['permissions']) && $adminperms['user']['users'] != 1)
-							{
-								continue; // No permissions
-							}
-						}
-					}
-
-					// Load language
-					if($recipient['language'] != $mybb->user['language'] && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
-
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
-					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->user['language']);
-					$lang->load("member");
-				}
-			}
-
 			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -534,86 +426,6 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "both")
 		{
-			$groups = $cache->read("usergroups");
-			$admingroups = array();
-			if(!empty($groups)) // Shouldn't be...
-			{
-				foreach($groups as $group)
-				{
-					if($group['cancp'] == 1)
-					{
-						$admingroups[] = (int)$group['gid'];
-					}
-				}
-			}
-
-			if(!empty($admingroups))
-			{
-				$sqlwhere = 'usergroup IN ('.implode(',', $admingroups).')';
-				foreach($admingroups as $admingroup)
-				{
-					switch($db->type)
-					{
-						case 'pgsql':
-						case 'sqlite':
-							$sqlwhere .= " OR ','||additionalgroups||',' LIKE '%,{$admingroup},%'";
-							break;
-						default:
-							$sqlwhere .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$admingroup},%'";
-							break;
-					}
-				}
-				$q = $db->simple_select('users', 'uid,username,email,language', $sqlwhere);
-				while($recipient = $db->fetch_array($q))
-				{
-					// First we check if the user's a super admin: if yes, we don't care about permissions
-					$is_super_admin = is_super_admin($recipient['uid']);
-					if(!$is_super_admin)
-					{
-						// Include admin functions
-						if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
-						{
-							continue;
-						}
-
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-
-						// Verify if we have permissions to access user-users
-						require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/user/module_meta.php";
-						if(function_exists("user_admin_permissions"))
-						{
-							// Get admin permissions
-							$adminperms = get_admin_permissions($recipient['uid']);
-
-							$permissions = user_admin_permissions();
-							if(array_key_exists('users', $permissions['permissions']) && $adminperms['user']['users'] != 1)
-							{
-								continue; // No permissions
-							}
-						}
-					}
-
-					// Load language
-					if($recipient['language'] != $mybb->user['language'] && $lang->language_exists($recipient['language']))
-					{
-						$reset_lang = true;
-						$lang->set_language($recipient['language']);
-						$lang->load("member");
-					}
-
-					$subject = $lang->sprintf($lang->newregistration_subject, $mybb->settings['bbname']);
-					$message = $lang->sprintf($lang->newregistration_message, $recipient['username'], $mybb->settings['bbname'], $user['username']);
-					my_mail($recipient['email'], $subject, $message);
-				}
-
-				// Reset language
-				if(isset($reset_lang))
-				{
-					$lang->set_language($mybb->user['language']);
-					$lang->load("member");
-				}
-			}
-			
 			$activationcode = random_str();
 			$activationarray = array(
 				"uid" => $user_info['uid'],
@@ -663,8 +475,6 @@ if($mybb->input['action'] == "coppa_form")
 	{
 		$mybb->settings['faxno'] = "&nbsp;";
 	}
-
-	$plugins->run_hooks("member_coppa_form");
 
 	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
 	output_page($coppa_form);
@@ -814,13 +624,13 @@ if($mybb->input['action'] == "register")
 		{
 			if(isset($mybb->cookies['mybb']['referrer']))
 			{
-				$query = $db->simple_select("users", "uid,username", "uid='".(int)$mybb->cookies['mybb']['referrer']."'");
+				$query = $db->simple_select("users", "uid,username", "uid='".intval($mybb->cookies['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
 			elseif(isset($referrer))
 			{
-				$query = $db->simple_select("users", "username", "uid='".(int)$referrer['uid']."'");
+				$query = $db->simple_select("users", "username", "uid='".intval($referrer['uid'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}
@@ -1048,6 +858,15 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
+				
+				$validator_extra .= "
+				$(\"#{$id}\").rules(\"add\", {
+					required: true,
+					minlength: 1,
+					messages: {
+						required: \"{$lang->js_validator_not_empty}\"
+					}
+				});\n";
 
 				$code = '';
 				$select = '';
@@ -1100,7 +919,6 @@ if($mybb->input['action'] == "register")
 					// JS validator extra for our default CAPTCHA
 					$validator_extra .= "
 					$(\"#imagestring\").rules(\"add\", {
-						required: true,
 						remote:{
 							url: \"xmlhttp.php?action=validate_captcha\",
 							type: \"post\",
@@ -1133,35 +951,7 @@ if($mybb->input['action'] == "register")
 			if($db->num_rows($query) > 0)
 			{
 				$question = $db->fetch_array($query);
-
-				$refresh = '';
-				// Total questions
-				$q = $db->simple_select('questions', 'COUNT(qid) as num', 'active=1');
-				$num = $db->fetch_field($q, 'num');
-				if($num > 1)
-				{
-					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
-				}
-				
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
-				
-				$validator_extra .= "
-				$(\"#answer\").rules(\"add\", {
-					required: true,
-					remote:{
-						url: \"xmlhttp.php?action=validate_question\",
-						type: \"post\",
-						dataType: \"json\",
-						data:
-						{
-							question: $('#question_id').val(),
-							my_post_key: my_post_key
-						},
-					},
-					messages: {
-						remote: \"{$lang->js_validator_no_security_question}\"
-					}
-				});\n";
 			}
 		}
 
@@ -1182,7 +972,7 @@ if($mybb->input['action'] == "register")
 			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
-				
+				// TODO: $validator_extra .= "\tregValidator.register('password', 'ajax', {url:'xmlhttp.php?action=complex_password', loading_message:'{$lang->js_validator_password_complexity}'});\n";
 				$validator_extra .= "
 				$(\"#password\").rules(\"add\", {
 					required: true,
@@ -1392,8 +1182,6 @@ if($mybb->input['action'] == "resendactivation")
 		error($lang->error_activated_by_admin);
 	}
 
-	$plugins->run_hooks("member_resendactivation_end");
-
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
@@ -1578,7 +1366,7 @@ if($mybb->input['action'] == "resetpassword")
 		$username = $user['username'];
 
 		// Generate a new password, then update it
-		$password_length = (int)$mybb->settings['minpasswordlength'];
+		$password_length = intval($mybb->settings['minpasswordlength']);
 
 		if($password_length < 8)
 		{
@@ -1673,7 +1461,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$errors = $loginhandler->get_friendly_errors();
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount'])
+		if($mybb->settings['failedcaptchalogincount'] > 0 && intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount'])
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;
@@ -1804,9 +1592,6 @@ if($mybb->input['action'] == "login")
 		default:
 			break;
 	}
-
-	$plugins->run_hooks("member_login_end");
-
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	output_page($login);
 }
@@ -1843,7 +1628,6 @@ if($mybb->input['action'] == "logout")
 	}
 
 	$plugins->run_hooks("member_logout_end");
-
 	redirect("index.php", $lang->redirect_loggedout);
 }
 
@@ -1956,14 +1740,14 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$website = '';
-	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
+	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $mybb->usergroup['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
 	}
 
 	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
+	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -2111,7 +1895,7 @@ if($mybb->input['action'] == "profile")
 			// If our away time has expired already, we should be back, right?
 			if($returnmkdate < TIME_NOW)
 			{
-				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.(int)$memprofile['uid'].'\'');
+				$db->update_query('users', array('away' => '0', 'awaydate' => '0', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 
 				// Update our status to "not away"
 				$memprofile['away'] = 0;
@@ -2930,4 +2714,4 @@ if(!$mybb->input['action'])
 {
 	header("Location: index.php");
 }
-
+?>

@@ -96,3 +96,4 @@ $l['error_containsnoforums'] = "Sorry, but the forum you are currently viewing d
 
 $l['inline_edit_description'] = '(Click and hold to edit)';
 
+?>

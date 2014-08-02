@@ -37,7 +37,7 @@ if(PHP_SAPI == "cli")
 	// Passing a specific task ID
 	if($_SERVER['argc'] == 2)
 	{
-		$query = $db->simple_select("tasks", "tid", "tid='".(int)$_SERVER['argv'][1]."'");
+		$query = $db->simple_select("tasks", "tid", "tid='".intval($_SERVER['argv'][1])."'");
 		$tid = $db->fetch_field($query, "tid");
 	}
 
@@ -71,3 +71,4 @@ else
 		run_task();
 	}
 }
+?>

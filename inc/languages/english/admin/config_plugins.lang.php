@@ -50,3 +50,4 @@ $l['success_plugin_activated'] = "The selected plugin has been activated success
 $l['success_plugin_deactivated'] = "The selected plugin has been deactivated successfully.";
 $l['success_plugin_installed'] = "The selected plugin has been installed and activated successfully.";
 $l['success_plugin_uninstalled'] = "The selected plugin has been uninstalled successfully.";
+?>

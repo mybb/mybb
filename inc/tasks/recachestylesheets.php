@@ -37,3 +37,4 @@ function task_recachestylesheets($task)
 	add_task_log($task, $lang->sprintf($lang->task_recachestylesheets_ran, $num_recached));
 }
 
+?>

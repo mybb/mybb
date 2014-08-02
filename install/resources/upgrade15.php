@@ -151,3 +151,4 @@ function upgrade15_usernameupdate()
 	$output->print_footer("15_done");
 }
 
+?>

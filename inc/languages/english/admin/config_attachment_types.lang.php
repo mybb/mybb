@@ -42,3 +42,4 @@ $l['success_attachment_type_deleted'] = "The attachment type has been deleted su
 
 $l['confirm_attachment_type_deletion'] = "Are you sure you wish to delete this attachment type?";
 
+?>

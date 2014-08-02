@@ -39,3 +39,4 @@ function upgrade6_dbchanges()
 	$output->print_footer("6_done");
 }
 
+?>

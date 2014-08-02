@@ -467,3 +467,4 @@ If you would not like to receive any more notifications of replies to this threa
 [url]{5}/usercp2.php?action=removesubscription&tid={7}&key={8}&my_post_key={9}[/url]
 
 ------------------------------------------";
+?>

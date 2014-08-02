@@ -41,3 +41,4 @@ $l['userdata_invalid_checkfield'] = "It has been detected that this form has bee
 $l['userdata_invalid_postnum'] = "The post count you entered is invalid. Please enter a valid post count, or leave the field empty.";
 $l['userdata_invalid_threadnum'] = "The thread count you entered is invalid. Please enter a valid thread count, or leave the field empty.";
 
+?>

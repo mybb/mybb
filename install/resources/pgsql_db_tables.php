@@ -608,17 +608,17 @@ $tables[] = "CREATE TABLE mybb_questions (
   qid serial,
   question varchar(200) NOT NULL default '',
   answer varchar(150) NOT NULL default '',
-  shown int NOT NULL default 0,
-  correct int NOT NULL default 0,
-  incorrect int NOT NULL default 0,
+  shown int unsigned NOT NULL default 0,
+  correct int unsigned NOT NULL default 0,
+  incorrect int unsigned NOT NULL default 0,
   active smallint NOT NULL default '0',
   PRIMARY KEY (qid)
 );";
 
 $tables[] = "CREATE TABLE mybb_questionsessions (
   sid varchar(32) NOT NULL default '',
-  qid int NOT NULL default '0',
-  dateline int NOT NULL default '0',
+  qid int unsigned NOT NULL default '0',
+  dateline int unsigned NOT NULL default '0',
   UNIQUE (sid)
 );";
 
@@ -708,16 +708,6 @@ $tables[] = "CREATE TABLE mybb_smilies (
   showclickable smallint NOT NULL default '0',
   PRIMARY KEY (sid)
 );";
-
-$tables[] = "CREATE TABLE mybb_spamlog (
-		sid serial,
-		username varchar(120) NOT NULL DEFAULT '',
-		email varchar(220) NOT NULL DEFAULT '',
-		ipaddress bytea NOT NULL default '',
-		dateline numeric(30,0) NOT NULL default '0',
-		data text NOT NULL default ''
-		PRIMARY KEY (sid)
-	);";
 
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid serial,
@@ -955,7 +945,6 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canratemembers smallint NOT NULL default '0',
   canchangename smallint NOT NULL default '0',
   canbereported smallint NOT NULL default '0',
-  canchangewebsite smallint NOT NULL default '1',
   showforumteam smallint NOT NULL default '0',
   usereputationsystem smallint NOT NULL default '0',
   cangivereputations smallint NOT NULL default '0',
@@ -1119,4 +1108,4 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	PRIMARY KEY(wid)
 );";
 
-
+?>

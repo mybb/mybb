@@ -170,7 +170,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$per_page = 15;
 		if($mybb->input['page'] > 0)
 		{
-			$current_page = $mybb->get_input('page', 1);
+			$current_page = intval($mybb->input['page']);
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_threads / $per_page;
 			$pages = ceil($pages);
@@ -305,7 +305,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$per_page = 15;
 		if($mybb->input['page'] > 0)
 		{
-			$current_page = $mybb->get_input('page', 1);
+			$current_page = intval($mybb->input['page']);
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_posts / $per_page;
 			$pages = ceil($pages);
@@ -457,7 +457,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		$per_page = 15;
 		if($mybb->input['page'] > 0)
 		{
-			$current_page = $mybb->get_input('page', 1);
+			$current_page = intval($mybb->input['page']);
 			$start = ($current_page-1)*$per_page;
 			$pages = $unapproved_attachments / $per_page;
 			$pages = ceil($pages);
@@ -565,3 +565,4 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 $page->output_header($lang->moderation_queue);
 echo "<p class=\"notice\">{$lang->error_no_threads}</p>";
 $page->output_footer();
+?>

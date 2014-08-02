@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -262,7 +262,7 @@ elseif($mybb->input['action'] == "helpresults")
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 	add_breadcrumb($lang->search_results, "misc.php?action=helpresults&sid={$sid}");
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+	if(!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -706,18 +706,18 @@ elseif($mybb->input['action'] == "smilies")
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";
-		$smilies_cache = $cache->read("smilies");
-		if(is_array($smilies_cache))
+		$smilies = $cache->read("smilies");
+		if(is_array($smilies))
 		{
 			$extra_class = ' smilie_pointer';
-			foreach($smilies_cache as $smilie)
+			foreach($smilies as $smilie)
 			{
 				$smilie['insert'] = addslashes($smilie['find']);
 				// Only show the first text to replace in the box
 				$smilie['find'] = explode("\n", $smilie['find'])[0];
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
-				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
+				$onclick = '  onclick="MyBBEditor.insertText(\'{$smilie[\'insert\']}\');"';
+				eval('$smilie = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
 				{
@@ -742,14 +742,14 @@ elseif($mybb->input['action'] == "smilies")
 	{
 		add_breadcrumb($lang->nav_smilies);
 		$class = "trow1";
-		$smilies_cache = $cache->read("smilies");
-		if(is_array($smilies_cache))
+		$smilies = $cache->read("smilies");
+		if(is_array($smilies))
 		{
 			$extra_class = $onclick = '';
-			foreach($smilies_cache as $smilie)
+			foreach($smilies as $smilie)
 			{
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				eval('$smilie_image = "'.$templates->get('smilie').'";');
+				eval('$smilie = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
 				$class = alt_trow();
 			}
@@ -887,7 +887,7 @@ elseif($mybb->input['action'] == "syndication")
 			$url .= "type=atom1.0";
 			$add = true;
 		}
-		if((int)$limit > 0)
+		if(intval($limit) > 0)
 		{
 			if($limit > 100)
 			{
@@ -951,7 +951,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	global $db, $forumcache, $permissioncache, $mybb, $forumlist, $forumlistbits, $flist, $lang, $unviewable, $inactiveforums, $templates;
 	static $unviewableforums;
 
-	$pid = (int)$pid;
+	$pid = intval($pid);
 	if(!$permissions)
 	{
 		$permissions = $mybb->usergroup;
@@ -1027,3 +1027,4 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 
 	return $forumlist;
 }
+?>

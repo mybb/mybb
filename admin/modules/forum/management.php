@@ -68,8 +68,8 @@ if($mybb->input['action'] == "copy")
 
 	if($mybb->request_method == "post")
 	{
-		$from = (int)$mybb->input['from'];
-		$to = (int)$mybb->input['to'];
+		$from = intval($mybb->input['from']);
+		$to = intval($mybb->input['to']);
 
 		// Find the source forum
 		$query = $db->simple_select("forums", '*', "fid='{$from}'");
@@ -99,7 +99,7 @@ if($mybb->input['action'] == "copy")
 				$new_forum['name'] = $db->escape_string($mybb->input['title']);
 				$new_forum['description'] = $db->escape_string($mybb->input['description']);
 				$new_forum['type'] = $db->escape_string($mybb->input['type']);
-				$new_forum['pid'] = $mybb->get_input('pid', 1);
+				$new_forum['pid'] = intval($mybb->input['pid']);
 				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
 				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 				$new_forum['parentlist'] = '';
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "copy")
 			{
 				foreach($mybb->input['copygroups'] as $gid)
 				{
-					$groups[] = (int)$gid;
+					$groups[] = intval($gid);
 				}
 				$groups = implode(',', $groups);
 				$query = $db->simple_select("forumpermissions", '*', "fid='{$from}' AND gid IN ({$groups})");
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "copy")
 		}
 		else
 		{
-			$copy_data['pid'] = $mybb->get_input('pid', 1);
+			$copy_data['pid'] = intval($mybb->input['pid']);
 		}
 		$copy_data['disporder'] = "1";
 		$copy_data['from'] = $mybb->input['fid'];
@@ -263,16 +263,16 @@ if($mybb->input['action'] == "copy")
 
 if($mybb->input['action'] == "editmod")
 {
-	$query = $db->simple_select("moderators", "*", "mid='".$mybb->get_input('mid', 1)."'");
+	$query = $db->simple_select("moderators", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mod_data = $db->fetch_array($query);
+
+	$plugins->run_hooks("admin_forum_management_editmod");
 
 	if(!$mod_data['id'])
 	{
 		flash_message($lang->error_incorrect_moderator, 'error');
 		admin_redirect("index.php?module=forum-management");
 	}
-
-	$plugins->run_hooks("admin_forum_management_editmod");
 
 	if($mod_data['isgroup'])
 	{
@@ -285,7 +285,7 @@ if($mybb->input['action'] == "editmod")
 
 	if($mybb->request_method == "post")
 	{
-		$mid = $mybb->get_input('mid', 1);
+		$mid = intval($mybb->input['mid']);
 		if(!$mid)
 		{
 			flash_message($lang->error_incorrect_moderator, 'error');
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "editmod")
 
 		if(!$errors)
 		{
-			$fid = $mybb->get_input('fid', 1);
+			$fid = intval($mybb->input['fid']);
 			$forum = get_forum($fid);
 			if($mod_data['isgroup'])
 			{
@@ -305,32 +305,32 @@ if($mybb->input['action'] == "editmod")
 				$mod = get_user($mod_data['id']);
 			}
 			$update_array = array(
-				'fid' => (int)$fid,
-				'caneditposts' => (int)$mybb->input['caneditposts'],
-				'cansoftdeleteposts' => (int)$mybb->input['cansoftdeleteposts'],
-				'canrestoreposts' => (int)$mybb->input['canrestoreposts'],
-				'candeleteposts' => (int)$mybb->input['candeleteposts'],
-				'cansoftdeletethreads' => (int)$mybb->input['cansoftdeletethreads'],
-				'canrestorethreads' => (int)$mybb->input['canrestorethreads'],
-				'candeletethreads' => (int)$mybb->input['candeletethreads'],
-				'canviewips' => (int)$mybb->input['canviewips'],
-				'canviewunapprove' => (int)$mybb->input['canviewunapprove'],
-				'canviewdeleted' => (int)$mybb->input['canviewdeleted'],
-				'canopenclosethreads' => (int)$mybb->input['canopenclosethreads'],
-				'canstickunstickthreads' => (int)$mybb->input['canstickunstickthreads'],
-				'canapproveunapprovethreads' => (int)$mybb->input['canapproveunapprovethreads'],
-				'canapproveunapproveposts' => (int)$mybb->input['canapproveunapproveposts'],
-				'canapproveunapproveattachs' => (int)$mybb->input['canapproveunapproveattachs'],
-				'canmanagethreads' => (int)$mybb->input['canmanagethreads'],
-				'canmanagepolls' => (int)$mybb->input['canmanagepolls'],
-				'canpostclosedthreads' => (int)$mybb->input['canpostclosedthreads'],
-				'canmovetononmodforum' => (int)$mybb->input['canmovetononmodforum'],
-				'canusecustomtools' => (int)$mybb->input['canusecustomtools'],
-				'canmanageannouncements' => (int)$mybb->input['canmanageannouncements'],
-				'canmanagereportedposts' => (int)$mybb->input['canmanagereportedposts'],
-				'canviewmodlog' => (int)$mybb->input['canviewmodlog']
+				'fid' => intval($fid),
+				'caneditposts' => intval($mybb->input['caneditposts']),
+				'cansoftdeleteposts' => intval($mybb->input['cansoftdeleteposts']),
+				'canrestoreposts' => intval($mybb->input['canrestoreposts']),
+				'candeleteposts' => intval($mybb->input['candeleteposts']),
+				'cansoftdeletethreads' => intval($mybb->input['cansoftdeletethreads']),
+				'canrestorethreads' => intval($mybb->input['canrestorethreads']),
+				'candeletethreads' => intval($mybb->input['candeletethreads']),
+				'canviewips' => intval($mybb->input['canviewips']),
+				'canviewunapprove' => intval($mybb->input['canviewunapprove']),
+				'canviewdeleted' => intval($mybb->input['canviewdeleted']),
+				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
+				'canstickunstickthreads' => intval($mybb->input['canstickunstickthreads']),
+				'canapproveunapprovethreads' => intval($mybb->input['canapproveunapprovethreads']),
+				'canapproveunapproveposts' => intval($mybb->input['canapproveunapproveposts']),
+				'canapproveunapproveattachs' => intval($mybb->input['canapproveunapproveattachs']),
+				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
+				'canmanagepolls' => intval($mybb->input['canmanagepolls']),
+				'canpostclosedthreads' => intval($mybb->input['canpostclosedthreads']),
+				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
+				'canusecustomtools' => intval($mybb->input['canusecustomtools']),
+				'canmanageannouncements' => intval($mybb->input['canmanageannouncements']),
+				'canmanagereportedposts' => intval($mybb->input['canmanagereportedposts']),
+				'canviewmodlog' => intval($mybb->input['canviewmodlog'])
 			);
-			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
+			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 
 			$cache->update_moderators();
 
@@ -340,7 +340,7 @@ if($mybb->input['action'] == "editmod")
 			log_admin_action($fid, $forum['name'], $mid, $mod[$fieldname]);
 
 			flash_message($lang->success_moderator_updated, 'success');
-			admin_redirect("index.php?module=forum-management&fid=".$mybb->get_input('fid', 1)."#tab_moderators");
+			admin_redirect("index.php?module=forum-management&fid=".intval($mybb->input['fid'])."#tab_moderators");
 		}
 	}
 
@@ -422,17 +422,17 @@ if($mybb->input['action'] == "editmod")
 
 if($mybb->input['action'] == "clear_permission")
 {
-	$pid = $mybb->get_input('pid', 1);
-	$fid = $mybb->get_input('fid', 1);
-	$gid = (int)$mybb->input['gid'];
+	$plugins->run_hooks("admin_forum_management_deletemod");
+
+	$pid = intval($mybb->input['pid']);
+	$fid = intval($mybb->input['fid']);
+	$gid = intval($mybb->input['gid']);
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
-
-	$plugins->run_hooks("admin_forum_management_deletemod");
 
 	if($mybb->request_method == "post")
 	{
@@ -470,9 +470,9 @@ if($mybb->input['action'] == "permissions")
 
 	if($mybb->request_method == "post")
 	{
-		$pid = $mybb->get_input('pid', 1);
-		$fid = $mybb->get_input('fid', 1);
-		$gid = (int)$mybb->input['gid'];
+		$pid = intval($mybb->input['pid']);
+		$fid = intval($mybb->input['fid']);
+		$gid = intval($mybb->input['gid']);
 		$forum = get_forum($fid);
 
 		if((!$fid || !$gid) && $pid)
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "permissions")
 				{
 					if(array_key_exists($field['Field'], $mybb->input['permissions']))
 					{
-						$update_array[$db->escape_string($field['Field'])] = (int)$mybb->input['permissions'][$field['Field']];
+						$update_array[$db->escape_string($field['Field'])] = intval($mybb->input['permissions'][$field['Field']]);
 					}
 					else
 					{
@@ -519,7 +519,7 @@ if($mybb->input['action'] == "permissions")
 		if($fid && !$pid)
 		{
 			$update_array['fid'] = $fid;
-			$update_array['gid'] = (int)$mybb->input['gid'];
+			$update_array['gid'] = intval($mybb->input['gid']);
 			$db->insert_query("forumpermissions", $update_array);
 		}
 		else
@@ -562,12 +562,12 @@ if($mybb->input['action'] == "permissions")
 		}
 		else
 		{
-			$query = $db->simple_select("forumpermissions", "fid", "pid='".$mybb->get_input('pid', 1)."'");
+			$query = $db->simple_select("forumpermissions", "fid", "pid='".intval($mybb->input['pid'])."'");
 			$mybb->input['fid'] = $db->fetch_field($query, "fid");
 
 			$sub_tabs['edit_permissions'] = array(
 				'title' => $lang->forum_permissions,
-				'link' => "index.php?module=forum-management&amp;action=permissions&amp;pid=".$mybb->get_input('pid', 1),
+				'link' => "index.php?module=forum-management&amp;action=permissions&amp;pid=".intval($mybb->input['pid']),
 				'description' => $lang->forum_permissions_desc
 			);
 
@@ -619,7 +619,7 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".$mybb->get_input('pid', 1)."&amp;gid=".(int)$mybb->input['gid']."&amp;fid=".(int)$mybb->input['gid'], "post", "modal_form");
+			$form = new Form("index.php?module=forum-management&amp;action=permissions&amp;ajax=1&amp;pid=".(int)$mybb->input['pid']."&amp;gid=".(int)intval($mybb->input['gid'])."&amp;fid=".(int)intval($mybb->input['gid']), "post", "modal_form");
 		}
 		echo $form->generate_hidden_field("usecustom", "1");
 
@@ -636,9 +636,9 @@ $(document).ready(function() {
 		}
 		else
 		{
-			$pid = $mybb->get_input('pid', 1);
-			$gid = (int)$mybb->input['gid'];
-			$fid = $mybb->get_input('fid', 1);
+			$pid = intval($mybb->input['pid']);
+			$gid = intval($mybb->input['gid']);
+			$fid = intval($mybb->input['fid']);
 
 			if($pid)
 			{
@@ -811,7 +811,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$pid = $mybb->get_input('pid', 1);
+		$pid = intval($mybb->input['pid']);
 		$type = $mybb->input['type'];
 
 		if($pid <= 0 && $type == "f")
@@ -832,27 +832,27 @@ if($mybb->input['action'] == "add")
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
 				"parentlist" => '',
-				"disporder" => (int)$mybb->input['disporder'],
-				"active" => (int)$mybb->input['active'],
-				"open" => (int)$mybb->input['open'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode'],
-				"allowpicons" => (int)$mybb->input['allowpicons'],
-				"allowtratings" => (int)$mybb->input['allowtratings'],
-				"usepostcounts" => (int)$mybb->input['usepostcounts'],
-				"usethreadcounts" => (int)$mybb->input['usethreadcounts'],
-				"requireprefix" => (int)$mybb->input['requireprefix'],
+				"disporder" => intval($mybb->input['disporder']),
+				"active" => intval($mybb->input['active']),
+				"open" => intval($mybb->input['open']),
+				"allowhtml" => intval($mybb->input['allowhtml']),
+				"allowmycode" => intval($mybb->input['allowmycode']),
+				"allowsmilies" => intval($mybb->input['allowsmilies']),
+				"allowimgcode" => intval($mybb->input['allowimgcode']),
+				"allowvideocode" => intval($mybb->input['allowvideocode']),
+				"allowpicons" => intval($mybb->input['allowpicons']),
+				"allowtratings" => intval($mybb->input['allowtratings']),
+				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
+				"requireprefix" => intval($mybb->input['requireprefix']),
 				"password" => $db->escape_string($mybb->input['password']),
-				"showinjump" => (int)$mybb->input['showinjump'],
-				"style" => (int)$mybb->input['style'],
-				"overridestyle" => (int)$mybb->input['overridestyle'],
-				"rulestype" => (int)$mybb->input['rulestype'],
+				"showinjump" => intval($mybb->input['showinjump']),
+				"style" => intval($mybb->input['style']),
+				"overridestyle" => intval($mybb->input['overridestyle']),
+				"rulestype" => intval($mybb->input['rulestype']),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
 				"rules" => $db->escape_string($mybb->input['rules']),
-				"defaultdatecut" => (int)$mybb->input['defaultdatecut'],
+				"defaultdatecut" => intval($mybb->input['defaultdatecut']),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
@@ -940,7 +940,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$forum_data['pid'] = $mybb->get_input('pid', 1);
+			$forum_data['pid'] = intval($mybb->input['pid']);
 		}
 		$forum_data['disporder'] = "1";
 		$forum_data['linkto'] = "";
@@ -1287,6 +1287,8 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_forum_management_edit");
+
 	if(!$mybb->input['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
@@ -1301,9 +1303,7 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=forum-management");
 	}
 
-	$fid = $mybb->get_input('fid', 1);
-
-	$plugins->run_hooks("admin_forum_management_edit");
+	$fid = intval($mybb->input['fid']);
 
 	if($mybb->request_method == "post")
 	{
@@ -1312,7 +1312,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$pid = $mybb->get_input('pid', 1);
+		$pid = intval($mybb->input['pid']);
 
 		if($pid == $mybb->input['fid'])
 		{
@@ -1368,27 +1368,27 @@ if($mybb->input['action'] == "edit")
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
-				"disporder" => (int)$mybb->input['disporder'],
-				"active" => (int)$mybb->input['active'],
-				"open" => (int)$mybb->input['open'],
-				"allowhtml" => (int)$mybb->input['allowhtml'],
-				"allowmycode" => (int)$mybb->input['allowmycode'],
-				"allowsmilies" => (int)$mybb->input['allowsmilies'],
-				"allowimgcode" => (int)$mybb->input['allowimgcode'],
-				"allowvideocode" => (int)$mybb->input['allowvideocode'],
-				"allowpicons" => (int)$mybb->input['allowpicons'],
-				"allowtratings" => (int)$mybb->input['allowtratings'],
-				"usepostcounts" => (int)$mybb->input['usepostcounts'],
-				"usethreadcounts" => (int)$mybb->input['usethreadcounts'],
-				"requireprefix" => (int)$mybb->input['requireprefix'],
+				"disporder" => intval($mybb->input['disporder']),
+				"active" => intval($mybb->input['active']),
+				"open" => intval($mybb->input['open']),
+				"allowhtml" => intval($mybb->input['allowhtml']),
+				"allowmycode" => intval($mybb->input['allowmycode']),
+				"allowsmilies" => intval($mybb->input['allowsmilies']),
+				"allowimgcode" => intval($mybb->input['allowimgcode']),
+				"allowvideocode" => intval($mybb->input['allowvideocode']),
+				"allowpicons" => intval($mybb->input['allowpicons']),
+				"allowtratings" => intval($mybb->input['allowtratings']),
+				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"usethreadcounts" => intval($mybb->input['usethreadcounts']),
+				"requireprefix" => intval($mybb->input['requireprefix']),
 				"password" => $db->escape_string($mybb->input['password']),
-				"showinjump" => (int)$mybb->input['showinjump'],
-				"style" => (int)$mybb->input['style'],
-				"overridestyle" => (int)$mybb->input['overridestyle'],
-				"rulestype" => (int)$mybb->input['rulestype'],
+				"showinjump" => intval($mybb->input['showinjump']),
+				"style" => intval($mybb->input['style']),
+				"overridestyle" => intval($mybb->input['overridestyle']),
+				"rulestype" => intval($mybb->input['rulestype']),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
 				"rules" => $db->escape_string($mybb->input['rules']),
-				"defaultdatecut" => (int)$mybb->input['defaultdatecut'],
+				"defaultdatecut" => intval($mybb->input['defaultdatecut']),
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
@@ -1851,9 +1851,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 if($mybb->input['action'] == "deletemod")
 {
-	$modid = (int)$mybb->input['id'];
-	$isgroup = (int)$mybb->input['isgroup'];
-	$fid = $mybb->get_input('fid', 1);
+	$plugins->run_hooks("admin_forum_management_deletemod");
+
+	$modid = intval($mybb->input['id']);
+	$isgroup = intval($mybb->input['isgroup']);
+	$fid = intval($mybb->input['fid']);
 
 	$query = $db->simple_select("moderators", "*", "id='{$modid}' AND isgroup = '{$isgroup}' AND fid='{$fid}'");
 	$mod = $db->fetch_array($query);
@@ -1870,8 +1872,6 @@ if($mybb->input['action'] == "deletemod")
 	{
 		admin_redirect("index.php?module=forum-management&fid={$fid}");
 	}
-
-	$plugins->run_hooks("admin_forum_management_deletemod");
 
 	if($mybb->request_method == "post")
 	{
@@ -1932,6 +1932,8 @@ if($mybb->input['action'] == "deletemod")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_forum_management_delete");
+
 	$query = $db->simple_select("forums", "*", "fid='{$mybb->input['fid']}'");
 	$forum = $db->fetch_array($query);
 
@@ -1948,11 +1950,9 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=forum-management");
 	}
 
-	$plugins->run_hooks("admin_forum_management_delete");
-
 	if($mybb->request_method == "post")
 	{
-		$fid = $mybb->get_input('fid', 1);
+		$fid = intval($mybb->input['fid']);
 		$forum_info = get_forum($fid);
 
 		$query = $db->simple_select("forums", "posts,unapprovedposts,threads,unapprovedthreads", "fid='{$fid}'");
@@ -2058,18 +2058,18 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_forum_management_start");
+
 	if(!isset($mybb->input['fid']))
 	{
 		$mybb->input['fid'] = 0;
 	}
 
-	$fid = $mybb->get_input('fid', 1);
+	$fid = intval($mybb->input['fid']);
 	if($fid)
 	{
 		$forum = get_forum($fid);
 	}
-
-	$plugins->run_hooks("admin_forum_management_start");
 
 	if($mybb->request_method == "post")
 	{
@@ -2145,7 +2145,7 @@ if(!$mybb->input['action'])
 			if(!empty($mybb->input['usergroup']))
 			{
 				$isgroup = 1;
-				$gid = (int)$mybb->input['usergroup'];
+				$gid = intval($mybb->input['usergroup']);
 
 				if(!$groupscache[$gid])
  				{
@@ -2244,7 +2244,7 @@ if(!$mybb->input['action'])
 			{
 				foreach($mybb->input['disporder'] as $update_fid => $order)
 				{
-					$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
+					$db->update_query("forums", array('disporder' => intval($order)), "fid='".intval($update_fid)."'");
 				}
 
 				$cache->update_forums();
@@ -2929,3 +2929,4 @@ function retrieve_single_permissions_row($gid, $fid)
 	return $form_container->output_row_cells(0, true);
 }
 
+?>

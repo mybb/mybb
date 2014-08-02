@@ -87,7 +87,7 @@ function fetch_unread_count($fid)
 		{
 			foreach($threadsread as $key => $value)
 			{
-				$tids .= $comma.(int)$key;
+				$tids .= $comma.intval($key);
 				$comma = ',';
 			}
 		}
@@ -101,7 +101,7 @@ function fetch_unread_count($fid)
 
 			while($thread = $db->fetch_array($query))
 			{
-				if(isset($threadsread[$thread['tid']]) && $thread['lastpost'] > (int)$threadsread[$thread['tid']] && isset($forumsread[$thread['fid']]) && $thread['lastpost'] > (int)$forumsread[$thread['fid']])
+				if(isset($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($threadsread[$thread['tid']]) && isset($forumsread[$thread['fid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
 				{
 					++$count;
 				}
@@ -324,3 +324,4 @@ function mark_all_forums_read()
 		my_unsetcookie("mybb[forumread]");
 	}
 }
+?>

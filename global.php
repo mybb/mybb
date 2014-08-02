@@ -120,7 +120,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 			my_unsetcookie('mybbtheme');
 		}
 
-		$db->update_query('users', array('style' => (int)$mybb->user['style']), "uid = '{$mybb->user['uid']}'");
+		$db->update_query('users', array('style' => intval($mybb->user['style'])), "uid = '{$mybb->user['uid']}'");
 	}
 	// Guest = cookie
 	else
@@ -550,84 +550,45 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
+if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1)
 {
-	// Only worth checking if we are here because we have ACP permissions and the other condition fails
-	if($mybb->usergroup['cancp'] == 1 && !($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
+	// Read the reported content cache
+	$reported = $cache->read('reportedcontent');
+
+	// 0 or more reported items currently exist
+	if($reported['unread'] > 0)
 	{
-		// First we check if the user's a super admin: if yes, we don't care about permissions
-		$can_access_moderationqueue = true;
-		$is_super_admin = is_super_admin($recipient['uid']);
-		if(!$is_super_admin)
+		// We want to avoid one extra query for users that can moderate any forum
+		if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
 		{
-			// Include admin functions
-			if(!file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php"))
+			$unread = (int)$reported['unread'];
+		}
+		else
+		{
+			$unread = 0;
+			$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
+
+			while($fid = $db->fetch_field($query, 'id3'))
 			{
-				$can_access_moderationqueue = false;
-			}
-
-			require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
-
-			// Verify if we have permissions to access forum-moderation_queue
-			require_once MYBB_ROOT.$mybb->config['admin_dir']."/modules/forum/module_meta.php";
-			if(function_exists("forum_admin_permissions"))
-			{
-				// Get admin permissions
-				$adminperms = get_admin_permissions($mybb->user['uid']);
-
-				$permissions = forum_admin_permissions();
-				if(array_key_exists('moderation_queue', $permissions['permissions']) && $adminperms['forum']['moderation_queue'] != 1)
+				if(is_moderator($fid, "canmanagereportedposts"))
 				{
-					$can_access_moderationqueue = false;
+					++$unread;
 				}
 			}
 		}
-	}
-	else
-	{
-		$can_access_moderationqueue = false;
-	}
-	
-	if($can_access_moderationqueue || ($mybb->user['ismoderator'] && $mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanagereportedcontent'] == 1))
-	{
-		// Read the reported content cache
-		$reported = $cache->read('reportedcontent');
 
-		// 0 or more reported items currently exist
-		if($reported['unread'] > 0)
+		if($unread > 0)
 		{
-			// We want to avoid one extra query for users that can moderate any forum
-			if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+			if($unread == 1)
 			{
-				$unread = (int)$reported['unread'];
+				$lang->unread_reports = $lang->unread_report;
 			}
 			else
 			{
-				$unread = 0;
-				$query = $db->simple_select('reportedcontent', 'id3', "reportstatus='0' AND (type = 'post' OR type = '')");
-
-				while($fid = $db->fetch_field($query, 'id3'))
-				{
-					if(is_moderator($fid, "canmanagereportedposts"))
-					{
-						++$unread;
-					}
-				}
+				$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 			}
 
-			if($unread > 0)
-			{
-				if($unread == 1)
-				{
-					$lang->unread_reports = $lang->unread_report;
-				}
-				else
-				{
-					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
-				}
-
-				eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
-			}
+			eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
 		}
 	}
 }
@@ -716,46 +677,6 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
-}
-
-if($mybb->usergroup['cancp'] == 1)
-{
-	$awaitingusers = $cache->read('awaitingactivation');
-
-	if(!empty($awaitingusers['users']))
-	{
-		$awaitingusers = (int)$awaitingusers['users'];
-	}
-	else
-	{
-		$awaitingusers = 0;
-	}
-
-	if($awaitingusers < 1)
-	{
-		$awaitingusers = 0;
-	}
-	else
-	{
-		$awaitingusers = my_number_format($awaitingusers);
-	}
-	
-	if($awaitingusers > 0)
-	{
-		if($awaitingusers == 1)
-		{
-			$awaiting_message = $lang->awaiting_message_single;
-		}
-		else
-		{
-			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
-		}
-		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
-	}
-	else
-	{
-		$awaitingusers = '';
-	}
 }
 
 // Set up some of the default templates
@@ -1016,3 +937,4 @@ if($colcookie)
 $plugins->run_hooks('global_end');
 
 $globaltime = $maintimer->getTime();
+?>

@@ -205,3 +205,4 @@ $plugins->run_hooks("stats_end");
 
 eval("\$stats = \"".$templates->get("stats")."\";");
 output_page($stats);
+?>

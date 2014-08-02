@@ -9,7 +9,7 @@
  */
 
 /**
- * Upgrade Script: 1.6.14 or 1.6.15
+ * Upgrade Script: 1.6.14
  */
 
 $upgrade_detail = array(
@@ -128,27 +128,24 @@ function upgrade30_dbchanges()
 		$db->drop_column("templategroups", "isdefault");
 	}
 
-	if($db->table_exists('reportedposts'))
+	if($db->field_exists('type', 'reportedposts'))
 	{
-		if($db->field_exists('type', 'reportedposts'))
-		{
-			$db->drop_column("reportedposts", "type");
-		}
+		$db->drop_column("reportedposts", "type");
+	}
 
-		if($db->field_exists('reports', 'reportedposts'))
-		{
-			$db->drop_column("reportedposts", "reports");
-		}
+	if($db->field_exists('reports', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "reports");
+	}
 
-		if($db->field_exists('reporters', 'reportedposts'))
-		{
-			$db->drop_column("reportedposts", "reporters");
-		}
+	if($db->field_exists('reporters', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "reporters");
+	}
 
-		if($db->field_exists('lastreport', 'reportedposts'))
-		{
-			$db->drop_column("reportedposts", "lastreport");
-		}
+	if($db->field_exists('lastreport', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "lastreport");
 	}
 
 	if($db->field_exists('warnings', 'promotions'))
@@ -226,7 +223,7 @@ function upgrade30_dbchanges()
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->rename_column("profilefields", "hidden", "profile", "smallint", "set", "'0'");
+				$db->rename_column("profilefields", "hidden", "profile", "smallint NOT NULL default '0'");
 				break;
 			default:
 				$db->rename_column("profilefields", "hidden", "profile", "tinyint(1) NOT NULL default '0'");
@@ -250,13 +247,10 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
 			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "smallint NOT NULL default '0'");
-			if($db->table_exists('reportedposts'))
-			{
-				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
-				$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
-				$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
-			}
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
 			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
 			$db->add_column("promotions", "threadtype", "varchar(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
@@ -281,13 +275,10 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL");
 			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			if($db->table_exists('reportedposts'))
-			{
-				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-				$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
-				$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
-				$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
-			}
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL default ''");
+			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
 			$db->add_column("promotions", "warningstype", "varchar(2) NOT NULL default '' AFTER warnings");
 			$db->add_column("adminsessions", "useragent", "varchar(100) NOT NULL default ''");
@@ -308,13 +299,10 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "viewableby", "text NOT NULL");
 			$db->add_column("profilefields", "editableby", "text NOT NULL");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
-			if($db->table_exists('reportedposts'))
-			{
-				$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
-				$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
-				$db->add_column("reportedposts", "reporters", "text NOT NULL");
-				$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
-			}
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
+			$db->add_column("reportedposts", "reporters", "text NOT NULL");
+			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
 			$db->add_column("promotions", "threads", "int NOT NULL default '0' AFTER posttype");
 			$db->add_column("promotions", "threadtype", "char(2) NOT NULL default '' AFTER threads");
 			$db->add_column("promotions", "warnings", "int NOT NULL default '0' AFTER referralstype");
@@ -428,11 +416,6 @@ function upgrade30_dbchanges2()
 	if($db->field_exists('threadnum', 'users'))
 	{
 		$db->drop_column("users", "threadnum");
-	}
-
-	if($db->field_exists('canchangewebsite', 'usergroups'))
-	{
-		$db->drop_column("usergroups", "canchangewebsite");
 	}
 
 	switch($db->type)
@@ -681,11 +664,6 @@ function upgrade30_dbchanges4()
 		$db->drop_column("maillogs", "type");
 	}
 
-	if($db->field_exists('groups', 'modtools'))
-	{
-		$db->drop_column("modtools", "groups");
-	}
-
 	switch($db->type)
 	{
 		case "pgsql":
@@ -699,7 +677,6 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "smallint NOT NULL default '0'");
-			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 		default:
 			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
@@ -712,7 +689,6 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "tinyint(1) NOT NULL default '0'");
-			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 	}
 
@@ -781,40 +757,23 @@ function upgrade30_dbchanges5()
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0'
 			);");
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
-				sid INTEGER PRIMARY KEY,
-				username varchar(120) NOT NULL DEFAULT '',
-				email varchar(220) NOT NULL DEFAULT '',
-				ipaddress blob(16) NOT NULL default ''
-				dateline int unsigned NOT NULL default '0' PRIMARY KEY,
-				data TEXT NOT NULL
-			) ENGINE=MyISAM;");
 			break;
 		case "pgsql":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
 				qid serial,
 				question varchar(200) NOT NULL default '',
 				answer varchar(150) NOT NULL default '',
-				shown int NOT NULL default 0,
-				correct int NOT NULL default 0,
-				incorrect int NOT NULL default 0,
+				shown int unsigned NOT NULL default 0,
+				correct int unsigned NOT NULL default 0,
+				incorrect int unsigned NOT NULL default 0,
 				active smallint NOT NULL default '0',
 				PRIMARY KEY (qid)
 			);");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
 				sid varchar(32) NOT NULL default '',
-				qid int NOT NULL default '0',
-				dateline int NOT NULL default '0',
+				qid int unsigned NOT NULL default '0',
+				dateline int unsigned NOT NULL default '0',
 				UNIQUE (sid)
-			);");
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
-				sid serial,
-				username varchar(120) NOT NULL DEFAULT '',
-				email varchar(220) NOT NULL DEFAULT '',
-				ipaddress bytea NOT NULL default '',
-				dateline numeric(30,0) NOT NULL default '0',
-				data text NOT NULL default '',
-				PRIMARY KEY (sid)
 			);");
 			break;
 		default:
@@ -832,15 +791,6 @@ function upgrade30_dbchanges5()
 				sid varchar(32) NOT NULL default '',
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0',
-				PRIMARY KEY (sid)
-			) ENGINE=MyISAM;");
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
-				sid int unsigned NOT NULL auto_increment,
-				username varchar(120) NOT NULL DEFAULT '',
-				email varchar(220) NOT NULL DEFAULT '',
-				ipaddress varbinary(16) NOT NULL default '',
-				dateline int unsigned NOT NULL default '0',
-				data text NOT NULL,
 				PRIMARY KEY (sid)
 			) ENGINE=MyISAM;");
 	}
@@ -960,16 +910,6 @@ function upgrade30_dbchanges6()
 		$db->drop_column("users", "sourceeditor");
 	}
 
-	if($db->field_exists('buddyrequestspm', 'users'))
-	{
-		$db->drop_column("users", "buddyrequestspm");
-	}
-
-	if($db->field_exists('buddyrequestsauto', 'users'))
-	{
-		$db->drop_column("users", "buddyrequestsauto");
-	}
-
 	switch($db->type)
 	{
 		case "pgsql":
@@ -1022,12 +962,7 @@ function upgrade30_dbchanges6()
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
 
-	if($db->table_exists('reportedposts'))
-	{
-		$db->update_query("reportedposts", array('type' => 'post'));
-	}
-
-	$db->insert_query("questions", array('question' => 'What does 2 + 2 equal?', 'answer' => '4\nFour', 'active' => '1'));
+	$db->update_query("reportedposts", array('type' => 'post'));
 
 	$query = $db->simple_select("attachtypes", "COUNT(*) as numexists", "extension='psd'");
 	if($db->fetch_field($query, "numexists") == 0)
@@ -1073,56 +1008,49 @@ function upgrade30_dbchanges6()
 
 	$db->update_query('usergroups', array('canviewboardclosed' => 1), 'cancp = 1');
 
-	if($db->table_exists('reportedposts'))
+	if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
 	{
-		if($db->field_exists("pid", "reportedposts") && !$db->field_exists("id", "reportedposts"))
+		switch($db->type)
 		{
-			switch($db->type)
-			{
-				case "pgsql":
-					$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
-					break;
-				default:
-					$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
-			}
-		}
-
-		if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
-		{
-			switch($db->type)
-			{
-				case "pgsql":
-					$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
-					break;
-				default:
-					$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
-			}
-		}
-
-		if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
-		{
-			switch($db->type)
-			{
-				case "pgsql":
-					$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
-					break;
-				default:
-					$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
-			}
+			case "pgsql":
+				$db->rename_column("reportedposts", "pid", "id", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "pid", "id", "int unsigned NOT NULL default '0'");
 		}
 	}
 
-	if($db->table_exists('reportedposts'))
+	if($db->field_exists("tid", "reportedposts") && !$db->field_exists("id2", "reportedposts"))
 	{
-		if($db->table_exists("reportedcontent"))
+		switch($db->type)
 		{
-			$db->drop_table("reportedcontent");
+			case "pgsql":
+				$db->rename_column("reportedposts", "tid", "id2", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "tid", "id2", "int unsigned NOT NULL default '0'");
 		}
-
-		$db->rename_table("reportedposts", "reportedcontent");
-
-		$cache->delete('reportedposts');
 	}
+
+	if($db->field_exists("fid", "reportedposts") && !$db->field_exists("id3", "reportedposts"))
+	{
+		switch($db->type)
+		{
+			case "pgsql":
+				$db->rename_column("reportedposts", "fid", "id3", "int", true, "'0'");
+				break;
+			default:
+				$db->rename_column("reportedposts", "fid", "id3", "int unsigned NOT NULL default '0'");
+		}
+	}
+
+	if($db->table_exists("reportedcontent"))
+	{
+		$db->drop_table("reportedcontent");
+	}
+
+	$db->rename_table("reportedposts", "reportedcontent");
+	$cache->delete('reportedposts');
 
 	$db->update_query("settings", array('optionscode' => 'select\r\n0=No CAPTCHA\r\n1=MyBB Default CAPTCHA\r\n2=reCAPTCHA\r\n3=Are You a Human'), "name='captchaimage'");
 	$db->update_query("settings", array('optionscode' => 'select\r\ninstant=Instant Activation\r\nverify=Send Email Verification\r\nrandompass=Send Random Password\r\nadmin=Administrator Activation\r\nboth=Email Verification & Administrator Activation'), "name='regtype'");
@@ -1270,35 +1198,11 @@ function upgrade30_dbchanges_optimize1()
 	switch($db->type)
 	{
 		case "pgsql":
-			$db->modify_column("adminoptions", "loginattempts", "smallint", "set", "'0'");
-			$db->modify_column("adminviews", "perpage", "smallint", "set", "'0'");
-			$db->modify_column("announcements", "fid", "smallint", "set", "'0'");
-			$db->modify_column("attachments", "pid", "smallint", "set", "'0'");
-			$db->modify_column("calendars", "disporder", "smallint", "set", "'0'");
-			$db->modify_column("calendars", "eventlimit", "smallint", "set", "'0'");
-			$db->modify_column("events", "timezone", "varchar(5)", "set", "''");
-			$db->modify_column("forums", "lastposttid", "int", "set", "'0'");
-			$db->modify_column("mailerrors", "smtpcode", "smallint", "set", "'0'");
-			$db->modify_column("maillogs", "touid", "int", "set", "'0'");
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ALTER COLUMN numvotes DROP DEFAULT"); // We need to drop the default first as PostgreSQL can't cast default values
-			$db->modify_column("polls", "numvotes", "int USING (trim(numvotes)::int)", "set", "'0'");
-			$db->modify_column("profilefields", "postnum", "smallint", "set", "'0'");
-			$db->modify_column("reputation", "reputation", "smallint", "set", "'0'");
-			$db->modify_column("spiders", "theme", "smallint", "set", "'0'");
-			$db->modify_column("spiders", "usergroup", "smallint", "set", "'0'");
-			$db->modify_column("templates", "sid", "smallint", "set", "'0'");
-			$db->modify_column("themestylesheets", "tid", "smallint", "set", "'0'");
-			$db->modify_column("usergroups", "canusesigxposts", "smallint", "set", "'0'");
-			$db->modify_column("users", "timezone", "varchar(5)", "set", "''");
-			$db->modify_column("users", "reputation", "int", "set", "'0'");
-			$db->modify_column("warninglevels", "percentage", "smallint", "set", "'0'");
-			$db->modify_column("warningtypes", "points", "smallint", "set", "'0'");
-			$db->modify_column("warnings", "points", "smallint", "set", "'0'");
-			break;
 		case "sqlite":
 			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
 			$db->modify_column("announcements", "fid", "smallint NOT NULL default '0'");
+			$db->modify_column("attachments", "pid", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
@@ -1323,6 +1227,7 @@ function upgrade30_dbchanges_optimize1()
 			$db->modify_column("adminoptions", "loginattempts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint(4) NOT NULL default '0'");
 			$db->modify_column("announcements", "fid", "smallint unsigned NOT NULL default '0'");
+			$db->modify_column("attachments", "pid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
@@ -1380,46 +1285,20 @@ function upgrade30_dbchanges_optimize2()
 
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
-		$update_data = array(
-			'adminlog' => 'uid',
-			'banfilters' => 'type',
-			'events' => 'cid',
-			'forumsubscriptions' => 'uid',
-			'moderatorlog' => array('uid', 'fid'),
-			'polls' => 'tid',
-			'reportedcontent' => 'reportstatus',
-			'settings' => 'gid',
-			'themestylesheets' => 'tid',
-			'warnings' => 'uid',
-			'forumpermissions' => array('fid' => array('fid', 'gid')),
-			'sessions' => array('location' => array('location1', 'location2')),
-			'templates' => array('sid' => array('sid', 'title'))
-		);
-
-		foreach($update_data as $table => $index)
-		{
-			if(!$db->index_exists($table, $index))
-			{
-				if(!is_array($index))
-				{
-					$index = array($index);
-				}
-
-				foreach($index as $_index)
-				{
-					if(!is_array($_index))
-					{
-						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX (`{$_index}`)");
-						continue;
-					}
-
-					foreach($index as $_index => $keys)
-					{
-						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$index}`(`".implode('`, `', $keys)."`)");
-					}
-				}
-			}
-		}
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminlog ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banfilters ADD INDEX ( `type` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD INDEX ( `cid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD INDEX `fid` ( `fid` , `gid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forumsubscriptions ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD INDEX ( `fid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."polls ADD INDEX ( `tid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."reportedcontent ADD INDEX ( `reportstatus` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX `location` ( `location1` , `location2` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings ADD INDEX ( `gid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD INDEX `sid` ( `sid` , `title` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themestylesheets ADD INDEX ( `tid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ADD INDEX ( `uid` )");
 	}
 
 	echo "<p>Dropping old indexes from tables...</p>";
@@ -1489,7 +1368,7 @@ function upgrade30_dbchanges_optimize3()
 		"sessions" => array("anonymous", "nopermission"),
 		"settinggroups" => array("isdefault"),
 		"settings" => array("isdefault"),
-		"smilies" => array("showclickable"),
+		"smilies" => array("sid", "showclickable"),
 		"tasks" => array("enabled", "logging"),
 		"themes" => array("def"),
 		"threads" => array("sticky", "visible"),
@@ -1507,17 +1386,14 @@ function upgrade30_dbchanges_optimize3()
 		{
 			if($db->type == "pgsql")
 			{
-				$db->modify_column($table, $column, "smallint", "set", "'0'");
+				$change_column[] = "MODIFY {$column} smallint NOT NULL default '0'";
 			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
 			}
 		}
-		if($db->type != "pgsql")
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
-		}
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 	}
 
 	global $footer_extra;
@@ -1585,17 +1461,14 @@ function upgrade30_dbchanges_optimize4()
 		{
 			if($db->type == "pgsql")
 			{
-				$db->modify_column($table, $column, "int", "set", "'0'");
+				$change_column[] = "MODIFY {$column} int NOT NULL default '0'";
 			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} int unsigned NOT NULL default '0'";
 			}
 		}
-		if($db->type != "pgsql")
-		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
-		}
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
@@ -1876,22 +1749,22 @@ function upgrade30_dbchanges_ip()
 				switch($mybb->input['iptable'])
 				{
 					case 7:
-						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".(int)$data['uid']."'");
+						$db->update_query("users", array('regip' => $db->escape_binary($ip1), 'lastip' => $db->escape_binary($ip2)), "uid = '".intval($data['uid'])."'");
 						break;
 					case 6:
-						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".(int)$data['rid']."'");
+						$db->update_query("threadratings", array('ipaddress' => $db->escape_binary($ip)), "rid = '".intval($data['rid'])."'");
 						break;
 					case 5:
-						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".(int)$data['sid']."'");
+						$db->update_query("sessions", array('ip' => $db->escape_binary($ip)), "sid = '".intval($data['sid'])."'");
 						break;
 					case 4:
-						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".(int)$data['pid']."'");
+						$db->update_query("posts", array('ipaddress' => $db->escape_binary($ip)), "pid = '".intval($data['pid'])."'");
 						break;
 					case 3:
 						$db->update_query("moderatorlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
 						break;
 					case 2:
-						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".(int)$data['mid']."'");
+						$db->update_query("maillogs", array('ipaddress' => $db->escape_binary($ip)), "mid = '".intval($data['mid'])."'");
 						break;
 					default:
 						$db->update_query("adminlog", array('ipaddress' => $db->escape_binary($ip)), "ipaddress = '".$db->escape_string($data['ipaddress'])."'");
@@ -2227,4 +2100,4 @@ function recache_existing_styles()
 
 	return $num_updated;
 }
-
+?>

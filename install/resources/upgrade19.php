@@ -22,3 +22,4 @@ $upgrade_detail = array(
 
 /* Nothing to do for 1.6.1 and 1.6.2 */
 
+?>

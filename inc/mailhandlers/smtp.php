@@ -550,3 +550,4 @@ class SmtpMail extends MailHandler
 		$this->last_error = $error;
 	}
 }
+?>

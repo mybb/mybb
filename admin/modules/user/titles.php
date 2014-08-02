@@ -48,7 +48,7 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -58,8 +58,8 @@ if($mybb->input['action'] == "add")
 		{
 			$new_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => (int)$mybb->input['posts'],
-				"stars" => (int)$mybb->input['stars'],
+				"posts" => intval($mybb->input['posts']),
+				"stars" => intval($mybb->input['stars']),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -114,7 +114,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
+	$plugins->run_hooks("admin_user_titles_edit");
+
+	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])
@@ -122,8 +124,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user_title, 'error');
 		admin_redirect("index.php?module=user-titles");
 	}
-
-	$plugins->run_hooks("admin_user_titles_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_posts;
 		}
 
-		$query = $db->simple_select("usertitles", "utid", "posts= '".(int)$mybb->input['posts']."' AND utid!= '".(int)$mybb->input['utid']."'");
+		$query = $db->simple_select("usertitles", "utid", "posts= '".intval($mybb->input['posts'])."' AND utid!= '".intval($mybb->input['utid'])."'");
 		if($db->num_rows($query))
 		{
 			$errors[] = $lang->error_cannot_have_same_posts;
@@ -147,8 +147,8 @@ if($mybb->input['action'] == "edit")
 		{
 			$updated_title = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"posts" => (int)$mybb->input['posts'],
-				"stars" => (int)$mybb->input['stars'],
+				"posts" => intval($mybb->input['posts']),
+				"stars" => intval($mybb->input['stars']),
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
@@ -206,7 +206,9 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("usertitles", "*", "utid='".(int)$mybb->input['utid']."'");
+	$plugins->run_hooks("admin_user_titles_delete");
+
+	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
 	if(!$usertitle['utid'])
@@ -220,8 +222,6 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=user-titles");
 	}
-
-	$plugins->run_hooks("admin_user_titles_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -278,3 +278,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+?>

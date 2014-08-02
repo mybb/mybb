@@ -47,3 +47,4 @@ $l['mark_as_deleted'] = "Mark all for deletion";
 $l['mark_as_approved'] = "Mark all as approved";
 $l['perform_action'] = "Perform Actions";
 
+?>

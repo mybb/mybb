@@ -35,3 +35,4 @@ $l['manage_user_titles'] = "Manage User Titles";
 $l['user_title'] = "User Title";
 $l['no_user_titles'] = "You do not have any user titles defined at the moment";
 
+?>

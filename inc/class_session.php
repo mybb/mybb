@@ -104,7 +104,7 @@ class session
 			$bannedcache = $cache->read("banned");
 		}
 
-		$uid = (int)$uid;
+		$uid = intval($uid);
 		$query = $db->query("
 			SELECT u.*, f.*
 			FROM ".TABLE_PREFIX."users u
@@ -233,7 +233,7 @@ class session
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".(int)$mybb->user['banoldgroup']."', additionalgroups='".$mybb->user['banoldadditionalgroups']."', displaygroup='".(int)$mybb->user['banolddisplaygroup']."' WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['banoldadditionalgroups']."', displaygroup='".intval($mybb->user['banolddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
@@ -319,7 +319,7 @@ class session
 			}
 			else
 			{
-				$mybb->user['lastactive'] = (int)$mybb->cookies['mybb']['lastactive'];
+				$mybb->user['lastactive'] = intval($mybb->cookies['mybb']['lastactive']);
 			}
 			if($time - $mybb->cookies['mybb']['lastactive'] > 900)
 			{
@@ -328,7 +328,7 @@ class session
 			}
 			else
 			{
-				$mybb->user['lastvisit'] = (int)$mybb->cookies['mybb']['lastactive'];
+				$mybb->user['lastvisit'] = intval($mybb->cookies['mybb']['lastactive']);
 			}
 		}
 
@@ -413,7 +413,7 @@ class session
 			$updated_spider = array(
 				"lastvisit" => TIME_NOW
 			);
-			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'");
+			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'", 1);
 		}
 
 		// Update the online data.
@@ -453,12 +453,12 @@ class session
 			$useragent = my_substr($useragent, 0, 100);
 		}
 		$onlinedata['useragent'] = $db->escape_string($useragent);
-		$onlinedata['location1'] = (int)$speciallocs['1'];
-		$onlinedata['location2'] = (int)$speciallocs['2'];
+		$onlinedata['location1'] = intval($speciallocs['1']);
+		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
 
-		$db->update_query("sessions", $onlinedata, "sid='{$sid}'");
+		$db->update_query("sessions", $onlinedata, "sid='{$sid}'", 1);
 	}
 
 	/**
@@ -507,8 +507,8 @@ class session
 			$useragent = my_substr($useragent, 0, 100);
 		}
 		$onlinedata['useragent'] = $db->escape_string($useragent);
-		$onlinedata['location1'] = (int)$speciallocs['1'];
-		$onlinedata['location2'] = (int)$speciallocs['2'];
+		$onlinedata['location1'] = intval($speciallocs['1']);
+		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
 		$db->replace_query("sessions", $onlinedata, "sid", false);
 		$this->sid = $onlinedata['sid'];
@@ -526,7 +526,7 @@ class session
 		$array = array('1' => '', '2' => '');
 		if(preg_match("#forumdisplay.php#", $_SERVER['PHP_SELF']) && $mybb->get_input('fid', 1) > 0)
 		{
-			$array[1] = $mybb->get_input('fid', 1);
+			$array[1] = intval($mybb->input['fid']);
 			$array[2] = '';
 		}
 		elseif(preg_match("#showthread.php#", $_SERVER['PHP_SELF']))
@@ -535,7 +535,7 @@ class session
 
 			if($mybb->get_input('tid', 1) > 0)
 			{
-				$array[2] = $mybb->get_input('tid', 1);
+				$array[2] = intval($mybb->input['tid']);
 			}
 
 			// If there is no tid but a pid, trick the system into thinking there was a tid anyway.
@@ -555,3 +555,4 @@ class session
 		return $array;
 	}
 }
+?>

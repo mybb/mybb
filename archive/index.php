@@ -120,12 +120,8 @@ switch($action)
 		$plugins->run_hooks("archive_thread_start");
 
 		// Paginate this thread
-		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
-		{
-			$mybb->settings['postsperpage'] = 20;
-		}
 		$perpage = $mybb->settings['postsperpage'];
-		$postcount = (int)$thread['replies']+1;
+		$postcount = intval($thread['replies'])+1;
 		$pages = ceil($postcount/$perpage);
 
 		if($page > $pages)
@@ -267,7 +263,7 @@ switch($action)
 
 		$plugins->run_hooks("archive_forum_start");
 
-		if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+		if(!$mybb->settings['threadsperpage'])
 		{
 			$mybb->settings['threadsperpage'] = 20;
 		}
@@ -300,7 +296,7 @@ switch($action)
 		}
 
 		// Show subforums.
-		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}'");
+		$query = $db->simple_select("forums", "COUNT(fid) AS subforums", "pid='{$id}' AND status='1'");
 		$subforumcount = $db->fetch_field($query, "subforums");
 		if($subforumcount > 0)
 		{
@@ -513,3 +509,4 @@ function build_archive_forumbits($pid=0)
 	}
 	return $forums;
 }
+?>

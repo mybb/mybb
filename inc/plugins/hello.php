@@ -107,3 +107,4 @@ function hello_world_postbit(&$post)
 {
 	$post['message'] = "<strong>Hello world!</strong><br /><br />{$post['message']}";
 }
+?>

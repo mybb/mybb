@@ -39,7 +39,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 	if($mybb->input['do'] == "set_default")
 	{
-		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".$mybb->get_input('vid', 1)."'");
+		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
 
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
@@ -69,7 +69,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 				$errors[] = $lang->error_no_view_fields;
 			}
 
-			if($mybb->get_input('perpage', 1) <= 0)
+			if(intval($mybb->input['perpage']) <= 0)
 			{
 				$errors[] = $lang->error_invalid_view_perpage;
 			}
@@ -95,13 +95,13 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 					"uid" => $mybb->user['uid'],
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
-					"visibility" => $mybb->get_input('visibiliy', 1),
+					"visibility" => intval($mybb->input['visibility']),
 					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
 					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
 					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
 					"sortby" => $db->escape_string($mybb->input['sortby']),
 					"sortorder" => $db->escape_string($mybb->input['sortorder']),
-					"perpage" => $mybb->get_input('perpage', 1),
+					"perpage" => intval($mybb->input['perpage']),
 					"view_type" => $db->escape_string($mybb->input['view_type'])
 				);
 
@@ -233,7 +233,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	}
 	else if($mybb->input['do'] == "edit")
 	{
-		$query = $db->simple_select("adminviews", "*", "vid='".$mybb->get_input('vid', 1)."'");
+		$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
 
 		// Does the view not exist?
@@ -259,7 +259,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$errors[] = $lang->error_no_view_fields;
 			}
 
-			if($mybb->get_input('perpage', 1) <= 0)
+			if(intval($mybb->input['perpage']) <= 0)
 			{
 				$errors[] = $lang->error_invalid_view_perpage;
 			}
@@ -284,13 +284,13 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$updated_view = array(
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
-					"visibility" => $mybb->get_input('visibiliy', 1),
+					"visibility" => intval($mybb->input['visibility']),
 					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
 					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
 					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
 					"sortby" => $db->escape_string($mybb->input['sortby']),
 					"sortorder" => $db->escape_string($mybb->input['sortorder']),
-					"perpage" => $mybb->get_input('perpage', 1),
+					"perpage" => intval($mybb->input['perpage']),
 					"view_type" => $db->escape_string($mybb->input['view_type'])
 				);
 				$db->update_query("adminviews", $updated_view, "vid='{$admin_view['vid']}'");
@@ -457,7 +457,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			admin_redirect($base_url."&action=views");
 		}
 
-		$vid = $mybb->get_input('vid', 1);
+		$vid = intval($mybb->input['vid']);
 		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid = '{$vid}'");
 		$admin_view = $db->fetch_array($query);
 
@@ -666,3 +666,4 @@ function fetch_default_view($type)
 	}
 	return $default_views[$type];
 }
+?>

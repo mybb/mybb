@@ -84,18 +84,18 @@ if($mybb->input['action'] == "add")
 			$new_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($thing),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => (int)$mybb->input['length'],
-				"maxlength" => (int)$mybb->input['maxlength'],
+				"length" => intval($mybb->input['length']),
+				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => (int)$mybb->input['postnum'],
+				"postnum" => intval($mybb->input['postnum']),
 				"allowhtml" => (int)$mybb->input['allowhtml'],
 				"allowmycode" => (int)$mybb->input['allowmycode'],
 				"allowsmilies" => (int)$mybb->input['allowsmilies'],
@@ -334,7 +334,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("profilefields", "*", "fid = '".$mybb->get_input('fid', 1)."'");
+	$plugins->run_hooks("admin_config_profile_fields_edit");
+
+	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 
 	if(!$profile_field['fid'])
@@ -342,8 +344,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?module=config-profile_fields");
 	}
-
-	$plugins->run_hooks("admin_config_profile_fields_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -403,18 +403,18 @@ if($mybb->input['action'] == "edit")
 			$updated_profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"disporder" => (int)$mybb->input['disporder'],
+				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($type),
 				"regex" => $db->escape_string($mybb->input['regex']),
-				"length" => (int)$mybb->input['length'],
-				"maxlength" => (int)$mybb->input['maxlength'],
+				"length" => intval($mybb->input['length']),
+				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
 				"registration" => $db->escape_string($mybb->input['registration']),
 				"profile" => $db->escape_string($mybb->input['profile']),
 				"viewableby" => $db->escape_string($mybb->input['viewableby']),
 				"editableby" => $db->escape_string($mybb->input['editableby']),
 				"postbit" => $db->escape_string($mybb->input['postbit']),
-				"postnum" => (int)$mybb->input['postnum'],
+				"postnum" => intval($mybb->input['postnum']),
 				"allowhtml" => (int)$mybb->input['allowhtml'],
 				"allowmycode" => (int)$mybb->input['allowmycode'],
 				"allowsmilies" => (int)$mybb->input['allowsmilies'],
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
-			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', 1)."'");
+			$db->update_query("profilefields", $updated_profile_field, "fid = '".intval($mybb->input['fid'])."'");
 
 			$cache->update_profilefields();
 
@@ -441,7 +441,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".$mybb->get_input('fid', 1),
+		'link' => "index.php?module=config-profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
 		'description' => $lang->edit_profile_field_desc
 	);
 
@@ -650,7 +650,9 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("profilefields", "*", "fid='".$mybb->get_input('fid', 1)."'");
+	$plugins->run_hooks("admin_config_profile_fields_delete");
+
+	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 
 	// Does the profile field not exist?
@@ -665,8 +667,6 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-profile_fields");
 	}
-
-	$plugins->run_hooks("admin_config_profile_fields_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -826,3 +826,4 @@ function print_selection_javascript()
 	}
 </script>";
 }
+?>

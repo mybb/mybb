@@ -20,13 +20,13 @@ $plugins->run_hooks("admin_tools_cache_begin");
 
 if($mybb->input['action'] == 'view')
 {
+	$plugins->run_hooks("admin_tools_cache_view");
+
 	if(!trim($mybb->input['title']))
 	{
 		flash_message($lang->error_no_cache_specified, 'error');
 		admin_redirect("index.php?module=tools-cache");
 	}
-
-	$plugins->run_hooks("admin_tools_cache_view");
 
 	// Rebuilds forum settings
 	if($mybb->input['title'] == 'settings')
@@ -209,6 +209,8 @@ if($mybb->input['action'] == "rebuild_all")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_cache_start");
+
 	$page->output_header($lang->cache_manager);
 
 	$sub_tabs['cache_manager'] = array(
@@ -216,8 +218,6 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=tools-cache",
 		'description' => $lang->cache_manager_description
 	);
-
-	$plugins->run_hooks("admin_tools_cache_start");
 
 	$page->output_nav_tabs($sub_tabs, 'cache_manager');
 
@@ -274,3 +274,4 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+?>

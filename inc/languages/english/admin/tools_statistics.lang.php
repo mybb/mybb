@@ -25,3 +25,4 @@ $l['decrease'] = "Decrease";
 
 $l['error_no_results_found_for_criteria'] = "We could not find any results for the date range you provided. Please try a different date range.";
 $l['error_no_statistics_available_yet'] = "We're sorry, there are currently no statistics data available for your forum yet.";
+?>

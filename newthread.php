@@ -17,7 +17,7 @@ $templatelist .= ",forumdisplay_rules,forumdisplay_rules_link,post_attachments_a
 $templatelist .= ",member_register_regimage,member_register_regimage_recaptcha,member_register_regimage_ayah,post_captcha_hidden,post_captcha,post_captcha_recaptcha,post_captcha_ayah,postbit_groupimage,postbit_online,postbit_away";
 $templatelist .= ",postbit_avatar,postbit_find,postbit_pm,postbit_rep_button,postbit_www,postbit_email,postbit_reputation,postbit_warn,postbit_warninglevel,postbit_author_user,postbit_author_guest,postbit_offline";
 $templatelist .= ",postbit_signature,postbit_classic,postbit,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_attachment_unapproved,post_attachments_update";
-$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,attachment_icon,postbit_reputation_formatted_link,global_moderation_notice";
+$templatelist .= ",postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,postbit_gotopost,smilieinsert_getmore,smilieinsert_smilie,smilieinsert_smilie_empty,attachment_icon,postbit_reputation_formatted_link";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -34,7 +34,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', 1)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".intval($mybb->input['tid'])."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -71,22 +71,9 @@ if($forum['open'] == 0 || $forum['type'] != "f" || $forum['linkto'] != "")
 	error($lang->error_closedinvalidforum);
 }
 
-if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
-}
-
-if($mybb->user['suspendposting'] == 1)
-{
-	$suspendedpostingtype = $lang->error_suspendedposting_permanent;
-	if($mybb->user['suspensiontime'])
-	{
-		$suspendedpostingtype = $lang->sprintf($lang->error_suspendedposting_temporal, my_date($mybb->settings['dateformat'], $mybb->user['suspensiontime']));
-	}
-
-	$lang->error_suspendedposting = $lang->sprintf($lang->error_suspendedposting, $suspendedpostingtype, my_date($mybb->settings['timeformat'], $mybb->user['suspensiontime']));
-
-	error($lang->error_suspendedposting);
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -263,34 +250,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 				$username = htmlspecialchars_uni($mybb->get_input('username'));
 			}
 			$uid = 0;
-		}
-
-		if(!$mybb->user['uid'] && $mybb->settings['stopforumspam_on_newthread'])
-		{
-			require_once MYBB_ROOT . '/inc/class_stopforumspamchecker.php';
-
-			$stop_forum_spam_checker = new StopForumSpamChecker(
-				$plugins,
-				$mybb->settings['stopforumspam_min_weighting_before_spam'],
-				$mybb->settings['stopforumspam_check_usernames'],
-				$mybb->settings['stopforumspam_check_emails'],
-				$mybb->settings['stopforumspam_check_ips'],
-				$mybb->settings['stopforumspam_log_blocks']
-			);
-
-			try {
-				if($stop_forum_spam_checker->is_user_a_spammer($mybb->get_input('username'), '', get_ip()))
-				{
-					$errors[] = $lang->error_stop_forum_spam_spammer;
-				}
-			}
-			catch (Exception $e)
-			{
-				if($mybb->settings['stopforumspam_block_on_error'])
-				{
-					$errors[] = $lang->error_stop_forum_spam_fetching;
-				}
-			}
 		}
 	}
 	// This user is logged in.
@@ -516,7 +475,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
 			{
-				$quoted_posts[$post] = (int)$post;
+				$quoted_posts[$post] = intval($post);
 			}
 		}
 
@@ -777,19 +736,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$valid_thread = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
 
-		// guest post --> verify author
-		if($post['uid'] == 0)
-		{
-			$valid_username = $posthandler->verify_author();
-		}
-		else
-		{
-			$valid_username = true;
-		}
-		
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_thread || !$valid_subject || !$valid_username)
+		if(!$valid_thread || !$valid_subject)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
@@ -1105,34 +1054,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 	}
 
-	$moderation_notice = '';
-	if(!is_moderator($forum['fid'], "canapproveunapproveattachs"))
-	{
-		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
-		{
-			$moderation_text = $lang->moderation_forum_attachments;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
-
-	if(!is_moderator($forum['fid'], "canapproveunapprovethreads"))
-	{
-		if($forumpermissions['modthreads'] == 1)
-		{
-			$moderation_text = $lang->moderation_forum_thread;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
-
-	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
-	{
-		if($mybb->user['moderateposts'] == 1)
-		{
-			$moderation_text = $lang->moderation_user_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
-		}
-	}
-
 	$plugins->run_hooks("newthread_end");
 
 	$forum['name'] = strip_tags($forum['name']);
@@ -1141,4 +1062,4 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);
 }
-
+?>

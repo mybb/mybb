@@ -110,9 +110,9 @@ class EventDataHandler extends DataHandler
 			return false;
 		}
 
-		$event['start_date']['day'] = (int)$event['start_date']['day'];
-		$event['start_date']['month'] = (int)$event['start_date']['month'];
-		$event['start_date']['year'] = (int)$event['start_date']['year'];
+		$event['start_date']['day'] = intval($event['start_date']['day']);
+		$event['start_date']['month'] = intval($event['start_date']['month']);
+		$event['start_date']['year'] = intval($event['start_date']['year']);
 
 		if($event['start_date']['day'] > date("t", mktime(0, 0, 0, $event['start_date']['month'], 1, $event['start_date']['year'])))
 		{
@@ -143,9 +143,9 @@ class EventDataHandler extends DataHandler
 				return false;
 			}
 
-			$event['end_date']['day'] = (int)$event['end_date']['day'];
-			$event['end_date']['month'] = (int)$event['end_date']['month'];
-			$event['end_date']['year'] = (int)$event['end_date']['year'];
+			$event['end_date']['day'] = intval($event['end_date']['day']);
+			$event['end_date']['month'] = intval($event['end_date']['month']);
+			$event['end_date']['year'] = intval($event['end_date']['year']);
 
 			if($event['end_date']['day'] > date("t", mktime(0, 0, 0, $event['end_date']['month'], 1, $event['end_date']['year'])))
 			{
@@ -261,7 +261,7 @@ class EventDataHandler extends DataHandler
 		else
 		{
 			$hour = $matches[1];
-			$min = (int)$matches[3];
+			$min = intval($matches[3]);
 			$matches[4] = trim($matches[4]);
 			if(my_strtolower($matches[4]) == "pm" && $hour != 12)
 			{
@@ -294,7 +294,7 @@ class EventDataHandler extends DataHandler
 		switch($event['repeats']['repeats'])
 		{
 			case 1:
-				$event['repeats']['days'] = (int)$event['repeats']['days'];
+				$event['repeats']['days'] = intval($event['repeats']['days']);
 				if($event['repeats']['days'] <= 0)
 				{
 					$this->set_error("invalid_repeat_day_interval");
@@ -303,7 +303,7 @@ class EventDataHandler extends DataHandler
 			case 2:
 				break;
 			case 3:
-				$event['repeats']['weeks'] = (int)$event['repeats']['weeks'];
+				$event['repeats']['weeks'] = intval($event['repeats']['weeks']);
 				if($event['repeats']['weeks'] <= 0)
 				{
 					$this->set_error("invalid_repeat_week_interval");
@@ -319,7 +319,7 @@ class EventDataHandler extends DataHandler
 			case 4:
 				if($event['repeats']['day'])
 				{
-					$event['repeats']['day'] = (int)$event['repeats']['day'];
+					$event['repeats']['day'] = intval($event['repeats']['day']);
 					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
@@ -330,11 +330,11 @@ class EventDataHandler extends DataHandler
 				{
 					if($event['repeats']['occurance'] != "last")
 					{
-						$event['repeats']['occurance'] = (int)$event['repeats']['occurance'];
+						$event['repeats']['occurance'] = intval($event['repeats']['occurance']);
 					}
-					$event['repeats']['weekday'] = (int)$event['repeats']['weekday'];
+					$event['repeats']['weekday'] = intval($event['repeats']['weekday']);
 				}
-				$event['repeats']['months'] = (int)$event['repeats']['months'];
+				$event['repeats']['months'] = intval($event['repeats']['months']);
 				if($event['repeats']['months'] <= 0 || $event['repeats']['months'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
@@ -344,7 +344,7 @@ class EventDataHandler extends DataHandler
 			case 5:
 				if($event['repeats']['day'])
 				{
-					$event['repeats']['day'] = (int)$event['repeats']['day'];
+					$event['repeats']['day'] = intval($event['repeats']['day']);
 					if($event['repeats']['day'] <= 0 || $event['repeats']['day'] > 31)
 					{
 						$this->set_error("invalid_repeat_day_interval");
@@ -355,17 +355,17 @@ class EventDataHandler extends DataHandler
 				{
 					if($event['repeats']['occurance'] != "last")
 					{
-						$event['repeats']['occurance'] = (int)$event['repeats']['occurance'];
+						$event['repeats']['occurance'] = intval($event['repeats']['occurance']);
 					}
-					$event['repeats']['weekday'] = (int)$event['repeats']['weekday'];
+					$event['repeats']['weekday'] = intval($event['repeats']['weekday']);
 				}
-				$event['repeats']['month'] = (int)$event['repeats']['month'];
+				$event['repeats']['month'] = intval($event['repeats']['month']);
 				if($event['repeats']['month'] <= 0 || $event['repeats']['month'] > 12)
 				{
 					$this->set_error("invalid_repeat_month_interval");
 					return false;
 				}
-				$event['repeats']['years'] = (int)$event['repeats']['years'];
+				$event['repeats']['years'] = intval($event['repeats']['years']);
 				if($event['repeats']['years'] <= 0 || $event['repeats']['years'] > 4)
 				{
 					$this->set_error("invalid_repeat_year_interval");
@@ -455,9 +455,9 @@ class EventDataHandler extends DataHandler
 
 		$event = &$this->data;
 
-		$query = $db->simple_select("calendars", "*", "cid='".(int)$event['cid']."'");
+		$query = $db->simple_select("calendars", "*", "cid='".intval($event['cid'])."'");
 		$calendar_moderation = $db->fetch_field($query, "moderation");
-		if($calendar_moderation == 1 && (int)$event['private'] != 1)
+		if($calendar_moderation == 1 && intval($event['private']) != 1)
 		{
 			$visible = 0;
 			if($event['uid'] == $mybb->user['uid'])
@@ -476,15 +476,15 @@ class EventDataHandler extends DataHandler
 
 		// Prepare an array for insertion into the database.
 		$this->event_insert_data = array(
-			'cid' => (int)$event['cid'],
-			'uid' => (int)$event['uid'],
+			'cid' => intval($event['cid']),
+			'uid' => intval($event['uid']),
 			'name' => $db->escape_string($event['name']),
 			'description' => $db->escape_string($event['description']),
 			'visible' => $visible,
-			'private' => (int)$event['private'],
+			'private' => intval($event['private']),
 			'dateline' => TIME_NOW,
-			'starttime' => (int)$event['starttime'],
-			'endtime' => (int)$event['endtime']
+			'starttime' => intval($event['starttime']),
+			'endtime' => intval($event['endtime'])
 		);
 
 		if(isset($event['timezone']))
@@ -494,12 +494,12 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['ignoretimezone']))
 		{
-			$this->event_insert_data['ignoretimezone'] = (int)$event['ignoretimezone'];
+			$this->event_insert_data['ignoretimezone'] = intval($event['ignoretimezone']);
 		}
 
 		if(isset($event['usingtime']))
 		{
-			$this->event_insert_data['usingtime'] = (int)$event['usingtime'];
+			$this->event_insert_data['usingtime'] = intval($event['usingtime']);
 		}
 
 		if(isset($event['repeats']))
@@ -568,14 +568,14 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['starttime']))
 		{
-			$this->event_update_data['starttime'] = (int)$event['starttime'];
-			$this->event_update_data['usingtime'] = (int)$event['usingtime'];
+			$this->event_update_data['starttime'] = intval($event['starttime']);
+			$this->event_update_data['usingtime'] = intval($event['usingtime']);
 		}
 
 		if(isset($event['endtime']))
 		{
-			$this->event_update_data['endtime'] = (int)$event['endtime'];
-			$this->event_update_data['usingtime'] = (int)$event['usingtime'];
+			$this->event_update_data['endtime'] = intval($event['endtime']);
+			$this->event_update_data['usingtime'] = intval($event['usingtime']);
 		}
 		else
 		{
@@ -599,12 +599,12 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['ignoretimezone']))
 		{
-			$this->event_update_data['ignoretimezone'] = (int)$event['ignoretimezone'];
+			$this->event_update_data['ignoretimezone'] = intval($event['ignoretimezone']);
 		}
 
 		if(isset($event['private']))
 		{
-			$this->event_update_data['private'] = (int)$event['private'];
+			$this->event_update_data['private'] = intval($event['private']);
 		}
 
 		if(isset($event['visible']))
@@ -614,12 +614,12 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['uid']))
 		{
-			$this->event_update_data['uid'] = (int)$event['uid'];
+			$this->event_update_data['uid'] = intval($event['uid']);
 		}
 
 		$plugins->run_hooks("datahandler_event_update", $this);
 
-		$db->update_query("events", $this->event_update_data, "eid='".(int)$event['eid']."'");
+		$db->update_query("events", $this->event_update_data, "eid='".intval($event['eid'])."'");
 
 		// Return the event's eid and whether or not it is private.
 		$this->return_values = array(
@@ -633,3 +633,4 @@ class EventDataHandler extends DataHandler
 	}
 }
 
+?>

@@ -46,7 +46,7 @@ if($mybb->input['action'] == "add")
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
-			$maxsize = $mybb->get_input('maxsize', 1);
+			$maxsize = intval($mybb->input['maxsize']);
 
 			if($maxsize == 0)
 			{
@@ -139,7 +139,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
+	$plugins->run_hooks("admin_config_attachment_types_edit");
+
+	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -147,8 +149,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?module=config-attachment_types");
 	}
-
-	$plugins->run_hooks("admin_config_attachment_types_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -178,13 +178,13 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
-				"maxsize" => $mybb->get_input('maxsize', 1),
+				"maxsize" => intval($mybb->input['maxsize']),
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
-			$plugins->run_hooks("admin_config_attachment_types_edit_commit");
-
 			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
+
+			$plugins->run_hooks("admin_config_attachment_types_edit_commit");
 
 			// Log admin action
 			log_admin_action($attachment_type['atid'], $mybb->input['extension']);
@@ -254,12 +254,14 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_attachment_types_delete");
+
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=config-attachment_types");
 	}
 
-	$query = $db->simple_select("attachtypes", "*", "atid='".$mybb->get_input('atid', 1)."'");
+	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
 	$attachment_type = $db->fetch_array($query);
 
 	if(!$attachment_type['atid'])
@@ -267,8 +269,6 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?module=config-attachment_types");
 	}
-
-	$plugins->run_hooks("admin_config_attachment_types_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -292,6 +292,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_attachment_types_start");
+
 	$page->output_header($lang->attachment_types);
 
 	$sub_tabs['attachment_types'] = array(
@@ -303,8 +305,6 @@ if(!$mybb->input['action'])
 		'title' => $lang->add_new_attachment_type,
 		'link' => "index.php?module=config-attachment_types&amp;action=add",
 	);
-
-	$plugins->run_hooks("admin_config_attachment_types_start");
 
 	$page->output_nav_tabs($sub_tabs, 'attachment_types');
 
@@ -348,3 +348,4 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+?>

@@ -11,3 +11,4 @@ $l['logindata_invalidpwordusernamecombo'] = "You have entered an invalid usernam
 
 $l['logindata_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['logindata_regimagerequired'] = "Please fill out the image verification code to continue the login process. Please enter the code exactly how it appears in the image.";
+?>

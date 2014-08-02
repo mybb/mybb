@@ -34,7 +34,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", "*", 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", "*", 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -59,7 +59,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", '*', 'tid="'.(int)$tool_id.'"');
+		$query = $db->simple_select("modtools", '*', 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -110,7 +110,7 @@ class CustomModeration extends Moderation
 
 		if(is_array($tid))
 		{
-			$tid = (int)$tid[0]; // There's only 1 thread when doing inline post moderation
+			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
 			// The thread chosen is the first thread in the array of tids.
 			// It is recommended that this be the tid of the oldest post
 		}
@@ -215,10 +215,6 @@ class CustomModeration extends Moderation
 				{
 					$this->unapprove_threads($new_tid, $thread['fid']);
 				}
-				if($post_options['splitthreadprefix'] != '0')
-				{
-					$this->apply_thread_prefix($new_tid, $post_options['splitthreadprefix']); // Add thread prefix to new thread
-				}
 				if(!empty($post_options['splitpostsaddreply'])) // Add reply to new thread
 				{
 					require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -274,7 +270,7 @@ class CustomModeration extends Moderation
 	{
 		global $db, $mybb;
 
-		$tid = (int)$tids[0]; // Take the first thread to get thread data from
+		$tid = intval($tids[0]); // Take the first thread to get thread data from
 		$query = $db->simple_select("threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
@@ -496,3 +492,4 @@ class CustomModeration extends Moderation
 		return true;
 	}
 }
+?>

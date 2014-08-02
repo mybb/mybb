@@ -29,8 +29,6 @@ $l['sort_by_threads'] = "Sort by: Thread count";
 $l['sort_by_referrals'] = "Sort by: Members referred";
 $l['order_asc'] = "ascending order";
 $l['order_desc'] = "descending order";
-$l['asc'] = "asc";
-$l['desc'] = "desc";
 $l['forumteam'] = "Show Forum Team";
 $l['advanced_search'] = "Advanced Search";
 $l['nav_memberlist_search'] = "Search";
@@ -78,3 +76,4 @@ $l['x'] = 'X';
 $l['y'] = 'Y';
 $l['z'] = 'Z';
 
+?>

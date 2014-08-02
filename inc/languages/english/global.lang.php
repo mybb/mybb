@@ -142,7 +142,6 @@ $l['multipage_next'] = "Next";
 $l['multipage_previous'] = "Previous";
 $l['multipage_link_start'] = " ...";
 $l['multipage_link_end'] = "... ";
-$l['multipage_jump'] = "Jump to page";
 
 $l['editor_bold'] = "Bold";
 $l['editor_italic'] = "Italic";
@@ -418,7 +417,6 @@ $l['invalid_captcha'] = "Please fill out the image verification code to continue
 $l['invalid_captcha_verify'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['invalid_captcha_transmit'] = "An error occurred with the image verification. Please try again.";
 $l['captcha_fetch_failure'] = 'There was an error fetching the new captcha.';
-$l['question_fetch_failure'] = 'There was an error fetching the new question.';
 $l['invalid_ayah_result'] = "The Are You a Human game was not completed. Please try again.";
 
 $l['timezone_gmt_minus_1200'] = "(GMT -12:00) Marshall Islands";
@@ -526,12 +524,4 @@ $l['october'] = "October";
 $l['november'] = "November";
 $l['december'] = "December";
 
-$l['moderation_forum_attachments'] = "Please note that new attachments in this forum must be approved by a moderator before becoming visible.";
-$l['moderation_forum_posts'] = "Please note that new posts in this forum must be approved by a moderator before becoming visible.";
-$l['moderation_user_posts'] = "Please note that new posts you make must be approved by a moderator before becoming visible.";
-$l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
-$l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
-$l['moderation_forum_edits_quick'] = "Please note edited posts in this forum must be approved by a moderator before becoming visible.";
-$l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the users.";
-$l['awaiting_message_plural'] = "There is {1} accounts awaiting activation. Please go to your ACP to activate the users.";
-
+?>

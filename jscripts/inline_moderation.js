@@ -36,7 +36,7 @@ var inlineModeration = {
 					{
 						element.prop('checked', true);
 						var post = element.parents('.post_content');
-						var thread = element.parents('.inline_row');
+						var thread = element.parents('tr');
 						var fieldset = element.parents('fieldset');
 						if(post.length > 0)
 						{
@@ -44,7 +44,7 @@ var inlineModeration = {
 						}
 						else if(thread.length > 0)
 						{
-							thread.addClass('trow_selected');
+							thread.children('td').addClass('trow_selected');
 						}
 						
 						if(fieldset.length > 0)
@@ -56,15 +56,15 @@ var inlineModeration = {
 					else
 					{
 						element.prop('checked', false);
-						var post = element.parents('.post_content');
-						var thread = element.parents('.inline_row');
+						var post = element.parents('div.post_content');
+						var thread = element.parents('tr');
 						if(post.length > 0)
 						{
 							post.removeClass('trow_selected');
 						}
 						else if(thread.length > 0)
 						{
-							thread.removeClass('trow_selected');
+							thread.children('td').removeClass('trow_selected');
 						}
 					}
 					allChecked = false;
@@ -132,14 +132,14 @@ var inlineModeration = {
 				}
 			}
 			var post = element.parents('.post_content');
-			var thread = element.parents('.inline_row');
+			var thread = element.parents('tr');
 			if(post.length > 0)
 			{
 				post.addClass('trow_selected');
 			}
 			else if(thread.length > 0)
 			{
-				thread.addClass('trow_selected');
+				thread.children('td').addClass('trow_selected');
 			}
 		}
 		else
@@ -163,14 +163,14 @@ var inlineModeration = {
 				}
 			}
 			var post = element.parents('.post_content');
-			var thread = element.parents('.inline_row');
+			var thread = element.parents('tr');
 			if(post.length > 0)
 			{
 				post.removeClass('trow_selected');
 			}
 			else if(thread.length > 0)
 			{
-				thread.removeClass('trow_selected');
+				thread.children('td').removeClass('trow_selected');
 			}
 		}
 
@@ -250,7 +250,7 @@ var inlineModeration = {
 
 				var post = element.parents('.post_content');
 				var fieldset = element.parents('fieldset');
-				var thread = element.parents('.inline_row');
+				var thread = element.parents('tr');
 				if(post.length > 0)
 				{
 					if(master.prop('checked') == true)
@@ -266,11 +266,11 @@ var inlineModeration = {
 				{
 					if(master.prop('checked') == true)
 					{
-						thread.addClass('trow_selected');
+						thread.children('td').addClass('trow_selected');
 					}
 					else
 					{
-						thread.removeClass('trow_selected');
+						thread.children('td').removeClass('trow_selected');
 					}
 				}
 				
@@ -446,5 +446,4 @@ var inlineModeration = {
 		return array;
 	}
 };
-
 $(inlineModeration.init);

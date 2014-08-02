@@ -18,3 +18,4 @@ $l['three_stars'] = "3 stars out of 5";
 $l['four_stars'] = "4 stars out of 5";
 $l['five_stars'] = "5 stars out of 5";
 $l['rating_added'] = "Your rating has been added!";
+?>

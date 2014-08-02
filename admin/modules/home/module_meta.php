@@ -171,3 +171,4 @@ function home_action_handler($action)
 	}
 }
 
+?>

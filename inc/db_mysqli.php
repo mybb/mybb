@@ -447,20 +447,9 @@ class DB_MySQLi
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query, $resulttype=MYSQLI_ASSOC)
+	function fetch_array($query)
 	{
-		switch($resulttype)
-		{
-			case MYSQLI_NUM:
-			case MYSQLI_BOTH:
-				break;
-			default:
-				$resulttype = MYSQLI_ASSOC;
-				break;
-		}
-
-		$array = mysqli_fetch_array($query, $resulttype);
-
+		$array = mysqli_fetch_assoc($query);
 		return $array;
 	}
 
@@ -1011,7 +1000,7 @@ class DB_MySQLi
 		if($version)
 		{
 			$version = explode(".", $version, 3);
-			$this->version = (int)$version[0].".".(int)$version[1].".".(int)$version[2];
+			$this->version = intval($version[0]).".".intval($version[1]).".".intval($version[2]);
 		}
 		return $this->version;
 	}
@@ -1514,3 +1503,4 @@ class DB_MySQLi
 	}
 }
 
+?>

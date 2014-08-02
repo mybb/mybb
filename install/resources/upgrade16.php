@@ -23,3 +23,4 @@ $upgrade_detail = array(
 
 /* Nothing to do from 1.4.5 to 1.4.13 */
 
+?>

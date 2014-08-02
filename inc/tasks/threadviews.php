@@ -37,3 +37,4 @@ function task_threadviews($task)
 
 	add_task_log($task, $lang->task_threadviews_ran);
 }
+?>

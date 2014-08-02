@@ -33,7 +33,7 @@ if(!@chdir($forumdir) && !empty($forumdir))
 
 $templatelist = "portal,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_welcome";
 $templatelist .= ",portal_welcome_guesttext,postbit_attachments_thumbnails_thumbnail,postbit_attachments_images_image,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images,postbit_attachments,portal_pms";
-$templatelist .= ",multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,portal_announcement_send_item,portal_announcement_icon,portal_announcement_avatar,portal_announcement_numcomments";
+$templatelist .= ",multipage_prevpage,multipage_page,multipage_page_current,multipage,multipage_nextpage,multipage_end,multipage_start,portal_announcement_send_item,portal_announcement_icon,portal_announcement_avatar,portal_announcement_numcomments";
 
 require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -437,7 +437,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 	$query = $db->simple_select("threads t", "COUNT(t.tid) AS threads", "t.visible='1'{$annfidswhere}{$tunviewwhere} AND t.closed NOT LIKE 'moved|%'", array('limit' => 1));
 	$announcementcount = $db->fetch_field($query, "threads");
 
-	$numannouncements = (int)$mybb->settings['portal_numannouncements'];
+	$numannouncements = intval($mybb->settings['portal_numannouncements']);
 	if(!$numannouncements)
 	{
 		$numannouncements = 10; // Default back to 10
@@ -704,3 +704,4 @@ $plugins->run_hooks("portal_end");
 
 eval("\$portal = \"".$templates->get("portal")."\";");
 output_page($portal);
+?>

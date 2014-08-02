@@ -235,3 +235,4 @@ class MyLanguage
 		return $this->$matches[1];
 	}
 }
+?>

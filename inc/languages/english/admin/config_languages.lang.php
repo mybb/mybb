@@ -55,3 +55,4 @@ $l['success_langfile_updated'] = "The language file has been updated successfull
 $l['success_langprops_updated'] = "The language properties have been updated successfully.";
 $l['success_quickphrases_updated'] = "The quick language phrases have been updated successfully.";
 
+?>

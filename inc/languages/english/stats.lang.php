@@ -35,3 +35,4 @@ $l['replies'] = "replies";
 $l['views'] = "views";
 $l['top_referrer'] = "Top referrer: <strong>{1}</strong> (<strong>{2}</strong> referrals)";
 
+?>

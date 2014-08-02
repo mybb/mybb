@@ -307,15 +307,7 @@ email=Sent via Email]]></optionscode>
 			<optionscode><![CDATA[groupselect]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
-		</setting>
-		<setting name="hidesignatures">
-			<title>Hide Signatures To Groups</title>
-			<description><![CDATA[Select the usergroups you wish to hide signatures from.]]></description>
-			<disporder>23</disporder>
-			<optionscode><![CDATA[groupselect]]></optionscode>
-			<settingvalue><![CDATA[]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
+		</setting>	
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="4" isdefault="1">
 		<setting name="seourls">
@@ -1595,18 +1587,10 @@ descending=Descending]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
-		<setting name="allowanonwarningpms">
-			<title>Allow Anonymous Warning PMs</title>
-			<description><![CDATA[Whether or not if to allow moderators to send anonymous warning PMs.]]></description>
-			<disporder>4</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
 		<setting name="maxwarningpoints">
 			<title>Maximum Warning Points</title>
 			<description><![CDATA[The maximum warning points that can be given to a user before it is considered a warning level of 100%.]]></description>
-			<disporder>5</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -2263,99 +2247,7 @@ delete=Delete]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="stopforumspam" title="Stop Forum Spam" description="This section allows you to change the settings used for the integration with StopForumSpam.com" disporder="27" isdefault="1">
-		<setting name="enablestopforumspam_on_register">
-			<title>Check Registrations Against StopForumSpam.com?</title>
-			<description>
-				<![CDATA[Do you wish to check all new registrations against the StopForumSpam.com database?]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_on_contact">
-			<title>Check Guest Contact Submissions Against StopForumSpam?</title>
-			<description>
-				<![CDATA[Should guest email and IP addresses be checked against StopForumSpam when using the contact page?]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_on_newreply">
-			<title>Check Guest Replies Against StopForumSpam?</title>
-			<description>
-				<![CDATA[Should guest usernames and IP addresses be checked against StopForumSpam when creating new replies?]]></description>
-			<disporder>3</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_on_newthread">
-			<title>Check Guest Threads Against StopForumSpam?</title>
-			<description>
-				<![CDATA[Should guest usernames and IP addresses be checked against StopForumSpam when creating new threads?]]></description>
-			<disporder>4</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_min_weighting_before_spam">
-			<title>Minimum stop forum spam weighting?</title>
-			<description>
-				<![CDATA[The minimum weighting received from StopForumSpam before deciding a user is a spammer. Should be a number between 0 and 100.]]></description>
-			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[50.00]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_check_usernames">
-			<title>Check usernames?</title>
-			<description>
-				<![CDATA[Should the user usernames be checked against the StopForumSpam database?]]></description>
-			<disporder>6</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_check_emails">
-			<title>Check email addresses?</title>
-			<description>
-				<![CDATA[Should the user email addresses be checked against the StopForumSpam database?]]></description>
-			<disporder>7</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_check_ips">
-			<title>Check IP addresses?</title>
-			<description>
-				<![CDATA[Should the user IP addresses be checked against the StopForumSpam database?]]></description>
-			<disporder>8</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_block_on_error">
-			<title>Block on StopForumSpam error?</title>
-			<description>
-				<![CDATA[If there is an error retrieving information from the StopForumSpam API, should the user be blocked?]]></description>
-			<disporder>9</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-		<setting name="stopforumspam_log_blocks">
-			<title>Log StopForumSpam blocks?</title>
-			<description>
-				<![CDATA[Should every StopForumSpam block be logged?]]></description>
-			<disporder>10</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[0]]></settingvalue>
-			<isdefault>1</isdefault>
-		</setting>
-	</settinggroup>
-	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="28" isdefault="1">
+	<settinggroup name="contactdetails" title="Contact Details" description="This section allows you to change the settings of the contact fields feature." disporder="27" isdefault="1">
 		<setting name="allowicqfield">
 			<title>Allow ICQ Number Field To Usergroups</title>
 			<description><![CDATA[Select the usergroups who are allowed to use the ICQ Number contact field.]]></description>
@@ -2414,7 +2306,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours.]]></description>
+			<description><![CDATA[Inser the interval of time to refresh the statistics page cache in hours.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>

@@ -159,7 +159,7 @@ class Moderation
 		$plugins->run_hooks("class_moderation_remove_redirects", $tid);
 
 		// Delete the redirects
-		$tid = (int)$tid;
+		$tid = intval($tid);
 		if(empty($tid))
 		{
 			return false;
@@ -184,7 +184,7 @@ class Moderation
 	{
 		global $db, $cache, $plugins;
 
-		$tid = (int)$tid;
+		$tid = intval($tid);
 
 		$plugins->run_hooks("class_moderation_delete_thread_start", $tid);
 
@@ -339,7 +339,7 @@ class Moderation
 	{
 		global $db, $plugins;
 
-		$pid = (int)$pid;
+		$pid = intval($pid);
 
 		if(empty($pid))
 		{
@@ -662,7 +662,7 @@ class Moderation
 
 		$pid = $plugins->run_hooks("class_moderation_delete_post_start", $pid);
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
-		$pid = (int)$pid;
+		$pid = intval($pid);
 		$query = $db->query("
 			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, t.visible as threadvisible
 			FROM ".TABLE_PREFIX."posts p
@@ -979,9 +979,9 @@ class Moderation
 		global $db, $plugins;
 
 		// Get thread info
-		$tid = (int)$tid;
-		$new_fid = (int)$new_fid;
-		$redirect_expire = (int)$redirect_expire;
+		$tid = intval($tid);
+		$new_fid = intval($new_fid);
+		$redirect_expire = intval($redirect_expire);
 
 		$thread = get_thread($tid, true);
 
@@ -1067,7 +1067,7 @@ class Moderation
 					"replies" => 0,
 					"closed" => "moved|$tid",
 					"sticky" => $thread['sticky'],
-					"visible" => (int)$thread['visible'],
+					"visible" => intval($thread['visible']),
 					"notes" => ''
 				);
 				$redirect_tid = $db->insert_query("threads", $threadarray);
@@ -1077,7 +1077,7 @@ class Moderation
 				}
 
 				// If we're moving back to a forum where we left a redirect, delete the rediect
-				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".(int)$tid."' AND fid='".(int)$new_fid."'");
+				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($redirect_tid = $db->fetch_field($query, 'tid'))
 				{
 					$this->delete_thread($redirect_tid);
@@ -1100,7 +1100,7 @@ class Moderation
 					"replies" => $thread['replies'],
 					"closed" => $thread['closed'],
 					"sticky" => $thread['sticky'],
-					"visible" => (int)$thread['visible'],
+					"visible" => intval($thread['visible']),
 					"unapprovedposts" => $thread['unapprovedposts'],
 					"deletedposts" => $thread['deletedposts'],
 					"attachmentcount" => $thread['attachmentcount'],
@@ -1256,7 +1256,7 @@ class Moderation
 				}
 
 				// If we're moving back to a forum where we left a redirect, delete the rediect
-				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".(int)$tid."' AND fid='".(int)$new_fid."'");
+				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
 				while($redirect_tid = $db->fetch_field($query, 'tid'))
 				{
 					$this->delete_thread($redirect_tid);
@@ -1374,8 +1374,8 @@ class Moderation
 	{
 		global $db, $mybb, $mergethread, $thread, $plugins;
 
-		$mergetid = (int)$mergetid;
-		$tid = (int)$tid;
+		$mergetid = intval($mergetid);
+		$tid = intval($tid);
 
 		if(!isset($mergethread['tid']) || $mergethread['tid'] != $mergetid)
 		{
@@ -1398,7 +1398,7 @@ class Moderation
 			$sqlarray = array(
 				"tid" => $tid,
 			);
-			$db->update_query("polls", $sqlarray, "tid='".(int)$mergethread['tid']."'");
+			$db->update_query("polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
 		}
 		// Both the old and the new thread have polls? Remove one
 		elseif($mergethread['poll'])
@@ -1740,9 +1740,9 @@ class Moderation
 	{
 		global $db, $thread, $plugins, $cache;
 
-		$tid = (int)$tid;
-		$moveto = (int)$moveto;
-		$newtid = (int)$destination_tid;
+		$tid = intval($tid);
+		$moveto = intval($moveto);
+		$newtid = intval($destination_tid);
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -1759,6 +1759,7 @@ class Moderation
 
 		// Get the first split post
 		$post_info = get_post($pids[0]);
+		$last_post_info = get_post(end($pids));
 		$visible = $post_info['visible'];
 
 		$forum_counters[$moveto] = array(
@@ -1778,13 +1779,14 @@ class Moderation
 			$newthread = array(
 				"fid" => $moveto,
 				"subject" => $newsubject,
-				"icon" => (int)$post_info['icon'],
-				"uid" => (int)$post_info['uid'],
+				"icon" => intval($post_info['icon']),
+				"uid" => intval($post_info['uid']),
 				"username" => $db->escape_string($post_info['username']),
-				"dateline" => (int)$post_info['dateline'],
-				"lastpost" => 0,
-				"lastposter" => '',
-				"visible" => (int)$visible,
+				"dateline" => intval($post_info['dateline']),
+				"lastpost" => $last_post_info['dateline'],
+				"lastposter" => $db->escape_string($last_post_info['username']),
+				"lastposteruid" => $last_post_info['uid'],
+				"visible" => intval($visible),
 				"notes" => ''
 			);
 			$newtid = $db->insert_query("threads", $newthread);
@@ -2059,8 +2061,9 @@ class Moderation
 						$counters[$key] = "+{$counter}";
 					}
 				}
+				update_thread_data($tid);
 				update_thread_counters($tid, $counters);
-				update_last_post($tid);
+				update_last_post($post['tid']);
 			}
 		}
 
@@ -2100,7 +2103,7 @@ class Moderation
 
 		$tid_list = implode(',', $tids);
 
-		$moveto = (int)$moveto;
+		$moveto = intval($moveto);
 
 		$newforum = get_forum($moveto);
 		
@@ -2658,7 +2661,7 @@ class Moderation
 	{
 		global $db, $plugins;
 
-		$tid = (int)$tid;
+		$tid = intval($tid);
 
 		if(empty($tid))
 		{
@@ -2666,7 +2669,7 @@ class Moderation
 		}
 
 		$update_thread = array(
-			"deletetime" => (int)$deletetime
+			"deletetime" => intval($deletetime)
 		);
 		$db->update_query("threads", $update_thread, "tid='{$tid}'");
 
@@ -2763,7 +2766,7 @@ class Moderation
 
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
-		$fid = (int)$fid;
+		$fid = intval($fid);
 
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
@@ -2802,7 +2805,7 @@ class Moderation
 
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
-		$fid = (int)$fid;
+		$fid = intval($fid);
 
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
@@ -2930,7 +2933,7 @@ class Moderation
 
 		// Make sure we only have valid values
 		$tids = array_map('intval', $tids);
-		$fid = (int)$fid;
+		$fid = intval($fid);
 
 		$tids_csv = implode(',', $tids);
 
@@ -3008,7 +3011,7 @@ class Moderation
 		$tids = array_map('intval', $tids);
 		$tids_csv = implode(',', $tids);
 
-		$update_thread = array('prefix' => (int)$prefix);
+		$update_thread = array('prefix' => intval($prefix));
 		$db->update_query('threads', $update_thread, "tid IN ({$tids_csv})");
 
 		$arguments = array('tids' => $tids, 'prefix' => $prefix);
@@ -3631,3 +3634,4 @@ class Moderation
 		return true;
 	}
 }
+?>

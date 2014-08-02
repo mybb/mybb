@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'online.php');
 
-$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_row_ip_lookup";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -43,11 +43,6 @@ if($mybb->get_input('action') == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
 	$invis_count = $db->fetch_field($query, "users");
 
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
-	
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -173,11 +168,6 @@ else
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
-	
-	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
 
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];
@@ -282,3 +272,4 @@ else
 	eval("\$online = \"".$templates->get("online")."\";");
 	output_page($online);
 }
+?>

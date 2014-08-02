@@ -406,3 +406,4 @@ Thank you,
 $l['ipaddress_misc_info'] = "Misc. Information for '{1}'";
 $l['ipaddress_host_name'] = "Host Name";
 $l['ipaddress_location'] = "GeoIP Location";
+?>

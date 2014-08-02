@@ -22,3 +22,4 @@ $l['online_admins'] = "Online Admins";
 $l['ipaddress'] = "IP Address:";
 $l['mybb_documentation'] = "MyBB Documentation";
 
+?>

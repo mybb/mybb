@@ -17,3 +17,4 @@ $l['can_manage_forum_announcements'] = "Can manage forum announcements?";
 $l['can_moderate'] = "Can moderate posts, threads, and attachments?";
 $l['can_manage_attachments'] = "Can manage attachments?";
 
+?>

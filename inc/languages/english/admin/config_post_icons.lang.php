@@ -44,3 +44,4 @@ $l['success_post_icon_updated'] = "The post icon has been updated successfully."
 $l['success_post_icon_deleted'] = "The selected post icon has been deleted successfully.";
 
 $l['confirm_post_icon_deletion'] = "Are you sure you wish to delete this post icon?";
+?>

@@ -14,3 +14,4 @@ $l['archive_nopermission'] = "Sorry, you do not have permission to access this r
 $l['error_nothreads'] = "There are currently no threads in this forum.";
 $l['error_unapproved_thread'] = "This thread is unapproved. Please <a href=\"{1}\">view the full version</a> to view the contents of this thread.";
 $l['archive_not_found'] = "The requested page was not found on this server.";
+?>

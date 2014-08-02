@@ -97,3 +97,4 @@ $l['searching'] = 'Searching...';
 $l['search_error'] = 'There was an error fetching your search results:';
 $l['search_done'] = 'Done!';
 
+?>

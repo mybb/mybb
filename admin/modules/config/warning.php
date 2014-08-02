@@ -62,7 +62,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => intval($mybb->input['action_1_usergroup']),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -83,7 +83,7 @@ if($mybb->input['action'] == "add_level")
 				);
 			}
 			$new_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
+				"percentage" => intval($mybb->input['percentage']),
 				"action" => serialize($action)
 			);
 
@@ -200,7 +200,9 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$plugins->run_hooks("admin_config_warning_edit_level");
+
+	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -209,8 +211,6 @@ if($mybb->input['action'] == "edit_level")
 		flash_message($lang->error_invalid_warning_level, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
-
-	$plugins->run_hooks("admin_config_warning_edit_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -226,7 +226,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => intval($mybb->input['action_1_usergroup']),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "edit_level")
 				);
 			}
 			$updated_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
+				"percentage" => intval($mybb->input['percentage']),
 				"action" => serialize($action)
 			);
 
@@ -396,7 +396,9 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$plugins->run_hooks("admin_config_warning_delete_level");
+
+	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -411,8 +413,6 @@ if($mybb->input['action'] == "delete_level")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
-
-	$plugins->run_hooks("admin_config_warning_delete_level");
 
 	if($mybb->request_method == "post")
 	{
@@ -453,7 +453,7 @@ if($mybb->input['action'] == "add_type")
 		{
 			$new_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => intval($mybb->input['points']),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -513,7 +513,9 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$plugins->run_hooks("admin_config_warning_edit_type");
+
+	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -522,8 +524,6 @@ if($mybb->input['action'] == "edit_type")
 		flash_message($lang->error_invalid_warning_type, 'error');
 		admin_redirect("index.php?module=config-warning");
 	}
-
-	$plugins->run_hooks("admin_config_warning_edit_type");
 
 	if($mybb->request_method == "post")
 	{
@@ -541,7 +541,7 @@ if($mybb->input['action'] == "edit_type")
 		{
 			$updated_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => intval($mybb->input['points']),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -609,7 +609,9 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
-	$query = $db->simple_select("warningtypes", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$plugins->run_hooks("admin_config_warning_delete_type");
+
+	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
 	// Does the warning type not exist?
@@ -624,8 +626,6 @@ if($mybb->input['action'] == "delete_type")
 	{
 		admin_redirect("index.php?module=config-warning");
 	}
-
-	$plugins->run_hooks("admin_config_warning_delete_type");
 
 	if($mybb->request_method == "post")
 	{
@@ -762,3 +762,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+?>

@@ -69,3 +69,4 @@ function task_usercleanup($task)
 
 	add_task_log($task, $lang->task_usercleanup_ran);
 }
+?>

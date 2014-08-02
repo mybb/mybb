@@ -166,3 +166,4 @@ function kill_tags($array)
 
 	return $array;
 }
+?>

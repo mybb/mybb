@@ -81,7 +81,9 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', 1)."'");
+	$plugins->run_hooks("admin_config_badwords_delete");
+
+	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?
@@ -96,8 +98,6 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=config-badwords");
 	}
-
-	$plugins->run_hooks("admin_config_badwords_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -122,7 +122,9 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("badwords", "*", "bid='".$mybb->get_input('bid', 1)."'");
+	$plugins->run_hooks("admin_config_badwords_edit");
+
+	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
 
 	// Does the bad word not exist?
@@ -131,8 +133,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_bid, 'error');
 		admin_redirect("index.php?module=config-badwords");
 	}
-
-	$plugins->run_hooks("admin_config_badwords_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -158,9 +158,9 @@ if($mybb->input['action'] == "edit")
 				"replacement" => $db->escape_string($mybb->input['replacement'])
 			);
 
-			$plugins->run_hooks("admin_config_badwords_edit_commit");
-
 			$db->update_query("badwords", $updated_badword, "bid='{$badword['bid']}'");
+
+			$plugins->run_hooks("admin_config_badwords_edit_commit");
 
 			// Log admin action
 			log_admin_action($badword['bid'], $mybb->input['badword']);
@@ -208,6 +208,8 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_badwords_start");
+
 	$page->output_header($lang->bad_words);
 
 	$sub_tabs['badwords'] = array(
@@ -215,8 +217,6 @@ if(!$mybb->input['action'])
 		'description' => $lang->bad_word_filters_desc,
 		'link' => "index.php?module=config-badwords"
 	);
-
-	$plugins->run_hooks("admin_config_badwords_start");
 
 	$page->output_nav_tabs($sub_tabs, "badwords");
 
@@ -267,3 +267,4 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
+?>

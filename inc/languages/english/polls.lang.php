@@ -55,3 +55,4 @@ $l['poll_time_limit'] = "Sorry but you cannot add a poll to your thread. The Adm
 
 $l['poll_deleted'] = "Deleted Poll";
 $l['poll_edited'] = "Edited Poll";
+?>

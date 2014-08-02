@@ -63,3 +63,4 @@ To join, please proceed to your [url={2}/usercp.php?action=usergroups]Group Memb
 
 This invite will expire {3} days from now.";
 
+?>

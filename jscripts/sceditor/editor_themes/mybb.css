@@ -406,7 +406,7 @@ div.sceditor-insertemoticon, div.sceditor-color-picker {
     border: 1px solid #bbb;
     width: 20em;
 }
-.sceditor-insertemoticon img, .sceditor-more-emoticons img {
+.sceditor-insertemoticon img {
     cursor: pointer;
     margin: 2px;
 }
@@ -583,11 +583,4 @@ div.sceditor-group {
     
   background-image: url(php.png);
     
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-	height: auto;
-	width: auto;
 }

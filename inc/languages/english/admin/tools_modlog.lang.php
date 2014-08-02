@@ -48,3 +48,4 @@ $l['date_range'] = "Date range:";
 $l['success_pruned_mod_logs'] = "The moderator logs have been pruned successfully.";
 $l['note_logs_locked'] = "For security reasons, logs less than 24 hours old cannot be pruned.";
 
+?>

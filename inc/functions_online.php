@@ -56,7 +56,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['aid'] = 0;
 			}
-			$parameters['aid'] = (int)$parameters['aid'];
+			$parameters['aid'] = intval($parameters['aid']);
 			if($parameters['aid'] > 0)
 			{
 				$ann_list[$parameters['aid']] = $parameters['aid'];
@@ -69,7 +69,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['aid'] = 0;
 			}
-			$parameters['aid'] = (int)$parameters['aid'];
+			$parameters['aid'] = intval($parameters['aid']);
 			if($parameters['aid'] > 0)
 			{
 				$aid_list[] = $parameters['aid'];
@@ -88,7 +88,7 @@ function fetch_wol_activity($location, $nopermission=false)
 				{
 					$parameters['eid'] = 0;
 				}
-				$parameters['eid'] = (int)$parameters['eid'];
+				$parameters['eid'] = intval($parameters['eid']);
 				if($parameters['eid'] > 0)
 				{
 					$eid_list[$parameters['eid']] = $parameters['eid'];
@@ -120,7 +120,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['fid'] = 0;
 			}
-			$parameters['fid'] = (int)$parameters['fid'];
+			$parameters['fid'] = intval($parameters['fid']);
 			if($parameters['fid'] > 0)
 			{
 				$fid_list[$parameters['fid']] = $parameters['fid'];
@@ -163,7 +163,7 @@ function fetch_wol_activity($location, $nopermission=false)
 				{
 					$parameters['uid'] = 0;
 				}
-				$parameters['uid'] = (int)$parameters['uid'];
+				$parameters['uid'] = intval($parameters['uid']);
 				if($parameters['uid'] > 0)
 				{
 					$uid_list[$parameters['uid']] = $parameters['uid'];
@@ -206,7 +206,7 @@ function fetch_wol_activity($location, $nopermission=false)
 				{
 					$parameters['tid'] = 0;
 				}
-				$parameters['tid'] = (int)$parameters['tid'];
+				$parameters['tid'] = intval($parameters['tid']);
 				if($parameters['tid'] > 0)
 				{
 					$tid_list[$parameters['tid']] = $parameters['tid'];
@@ -271,7 +271,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['tid'] = 0;
 			}
-			$parameters['tid'] = (int)$parameters['tid'];
+			$parameters['tid'] = intval($parameters['tid']);
 			if($parameters['tid'] > 0)
 			{
 				$tid_list[$parameters['tid']] = $parameters['tid'];
@@ -284,7 +284,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['fid'] = 0;
 			}
-			$parameters['fid'] = (int)$parameters['fid'];
+			$parameters['fid'] = intval($parameters['fid']);
 			if($parameters['fid'] > 0)
 			{
 				$fid_list[$parameters['fid']] = $parameters['fid'];
@@ -344,7 +344,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['tid'] = 0;
 			}
-			$parameters['tid'] = (int)$parameters['tid'];
+			$parameters['tid'] = intval($parameters['tid']);
 			if($parameters['tid'] > 0)
 			{
 				$tid_list[$parameters['tid']] = $parameters['tid'];
@@ -385,7 +385,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['uid'] = 0;
 			}
-			$parameters['uid'] = (int)$parameters['uid'];
+			$parameters['uid'] = intval($parameters['uid']);
 			if($parameters['uid'] > 0)
 			{
 				$uid_list[$parameters['uid']] = $parameters['uid'];
@@ -409,7 +409,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['tid'] = 0;
 			}
-			$parameters['tid'] = (int)$parameters['tid'];
+			$parameters['tid'] = intval($parameters['tid']);
 			if($parameters['tid'] > 0)
 			{
 				$tid_list[$parameters['tid']] = $parameters['tid'];
@@ -429,7 +429,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$parameters['pid'] = 0;
 			}
-			$parameters['pid'] = (int)$parameters['pid'];
+			$parameters['pid'] = intval($parameters['pid']);
 			if($parameters['pid'] > 0 && $parameters['action'] == "showpost")
 			{
 				$pid_list[$parameters['pid']] = $parameters['pid'];
@@ -442,13 +442,13 @@ function fetch_wol_activity($location, $nopermission=false)
 				{
 					$parameters['page'] = 0;
 				}
-				$parameters['page'] = (int)$parameters['page'];
+				$parameters['page'] = intval($parameters['page']);
 				$user_activity['page'] = $parameters['page'];
 				if(!isset($parameters['tid']))
 				{
 					$parameters['tid'] = 0;
 				}
-				$parameters['tid'] = (int)$parameters['tid'];
+				$parameters['tid'] = intval($parameters['tid']);
 				if($parameters['tid'] > 0)
 				{
 					$tid_list[$parameters['tid']] = $parameters['tid'];
@@ -1172,3 +1172,4 @@ function build_wol_row($user)
 	}
 	return $online_row;
 }
+?>

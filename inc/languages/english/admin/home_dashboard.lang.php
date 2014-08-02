@@ -53,3 +53,4 @@ $l['save_notes'] = "Save Notes";
 
 $l['success_notes_updated'] = "The administrator notes have been successfully updated.";
 
+?>

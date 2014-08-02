@@ -168,8 +168,6 @@ foreach($usergroups as $usergroup)
 
 		$bgcolor = alt_trow();
 
-		$plugins->run_hooks('showteam_user');
-
 		// If the current group is a moderator group
 		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 		{
@@ -202,3 +200,4 @@ $plugins->run_hooks("showteam_end");
 
 eval("\$showteam = \"".$templates->get("showteam")."\";");
 output_page($showteam);
+?>

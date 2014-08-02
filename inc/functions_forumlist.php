@@ -586,3 +586,4 @@ function get_forum_unapproved($forum)
 		"unapproved_threads" => $unapproved_threads
 	);
 }
+?>

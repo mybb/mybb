@@ -160,8 +160,6 @@ $l['timeonline'] = "Time Spent Online:";
 $l['timeonline_hidden'] = "(Hidden)";
 $l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
-$l['error_stop_forum_spam_spammer'] = 'Sorry, your username or email address matches that of a known spammer. If you feel this is a mistake, please contact an administrator.';
-$l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your account against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
 
 $l['none_registered'] = "None Registered";
 $l['not_specified'] = "Not Specified";
@@ -187,7 +185,7 @@ $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />Yo
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_accountactivated_admin'] = "Your email has successfully validated.<br />Your registration must now be activated by an administrator. Until then, you may not be able to post on these forums.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";
-$l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator. Until then, you may not be able to post on these forums.";
+$l['redirect_registered_admin_activate'] = "Thank you for registering on {1}, {2}.<br />Your registration must be activated by an administrator.  Until then, you may not be able to post on these forums.";
 $l['redirect_loggedout'] = "You have successfully been logged out.<br />You will now be taken back to the forum index.";
 $l['redirect_alreadyloggedout'] = "You were already logged out or have not logged in yet.<br />You will now be taken back to the forum index.";
 $l['redirect_lostpwsent'] = "Thank you, all accounts pertaining to that email address have now been sent an email with details on how to reset the passwords.<br /><br />You will now be taken to the forums' index.";
@@ -216,7 +214,6 @@ $l['js_validator_no_username'] = "You must enter a username";
 $l['js_validator_invalid_email'] = "You need to enter a valid email address";
 $l['js_validator_email_match'] = "You need to enter the same email address again";
 $l['js_validator_no_image_text'] = "You need to enter the text in the image above";
-$l['js_validator_no_security_question'] = "You need to enter the answer to the question above";
 $l['js_validator_password_matches'] = "The passwords you enter must match";
 $l['js_validator_password_complexity'] = "Checking password complexity";
 $l['js_validator_password_length'] = "Your password must be {1} or more characters long";
@@ -241,13 +238,4 @@ $l['add_to_buddy_list'] = "Add to Buddy List";
 $l['remove_from_ignore_list'] = "Remove from Ignore List";
 $l['add_to_ignore_list'] = "Add to Ignore List";
 $l['report_user'] = "Report User";
-
-$l['newregistration_subject'] = "New registration at {1}";
-$l['newregistration_message'] = "{1},
-
-There is a new user at {2} who is pending admin activation.
-
-Username: {3}
-
-Thank you,
-{2} Staff";
+?>

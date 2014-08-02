@@ -79,3 +79,4 @@ function upgrade4_dbchanges()
 	$output->print_footer("4_done");
 }
 
+?>

@@ -89,3 +89,4 @@ $l['success_promo_added'] = 'The promotion has been created successfully.';
 $l['confirm_promo_disable'] = "Are you sure you want to disable this promotion?";
 $l['confirm_promo_deletion'] = "Are you sure you wish to delete this promotion?";
 
+?>

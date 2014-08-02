@@ -18,13 +18,13 @@ require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("announcements");
 
-$aid = $mybb->get_input('aid', 1);
+$aid = $mybb->get_input('aid');
+
+$plugins->run_hooks("announcements_start");
 
 // Get announcement fid
 $query = $db->simple_select("announcements", "fid", "aid='$aid'");
 $announcement = $db->fetch_array($query);
-
-$plugins->run_hooks("announcements_start");
 
 if(!$announcement)
 {
@@ -124,3 +124,4 @@ $plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
 output_page($forumannouncement);
+?>

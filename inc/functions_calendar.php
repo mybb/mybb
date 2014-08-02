@@ -1098,3 +1098,4 @@ function fetch_weekday_monthly_repetition($repeats, $month, $year)
 	}
 	return gmmktime(0, 0, 0, $month, $day, $year);
 }
+?>

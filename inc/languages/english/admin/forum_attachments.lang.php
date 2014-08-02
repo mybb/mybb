@@ -105,3 +105,4 @@ $l['button_delete_orphans'] = "Delete Checked Orphans";
 $l['button_delete_attachments'] = "Delete Checked Attachments";
 $l['button_find_attachments'] = "Find Attachments";
 
+?>

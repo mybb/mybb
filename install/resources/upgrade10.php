@@ -37,3 +37,4 @@ function upgrade10_dbchanges()
 	$output->print_footer("10_done");
 }
 
+?>

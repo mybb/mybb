@@ -1,21 +1,5 @@
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
-
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"), require("../xml/xml"), require("../javascript/javascript"), require("../css/css"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror", "../xml/xml", "../javascript/javascript", "../css/css"], mod);
-  else // Plain browser env
-    mod(CodeMirror);
-})(function(CodeMirror) {
-"use strict";
-
 CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
-  var htmlMode = CodeMirror.getMode(config, {name: "xml",
-                                             htmlMode: true,
-                                             multilineTagIndentFactor: parserConfig.multilineTagIndentFactor,
-                                             multilineTagIndentPastTag: parserConfig.multilineTagIndentPastTag});
+  var htmlMode = CodeMirror.getMode(config, {name: "xml", htmlMode: true});
   var cssMode = CodeMirror.getMode(config, "css");
 
   var scriptTypes = [], scriptTypesConf = parserConfig && parserConfig.scriptTypes;
@@ -60,7 +44,7 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
     if (close > -1) stream.backUp(cur.length - close);
     else if (m = cur.match(/<\/?$/)) {
       stream.backUp(cur.length);
-      if (!stream.match(pat, false)) stream.match(cur);
+      if (!stream.match(pat, false)) stream.match(cur[0]);
     }
     return style;
   }
@@ -109,6 +93,8 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
         return CodeMirror.Pass;
     },
 
+    electricChars: "/{}:",
+
     innerMode: function(state) {
       return {state: state.localState || state.htmlState, mode: state.localMode || htmlMode};
     }
@@ -116,5 +102,3 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
 }, "xml", "javascript", "css");
 
 CodeMirror.defineMIME("text/html", "htmlmixed");
-
-});

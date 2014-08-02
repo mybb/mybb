@@ -14,14 +14,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.7.2";
+	public $version = "1.7.1";
 
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	public $version_code = 1702;
+	public $version_code = 1701;
 
 	/**
 	 * The current working directory.
@@ -423,7 +423,7 @@ class MyBB {
 				{
 					return 0;
 				}
-				return (int)$this->input[$name];
+				return intval($this->input[$name]);
 			default:
 				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
 				{
@@ -576,3 +576,4 @@ $fpermfields = array(
 	'cansearch'
 );
 
+?>

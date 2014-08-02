@@ -224,7 +224,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 				</tr>
 				<tr class="alt_row last">
 					<td class="first"><label for="bburl">Forum URL (No trailing slash):</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="bburl" id="bburl" value="{2}" onkeyup="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise links on your forum may be broken.\')" onchange="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise links on your forum may be broken.\')" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="bburl" id="bburl" value="{2}" /></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="first last">Website Details</th>
@@ -242,11 +242,11 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="cookiedomain" id="cookiedomain" value="{5}" onkeyup="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise logging in or out on your forum may be broken.\')" onchange="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise logging in or out on your forum may be broken.\')" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="cookiedomain" id="cookiedomain" value="{5}" /></td>
 				</tr>
 				<tr class="alt_row last">
 					<td class="first"><label for="cookiepath">Cookie Path:</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="cookiepath" id="cookiepath" value="{6}" onkeyup="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise logging in or out on your forum may be broken.\')" onchange="warnUser(this, \'This option was set automatically. Do not change it if you are not sure about the correct value, otherwise logging in or out on your forum may be broken.\')" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="cookiepath" id="cookiepath" value="{6}" /></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="first last">Contact Details</th>
@@ -269,7 +269,6 @@ $l['config_step_error_config'] = '<div class="error">
 </div>';
 $l['config_step_error_url'] = 'You did not enter the URL to your forums.';
 $l['config_step_error_name'] = 'You did not enter a name for your copy of MyBB.';
-$l['config_step_revert'] = 'Click to revert this setting to original value.';
 
 
 $l['admin_step_setupsettings'] = '<p>Setting up basic board settings...</p>';
@@ -293,11 +292,11 @@ $l['admin_step_admintable'] = '<div class="border_wrapper">
 		</tr>
 		<tr class="alt_row">
 			<td class="first"><label for="adminpass">Password:</label></td>
-			<td class="alt_col last"><input type="password" class="text_input" name="adminpass" id="adminpass" value="" autocomplete="off" onchange="comparePass()" /></td>
+			<td class="alt_col last"><input type="password" class="text_input" name="adminpass" id="adminpass" value="" autocomplete="off"  /></td>
 		</tr>
 		<tr class="last">
 			<td class="first"><label for="adminpass2">Retype Password:</label></td>
-			<td class="alt_col last"><input type="password" class="text_input" name="adminpass2" id="adminpass2" value="" autocomplete="off" onchange="comparePass()"  /></td>
+			<td class="alt_col last"><input type="password" class="text_input" name="adminpass2" id="adminpass2" value="" autocomplete="off"  /></td>
 		</tr>
 		<tr>
 			<th colspan="2" class="first last">Contact Details</th>
@@ -321,7 +320,6 @@ $l['admin_step_error_nouser'] = 'You did not enter a username for your Administr
 $l['admin_step_error_nopassword'] = 'You did not enter a password for your Administrator account.';
 $l['admin_step_error_nomatch'] = 'The passwords you entered do not match.';
 $l['admin_step_error_noemail'] = 'You did not enter your email address for the Administrator\'s account.';
-$l['admin_step_nomatch'] = 'The retyped password does not match the password from the first input. Please correct it before continuing.';
 
 $l['done_step_usergroupsinserted'] = "<p>Importing user groups...";
 $l['done_step_admincreated'] = '<p>Creating Administrator account...';
@@ -363,4 +361,4 @@ $l['locked'] = 'The installer is currently locked, please remove \'lock\' from t
 $l['no_permision'] = "You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={1}\">here</a>. From there you will be able to log in again under your administrator account.";
 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
-
+?>

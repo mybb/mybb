@@ -132,8 +132,8 @@ if($mybb->input['action'] == "add")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => intval($mybb->input['enabled']),
+				"logging" => intval($mybb->input['logging'])
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
@@ -246,7 +246,9 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$plugins->run_hooks("admin_tools_tasks_edit");
+
+	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -255,8 +257,6 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?module=tools-tasks");
 	}
-
-	$plugins->run_hooks("admin_tools_tasks_edit");
 
 	if($mybb->request_method == "post")
 	{
@@ -331,8 +331,8 @@ if($mybb->input['action'] == "edit")
 				"day" => $db->escape_string($mybb->input['day']),
 				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
 				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => intval($mybb->input['enabled']),
+				"logging" => intval($mybb->input['logging'])
 			);
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
@@ -446,7 +446,9 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$plugins->run_hooks("admin_tools_tasks_delete");
+
+	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -461,8 +463,6 @@ if($mybb->input['action'] == "delete")
 	{
 		admin_redirect("index.php?module=tools-tasks");
 	}
-
-	$plugins->run_hooks("admin_tools_tasks_delete");
 
 	if($mybb->request_method == "post")
 	{
@@ -495,16 +495,6 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=tools-tasks");
 	}
 
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
-	$task = $db->fetch_array($query);
-
-	// Does the task not exist?
-	if(!$task['tid'])
-	{
-		flash_message($lang->error_invalid_task, 'error');
-		admin_redirect("index.php?module=tools-tasks");
-	}
-
 	if($mybb->input['action'] == "enable")
 	{
 		$plugins->run_hooks("admin_tools_tasks_enable");
@@ -512,6 +502,16 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	else
 	{
 		$plugins->run_hooks("admin_tools_tasks_disable");
+	}
+
+	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
+	$task = $db->fetch_array($query);
+
+	// Does the task not exist?
+	if(!$task['tid'])
+	{
+		flash_message($lang->error_invalid_task, 'error');
+		admin_redirect("index.php?module=tools-tasks");
 	}
 
 	if($mybb->input['action'] == "enable")
@@ -583,10 +583,9 @@ if($mybb->input['action'] == "run")
 
 	ignore_user_abort(true);
 	@set_time_limit(0);
-
 	$plugins->run_hooks("admin_tools_tasks_run");
 
-	$query = $db->simple_select("tasks", "*", "tid='".$mybb->get_input('tid', 1)."'");
+	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
 	$task = $db->fetch_array($query);
 
 	// Does the task not exist?
@@ -645,7 +644,7 @@ if($mybb->input['action'] == "logs")
 
 	if($mybb->input['page'] > 0)
 	{
-		$current_page = $mybb->get_input('page', 1);
+		$current_page = intval($mybb->input['page']);
 		$start = ($current_page-1)*$per_page;
 		$pages = $log_count / $per_page;
 		$pages = ceil($pages);
@@ -691,6 +690,8 @@ if($mybb->input['action'] == "logs")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_tasks_start");
+
 	$page->output_header($lang->task_manager);
 
 	$sub_tabs['scheduled_tasks'] = array(
@@ -708,8 +709,6 @@ if(!$mybb->input['action'])
 		'title' => $lang->view_task_logs,
 		'link' => "index.php?module=tools-tasks&amp;action=logs"
 	);
-
-	$plugins->run_hooks("admin_tools_tasks_start");
 
 	$page->output_nav_tabs($sub_tabs, 'scheduled_tasks');
 
@@ -761,3 +760,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+?>
