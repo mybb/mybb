@@ -184,7 +184,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select('smilies', 'sid', 'disporder=\''.$mybb->input['disporder'].'\'');
+			$query = $db->simple_select("smilies", "sid", "disporder= '".$mybb->input['disporder']."' AND sid!= '".(int)$mybb->input['sid']."'");
 			$duplicate_disporder = (int)$db->fetch_field($query, 'sid');
 
 			if($duplicate_disporder)
