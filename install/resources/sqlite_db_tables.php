@@ -652,7 +652,7 @@ $tables[] = "CREATE TABLE mybb_settings (
 $tables[] = "CREATE TABLE mybb_smilies (
 	sid INTEGER PRIMARY KEY,
 	name varchar(120) NOT NULL default '',
-	find varchar(120) NOT NULL default '',
+	find TEXT NOT NULL,
 	image varchar(220) NOT NULL default '',
 	disporder smallint NOT NULL default '0',
 	showclickable tinyint(1) NOT NULL default '0'
