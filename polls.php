@@ -167,6 +167,15 @@ if($mybb->input['action'] == "newpoll")
 		$timeout = 0;
 	}
 
+	if($mybb->get_input('maxvotes', 1) > 0)
+	{
+		$maxvotes = $mybb->get_input('maxvotes', 1);
+	}
+	else
+	{
+		$maxvotes = 1;
+	}
+	
 	$plugins->run_hooks("polls_newpoll_end");
 
 	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
@@ -294,6 +303,15 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	{
 		$timeout = 0;
 	}
+	
+	if($mybb->get_input('maxvotes', 1) > 0)
+	{
+		$maxvotes = $mybb->get_input('maxvotes', 1);
+	}
+	else
+	{
+		$maxvotes = 1;
+	}
 
 	$newpoll = array(
 		"tid" => $thread['tid'],
@@ -306,7 +324,8 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		"timeout" => $timeout,
 		"closed" => 0,
 		"multiple" => $postoptions['multiple'],
-		"public" => $postoptions['public']
+		"public" => $postoptions['public'],
+		"maxvotes" => $maxvotes
 	);
 
 	$plugins->run_hooks("polls_do_newpoll_process");
@@ -436,6 +455,15 @@ if($mybb->input['action'] == "editpoll")
 		{
 			$timeout = $poll['timeout'];
 		}
+		
+		if(!$poll['maxvotes'])
+		{
+			$maxvotes = 1;
+		}
+		else
+		{
+			$maxvotes = $poll['maxvotes'];
+		}
 	}
 	else
 	{
@@ -502,6 +530,15 @@ if($mybb->input['action'] == "editpoll")
 		else
 		{
 			$timeout = 0;
+		}
+		
+		if($mybb->get_input('maxvotes', 1) > 0)
+		{
+			$maxvotes = $mybb->get_input('maxvotes', 1);
+		}
+		else
+		{
+			$maxvotes = 1;
 		}
 	}
 
@@ -649,6 +686,15 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		$timeout = 0;
 	}
 
+	if($mybb->get_input('maxvotes', 1) > 0)
+	{
+		$maxvotes = $mybb->get_input('maxvotes', 1);
+	}
+	else
+	{
+		$maxvotes = 1;
+	}
+	
 	$updatedpoll = array(
 		"question" => $db->escape_string($mybb->input['question']),
 		"options" => $db->escape_string($optionslist),
@@ -658,12 +704,13 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"timeout" => $timeout,
 		"closed" => $postoptions['closed'],
 		"multiple" => $postoptions['multiple'],
-		"public" => $postoptions['public']
+		"public" => $postoptions['public'],
+		"maxvotes" => $maxvotes
 	);
 
 	$plugins->run_hooks("polls_do_editpoll_process");
 
-	$db->update_query("polls", $updatedpoll, "pid='".(int)$mybb->input['pid']."'");
+	$db->update_query("polls", $updatedpoll, "pid='".$mybb->get_input('pid', 1)."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
 
@@ -729,7 +776,7 @@ if($mybb->input['action'] == "showresults")
 		// Mark for current user's vote
 		if($mybb->user['uid'] == $voter['uid'] && $mybb->user['uid'])
 		{
-			$votedfor[$voter['voteoption']] = 1;
+			++$votedfor[$voter['voteoption']];
 		}
 
 		// Count number of guests and users without a username (assumes they've been deleted)
@@ -771,7 +818,7 @@ if($mybb->input['action'] == "showresults")
 		if(!empty($votedfor[$number]))
 		{
 			$optionbg = 'trow2';
-			$votestar = '*';
+			$votestar = '* (' . $votedfor[$number] . ')';
 		}
 		else
 		{
@@ -898,10 +945,18 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	if($mybb->user['uid'])
 	{
 		$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
-		$votecheck = $db->fetch_array($query);
+		$v = 0;
+		while($votecheck = $db->fetch_array($query))
+		{
+			$v++;
+			if($v >= $poll['maxvotes'])
+			{
+				$alreadyvoted = 1;
+			}
+		}
 	}
 
-	if($votecheck['vid'] || (isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== ""))
+	if($alreadyvoted || (isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== ""))
 	{
 		error($lang->error_alreadyvoted);
 	}

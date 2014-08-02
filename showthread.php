@@ -16,7 +16,7 @@ $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_p
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button,showthread_inlinemoderation_standard";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
-$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved";
+$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
 $templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,postbit_warninglevel,showthread_poll_resultbit,global_moderation_notice";
 
@@ -358,7 +358,7 @@ $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -456,10 +456,15 @@ if($mybb->input['action'] == "thread")
 		if($mybb->user['uid'] != 0)
 		{
 			$query = $db->simple_select("pollvotes", "*", "uid='".$mybb->user['uid']."' AND pid='".$poll['pid']."'");
+			$numvotes = 0;
 			while($votecheck = $db->fetch_array($query))
 			{
-				$alreadyvoted = 1;
-				$votedfor[$votecheck['voteoption']] = 1;
+				$numvotes++;
+				++$votedfor[$votecheck['voteoption']];
+				if($numvotes >= $poll['maxvotes'])
+				{
+					$alreadyvoted = 1;
+				}
 			}
 		}
 		else
@@ -467,6 +472,7 @@ if($mybb->input['action'] == "thread")
 			if(isset($mybb->cookies['pollvotes'][$poll['pid']]) && $mybb->cookies['pollvotes'][$poll['pid']] !== "")
 			{
 				$alreadyvoted = 1;
+				$numvotes = 1;
 			}
 		}
 		$optionsarray = explode("||~|~||", $poll['options']);
@@ -513,7 +519,7 @@ if($mybb->input['action'] == "thread")
 			if(!empty($votedfor[$number]))
 			{
 				$optionbg = "trow2";
-				$votestar = "*";
+				$votestar = '* (' . $votedfor[$number] . ')';
 			}
 			else
 			{
@@ -570,7 +576,14 @@ if($mybb->input['action'] == "thread")
 		{
 			if($alreadyvoted)
 			{
-				$pollstatus = $lang->already_voted;
+				if($poll['maxvotes'] > 1)
+				{
+					$pollstatus = $lang->sprintf($lang->already_voted_multiple, $numvotes);
+				}
+				else
+				{
+					$pollstatus = $lang->already_voted;
+				}
 
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
@@ -587,6 +600,14 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
+			if($numvotes > 0)
+			{
+				$pollstatus = $lang->sprintf($lang->votes_remaining, ($poll['maxvotes'] - $numvotes));
+				if($mybb->usergroup['canundovotes'] == 1)
+				{
+					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+				}
+			}
 			$publicnote = '&nbsp;';
 			if($poll['public'] == 1)
 			{
@@ -867,7 +888,7 @@ if($mybb->input['action'] == "thread")
 	else // Linear display
 	{
 		$threadexbox = '';
-		if(!$mybb->settings['postsperpage'])
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
 			$mybb->settings['postsperpage'] = 20;
 		}
@@ -1220,6 +1241,20 @@ if($mybb->input['action'] == "thread")
 	if($ismod)
 	{
 		$customthreadtools = $customposttools = $standardthreadtools = $standardposttools = '';
+
+		$threadnotesbox = $viewnotes = '';
+		if(!empty($thread['notes']))
+		{
+			$thread['notes'] = nl2br(htmlspecialchars_uni($thread['notes']));
+
+			if(strlen($thread['notes']) > 200)
+			{
+				eval("\$viewnotes = \"".$templates->get("showthread_threadnotes_viewnotes")."\";");
+				$thread['notes'] = my_substr($thread['notes'], 0, 200)."... {$viewnotes}";
+			}
+
+			eval("\$threadnotesbox = \"".$templates->get("showthread_threadnotes")."\";");
+		}
 
 		if(is_moderator($forum['fid'], "canusecustomtools") && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$forum['fid']]['modtools'])))
 		{
