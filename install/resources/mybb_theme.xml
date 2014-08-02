@@ -5239,22 +5239,29 @@ $().ready(function() {
 <td colspan="2"><br /><span class="smalltext" id="question" style="font-weight:bold;">{$question['question']}</span></td>
 </tr>
 <tr>
-<td width="60%"><br /><input type="text" class="textbox" name="answer" value="" id="answer" style="width: 100%;" />
-<input type="hidden" name="question_id" value="{$sid}" id="question_id" />
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "1")
-	{
-		document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return question.refresh();" \/>');
-	}
-// -->
-</script></td>
+<td width="60%">
+	<input type="text" class="textbox" name="answer" value="" id="answer" style="width: 70%;" />
+	<input type="hidden" name="question_id" value="{$sid}" id="question_id" />
+</td>
+<td width="40%">
+	{$refresh}
+</td>
 </tr>
 <tr>
 	<td id="answer_status"  style="display: none;" colspan="2">&nbsp;</td>
 </tr>
 </table>
 </fieldset>]]></template>
+		<template name="member_register_question_refresh" version="1800"><![CDATA[
+		<script type="text/javascript">
+		<!--
+			if(use_xmlhttprequest == "1")
+			{
+				document.write('<input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return question.refresh();" \/>');
+			}
+		// -->
+		</script>
+		]]></template>
 		<template name="member_register_referrer" version="1800"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
@@ -7317,8 +7324,8 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
 </tr>]]></template>
 		<template name="modcp_modlogs_result_announcement" version="1800"><![CDATA[<strong>{$lang->announcement}:</strong> <a href="{$data['announcement']}" target="_blank">{$data['subject']}</a>]]></template>
-		<template name="modcp_modlogs_result_forum" version="1800"><![CDATA[<strong>{$lang->forum}</strong> <a href="{$logitem['forum']}" target="_blank">{$logitem['fname']}</a><br />]]></template>
-		<template name="modcp_modlogs_result_post" version="1800"><![CDATA[<strong>{$lang->post}</strong> <a href="{$logitem['post']}#pid{$logitem['pid']}">{$logitem['psubject']}</a>]]></template>
+		<template name="modcp_modlogs_result_forum" version="1800"><![CDATA[<strong>{$lang->forum}:</strong> <a href="{$logitem['forum']}" target="_blank">{$logitem['fname']}</a><br />]]></template>
+		<template name="modcp_modlogs_result_post" version="1800"><![CDATA[<strong>{$lang->post}:</strong> <a href="{$logitem['post']}#pid{$logitem['pid']}">{$logitem['psubject']}</a>]]></template>
 		<template name="modcp_modlogs_result_thread" version="1800"><![CDATA[<strong>{$lang->thread}:</strong> <a href="{$logitem['thread']}" target="_blank">{$logitem['tsubject']}</a><br />]]></template>
 		<template name="modcp_modlogs_user" version="1800"><![CDATA[<option value="{$user['uid']}"{$selected}>{$user['username']}</option>]]></template>
 		<template name="modcp_modqueue_attachments" version="1800"><![CDATA[<html>
@@ -8542,6 +8549,18 @@ if(use_xmlhttprequest == "1")
 <td class="{$trow}" align="center">{$modaction['action']}</td>
 <td class="{$trow}">{$info}</td>
 </tr>]]></template>
+		<template name="moderation_viewthreadnotes" version="1800"><![CDATA[<div class="modal">
+<div style="overflow-y: auto; max-height: 400px;">
+<table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
+<tr>
+<td colspan="2" class="thead"><strong>{$lang->view_notes_for}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$thread['notes']}</td>
+</tr>
+</table>
+</div>
+</div>]]></template>
 		<template name="moderation_threadnotes_modaction_error" version="1800"><![CDATA[<tr><td class="trow1" colspan="4">{$lang->no_mod_options}</td></tr>]]></template>
 		<template name="multipage" version="1800"><![CDATA[<div class="pagination">
 <span class="pages">{$lang->multipage_pages}</span>
@@ -9205,7 +9224,10 @@ if(use_xmlhttprequest == "1")
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
 		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
-<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
+  <br/>
+  <span class="smalltext">{$lang->verification_note}</span>
+  </td>
 <td class="trow1">
 <script type="text/javascript">
 <!--
@@ -9215,20 +9237,22 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
-		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
+		</td>
+	</tr>
+	<tr>
+		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" size="16" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" />
+      
 		<script type="text/javascript">
 		<!--
 			if(use_xmlhttprequest == "1")
 			{
-				document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+				document.write('<input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
 			}
 		// -->
 		</script>
-		</td>
-		<td><span class="smalltext">{$lang->verification_note}</span></td>
-	</tr>
-	<tr>
-		<td><input type="text" class="textbox" name="imagestring" value="" id="imagestring" /><input type="hidden" name="imagehash" value="{$imagehash}" id="imagehash" /></td>
+      
+      </td>
 	</tr>
 </table>
 </td>
@@ -11032,10 +11056,10 @@ if(use_xmlhttprequest == "1")
 </head>
 <body>
 	{$header}
+	{$threadnotesbox}
 	{$pollbox}
 	<div class="float_left">
 		{$multipage}
-
 	</div>
 	<div class="float_right">
 		{$newreply}
@@ -11378,6 +11402,23 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">{$threadedbits}</td>
 </tr>
 </table>]]></template>
+		<template name="showthread_threadnotes" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
+<tr>
+	<td class="thead thead_collapse{$collapsedimg['threadnotes']}">
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['threadnotes']}.png" id="threadnotes_img" class="expander" alt="[-]" title="[-]" /></div>
+		<div><span class="smalltext"><strong>{$lang->view_thread_notes}</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['threadnotes_e']}" id="threadnotes_e">
+<tr>
+	<td class="trow1">
+		{$thread['notes']}
+	</td>
+</tr>
+</tbody>
+</table>
+<br />]]></template>
+		<template name="showthread_threadnotes_viewnotes" version="1800"><![CDATA[[<a href="javascript:Thread.viewNotes({$thread['tid']});">{$lang->view_all_notes}</a>]]]></template>
 		<template name="showthread_threadnoteslink" version="1800"><![CDATA[ | <a href="moderation.php?action=threadnotes&modtype=thread&tid={$thread['tid']}">{$lang->view_thread_notes}</a>]]></template>
 		<template name="showthread_usersbrowsing" version="1600"><![CDATA[<br />
 <span class="smalltext">{$lang->users_browsing_thread} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>
@@ -13610,30 +13651,30 @@ $(function() {
 <body>
 {$header}
 <form action="contact.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-{$errors}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$lang->contact}</strong></td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong></td>
-<td class="trow1"><input type="text" name="subject" class="textbox" value="{$mybb->input['subject']}" /></td>
-</tr>
-<tr>
-<td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong></td>
-<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
-<td class="trow1"><input type="text" name="email" class="textbox" value="{$mybb->input['email']}" /></td>
-</tr>
-{$captcha}
-</table>
-<br />
-<div align="center">
-<input type="submit" class="button" name="submit" value="{$lang->contact_send}" />
-</div>
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	{$errors}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+		<td class="thead" colspan="2"><strong>{$lang->contact}</strong></td>
+		</tr>
+		<tr>
+		<td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong><br /><span class="smalltext">{$lang->contact_subject_desc}</span></td>
+		<td class="trow1"><input type="text" name="subject" class="textbox" size="49" value="{$mybb->input['subject']}" /></td>
+		</tr>
+		<tr>
+		<td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong><br /><span class="smalltext">{$lang->contact_message_desc}</span></td>
+		<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
+		</tr>
+		<tr>
+		<td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
+		<td class="trow1"><input type="text" name="email" class="textbox" size="49" value="{$mybb->input['email']}" /></td>
+		</tr>
+		{$captcha}
+	</table>
+	<br />
+	<div align="center">
+		<input type="submit" class="button" name="submit" value="{$lang->contact_send}" />
+	</div>
 </form>
 {$footer}
 </body>
@@ -13667,6 +13708,7 @@ $(function() {
   	var yes_confirm = "{$lang->yes}";
 	var no_confirm = "{$lang->no}";
 	var MyBBEditor = null;
+	var spinner_image = "{$theme['imgdir']}/spinner.gif";
 // -->
 </script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>

@@ -165,7 +165,7 @@ var Thread = {
 
 			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key,
 			{
-				indicator: "<img src='images/spinner.gif'>",
+				indicator: '<img src="'+spinner_image+'">',
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
@@ -511,6 +511,11 @@ var Thread = {
 		});
 		
 		return false;
+	},
+
+	viewNotes: function(tid)
+	{
+		MyBB.popupWindow("/moderation.php?action=viewthreadnotes&tid="+tid);
 	}
 };
 

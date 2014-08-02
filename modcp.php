@@ -46,6 +46,11 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 	error_no_permission();
 }
 
+if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+{
+	$mybb->settings['threadsperpage'] = 20;
+}
+
 $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
@@ -1105,8 +1110,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1124,11 +1128,12 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = '01';
 		}
 		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1473,7 +1478,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1491,11 +1496,11 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$mybb->input['endtime_month'] = '01';
 		}
 		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		elseif($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -3577,7 +3582,7 @@ if($mybb->input['action'] == "ipsearch")
 				$query = $db->query("
 					SELECT COUNT(pid) AS count
 					FROM ".TABLE_PREFIX."posts
-					WHERE {$post_ip_sql} AND visibility >= -1
+					WHERE {$post_ip_sql} AND visible >= -1
 				");
 
 				$post_results = $db->fetch_field($query, "count");
@@ -3732,7 +3737,7 @@ if($mybb->input['action'] == "ipsearch")
 			$query = $db->query("
 				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
 				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql} AND visibility >= -1
+				WHERE {$post_ip_sql} AND visible >= -1
 				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");

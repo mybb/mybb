@@ -34,7 +34,7 @@ if($mybb->input['action'] == "editdraft" || ($mybb->get_input('savedraft') && $m
 {
 	$thread = get_thread($mybb->input['tid']);
 
-	$query = $db->simple_select("posts", "*", "tid='".(int)$mybb->input['tid']."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "*", "tid='".$mybb->get_input('tid', 1)."' AND visible='-2'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if(!$thread['tid'] || !$post['pid'] || $thread['visible'] != -2 || $thread['uid'] != $mybb->user['uid'])
@@ -777,9 +777,19 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$valid_thread = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
 
+		// guest post --> verify author
+		if($post['uid'] == 0)
+		{
+			$valid_username = $posthandler->verify_author();
+		}
+		else
+		{
+			$valid_username = true;
+		}
+		
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_thread || !$valid_subject)
+		if(!$valid_thread || !$valid_subject || !$valid_username)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}

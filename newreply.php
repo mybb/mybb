@@ -517,6 +517,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		$postinfo = $posthandler->insert_post();
 		$pid = $postinfo['pid'];
 		$visible = $postinfo['visible'];
+		$closed = $postinfo['closed'];
 
 		// Invalidate solved captcha
 		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
@@ -615,6 +616,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
+				
+				if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+				{
+					$mybb->settings['postsperpage'] = 20;
+				}
 
 				// Lets see if this post is on the same page as the one we're viewing or not
 				// if it isn't, redirect us
@@ -684,7 +690,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					});
 				}\n";
 
-				if($thread['closed'] != 1)
+				if($closed == 1)
 				{
 					$data .= "$('#quick_reply_form .trow1').removeClass('trow1 trow2').addClass('trow_shaded');\n";
 				}
@@ -1012,10 +1018,20 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// Now let the post handler do all the hard work.
 		$valid_post = $posthandler->verify_message();
 		$valid_subject = $posthandler->verify_subject();
+		
+		// guest post --> verify author
+		if($post['uid'] == 0)
+		{
+			$valid_username = $posthandler->verify_author();
+		}
+		else
+		{
+			$valid_username = true;
+		}
 
 		$post_errors = array();
 		// Fetch friendly error messages if this is an invalid post
-		if(!$valid_post || !$valid_subject)
+		if(!$valid_post || !$valid_subject || !$valid_username)
 		{
 			$post_errors = $posthandler->get_friendly_errors();
 		}
@@ -1257,7 +1273,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$reviewmore = '';
 	if($mybb->settings['threadreview'] != 0)
 	{
-		if(!$mybb->settings['postsperpage'])
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
 		{
 			$mybb->settings['postsperpage'] = 20;
 		}
@@ -1272,6 +1288,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		$query = $db->simple_select("posts", "COUNT(pid) AS post_count", "tid='{$tid}' AND {$visibility}");
 		$numposts = $db->fetch_field($query, "post_count");
+		
+		if(!$mybb->settings['postsperpage'] || (int)$mybb->settings['postsperpage'] < 1)
+		{
+			$mybb->settings['postsperpage'] = 20;
+		}
 
 		if($numposts > $mybb->settings['postsperpage'])
 		{

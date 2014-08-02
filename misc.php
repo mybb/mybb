@@ -262,7 +262,7 @@ elseif($mybb->input['action'] == "helpresults")
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 	add_breadcrumb($lang->search_results, "misc.php?action=helpresults&sid={$sid}");
 
-	if(!$mybb->settings['threadsperpage'])
+	if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
@@ -713,6 +713,8 @@ elseif($mybb->input['action'] == "smilies")
 			foreach($smilies_cache as $smilie)
 			{
 				$smilie['insert'] = addslashes($smilie['find']);
+				// Only show the first text to replace in the box
+				$smilie['find'] = explode("\n", $smilie['find'])[0];
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
@@ -781,7 +783,7 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		error($lang->error_invaliduser);
 	}
-	
+
 	// Build IM navigation bar
 	$navigationbar = $navsep = $imtype = $imtype_lang = '';
 	if($user['aim'])

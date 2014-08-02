@@ -445,7 +445,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_icons');
 
-	$pagenum = (int)$mybb->input['page'];
+	$pagenum = $mybb->get_input('page', 1);
 	if($pagenum)
 	{
 		$start = ($pagenum - 1) * 20;

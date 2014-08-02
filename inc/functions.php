@@ -846,7 +846,7 @@ function error_no_permission()
 		"location2" => 0
 	);
 
-	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
+	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
 
 	if($mybb->get_input('ajax', 1))
 	{
@@ -3408,6 +3408,13 @@ function log_moderator_action($data, $action="")
 		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
+	
+	$pid = 0;
+	if(isset($data['pid']))
+	{
+		$pid = (int)$data['pid'];
+		unset($data['pid']);
+	}
 
 	// Any remaining extra data - we serialize and insert in to its own column
 	if(is_array($data))
@@ -3420,6 +3427,7 @@ function log_moderator_action($data, $action="")
 		"dateline" => TIME_NOW,
 		"fid" => (int)$fid,
 		"tid" => $tid,
+		"pid" => $pid,
 		"action" => $db->escape_string($action),
 		"data" => $db->escape_string($data),
 		"ipaddress" => $db->escape_binary($session->packedip)
@@ -3839,6 +3847,11 @@ function build_breadcrumb()
 				$multipage_dropdown = null;
 				if(!empty($navbit['multipage']))
 				{
+					if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] < 1)
+					{
+						$mybb->settings['threadsperpage'] = 20;
+					}
+		
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
 					{

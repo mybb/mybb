@@ -128,6 +128,23 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 			$post['username'] = $user['username'];
 		}
+		// if the uid is 0 verify the username
+		else if($post['uid'] == 0 && $post['username'] != $lang->guest)
+		{	
+			// Set up user handler
+			require_once MYBB_ROOT."inc/datahandlers/user.php";
+			$userhandler = new UserDataHandler();
+			
+			$data_array = array('username' => $post['username']);
+			$userhandler->set_data($data_array);
+			
+			if(!$userhandler->verify_username())
+			{
+				// invalid username
+				$this->errors = array_merge($this->errors, $userhandler->get_errors());
+				return false;
+			}
+		}
 
 		// After all of this, if we still don't have a username, force the username as "Guest" (Note, this is not translatable as it is always a fallback)
 		if(!$post['username'])
@@ -826,6 +843,8 @@ class PostDataHandler extends DataHandler
 		// Fetch the thread
 		$thread = get_thread($post['tid']);
 
+		$closed = $thread['closed'];
+
 		// This post is being saved as a draft.
 		if($post['savedraft'])
 		{
@@ -876,6 +895,7 @@ class PostDataHandler extends DataHandler
 				{
 					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
+					$closed = 1;
 				}
 
 				// Open the thread.
@@ -883,6 +903,7 @@ class PostDataHandler extends DataHandler
 				{
 					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
+					$closed = 0;
 				}
 
 				if(!isset($modoptions['stickthread']))
@@ -1246,7 +1267,8 @@ class PostDataHandler extends DataHandler
 		// Return the post's pid and whether or not it is visible.
 		$this->return_values = array(
 			"pid" => $this->pid,
-			"visible" => $visible
+			"visible" => $visible,
+			"closed" => $closed
 		);
 
 		$plugins->run_hooks("datahandler_post_insert_post_end", $this);

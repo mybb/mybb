@@ -612,7 +612,7 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 		// Has the expiry dateline been set yet?
 		if($attempts['loginlockoutexpiry'] == 0 && $return_num == false)
 		{
-			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$uid."'", 1);
+			$db->update_query("adminoptions", array("loginlockoutexpiry" => TIME_NOW+((int)$mybb->settings['loginattemptstimeout']*60)), "uid='".(int)$uid."'");
 		}
 
 		// Are we returning the # of login attempts?
