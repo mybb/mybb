@@ -246,6 +246,8 @@ if($mybb->input['action'] == "activate_user")
 
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
+	$cache->update_awaitingactivation();
+
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
 
 	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
