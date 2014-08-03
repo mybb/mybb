@@ -325,7 +325,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 unset($actions);
 
-if(!empty($theme_stylesheets))
+if(!empty($theme_stylesheets) && is_array($theme['disporder']))
 {
 	foreach($theme['disporder'] as $style_name => $order)
 	{

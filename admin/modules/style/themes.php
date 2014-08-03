@@ -1057,9 +1057,13 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$theme_properties = my_unserialize($theme['properties']);
-		if($theme_properties['disporder'])
+		if(isset($theme_properties['disporder']))
 		{
-			$properties['disporder'] = $theme_properties['disporder'];
+			$properties['disporder'] = (int)$theme_properties['disporder'];
+		}
+		else
+		{
+			$properties['disporder'] = 0;
 		}
 
 		$allowedgroups = array();
@@ -1283,22 +1287,25 @@ if($mybb->input['action'] == "edit")
 	// Order the stylesheets
 	$ordered_stylesheets = array();
 
-	foreach($properties['disporder'] as $style_name => $order)
+	if(isset($properties['disporder']) && is_array($properties['disporder']))
 	{
-		foreach($stylesheets as $filename => $style)
+		foreach($properties['disporder'] as $style_name => $order)
 		{
-			if(strpos($filename, 'css.php?stylesheet=') !== false)
+			foreach($stylesheets as $filename => $style)
 			{
-				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
-				$filename = $theme_stylesheets[$style['sid']];
-			}
+				if(strpos($filename, 'css.php?stylesheet=') !== false)
+				{
+					$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+					$filename = $theme_stylesheets[$style['sid']];
+				}
 
-			if(basename($filename) != $style_name)
-			{
-				continue;
-			}
+				if(basename($filename) != $style_name)
+				{
+					continue;
+				}
 
-			$ordered_stylesheets[$filename] = $style;
+				$ordered_stylesheets[$filename] = $style;
+			}
 		}
 	}
 
@@ -1462,8 +1469,14 @@ if($mybb->input['action'] == "edit")
 			$popup->add_item($lang->delete_revert, "index.php?module=style-themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 
+		$disporder = 0;
+		if(isset($properties['disporder'][$filename]))
+		{
+			$disporder = (int)$properties['disporder'][$filename];
+		}
+
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
+		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $disporder, array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
