@@ -1812,7 +1812,7 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			$visible = 0;
-			if($forumpermissions['mod_edit_posts'] != 1 && !$ismod)
+			if($forumpermissions['mod_edit_posts'] != 1 || $ismod)
 			{
 				$visible = 1;
 			}
