@@ -105,6 +105,8 @@ if($mybb->input['action'] == "add")
 
 			$fid = $db->insert_query("profilefields", $new_profile_field);
 
+			$cache->update_profilefields();
+
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
 
 			$plugins->run_hooks("admin_config_profile_fields_add_commit");
@@ -673,6 +675,8 @@ if($mybb->input['action'] == "delete")
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
+
+		$cache->update_profilefields();
 
 		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
 
