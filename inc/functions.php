@@ -7659,41 +7659,41 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
 		return false;
 	}
 
-	if(isset($pm['language']))
+	if(isset($pm['language']) && $pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
 	{
-		if($pm['language'] != $mybb->user['language'] && $lang->language_exists($pm['language']))
-		{
-			// Load user language
-			$lang->set_language($pm['language']);
-			$lang->load($pm['language_file']);
+		// Load user language
+		$lang->set_language($pm['language']);
+		$lang->load($pm['language_file']);
 
-			$revert = true;
-		}
+		$revert = true;
+	}
 
-		foreach(array('subject', 'message') as $key)
+	foreach(array('subject', 'message') as $key)
+	{
+		$lang_string = $pm[$key];
+		if(is_array($pm[$key]))
 		{
-			$lang_string = $pm[$key];
-			if(is_array($pm[$key]))
+			$num_args = count($pm[$key]);
+
+			for($i = 1; $i < $num_args; $i++)
 			{
-				$num_args = count($pm[$key]);
-
-				for($i = 1; $i < $num_args; $i++)
-				{
-					$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
-				}
-
-				$lang_string = $pm[$key][0];
+				$lang->{$pm[$key][0]} = str_replace('{'.$i.'}', $pm[$key][$i], $lang->{$pm[$key][0]});
 			}
 
-			$pm[$key] = $lang->{$lang_string};
+			$lang_string = $pm[$key][0];
 		}
 
-		if(isset($revert))
+		if(isset($lang->{$lang_string}))
 		{
-			// Revert language
-			$lang->set_language($mybb->user['language']);
-			$lang->load($pm['language_file']);
+			$pm[$key] = $lang->{$lang_string};
 		}
+	}
+
+	if(isset($pm['language']) && isset($revert))
+	{
+		// Revert language
+		$lang->set_language($mybb->user['language']);
+		$lang->load($pm['language_file']);
 	}
 
 	if(!$pm['subject'] ||!$pm['message'] || !$pm['touid'] || (!$pm['receivepms'] && !$admin_override))
