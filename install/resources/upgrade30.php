@@ -278,8 +278,8 @@ function upgrade30_dbchanges()
 			$db->add_column("profilefields", "allowsmilies", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowimgcode", "tinyint(1) NOT NULL default '0'");
 			$db->add_column("profilefields", "allowvideocode", "tinyint(1) NOT NULL default '0'");
-			$db->add_column("profilefields", "viewableby", "text NOT NULL");
-			$db->add_column("profilefields", "editableby", "text NOT NULL");
+			$db->add_column("profilefields", "viewableby", "text NOT NULL default ''");
+			$db->add_column("profilefields", "editableby", "text NOT NULL default ''");
 			$db->add_column("templategroups", "isdefault", "tinyint(1) NOT NULL default '0'");
 			if($db->table_exists('reportedposts'))
 			{
@@ -699,7 +699,6 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "smallint NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "smallint NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "smallint NOT NULL default '0'");
-			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 		default:
 			$db->add_column("usergroups", "emailfloodtime", "int(3) NOT NULL default '5' AFTER maxemails");
@@ -712,6 +711,15 @@ function upgrade30_dbchanges4()
 			$db->add_column("usergroups", "canviewwarnlogs", "tinyint(1) NOT NULL default '0' AFTER canbanusers");
 			$db->add_column("usergroups", "canuseipsearch", "tinyint(1) NOT NULL default '0' AFTER canviewwarnlogs");
 			$db->add_column("maillogs", "type", "tinyint(1) NOT NULL default '0'");
+			break;
+	}
+
+	switch($db->type)
+	{
+		case "sqlite":
+			$db->add_column("modtools", "groups", "text NOT NULL default ''");
+			break;
+		default:
 			$db->add_column("modtools", "groups", "text NOT NULL");
 			break;
 	}
@@ -764,6 +772,11 @@ function upgrade30_dbchanges5()
 		$db->drop_table("questionsessions");
 	}
 
+	if($db->table_exists("spamlog"))
+	{
+		$db->drop_table("spamlog");
+	}
+
 	switch($db->type)
 	{
 		case "sqlite":
@@ -785,10 +798,10 @@ function upgrade30_dbchanges5()
 				sid INTEGER PRIMARY KEY,
 				username varchar(120) NOT NULL DEFAULT '',
 				email varchar(220) NOT NULL DEFAULT '',
-				ipaddress blob(16) NOT NULL default ''
-				dateline int unsigned NOT NULL default '0' PRIMARY KEY,
+				ipaddress blob(16) NOT NULL default '',
+				dateline int unsigned NOT NULL default '0',
 				data TEXT NOT NULL
-			) ENGINE=MyISAM;");
+			);");
 			break;
 		case "pgsql":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questions (
@@ -882,9 +895,9 @@ function upgrade30_dbchanges6()
 		case "sqlite":
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."buddyrequests (
 				 id INTEGER PRIMARY KEY,
-				 uid bigint(30) UNSIGNED NOT NULL,
-				 touid bigint(30) UNSIGNED NOT NULL,
-				 date int(11) UNSIGNED NOT NULL
+				 uid bigint unsigned NOT NULL,
+				 touid bigint unsigned NOT NULL,
+				 date int unsigned NOT NULL
 			);");
 			break;
 		default:
@@ -970,6 +983,11 @@ function upgrade30_dbchanges6()
 		$db->drop_column("users", "buddyrequestsauto");
 	}
 
+	if($db->field_exists('ipaddress', 'privatemessages'))
+	{
+		$db->drop_column("privatemessages", "ipaddress");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -1037,11 +1055,21 @@ function upgrade30_dbchanges6()
 	{
 		$db->insert_query("attachtypes", array('name' => "Adobe Photoshop File", 'mimetype' => 'application/x-photoshop', 'extension' => "psd", 'maxsize' => '1024', 'icon' => 'images/attachtypes/psd.png'));
 	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
+	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='video'");
 	if($db->fetch_field($query, "numexists") == 0)
 	{
 		$db->insert_query("templategroups", array('prefix' => 'video', 'title' => '<lang:group_video>', 'isdefault' => '1'));
+	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
 	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='php'");
@@ -1049,11 +1077,21 @@ function upgrade30_dbchanges6()
 	{
 		$db->update_query("templategroups", array('prefix' => 'announcement', 'title' => '<lang:group_announcement>'), "prefix='php'");
 	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
+	}
 
 	$query = $db->simple_select("templategroups", "COUNT(*) as numexists", "prefix='redirect'");
 	if($db->fetch_field($query, "numexists") != 0)
 	{
 		$db->update_query("templategroups", array('prefix' => 'posticons', 'title' => '<lang:group_posticons>'), "prefix='redirect'");
+	}
+	// SQLite... As we modify tables below we need to close all cursors before...
+	if($db->type == "sqlite")
+	{
+		$query->closeCursor();
 	}
 
 	// Sync usergroups with canbereported; no moderators or banned groups
@@ -1351,7 +1389,16 @@ function upgrade30_dbchanges_optimize1()
 	if($db->type != "pgsql")
 	{
 		// PgSQL doesn't support longtext
-		$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
+		if($db->type == "sqlite")
+		{
+			// And SQLite doesn't like text columns without a default value...
+			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL default ''");
+		}
+		else
+		{
+			// ...while MySQL hates text columns with a default value
+			$db->modify_column("themestylesheets", "stylesheet", "longtext NOT NULL");
+		}
 	}
 
 	global $footer_extra;
@@ -1512,6 +1559,10 @@ function upgrade30_dbchanges_optimize3()
 			{
 				$db->modify_column($table, $column, "smallint", "set", "'0'");
 			}
+			else if($db->type == "sqlite")
+			{
+				$change_column[] = "CHANGE {$column} {$column} tinyint(1) NOT NULL default '0'";
+			}
 			else
 			{
 				$change_column[] = "MODIFY {$column} tinyint(1) NOT NULL default '0'";
@@ -1589,6 +1640,10 @@ function upgrade30_dbchanges_optimize4()
 			if($db->type == "pgsql")
 			{
 				$db->modify_column($table, $column, "int", "set", "'0'");
+			}
+			else if($db->type == "sqlite")
+			{
+				$change_column[] = "CHANGE {$column} {$column} int unsigned NOT NULL default '0'";
 			}
 			else
 			{

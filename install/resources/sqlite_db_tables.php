@@ -131,9 +131,9 @@ $tables[] = "CREATE TABLE mybb_banned (
 
 $tables[] = "CREATE TABLE mybb_buddyrequests (
  id INTEGER PRIMARY KEY,
- uid bigint(30) UNSIGNED NOT NULL,
- touid bigint(30) UNSIGNED NOT NULL,
- date int(11) UNSIGNED NOT NULL
+ uid bigint UNSIGNED NOT NULL,
+ touid bigint UNSIGNED NOT NULL,
+ date int UNSIGNED NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_calendars (
@@ -287,7 +287,7 @@ $tables[] = "CREATE TABLE mybb_groupleaders (
 	gid smallint NOT NULL default '0',
 	uid int NOT NULL default '0',
 	canmanagemembers tinyint(1) NOT NULL default '0',
-	canmanagerequests tinyint(1) NOT NULL default '0'
+	canmanagerequests tinyint(1) NOT NULL default '0',
 	caninvitemembers tinyint(1) NOT NULL default '0'
 );";
 
@@ -322,8 +322,8 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
 	uid int NOT NULL default '0',
 	gid smallint NOT NULL default '0',
 	reason varchar(250) NOT NULL default '',
-	dateline int unsigned NOT NULL default '0'
-	invite tinyint(1) NOT NULL default '0',
+	dateline int unsigned NOT NULL default '0',
+	invite tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_massemails (
@@ -519,12 +519,12 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 	postbit tinyint(1) NOT NULL default '0',
 	viewableby TEXT NOT NULL,
 	editableby TEXT NOT NULL,
-	postnum smallint NOT NULL default '0'
+	postnum smallint NOT NULL default '0',
 	allowhtml tinyint(1) NOT NULL default '0',
 	allowmycode tinyint(1) NOT NULL default '0',
 	allowsmilies tinyint(1) NOT NULL default '0',
 	allowimgcode tinyint(1) NOT NULL default '0',
-	allowvideocode tinyint(1) NOT NULL default '0',
+	allowvideocode tinyint(1) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_promotions (
@@ -660,13 +660,13 @@ $tables[] = "CREATE TABLE mybb_smilies (
 );";
 
 $tables[] = "CREATE TABLE mybb_spamlog (
-		sid INTEGER PRIMARY KEY,
-		username varchar(120) NOT NULL DEFAULT '',
-		email varchar(220) NOT NULL DEFAULT '',
-		ipaddress blob(16) NOT NULL default ''
-		dateline int unsigned NOT NULL default '0' PRIMARY KEY,
-		data TEXT NOT NULL
-	) ENGINE=MyISAM;";
+	sid INTEGER PRIMARY KEY,
+	username varchar(120) NOT NULL DEFAULT '',
+	email varchar(220) NOT NULL DEFAULT '',
+	ipaddress blob(16) NOT NULL default '',
+	dateline int unsigned NOT NULL default '0',
+	data TEXT NOT NULL default ''
+);";
 
 $tables[] = "CREATE TABLE mybb_spiders (
 	sid INTEGER PRIMARY KEY,
