@@ -2540,7 +2540,7 @@ if($mybb->input['action'] == "do_editlists")
 		// Fetch out new users
 		if(count($users) > 0)
 		{
-			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			$query = $db->simple_select("users", "uid,buddyrequestsauto,buddyrequestspm,language", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;

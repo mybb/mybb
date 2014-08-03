@@ -1217,7 +1217,9 @@ class PostDataHandler extends DataHandler
 					$pm = array(
 						'subject' => array('pmsubject_subscription', $subject),
 						'message' => array('pm_subscription', $subscribedmember['username'], $post['username'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey'], $post_code),
-						'touid' => $subscribedmember['uid']
+						'touid' => $subscribedmember['uid'],
+						'language' => $subscribedmember['language'],
+						'language_file' => 'messages'
 					);
 					send_pm($pm, -1, true);
 				}
