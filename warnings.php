@@ -29,7 +29,10 @@ if($mybb->settings['enablewarningsystem'] == 0)
 }
 
 // Expire old warnings
-expire_warnings();
+require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+$warningshandler = new WarningsHandler('update');
+
+$warningshandler->expire_warnings();
 
 $mybb->input['action'] = $mybb->get_input('action');
 

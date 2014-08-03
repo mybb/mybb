@@ -3695,7 +3695,10 @@ if(!$mybb->input['action'])
 
 		if($warning_level > 0)
 		{
-			expire_warnings();
+			require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+			$warningshandler = new WarningsHandler('update');
+
+			$warningshandler->expire_warnings();
 
 			$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
 			$warnings = '';
