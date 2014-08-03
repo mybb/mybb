@@ -1448,7 +1448,7 @@ function upgrade_css_120_to_140($css)
 		md5('.low_warning') => array("class_name" => '.low_warning', "values" => "color: #AE5700;"),
 		md5('div.error') => array("class_name" => 'div.error', "values" => "padding: 5px 10px;\n\tborder-top: 2px solid #FFD324;\n\tborder-bottom: 2px solid #FFD324;\n\tbackground: #FFF6BF;\n\tfont-size: 12px;"),
 		md5('div.error p') => array("class_name" => 'div.error p', "values" => "margin: 0;\n\tcolor: #000;\n\tfont-weight: normal;"),
-		md5('div.error p em') => array("class_name" => 'div.error p em', "values" => "font-style: normal;\n\tfont-weight: bold;\n\tpadding-left: 24px;\n\tdisplay: block;\n\tcolor: #C00;\n\tbackground: url({$mybb->settings['bburl']}/images/error.gif) no-repeat 0;"),
+		md5('div.error p em') => array("class_name" => 'div.error p em', "values" => "font-style: normal;\n\tfont-weight: bold;\n\tpadding-left: 24px;\n\tdisplay: block;\n\tcolor: #C00;\n\tbackground: url({$mybb->settings['bburl']}/images/error.png) no-repeat 0;"),
 		md5('div.error.ul') => array("class_name" => 'div.error.ul', "values" => "margin-left: 24px;"),
 		md5('.online') => array("class_name" => '.online', "values" => "color: #15A018;"),
 		md5('.offline') => array("class_name" => '.offline', "values" => "color: #C7C7C7;"),
@@ -1471,9 +1471,9 @@ function upgrade_css_120_to_140($css)
 		md5('.post_content') => array("class_name" => '.post_content', "values" => "padding: 5px 10px;"),
 		md5('.invalid_field') => array("class_name" => '.invalid_field', "values" => "border: 1px solid #f30;\n\tcolor: #f30;"),
 		md5('.valid_field') => array("class_name" => '.valid_field', "values" => "border: 1px solid #0c0;"),
-		md5('.validation_error') => array("class_name" => '.validation_error', "values" => "background: url(images/invalid.gif) no-repeat center left;\n\tcolor: #f30;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
-		md5('.validation_success') => array("class_name" => '.validation_success', "values" => "background: url(images/valid.gif) no-repeat center left;\n\tcolor: #00b200;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
-		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.gif) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
+		md5('.validation_error') => array("class_name" => '.validation_error', "values" => "background: url(images/invalid.png) no-repeat center left;\n\tcolor: #f30;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
+		md5('.validation_success') => array("class_name" => '.validation_success', "values" => "background: url(images/valid.png) no-repeat center left;\n\tcolor: #00b200;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
+		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.png) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 	);
 
 	$already_parsed = array();
