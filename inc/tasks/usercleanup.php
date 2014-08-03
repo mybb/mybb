@@ -13,7 +13,10 @@ function task_usercleanup($task)
 	global $db, $lang, $cache, $plugins;
 
 	// Expire any old warnings
-	expire_warnings();
+	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+	$warningshandler = new WarningsHandler('update');
+
+	$warningshandler->expire_warnings();
 
 	// Expire any post moderation or suspension limits
 	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime", "(moderationtime!=0 AND moderationtime<".TIME_NOW.") OR (suspensiontime!=0 AND suspensiontime<".TIME_NOW.")");

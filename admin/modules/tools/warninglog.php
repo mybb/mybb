@@ -313,7 +313,10 @@ if(!$mybb->input['action'])
 	}
 
 	// Expire any warnings past their expiration date
-	expire_warnings();
+	require_once MYBB_ROOT.'inc/datahandlers/warnings.php';
+	$warningshandler = new WarningsHandler('update');
+
+	$warningshandler->expire_warnings();
 
 	// Pagination stuff
 	$sql = "
