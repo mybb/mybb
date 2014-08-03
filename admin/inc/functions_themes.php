@@ -1473,7 +1473,7 @@ function upgrade_css_120_to_140($css)
 		md5('.valid_field') => array("class_name" => '.valid_field', "values" => "border: 1px solid #0c0;"),
 		md5('.validation_error') => array("class_name" => '.validation_error', "values" => "background: url(images/invalid.png) no-repeat center left;\n\tcolor: #f30;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 		md5('.validation_success') => array("class_name" => '.validation_success', "values" => "background: url(images/valid.png) no-repeat center left;\n\tcolor: #00b200;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
-		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.png) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
+		md5('.validation_loading') => array("class_name" => '.validation_loading', "values" => "background: url(images/spinner.gif) no-repeat center left;\n\tcolor: #555;\n\tmargin: 5px 0;\n\tpadding: 5px;\n\tfont-weight: bold;\n\tfont-size: 11px;\n\tpadding-left: 22px;"),
 	);
 
 	$already_parsed = array();
