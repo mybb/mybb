@@ -1313,7 +1313,6 @@ function upgrade30_dbchanges_optimize1()
 		case "pgsql":
 			$db->modify_column("adminoptions", "loginattempts", "smallint", "set", "'0'");
 			$db->modify_column("adminviews", "perpage", "smallint", "set", "'0'");
-			$db->modify_column("announcements", "fid", "smallint", "set", "'0'");
 			$db->modify_column("attachments", "pid", "smallint", "set", "'0'");
 			$db->modify_column("calendars", "disporder", "smallint", "set", "'0'");
 			$db->modify_column("calendars", "eventlimit", "smallint", "set", "'0'");
@@ -1339,7 +1338,6 @@ function upgrade30_dbchanges_optimize1()
 		case "sqlite":
 			$db->modify_column("adminoptions", "loginattempts", "smallint NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint NOT NULL default '0'");
-			$db->modify_column("announcements", "fid", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
@@ -1363,7 +1361,6 @@ function upgrade30_dbchanges_optimize1()
 		default:
 			$db->modify_column("adminoptions", "loginattempts", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("adminviews", "perpage", "smallint(4) NOT NULL default '0'");
-			$db->modify_column("announcements", "fid", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "disporder", "smallint unsigned NOT NULL default '0'");
 			$db->modify_column("calendars", "eventlimit", "smallint(3) NOT NULL default '0'");
 			$db->modify_column("events", "timezone", "varchar(5) NOT NULL default ''");
