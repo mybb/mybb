@@ -1313,7 +1313,6 @@ function upgrade30_dbchanges_optimize1()
 		case "pgsql":
 			$db->modify_column("adminoptions", "loginattempts", "smallint", "set", "'0'");
 			$db->modify_column("adminviews", "perpage", "smallint", "set", "'0'");
-			$db->modify_column("attachments", "pid", "smallint", "set", "'0'");
 			$db->modify_column("calendars", "disporder", "smallint", "set", "'0'");
 			$db->modify_column("calendars", "eventlimit", "smallint", "set", "'0'");
 			$db->modify_column("events", "timezone", "varchar(5)", "set", "''");
