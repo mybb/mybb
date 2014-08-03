@@ -2231,7 +2231,7 @@ function upgrade30_updatetheme()
 		"stylesheets" => $db->escape_string(serialize($stylesheets))
 	);
 
-	$db->update_query("themes", $update_array, "tid = '2'");
+	$db->update_query("themes", $update_array, "tid = '1'");
 
 	$contents .= "done.</p>";
 
@@ -2293,74 +2293,78 @@ function upgrade30_updatetheme()
 
 	$query = $db->simple_select("themes", "*", "tid = '2'");
 
-	$theme = $db->fetch_array($query);
-	$properties = my_unserialize($theme['properties']);
-	$stylesheets = my_unserialize($theme['stylesheets']);
+	// Someone deleted the default theme... :o
+	if($db->num_rows($query) != 0)
+	{
+		$theme = $db->fetch_array($query);
+		$properties = my_unserialize($theme['properties']);
+		$stylesheets = my_unserialize($theme['stylesheets']);
+		
+		$properties['editortheme'] = "mybb.css"; // New editor, so reset the theme for it
+		$properties['tablespace'] = 5;
+		$properties['borderwidth'] = 0;
+		// Reset the logo if it's still the default one
+		if($properties['logo'] == "images/logo.gif")
+		{
+			$properties['logo'] = "images/logo.png";
+		}
 	
-	$properties['editortheme'] = "mybb.css"; // New editor, so reset the theme for it
-	$properties['tablespace'] = 5;
-	$properties['borderwidth'] = 0;
-	// Reset the logo if it's still the default one
-	if($properties['logo'] == "images/logo.gif")
-	{
-		$properties['logo'] = "images/logo.png";
-	}
-
-	require_once MYBB_ROOT."inc/class_xml.php";
-	$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
-	$parser = new XMLParser($colors);
-	$tree = $parser->get_tree();
-
-	if(is_array($tree) && is_array($tree['colors']))
-	{
-		if(is_array($tree['colors']['scheme']))
+		require_once MYBB_ROOT."inc/class_xml.php";
+		$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
+		$parser = new XMLParser($colors);
+		$tree = $parser->get_tree();
+	
+		if(is_array($tree) && is_array($tree['colors']))
 		{
-			foreach($tree['colors']['scheme'] as $tag => $value)
+			if(is_array($tree['colors']['scheme']))
 			{
-				$exp = explode("=", $value['value']);
-
-				$properties['colors'][$exp[0]] = $exp[1];
-			}
-		}
-
-		if(is_array($tree['colors']['stylesheets']))
-		{
-			$count = count($properties['disporder']) + 1;
-			foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
-			{
-				$new_stylesheet = array(
-					"name" => $db->escape_string($stylesheet['attributes']['name']),
-					"tid" => 2,
-					"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
-					"stylesheet" => $db->escape_string($stylesheet['value']),
-					"lastmodified" => TIME_NOW,
-					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
-				);
-
-				$sid = $db->insert_query("themestylesheets", $new_stylesheet);
-				$css_url = "css.php?stylesheet={$sid}";
-
-				$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
-
-				if($cached)
+				foreach($tree['colors']['scheme'] as $tag => $value)
 				{
-					$css_url = $cached;
+					$exp = explode("=", $value['value']);
+	
+					$properties['colors'][$exp[0]] = $exp[1];
 				}
-
-				// Add to display and stylesheet list
-				$properties['disporder'][$stylesheet['attributes']['name']] = $count;
-				$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
-
-				++$count;
 			}
+	
+			if(is_array($tree['colors']['stylesheets']))
+			{
+				$count = count($properties['disporder']) + 1;
+				foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
+				{
+					$new_stylesheet = array(
+						"name" => $db->escape_string($stylesheet['attributes']['name']),
+						"tid" => 2,
+						"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
+						"stylesheet" => $db->escape_string($stylesheet['value']),
+						"lastmodified" => TIME_NOW,
+						"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
+					);
+	
+					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+					$css_url = "css.php?stylesheet={$sid}";
+	
+					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
+	
+					if($cached)
+					{
+						$css_url = $cached;
+					}
+	
+					// Add to display and stylesheet list
+					$properties['disporder'][$stylesheet['attributes']['name']] = $count;
+					$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
+	
+					++$count;
+				}
+			}
+	
+			$update_array = array(
+				"properties" => $db->escape_string(serialize($properties)),
+				"stylesheets" => $db->escape_string(serialize($stylesheets))
+			);
+	
+			$db->update_query("themes", $update_array, "tid = '2'");
 		}
-
-		$update_array = array(
-			"properties" => $db->escape_string(serialize($properties)),
-			"stylesheets" => $db->escape_string(serialize($stylesheets))
-		);
-
-		$db->update_query("themes", $update_array, "tid = '2'");
 	}
 
 	$contents .= "done.</p>";
