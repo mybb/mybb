@@ -200,6 +200,26 @@ var Thread = {
 							});
 							$(this).html($('#pid_' + pid + '_temp').html());
 						}
+						else if(json.hasOwnProperty("moderation_post"))
+						{
+							$("div.jGrowl").jGrowl("close");
+
+							$.jGrowl(json.moderation_post);
+							
+							$(this).html(' ');
+							$('#post_' + pid).slideToggle();
+						}
+						else if(json.hasOwnProperty("moderation_thread"))
+						{
+							$("div.jGrowl").jGrowl("close");
+
+							$(this).html(' ');
+							
+							alert(json.moderation_thread);
+							
+							// Redirect user to forum
+							window.location = json.url;
+						}
 						else
 						{
 							// Change html content
