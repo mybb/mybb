@@ -246,6 +246,8 @@ if($mybb->input['action'] == "activate_user")
 
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
+	$cache->update_awaitingactivation();
+
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
 
 	$message = $lang->sprintf($lang->email_adminactivateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
@@ -2376,6 +2378,8 @@ if($mybb->input['action'] == "inline_edit")
 				{
 					$sql_array = implode(",", $to_update);
 					$db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid IN (".$sql_array.")");
+
+					$cache->update_awaitingactivation();
 
 					// Action complete, grab stats and show success message - redirect user
 					$to_update_count = count($to_update);
