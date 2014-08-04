@@ -1551,7 +1551,6 @@ class UserDataHandler extends DataHandler
 		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
 		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
 
-
 		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
 		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
 		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
