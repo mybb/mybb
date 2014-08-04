@@ -1532,7 +1532,9 @@ class UserDataHandler extends DataHandler
 		
 			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
 		}
-	
+
+		$plugins->run_hooks('datahandler_user_delete_content', $this);
+
 		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
 		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
 		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
@@ -1594,6 +1596,8 @@ class UserDataHandler extends DataHandler
 
 		require_once MYBB_ROOT.'inc/class_moderation.php';
 		$moderation = new Moderation();
+
+		$plugins->run_hooks('datahandler_user_delete_posts', $this);
 
 		// Threads
 		$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
@@ -1669,6 +1673,8 @@ class UserDataHandler extends DataHandler
 			$update["usergroup"] = (int)$gid;
 
 		}
+
+		$plugins->run_hooks('datahandler_user_clear_profile', $this);
 
 		$db->update_query("users", $update, 'uid IN('.$this->delete_uids.')');
 	}
