@@ -870,7 +870,7 @@ if($mybb->input['action'] == "register")
 		{
 			foreach($pfcache as $profilefield)
 			{
-				if(!(($profilefield['required'] == 1 || $profilefield['registration'] == 1 || $profilefield['editableby'] == -1) || ($profilefield['editableby'] != '' && is_member($profilefield['editableby'], array('usergroup' => $usergroup, 'additionalgroups' => '')))))
+				if($profilefield['required'] != 1 && $profilefield['registration'] != 1 || $profilefield['editableby'] == '' || $profilefield['editableby'] && $profilefield['editableby'] != -1 && !is_member($profilefield['editableby'], array('usergroup' => $mybb->user['usergroup'], 'additionalgroups' => $usergroup)))
 				{
 					continue;
 				}
