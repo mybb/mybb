@@ -474,12 +474,12 @@ else if($mybb->input['action'] == "edit_post")
 				// Is it the first post?
 				if($thread['firstpost'] == $post['pid'])
 				{
-					echo json_encode(array("moderation_thread" => $lang->thread_moderation, 'url' => $mybb->settings['bburl'].'/'.get_forum_link($thread['fid'])));
+					echo json_encode(array("moderation_thread" => $lang->thread_moderation, 'url' => $mybb->settings['bburl'].'/'.get_forum_link($thread['fid']), "message" => $post['message']));
 					exit;
 				}
 				else
 				{
-					echo json_encode(array("moderation_post" => $lang->post_moderation));
+					echo json_encode(array("moderation_post" => $lang->post_moderation, 'url' => $mybb->settings['bburl'].'/'.get_thread_link($thread['tid']), "message" => $post['message']));
 					exit;
 				}
 			}

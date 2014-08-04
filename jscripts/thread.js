@@ -206,14 +206,22 @@ var Thread = {
 
 							$.jGrowl(json.moderation_post);
 							
-							$(this).html(' ');
-							$('#post_' + pid).slideToggle();
+							$(this).html(json.message);
+							$('#post_' + pid).slideToggle(function() {
+								$('#post_' + pid).remove();
+							
+								// No more posts on this page?
+								if($('.post').length == 0)
+								{
+									window.location = json.url;
+								}
+							});
 						}
 						else if(json.hasOwnProperty("moderation_thread"))
 						{
 							$(".jGrowl").jGrowl("close");
 
-							$(this).html(' ');
+							$(this).html(json.message);
 							
 							alert(json.moderation_thread);
 							
