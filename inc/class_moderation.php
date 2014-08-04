@@ -2293,7 +2293,7 @@ class Moderation
 	 */
 	function approve_posts($pids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		$num_posts = 0;
 
@@ -2394,6 +2394,8 @@ class Moderation
 			$db->update_query("posts", $approve, $where);
 		}
 
+		$plugins->run_hooks("class_moderation_approve_posts", $pids);
+
 		if(!empty($thread_counters))
 		{
 			foreach($thread_counters as $tid => $counters)
@@ -2439,7 +2441,7 @@ class Moderation
 	 */
 	function unapprove_posts($pids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		if(empty($pids))
 		{
@@ -2559,6 +2561,8 @@ class Moderation
 			$where = "pid IN (".implode(',', $pids).")";
 			$db->update_query("posts", $approve, $where);
 		}
+
+		$plugins->run_hooks("class_moderation_unapprove_posts", $pids);
 
 		if(!empty($thread_counters))
 		{
@@ -3026,7 +3030,7 @@ class Moderation
 	 */
 	function soft_delete_posts($pids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		if(empty($pids))
 		{
@@ -3146,6 +3150,8 @@ class Moderation
 			$db->update_query("posts", $update, $where);
 		}
 
+		$plugins->run_hooks("class_moderation_soft_delete_posts", $pids);
+
 		if(is_array($thread_counters))
 		{
 			foreach($thread_counters as $tid => $counters)
@@ -3194,7 +3200,7 @@ class Moderation
 	 */
 	function restore_posts($pids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		$num_posts = 0;
 
@@ -3294,6 +3300,8 @@ class Moderation
 			$where = "pid IN (".implode(',', $pids).")";
 			$db->update_query("posts", $update, $where);
 		}
+
+		$plugins->run_hooks("class_moderation_restore_posts", $pids);
 
 		if(is_array($thread_counters))
 		{
@@ -3443,7 +3451,7 @@ class Moderation
 				$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_restore).")");
 			}
 
-			$plugins->run_hooks("class_moderation_approve_threads", $tids);
+			$plugins->run_hooks("class_moderation_restore_threads", $tids);
 
 			if(is_array($forum_counters))
 			{
@@ -3596,7 +3604,7 @@ class Moderation
 			$db->update_query("posts", $update, "pid IN (".implode(',', $posts_to_delete).")");
 		}
 
-		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);
+		$plugins->run_hooks("class_moderation_soft_delete_threads", $tids);
 
 		if(is_array($forum_counters))
 		{
