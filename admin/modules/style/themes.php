@@ -731,6 +731,19 @@ if($mybb->input['action'] == "duplicate")
 		{
 			$errors[] = $lang->error_missing_name;
 		}
+		else
+		{
+			$query = $db->simple_select("themes", "tid, name");
+			while($existing_theme = $db->fetch_array($query))
+			{
+				$themes[$existing_theme['tid']] = $existing_theme['name'];
+			}
+
+			if(in_array($mybb->input['name'], $themes))
+			{
+				$errors[] = $lang->error_existing_name;
+			}
+		}
 
 		if(!$errors)
 		{
@@ -856,11 +869,21 @@ if($mybb->input['action'] == "add")
 {
 	$plugins->run_hooks("admin_style_themes_add");
 
+	$query = $db->simple_select("themes", "tid, name");
+	while($theme = $db->fetch_array($query))
+	{
+		$themes[$theme['tid']] = $theme['name'];
+	}
+
 	if($mybb->request_method == "post")
 	{
 		if(!$mybb->input['name'])
 		{
 			$errors[] = $lang->error_missing_name;
+		}
+		else if(in_array($mybb->input['name'], $themes))
+		{
+			$errors[] = $lang->error_existing_name;
 		}
 
 		if(!$errors)
@@ -875,12 +898,6 @@ if($mybb->input['action'] == "add")
 			flash_message($lang->success_theme_created, 'success');
 			admin_redirect("index.php?module=style-themes&action=edit&tid=".$tid);
 		}
-	}
-
-	$query = $db->simple_select("themes", "tid, name");
-	while($theme = $db->fetch_array($query))
-	{
-		$themes[$theme['tid']] = $theme['name'];
 	}
 
 	$page->add_breadcrumb_item($lang->create_new_theme, "index.php?module=style-themes&amp;action=add");
@@ -1092,6 +1109,19 @@ if($mybb->input['action'] == "edit")
 		if(!$update_array['name'])
 		{
 			$errors[] = $lang->error_missing_name;
+		}
+		else
+		{
+			$query = $db->simple_select("themes", "tid, name");
+			while($existing_theme = $db->fetch_array($query))
+			{
+				$themes[$existing_theme['tid']] = $existing_theme['name'];
+			}
+
+			if(in_array($update_array['name'], $themes))
+			{
+				$errors[] = $lang->error_existing_name;
+			}
 		}
 
 		if($update_array['pid'])
