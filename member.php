@@ -1305,7 +1305,6 @@ if($mybb->input['action'] == "activate")
 	}
 	if(isset($mybb->input['code']) && $user)
 	{
-		$mybb->settings['awaitingusergroup'] = "5";
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND (type='r' OR type='e' OR type='b')");
 		$activation = $db->fetch_array($query);
 		if(!$activation['uid'])
@@ -1327,6 +1326,8 @@ if($mybb->input['action'] == "activate")
 		if($user['usergroup'] == 5 && $activation['type'] != "e" && $activation['type'] != "b")
 		{
 			$db->update_query("users", array("usergroup" => 2), "uid='".$user['uid']."'");
+
+			$cache->update_awaitingactivation();
 		}
 		if($activation['type'] == "e")
 		{
