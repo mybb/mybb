@@ -192,7 +192,7 @@ var Thread = {
 					{
 						if(json.hasOwnProperty("errors"))
 						{
-							$("div.jGrowl").jGrowl("close");
+							$("jGrowl").jGrowl("close");
 
 							$.each(json.errors, function(i, message)
 							{
@@ -202,7 +202,7 @@ var Thread = {
 						}
 						else if(json.hasOwnProperty("moderation_post"))
 						{
-							$("div.jGrowl").jGrowl("close");
+							$("jGrowl").jGrowl("close");
 
 							$.jGrowl(json.moderation_post);
 							
@@ -211,7 +211,7 @@ var Thread = {
 						}
 						else if(json.hasOwnProperty("moderation_thread"))
 						{
-							$("div.jGrowl").jGrowl("close");
+							$("jGrowl").jGrowl("close");
 
 							$(this).html(' ');
 							
