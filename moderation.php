@@ -2743,7 +2743,7 @@ switch($mybb->input['action'])
 
 		$uid = $mybb->input['uid'];
 		$user = get_user($uid);
-		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup']))
+		if(!$user['uid'] || !purgespammer_show($user['postnum'], $user['usergroup'], $user['uid']))
 		{
 			error($lang->purgespammer_invalid_user);
 		}
@@ -2898,7 +2898,7 @@ switch($mybb->input['action'])
 							require_once MYBB_ROOT.'inc/datahandlers/user.php';
 							$userhandler = new UserDataHandler('delete');
 
-							$user_deleted = $userhandler->delete_user($uid);
+							$user_deleted = $userhandler->delete_user($uid, 1);
 						}
 						break;
 					case "stopforumspam":
@@ -2909,7 +2909,7 @@ switch($mybb->input['action'])
 
 			$cache->update_reportedcontent();
 
-			log_moderator_action(array(), $lang->sprintf($lang->purgespammer_modlog, htmlspecialchars_uni($user['username'])));
+			log_moderator_action(array('uid' => $uid, 'username' => $user['username']), $lang->purgespammer_modlog);
 
 			if($user_deleted)
 			{

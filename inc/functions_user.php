@@ -711,16 +711,19 @@ function generate_question()
  *
  * @param int The users post count
  * @param int The usergroup of our user
+ * @param int The uid of our user
  * @return boolean Whether or not to show the feature
  */
-function purgespammer_show($post_count, $usergroup)
+function purgespammer_show($post_count, $usergroup, $uid)
 {
 		global $mybb, $cache;
 
 		// only show this if the current user has permission to use it and the user has less than the post limit for using this tool
-		$groups = explode(",", $mybb->settings['purgespammergroups']);
 		$bangroup = $mybb->settings['purgespammerbangroup'];
 		$usergroups = $cache->read('usergroups');
 
-		return (in_array($mybb->user['usergroup'], $groups) && !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod'] && (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0) && $usergroup != $bangroup && $usergroups[$usergroup]['isbannedgroup'] != 1);
+		return ($mybb->user['uid'] != $uid && is_member($mybb->settings['purgespammergroups']) && !is_super_admin($uid)
+			&& !$usergroups[$usergroup]['cancp'] && !$usergroups[$usergroup]['canmodcp'] && !$usergroups[$usergroup]['issupermod']
+			&& (str_replace($mybb->settings['thousandssep'], '', $post_count) <= $mybb->settings['purgespammerpostlimit'] || $mybb->settings['purgespammerpostlimit'] == 0)
+			&& !is_member($bangroup, $uid) && !$usergroups[$usergroup]['isbannedgroup']);
 }

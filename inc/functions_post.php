@@ -393,7 +393,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
 		}
 
-		if(purgespammer_show($post['postnum'], $post['usergroup']))
+		if($post_type != 3 && $post_type != 1 && purgespammer_show($post['postnum'], $post['usergroup'], $post['uid']))
 		{
 			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
 		}

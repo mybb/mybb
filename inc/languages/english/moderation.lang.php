@@ -177,10 +177,9 @@ $l['purgespammer_delete_desc'] = "Completely delete this user.";
 $l['purgespammer_stopforumspam'] = "Submit to StopForumSpam";
 $l['purgespammer_stopforumspam_desc'] = "Submit details on this user to the StopForumSpam database.";
 $l['purgespammer_submit'] = "Purge Spammer";
-$l['purgespammer_profile'] = "Purged Spammer {1}.";
 $l['purgespammer_success'] = "The selected actions have been performed.";
 $l['purgespammer_invalid_user'] = "You have specified an invalid user.";
-$l['purgespammer_modlog'] = "Purged Spammer {1}";
+$l['purgespammer_modlog'] = "Purged Spammer";
 
 $l['error_invalidpm'] = "Invalid PM";
 $l['error_nomergeposts'] = "You need to select one or more posts to be able to merge posts together.";
@@ -244,4 +243,3 @@ $l['redirect_delayed_moderation_thread'] = "The selected moderation tool has bee
 $l['redirect_delayed_moderation_forum'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the forum.";
 $l['redirect_delayed_moderation_search'] = "The selected moderation tool has been saved and delayed for {1} day(s).<br />You will now be returned to the search.";
 $l['redirect_delayed_moderation_cancelled'] = "The selected delayed moderation action has been canceled.<br />You will now be returned to the delayed moderation page.";
-
