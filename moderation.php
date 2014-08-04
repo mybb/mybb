@@ -2808,28 +2808,7 @@ switch($mybb->input['action'])
 				}
 
 				// Clear the profile
-				$db->delete_query("userfields", "ufid = '{$uid}'");
-				$update = array(
-					"website" => "",
-					"birthday" => "",
-					"icq" => "",
-					"aim" => "",
-					"yahoo" => "",
-					"skype" => "",
-					"google" => "",
-					"usertitle" => "",
-					"away" => 0,
-					"awaydate" => 0,
-					"returndate" => "",
-					"awayreason" => "",
-					"usergroup" => (int)$mybb->settings['purgespammerbangroup'],
-					"additionalgroups" => "",
-					"displaygroup" => 0,
-					"signature" => "",
-					"avatar" => ""
-				);
-				$db->update_query("users", $update, "uid = '{$uid}'");
-
+				$userhandler->clear_profile($uid, $mybb->settings['purgespammerbangroup']);
 
 				$cache->update_banned();
 				$cache->update_bannedips();

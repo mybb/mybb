@@ -1510,6 +1510,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	 * Provides a method to delete an users content
+	 *
+	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_content($delete_uids=false)
 	{
@@ -1567,6 +1569,8 @@ class UserDataHandler extends DataHandler
 
 	/**
 	 * Provides a method to delete an users posts and threads
+	 *
+	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
 	 */
 	function delete_posts($delete_uids=false)
 	{
@@ -1612,5 +1616,60 @@ class UserDataHandler extends DataHandler
 		{
 			$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
 		}
+	}
+
+	/**
+	 * Provides a method to clear an users profile (note that this doesn't delete the custom profilefields)
+	 *
+	 * @param array Array of user ids, false if they're already set (eg when using the delete_user function)
+	 * @param int The new usergroup if the users should be moved (additional usergroups are always removed)
+	 */
+	function clear_profile($delete_uids=false, $gid=0)
+	{
+		global $db;
+
+		// delete_uids isn't a nice name, but it's used as the functions above use the same
+		if($delete_uids != false)
+		{
+			$this->delete_uids = array_map('intval', (array)$delete_uids);
+
+			foreach($this->delete_uids as $key => $uid)
+			{
+				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+				{
+					// Remove super admins
+					unset($this->delete_uids[$key]);
+				}
+			}
+
+			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+		}
+
+		$update = array(
+			"website" => "",
+			"birthday" => "",
+			"icq" => "",
+			"aim" => "",
+			"yahoo" => "",
+			"skype" => "",
+			"google" => "",
+			"usertitle" => "",
+			"away" => 0,
+			"awaydate" => 0,
+			"returndate" => "",
+			"awayreason" => "",
+			"additionalgroups" => "",
+			"displaygroup" => 0,
+			"signature" => "",
+			"avatar" => ""
+		);
+
+		if($gid > 0)
+		{
+			$update["usergroup"] = (int)$gid;
+
+		}
+
+		$db->update_query("users", $update, 'uid IN('.$this->delete_uids.')');
 	}
 }
