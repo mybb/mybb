@@ -1447,70 +1447,17 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks('datahandler_user_delete_start', $this);
 
 		$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+		
+		$this->delete_content();
 
 		// Delete the user
-		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
-		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
-		$db->delete_query('forumsubscriptions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
-		$db->delete_query('reputation', 'uid IN('.$this->delete_uids.') OR adduid IN('.$this->delete_uids.')');
-		$db->delete_query('posts', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
-		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
-		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
-
-		
-		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
-		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
-		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
-		
-		// Update the reports made by the deleted users by setting the uid to 0
-		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
-
-		// Remove any of the user(s) uploaded avatars
-		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
-		while($avatar = $db->fetch_field($query, 'avatar'))
-		{
-			$avatar = substr($avatar, 2, -20);
-			@unlink(MYBB_ROOT.$avatar);
-		}
-
 		$query = $db->delete_query('users', 'uid IN('.$this->delete_uids.')');
 		$this->deleted_users = (int)$db->affected_rows($query);
 
 		// Are we removing the posts/threads of a user?
 		if((int)$prunecontent == 1)
 		{
-			require_once MYBB_ROOT.'inc/class_moderation.php';
-			$moderation = new Moderation();
-
-			// Threads
-			$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
-			while($tid = $db->fetch_field($query, 'tid'))
-			{
-				$moderation->delete_thread($tid);
-			}
-
-			// Posts
-			$pids = array();
-			$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
-			while($pid = $db->fetch_field($query, 'pid'))
-			{
-				$moderation->delete_post($pid);
-				$pids[] = (int)$pid;
-			}
-			
-			// Delete Reports made to users's posts/threads
-			if(!empty($pids))
-			{
-				$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
-			}
+			$this->delete_posts();
 		}
 		else
 		{
@@ -1559,5 +1506,111 @@ class UserDataHandler extends DataHandler
 		$plugins->run_hooks("datahandler_user_delete_end", $this);
 
 		return $this->return_values;
+	}
+
+	/**
+	 * Provides a method to delete an users content
+	 */
+	function delete_content($delete_uids=false)
+	{
+		global $db;
+
+		if($delete_uids != false)
+		{
+			$this->delete_uids = array_map('intval', (array)$delete_uids);
+		
+			foreach($this->delete_uids as $key => $uid)
+			{
+				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+				{
+					// Remove super admins
+					unset($this->delete_uids[$key]);
+				}
+			}
+		
+			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+		}
+	
+		$db->delete_query('userfields', 'ufid IN('.$this->delete_uids.')');
+		$db->delete_query('privatemessages', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('events', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+		$db->delete_query('forumsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('threadsubscriptions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('sessions', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('banned', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('joinrequests', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('awaitingactivation', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('warnings', 'uid IN('.$this->delete_uids.')');
+		$db->delete_query('reputation', 'uid IN('.$this->delete_uids.') OR adduid IN('.$this->delete_uids.')');
+		$db->delete_query('posts', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('threads', 'uid IN('.$this->delete_uids.') AND visible=\'-2\'');
+		$db->delete_query('moderators', 'id IN('.$this->delete_uids.') AND isgroup=\'0\'');
+
+
+		// Delete reports made to the profile or reputation of the deleted users (i.e. made by them)
+		$db->delete_query('reportedcontent', 'type=\'reputation\' AND id3 IN('.$this->delete_uids.') OR type=\'reputation\' AND id2 IN('.$this->delete_uids.')');
+		$db->delete_query('reportedcontent', 'type=\'profile\' AND id IN('.$this->delete_uids.')');
+
+		// Update the reports made by the deleted users by setting the uid to 0
+		$db->update_query('reportedcontent', array('uid' => 0), 'uid IN('.$this->delete_uids.')');
+
+		// Remove any of the user(s) uploaded avatars
+		$query = $db->simple_select('users', 'avatar', 'uid IN ('.$this->delete_uids.') AND avatartype=\'upload\'');
+		while($avatar = $db->fetch_field($query, 'avatar'))
+		{
+			$avatar = substr($avatar, 2, -20);
+			@unlink(MYBB_ROOT.$avatar);
+		}
+
+	}
+
+	/**
+	 * Provides a method to delete an users posts and threads
+	 */
+	function delete_posts($delete_uids=false)
+	{
+		global $db;
+
+		if($delete_uids != false)
+		{
+			$this->delete_uids = array_map('intval', (array)$delete_uids);
+
+			foreach($this->delete_uids as $key => $uid)
+			{
+				if(!$uid || is_super_admin($uid) || $uid == $mybb->user['uid'])
+				{
+					// Remove super admins
+					unset($this->delete_uids[$key]);
+				}
+			}
+
+			$this->delete_uids = '\''.implode('\',\'', $this->delete_uids).'\'';
+		}
+
+		require_once MYBB_ROOT.'inc/class_moderation.php';
+		$moderation = new Moderation();
+
+		// Threads
+		$query = $db->simple_select('threads', 'tid', 'uid IN('.$this->delete_uids.')');
+		while($tid = $db->fetch_field($query, 'tid'))
+		{
+			$moderation->delete_thread($tid);
+		}
+
+		// Posts
+		$pids = array();
+		$query = $db->simple_select('posts', 'pid', 'uid IN('.$this->delete_uids.')');
+		while($pid = $db->fetch_field($query, 'pid'))
+		{
+			$moderation->delete_post($pid);
+			$pids[] = (int)$pid;
+		}
+
+		// Delete Reports made to users's posts/threads
+		if(!empty($pids))
+		{
+			$db->delete_query('reportedcontent', 'type=\'posts\' AND id IN('.implode(',', $pids).')');
+		}
 	}
 }
