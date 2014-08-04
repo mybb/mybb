@@ -1098,7 +1098,6 @@ if($mybb->input['action'] == "edit")
 		$update_array = array(
 			'name' => $db->escape_string($mybb->input['name']),
 			'pid' => $mybb->get_input('pid', 1),
-			'tid' => $mybb->get_input('tid', 1),
 			'allowedgroups' => $allowedgroups,
 			'properties' => $db->escape_string(serialize($properties))
 		);
@@ -1110,7 +1109,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($update_array['name'])."' and tid != '{$update_array['tid']}'");
+			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($update_array['name'])."' and tid != '{$theme['tid']}'");
 			$numthemes = $db->fetch_field($query, 'numthemes');
 
 			if($numthemes)
