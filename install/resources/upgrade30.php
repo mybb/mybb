@@ -2423,6 +2423,8 @@ function upgrade30_acppin_submit()
 	}
 	else
 	{
+		$pin = addslashes($mybb->get_input('pin'));
+
 		$file = @fopen(MYBB_ROOT."inc/config.php", "r+");
 
 		// Set the pointer before the closing php tag to remove it
@@ -2435,7 +2437,7 @@ function upgrade30_acppin_submit()
  *  on your Admin CP, enter it below.
  */
 
-\$config['secret_pin'] = '{$mybb->input['pin']}';");
+\$config['secret_pin'] = '{$pin}';");
 
 		@fclose($file);
 

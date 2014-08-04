@@ -1507,15 +1507,6 @@ function create_tables()
 \$config['hide_admin_links'] = 0;
 
 /**
- * Admin CP Secret PIN
- *  If you wish to request a PIN
- *  when someone tries to login
- *  on your Admin CP, enter it below.
- */
-
-\$config['secret_pin'] = '';
-
-/**
  * Data-cache configuration
  *  The data cache is a temporary cache
  *  of the most commonly accessed data in MyBB.
@@ -1577,7 +1568,7 @@ function create_tables()
 	'promotion_logs' => 180 // Promotion logs
 );
 
-?>";
+";
 
 	$file = fopen(MYBB_ROOT.'inc/config.php', 'w');
 	fwrite($file, $configdata);
@@ -2018,6 +2009,22 @@ EOF;
 		write_settings();
 
 		echo $lang->sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
+
+		// Save the acp pin
+		$pin = addslashes($mybb->get_input('pin'));
+
+		$file = @fopen(MYBB_ROOT."inc/config.php", "a");
+
+		@fwrite($file, "/**
+ * Admin CP Secret PIN
+ *  If you wish to request a PIN
+ *  when someone tries to login
+ *  on your Admin CP, enter it below.
+ */
+
+\$config['secret_pin'] = '{$pin}';");
+
+		@fclose($file);
 
 		include_once MYBB_ROOT."inc/functions_task.php";
 		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
