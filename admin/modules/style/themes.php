@@ -738,7 +738,7 @@ if($mybb->input['action'] == "duplicate")
 			
 			if($numthemes)
 			{
-				$errors[] = $lang->error_existing_name;
+				$errors[] = $lang->error_theme_already_exists;
 			}
 		}
 
@@ -880,7 +880,7 @@ if($mybb->input['action'] == "add")
 		}
 		else if(in_array($mybb->input['name'], $themes))
 		{
-			$errors[] = $lang->error_existing_name;
+			$errors[] = $lang->error_theme_already_exists;
 		}
 
 		if(!$errors)
@@ -1109,12 +1109,12 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($update_array['name'])."' and tid != '{$theme['tid']}'");
+			$query = $db->simple_select("themes", "COUNT(tid) as numthemes", "name = '".$db->escape_string($update_array['name'])."' AND tid != '{$theme['tid']}'");
 			$numthemes = $db->fetch_field($query, 'numthemes');
 
 			if($numthemes)
 			{
-				$errors[] = $lang->error_existing_name;
+				$errors[] = $lang->error_theme_already_exists;
 			}
 		}
 
