@@ -167,9 +167,8 @@ $l['created_by'] = "Created by";
 $l['error_invalid_stylesheet'] = "You have selected an invalid stylesheet.";
 $l['error_invalid_theme'] = "You have selected an invalid theme.";
 $l['error_missing_name'] = "Please enter a name for this theme.";
-$l['error_existing_name'] = "A theme with the same name already exists. Please specify a different name.";
-$l['error_missing_url'] = "Please enter a theme a import.";
-$l['error_theme_already_exists'] = "The theme specified already exists. Please enter a new name for this theme.";
+$l['error_missing_url'] = "Please enter a valid url to import a theme from.";
+$l['error_theme_already_exists'] = "A theme with the same name already exists. Please specify a different name.";
 $l['error_theme_security_problem'] = "A potential security issue was found in the theme. It was not imported. Please contact the Author or MyBB Group for support.";
 
 $l['error_local_file'] = "Could not open the local file. Does it exist? Please check and try again.";
