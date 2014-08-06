@@ -1581,7 +1581,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="allowanonwarningpms">
 			<title>Allow Anonymous Warning PMs</title>
-			<description><![CDATA[Whether or not if to allow moderators to send anonymous warning PMs.]]></description>
+			<description><![CDATA[Allow moderators to send anonymous warning PMs.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
