@@ -587,11 +587,18 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
+			$closeon = '&nbsp;';
+			if($poll['timeout'] != 0)
+			{
+				$closeon = $lang->sprintf($lang->poll_closes, my_date($mybb->settings['dateformat'], $expiretime));
+			}
+
 			$publicnote = '&nbsp;';
 			if($poll['public'] == 1)
 			{
 				$publicnote = $lang->public_note;
 			}
+
 			eval("\$pollbox = \"".$templates->get("showthread_poll")."\";");
 			$plugins->run_hooks("showthread_poll");
 		}
