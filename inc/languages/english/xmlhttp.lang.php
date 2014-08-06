@@ -7,6 +7,7 @@
 
 $l['no_new_subject'] = "You did not enter a new subject.";
 $l['post_moderation'] = "Your post is now under moderation.";
+$l['thread_moderation'] = "Your thread is now under moderation.";
 $l['post_doesnt_exist'] = "The specified post does not exist.";
 $l['thread_doesnt_exist'] = "The specified thread does not exist.";
 $l['thread_closed_edit_subjects'] = "This thread is closed and you may not edit subjects.";

@@ -192,13 +192,41 @@ var Thread = {
 					{
 						if(json.hasOwnProperty("errors"))
 						{
-							$("div.jGrowl").jGrowl("close");
+							$(".jGrowl").jGrowl("close");
 
 							$.each(json.errors, function(i, message)
 							{
 								$.jGrowl(lang.quick_edit_update_error + ' ' + message);
 							});
 							$(this).html($('#pid_' + pid + '_temp').html());
+						}
+						else if(json.hasOwnProperty("moderation_post"))
+						{
+							$(".jGrowl").jGrowl("close");
+
+							$.jGrowl(json.moderation_post);
+							
+							$(this).html(json.message);
+							$('#post_' + pid).slideToggle(function() {
+								$('#post_' + pid).remove();
+							
+								// No more posts on this page?
+								if($('.post').length == 0)
+								{
+									window.location = json.url;
+								}
+							});
+						}
+						else if(json.hasOwnProperty("moderation_thread"))
+						{
+							$(".jGrowl").jGrowl("close");
+
+							$(this).html(json.message);
+							
+							alert(json.moderation_thread);
+							
+							// Redirect user to forum
+							window.location = json.url;
 						}
 						else
 						{
