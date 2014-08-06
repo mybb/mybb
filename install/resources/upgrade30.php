@@ -2128,7 +2128,7 @@ function upgrade30_dbchanges_ip()
 
 function upgrade30_updatetheme()
 {
-	global $db, $mybb, $output;
+	global $db, $mybb, $output, $config;
 
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
@@ -2378,6 +2378,76 @@ function upgrade30_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
+	if(!isset($config['secret_pin']) && is_writable(MYBB_ROOT."inc/config.php"))
+	{
+		$output->print_footer("30_acppin");
+	}
+	else
+	{
+		$output->print_footer("30_done");
+	}
+}
+
+function upgrade30_acppin()
+{
+	global $db, $mybb, $output;
+
+	$output->print_header("Add an ACP Pin");
+
+	echo "<p>We added a new security function in 1.8: The possibility to set a security PIN which you need to enter the ACP.<br />\n";
+	echo "If you don't want to set a PIN you can simply skip this step (leave the field below empty). You can still set the PIN later (see the docs to see how).</p>\n";
+
+	echo "<b>PIN:</b> <input type=\"password\" name=\"pin\" />";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
+	$output->print_footer("30_acppin_submit");
+}
+
+function upgrade30_acppin_submit()
+{
+	global $db, $mybb, $output, $config;
+
+	$output->print_header("Writing the config file");
+
+	$content = "<p>We're now writing your PIN (if you've entered one) to the config.php file... ";
+
+	if(!is_writable(MYBB_ROOT."inc/config.php"))
+	{
+		$content .= "Failed (config.php not writable)";
+	}
+	else if(isset($config['secret_pin']))
+	{
+		$content .= "Skipped (PIN already set)";
+	}
+	else
+	{
+		$pin = addslashes($mybb->get_input('pin'));
+
+		$file = @fopen(MYBB_ROOT."inc/config.php", "r+");
+
+		// Set the pointer before the closing php tag to remove it
+		@fseek($file, -2, SEEK_END);
+
+		@fwrite($file, "/**
+ * Admin CP Secret PIN
+ *  If you wish to request a PIN
+ *  when someone tries to login
+ *  on your Admin CP, enter it below.
+ */
+
+\$config['secret_pin'] = '{$pin}';");
+
+		@fclose($file);
+
+		$content .= "Done";		
+	}
+
+	echo $content."</p>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
 	$output->print_footer("30_done");
 }
 
