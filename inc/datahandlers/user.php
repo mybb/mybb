@@ -1515,7 +1515,7 @@ class UserDataHandler extends DataHandler
 	 */
 	function delete_content($delete_uids=false)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if($delete_uids != false)
 		{
@@ -1575,7 +1575,7 @@ class UserDataHandler extends DataHandler
 	 */
 	function delete_posts($delete_uids=false)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if($delete_uids != false)
 		{
@@ -1629,7 +1629,7 @@ class UserDataHandler extends DataHandler
 	 */
 	function clear_profile($delete_uids=false, $gid=0)
 	{
-		global $db;
+		global $db, $plugins;
 
 		// delete_uids isn't a nice name, but it's used as the functions above use the same
 		if($delete_uids != false)
