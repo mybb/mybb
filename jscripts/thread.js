@@ -204,18 +204,19 @@ var Thread = {
 						{
 							$(".jGrowl").jGrowl("close");
 
-							$.jGrowl(json.moderation_post);
-							
 							$(this).html(json.message);
-							$('#post_' + pid).slideToggle(function() {
-								$('#post_' + pid).remove();
-							
-								// No more posts on this page?
-								if($('.post').length == 0)
-								{
-									window.location = json.url;
-								}
-							});
+
+							// No more posts on this page? (testing for "1" as the last post would be removed here)
+							if($('.post').length == 1)
+							{
+								alert(json.moderation_post);
+								window.location = json.url;
+							}
+							else
+							{
+								$.jGrowl(json.moderation_post);
+								$('#post_' + pid).slideToggle();
+							}
 						}
 						else if(json.hasOwnProperty("moderation_thread"))
 						{
@@ -227,7 +228,7 @@ var Thread = {
 							
 							// Redirect user to forum
 							window.location = json.url;
-						}
+						}	
 						else
 						{
 							// Change html content
