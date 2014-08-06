@@ -1879,7 +1879,8 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="searchfloodtime">
 			<title>Search Flood Time (seconds)</title>
-			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performing searches. Set to 0 to disable.]]></description>
+			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performi
+			ng searches. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
@@ -2405,7 +2406,7 @@ delete=Delete]]></optionscode>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
 		<setting name="statsenabled">
 			<title>Enable Statistics Pages</title>
-			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no. 0 to disable caching.]]></description>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2414,7 +2415,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours.]]></description>
+			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
