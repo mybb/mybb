@@ -246,7 +246,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="jumptopagemultipage">
 			<title>Show Jump To Page form in Pagination</title>
-			<description><![CDATA[Whther if to show a Jump To Page form in pagination if number of pages exists Maximum Page Links in Pagination setting value.]]></description>
+			<description><![CDATA[Do you want to show a "jump to page" form in pagination if number of pages exceeds "Maximum Page Links in Pagination"?]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1581,7 +1581,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="allowanonwarningpms">
 			<title>Allow Anonymous Warning PMs</title>
-			<description><![CDATA[Whether or not if to allow moderators to send anonymous warning PMs.]]></description>
+			<description><![CDATA[Allow moderators to send anonymous warning PMs.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -1879,7 +1879,8 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="searchfloodtime">
 			<title>Search Flood Time (seconds)</title>
-			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performing searches. Set to 0 to disable.]]></description>
+			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performi
+			ng searches. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
@@ -2414,7 +2415,7 @@ delete=Delete]]></optionscode>
 	<settinggroup name="statspage" title="Statistics Page" description="This section allows you to change the settings of the statistics page." disporder="28" isdefault="1">
 		<setting name="statsenabled">
 			<title>Enable Statistics Pages</title>
-			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no. 0 to disable caching.]]></description>
+			<description><![CDATA[If you wish to disable the statistics page on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -2423,7 +2424,7 @@ delete=Delete]]></optionscode>
 		</setting>
 		<setting name="statscachetime">
 			<title>Statistics Cache Time</title>
-			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours.]]></description>
+			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>

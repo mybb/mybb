@@ -2128,7 +2128,7 @@ function upgrade30_dbchanges_ip()
 
 function upgrade30_updatetheme()
 {
-	global $db, $mybb, $output;
+	global $db, $mybb, $output, $config;
 
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
@@ -2150,111 +2150,304 @@ function upgrade30_updatetheme()
 	$db->update_query("usergroups", array('starimage' => 'images/star.png'), "starimage='images/star.gif'");
 	$contents .= "done.</p>";
 
-	$contents .= '<p>Re-caching and minifying existing stylesheets...</p>';
-
-	$num_re_cached = recache_existing_styles();
-
-	$contents .= "Done. {$num_re_cached} stylesheets re-cached.";
-
-	$contents .= "<p>Updating the Default theme... ";
-
-	$db->delete_query("templates", "sid = '1'");
-	$query = $db->simple_select("themes", "tid", "tid = '2'");
-
-	if($db->num_rows($query))
-	{
-		// Remove existing default theme
-		$db->delete_query("themes", "tid = '2'");
-		$db->delete_query("themestylesheets", "tid = '2'");
-	}
-
-	// Sounds crazy, but the new master files need to be inserted first
-	// so we can inherit them properly
-	$theme = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	import_theme_xml($theme, array("tid" => 1, "no_templates" => 1, "version_compat" => 1));
-
-	// Create the new default theme
-	$tid = build_new_theme("Default", null, 1);
-	$db->update_query("themes", array("tid" => 2), "tid = '{$tid}'");
-
-	$tid = 2;
-
-	// Now that the default theme is back, we need to insert our colors
-	$query = $db->simple_select("themes", "*", "tid = '{$tid}'");
+	$contents .= "<p>Adding new stylesheets... ";
+	
+	$query = $db->simple_select("themes", "*", "tid='1'");
 
 	$theme = $db->fetch_array($query);
 	$properties = my_unserialize($theme['properties']);
 	$stylesheets = my_unserialize($theme['stylesheets']);
 
-	$query = $db->simple_select("themes", "tid", "def != '0'");
-
-	if(!$db->num_rows($query))
-	{
-		// We remove the user's default theme, so put it back
-		$db->update_query("themes", array("def" => 1), "tid = '{$tid}'");
-	}
-
+	$old = array("global.css", "usercp.css", "modcp.css", "star_ratings.css");
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
+	$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	$parser = new XMLParser($colors);
 	$tree = $parser->get_tree();
 
-	if(is_array($tree) && is_array($tree['colors']))
+	if(is_array($tree) && is_array($tree['theme']))
 	{
-		if(is_array($tree['colors']['scheme']))
+		if(is_array($tree['theme']['stylesheets']))
 		{
-			foreach($tree['colors']['scheme'] as $tag => $value)
-			{
-				$exp = explode("=", $value['value']);
-
-				$properties['colors'][$exp[0]] = $exp[1];
-			}
-		}
-
-		if(is_array($tree['colors']['stylesheets']))
-		{
-			$count = count($properties['disporder']) + 1;
-			foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
+			foreach($tree['theme']['stylesheets']['stylesheet'] as $stylesheet)
 			{
 				$new_stylesheet = array(
 					"name" => $db->escape_string($stylesheet['attributes']['name']),
-					"tid" => 2,
+					"tid" => 1,
 					"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
 					"stylesheet" => $db->escape_string($stylesheet['value']),
 					"lastmodified" => TIME_NOW,
 					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 				);
 
-				$sid = $db->insert_query("themestylesheets", $new_stylesheet);
-				$css_url = "css.php?stylesheet={$sid}";
-
-				$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
-
-				if($cached)
+				if(in_array($new_stylesheet['name'], $old))
 				{
-					$css_url = $cached;
+					// We can update the disporder here
+					$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
 				}
+				else
+				{
+					// Insert new stylesheet
+					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+					$css_url = "css.php?stylesheet={$sid}";
 
-				// Add to display and stylesheet list
-				$properties['disporder'][$stylesheet['attributes']['name']] = $count;
-				$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
+					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
 
-				++$count;
+					if($cached)
+					{
+						$css_url = $cached;
+					}
+
+					// Add to display and stylesheet list
+					$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
+					$attachedto = $stylesheet['attributes']['attachedto'];
+					if(!$attachedto)
+					{
+						$attachedto = "global";
+					}
+
+					// private.php?compose,folders|usercp.php,global|global
+					$attachedto = explode("|", $attachedto);
+					foreach($attachedto as $attached_file)
+					{
+						$attached_actions = explode(",", $attached_file);
+						$attached_file = array_shift($attached_actions);
+						if(count($attached_actions) == 0)
+						{
+							$attached_actions = array("global");
+						}
+
+						foreach($attached_actions as $action)
+						{
+							$stylesheets[$attached_file][$action][] = $css_url;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	$update_array = array(
+		"properties" => $db->escape_string(serialize($properties)),
+		"stylesheets" => $db->escape_string(serialize($stylesheets))
+	);
+
+	$db->update_query("themes", $update_array, "tid = '1'");
+
+	$contents .= "done.</p>";
+
+	$contents .= "<p>Adding a disporder to all stylesheets... ";
+
+	$query = $db->simple_select("themes", "tid,properties,stylesheets");
+	while($theme = $db->fetch_array($query))
+	{
+		$properties = my_unserialize($theme['properties']);
+		$stylesheets = my_unserialize($theme['stylesheets']);
+
+		// Disporder already set?
+		if(isset($properties['disporder']) && !empty($properties['disporder']))
+		{
+			continue;
+		}
+
+		$disporder = 1;
+
+		// First go through all own stylesheets
+		$query2 = $db->simple_select("themestylesheets", "name", "tid='{$theme['tid']}'");
+		while($name = $db->fetch_field($query2, "name"))
+		{
+			$properties['disporder'][$name] = $disporder;
+			$disporder++;
+		}
+
+		// Next go through the inherited stylesheets
+		if(!empty($stylesheets))
+		{
+			foreach($stylesheets as $a)
+			{
+				foreach($a as $file => $stylesheet)
+				{
+					// Don't ask me... Throws an error otherwise
+					if(empty($stylesheet))
+					{
+						continue;
+					}
+					foreach($stylesheet as $s)
+					{
+						$name = pathinfo($s, PATHINFO_BASENAME);
+						if(empty($properties['disporder']) || !in_array($name, array_keys($properties['disporder'])))
+						{
+							$properties['disporder'][$name] = $disporder;
+							$disporder++;
+						}
+					}
+				}
 			}
 		}
 
-		$update_array = array(
-			"properties" => $db->escape_string(serialize($properties)),
-			"stylesheets" => $db->escape_string(serialize($stylesheets))
-		);
-
-		$db->update_query("themes", $update_array, "tid = '{$tid}'");
+		$db->update_query("themes", array("properties" => $db->escape_string(serialize($properties))), "tid='{$theme['tid']}'");
 	}
 
 	$contents .= "done.</p>";
+
+	$contents .= "<p>Adding the Default colors... ";
+
+	$query = $db->simple_select("themes", "*", "tid = '2'");
+
+	// Someone deleted the default theme... :o
+	if($db->num_rows($query) != 0)
+	{
+		$theme = $db->fetch_array($query);
+		$properties = my_unserialize($theme['properties']);
+		$stylesheets = my_unserialize($theme['stylesheets']);
+		
+		$properties['editortheme'] = "mybb.css"; // New editor, so reset the theme for it
+		$properties['tablespace'] = 5;
+		$properties['borderwidth'] = 0;
+		// Reset the logo if it's still the default one
+		if($properties['logo'] == "images/logo.gif")
+		{
+			$properties['logo'] = "images/logo.png";
+		}
+	
+		require_once MYBB_ROOT."inc/class_xml.php";
+		$colors = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
+		$parser = new XMLParser($colors);
+		$tree = $parser->get_tree();
+	
+		if(is_array($tree) && is_array($tree['colors']))
+		{
+			if(is_array($tree['colors']['scheme']))
+			{
+				foreach($tree['colors']['scheme'] as $tag => $value)
+				{
+					$exp = explode("=", $value['value']);
+	
+					$properties['colors'][$exp[0]] = $exp[1];
+				}
+			}
+	
+			if(is_array($tree['colors']['stylesheets']))
+			{
+				$count = count($properties['disporder']) + 1;
+				foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
+				{
+					$new_stylesheet = array(
+						"name" => $db->escape_string($stylesheet['attributes']['name']),
+						"tid" => 2,
+						"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
+						"stylesheet" => $db->escape_string($stylesheet['value']),
+						"lastmodified" => TIME_NOW,
+						"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
+					);
+	
+					$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+					$css_url = "css.php?stylesheet={$sid}";
+	
+					$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
+	
+					if($cached)
+					{
+						$css_url = $cached;
+					}
+	
+					// Add to display and stylesheet list
+					$properties['disporder'][$stylesheet['attributes']['name']] = $count;
+					$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
+	
+					++$count;
+				}
+			}
+	
+			$update_array = array(
+				"properties" => $db->escape_string(serialize($properties)),
+				"stylesheets" => $db->escape_string(serialize($stylesheets))
+			);
+	
+			$db->update_query("themes", $update_array, "tid = '2'");
+		}
+	}
+
+	$contents .= "done.</p>";
+
+	$contents .= '<p>Re-caching and minifying existing stylesheets...</p>';
+
+	$num_re_cached = recache_existing_styles();
+
+	$contents .= "Done. {$num_re_cached} stylesheets re-cached.";
+
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
+	if(!isset($config['secret_pin']) && is_writable(MYBB_ROOT."inc/config.php"))
+	{
+		$output->print_footer("30_acppin");
+	}
+	else
+	{
+		$output->print_footer("30_done");
+	}
+}
+
+function upgrade30_acppin()
+{
+	global $db, $mybb, $output;
+
+	$output->print_header("Add an ACP Pin");
+
+	echo "<p>We added a new security function in 1.8: The possibility to set a security PIN which you need to enter the ACP.<br />\n";
+	echo "If you don't want to set a PIN you can simply skip this step (leave the field below empty). You can still set the PIN later (see the docs to see how).</p>\n";
+
+	echo "<b>PIN:</b> <input type=\"password\" name=\"pin\" />";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
+	$output->print_footer("30_acppin_submit");
+}
+
+function upgrade30_acppin_submit()
+{
+	global $db, $mybb, $output, $config;
+
+	$output->print_header("Writing the config file");
+
+	$content = "<p>We're now writing your PIN (if you've entered one) to the config.php file... ";
+
+	if(!is_writable(MYBB_ROOT."inc/config.php"))
+	{
+		$content .= "Failed (config.php not writable)";
+	}
+	else if(isset($config['secret_pin']))
+	{
+		$content .= "Skipped (PIN already set)";
+	}
+	else
+	{
+		$pin = addslashes($mybb->get_input('pin'));
+
+		$file = @fopen(MYBB_ROOT."inc/config.php", "r+");
+
+		// Set the pointer before the closing php tag to remove it
+		@fseek($file, -2, SEEK_END);
+
+		@fwrite($file, "/**
+ * Admin CP Secret PIN
+ *  If you wish to request a PIN
+ *  when someone tries to login
+ *  on your Admin CP, enter it below.
+ */
+
+\$config['secret_pin'] = '{$pin}';");
+
+		@fclose($file);
+
+		$content .= "Done";		
+	}
+
+	echo $content."</p>";
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+
 	$output->print_footer("30_done");
 }
 

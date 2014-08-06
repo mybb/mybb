@@ -192,7 +192,7 @@ var Thread = {
 					{
 						if(json.hasOwnProperty("errors"))
 						{
-							$("div.jGrowl").jGrowl("close");
+							$(".jGrowl").jGrowl("close");
 
 							$.each(json.errors, function(i, message)
 							{
@@ -200,6 +200,35 @@ var Thread = {
 							});
 							$(this).html($('#pid_' + pid + '_temp').html());
 						}
+						else if(json.hasOwnProperty("moderation_post"))
+						{
+							$(".jGrowl").jGrowl("close");
+
+							$(this).html(json.message);
+
+							// No more posts on this page? (testing for "1" as the last post would be removed here)
+							if($('.post').length == 1)
+							{
+								alert(json.moderation_post);
+								window.location = json.url;
+							}
+							else
+							{
+								$.jGrowl(json.moderation_post);
+								$('#post_' + pid).slideToggle();
+							}
+						}
+						else if(json.hasOwnProperty("moderation_thread"))
+						{
+							$(".jGrowl").jGrowl("close");
+
+							$(this).html(json.message);
+							
+							alert(json.moderation_thread);
+							
+							// Redirect user to forum
+							window.location = json.url;
+						}	
 						else
 						{
 							// Change html content

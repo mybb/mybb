@@ -255,6 +255,13 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="first"><label for="contactemail">Contact Email:</label></td>
 					<td class="last alt_col"><input type="text" class="text_input" name="contactemail" id="contactemail" value="{7}" /></td>
 				</tr>
+				<tr>
+					<th colspan="2" class="first last">Security Settings</th>
+				</tr>
+				<tr class="last">
+					<td class="first"><label for="acppin">ACP PIN:</label><br />Leave this empty if you don\'t want to set one</td>
+					<td class="last alt_col"><input type="password" class="text_input" name="pin" id="acppin" value="" /></td>
+				</tr>
 				</tbody>
 			</table>
 		</div>
