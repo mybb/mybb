@@ -246,7 +246,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="jumptopagemultipage">
 			<title>Show Jump To Page form in Pagination</title>
-			<description><![CDATA[Whther if to show a Jump To Page form in pagination if number of pages exists Maximum Page Links in Pagination setting value.]]></description>
+			<description><![CDATA[Do you want to show a "jump to page" form in pagination if number of pages exceeds "Maximum Page Links in Pagination"?]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
