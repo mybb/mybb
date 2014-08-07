@@ -1879,8 +1879,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 		</setting>
 		<setting name="searchfloodtime">
 			<title>Search Flood Time (seconds)</title>
-			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performi
-			ng searches. Set to 0 to disable.]]></description>
+			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performing searches. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
