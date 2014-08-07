@@ -1,0 +1,6 @@
+.idea/
+inc/settings.php
+inc/config.php
+cache/
+uploads/
+install/lock
