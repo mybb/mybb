@@ -441,7 +441,7 @@ var Cookie = {
 			path: cookiePath,
 			domain: cookieDomain
 		};
-		return $.removeCookie(name);
+		return $.removeCookie(name, options);
 	}
 };
 
