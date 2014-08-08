@@ -583,7 +583,7 @@ function build_friendly_wol_location($user_activity)
 	}
 	if($inactiveforums)
 	{
-		$fidnot .= " AND fid NOT IN ($unviewableforums)";
+		$fidnot .= " AND fid NOT IN ($inactiveforums)";
 	}
 
 	// Fetch any users
