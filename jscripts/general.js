@@ -402,7 +402,48 @@ var MyBB = {
 
 		return false;
 	}
-}
+};
+
+var Cookie = {
+	get: function(name)
+	{
+		name = cookiePrefix + name;
+		return $.cookie(name);
+	},
+
+	set: function(name, value, expires)
+	{
+		name = cookiePrefix + name;
+		if(!expires) 
+		{
+			expire = new Date("Wed, 1 Jan 2020 00:00:00 GMT");
+		}
+		else 
+		{
+			expire = new Date();
+			expire.setTime(expire.getTime()+(expires*1000));
+		}
+
+		options = {
+			expires: expire,
+			path: cookiePath,
+			domain: cookieDomain
+		};
+
+		return $.cookie(name, value, options);
+	},
+
+	unset: function(name)
+	{
+		name = cookiePrefix + name;
+
+		options = {
+			path: cookiePath,
+			domain: cookieDomain
+		};
+		return $.removeCookie(name);
+	}
+};
 
 var expandables = {
 
@@ -497,7 +538,7 @@ var expandables = {
 	{
 		var saved = [];
 		var newCollapsed = [];
-		var collapsed = $.cookie('collapsed');
+		var collapsed = Cookie.get('collapsed');
 
 		if(collapsed)
 		{
@@ -516,7 +557,7 @@ var expandables = {
 		{
 			newCollapsed[newCollapsed.length] = id;
 		}
-		$.cookie('collapsed', newCollapsed.join("|"));
+		Cookie.set('collapsed', newCollapsed.join("|"));
 	}
 };
 

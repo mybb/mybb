@@ -10,7 +10,7 @@ var Thread = {
 
 	initMultiQuote: function()
 	{
-		var quoted = $.cookie('multiquote');
+		var quoted = Cookie.get('multiquote');
 		if(quoted)
 		{
 			var post_ids = quoted.split("|");
@@ -33,7 +33,7 @@ var Thread = {
 	multiQuote: function(pid)
 	{
 		var new_post_ids = new Array();
-		var quoted = $.cookie("multiquote");
+		var quoted = Cookie.get("multiquote");
 		var is_new = true;
 		if(quoted)
 		{
@@ -73,7 +73,7 @@ var Thread = {
 				$('#quickreply_multiquote').hide();
 			}
 		}
-		$.cookie("multiquote", new_post_ids.join("|"));
+		Cookie.set("multiquote", new_post_ids.join("|"));
 	},
 
 	loadMultiQuoted: function()
@@ -137,7 +137,7 @@ var Thread = {
 	clearMultiQuoted: function()
 	{
 		$('#quickreply_multiquote').hide();
-		var quoted = $.cookie("multiquote");
+		var quoted = Cookie.get("multiquote");
 		if(quoted)
 		{
 			var post_ids = quoted.split("|");
@@ -150,7 +150,7 @@ var Thread = {
 				}
 			});
 		}
-		$.removeCookie('multiquote');
+		Cookie.unset('multiquote');
 	},
 
 	quickEdit: function(el)
