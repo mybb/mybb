@@ -213,6 +213,10 @@ class DefaultForm
 		{
 			$textarea .= " disabled=\"disabled\"";
 		}
+		if(isset($options['readonly']))
+		{
+			$textarea .= " readonly=\"readonly\"";
+		}
 		if(isset($options['maxlength']))
 		{
 			$textarea .= " maxlength=\"{$options['maxlength']}\"";
