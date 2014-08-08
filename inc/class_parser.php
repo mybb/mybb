@@ -527,8 +527,18 @@ class postParser
 
 				foreach($smilie['find'] as $s)
 				{
+					$s = $this->parse_html($s);
 					eval("\$smilie_template = \"".$templates->get("smilie", 1, 0)."\";");
 					$this->smilies_cache[$s] = $smilie_template;
+					// workaround for smilies starting with ;
+					if($s[0] == ";")
+					{
+						$this->smilies_cache += array(
+							"&amp$s" => "&amp$s",
+							"&lt$s" => "&lt$s",
+							"&gt$s" => "&gt$s",
+						);
+					}
 				}
 			}
 		}
@@ -549,59 +559,35 @@ class postParser
 			$this->cache_smilies();
 		}
 
-		$message = ' ' . $message . ' ';
+		// No smilies?
+		if(!count($this->smilies_cache))
+		{
+			return $message;
+		}
 
 		// First we take out any of the tags we don't want parsed between (url= etc)
-		preg_match_all("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
-		$message = preg_replace("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])#si", "<mybb-bad-sm>", $message);
-
-		// Impose a hard limit of 500 smilies per message as to not overload the parser
-		$remaining = 500;
-
-		if(is_array($this->smilies_cache))
+		preg_match_all("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])|(http|ftp)(s|)://[^\s]*#i", $message, $bad_matches, PREG_PATTERN_ORDER);
+		if(count($bad_matches[0]) > 0)
 		{
-			foreach($this->smilies_cache as $find => $replace)
-			{
-				$orig_message = $message;
-				$find = $this->parse_html($find);
-				$find = preg_quote($find, "#");
-
-				$replace = strip_tags($replace, "<img>");
-
-				// Fix issues for smileys starting with a ";"
-				$orig_find = $find;
-				if(substr($find, 0, 1) == ";")
-				{
-					$find = "(?<!&gt|&lt|&amp)".$find;
-				}
-
-				$message = @preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
-
-				if($message == null)
-				{
-					$message = preg_replace("#(?<=[^&;\"])".$orig_find."(?=.\W|\"|\W.|\W$)#si", $replace, $orig_message, $remaining);
-				}
-
-				$remaining -= $replacements;
-				if($remaining <= 0)
-				{
-					break; // Reached the limit
-				}
-			}
-			unset($orig_message, $orig_find);
+			$message = preg_replace("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])|(http|ftp)(s|)://[^\s]*#si", "<mybb-bad-sm>", $message);
 		}
+
+		$message = strtr($message, $this->smilies_cache);
 
 		// If we matched any tags previously, swap them back in
 		if(count($bad_matches[0]) > 0)
 		{
+			$message = explode("<mybb-bad-sm>", $message);
+			$i = 0;
 			foreach($bad_matches[0] as $match)
 			{
-				$match = str_replace('$', '\$', $match);
-				$message = preg_replace("#<mybb-bad-sm>#", $match, $message, 1);
+				$message[$i] .= $match;
+				$i++;
 			}
+			$message = implode("", $message);
 		}
 
-		return trim($message);
+		return $message;
 	}
 
 	/**
