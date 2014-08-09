@@ -103,12 +103,7 @@ function rebuild_poll_counters($pid)
 	$poll = $db->fetch_array($query);
 
 	$votes = array();
-	$query = $db->query("
-		SELECT voteoption, COUNT(vid) AS vote_count
-		FROM ".TABLE_PREFIX."pollvotes
-		WHERE pid='{$poll['pid']}'
-		GROUP BY voteoption
-	");
+	$query = $db->simple_select("pollvotes", "voteoption, COUNT(vid) AS vote_count", "pid='{$poll['pid']}'", array('group_by' => 'voteoption'));
 	while($vote = $db->fetch_array($query))
 	{
 		$votes[$vote['voteoption']] = $vote['vote_count'];
