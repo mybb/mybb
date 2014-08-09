@@ -698,10 +698,9 @@ class DB_PgSQL
 	 * @param string The table name to be queried.
 	 * @param string Comma delimetered list of fields to be selected.
 	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options: order by, order direction, limit, limit start, group by.
+	 * @param array List of options: group by, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
-
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
