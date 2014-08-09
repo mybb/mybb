@@ -1673,7 +1673,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$errors = $loginhandler->get_friendly_errors();
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount'])
+		if($mybb->settings['failedcaptchalogincount'] > 0 && ((int)$user['loginattempts'] >= $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] >= $mybb->settings['failedcaptchalogincount']))
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;

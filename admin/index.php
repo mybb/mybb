@@ -96,23 +96,8 @@ if($mybb->input['action'] == "unlock")
 	$error = '';
 	if($mybb->input['username'])
 	{
-		$username = $db->escape_string(my_strtolower($mybb->input['username']));
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
-				break;
-			case 1:
-				$query = $db->simple_select("users", "*", "LOWER(email)='".$username."'", array('limit' => 1));
-				break;
-			case 2:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
-				break;
-			default:
-				$query = $db->simple_select("users", "*", "LOWER(username)='".$username."'", array('limit' => 1));
-				break;
-		}
-		$user = $db->fetch_array($query);
+		$user = get_user_by_username($mybb->input['username'], array('fields' => '*'));
+
 		if(!$user['uid'])
 		{
 			$error = $lang->error_invalid_username;
@@ -249,23 +234,7 @@ elseif($mybb->input['do'] == "login")
 	}
 	else
 	{
-		$username = $db->escape_string(my_strtolower($mybb->input['username']));
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
-				break;
-			case 1:
-				$query = $db->simple_select("users", "uid,email,username", "LOWER(email)='".$username."'", array('limit' => 1));
-				break;
-			case 2:
-				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
-				break;
-			default:
-				$query = $db->simple_select("users", "uid,email,username", "LOWER(username)='".$username."'", array('limit' => 1));
-				break;
-		}
-		$login_user = $db->fetch_array($query);
+		$login_user = get_user_by_username($mybb->input['username'], array('fields' => array('email', 'username')));
 
 		if($login_user['uid'] > 0)
 		{
