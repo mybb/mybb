@@ -86,6 +86,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
+	$errors = "";
 	$plugins->run_hooks("member_do_register_start");
 
 	// Are checking how long it takes for users to register?
@@ -189,8 +190,6 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	);
 
 	$userhandler->set_data($user);
-
-	$errors = "";
 
 	if(!$userhandler->validate_user())
 	{
