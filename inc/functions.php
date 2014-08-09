@@ -3071,8 +3071,9 @@ function build_clickable_smilies()
 					}
 
 					// Only show the first text to replace in the box
-					$smilie['find'] = explode("\n", $smilie['find'])[0];
-
+					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
+					$smilie['find'] = $temp[0];
+					
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$find.'\');"';

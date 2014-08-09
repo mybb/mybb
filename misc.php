@@ -713,7 +713,8 @@ elseif($mybb->input['action'] == "smilies")
 			foreach($smilies_cache as $smilie)
 			{
 				// Only show the first text to replace in the box
-				$smilie['find'] = explode("\n", $smilie['find'])[0];
+				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
+				$smilie['find'] = $temp[0];
 
 				$smilie['insert'] = addslashes($smilie['find']);
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
