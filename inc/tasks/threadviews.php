@@ -18,11 +18,7 @@ function task_threadviews($task)
 	}
 
 	// Update thread views
-	$query = $db->query("
-		SELECT tid, COUNT(tid) AS views
-		FROM ".TABLE_PREFIX."threadviews
-		GROUP BY tid
-	");
+	$query = $db->simple_select("threadviews", "tid, COUNT(tid) AS views", "", array('group_by' => 'tid'));
 	while($threadview = $db->fetch_array($query))
 	{
 		$db->update_query("threads", array('views' => "views+{$threadview['views']}"), "tid='{$threadview['tid']}'", 1, true);

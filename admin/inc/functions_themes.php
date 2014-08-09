@@ -1205,11 +1205,7 @@ function build_theme_list($parent=0, $depth=0)
 	if(!is_array($theme_cache))
 	{
 		$themes = cache_themes();
-		$query = $db->query("
-			SELECT style, COUNT(uid) AS users
-			FROM ".TABLE_PREFIX."users
-			GROUP BY style
-		");
+		$query = $db->simple_select("users", "style, COUNT(uid) AS users", "", array('group_by' => 'style'));
 		while($user_themes = $db->fetch_array($query))
 		{
 			if($user_themes['style'] == 0)
