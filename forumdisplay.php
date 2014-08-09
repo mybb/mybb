@@ -12,7 +12,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'forumdisplay.php');
 
 $templatelist = "forumdisplay,forumdisplay_thread,forumbit_depth1_cat,forumbit_depth2_cat,forumbit_depth2_forum,forumdisplay_subforums,forumdisplay_threadlist,forumdisplay_moderatedby,forumdisplay_newthread,forumdisplay_searchforum,forumdisplay_thread_rating,forumdisplay_threadlist_rating,forumdisplay_threadlist_sortrating";
-$templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_threadlist_inlineedit_js,forumdisplay_orderarrow";
+$templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_gotounread,forumbit_depth2_forum_lastpost,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_orderarrow";
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_icon,forumdisplay_thread_unapproved_posts,forumdisplay_nothreads,forumdisplay_announcements_announcement_modbit,forumbit_depth2_forum_viewers";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,forumdisplay_password_wrongpass,forumdisplay_password,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom,forumbit_subforums,forumbit_moderators,forumbit_depth2_forum_lastpost_never,forumbit_depth2_forum_lastpost_hidden";
 $templatelist .= ",forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall,forumdisplay_threadlist_clearpass,forumdisplay_thread_rating_moved";
@@ -967,7 +967,6 @@ else
 
 $unreadpost = 0;
 $threads = '';
-$load_inline_edit_js = 0;
 if(!empty($threadcache) && is_array($threadcache))
 {
 	if(!$mybb->settings['maxmultipagelinks'])
@@ -1238,7 +1237,6 @@ if(!empty($threadcache) && is_array($threadcache))
 			$inline_edit_class = "subject_editable";
 		}
 
-		$load_inline_edit_js = 1;
 		$lastposter = $thread['lastposter'];
 		$lastposteruid = $thread['lastposteruid'];
 		$lastpostdate = my_date('relative', $thread['lastpost']);
@@ -1430,11 +1428,6 @@ if($foruminfo['type'] != "c")
 	if($foruminfo['password'] != '')
 	{
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
-	}
-
-	if($load_inline_edit_js == 1)
-	{
-		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
 
 	$post_code_string = '';

@@ -16,7 +16,7 @@ $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_th
 $templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
 $templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool";
 $templatelist .= ",search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation,search_orderarrow,search_moderator_options";
-$templatelist .= ",forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple";
+$templatelist .= ",forumdisplay_thread_attachment_count,search_threads_inlinemoderation_selectall,search_posts_inlinemoderation_selectall,post_prefixselect_prefix,post_prefixselect_multiple";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -583,7 +583,6 @@ if($mybb->input['action'] == "results")
 			{
 				$inline_edit_class = "";
 			}
-			$load_inline_edit_js = 1;
 
 			// If this thread has 1 or more attachments show the papperclip
 			if($mybb->settings['enableattachments'] == 1 && $thread['attachmentcount'] > 0)
@@ -632,13 +631,6 @@ if($mybb->input['action'] == "results")
 		if(!$results)
 		{
 			error($lang->error_nosearchresults);
-		}
-		else
-		{
-			if($load_inline_edit_js == 1)
-			{
-				eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
-			}
 		}
 		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->get_input('uid', 1));
 		if($upper > $threadcount)
