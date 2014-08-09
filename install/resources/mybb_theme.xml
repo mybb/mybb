@@ -5022,11 +5022,6 @@ $().ready(function() {
 				},
 			},
           },
-          password2: {
-				required: true,
-				minlength: 6,
-				equalTo: "#password"
-          },
           email: {
 				required: true,
 				email: true,
