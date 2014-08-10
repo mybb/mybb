@@ -138,7 +138,7 @@ $interval = (int)$mybb->settings['statscachetime']*60860;
 if(!$statistics || TIME_NOW-$interval > $statistics['time'] || $mybb->settings['statscachetime'] == 0)
 {
 	$cache->update_statistics();
-	$statistics = $cache->read('statistics', true);
+	$statistics = $cache->read('statistics');
 }
 
 // Top forum
