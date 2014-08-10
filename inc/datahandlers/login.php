@@ -51,10 +51,8 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$username = $db->escape_string(my_strtolower($user['username']));
-
-		$query = $db->simple_select("users", "loginattempts", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
-		$user['loginattempts'] = $db->fetch_field($query, "loginattempts");
+		$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 		if($check_captcha)
 		{
@@ -143,22 +141,11 @@ class LoginDataHandler extends DataHandler
 		$password = md5($user['password']);
 		$username = $this->login_data['username'];
 
-		$fields = 'uid, username, password, salt, loginkey, coppauser, usergroup';
+		$options = array(
+			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
+		);
 
-		switch($mybb->settings['username_method'])
-		{
-			case 1:
-				$query = $db->simple_select("users", $fields, "LOWER(email) = '{$username}'", array('limit' => 1));
-				break;
-			case 2:
-				$query = $db->simple_select("users", $fields, "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
-				break;
-			default:
-				$query = $db->simple_select("users", $fields, "LOWER(username) = '{$username}'", array('limit' => 1));
-				break;
-		}
-
-		$this->login_data = $db->fetch_array($query);
+		$this->login_data = get_user_by_username($username, $options);
 
 		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
 		{
