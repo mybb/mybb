@@ -143,9 +143,6 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 
-		// Exclude super admins
-		$sql_where .= not_super_admins(true);
-
 		$uid = array();
 		$log_inserts = array();
 
@@ -175,6 +172,12 @@ function task_promotions($task)
 		$uids = array();
 		while($user = $db->fetch_array($query2))
 		{
+			if(is_super_admin($user['uid']))
+			{
+				// Skip super admins
+				continue;
+			}
+
 			// super admin check?
 			if($usergroup_select == "additionalgroups")
 			{
