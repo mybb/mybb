@@ -722,7 +722,7 @@ class DB_MySQL
 	 * @param string The table name to be queried.
 	 * @param string Comma delimetered list of fields to be selected.
 	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options, order by, order direction, limit, limit start.
+	 * @param array List of options: group by, order by, order direction, limit, limit start.
 	 * @return resource The query data.
 	 */
 	function simple_select($table, $fields="*", $conditions="", $options=array())
@@ -732,6 +732,12 @@ class DB_MySQL
 		{
 			$query .= " WHERE ".$conditions;
 		}
+
+		if(isset($options['group_by']))
+		{
+			$query .= " GROUP BY ".$options['group_by'];
+		}
+
 		if(isset($options['order_by']))
 		{
 			$query .= " ORDER BY ".$options['order_by'];
@@ -740,6 +746,7 @@ class DB_MySQL
 				$query .= " ".my_strtoupper($options['order_dir']);
 			}
 		}
+
 		if(isset($options['limit_start']) && isset($options['limit']))
 		{
 			$query .= " LIMIT ".$options['limit_start'].", ".$options['limit'];
@@ -748,6 +755,7 @@ class DB_MySQL
 		{
 			$query .= " LIMIT ".$options['limit'];
 		}
+
 		return $this->query($query);
 	}
 

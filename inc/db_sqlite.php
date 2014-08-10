@@ -577,9 +577,9 @@ class DB_SQLite
 	 * @param string The table name to be queried.
 	 * @param string Comma delimetered list of fields to be selected.
 	 * @param string SQL formatted list of conditions to be matched.
-	 * @param array List of options, order by, order direction, limit, limit start
+	 * @param array List of options: group by, order by, order direction, limit, limit start.
+	 * @return resource The query data.
 	 */
-
 	function simple_select($table, $fields="*", $conditions="", $options=array())
 	{
 		$query = "SELECT ".$fields." FROM ".$this->table_prefix.$table;
@@ -587,6 +587,11 @@ class DB_SQLite
 		if($conditions != "")
 		{
 			$query .= " WHERE ".$conditions;
+		}
+
+		if(isset($options['group_by']))
+		{
+			$query .= " GROUP BY ".$options['group_by'];
 		}
 
 		if(isset($options['order_by']))
