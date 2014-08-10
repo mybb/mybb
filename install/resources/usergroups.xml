@@ -20,12 +20,14 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
-		<caneditposts><![CDATA[1]]></caneditposts>
-		<candeleteposts><![CDATA[1]]></candeleteposts>
-		<candeletethreads><![CDATA[1]]></candeletethreads>
-		<caneditattachments><![CDATA[1]]></caneditattachments>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
+		<caneditposts><![CDATA[0]]></caneditposts>
+		<candeleteposts><![CDATA[0]]></candeleteposts>
+		<candeletethreads><![CDATA[0]]></candeletethreads>
+		<caneditattachments><![CDATA[0]]></caneditattachments>
 		<canpostpolls><![CDATA[0]]></canpostpolls>
 		<canvotepolls><![CDATA[0]]></canvotepolls>
 		<canundovotes><![CDATA[0]]></canundovotes>
@@ -55,6 +57,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -104,8 +107,10 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -139,6 +144,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[1]]></canbereported>
+		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -188,8 +194,10 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -223,6 +231,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -273,8 +282,10 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -308,6 +319,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -357,8 +369,10 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[0]]></caneditposts>
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
@@ -392,6 +406,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[1]]></canbereported>
+		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
@@ -441,8 +456,10 @@
 		<canpostreplys><![CDATA[1]]></canpostreplys>
 		<canpostattachments><![CDATA[1]]></canpostattachments>
 		<canratethreads><![CDATA[1]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[1]]></caneditposts>
 		<candeleteposts><![CDATA[1]]></candeleteposts>
 		<candeletethreads><![CDATA[1]]></candeletethreads>
@@ -476,6 +493,7 @@
 		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canchangewebsite><![CDATA[1]]></canchangewebsite>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
@@ -525,8 +543,10 @@
 		<canpostreplys><![CDATA[0]]></canpostreplys>
 		<canpostattachments><![CDATA[0]]></canpostattachments>
 		<canratethreads><![CDATA[0]]></canratethreads>
-		<modthreads><![CDATA[0]]></modthreads>
 		<modposts><![CDATA[0]]></modposts>
+		<modthreads><![CDATA[0]]></modthreads>
+		<mod_edit_posts><![CDATA[0]]></mod_edit_posts>
+		<modattachments><![CDATA[0]]></modattachments>
 		<caneditposts><![CDATA[0]]></caneditposts>
 		<candeleteposts><![CDATA[0]]></candeleteposts>
 		<candeletethreads><![CDATA[0]]></candeletethreads>
@@ -560,6 +580,7 @@
 		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<canbereported><![CDATA[0]]></canbereported>
+		<canchangewebsite><![CDATA[0]]></canchangewebsite>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
