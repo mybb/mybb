@@ -10317,7 +10317,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->dateread}</strong></span></td>
-<td class="tcat" align="center" width="1%"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
+<td class="tcat" align="center" width="1%"><span class="smalltext"><input type="checkbox" class="checkbox checkall" name="allbox" /></span></td>
 </tr>
 {$readmessages}
 {$stoptrackingread}
@@ -10336,7 +10336,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="right" style="white-space: nowrap" width="20%"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
+<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkall" name="allbox" /></span></td>
 </tr>
 {$unreadmessages}
 {$stoptrackingunread}
