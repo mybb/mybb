@@ -2426,7 +2426,7 @@ delete=Delete]]></optionscode>
 			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[24]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
