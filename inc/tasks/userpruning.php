@@ -41,7 +41,6 @@ function task_userpruning($task)
 			unset($in_usergroups[$key]);
 		}
 
-		// Exclude super admins
 		$regdate = TIME_NOW-((int)$mybb->settings['dayspruneregistered']*24*60*60);
 		$query = $db->simple_select("users", "uid", "regdate <= ".(int)$regdate." AND postnum <= ".(int)$mybb->settings['prunepostcount']." AND usergroup IN(".$db->escape_string(implode(',', $in_usergroups)).")");
 		while($user = $db->fetch_array($query))
