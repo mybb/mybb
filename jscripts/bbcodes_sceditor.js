@@ -204,7 +204,7 @@ $(document).ready(function($) {
 
 			if(typeof attrs.defaultattr !== "undefined")
 			{
-				content = '<cite>' + attrs.defaultattr.replace(/\s/g, '&nbsp;') + '</cite>' + content;
+				content = '<cite contenteditable="false">' + attrs.defaultattr.replace(/\s/g, '&nbsp;') + '</cite>' + content;
 				data += ' data-author="' + attrs.defaultattr + '"';
 			}
 
