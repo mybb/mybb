@@ -173,7 +173,7 @@ $(document).ready(function($) {
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				author = '=' + author.replace(/\s+/, "");
+				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
 			}
