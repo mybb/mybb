@@ -60,7 +60,7 @@ class LoginDataHandler extends DataHandler
 			{
 				$mybb->cookies['loginattempts'] = 0;
 			}
-			if($mybb->settings['failedcaptchalogincount'] > 0 && ((int)$user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
+			if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 			{
 				$this->captcha_verified = false;
 				$this->verify_captcha();
