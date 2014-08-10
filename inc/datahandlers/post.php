@@ -1765,61 +1765,6 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 		$forumpermissions = forum_permissions($post['fid'], $post['uid']);
 
-		// Decide on the visibility of this post.
-		$ismod = is_moderator($post['fid'], "", $post['uid']);
-		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
-		{
-			if($forumpermissions['mod_edit_posts'] == 1 && !$ismod)
-			{
-				if($existing_post['visible'] == 1)
-				{
-					update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
-					update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
-
-					// Subtract from the users post and thread counts
-					// Update the post count if this forum allows post counts to be tracked
-					if($forum['usepostcounts'] != 0)
-					{
-						$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
-					}
-
-					if($forum['usethreadcounts'] != 0)
-					{
-						$db->write_query("UPDATE ".TABLE_PREFIX."users SET threadnum=threadnum-1 WHERE uid='{$existing_post['uid']}'");
-					}
-				}
-				$visible = 0;
-			}
-			else
-			{
-				if($existing_post['visible'] == 0)
-				{
-					update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
-					update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
-
-					// Update the post count if this forum allows post counts to be tracked
-					if($forum['usepostcounts'] != 0)
-					{
-						$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
-					}
-
-					if($forum['usethreadcounts'] != 0)
-					{
-						$db->write_query("UPDATE ".TABLE_PREFIX."users SET threadnum=threadnum+1 WHERE uid='{$existing_post['uid']}'");
-					}
-				}
-				$visible = 1;
-			}
-		}
-		else
-		{
-			$visible = 0;
-			if($forumpermissions['mod_edit_posts'] != 1 || $ismod)
-			{
-				$visible = 1;
-			}
-		}
-
 		// Check if this is the first post in a thread.
 		$options = array(
 			"order_by" => "dateline",
@@ -1838,6 +1783,9 @@ class PostDataHandler extends DataHandler
 			$first_post = false;
 		}
 
+		// Decide on the visibility of this post.
+		$ismod = is_moderator($post['fid'], "", $post['uid']);
+
 		// Keep visibility for unapproved and deleted posts
 		if($existing_post['visible'] == 0)
 		{
@@ -1847,13 +1795,22 @@ class PostDataHandler extends DataHandler
 		{
 			$visible = -1;
 		}
+		elseif($forumpermissions['mod_edit_posts'] == 1 && !$ismod)
+		{
+			$visible = 0;
+			require_once MYBB_ROOT."inc/class_moderation.php";
+			$moderation = new Moderation;
+			$moderation->unapprove_posts(array($post['pid']));
+		}
+		else
+		{
+			$visible = 1;
+		}
 
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
 			$this->tid = $post['tid'];
-
-			$this->thread_update_data['visible'] = $visible;
 
 			if(isset($post['prefix']))
 			{
@@ -1919,8 +1876,6 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['edituid'] = (int)$post['edit_uid'];
 			$this->post_update_data['edittime'] = TIME_NOW;
 		}
-
-		$this->post_update_data['visible'] = $visible;
 
 		$plugins->run_hooks("datahandler_post_update", $this);
 
