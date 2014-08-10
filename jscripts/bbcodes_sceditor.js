@@ -173,7 +173,14 @@ $(document).ready(function($) {
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				author  = "='" + author;
+				if($elm.data('pid') || $elm.data('dateline'))
+				{
+					author  = "='" + author;
+				}
+				else
+				{
+					author  = "=" + author;
+				}
 
 				$elm.prepend($cite);
 			}
@@ -197,7 +204,7 @@ $(document).ready(function($) {
 
 			if(typeof attrs.defaultattr !== "undefined")
 			{
-				content = '<cite>' + attrs.defaultattr + '</cite>' + content;
+				content = '<cite contenteditable="false">' + attrs.defaultattr.replace(/\s/g, '&nbsp;') + '</cite>' + content;
 				data += ' data-author="' + attrs.defaultattr + '"';
 			}
 
