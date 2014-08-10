@@ -39,14 +39,17 @@ if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_templat
 
 	$sub_tabs['add_set'] = array(
 		'title' => $lang->add_set,
-		'link' => "index.php?module=style-templates&amp;action=add_set&amp;sid=".$sid.$expand_str
+		'link' => "index.php?module=style-templates&amp;action=add_set".$expand_str
 	);
 
-	$sub_tabs['add_template_group'] = array(
-		'title' => $lang->add_template_group,
-		'link' => "index.php?module=style-templates&amp;action=add_template_group".$expand_str,
-		'description' => $lang->add_template_group_desc
-	);
+	if($mybb->get_input('sid', 1) != -1)
+	{
+		$sub_tabs['add_template_group'] = array(
+			'title' => $lang->add_template_group,
+			'link' => "index.php?module=style-templates&amp;action=add_template_group".$expand_str,
+			'description' => $lang->add_template_group_desc
+		);
+	}
 
 	$sub_tabs['search_replace'] = array(
 		'title' => $lang->search_replace,
@@ -83,11 +86,14 @@ else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set
 		'description' => $lang->add_template_desc
 	);
 
-	$sub_tabs['add_template_group'] = array(
-		'title' => $lang->add_template_group,
-		'link' => "index.php?module=style-templates&amp;action=add_template_group&amp;sid=".$sid.$expand_str,
-		'description' => $lang->add_template_group_desc
-	);
+	if($mybb->get_input('sid', 1) != -1)
+	{
+		$sub_tabs['add_template_group'] = array(
+			'title' => $lang->add_template_group,
+			'link' => "index.php?module=style-templates&amp;action=add_template_group&amp;sid=".$sid.$expand_str,
+			'description' => $lang->add_template_group_desc
+		);
+	}
 }
 
 $template_sets = array();
@@ -314,6 +320,11 @@ if($mybb->input['action'] == "add_template")
 if($mybb->input['action'] == "add_template_group")
 {
 	$plugins->run_hooks("admin_style_templates_add_template_group");
+
+	if($mybb->get_input('sid', 1) == -1)
+	{
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}".$expand_str2);
+	}
 
 	$errors = array();
 	if($mybb->request_method == "post")
