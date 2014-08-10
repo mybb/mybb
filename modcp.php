@@ -13,7 +13,7 @@ define('THIS_SCRIPT', 'modcp.php');
 
 $templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport,modcp_reports_allreports,modcp_modlogs_multipage,modcp_announcements_delete,modcp_announcements_edit,modcp_awaitingmoderation,modcp_banuser_bangroups_hidden";
 $templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban,modcp_announcements_announcement_global,modcp_no_announcements_forum,modcp_modqueue_threads_thread,modcp_awaitingthreads,modcp_banuser_bangroups";
-$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts,modcp_nav_editprofile";
+$templatelist .= ",modcp_banning_nobanned,modcp_modqueue_threads_empty,modcp_modqueue_masscontrols,modcp_modqueue_threads,modcp_modqueue_posts_post,modcp_modqueue_posts_empty,modcp_awaitingposts,modcp_nav_editprofile";
 $templatelist .= ",modcp_nav,modcp_modlogs_noresults,modcp_modlogs_nologs,modcp,modcp_modqueue_posts,modcp_modqueue_attachments_attachment,modcp_modqueue_attachments_empty,modcp_modqueue_attachments,modcp_editprofile_suspensions_info";
 $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements,modcp_editprofile_select_option,modcp_editprofile_select,modcp_finduser_noresults, modcp_nav_forums_posts";
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special,modcp_warninglogs_warning_revoked,modcp_warninglogs_warning,modcp_ipsearch_result,modcp_nav_modqueue,modcp_banuser_liftlist";
@@ -3925,11 +3925,6 @@ if($mybb->input['action'] == "banning")
 	$upper = $start+$perpage;
 
 	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=banning");
-	$allbannedpages = '';
-	if($postcount > $perpage)
-	{
-		eval("\$allbannedpages = \"".$templates->get("modcp_banning_multipage")."\";");
-	}
 
 	$plugins->run_hooks("modcp_banning_start");
 
