@@ -6513,43 +6513,6 @@ function is_super_admin($uid)
 }
 
 /**
- * Prevents super administrators being selected in a SELECT.
- *
- * @param boolean Prefix with an AND?
- * @param string The prefix to add to uid when used in a JOIN (e.g. SELECTing users u would mean using 'u' in this argument).
- * @return string An addition to the WHERE statement
- */
-function not_super_admins($use_and = false, $uid_prefix = '')
-{
-	static $super_admins;
-
-	if(!isset($super_admins))
-	{
-		global $mybb, $db;
-		$super_admins = $db->escape_string(str_replace(" ", "", $mybb->config['super_admins']));
-	}
-
-	if($super_admins)
-	{
-		$sql_where = '';
-		if($use_and)
-		{
-			$sql_where .= ' AND ';
-		}
-
-		if($uid_prefix != '')
-		{
-			$sql_where .= $uid_prefix.'.';
-		}
-
-		$sql_where .= "uid NOT IN({$super_admins})";
-
-		return $sql_where;
-	}
-	return '';
-}
-
-/**
  * Checks if a user is a member of a particular group
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
