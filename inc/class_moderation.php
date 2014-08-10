@@ -323,6 +323,7 @@ class Moderation
 		// Update forum count
 		update_forum_counters($thread['fid'], $updated_counters);
 		update_forum_lastpost($thread['fid']);
+		$cache->update_statistics();
 
 		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
@@ -481,6 +482,7 @@ class Moderation
 					);
 					update_forum_counters($fid, $update_array);
 					update_forum_lastpost($fid);
+					$cache->update_statistics();
 				}
 			}
 			
@@ -632,6 +634,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $update_array);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -743,6 +746,7 @@ class Moderation
 
 		update_forum_counters($post['fid'], $update_array);
 		update_forum_lastpost($post['fid']);
+		$cache->update_statistics();
 
 		return true;
 	}
@@ -757,7 +761,7 @@ class Moderation
 	 */
 	function merge_posts($pids, $tid=0, $sep="new_line")
 	{
-		global $db, $plugins;
+		global $db, $plugins, $cache;
 
 		// Make sure we only have valid values
 		$pids = array_map('intval', $pids);
@@ -951,6 +955,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $updated_forum_stats);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -1372,7 +1377,7 @@ class Moderation
 	 */
 	function merge_threads($mergetid, $tid, $subject)
 	{
-		global $db, $mybb, $mergethread, $thread, $plugins;
+		global $db, $mybb, $mergethread, $thread, $plugins, $cache;
 
 		$mergetid = (int)$mergetid;
 		$tid = (int)$tid;
@@ -1721,6 +1726,8 @@ class Moderation
 		);
 		update_thread_counters($tid, $updated_stats);
 		update_last_post($tid);
+		$cache->update_statistics();
+
 		return true;
 	}
 
@@ -2078,6 +2085,7 @@ class Moderation
 				}
 				update_forum_counters($fid, $counters);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -2419,6 +2427,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $updated_forum_stats);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -2590,6 +2599,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $updated_forum_stats);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -2660,7 +2670,7 @@ class Moderation
 	 */
 	function expire_thread($tid, $deletetime)
 	{
-		global $db, $plugins;
+		global $db, $plugins, $cache;
 
 		$tid = (int)$tid;
 
@@ -2673,6 +2683,7 @@ class Moderation
 			"deletetime" => (int)$deletetime
 		);
 		$db->update_query("threads", $update_thread, "tid='{$tid}'");
+		$cache->update_statistics();
 
 		$arguments = array("tid" => $tid, "deletetime" => $deletetime);
 		$plugins->run_hooks("class_moderation_expire_thread", $arguments);
@@ -3178,6 +3189,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $updated_forum_stats);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -3326,6 +3338,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $updated_forum_stats);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
@@ -3467,6 +3480,7 @@ class Moderation
 					);
 					update_forum_counters($fid, $update_array);
 					update_forum_lastpost($fid);
+					$cache->update_statistics();
 				}
 			}
 
@@ -3621,6 +3635,7 @@ class Moderation
 				);
 				update_forum_counters($fid, $update_array);
 				update_forum_lastpost($fid);
+				$cache->update_statistics();
 			}
 		}
 
