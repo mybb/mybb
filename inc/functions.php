@@ -3475,13 +3475,27 @@ function get_reputation($reputation, $uid=0)
 		$reputation_class = "reputation_neutral";
 	}
 
-	if($uid != 0)
+	if(defined("IN_ADMINCP"))
 	{
-		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+		if($uid != 0)
+		{
+			$display_reputation = "<a href=\"reputation.php?uid={$uid}\"><strong class=\"{$reputation_class}\">{$reputation}</strong></a>";
+		}
+		else
+		{
+			$display_reputation = "<strong class=\"{$reputation_class}\">{$reputation}</strong>";
+		}
 	}
 	else
 	{
-		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
+		if($uid != 0)
+		{
+			eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+		}
+		else
+		{
+			eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
+		}
 	}
 
 	return $display_reputation;
