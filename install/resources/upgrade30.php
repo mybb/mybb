@@ -2427,10 +2427,24 @@ function upgrade30_acppin_submit()
 
 		$file = @fopen(MYBB_ROOT."inc/config.php", "r+");
 
-		// Set the pointer before the closing php tag to remove it
-		@fseek($file, -2, SEEK_END);
+		$contents = '';
+		while(!@feof($file))
+		{
+			$contents .= @fread($file, 8436);
+		}
 
-		@fwrite($file, "/**
+		// Set the pointer before the closing php tag to remove it
+		if(my_substr($contents, -2) == "?>")
+		{
+			@fseek($file, -2, SEEK_END);
+		}
+		elseif(my_substr($contents, -3) == "?>\n")
+		{
+			@fseek($file, -3, SEEK_END);
+		}
+
+		@fwrite($file, "
+/**
  * Admin CP Secret PIN
  *  If you wish to request a PIN
  *  when someone tries to login
