@@ -4222,16 +4222,16 @@ a.button {
 {$boardstats}
 
 <dl class="forum_legend smalltext">
-	<dt><img src="{$theme['imgdir']}/on.png" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_on" title="{$lang->new_posts}"></div></dt>
 	<dd>{$lang->new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/off.png" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_off" title="{$lang->no_new_posts}"></div></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlock.png" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlock" title="{$lang->forum_locked}"></div></dt>
 	<dd>{$lang->forum_locked}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlink.png" alt="{$lang->forum_redirect}" title="{$lang->forum_redirect}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlink" title="{$lang->forum_redirect}"></div></dt>
 	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br class="clear" />
