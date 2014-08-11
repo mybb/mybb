@@ -416,13 +416,11 @@ var Cookie = {
 		name = cookiePrefix + name;
 		if(!expires) 
 		{
-			expire = new Date("Wed, 1 Jan 2020 00:00:00 GMT");
+			expires = 315360000; // 10*365*24*60*60 => 10 years
 		}
-		else 
-		{
-			expire = new Date();
-			expire.setTime(expire.getTime()+(expires*1000));
-		}
+
+		expire = new Date();
+		expire.setTime(expire.getTime()+(expires*1000));
 
 		options = {
 			expires: expire,
