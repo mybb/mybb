@@ -1665,8 +1665,11 @@ function upgrade30_dbchanges_smilies()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
-
-	if($db->type == 'sqlite')
+	if($db->type == 'pgsql')
+	{
+		$db->modify_column("smilies", "find", "text", "set");
+	}
+	else if($db->type == 'sqlite')
 	{
 		$db->modify_column("smilies", "find", "TEXT NOT NULL");
 	}
