@@ -31,6 +31,7 @@ function fetch_wol_activity($location, $nopermission=false)
 	{
 		$filename = my_substr($split_loc[0], -my_strpos(strrev($split_loc[0]), "/"));
 	}
+	$parameters = array();
 	if($split_loc[1])
 	{
 		$temp = explode("&amp;", my_substr($split_loc[1], 1));
@@ -1013,6 +1014,17 @@ function build_friendly_wol_location($user_activity)
 			{
 				$pagenote = '';
 				$location_name = $lang->sprintf($lang->reading_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']], $pagenote);
+			}
+			else
+			{
+				$location_name = $lang->reading_thread;
+			}
+			break;
+		case "showpost":
+			if(!empty($posts[$user_activity['pid']]) && !empty($threads[$posts[$user_activity['pid']]]))
+			{
+				$pagenote = '';
+				$location_name = $lang->sprintf($lang->reading_thread2, get_thread_link($posts[$user_activity['pid']]), $threads[$posts[$user_activity['pid']]], $pagenote);
 			}
 			else
 			{
