@@ -2433,14 +2433,13 @@ function upgrade30_acppin_submit()
 			$contents .= @fread($file, 8436);
 		}
 
+		$contents_temp = str_replace(array("\r", "\t", "\n", " ", "\0", "\x0B"), '', $contents);
+
 		// Set the pointer before the closing php tag to remove it
-		if(my_substr($contents, -2) == "?>")
+		$pos = strrpos($contents, "?>");
+		if(my_substr($contents_temp, -2) == "?>")
 		{
-			@fseek($file, -2, SEEK_END);
-		}
-		elseif(my_substr($contents, -3) == "?>\n")
-		{
-			@fseek($file, -3, SEEK_END);
+			@fseek($file, $pos - my_strlen($contents), SEEK_END);
 		}
 
 		@fwrite($file, "
