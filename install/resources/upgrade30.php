@@ -1669,10 +1669,6 @@ function upgrade30_dbchanges_smilies()
 	{
 		$db->modify_column("smilies", "find", "text", "set");
 	}
-	else if($db->type == 'sqlite')
-	{
-		$db->modify_column("smilies", "find", "TEXT NOT NULL");
-	}
 	else
 	{
 		$db->modify_column("smilies", "find", "text NOT NULL");
