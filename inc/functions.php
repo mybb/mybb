@@ -3067,13 +3067,13 @@ function build_clickable_smilies()
 				{
 					if($counter == 0)
 					{
-						$smilies .=  "<tr>\n";
+						$smilies .= $templates->get("smilieinsert_wrapper_start");
+                        $smilies .= "\n";
 					}
 
 					// Only show the first text to replace in the box
-					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
-					$smilie['find'] = $temp[0];
-					
+					$smilie['find'] = explode("\n", $smilie['find'])[0];
+
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="console.log(MyBBEditor); MyBBEditor.insertText(\''.$find.'\');"';
@@ -3085,16 +3085,18 @@ function build_clickable_smilies()
 					if($counter == $mybb->settings['smilieinsertercols'])
 					{
 						$counter = 0;
-						$smilies .= "</tr>\n";
+                        $smilies .= $templates->get("smilieinsert_wrapper_end");
+                        $smilies .= "\n";
 					}
 				}
 			}
 
 			if($counter != 0)
 			{
-				$colspan = $mybb->settings['smilieinsertercols'] - $counter;
-				$smilies .= "<td colspan=\"{$colspan}\">&nbsp;</td>\n</tr>\n";
-			}
+				  $colspan = $mybb->settings['smilieinsertercols'] - $counter;
+                  $smilies .= $templates->get("smilieinsert_empty");
+                  $smilies .= "\n";
+            }
 
 			eval("\$clickablesmilies = \"".$templates->get("smilieinsert")."\";");
 		}
