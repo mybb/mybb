@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "misc_rules_forum,misc_help_helpdoc,misc_whoposted_poster,misc_whoposted,misc_smilies_popup_smilie,misc_smilies_popup,misc_smilies_popup_empty,misc_syndication_feedurl,misc_syndication";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user,misc_buddypopup_user_none,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm,misc_help_search,misc_syndication_forumlist";
-$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
+$templatelist .= ",misc_smilies,misc_smilies_smilie,misc_smilies_wrapper_end,misc_smilies_wrapper_​start,misc_help_section_bit,misc_help_section,misc_help,forumdisplay_password_wrongpass,forumdisplay_password,misc_helpresults,misc_helpresults_bit,misc_helpresults_noresults,multipage,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -705,7 +705,7 @@ elseif($mybb->input['action'] == "smilies")
 		$editor = preg_replace('#([^a-zA-Z0-9_-]+)#', '', $mybb->get_input('editor'));
 		$e = 1;
 		$class = "trow1";
-		$smilies = "<tr>";
+		$smilies .= $templates->get("misc_smilies_wrapper_start");
 		$smilies_cache = $cache->read("smilies");
 		if(is_array($smilies_cache))
 		{
@@ -713,8 +713,7 @@ elseif($mybb->input['action'] == "smilies")
 			foreach($smilies_cache as $smilie)
 			{
 				// Only show the first text to replace in the box
-				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
-				$smilie['find'] = $temp[0];
+				$smilie['find'] = explode("\n", $smilie['find'])[0];
 
 				$smilie['insert'] = addslashes($smilie['find']);
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
@@ -723,7 +722,7 @@ elseif($mybb->input['action'] == "smilies")
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
 				{
-					$smilies .= "</tr><tr>";
+					$smilies .= $templates->get("misc_smilies_wrapper_end");
 					$e = 1;
 					$class = alt_trow();
 				}
