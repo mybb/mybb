@@ -2812,6 +2812,9 @@ switch($mybb->input['action'])
 
 				$cache->update_banned();
 				$cache->update_bannedips();
+
+				// Update reports cache
+				$cache->update_reportedcontent();
 			}
 			elseif($mybb->settings['purgespammerbandelete'] == "delete")
 			{
