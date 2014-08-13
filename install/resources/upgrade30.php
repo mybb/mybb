@@ -1461,7 +1461,7 @@ function upgrade30_dbchanges_optimize2()
 
 					foreach($index as $_index => $keys)
 					{
-						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$index}`(`".implode('`, `', $keys)."`)");
+						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$_index}`(`".implode('`, `', $keys)."`)");
 					}
 				}
 			}
@@ -2009,7 +2009,7 @@ function upgrade30_dbchanges_ip()
 
 					$table = 'searchlog';
 					$column = 'ipaddress';
-					// Skip conversation
+					// Skip conversion
 					$db->delete_query('searchlog');
 					break;
 				case 5:
@@ -2039,7 +2039,7 @@ function upgrade30_dbchanges_ip()
 
 					$table = 'adminsessions';
 					$column = 'ip';
-					// Skip conversation
+					// Skip conversion
 					$db->delete_query('adminsessions');
 					break;
 				default:
@@ -2488,3 +2488,4 @@ function recache_existing_styles()
 	return $num_updated;
 }
 
+update_query(
