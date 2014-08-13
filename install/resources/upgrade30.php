@@ -2439,7 +2439,7 @@ function upgrade30_acppin_submit()
 		$pos = strrpos($contents, "?>");
 		if(my_substr($contents_temp, -2) == "?>")
 		{
-			@fseek($file, $pos - my_strlen($contents), SEEK_END);
+			@fseek($file, $pos, SEEK_SET);
 		}
 
 		@fwrite($file, "
