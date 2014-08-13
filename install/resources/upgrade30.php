@@ -1830,10 +1830,10 @@ function upgrade30_dbchanges_ip()
 					echo "<p>Converting thread rating IPs...</p>";
 					flush();
 					$query = $db->simple_select("threadratings", "COUNT(rid) AS ipcount");
-					echo "<p>Converting session IPs...</p>";
-					flush();
 					break;
 				case 5:
+					echo "<p>Converting session IPs...</p>";
+					flush();
 					$query = $db->simple_select("sessions", "COUNT(sid) AS ipcount");
 					break;
 				case 4:
@@ -2487,5 +2487,3 @@ function recache_existing_styles()
 
 	return $num_updated;
 }
-
-update_query(
