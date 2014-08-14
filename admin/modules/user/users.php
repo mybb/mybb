@@ -2584,6 +2584,7 @@ if($mybb->input['action'] == "inline_edit")
 				}
 				else
 				{
+					$to_be_deleted = count($selected);
 					if($mybb->input['processed'] == 1)
 					{
 						// Set up user handler.
@@ -2603,7 +2604,6 @@ if($mybb->input['action'] == "inline_edit")
 						admin_redirect("index.php?module=user-users".$vid_url);
 					}
 
-					$to_be_deleted = count($selected);
 					$lang->confirm_multidelete = $lang->sprintf($lang->confirm_multidelete, my_number_format($to_be_deleted));
 					$page->output_confirm_action("index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multidelete&amp;my_post_key={$mybb->post_code}&amp;processed=1", $lang->confirm_multidelete);
 				}
