@@ -13,6 +13,9 @@ var MyBB = {
 	{
 		expandables.init();
 
+		/* Set the current URL for form input fields */
+		$('[name=url]').val($(location).attr('href'));
+
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
 			$(this).change(function() {
