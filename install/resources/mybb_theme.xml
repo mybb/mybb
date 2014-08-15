@@ -2112,7 +2112,17 @@ ul.thread_tools li.subscription_remove {
 
 ul.thread_tools li.poll {
 	background-position: 0 -80px;
-}]]></stylesheet>
+}
+
+.showthread_spinner {
+	width: 100%;
+	margin: 0 auto;
+	display: block;
+	text-align: center;
+	margin: 20px;
+}
+
+]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
 	width: 16px;
@@ -11296,7 +11306,9 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
-		<template name="showthread_quickreply" version="1800"><![CDATA[<br />
+		<template name="showthread_quickreply" version="1800"><![CDATA[
+<div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="" /></div>
+<br />
 {$moderation_notice}
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />

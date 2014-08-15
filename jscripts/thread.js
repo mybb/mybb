@@ -302,7 +302,7 @@ var Thread = {
 		var post_body = $('#quick_reply_form').serialize();
 		
 		// Spinner!
-		$('#quick_reply_form').before('<div id="quickreply_spinner" style="width: 100%; margin: 0 auto; display: block; text-align: center; margin: 20px"><img src="'+spinner_image+'"></div>');
+		$('#quickreply_spinner').show();
 
 		$.ajax(
 		{
@@ -315,7 +315,7 @@ var Thread = {
 		  		Thread.quickReplyDone(request, status);
 				
 				// Get rid of spinner
-				$('#quickreply_spinner').remove();
+				$('#quickreply_spinner').hide();
           	}
 		});
 
