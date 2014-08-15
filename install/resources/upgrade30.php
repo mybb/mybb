@@ -2060,10 +2060,10 @@ function upgrade30_dbchanges_ip()
 					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
 					break;
 				case "sqlite":
-					$db->modify_column($table, $column, "blob(16) NOT NULL");
+					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
 					break;
 				default:
-					$db->modify_column($table, $column, "varbinary(16) NOT NULL");
+					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
 					break;
 			}
 			if($mybb->input['iptable'] < 10)
