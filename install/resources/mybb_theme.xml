@@ -338,15 +338,16 @@ a:active {
 }
 
 .subforumicon {
-	height: 7px;
-	width: 7px;
+	height: 10px;
+	width: 10px;
 	display: inline-block;
 	margin: 0 5px;
 }
 
 .subforum_minion,
 .subforum_minioff,
-.subforum_miniofflock {
+.subforum_miniofflock,
+.subforum_miniofflink {
 	background: url(images/mini_status_sprite.png) no-repeat 0 0;
 }
 
@@ -355,11 +356,15 @@ a:active {
 }
 
 .subforum_minioff {
-	background-position: 0 -7px;
+	background-position: 0 -10px;
 }
 
 .subforum_miniofflock {
-	background-position: 0 -14px;
+	background-position: 0 -20px;
+}
+
+.subforum_miniofflink {
+    background-position: 0 -30px;
 }
 
 table {
