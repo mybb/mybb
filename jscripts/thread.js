@@ -5,6 +5,9 @@ var Thread = {
 			Thread.quickEdit();
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
+			
+			// Set spinner image
+			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
 	},
 
