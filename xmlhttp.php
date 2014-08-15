@@ -66,7 +66,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 	@mb_internal_encoding($lang->settings['charset']);
 }
 
-// Load the language pack for this file.
+// Load the theme
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$loadstyle = "tid='".$mybb->user['style']."'";
@@ -85,7 +85,11 @@ if($loadstyle == "def='1'")
 	}
 	$theme = $cache->read('default_theme');
 }
-
+else
+{
+	$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
+	$theme = $db->fetch_array($query);
+}
 $theme = @array_merge($theme, my_unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
