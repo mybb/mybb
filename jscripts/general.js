@@ -13,8 +13,8 @@ var MyBB = {
 	{
 		expandables.init();
 
-		/* Set the current URL for form input fields */
-		$('[name=url]').val($(location).attr('href'));
+		/* Set the current URL for quick login form input field */
+		$("#quick_login :input[name='url']").val($(location).attr('href'));
 
 		/* Create the Check All feature */
 		$('[name="allbox"]').each(function(key, value) {
