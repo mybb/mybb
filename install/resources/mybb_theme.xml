@@ -202,7 +202,7 @@ a:active {
 }
 
 #search input.button {
-	background: #0a5096 url(images/thead.png) top left repeat-x;
+	background: #0066a2 url(images/thead.png) top left repeat-x;
 	color: #fff;
 }
 
@@ -356,7 +356,7 @@ table {
 }
 
 .thead {
-	background: #0a5096 url(images/thead.png) top left repeat-x;
+	background: #0066a2 url(images/thead.png) top left repeat-x;
 	color: #ffffff;
 	border-bottom: 1px solid #263c30;
 	padding: 8px;
