@@ -11307,7 +11307,7 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
 		<template name="showthread_quickreply" version="1800"><![CDATA[
-<div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="" /></div>
+<div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
 <br />
 {$moderation_notice}
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
