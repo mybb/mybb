@@ -309,6 +309,34 @@ a:active {
 	width: auto;
 }
 
+.forum_status {
+	height: 30px;
+	width: 30px;
+}
+
+.forum_on, 
+.forum_off, 
+.forum_offlock, 
+.forum_offlink {
+	background: url(images/forum_icon_sprite.png) no-repeat 0 0;
+}
+
+.forum_on {
+	background-position: 0 0;
+}
+
+.forum_off {
+	background-position: 0 -30px;
+}
+
+.forum_offlock {
+	background-position: 0 -60px;
+}
+
+.forum_offlink {
+	background-position: 0 -90px;
+}
+
 table {
 	color: #333;
 	font-size: 13px;
@@ -3653,7 +3681,7 @@ a.button {
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
 		<template name="forumbit_depth2_cat" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$subforums}</div>
 </td>
@@ -3662,7 +3690,7 @@ a.button {
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth2_forum" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
@@ -4194,16 +4222,16 @@ a.button {
 {$boardstats}
 
 <dl class="forum_legend smalltext">
-	<dt><img src="{$theme['imgdir']}/on.png" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_on" title="{$lang->new_posts}"></div></dt>
 	<dd>{$lang->new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/off.png" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_off" title="{$lang->no_new_posts}"></div></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlock.png" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlock" title="{$lang->forum_locked}"></div></dt>
 	<dd>{$lang->forum_locked}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlink.png" alt="{$lang->forum_redirect}" title="{$lang->forum_redirect}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlink" title="{$lang->forum_redirect}"></div></dt>
 	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br class="clear" />
