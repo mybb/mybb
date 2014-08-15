@@ -1058,22 +1058,16 @@ div.error ul {
 }
 
 .post {
-	margin-bottom: 15px;
 	overflow: hidden;
 }
 
-.post:last-child {
-	margin-bottom: 0;
-}
-
 .post.classic {
-	border-top: 3px solid #333;
 	padding-top: 15px;
 }
 
 .post .post_author {
-	border-bottom: 1px solid #bbb;
-	border-top: 3px solid #333;
+	border-bottom: 1px solid #ccc;
+	border-top: 2px solid #ccc;
 	background: #f5f5f5;
 	padding: 5px;
 	overflow: hidden;
@@ -1195,8 +1189,7 @@ div.error ul {
 .post_controls {
 	clear: both;
 	background: #f5f5f5;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #ccc;
 	padding: 5px;
 	overflow: hidden;
 }
