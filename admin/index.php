@@ -396,7 +396,7 @@ if(!empty($mybb->user['uid']))
 	{
 		$cp_language = $admin_options['cplanguage'];
 		$lang->set_language($cp_language, "admin");
-		$lang->load("global.php"); // Reload global language vars
+		$lang->load("global"); // Reload global language vars
 	}
 
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
