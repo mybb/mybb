@@ -300,6 +300,9 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
+		
+		// Spinner!
+		$('#quick_reply_form').before('<div id="quickreply_spinner" style="width: 100%; margin: 0 auto; display: block; text-align: center; margin: 20px"><img src="'+spinner_image+'"></div>');
 
 		$.ajax(
 		{
@@ -310,6 +313,9 @@ var Thread = {
         	complete: function (request, status)
         	{
 		  		Thread.quickReplyDone(request, status);
+				
+				// Get rid of spinner
+				$('#quickreply_spinner').remove();
           	}
 		});
 
