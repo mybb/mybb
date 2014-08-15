@@ -337,6 +337,31 @@ a:active {
 	background-position: 0 -90px;
 }
 
+.subforumicon {
+	height: 7px;
+	width: 7px;
+	display: inline-block;
+	margin: 0 5px;
+}
+
+.subforum_minion,
+.subforum_minioff,
+.subforum_miniofflock {
+	background: url(images/mini_status_sprite.png) no-repeat 0 0;
+}
+
+.subforum_minion {
+	background-position: 0 0;
+}
+
+.subforum_minioff {
+	background-position: 0 -7px;
+}
+
+.subforum_miniofflock {
+	background-position: 0 -14px;
+}
+
 table {
 	color: #333;
 	font-size: 13px;
@@ -814,11 +839,6 @@ blockquote cite span.highlight {
 
 .smilie_pointer {
 	cursor: pointer;
-}
-
-.subforumicon {
-	border: 0;
-	vertical-align: middle;
 }
 
 .separator {
@@ -3707,7 +3727,7 @@ a.button {
 		<template name="forumbit_depth2_forum_unapproved_threads" version="1800"><![CDATA[ <span title="{$unapproved_threads_count}">({$forum['unapprovedthreads']})</span>]]></template>
 		<template name="forumbit_depth2_forum_viewers" version="1800"><![CDATA[<span class="smalltext">{$forum_viewers_text}</span>]]></template>
 		<template name="forumbit_depth3" version="1404"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
+		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<div title="{$lightbulb['altonoff']}" class="subforumicon subforum_{$lightbulb['folder']} ajax_mark_read" id="mark_read_{$forum['fid']}"></div>]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
