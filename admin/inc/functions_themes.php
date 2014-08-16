@@ -1052,7 +1052,9 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			}
 			
 			if($properties['disporder'][$stylesheet['name']] > $max_disporder)
+			{
 				$max_disporder = $properties['disporder'][$stylesheet['name']];
+			}
 
 			$orders[$stylesheet['name']] = $properties['disporder'][$stylesheet['name']];
 		}
