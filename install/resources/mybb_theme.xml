@@ -312,12 +312,6 @@ a:active {
 .forum_status {
 	height: 30px;
 	width: 30px;
-}
-
-.forum_on, 
-.forum_off, 
-.forum_offlock, 
-.forum_offlink {
 	background: url(images/forum_icon_sprite.png) no-repeat 0 0;
 }
 
@@ -342,12 +336,6 @@ a:active {
 	width: 10px;
 	display: inline-block;
 	margin: 0 5px;
-}
-
-.subforum_minion,
-.subforum_minioff,
-.subforum_miniofflock,
-.subforum_miniofflink {
 	background: url(images/mini_status_sprite.png) no-repeat 0 0;
 }
 
