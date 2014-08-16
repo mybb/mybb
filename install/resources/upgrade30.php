@@ -2390,14 +2390,26 @@ function upgrade30_updatetheme()
 
 function upgrade30_acppin()
 {
-	global $db, $mybb, $output;
+	global $config, $output;
 
-	$output->print_header("Add an ACP Pin");
+	$output->print_header("Add an ACP PIN");
 
 	echo "<p>We added a new security function in 1.8: The possibility to set a security PIN which you need to enter the ACP.<br />\n";
 	echo "If you don't want to set a PIN you can simply skip this step (leave the field below empty). You can still set the PIN later (see the docs to see how).</p>\n";
-
-	echo "<b>PIN:</b> <input type=\"password\" name=\"pin\" />";
+	echo '<div class="border_wrapper">
+			<div class="title">ACP PIN Configuration</div>
+			<table class="general" cellspacing="0">
+				<tbody>
+				<tr>
+					<th colspan="2" class="first last">ACP Security PIN</th>
+				</tr>
+				<tr class="first">
+					<td class="first"><label for="bbname">PIN:</label></td>
+					<td class="last alt_col"><input type="password" class="text_input" name="pin" id="pin" value="'.$config['secret_pin'].'" /></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>';
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 
