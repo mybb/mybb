@@ -352,7 +352,7 @@ a:active {
 }
 
 .subforum_miniofflink {
-    background-position: 0 -30px;
+	background-position: 0 -30px;
 }
 
 table {
