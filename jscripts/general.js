@@ -249,15 +249,15 @@ var MyBB = {
 	{
 		if(request == 1)
 		{
-            if($("#mark_read_"+fid).hasClass('subforum_minion'))
-            {
-                $("#mark_read_"+fid).removeClass('subforum_minion').addClass('subforum_minioff');
-            }
-            else
-            {
-                $("#mark_read_"+fid).removeClass('forum_on').addClass('forum_off');
-            }
-            $("#mark_read_"+fid).css("cursor", "default").attr("title", lang.no_new_posts);
+			if($("#mark_read_"+fid).hasClass('subforum_minion'))
+			{
+				$("#mark_read_"+fid).removeClass('subforum_minion').addClass('subforum_minioff');
+			}
+			else
+			{
+				$("#mark_read_"+fid).removeClass('forum_on').addClass('forum_off');
+			}
+			$("#mark_read_"+fid).css("cursor", "default").attr("title", lang.no_new_posts);
 		}
 	},
 
