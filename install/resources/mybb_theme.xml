@@ -4338,6 +4338,7 @@ a.button {
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -4394,6 +4395,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#inviteusername").select2({
@@ -5298,6 +5300,7 @@ $().ready(function() {
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#referrer").select2({
@@ -5569,6 +5572,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -5712,6 +5716,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -6588,6 +6593,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -7088,6 +7094,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -7810,6 +7817,7 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
@@ -10219,6 +10227,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#to").select2({
@@ -10750,6 +10759,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
+MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
 	$("#author").select2({
@@ -11940,6 +11950,7 @@ if(use_xmlhttprequest == "1")
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
 							<script type="text/javascript">
                             <!--
+								MyBB.select2();
                                 if(use_xmlhttprequest == "1")
                                 {
 									$("#buddy_add_username").select2({
@@ -12007,6 +12018,7 @@ if(use_xmlhttprequest == "1")
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
                             <!--
+								MyBB.select2();
                                 if(use_xmlhttprequest == "1")
                                 {
 									$("#ignored_add_username").select2({
@@ -13730,6 +13742,18 @@ $(function() {
 <script type="text/javascript">
 <!--
 	lang.unknown_error = "{$lang->unknown_error}";
+
+	lang.select2_match = {$lang->select2_match};
+	lang.select2_matches = {$lang->select2_matches};
+	lang.select2_nomatches = {$lang->select2_nomatches};
+	lang.select2_inputtooshort_single = {$lang->select2_inputtooshort_single};
+	lang.select2_inputtooshort_plural = {$lang->select2_inputtooshort_plural};
+	lang.select2_inputtoolong_single = {$lang->select2_inputtoolong_single};
+	lang.select2_inputtoolong_plural = {$lang->select2_inputtoolong_plural};
+	lang.select2_selectiontoobig_single = {$lang->select2_selectiontoobig_single};
+	lang.select2_selectiontoobig_plural = {$lang->select2_selectiontoobig_plural};
+	lang.select2_loadmore = {$lang->select2_loadmore};
+	lang.select2_searching = {$lang->select2_searching};
 
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";

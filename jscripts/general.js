@@ -401,6 +401,67 @@ var MyBB = {
 		});
 
 		return false;
+	},
+
+	// Fixes https://github.com/mybb/mybb/issues/1232
+	select2: function()
+	{
+		if(typeof $.fn.select2 !== "undefined")
+		{
+			$.extend($.fn.select2.defaults, {
+				formatMatches: function (matches) {
+					if(matches == 1)
+					{
+						return lang.select2_match;
+					}
+					else
+					{
+						return lang.select2_matches.replace('{1}',matches);
+					}
+				},
+				formatNoMatches: function () {
+					return lang.select2_nomatches;
+				},
+				formatInputTooShort: function (input, min) {
+					var n = min - input.length;
+					if( n == 1)
+					{
+						return lang.select2_inputtooshort_single;
+					}
+					else
+					{
+						return lang.select2_inputtooshort_plural.replace('{1}', n);
+					}
+				},
+				formatInputTooLong: function (input, max) {
+					var n = input.length - max;
+					if( n == 1)
+					{
+						return lang.select2_inputtoolong_single;
+					}
+					else
+					{
+						return lang.select2_inputtoolong_plural.replace('{1}', n);
+					}
+				},
+				formatSelectionTooBig: function (limit) {
+					if( limit == 1)
+					{
+						return lang.select2_selectiontoobig_single;
+					}
+					else
+					{
+						return lang.select2_selectiontoobig_plural.replace('{1}', limit);
+					}
+				},
+				formatLoadMore: function (pageNumber) {
+					return lang.select2_loadmore;
+				},
+				formatSearching: function () {
+					return lang.select2_searching;
+				}
+			});
+		}
 	}
 };
 
