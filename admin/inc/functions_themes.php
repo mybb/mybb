@@ -1040,6 +1040,8 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 		{
 			$properties = my_unserialize($theme['properties']);
 		}
+		
+		$max_disporder = 0;
 
 		foreach($stylesheets as $stylesheet)
 		{
@@ -1048,13 +1050,17 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 				$orphaned_stylesheets[] = $stylesheet['name'];
 				continue;
 			}
+			
+			if($properties['disporder'][$stylesheet['name']] > $max_disporder)
+				$max_disporder = $properties['disporder'][$stylesheet['name']];
 
 			$orders[$stylesheet['name']] = $properties['disporder'][$stylesheet['name']];
 		}
 
 		if(!empty($orphaned_stylesheets))
 		{
-			$loop = count($orders) + 1;
+			$loop = $max_disporder + 1;
+			$max_disporder = $loop;
 			foreach($orphaned_stylesheets as $stylesheet)
 			{
 				$orders[$stylesheet] = $loop;
