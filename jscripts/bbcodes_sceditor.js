@@ -258,19 +258,56 @@ $(document).ready(function($) {
 	/************************
 	 * Add MyBB PHP command *
 	 ************************/
-	$.sceditor.command.set('php', {
-		exec: function() {
-			this.wysiwygEditorInsertHtml('<code class="phpcodeblock">', '</code>');
-		},
-		txtExec: ['[php]', '[/php]'],
-		tooltip: "PHP"
-	});
-	
 	$.sceditor.plugins.bbcode.bbcode.set('php', {
+		allowsEmpty: true,
 		isInline: false,
 		allowedChildren: ['#', '#newline'],
 		format: '[php]{0}[/php]',
 		html: '<code class="phpcodeblock">{0}</code>'
+	});
+
+	$.sceditor.command.set("php", {
+		_dropDown: function (editor, caller, html) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+					'<label for="php">' + editor._('PHP') + ':</label> ' +
+					'<textarea type="text" id="php" />' +					
+				'</div>' +
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+			);
+
+			setTimeout(function() {
+				$content.find('#php').focus();
+			},100);
+
+			$content.find('.button').click(function (e) {
+				var	val = $content.find('#php').val(),
+					before = '[php]',
+					end = '[/php]';
+
+				if (html) {
+					before = before + html + end;
+					end = null;
+				}
+				else if (val) {
+					before = before + val + end;
+					end = null;
+				}
+
+				editor.insert(before, end);
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertphp', $content);
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('php')._dropDown(this, caller);
+		},
+		txtExec: ['[php]', '[/php]'],
+		tooltip: "PHP"
 	});
 
 
@@ -279,6 +316,7 @@ $(document).ready(function($) {
 	 * Update code to support PHP *
 	 ******************************/
 	$.sceditor.plugins.bbcode.bbcode.set('code', {
+		allowsEmpty: true,
 		tags: {
 			code: null
 		},
@@ -291,6 +329,49 @@ $(document).ready(function($) {
 			return '[code]' + content + '[/code]';
 		},
 		html: '<code>{0}</code>'
+	});
+
+	$.sceditor.command.set("code", {
+		_dropDown: function (editor, caller, html) {
+			var $content;
+
+			$content = $(
+				'<div>' +
+					'<label for="code">' + editor._('Code') + ':</label> ' +
+					'<textarea type="text" id="code" />' +					
+				'</div>' +
+				'<div><input type="button" class="button" value="' + editor._('Insert') + '" /></div>'
+			);
+
+			setTimeout(function() {
+				$content.find('#code').focus();
+			},100);
+
+			$content.find('.button').click(function (e) {
+				var	val = $content.find('#code').val(),
+					before = '[code]',
+					end = '[/code]';
+
+				if (html) {
+					before = before + html + end;
+					end = null;
+				}
+				else if (val) {
+					before = before + val + end;
+					end = null;
+				}
+
+				editor.insert(before, end);
+				editor.closeDropDown(true);
+				e.preventDefault();
+			});
+
+			editor.createDropDown(caller, 'insertcode', $content);
+		},
+		exec: function (caller) {
+			$.sceditor.command.get('code')._dropDown(this, caller);
+		},
+		txtExec: ['[code]', '[/code]'],
 	});
 
 
@@ -483,16 +564,6 @@ $(document).ready(function($) {
 	if(partialmode) {
 		$.sceditor.plugins.bbcode.bbcode.remove('code').remove('php').remove('quote').remove('video').remove('img');
 		$.sceditor.command
-			.set('code', {
-				exec: function() {
-					this.insert('[code]', '[/code]');
-				}
-			})
-			.set('php', {
-				exec: function() {
-					this.insert('[php]', '[/php]');
-				}
-			})
 			.set('image', {
 				exec:  function (caller) {
 					var	editor  = this,
@@ -534,5 +605,5 @@ $(document).ready(function($) {
 					this.insert('[quote]', '[/quote]');
 				}
 			});
-	}	 
+	}
 });
