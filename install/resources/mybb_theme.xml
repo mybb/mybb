@@ -2119,7 +2119,7 @@ ul.thread_tools li.poll {
 	margin: 0 auto;
 	display: block;
 	text-align: center;
-	margin: 20px;
+	padding: 20px;
 }
 
 ]]></stylesheet>
