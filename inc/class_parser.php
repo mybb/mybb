@@ -347,7 +347,7 @@ class postParser
 
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
-			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_]+)\](.*?)\[/font\]#si";
+			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_'\"]+)\](.*?)\[/font\]#si";
 			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
 			++$nestable_count;
