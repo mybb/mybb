@@ -5,6 +5,9 @@ var Thread = {
 			Thread.quickEdit();
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
+			
+			// Set spinner image
+			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
 	},
 
@@ -300,6 +303,9 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
+		
+		// Spinner!
+		$('#quickreply_spinner').show();
 
 		$.ajax(
 		{
@@ -310,6 +316,9 @@ var Thread = {
         	complete: function (request, status)
         	{
 		  		Thread.quickReplyDone(request, status);
+				
+				// Get rid of spinner
+				$('#quickreply_spinner').hide();
           	}
 		});
 
