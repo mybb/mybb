@@ -51,9 +51,6 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 
-		$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
-		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
-
 		if($check_captcha)
 		{
 			if(!isset($mybb->cookies['loginattempts']))

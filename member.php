@@ -1660,6 +1660,9 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		'imagestring' => $mybb->get_input('imagestring')
 	);
 
+	$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+
 	$loginhandler->set_data($user);
 	$validated = $loginhandler->validate_login();
 
@@ -1677,7 +1680,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] >= $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] >= $mybb->settings['failedcaptchalogincount']))
+		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;
