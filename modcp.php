@@ -4064,30 +4064,37 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	{
 		// Get the users info from their uid
 		$query = $db->query("
-			SELECT b.*, u.uid, u.usergroup, u.additionalgroups, u.displaygroup
+			SELECT b.*, u.uid, u.username, u.usergroup, u.additionalgroups, u.displaygroup
 			FROM ".TABLE_PREFIX."banned b
 			LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$user = $db->fetch_array($query);
-		if(!$user)
+
+		$existing_ban = false;
+		if($user['uid'])
 		{
-			error($lang->error_invalidban);
+			$existing_ban = true;
 		}
 
 		// Permission to edit this ban?
-		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+		if($existing_ban && $mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 		{
 			error_no_permission();
 		}
 	}
+
 	// Creating a new ban
-	else
+	if(!$existing_ban)
 	{
 		// Get the users info from their Username
-		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
-		$user = $db->fetch_array($query);
-		if(!$user)
+		$options = array(
+			'fields' => array('username', 'usergroup', 'additionalgroups', 'displaygroup')
+		);
+
+		$user = get_user_by_username($mybb->input['username'], $options);
+
+		if(!$user['uid'])
 		{
 			$errors[] = $lang->invalid_username;
 		}
@@ -4121,7 +4128,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	}
 
 	// If this is a new ban, we check the user isn't already part of a banned group
-	if(!$mybb->get_input('uid') && $user['uid'])
+	if(!$existing_ban && $user['uid'])
 	{
 		$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
 		if($db->fetch_field($query, "uid"))
@@ -4151,13 +4158,11 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$banreason = my_substr($mybb->get_input('banreason'), 0, 255);
 
-		if($mybb->get_input('uid', 1))
+		if($existing_ban)
 		{
-			$username_select = $db->simple_select('users', 'username', "uid='".$mybb->get_input('uid', 1)."'");
-			$user['username'] = $db->fetch_field($username_select, 'username');
 			$update_array = array(
 				'gid' => $mybb->get_input('usergroup', 1),
-				'admin' => $mybb->get_input('uid', 1),
+				'admin' => (int)$user['uid'],
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
@@ -4171,9 +4176,9 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			$insert_array = array(
 				'uid' => $user['uid'],
 				'gid' => $mybb->get_input('usergroup', 1),
-				'oldgroup' => $user['usergroup'],
-				'oldadditionalgroups' => $user['additionalgroups'],
-				'olddisplaygroup' => $user['displaygroup'],
+				'oldgroup' => (int)$user['usergroup'],
+				'oldadditionalgroups' => (string)$user['additionalgroups'],
+				'olddisplaygroup' => (int)$user['displaygroup'],
 				'admin' => (int)$mybb->user['uid'],
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
@@ -4195,7 +4200,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$cache->update_banned();
 
 		// Log edit or add ban
-		if($mybb->get_input('uid', 1))
+		if($existing_ban)
 		{
 			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->edited_user_ban);
 		}
@@ -4206,7 +4211,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		$plugins->run_hooks("modcp_do_banuser_end");
 
-		if($mybb->get_input('uid', 1))
+		if($existing_ban)
 		{
 			redirect("modcp.php?action=banning", $lang->redirect_banuser_updated);
 		}
