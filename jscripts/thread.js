@@ -83,6 +83,9 @@ var Thread = {
 	{
 		if(use_xmlhttprequest == 1)
 		{
+			// Spinner!
+			$('#quickreply_spinner').show();
+
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
@@ -90,6 +93,9 @@ var Thread = {
 				complete: function (request, status)
 				{
 					Thread.multiQuotedLoaded(request, status);
+					
+					// Get rid of spinner
+					$('#quickreply_spinner').hide();
 				}
 			});
 
