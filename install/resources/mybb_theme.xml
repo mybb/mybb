@@ -13654,6 +13654,7 @@ opt_editor = {
 	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
+	enablePasteFiltering: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown
