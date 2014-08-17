@@ -4382,14 +4382,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -4420,7 +4418,7 @@ if(use_xmlhttprequest == "1")
 if(use_xmlhttprequest == "1")
 {
 	$("#inviteusername").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -4438,14 +4436,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -5342,14 +5338,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users&getone=1", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -5613,14 +5607,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
        // Allow the user entered text to be selected as well
@@ -5738,7 +5730,7 @@ if(use_xmlhttprequest == "1")
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -5756,14 +5748,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
        // Allow the user entered text to be selected as well
@@ -6632,14 +6622,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users&getone=1", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -7132,15 +7120,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query,
-						getone: 1
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		}
 	});
@@ -7854,14 +7839,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -10794,14 +10777,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -11986,17 +11967,21 @@ if(use_xmlhttprequest == "1")
 											}
 										},
 										initSelection: function(element, callback) {
-											// the input tag has a value attribute preloaded that points to a preselected movie's id
-											// this function resolves that id attribute to an object that select2 can render
-											// using its formatResult renderer - that way the movie name is shown preselected
 											var query = $(element).val();
 											if (query !== "") {
-												$.ajax("xmlhttp.php?action=get_users", {
-													data: {
-														query: query
-													},
-													dataType: "json"
-												}).done(function(data) { callback(data); });
+												var newqueries = [];
+												exp_queries = query.split(",");
+												$.each(exp_queries, function(index, value ){
+													if(value.replace(/\s/g, '') != "")
+													{
+														var newquery = {
+															id: value.replace(/,\s?/g, ", "),
+															text: value.replace(/,\s?/g, ", ")
+														};
+														newqueries.push(newquery);
+													}
+												});
+												callback(newqueries);
 											}
 										},
 									});
@@ -12055,12 +12040,19 @@ if(use_xmlhttprequest == "1")
 										initSelection: function(element, callback) {
 											var query = $(element).val();
 											if (query !== "") {
-												$.ajax("xmlhttp.php?action=get_users", {
-													data: {
-														query: query
-													},
-													dataType: "json"
-												}).done(function(data) { callback(data); });
+												var newqueries = [];
+												exp_queries = query.split(",");
+												$.each(exp_queries, function(index, value ){
+													if(value.replace(/\s/g, '') != "")
+													{
+														var newquery = {
+															id: value.replace(/,\s?/g, ", "),
+															text: value.replace(/,\s?/g, ", ")
+														};
+														newqueries.push(newquery);
+													}
+												});
+												callback(newqueries);
 											}
 										},
 									});
