@@ -536,7 +536,7 @@ else if($mybb->input['action'] == "edit_post")
 			$post['editdate'] = my_date('relative', TIME_NOW);
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
-			$post['editreason'] = $editreason;
+			$post['editreason'] = trim($editreason);
 			$editreason = "";
 			if($post['editreason'] != "")
 			{

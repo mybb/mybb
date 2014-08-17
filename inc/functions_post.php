@@ -527,6 +527,7 @@ function build_postbit($post, $post_type=0)
 			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			$editreason = "";
+			$post['editreason'] = trim($post['editreason']);
 			if($post['editreason'] != "")
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
