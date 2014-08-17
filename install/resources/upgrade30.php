@@ -777,6 +777,8 @@ function upgrade30_dbchanges5()
 		$db->drop_table("spamlog");
 	}
 
+	$collation = $db->build_create_table_collation();
+
 	switch($db->type)
 	{
 		case "sqlite":
@@ -840,13 +842,13 @@ function upgrade30_dbchanges5()
 				incorrect int unsigned NOT NULL default 0,
 				active tinyint(1) NOT NULL default '0',
 				PRIMARY KEY (qid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
 				sid varchar(32) NOT NULL default '',
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0',
 				PRIMARY KEY (sid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
 				sid int unsigned NOT NULL auto_increment,
 				username varchar(120) NOT NULL DEFAULT '',
@@ -855,7 +857,7 @@ function upgrade30_dbchanges5()
 				dateline int unsigned NOT NULL default '0',
 				data text NOT NULL,
 				PRIMARY KEY (sid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 	}
 
 	global $footer_extra;
