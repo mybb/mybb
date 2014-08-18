@@ -1558,7 +1558,7 @@ a.button.report_user_button span {
 	left: 50%;
 	margin-right: -32px;
 	margin-top: -32px;
-	background: url(images/spinner.gif) #111 no-repeat center center;
+	background: url(images/spinner_big.gif) no-repeat center center;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-o-border-radius: 8px;
