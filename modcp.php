@@ -1396,7 +1396,9 @@ if($mybb->input['action'] == "new_announcement")
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
 	else
+	{
 		$preview = '';
+	}
 
 	$plugins->run_hooks("modcp_new_announcement");
 
