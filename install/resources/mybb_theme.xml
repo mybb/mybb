@@ -2346,6 +2346,11 @@ a.button {
 </td></tr>
 </table>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
@@ -3468,6 +3473,11 @@ a.button {
 <input type="hidden" name="attachmentact" value="" />
 </form>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="editpost_delete" version="1800"><![CDATA[<form action="editpost.php" method="post" name="editpost">
@@ -6314,6 +6324,11 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
+	<script type="text/javascript">
+		$(".author_avatar img").error(function () {
+			$(this).unbind("error").closest('.author_avatar').remove();
+		});
+	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_announcements_forum" version="1400"><![CDATA[					<tr>
@@ -6443,6 +6458,11 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
+	<script type="text/javascript">
+		$(".author_avatar img").error(function () {
+			$(this).unbind("error").closest('.author_avatar').remove();
+		});
+	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
@@ -8659,6 +8679,11 @@ if(use_xmlhttprequest == "1")
 {$forumrules}
 {$threadreview}
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
@@ -8747,6 +8772,11 @@ if(use_xmlhttprequest == "1")
 </form>
 {$forumrules}
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
@@ -10022,6 +10052,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
@@ -10189,6 +10224,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 // -->
 </script>
 {$autocompletejs}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
