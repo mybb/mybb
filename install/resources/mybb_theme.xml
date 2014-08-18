@@ -1090,6 +1090,7 @@ div.error ul {
 	width: 15%;
 	margin: 0 1% 15px 0;
 	border-left: 0;
+	padding: 5px 1%;
 }
 
 .post .post_author .buddy_status {
@@ -1167,8 +1168,8 @@ div.error ul {
 
 .post.classic .post_content {
 	float: left;
-	width: 80%;
-	padding-top: 0;
+	width: 79%;
+	padding: 0 1% 5px 1%;
 }
 
 .post_content {
