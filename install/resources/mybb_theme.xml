@@ -1384,6 +1384,14 @@ a.button.report_user_button span {
 	display: none;
 }
 
+.spinner {
+	width: 100%;
+	margin: 0 auto;
+	display: block;
+	text-align: center;
+	padding: 20px;
+}
+
 /** jGrowl Start **/
 
 /** Special IE6 Style Positioning **/
@@ -2145,17 +2153,7 @@ ul.thread_tools li.subscription_remove {
 
 ul.thread_tools li.poll {
 	background-position: 0 -80px;
-}
-
-.showthread_spinner {
-	width: 100%;
-	margin: 0 auto;
-	display: block;
-	text-align: center;
-	padding: 20px;
-}
-
-]]></stylesheet>
+}]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
 	width: 16px;
@@ -11369,7 +11367,7 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
 		<template name="showthread_quickreply" version="1800"><![CDATA[
-<div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
+<div id="quickreply_spinner" class="spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
 <br />
 {$moderation_notice}
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
