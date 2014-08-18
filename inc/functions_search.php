@@ -434,7 +434,7 @@ function privatemessage_perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
-		if(preg_match("# and|or #", $keywords))
+		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$string = "AND";
 			if($search['subject'] == 1)
@@ -451,6 +451,7 @@ function privatemessage_perform_search_mysql($search)
 			// Expand the string by double quotes
 			$keywords_exp = explode("\"", $keywords);
 			$inquote = false;
+			$boolean = '';
 
 			foreach($keywords_exp as $phrase)
 			{
@@ -511,6 +512,7 @@ function privatemessage_perform_search_mysql($search)
 							{
 								$message_lookin .= " $boolean LOWER(message) LIKE '%{$word}%'";
 							}
+							$boolean = 'AND';
 						}
 					}
 				}
@@ -529,6 +531,7 @@ function privatemessage_perform_search_mysql($search)
 					{
 						$message_lookin .= " $boolean LOWER(message) LIKE '%{$phrase}%'";
 					}
+					$boolean = 'AND';
 				}
 
 				// Check to see if we have any search terms and not a malformed SQL string
@@ -717,7 +720,7 @@ function helpdocument_perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
-		if(preg_match("# and|or #", $keywords))
+		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$string = "AND";
 			if($search['name'] == 1)
@@ -928,7 +931,7 @@ function perform_search_mysql($search)
 	{
 		// Complex search
 		$keywords = " {$keywords} ";
-		if(preg_match("# and|or #", $keywords))
+		if(preg_match("#\s(and|or)\s#", $keywords))
 		{
 			$subject_lookin = " AND (";
 			$message_lookin = " AND (";
