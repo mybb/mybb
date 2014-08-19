@@ -3077,6 +3077,7 @@ function build_clickable_smilies()
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
+					$extra_class = ' smilie_pointer';
 					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
 					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
 					++$i;
