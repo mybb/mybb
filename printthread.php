@@ -34,7 +34,7 @@ $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
 {
 	$threadprefix = build_prefixes($thread['prefix']);
-	if(isset($threadprefix))
+	if(!empty($threadprefix))
 	{
 		$thread['threadprefix'] = $threadprefix['prefix'];
 		$thread['displaystyle'] = $threadprefix['displaystyle'];

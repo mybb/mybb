@@ -3181,7 +3181,7 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 	}
 
 	$prefix_cache = build_prefixes(0);
-	if(!$prefix_cache)
+	if(empty($prefix_cache))
 	{
 		return false; // We've got no prefixes to show
 	}
@@ -3292,7 +3292,7 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 	$fid = (int)$fid;
 
 	$prefix_cache = build_prefixes(0);
-	if(!$prefix_cache)
+	if(empty($prefix_cache))
 	{
 		return false; // We've got no prefixes to show
 	}

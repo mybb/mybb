@@ -37,7 +37,7 @@ $threadprefix = array('prefix' => '');
 if($thread['prefix'])
 {
 	$threadprefix = build_prefixes($thread['prefix']);
-	if(isset($threadprefix['displaystyle']))
+	if(!empty($threadprefix['displaystyle']))
 	{
 		$breadcrumbprefix = $threadprefix['displaystyle'].'&nbsp;';
 	}

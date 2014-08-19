@@ -653,7 +653,7 @@ function build_friendly_wol_location($user_activity)
 		while($thread = $db->fetch_array($query))
 		{
 			$thread['threadprefix'] = '';
-			if($thread['prefix'] && isset($threadprefixes[$thread['prefix']]))
+			if($thread['prefix'] && !empty($threadprefixes[$thread['prefix']]))
 			{
 				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'];
 			}
