@@ -855,7 +855,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$editreason = '';
 	if($mybb->settings['alloweditreason'] == 1)
 	{
-		$mybb->input['editreason'] = $mybb->get_input('editreason');
 		eval("\$editreason = \"".$templates->get("editpost_reason")."\";");
 		$bgcolor = "trow2";
 		$bgcolor2 = "trow1";
