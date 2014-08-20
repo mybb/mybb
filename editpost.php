@@ -462,8 +462,8 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		"prefix" => $mybb->get_input('threadprefix', 1),
 		"subject" => $mybb->get_input('subject'),
 		"icon" => $mybb->get_input('icon', 1),
-		"uid" => $mybb->user['uid'],
-		"username" => $mybb->user['username'],
+		"uid" => $post['uid'],
+		"username" => $post['username'],
 		"edit_uid" => $mybb->user['uid'],
 		"message" => $mybb->get_input('message'),
 		"editreason" => $mybb->get_input('editreason'),
@@ -678,12 +678,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->get_input('message'),
 		);
-
-		if(!isset($mybb->input['previewpost']))
-		{
-			$post['uid'] = $mybb->user['uid'];
-			$post['username'] = $mybb->user['username'];
-		}
 
 		$postoptions = $mybb->get_input('postoptions', 2);
 		if(!isset($postoptions['signature']))
