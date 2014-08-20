@@ -108,7 +108,7 @@ $loadstyle = '';
 $load_from_forum = $load_from_user = 0;
 $style = array();
 
-// This user has a custom theme set in their profile
+// The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
 	$mybb->user['style'] = $mybb->get_input('theme');
@@ -134,6 +134,7 @@ else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
 }
 
+// This user has a custom theme set in their profile
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
