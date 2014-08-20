@@ -2864,7 +2864,7 @@ switch($mybb->input['action'])
 
 			$options = my_unserialize($tool['threadoptions']);
 
-			if(!empty($tool['groups']) && !is_member($tool['groups']))
+			if($tool['groups'] != -1 && !is_member($tool['groups']))
 			{
 				error_no_permission();
 			}
