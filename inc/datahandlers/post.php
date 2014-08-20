@@ -1848,7 +1848,7 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['message'] = $db->escape_string($post['message']);
 		}
 
-		if(isset($post['editreason']) && trim($post['editreason']))
+		if(isset($post['editreason']) && trim($post['editreason']) != '')
 		{
 			$this->post_update_data['editreason'] = $db->escape_string(trim($post['editreason']));
 		}
