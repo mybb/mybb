@@ -777,6 +777,8 @@ function upgrade30_dbchanges5()
 		$db->drop_table("spamlog");
 	}
 
+	$collation = $db->build_create_table_collation();
+
 	switch($db->type)
 	{
 		case "sqlite":
@@ -840,13 +842,13 @@ function upgrade30_dbchanges5()
 				incorrect int unsigned NOT NULL default 0,
 				active tinyint(1) NOT NULL default '0',
 				PRIMARY KEY (qid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."questionsessions (
 				sid varchar(32) NOT NULL default '',
 				qid int unsigned NOT NULL default '0',
 				dateline int unsigned NOT NULL default '0',
 				PRIMARY KEY (sid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."spamlog (
 				sid int unsigned NOT NULL auto_increment,
 				username varchar(120) NOT NULL DEFAULT '',
@@ -855,7 +857,7 @@ function upgrade30_dbchanges5()
 				dateline int unsigned NOT NULL default '0',
 				data text NOT NULL,
 				PRIMARY KEY (sid)
-			) ENGINE=MyISAM;");
+			) ENGINE=MyISAM{$collation}");
 	}
 
 	global $footer_extra;
@@ -2060,10 +2062,10 @@ function upgrade30_dbchanges_ip()
 					$db->modify_column($table, $column, "bytea USING {$column}::bytea", 'set', "''");
 					break;
 				case "sqlite":
-					$db->modify_column($table, $column, "blob(16) NOT NULL");
+					$db->modify_column($table, $column, "blob(16) NOT NULL default ''");
 					break;
 				default:
-					$db->modify_column($table, $column, "varbinary(16) NOT NULL");
+					$db->modify_column($table, $column, "varbinary(16) NOT NULL default ''");
 					break;
 			}
 			if($mybb->input['iptable'] < 10)
@@ -2113,7 +2115,7 @@ function upgrade30_dbchanges_ip()
 	}
 	else
 	{
-		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversation.</p>";
+		$contents = "<p><input type=\"hidden\" name=\"iptask\" value=\"{$next_task}\" />{$iptable}{$ipstart}Done. Click Next to continue the IP conversion.</p>";
 
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">$(document).ready(function() { var button = $('.submit_button'); if(button) { button.val('Automatically Redirecting...'); button.prop('disabled', true); button.css('color', '#aaa'); button.css('border-color', '#aaa'); document.forms[0].submit(); } });</script>";
@@ -2390,14 +2392,26 @@ function upgrade30_updatetheme()
 
 function upgrade30_acppin()
 {
-	global $db, $mybb, $output;
+	global $config, $output;
 
-	$output->print_header("Add an ACP Pin");
+	$output->print_header("Add an ACP PIN");
 
 	echo "<p>We added a new security function in 1.8: The possibility to set a security PIN which you need to enter the ACP.<br />\n";
 	echo "If you don't want to set a PIN you can simply skip this step (leave the field below empty). You can still set the PIN later (see the docs to see how).</p>\n";
-
-	echo "<b>PIN:</b> <input type=\"password\" name=\"pin\" />";
+	echo '<div class="border_wrapper">
+			<div class="title">ACP PIN Configuration</div>
+			<table class="general" cellspacing="0">
+				<tbody>
+				<tr>
+					<th colspan="2" class="first last">ACP Security PIN</th>
+				</tr>
+				<tr class="first">
+					<td class="first"><label for="bbname">PIN:</label></td>
+					<td class="last alt_col"><input type="password" class="text_input" name="pin" id="pin" value="'.$config['secret_pin'].'" /></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>';
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 

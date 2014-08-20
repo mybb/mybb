@@ -148,6 +148,39 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->get_input('my_post_key'));
 
+		if(!$mybb->get_input('date_day', 1))
+		{
+			$mybb->input['date_day'] = date('d', TIME_NOW);
+		}
+		if(!$mybb->get_input('date_month', 1))
+		{
+			$mybb->input['date_month'] = date('m', TIME_NOW);
+		}
+
+		// Assume in-line moderation if TID is not set
+		if(!empty($mybb->input['tid']))
+		{
+			$mybb->input['tids'] = $tid;
+		}
+		else
+		{
+			if($mybb->get_input('inlinetype') == 'search')
+			{
+				$tids = getids($mybb->get_input('searchid'), 'search');
+			}
+			else
+			{
+				$fid = $mybb->get_input('fid', 1);
+				$tids = getids($fid, "forum");
+			}
+			if(count($tids) < 1)
+			{
+				error($lang->error_inline_nothreadsselected);
+			}
+
+			$mybb->input['tids'] = $tids;
+		}
+
 		add_breadcrumb($lang->delayed_moderation);
 
 		if(!is_moderator($fid, "canmanagethreads"))
@@ -184,29 +217,6 @@ switch($mybb->input['action'])
 			}
 
 			eval("\$customthreadtools .= \"".$templates->get("moderation_delayedmoderation_custommodtool")."\";");
-		}
-
-		if(isset($mybb->input['tid']))
-		{
-			$mybb->input['tids'] = $mybb->get_input('tid', 1);
-		}
-		else
-		{
-			if($mybb->get_input('inlinetype') == 'search')
-			{
-				$tids = getids($mybb->get_input('searchid'), 'search');
-			}
-			else
-			{
-				$fid = $mybb->get_input('fid', 1);
-				$tids = getids($fid, "forum");
-			}
-			if(count($tids) < 1)
-			{
-				error($lang->error_inline_nothreadsselected);
-			}
-
-			$mybb->input['tids'] = $tids;
 		}
 
 		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', 2);
@@ -249,19 +259,19 @@ switch($mybb->input['action'])
 				$errors[] = $lang->error_delayedmoderation_invalid_date_year;
 			}
 
-			$enddate = explode(' ', (string)$mybb->input['date_time']);
-			$enddate = explode(':', (string)$enddate[0]);
+			$date_time = explode(' ', (string)$mybb->input['date_time']);
+			$date_time = explode(':', (string)$date_time[0]);
 
 			if(stristr($mybb->input['date_time'], 'pm'))
 			{
-				$enddate[0] = 12+$enddate[0];
-				if($enddate[0] >= 24)
+				$date_time[0] = 12+$date_time[0];
+				if($date_time[0] >= 24)
 				{
-					$enddate[0] = '00';
+					$date_time[0] = '00';
 				}
 			}
 
-			$rundate = mktime((int)$enddate[0], (int)$enddate[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
+			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
 
 			if(!$errors)
 			{
@@ -269,6 +279,7 @@ switch($mybb->input['action'])
 				{
 					$mybb->input['tids'] = implode(',' , $mybb->input['tids']);
 				}
+
 				$db->insert_query("delayedmoderation", array(
 					'type' => $db->escape_string($mybb->input['type']),
 					'delaydateline' => (int)$rundate,
@@ -279,9 +290,10 @@ switch($mybb->input['action'])
 					'inputs' => $db->escape_string(serialize($mybb->input['delayedmoderation']))
 				));
 
-				$lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $mybb->input['delay']);
+				$rundate_format = my_date('relative', $rundate, '', 2);
+				$lang->redirect_delayed_moderation_thread = $lang->sprintf($lang->redirect_delayed_moderation_thread, $rundate_format);
 
-				if(isset($mybb->input['tid']))
+				if(!empty($mybb->input['tid']))
 				{
 					moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_delayed_moderation_thread);
 				}
@@ -289,11 +301,11 @@ switch($mybb->input['action'])
 				{
 					if($mybb->get_input('inlinetype') == 'search')
 					{
-						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_search, $mybb->input['delay']));
+						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_search, $rundate_format));
 					}
 					else
 					{
-						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_forum, $mybb->input['delay']));
+						moderation_redirect(get_forum_link($fid), $lang->sprintf($lang->redirect_delayed_moderation_forum, $rundate_format));
 					}
 				}
 			}
@@ -311,7 +323,6 @@ switch($mybb->input['action'])
 					$method_selected[$mybb->input['delayedmoderation']['method']] = "checked=\"checked\"";
 				}
 
-				$mybb->input['delay'] = $mybb->get_input('delay', 1);
 				foreach(array('redirect_expire', 'new_forum', 'subject', 'threadurl') as $value)
 				{
 					if(!isset($mybb->input['delayedmoderation'][$value]))
@@ -337,7 +348,6 @@ switch($mybb->input['action'])
 			$type_selected['openclosethread'] = "checked=\"checked\"";
 			$method_selected = array('move' => 'checked="checked"', 'redirect' => '', 'copy' => '');
 
-			$mybb->input['delay'] = 1;
 			$mybb->input['delayedmoderation']['redirect_expire'] = '';
 			$mybb->input['delayedmoderation']['subject'] = $thread['subject'];
 			$mybb->input['delayedmoderation']['threadurl'] = '';
@@ -538,7 +548,7 @@ switch($mybb->input['action'])
 		for($day = 1; $day <= 31; ++$day)
 		{
 			$selected = '';
-			if($endday == $day)
+			if($mybb->get_input('date_day', 1) == $day)
 			{
 				$selected = ' selected="selected"';
 			}
@@ -549,8 +559,12 @@ switch($mybb->input['action'])
 		foreach(array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12') as $month)
 		{
 			$datemonth[$month] = '';
+			if($mybb->get_input('date_month', 1) == (int)$month)
+			{
+				$datemonth[$month] = ' selected="selected"';
+			}
 		}
-		$datemonth[$endmonth] = ' selected="selected"';
+		
 
 		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
 
@@ -2795,6 +2809,7 @@ switch($mybb->input['action'])
 				// Add the IP's to the banfilters
 				foreach(array($user['regip'], $user['lastip']) as $ip)
 				{
+					$ip = my_inet_ntop($db->unescape_binary($ip));
 					$query = $db->simple_select("banfilters", "*", "type = '1' AND filter = '".$db->escape_string($ip)."'");
 					if($db->num_rows($query) == 0)
 					{

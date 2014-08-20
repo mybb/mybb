@@ -229,7 +229,27 @@ $(document).ready(function($) {
 			if(element[0].nodeName.toLowerCase() !== 'font' || !(font = element.attr('face')))
 				font = element.css('font-family');
 
-			return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
+
+			if(typeof font == 'string' && font != '' && font != 'defaultattr')
+			{
+				return '[font=' + this.stripQuotes(font) + ']' + content + '[/font]';
+			}
+			else
+			{
+				return content;
+			}
+		},
+		html: function(token, attrs, content) {
+			if(typeof attrs.defaultattr == 'string' && attrs.defaultattr != '' && attrs.defaultattr != '{defaultattr}')
+			{
+				return '<font face="' +
+					attrs.defaultattr +
+					'">' + content + '</font>';
+			}
+			else
+			{
+				return content;
+			}
 		}
 	});
 

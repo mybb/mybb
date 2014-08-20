@@ -38,7 +38,7 @@ var MyBB = {
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
-				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || element.attr("src").match("offlink.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
+				if(element.hasClass('forum_off') || element.hasClass('forum_offlock') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_miniofflock') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
 				element.click(function()
 				{
@@ -249,9 +249,15 @@ var MyBB = {
 	{
 		if(request == 1)
 		{
-			$("#mark_read_"+fid).attr("src", $("#mark_read_"+fid).attr("src").replace("on.png", "off.png"))
-								.css("cursor", "default")
-								.attr("title", lang.no_new_posts);
+			if($("#mark_read_"+fid).hasClass('subforum_minion'))
+			{
+				$("#mark_read_"+fid).removeClass('subforum_minion').addClass('subforum_minioff');
+			}
+			else
+			{
+				$("#mark_read_"+fid).removeClass('forum_on').addClass('forum_off');
+			}
+			$("#mark_read_"+fid).css("cursor", "default").attr("title", lang.no_new_posts);
 		}
 	},
 

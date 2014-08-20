@@ -202,7 +202,7 @@ a:active {
 }
 
 #search input.button {
-	background: #0a5096 url(images/thead.png) top left repeat-x;
+	background: #0066a2 url(images/thead.png) top left repeat-x;
 	color: #fff;
 }
 
@@ -305,8 +305,52 @@ a:active {
 
 .scaleimages img {
 	max-width: 100%;
-	height: auto;
-	width: auto;
+}
+
+.forum_status {
+	height: 30px;
+	width: 30px;
+	background: url(images/forum_icon_sprite.png) no-repeat 0 0;
+}
+
+.forum_on {
+	background-position: 0 0;
+}
+
+.forum_off {
+	background-position: 0 -30px;
+}
+
+.forum_offlock {
+	background-position: 0 -60px;
+}
+
+.forum_offlink {
+	background-position: 0 -90px;
+}
+
+.subforumicon {
+	height: 10px;
+	width: 10px;
+	display: inline-block;
+	margin: 0 5px;
+	background: url(images/mini_status_sprite.png) no-repeat 0 0;
+}
+
+.subforum_minion {
+	background-position: 0 0;
+}
+
+.subforum_minioff {
+	background-position: 0 -10px;
+}
+
+.subforum_miniofflock {
+	background-position: 0 -20px;
+}
+
+.subforum_miniofflink {
+	background-position: 0 -30px;
 }
 
 table {
@@ -328,7 +372,7 @@ table {
 }
 
 .thead {
-	background: #0a5096 url(images/thead.png) top left repeat-x;
+	background: #0066a2 url(images/thead.png) top left repeat-x;
 	color: #ffffff;
 	border-bottom: 1px solid #263c30;
 	padding: 8px;
@@ -788,11 +832,6 @@ blockquote cite span.highlight {
 	cursor: pointer;
 }
 
-.subforumicon {
-	border: 0;
-	vertical-align: middle;
-}
-
 .separator {
 	margin: 5px;
 	padding: 0;
@@ -1030,22 +1069,16 @@ div.error ul {
 }
 
 .post {
-	margin-bottom: 15px;
 	overflow: hidden;
 }
 
-.post:last-child {
-	margin-bottom: 0;
-}
-
 .post.classic {
-	border-top: 3px solid #333;
 	padding-top: 15px;
 }
 
 .post .post_author {
-	border-bottom: 1px solid #bbb;
-	border-top: 3px solid #333;
+	border-bottom: 1px solid #ccc;
+	border-top: 2px solid #ccc;
 	background: #f5f5f5;
 	padding: 5px;
 	overflow: hidden;
@@ -1057,6 +1090,7 @@ div.error ul {
 	width: 15%;
 	margin: 0 1% 15px 0;
 	border-left: 0;
+	padding: 5px 1%;
 }
 
 .post .post_author .buddy_status {
@@ -1134,8 +1168,8 @@ div.error ul {
 
 .post.classic .post_content {
 	float: left;
-	width: 80%;
-	padding-top: 0;
+	width: 79%;
+	padding: 0 1% 5px 1%;
 }
 
 .post_content {
@@ -1167,8 +1201,7 @@ div.error ul {
 .post_controls {
 	clear: both;
 	background: #f5f5f5;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #ccc;
 	padding: 5px;
 	overflow: hidden;
 }
@@ -1525,7 +1558,7 @@ a.button.report_user_button span {
 	left: 50%;
 	margin-right: -32px;
 	margin-top: -32px;
-	background: url(images/spinner.gif) #111 no-repeat center center;
+	background: url(images/spinner_big.gif) no-repeat center center;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	-o-border-radius: 8px;
@@ -2112,7 +2145,17 @@ ul.thread_tools li.subscription_remove {
 
 ul.thread_tools li.poll {
 	background-position: 0 -80px;
-}]]></stylesheet>
+}
+
+.showthread_spinner {
+	width: 100%;
+	margin: 0 auto;
+	display: block;
+	text-align: center;
+	padding: 20px;
+}
+
+]]></stylesheet>
 		<stylesheet name="thread_status.css" attachedto="forumdisplay.php|usercp.php|search.php" version="1800" disporder="6"><![CDATA[.thread_status {
 	display: inline-block;
 	width: 16px;
@@ -2346,6 +2389,11 @@ a.button {
 </td></tr>
 </table>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="announcement_edit" version="1800"><![CDATA[<a href="modcp.php?action=edit_announcement&amp;aid={$post['aid']}" title="{$lang->announcement_edit}" class="postbit_edit"><span>{$lang->postbit_button_edit}</span></a>]]></template>
@@ -3468,6 +3516,11 @@ a.button {
 <input type="hidden" name="attachmentact" value="" />
 </form>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="editpost_delete" version="1800"><![CDATA[<form action="editpost.php" method="post" name="editpost">
@@ -3653,7 +3706,7 @@ a.button {
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
 		<template name="forumbit_depth2_cat" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$subforums}</div>
 </td>
@@ -3662,7 +3715,7 @@ a.button {
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth2_forum" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
@@ -3679,7 +3732,7 @@ a.button {
 		<template name="forumbit_depth2_forum_unapproved_threads" version="1800"><![CDATA[ <span title="{$unapproved_threads_count}">({$forum['unapprovedthreads']})</span>]]></template>
 		<template name="forumbit_depth2_forum_viewers" version="1800"><![CDATA[<span class="smalltext">{$forum_viewers_text}</span>]]></template>
 		<template name="forumbit_depth3" version="1404"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.png" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
+		<template name="forumbit_depth3_statusicon" version="1800"><![CDATA[<div title="{$lightbulb['altonoff']}" class="subforumicon subforum_{$lightbulb['folder']} ajax_mark_read" id="mark_read_{$forum['fid']}"></div>]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
@@ -4154,7 +4207,10 @@ a.button {
 							</tr>
 						</table>
 					</form>
-				</div>]]></template>
+				</div>
+				<script type="text/javascript">
+					$("#quick_login input[name='url']").val($(location).attr('href'));
+				</script>]]></template>
 		<template name="header_welcomeblock_member" version="1800"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
@@ -4194,16 +4250,16 @@ a.button {
 {$boardstats}
 
 <dl class="forum_legend smalltext">
-	<dt><img src="{$theme['imgdir']}/on.png" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_on" title="{$lang->new_posts}"></div></dt>
 	<dd>{$lang->new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/off.png" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dt><div class="forum_status forum_off" title="{$lang->no_new_posts}"></div></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlock.png" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlock" title="{$lang->forum_locked}"></div></dt>
 	<dd>{$lang->forum_locked}</dd>
 
-	<dt><img src="{$theme['imgdir']}/offlink.png" alt="{$lang->forum_redirect}" title="{$lang->forum_redirect}" style="vertical-align: middle;" /></dt>
+	<dt><div class="forum_status forum_offlink" title="{$lang->forum_redirect}"></div></dt>
 	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br class="clear" />
@@ -4335,14 +4391,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -4373,7 +4427,7 @@ if(use_xmlhttprequest == "1")
 if(use_xmlhttprequest == "1")
 {
 	$("#inviteusername").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -4391,14 +4445,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -5295,14 +5347,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users&getone=1", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -5566,14 +5616,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
        // Allow the user entered text to be selected as well
@@ -5691,7 +5739,7 @@ if(use_xmlhttprequest == "1")
 if(use_xmlhttprequest == "1")
 {
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -5709,14 +5757,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
        // Allow the user entered text to be selected as well
@@ -6314,6 +6360,11 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
+	<script type="text/javascript">
+		$(".author_avatar img").error(function () {
+			$(this).unbind("error").closest('.author_avatar').remove();
+		});
+	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_announcements_forum" version="1400"><![CDATA[					<tr>
@@ -6443,6 +6494,11 @@ if(use_xmlhttprequest == "1")
 		</table>
 	</form>
 	{$footer}
+	<script type="text/javascript">
+		$(".author_avatar img").error(function () {
+			$(this).unbind("error").closest('.author_avatar').remove();
+		});
+	</script>
 </body>
 </html>]]></template>
 		<template name="modcp_awaitingattachments" version="1800"><![CDATA[<tr>
@@ -6585,14 +6641,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users&getone=1", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -7085,15 +7139,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query,
-						getone: 1
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		}
 	});
@@ -7807,14 +7858,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -8659,6 +8708,11 @@ if(use_xmlhttprequest == "1")
 {$forumrules}
 {$threadreview}
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
@@ -8747,6 +8801,11 @@ if(use_xmlhttprequest == "1")
 </form>
 {$forumrules}
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
@@ -10022,6 +10081,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 {$footer}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
@@ -10189,6 +10253,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 // -->
 </script>
 {$autocompletejs}
+<script type="text/javascript">
+	$(".author_avatar img").error(function () {
+		$(this).unbind("error").closest('.author_avatar').remove();
+	});
+</script>
 </body>
 </html>]]></template>
 		<template name="private_send_autocomplete" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/select2/select2.css">
@@ -10747,14 +10816,12 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 		initSelection: function(element, callback) {
-			var query = $(element).val();
-			if (query !== "") {
-				$.ajax("xmlhttp.php?action=get_users", {
-					data: {
-						query: query
-					},
-					dataType: "json"
-				}).done(function(data) { callback(data); });
+			var value = $(element).val();
+			if (value !== "") {
+				callback({
+					id: value,
+					text: value
+				});
 			}
 		},
 	});
@@ -11135,6 +11202,11 @@ if(use_xmlhttprequest == "1")
 		}
 	// -->
 	</script>
+	<script type="text/javascript">
+		$(".author_avatar img").error(function () {
+			$(this).unbind("error").closest('.author_avatar').remove();
+		});
+	</script>
 </body>
 </html>]]></template>
 		<template name="showthread_add_poll" version="1800"><![CDATA[<li class="poll"><a href="polls.php?action=newpoll&amp;tid={$tid}">{$lang->add_poll_to_thread}</a></li>]]></template>
@@ -11296,7 +11368,9 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="showthread_poll_undovote" version="1800"><![CDATA[ [<a href="polls.php?action=do_undovote&amp;pid={$poll['pid']}&amp;my_post_key={$mybb->post_code}">{$lang->undo_vote}</a>]]]></template>
-		<template name="showthread_quickreply" version="1800"><![CDATA[<br />
+		<template name="showthread_quickreply" version="1800"><![CDATA[
+<div id="quickreply_spinner" class="showthread_spinner" style="display: none"><img src="{$theme['imgdir']}/spinner.gif" /></div>
+<br />
 {$moderation_notice}
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -11937,17 +12011,21 @@ if(use_xmlhttprequest == "1")
 											}
 										},
 										initSelection: function(element, callback) {
-											// the input tag has a value attribute preloaded that points to a preselected movie's id
-											// this function resolves that id attribute to an object that select2 can render
-											// using its formatResult renderer - that way the movie name is shown preselected
 											var query = $(element).val();
 											if (query !== "") {
-												$.ajax("xmlhttp.php?action=get_users", {
-													data: {
-														query: query
-													},
-													dataType: "json"
-												}).done(function(data) { callback(data); });
+												var newqueries = [];
+												exp_queries = query.split(",");
+												$.each(exp_queries, function(index, value ){
+													if(value.replace(/\s/g, '') != "")
+													{
+														var newquery = {
+															id: value.replace(/,\s?/g, ", "),
+															text: value.replace(/,\s?/g, ", ")
+														};
+														newqueries.push(newquery);
+													}
+												});
+												callback(newqueries);
 											}
 										},
 									});
@@ -12006,12 +12084,19 @@ if(use_xmlhttprequest == "1")
 										initSelection: function(element, callback) {
 											var query = $(element).val();
 											if (query !== "") {
-												$.ajax("xmlhttp.php?action=get_users", {
-													data: {
-														query: query
-													},
-													dataType: "json"
-												}).done(function(data) { callback(data); });
+												var newqueries = [];
+												exp_queries = query.split(",");
+												$.each(exp_queries, function(index, value ){
+													if(value.replace(/\s/g, '') != "")
+													{
+														var newquery = {
+															id: value.replace(/,\s?/g, ", "),
+															text: value.replace(/,\s?/g, ", ")
+														};
+														newqueries.push(newquery);
+													}
+												});
+												callback(newqueries);
 											}
 										},
 									});
@@ -13630,6 +13715,7 @@ opt_editor = {
 	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
+	enablePasteFiltering: true,
 	emoticonsEnabled: {$emoticons_enabled},
 	emoticons: {
 		// Emoticons to be included in the dropdown

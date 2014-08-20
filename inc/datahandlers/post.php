@@ -625,6 +625,8 @@ class PostDataHandler extends DataHandler
 	{
 		$prefix = &$this->data['prefix'];
 
+		$prefix_cache = build_prefixes();
+
 		// If a valid prefix isn't supplied, don't assign one.
 		if(empty($prefix))
 		{
@@ -632,13 +634,14 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			$verification = build_prefixes($prefix);
-			if(!$verification)
+			$prefix_cache = build_prefixes($prefix);
+
+			if(empty($prefix_cache))
 			{
 				$this->set_error('invalid_prefix');
 				return false;
 			}
-			if($verification['groups'] != "-1")
+			if($prefix_cache['groups'] != "-1")
 			{
 				if(!empty($this->data['edit_uid']))
 				{
@@ -649,32 +652,17 @@ class PostDataHandler extends DataHandler
 				{
 					$user = get_user($this->data['uid']);
 				}
-				$groups = array($user['usergroup']);
-				if(!empty($user['additionalgroups']))
-				{
-					$groups = array_merge($groups, explode(',', $user['additionalgroups']));
-				}
-				$prefix_groups = explode(",", $verification['groups']);
 
-				$valid_group = false;
-				foreach($groups as $group)
-				{
-					if(in_array($group, $prefix_groups))
-					{
-						$valid_group = true;
-						break;
-					}
-				}
-				if(!$valid_group)
+				if(!is_member($prefix_cache['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
 				{
 					$this->set_error('invalid_prefix');
 					return false;
 				}
 			}
-			if($verification['forums'] != "-1")
+			if($prefix_cache['forums'] != "-1")
 			{
 				// Decide whether this prefix can be used in our forum
-				$forums = explode(",", $verification['forums']);
+				$forums = explode(",", $prefix_cache['forums']);
 
 				if(!in_array($this->data['fid'], $forums))
 				{
@@ -689,55 +677,51 @@ class PostDataHandler extends DataHandler
 
 		if($forum['requireprefix'] == 1)
 		{
-			$required_cache = build_prefixes();
-			$num_prefixes = 0;
+			$num_prefixes = false;
 
 			// Go through each of our prefixes and decide if there are any possible prefixes to use.
-			foreach($required_cache as $required)
+			if(!empty($this->data['edit_uid']))
 			{
-				if($required['forums'] != "-1")
-				{
-					// Decide whether this prefix can be used in our forum
-					$forums = explode(",", $required['forums']);
+				// Post is being edited
+				$user = get_user($this->data['edit_uid']);
+			}
+			else
+			{
+				$user = get_user($this->data['uid']);
+			}
 
-					if(!in_array($forum['fid'], $forums))
-					{
-						continue;
-					}
-				}
-				if($required['groups'] != "-1")
+			$prefix_cache = build_prefixes();
+
+			if(!empty($prefix_cache))
+			{
+				foreach($prefix_cache as $required)
 				{
-					if(!empty($this->data['edit_uid']))
+					if($required['forums'] != "-1")
 					{
-						// Post is being edited
-						$user = get_user($this->data['edit_uid']);
+						// Decide whether this prefix can be used in our forum
+						$forums = explode(",", $required['forums']);
+
+						if(!in_array($forum['fid'], $forums))
+						{
+							continue;
+						}
+					}
+
+					if($required['groups'] != "-1")
+					{
+						if(!is_member($required['groups'], array('usergroup' => $user['usergroup'], 'additionalgroups' => $user['additionalgroups'])))
+						{
+							$num_prefixes = true;
+						}
 					}
 					else
 					{
-						$user = get_user($this->data['uid']);
+						$num_prefixes = true;
 					}
-					$groups = array($user['usergroup']);
-					if(!empty($user['additionalgroups']))
-					{
-						$groups = array_merge($groups, explode(',', $user['additionalgroups']));
-					}
-					$prefix_groups = explode(",", $required['groups']);
-
-					foreach($groups as $group)
-					{
-						if(in_array($group, $prefix_groups))
-						{
-							++$num_prefixes;
-						}
-					}
-				}
-				else
-				{
-					++$num_prefixes;
 				}
 			}
 
-			if($prefix == 0 && $num_prefixes > 0)
+			if($prefix == 0 && $num_prefixes)
 			{
 				$this->set_error('require_prefix');
 				return false;

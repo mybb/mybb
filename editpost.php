@@ -82,7 +82,7 @@ $breadcrumbprefix = '';
 if($thread['prefix'])
 {
 	$threadprefixes = build_prefixes();
-	if(isset($threadprefixes[$thread['prefix']]))
+	if(!empty($threadprefixes[$thread['prefix']]))
 	{
 		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 	}
