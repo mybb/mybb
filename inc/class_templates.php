@@ -80,7 +80,7 @@ class templates
 		if(!isset($this->cache[$title]))
 		{
 			// Only load master and global templates if template is needed in Admin CP
-			if(empty($theme))
+			if(empty($theme['templateset']))
 			{
 				$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 			}
