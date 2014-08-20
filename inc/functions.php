@@ -1090,6 +1090,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	$jumptopage = '';
 	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
 	{
+		$jump_url = str_replace(array('&page={page}', '&amp;page={page}'), '', $url);
 		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
