@@ -5570,10 +5570,14 @@ if(use_xmlhttprequest == "1")
 	</td>
 	<td class="trow1" width="33%" style="vertical-align: top;">
 		{$lang->contains}<br />
-		<input type="text" class="textbox" name="website" id="website" style="width: 99%; margin-top: 4px;" value="{$search_website}" />
+		<input type="text" class="textbox" name="website" id="website" style="width: 97%; margin-top: 4px; height: 20px;" value="{$search_website}" />
 	</td>
 	<td class="trow1" width="33%">
-		<select name="sort" id="sort" style="width: 99%;">
+		<span class="smalltext">
+		<input type="radio" class="radio" name="order" id="order_asc" value="ascending"{$order_check['ascending']} style="vertical-align: bottom;" /> <label for="order_asc">{$lang->order_asc}</label><br />
+		<input type="radio" class="radio" name="order" id="order_desc" value="descending"{$order_check['descending']} style="vertical-align: bottom; margin-left: 5px;" /> <label for="order_desc">{$lang->order_desc}</label>
+		</span>
+		<select name="sort" id="sort" style="width: 99%; margin-top: 7px;">
 			<option value="username"{$sort_selected['username']}>{$lang->sort_by_username}</option>
 			<option value="regdate"{$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
 			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
@@ -5581,10 +5585,7 @@ if(use_xmlhttprequest == "1")
 			<option value="threadnum"{$sort_selected['threadnum']}>{$lang->sort_by_threads}</option>
 			<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>
 		</select><br />
-		<span class="smalltext">
-		<input type="radio" class="radio" name="order" id="order_asc" value="ascending"{$order_check['ascending']} /> <label for="order_asc">{$lang->order_asc}</label><br />
-		<input type="radio" class="radio" name="order" id="order_desc" value="descending"{$order_check['descending']} /> <label for="order_desc">{$lang->order_desc}</label>
-		</span>
+
 	</td>
 </tr>
 </table>
