@@ -3547,7 +3547,7 @@ a.button {
 		<template name="editpost_disablesmilies_hidden" version="1800"><![CDATA[<input type="hidden" name="postoptions[disablesmilies]" value="no" />]]></template>
 		<template name="editpost_reason" version="1800"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->editreason}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="editreason" size="50" maxlength="150" value="{$reason}" tabindex="5" /></td>
+<td class="trow1"><input type="text" class="textbox" name="editreason" size="40" maxlength="150" value="{$reason}" tabindex="5" /></td>
 </tr>]]></template>
 		<template name="error" version="120"><![CDATA[<html>
 <head>
