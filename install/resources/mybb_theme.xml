@@ -8617,7 +8617,7 @@ if(use_xmlhttprequest == "1")
 </script>]]></template>
 		<template name="multipage_end" version="1600"><![CDATA[{$lang->multipage_link_end} <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
 		<template name="multipage_jump_page" version="1800"><![CDATA[<div class="popup_menu drop_go_page" style="display: none;">
-	<form action="{$page_url}" method="post">
+	<form action="{$jump_url}" method="post">
 		<label for="page">{$lang->multipage_jump}:</label> <input type="text" class="textbox" name="page" value="{$page}" size="4" />
 		<input type="submit" class="button" value="{$lang->go}" />
 	</form>
