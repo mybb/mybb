@@ -592,7 +592,7 @@ select {
 	font-size: 13px;
 }
 
-input.button {
+button, input.button {
 	padding: 3px 8px;
 	cursor: pointer;
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
@@ -603,7 +603,7 @@ input.button {
 	outline: 0;
 }
 
-input.button:hover {
+button, input.button:hover {
 	border-color: #aaa;
 }
 
@@ -2310,6 +2310,7 @@ tr td.trow_shaded:last-child {
 	border-bottom-right-radius: 6px !important;
 }
 
+button,
 input.button,
 input.textbox,
 input.invalid_field,
