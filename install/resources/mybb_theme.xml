@@ -592,7 +592,8 @@ select {
 	font-size: 13px;
 }
 
-button, input.button {
+button,
+input.button {
 	padding: 3px 8px;
 	cursor: pointer;
 	font-family: Tahoma, Verdana, Arial, Sans-Serif;
@@ -603,7 +604,8 @@ button, input.button {
 	outline: 0;
 }
 
-button, input.button:hover {
+button:hover,
+input.button:hover {
 	border-color: #aaa;
 }
 
