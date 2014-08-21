@@ -1090,10 +1090,8 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	$jumptopage = '';
 	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
 	{
-		$jump_url = str_replace(array('page={page}', 'page-{page}'), array('page={fakepage}', 'page-{fakepage}'), $url);
-		$jump_url = fetch_page_url($jump_url, '{fakepage}'); // Basically converts our URL to a SEF URL with {page} still on it so we can do the replacement below
-		$jump_url = str_replace(array('&amp;page={fakepage}', '&page={fakepage}', '-page-{fakepage}'), '', $jump_url);
-		
+		// When the second parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the URL as it's unnecessary
+		$jump_url = fetch_page_url($jump_url, 1);
 		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
