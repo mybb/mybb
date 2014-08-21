@@ -279,7 +279,7 @@ var Thread = {
 				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 				if(allowEditReason == 1 && $('#quickedit_' + pid + '_editreason').length == 0)
 				{
-					$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="50" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
+					$('#quickedit_' + pid).after('<label for="editreason">' + lang.editreason + ':</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
 				}
 			});
         });
