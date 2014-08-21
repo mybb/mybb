@@ -212,36 +212,32 @@ class WarningsHandler extends DataHandler
 
 			$warning['points'] = round($warning['custom_points']);
 
-			// Build expiry date
-			if($warning['expires'])
+			// Build expiry date				
+			if($warning['expires_period'] == "hours")
 			{
-				if($warning['expires_period'] == "hours")
-				{
-					$warning['expires'] = $warning['expires']*3600;
-				}
-				else if($warning['expires_period'] == "days")
-				{
-					$warning['expires'] = $warning['expires']*86400;
-				}
-				else if($warning['expires_period'] == "weeks")
-				{
-					$warning['expires'] = $warning['expires']*604800;
-				}
-				else if($warning['expires_period'] == "months")
-				{
-					$warning['expires'] = $warning['expires']*2592000;
-				}
-
-				// Add on current time and we're there!
-				if($warning['expires_period'] != "never" && $warning['expires'])
-				{
-					$warning['expires'] += TIME_NOW;
-				}
+				$warning['expires'] = $warning['expires']*3600 + TIME_NOW;
 			}
-
-			if($warning['expires'] <= TIME_NOW)
+			else if($warning['expires_period'] == "days")
+			{
+				$warning['expires'] = $warning['expires']*86400 + TIME_NOW;
+			}
+			else if($warning['expires_period'] == "weeks")
+			{
+				$warning['expires'] = $warning['expires']*604800 + TIME_NOW;
+			}
+			else if($warning['expires_period'] == "months")
+			{
+				$warning['expires'] = $warning['expires']*2592000 + TIME_NOW;
+			}
+			else if($warning['expires_period'] == "never")
 			{
 				$warning['expires'] = 0;
+			}
+			else
+			{
+				// unkown expires_period
+				$this->set_error('error_invalid_expires_period');
+				return false;
 			}
 		}
 		// Using a predefined warning type

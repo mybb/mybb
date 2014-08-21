@@ -77,7 +77,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		'custom_reason' => $mybb->get_input('custom_reason'),
 		'custom_points' => $mybb->get_input('custom_points', 1),
 		'expires' => $mybb->get_input('expires', 1),
-		'expires_period' => $mybb->get_input('expires_period', 1)
+		'expires_period' => $mybb->get_input('expires_period')
 	);
 
 	// Is this warning being given for a post?
