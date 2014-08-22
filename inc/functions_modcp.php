@@ -86,7 +86,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 				{
 					// A child is moderated, so print out this forum's title.  RECURSE!
 					$trow = alt_trow();
-					eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum_nomod")."\";");
+					eval($templates->render("modcp_announcements_forum_nomod", "announcements_forum", true));
 				}
 				else
 				{
@@ -101,7 +101,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 				$padding = 40*($depth-1);
 
-				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
+				eval($templates->render("modcp_announcements_forum", "announcements_forum", true));
 
 				if(isset($announcements[$forum['fid']]))
 				{
@@ -111,16 +111,16 @@ function fetch_forum_announcements($pid=0, $depth=1)
 
 						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 						{
-							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
+							eval($templates->render("modcp_announcements_announcement_expired", "icon"));
 						}
 						else
 						{
-							eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
+							eval($templates->render("modcp_announcements_announcement_active", "icon"));
 						}
 
 						$subject = htmlspecialchars_uni($announcement['subject']);
 
-						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
+						eval($templates->render("modcp_announcements_announcement", "announcements_forum", true));
 					}
 				}
 			}

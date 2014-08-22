@@ -528,7 +528,7 @@ class postParser
 				foreach($smilie['find'] as $s)
 				{
 					$s = $this->parse_html($s);
-					eval("\$smilie_template = \"".$templates->get("smilie", 1, 0)."\";");
+					eval($templates->render("smilie", "smilie_template", false, 1, 0));
 					$this->smilies_cache[$s] = $smilie_template;
 					// workaround for smilies starting with ;
 					if($s[0] == ";")
@@ -820,7 +820,8 @@ class postParser
 			}
 			else
 			{
-				eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
+				$linkback = " ";
+				eval($templates->render("postbit_gotopost", "linkback", true, 1, 0));
 			}
 
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#i", '', $username);
@@ -1393,7 +1394,7 @@ class postParser
 
 		$id = htmlspecialchars_uni($id);
 
-		eval("\$video_code = \"".$templates->get("video_{$video}_embed")."\";");
+		eval($templates->render("video_{$video}_embed", "video_code"));
 
 		return $video_code;
 	}

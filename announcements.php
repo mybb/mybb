@@ -122,5 +122,5 @@ if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 
 $plugins->run_hooks("announcements_end");
 
-eval("\$forumannouncement = \"".$templates->get("announcement")."\";");
+eval($templates->render("announcement", "forumannouncement"));
 output_page($forumannouncement);

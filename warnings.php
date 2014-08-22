@@ -219,7 +219,7 @@ if($mybb->input['action'] == "warn")
 		$post['subject'] = $parser->parse_badwords($post['subject']);
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post_link = get_post_link($post['pid']);
-		eval("\$post = \"".$templates->get("warnings_warn_post")."\";");
+		eval($templates->render("warnings_warn_post", "post"));
 
 		// Fetch any existing warnings issued for this post
 		$query = $db->query("
@@ -238,11 +238,11 @@ if($mybb->input['action'] == "warn")
 			{
 				if($warning['expired'] == 0)
 				{
-					eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
+					eval($templates->render("warnings_active_header", "warnings", true));
 				}
 				else
 				{
-					eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
+					eval($templates->render("warnings_expired_header", "warnings", true));
 				}
 			}
 			$last_expired = $warning['expired'];
@@ -289,11 +289,11 @@ if($mybb->input['action'] == "warn")
 			}
 			$alt_bg = alt_trow();
 			$plugins->run_hooks("warnings_warning");
-			eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
+			eval($templates->render("warnings_warning", "warnings", true));
 		}
 		if($warnings)
 		{
-			eval("\$existing_warnings = \"".$templates->get("warnings_warn_existing")."\";");
+			eval($templates->render("warnings_warn_existing", "existing_warnings"));
 		}
 	}
 
@@ -434,9 +434,9 @@ if($mybb->input['action'] == "warn")
 		$result = '';
 		if(!empty($new_level['friendly_action']))
 		{
-			eval("\$result = \"".$templates->get("warnings_warn_type_result")."\";");
+			eval($templates->render("warnings_warn_type_result", "result"));
 		}
-		eval("\$types .= \"".$templates->get("warnings_warn_type")."\";");
+		eval($templates->render("warnings_warn_type", "types", true));
 		unset($new_level);
 		unset($result);
 	}
@@ -450,7 +450,7 @@ if($mybb->input['action'] == "warn")
 			$type_checked['custom'] = "checked=\"checked\"";
 		}
 
-		eval("\$custom_warning = \"".$templates->get("warnings_warn_custom")."\";");
+		eval($templates->render("warnings_warn_custom", "custom_warning"));
 	}
 
 	$pm_notify = '';
@@ -477,15 +477,15 @@ if($mybb->input['action'] == "warn")
 				$checked = ' checked="checked"';
 			}
 
-			eval('$anonymous_pm = "'.$templates->get('warnings_warn_pm_anonymous').'";');
+			eval($templates->render("warnings_warn_pm_anonymous", "anonymous_pm"));
 		}
 
-		eval("\$pm_notify = \"".$templates->get("warnings_warn_pm")."\";");
+		eval($templates->render("warnings_warn_pm", "pm_notify"));
 	}
 
 	$plugins->run_hooks("warnings_warn_end");
 
-	eval("\$warn = \"".$templates->get("warnings_warn")."\";");
+	eval($templates->render("warnings_warn", "warn"));
 	output_page($warn);
 	exit;
 }
@@ -604,11 +604,11 @@ if($mybb->input['action'] == "view")
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 		$post_link = get_post_link($warning['pid'])."#pid{$warning['pid']}";
-		eval("\$warning_info = \"".$templates->get("warnings_view_post")."\";");
+		eval($templates->render("warnings_view_post", "warning_info"));
 	}
 	else
 	{
-		eval("\$warning_info = \"".$templates->get("warnings_view_user")."\";");
+		eval($templates->render("warnings_view_user", "warning_info"));
 	}
 
 	$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
@@ -663,7 +663,7 @@ if($mybb->input['action'] == "view")
 		{
 			$warn_errors = '';
 		}
-		eval("\$revoke = \"".$templates->get("warnings_view_revoke")."\";");
+		eval($templates->render("warnings_view_revoke", "revoke"));
 	}
 	else
 	{
@@ -675,12 +675,12 @@ if($mybb->input['action'] == "view")
 		}
 		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
-		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
+		eval($templates->render("warnings_view_revoked", "revoke"));
 	}
 
 	$plugins->run_hooks("warnings_view_end");
 
-	eval("\$warning = \"".$templates->get("warnings_view")."\";");
+	eval($templates->render("warnings_view", "warning"));
 	output_page($warning);
 }
 
@@ -776,11 +776,11 @@ if(!$mybb->input['action'])
 		{
 			if($warning['expired'] == 0)
 			{
-				eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
+				eval($templates->render("warnings_active_header", "warnings", true));
 			}
 			else
 			{
-				eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
+				eval($templates->render("warnings_expired_header", "warnings", true));
 			}
 		}
 		$last_expired = $warning['expired'];
@@ -832,17 +832,17 @@ if(!$mybb->input['action'])
 		}
 		$alt_bg = alt_trow();
 		$plugins->run_hooks("warnings_warning");
-		eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
+		eval($templates->render("warnings_warning", "warnings", true));
 	}
 
 	if(!$warnings)
 	{
-		eval("\$warnings = \"".$templates->get("warnings_no_warnings")."\";");
+		eval($templates->render("warnings_no_warnings", "warnings"));
 	}
 
 	$plugins->run_hooks("warnings_end");
 
-	eval("\$warnings = \"".$templates->get("warnings")."\";");
+	eval($templates->render("warnings", "warnings"));
 	output_page($warnings);
 }
 
