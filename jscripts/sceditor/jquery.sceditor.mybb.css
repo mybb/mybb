@@ -25,7 +25,6 @@ body {
 	/* Needed so the cursor will be placed at the end of the content
 	   when the there isn't enought content to fill the full viewport */
 	min-height: 100%;
-	height: 100%;
 	word-wrap: break-word;
 }
 
