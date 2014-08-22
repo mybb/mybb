@@ -13743,17 +13743,17 @@ $(function() {
 <!--
 	lang.unknown_error = "{$lang->unknown_error}";
 
-	lang.select2_match = {$lang->select2_match};
-	lang.select2_matches = {$lang->select2_matches};
-	lang.select2_nomatches = {$lang->select2_nomatches};
-	lang.select2_inputtooshort_single = {$lang->select2_inputtooshort_single};
-	lang.select2_inputtooshort_plural = {$lang->select2_inputtooshort_plural};
-	lang.select2_inputtoolong_single = {$lang->select2_inputtoolong_single};
-	lang.select2_inputtoolong_plural = {$lang->select2_inputtoolong_plural};
-	lang.select2_selectiontoobig_single = {$lang->select2_selectiontoobig_single};
-	lang.select2_selectiontoobig_plural = {$lang->select2_selectiontoobig_plural};
-	lang.select2_loadmore = {$lang->select2_loadmore};
-	lang.select2_searching = {$lang->select2_searching};
+	lang.select2_match = "{$lang->select2_match}";
+	lang.select2_matches = "{$lang->select2_matches}";
+	lang.select2_nomatches = "{$lang->select2_nomatches}";
+	lang.select2_inputtooshort_single = "{$lang->select2_inputtooshort_single}";
+	lang.select2_inputtooshort_plural = "{$lang->select2_inputtooshort_plural}";
+	lang.select2_inputtoolong_single = "{$lang->select2_inputtoolong_single}";
+	lang.select2_inputtoolong_plural = "{$lang->select2_inputtoolong_plural}";
+	lang.select2_selectiontoobig_single = "{$lang->select2_selectiontoobig_single}";
+	lang.select2_selectiontoobig_plural = "{$lang->select2_selectiontoobig_plural}";
+	lang.select2_loadmore = "{$lang->select2_loadmore}";
+	lang.select2_searching = "{$lang->select2_searching}";
 
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
