@@ -86,7 +86,7 @@ if($mybb->get_input('action') == "today")
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
 			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
 
-			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
+			eval($templates->render("online_today_row", "todayrows", true));
 		}
 	}
 
@@ -118,7 +118,7 @@ if($mybb->get_input('action') == "today")
 
 	$plugins->run_hooks("online_today_end");
 
-	eval("\$today = \"".$templates->get("online_today")."\";");
+	eval($templates->render("online_today", "today"));
 	output_page($today);
 }
 else
@@ -279,6 +279,6 @@ else
 
 	$plugins->run_hooks("online_end");
 
-	eval("\$online = \"".$templates->get("online")."\";");
+	eval($templates->render("online", "online"));
 	output_page($online);
 }

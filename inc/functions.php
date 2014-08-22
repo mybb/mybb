@@ -74,7 +74,7 @@ function output_page($contents)
 			$sql_queries = $lang->sprintf($lang->debug_sql_queries, $db->query_count);
 			$server_load = $lang->sprintf($lang->debug_server_load, $serverload);
 
-			eval("\$debugstuff = \"".$templates->get("debug_summary")."\";");
+			eval($templates->render("debug_summary", "debugstuff"));
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
 
@@ -773,7 +773,7 @@ function error($error="", $title="")
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 
-	eval("\$errorpage = \"".$templates->get("error")."\";");
+	eval($templates->render("error", "errorpage"));
 	output_page($errorpage);
 
 	exit;
@@ -825,7 +825,7 @@ function inline_error($errors, $title="", $json_data=array())
 		$errorlist .= "<li>".$error."</li>\n";
 	}
 
-	eval("\$errors = \"".$templates->get("error_inline")."\";");
+	eval($templates->render("error_inline", "errors"));
 
 	return $errors;
 }
@@ -859,7 +859,7 @@ function error_no_permission()
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_username = $lang->sprintf($lang->error_nopermission_user_username, $mybb->user['username']);
-		eval("\$errorpage = \"".$templates->get("error_nopermission_loggedin")."\";");
+		eval($templates->render("error_nopermission_loggedin", "errorpage"));
 	}
 	else
 	{
@@ -887,7 +887,7 @@ function error_no_permission()
 				$lang_username = $lang->username;
 				break;
 		}
-		eval("\$errorpage = \"".$templates->get("error_nopermission")."\";");
+		eval($templates->render("error_nopermission", "errorpage"));
 	}
 
 	error($errorpage);
@@ -949,7 +949,7 @@ function redirect($url, $message="", $title="", $force_redirect=false)
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars_uni($url);
 
-		eval("\$redirectpage = \"".$templates->get("redirect")."\";");
+		eval($templates->render("redirect", "redirectpage"));
 		output_page($redirectpage);
 	}
 	else
@@ -1001,7 +1001,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	{
 		$prev = $page-1;
 		$page_url = fetch_page_url($url, $prev);
-		eval("\$prevpage = \"".$templates->get("multipage_prevpage")."\";");
+		eval($templates->render("multipage_prevpage", "prevpage"));
 	}
 
 	// Maximum number of "page bits" to show
@@ -1043,7 +1043,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		}
 
 		$page_url = fetch_page_url($url, 1);
-		eval("\$start = \"".$templates->get("multipage_start")."\";");
+		eval($templates->render("multipage_start", "start"));
 	}
 
 	$mppage = '';
@@ -1054,16 +1054,16 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		{
 			if($breadcrumb == true)
 			{
-				eval("\$mppage .= \"".$templates->get("multipage_page_link_current")."\";");
+				eval($templates->render("multipage_page_link_current", "mppage", true));
 			}
 			else
 			{
-				eval("\$mppage .= \"".$templates->get("multipage_page_current")."\";");
+				eval($templates->render("multipage_page_current", "mppage", true));
 			}
 		}
 		else
 		{
-			eval("\$mppage .= \"".$templates->get("multipage_page")."\";");
+			eval($templates->render("multipage_page", "mppage", true));
 		}
 	}
 
@@ -1076,7 +1076,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 		}
 
 		$page_url = fetch_page_url($url, $pages);
-		eval("\$end = \"".$templates->get("multipage_end")."\";");
+		eval($templates->render("multipage_end", "end"));
 	}
 
 	$nextpage = '';
@@ -1084,7 +1084,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	{
 		$next = $page+1;
 		$page_url = fetch_page_url($url, $next);
-		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
+		eval($templates->render("multipage_nextpage", "nextpage"));
 	}
 
 	$jumptopage = '';
@@ -1092,18 +1092,18 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	{
 		// When the second parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the URL as it's unnecessary
 		$jump_url = fetch_page_url($jump_url, 1);
-		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
+		eval($templates->render("multipage_jump_page", "jumptopage"));
 	}
 
 	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 
 	if($breadcrumb == true)
 	{
-		eval("\$multipage = \"".$templates->get("multipage_breadcrumb")."\";");
+		eval($templates->render("multipage_breadcrumb", "multipage"));
 	}
 	else
 	{
-		eval("\$multipage = \"".$templates->get("multipage")."\";");
+		eval($templates->render("multipage", "multipage"));
 	}
 
 	return $multipage;
@@ -1497,7 +1497,7 @@ function check_forum_password($fid, $pid=0)
 			}
 			else
 			{
-				eval("\$pwnote = \"".$templates->get("forumdisplay_password_wrongpass")."\";");
+				eval($templates->render("forumdisplay_password_wrongpass", "pwnote"));
 				$showform = true;
 			}
 		}
@@ -1527,7 +1527,7 @@ function check_forum_password($fid, $pid=0)
 		else
 		{
 			$_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
-			eval("\$pwform = \"".$templates->get("forumdisplay_password")."\";");
+			eval($templates->render("forumdisplay_password", "pwform"));
 			output_page($pwform);
 		}
 		exit;
@@ -1765,10 +1765,10 @@ function get_post_icons()
 			$checked = '';
 		}
 
-		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
+		eval($templates->render("posticons_icon", "iconlist", true));
 	}
 
-	eval("\$posticons = \"".$templates->get("posticons")."\";");
+	eval($templates->render("posticons", "posticons"));
 
 	return $posticons;
 }
@@ -2584,7 +2584,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 					$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
 
-					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
+					eval($templates->render("forumjump_bit", "forumjumpbits", true));
 
 					if($forum_cache[$forum['fid']])
 					{
@@ -2626,7 +2626,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 			}
 		}
 
-		eval("\$forumjump = \"".$templates->get("forumjump_".$template)."\";");
+		eval($templates->render("forumjump_".$template, "forumjump"));
 	}
 
 	return $forumjump;
@@ -2993,7 +2993,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 				$sourcemode = "MyBBEditor.sourceMode(true);";
 			}
 
-			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
+			eval($templates->render("codebuttons", "codeinsert"));
 		}
 	}
 
@@ -3047,7 +3047,7 @@ function build_clickable_smilies()
 			else if($mybb->settings['smilieinsertertot'] < $smiliecount)
 			{
 				$smiliecount = $mybb->settings['smilieinsertertot'];
-				eval("\$getmore = \"".$templates->get("smilieinsert_getmore")."\";");
+				eval($templates->render("smilieinsert_getmore", "getmore"));
 			}
 
 			$smilies = "";
@@ -3072,8 +3072,8 @@ function build_clickable_smilies()
 
 					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
 					$extra_class = ' smilie_pointer';
-					eval('$smilie = "'.$templates->get('smilie', 1, 0).'";');
-					eval("\$smilies .= \"".$templates->get("smilieinsert_smilie")."\";");
+					eval($templates->render("smilie", "smilie", false, 1, 0));
+					eval($templates->render("smilieinsert_smilie", "smilies", true));
 					++$i;
 					++$counter;
 
@@ -3091,7 +3091,7 @@ function build_clickable_smilies()
 				$smilies .= "<td colspan=\"{$colspan}\">&nbsp;</td>\n</tr>\n";
 			}
 
-			eval("\$clickablesmilies = \"".$templates->get("smilieinsert")."\";");
+			eval($templates->render("smilieinsert", "clickablesmilies"));
 		}
 		else
 		{
@@ -3259,16 +3259,16 @@ function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 		}
 
 		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("post_prefixselect_prefix")."\";");
+		eval($templates->render("post_prefixselect_prefix", "prefixselect_prefix", true));
 	}
 
 	if($multiple != 0)
 	{
-		eval("\$prefixselect = \"".$templates->get("post_prefixselect_multiple")."\";");
+		eval($templates->render("post_prefixselect_multiple", "prefixselect"));
 	}
 	else
 	{
-		eval("\$prefixselect = \"".$templates->get("post_prefixselect_single")."\";");
+		eval($templates->render("post_prefixselect_single", "prefixselect"));
 	}
 
 	return $prefixselect;
@@ -3336,10 +3336,10 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		}
 
 		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+		eval($templates->render("forumdisplay_threadlist_prefixes_prefix", "prefixselect_prefix", true));
 	}
 
-	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	eval($templates->render("forumdisplay_threadlist_prefixes", "prefixselect"));
 	return $prefixselect;
 }
 
@@ -3472,11 +3472,11 @@ function get_reputation($reputation, $uid=0)
 
 	if($uid != 0)
 	{
-		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted_link")."\";");
+		eval($templates->render("postbit_reputation_formatted_link", "display_reputation"));
 	}
 	else
 	{
-		eval("\$display_reputation = \"".$templates->get("postbit_reputation_formatted")."\";");
+		eval($templates->render("postbit_reputation_formatted", "display_reputation"));
 	}
 
 	return $display_reputation;
@@ -3510,7 +3510,7 @@ function get_colored_warning_level($level)
 		$warning_class = "normal_warning";
 	}
 
-	eval("\$level = \"".$templates->get("postbit_warninglevel_formatted")."\";");
+	eval($templates->render("postbit_warninglevel_formatted", "level"));
 	return $level;
 }
 
@@ -3723,7 +3723,7 @@ function get_attachment_icon($ext)
 		$name = $lang->unknown;
 	}
 
-	eval("\$attachment_icon = \"".$templates->get("attachment_icon")."\";");
+	eval($templates->render("attachment_icon", "attachment_icon"));
 	return $attachment_icon;
 }
 
@@ -3832,7 +3832,7 @@ function build_breadcrumb()
 {
 	global $nav, $navbits, $templates, $theme, $lang, $mybb;
 
-	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
+	eval($templates->render("nav_sep", "navsep"));
 
 	$i = 0;
 	$activesep = '';
@@ -3866,7 +3866,7 @@ function build_breadcrumb()
 					if($multipage)
 					{
 						++$i;
-						eval("\$multipage_dropdown = \"".$templates->get("nav_dropdown")."\";");
+						eval($templates->render("nav_dropdown", "multipage_dropdown"));
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
@@ -3875,7 +3875,7 @@ function build_breadcrumb()
 				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
 				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
 
-				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
+				eval($templates->render("nav_bit", "nav", true));
 			}
 		}
 	}
@@ -3886,11 +3886,11 @@ function build_breadcrumb()
 
 	if($nav)
 	{
-		eval("\$activesep = \"".$templates->get("nav_sep_active")."\";");
+		eval($templates->render("nav_sep_active", "activesep"));
 	}
 
-	eval("\$activebit = \"".$templates->get("nav_bit_active")."\";");
-	eval("\$donenav = \"".$templates->get("nav")."\";");
+	eval($templates->render("nav_bit_active", "activebit"));
+	eval($templates->render("nav", "donenav"));
 
 	return $donenav;
 }
@@ -4698,7 +4698,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 				if($theme['pid'] != 0)
 				{
 					$theme['name'] = htmlspecialchars_uni($theme['name']);
-					eval("\$themeselect_option .= \"".$templates->get("usercp_themeselector_option")."\";");
+					eval($templates->render("usercp_themeselector_option", "themeselect_option", true));
 					++$num_themes;
 					$depthit = $depth."--";
 				}
@@ -4715,11 +4715,11 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 	{
 		if($footer == true)
 		{
-			eval("\$themeselect = \"".$templates->get("footer_themeselector")."\";");
+			eval($templates->render("footer_themeselector", "themeselect"));
 		}
 		else
 		{
-			eval("\$themeselect = \"".$templates->get("usercp_themeselector")."\";");
+			eval($templates->render("usercp_themeselector", "themeselect"));
 		}
 
 		return $themeselect;
@@ -6365,10 +6365,10 @@ function build_timezone_select($name, $selected=0, $short=false)
 			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 
-		eval("\$timezone_option .= \"".$templates->get("usercp_options_timezone_option")."\";");
+		eval($templates->render("usercp_options_timezone_option", "timezone_option", true));
 	}
 
-	eval("\$select = \"".$templates->get("usercp_options_timezone")."\";");
+	eval($templates->render("usercp_options_timezone", "select"));
 	return $select;
 }
 

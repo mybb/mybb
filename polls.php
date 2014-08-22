@@ -24,11 +24,11 @@ $plugins->run_hooks("polls_start");
 
 if($mybb->user['uid'] != 0)
 {
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	eval($templates->render("changeuserbox", "loginbox"));
 }
 else
 {
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+	eval($templates->render("loginbox", "loginbox"));
 }
 
 $mybb->input['action'] = $mybb->get_input('action');
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "newpoll")
 		}
 		$option = $options[$i];
 		$option = htmlspecialchars_uni($option);
-		eval("\$optionbits .= \"".$templates->get("polls_newpoll_option")."\";");
+		eval($templates->render("polls_newpoll_option", "optionbits", true));
 		$option = "";
 	}
 
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "newpoll")
 
 	$plugins->run_hooks("polls_newpoll_end");
 
-	eval("\$newpoll = \"".$templates->get("polls_newpoll")."\";");
+	eval($templates->render("polls_newpoll", "newpoll"));
 	output_page($newpoll);
 }
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
@@ -442,7 +442,7 @@ if($mybb->input['action'] == "editpoll")
 				$optionvotes = 0;
 			}
 
-			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
+			eval($templates->render("polls_editpoll_option", "optionbits", true));
 			$option = "";
 			$optionvotes = "";
 		}
@@ -519,7 +519,7 @@ if($mybb->input['action'] == "editpoll")
 				$optionvotes = 0;
 			}
 
-			eval("\$optionbits .= \"".$templates->get("polls_editpoll_option")."\";");
+			eval($templates->render("polls_editpoll_option", "optionbits", true));
 			$option = "";
 		}
 
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "editpoll")
 
 	$plugins->run_hooks("polls_editpoll_end");
 
-	eval("\$editpoll = \"".$templates->get("polls_editpoll")."\";");
+	eval($templates->render("polls_editpoll", "editpoll"));
 	output_page($editpoll);
 }
 
@@ -863,7 +863,7 @@ if($mybb->input['action'] == "showresults")
 				}
 			}
 		}
-		eval("\$polloptions .= \"".$templates->get("polls_showresults_resultbit")."\";");
+		eval($templates->render("polls_showresults_resultbit", "polloptions", true));
 	}
 
 	if($poll['totvotes'])
@@ -878,7 +878,7 @@ if($mybb->input['action'] == "showresults")
 	$plugins->run_hooks("polls_showresults_end");
 
 	$poll['question'] = htmlspecialchars_uni($poll['question']);
-	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
+	eval($templates->render("polls_showresults", "showresults"));
 	output_page($showresults);
 }
 if($mybb->input['action'] == "vote" && $mybb->request_method == "post")

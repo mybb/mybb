@@ -1167,10 +1167,10 @@ function build_wol_row($user)
 
 		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
-			eval("\$lookup = \"".$templates->get("online_row_ip_lookup")."\";");
+			eval($templates->render("online_row_ip_lookup", "lookup"));
 		}
 
-		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
+		eval($templates->render("online_row_ip", "user_ip"));
 	}
 	else
 	{
@@ -1180,7 +1180,7 @@ function build_wol_row($user)
 	// And finally if we have permission to view this user, return the completed online row
 	if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 	{
-		eval("\$online_row = \"".$templates->get("online_row")."\";");
+		eval($templates->render("online_row", "online_row"));
 	}
 	return $online_row;
 }

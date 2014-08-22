@@ -81,14 +81,14 @@ foreach($foldersexploded as $key => $folders)
 	$folder_id = $folderinfo[0];
 	$folder_name = $folderinfo[1];
 
-	eval("\$folderjump_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$folderoplist_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
-	eval("\$foldersearch_folder .= \"".$templates->get("private_jump_folders_folder")."\";");
+	eval($templates->render("private_jump_folders_folder", "folderjump_folder", true));
+	eval($templates->render("private_jump_folders_folder", "folderoplist_folder", true));
+	eval($templates->render("private_jump_folders_folder", "foldersearch_folder", true));
 }
 
-eval("\$folderjump = \"".$templates->get("private_jump_folders")."\";");
-eval("\$folderoplist = \"".$templates->get("private_move")."\";");
-eval("\$foldersearch = \"".$templates->get("private_advanced_search_folders")."\";");
+eval($templates->render("private_jump_folders", "folderjump"));
+eval($templates->render("private_move", "folderoplist"));
+eval($templates->render("private_advanced_search_folders", "foldersearch"));
 
 usercp_menu();
 
@@ -401,21 +401,21 @@ if($mybb->input['action'] == "results")
 					$profilelink = get_profile_link($uid);
 					$user = $cached_users[$uid];
 					$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-					eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
+					eval($templates->render("private_multiple_recipients_user", "to_users", true));
 				}
 				if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 				{
-					eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
+					eval($templates->render("private_multiple_recipients_bcc", "bcc_users"));
 					foreach($recipients['bcc'] as $uid)
 					{
 						$profilelink = get_profile_link($uid);
 						$user = $cached_users[$uid];
 						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-						eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
+						eval($templates->render("private_multiple_recipients_user", "bcc_users", true));
 					}
 				}
 
-				eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
+				eval($templates->render("private_multiple_recipients", "tofromusername"));
 			}
 			else if($message['toid'])
 			{
@@ -445,7 +445,7 @@ if($mybb->input['action'] == "results")
 		{
 			$icon = $icon_cache[$message['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-			eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
+			eval($templates->render("private_messagebit_icon", "icon"));
 		}
 		else
 		{
@@ -493,17 +493,17 @@ if($mybb->input['action'] == "results")
 			$message['message'] = my_substr($message['message'], 0, 200)."...";
 		}
 
-		eval("\$messagelist .= \"".$templates->get("private_search_messagebit")."\";");
+		eval($templates->render("private_search_messagebit", "messagelist", true));
 	}
 
 	if($db->num_rows($query) == 0)
 	{
-		eval("\$messagelist = \"".$templates->get("private_search_results_nomessages")."\";");
+		eval($templates->render("private_search_results_nomessages", "messagelist"));
 	}
 
 	$plugins->run_hooks("private_results_end");
 
-	eval("\$results = \"".$templates->get("private_search_results")."\";");
+	eval($templates->render("private_search_results", "results"));
 	output_page($results);
 }
 
@@ -511,7 +511,7 @@ if($mybb->input['action'] == "advanced_search")
 {
 	$plugins->run_hooks("private_advanced_search");
 
-	eval("\$advanced_search = \"".$templates->get("private_advanced_search")."\";");
+	eval($templates->render("private_advanced_search", "advanced_search"));
 
 	output_page($advanced_search);
 }
@@ -760,7 +760,7 @@ if($mybb->input['action'] == "send")
 		}
 
 		$postbit = build_postbit($post, 2);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
+		eval($templates->render("previewpost", "preview"));
 	}
 	else if(!$send_errors)
 	{
@@ -929,7 +929,7 @@ if($mybb->input['action'] == "send")
 	}
 
 	// Load the auto complete javascript if it is enabled.
-	eval("\$autocompletejs = \"".$templates->get("private_send_autocomplete")."\";");
+	eval($templates->render("private_send_autocomplete", "autocompletejs"));
 
 	$pmid = $mybb->get_input('pmid', 1);
 	$do = $mybb->get_input('do');
@@ -943,21 +943,21 @@ if($mybb->input['action'] == "send")
 	if($mybb->user['buddylist'] != '' && $mybb->settings['use_xmlhttprequest'] == 1)
 	{
 		$buddy_select = 'to';
-		eval("\$buddy_select_to = \"".$templates->get("private_send_buddyselect")."\";");
+		eval($templates->render("private_send_buddyselect", "buddy_select_to"));
 		$buddy_select = 'bcc';
-		eval("\$buddy_select_bcc = \"".$templates->get("private_send_buddyselect")."\";");
+		eval($templates->render("private_send_buddyselect", "buddy_select_bcc"));
 	}
 
 	// Hide tracking option if no permission
 	$private_send_tracking = '';
 	if($mybb->usergroup['cantrackpms'])
 	{
-		eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
+		eval($templates->render("private_send_tracking", "private_send_tracking"));
 	}
 
 	$plugins->run_hooks("private_send_end");
 
-	eval("\$send = \"".$templates->get("private_send")."\";");
+	eval($templates->render("private_send", "send"));
 	output_page($send);
 }
 
@@ -1055,7 +1055,7 @@ if($mybb->input['action'] == "read")
 		}
 
 		$actioned_on = $lang->sprintf($reply_string, $reply_date);
-		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
+		eval($templates->render("private_read_action", "action_time"));
 	}
 	else if($pm['status'] == 4 && $pm['statustime'])
 	{
@@ -1068,7 +1068,7 @@ if($mybb->input['action'] == "read")
 		}
 
 		$actioned_on = $lang->sprintf($forward_string, $forward_date);
-		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
+		eval($templates->render("private_read_action", "action_time"));
 	}
 
 	$pm['userusername'] = $pm['username'];
@@ -1127,7 +1127,7 @@ if($mybb->input['action'] == "read")
 	if(count($bcc_recipients) > 0)
 	{
 		$bcc_recipients = implode(', ', $bcc_recipients);
-		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
+		eval($templates->render("private_read_bcc", "bcc"));
 	}
 
 	$replyall = false;
@@ -1145,7 +1145,7 @@ if($mybb->input['action'] == "read")
 		$to_recipients = $lang->nobody;
 	}
 
-	eval("\$pm['subject_extra'] = \"".$templates->get("private_read_to")."\";");
+	eval($templates->render("private_read_to", "pm['subject_extra']"));
 
 	add_breadcrumb($pm['subject']);
 	$message = build_postbit($pm, 2);
@@ -1198,15 +1198,15 @@ if($mybb->input['action'] == "read")
 		{
 			$lang->options_read_receipt = $lang->quickreply_read_receipt;
 
-			eval("\$private_send_tracking = \"".$templates->get("private_send_tracking")."\";");
+			eval($templates->render("private_send_tracking", "private_send_tracking"));
 		}
 
-		eval("\$quickreply = \"".$templates->get("private_quickreply")."\";");
+		eval($templates->render("private_quickreply", "quickreply"));
 	}
 
 	$plugins->run_hooks("private_read_end");
 
-	eval("\$read = \"".$templates->get("private_read")."\";");
+	eval($templates->render("private_read", "read"));
 	output_page($read);
 }
 
@@ -1271,18 +1271,18 @@ if($mybb->input['action'] == "tracking")
 		$readmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($readmessage['subject']));
 		$readmessage['profilelink'] = build_profile_link($readmessage['tousername'], $readmessage['toid']);
 		$readdate = my_date('relative', $readmessage['readtime']);
-		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
+		eval($templates->render("private_tracking_readmessage", "readmessages", true));
 	}
 
 	$stoptrackingread = '';
 	if(!empty($readmessages))
 	{
-		eval("\$stoptrackingread = \"".$templates->get("private_tracking_readmessage_stop")."\";");
+		eval($templates->render("private_tracking_readmessage_stop", "stoptrackingread"));
 	}
 
 	if(!$readmessages)
 	{
-		eval("\$readmessages = \"".$templates->get("private_tracking_nomessage")."\";");
+		eval($templates->render("private_tracking_nomessage", "readmessages"));
 	}
 
 	$query = $db->simple_select("privatemessages", "COUNT(pmid) as unreadpms", "receipt='1' AND folder!='3' AND status='0' AND fromid='".$mybb->user['uid']."'");
@@ -1327,24 +1327,24 @@ if($mybb->input['action'] == "tracking")
 		$unreadmessage['subject'] = htmlspecialchars_uni($parser->parse_badwords($unreadmessage['subject']));
 		$unreadmessage['profilelink'] = build_profile_link($unreadmessage['tousername'], $unreadmessage['toid']);
 		$senddate = my_date('relative', $unreadmessage['dateline']);
-		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
+		eval($templates->render("private_tracking_unreadmessage", "unreadmessages", true));
 	}
 
 	$stoptrackingunread = '';
 	if(!empty($unreadmessages))
 	{
-		eval("\$stoptrackingunread = \"".$templates->get("private_tracking_unreadmessage_stop")."\";");
+		eval($templates->render("private_tracking_unreadmessage_stop", "stoptrackingunread"));
 	}
 
 	if(!$unreadmessages)
 	{
 		$lang->no_readmessages = $lang->no_unreadmessages;
-		eval("\$unreadmessages = \"".$templates->get("private_tracking_nomessage")."\";");
+		eval($templates->render("private_tracking_nomessage", "unreadmessages"));
 	}
 
 	$plugins->run_hooks("private_tracking_end");
 
-	eval("\$tracking = \"".$templates->get("private_tracking")."\";");
+	eval($templates->render("private_tracking", "tracking"));
 	output_page($tracking);
 }
 
@@ -1448,12 +1448,12 @@ if($mybb->input['action'] == "folders")
 		if($folderinfo[0] == "1" || $folderinfo[0] == "2" || $folderinfo[0] == "3" || $folderinfo[0] == "4")
 		{
 			$foldername2 = get_pm_folder_name($fid);
-			eval("\$folderlist .= \"".$templates->get("private_folders_folder_unremovable")."\";");
+			eval($templates->render("private_folders_folder_unremovable", "folderlist", true));
 			unset($name);
 		}
 		else
 		{
-			eval("\$folderlist .= \"".$templates->get("private_folders_folder")."\";");
+			eval($templates->render("private_folders_folder", "folderlist", true));
 		}
 	}
 
@@ -1462,12 +1462,12 @@ if($mybb->input['action'] == "folders")
 	{
 		$fid = "new$i";
 		$foldername = '';
-		eval("\$newfolders .= \"".$templates->get("private_folders_folder")."\";");
+		eval($templates->render("private_folders_folder", "newfolders", true));
 	}
 
 	$plugins->run_hooks("private_folders_end");
 
-	eval("\$folders = \"".$templates->get("private_folders")."\";");
+	eval($templates->render("private_folders", "folders"));
 	output_page($folders);
 }
 
@@ -1593,12 +1593,12 @@ if($mybb->input['action'] == "empty")
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS pmsinfolder", " folder='$fid' AND uid='".$mybb->user['uid']."'");
 		$thing = $db->fetch_array($query);
 		$foldercount = my_number_format($thing['pmsinfolder']);
-		eval("\$folderlist .= \"".$templates->get("private_empty_folder")."\";");
+		eval($templates->render("private_empty_folder", "folderlist", true));
 	}
 
 	$plugins->run_hooks("private_empty_end");
 
-	eval("\$folders = \"".$templates->get("private_empty")."\";");
+	eval($templates->render("private_empty", "folders"));
 	output_page($folders);
 }
 
@@ -1780,14 +1780,14 @@ if($mybb->input['action'] == "export")
 		$folder_id = $folderinfo[0];
 		$folder_name = $folderinfo[1];
 
-		eval("\$folderlist_folder .= \"".$templates->get("private_archive_folders_folder")."\";");
+		eval($templates->render("private_archive_folders_folder", "folderlist_folder", true));
 	}
 
-	eval("\$folderlist = \"".$templates->get("private_archive_folders")."\";");
+	eval($templates->render("private_archive_folders", "folderlist"));
 
 	$plugins->run_hooks("private_export_end");
 
-	eval("\$archive = \"".$templates->get("private_archive")."\";");
+	eval($templates->render("private_archive", "archive"));
 
 	output_page($archive);
 }
@@ -2001,7 +2001,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 						{
 							$mybb->input['exporttype'] == "txt";
 						}
-						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_folderhead", 1, 0)."\";");
+						eval($templates->render("private_archive_".$mybb->input['exporttype']."_folderhead", "pmsdownload", true, 1, 0));
 					}
 					else
 					{
@@ -2012,7 +2012,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			}
 		}
 
-		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
+		eval($templates->render("private_archive_".$mybb->input['exporttype']."_message", "pmsdownload", true, 1, 0));
 		$ids .= ",'{$message['pmid']}'";
 	}
 
@@ -2025,7 +2025,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("private_do_export_end");
 
-	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
+	eval($templates->render("private_archive_".$mybb->input['exporttype'], "archived", false, 1, 0));
 	if($mybb->get_input('deletepms', 1) == 1)
 	{ // delete the archived pms
 		$db->delete_query("privatemessages", "pmid IN ('0'$ids)");
@@ -2121,7 +2121,7 @@ if(!$mybb->input['action'])
 	$orderarrow = $sortsel = array('subject' => '', 'username' => '', 'dateline' => '');
 	$sortsel[$sortby] = "selected=\"selected\"";
 
-	eval("\$orderarrow['$sortby'] = \"".$templates->get("private_orderarrow")."\";");
+	eval($templates->render("private_orderarrow", "orderarrow['$sortby']"));
 
 	// Do Multi Pages
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."' AND folder='$folder'");
@@ -2295,11 +2295,11 @@ if(!$mybb->input['action'])
 						{
 							$username = $lang->na;
 						}
-						eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
+						eval($templates->render("private_multiple_recipients_user", "to_users", true));
 					}
 					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && count($recipients['bcc']))
 					{
-						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
+						eval($templates->render("private_multiple_recipients_bcc", "bcc_users"));
 						foreach($recipients['bcc'] as $uid)
 						{
 							$profilelink = get_profile_link($uid);
@@ -2309,11 +2309,11 @@ if(!$mybb->input['action'])
 							{
 								$username = $lang->na;
 							}
-							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";");
+							eval($templates->render("private_multiple_recipients_user", "bcc_users", true));
 						}
 					}
 
-					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
+					eval($templates->render("private_multiple_recipients", "tofromusername"));
 				}
 				else if($message['toid'])
 				{
@@ -2345,7 +2345,7 @@ if(!$mybb->input['action'])
 
 			if($mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{
-				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
+				eval($templates->render("private_messagebit_denyreceipt", "denyreceipt"));
 			}
 			else
 			{
@@ -2356,7 +2356,7 @@ if(!$mybb->input['action'])
 			{
 				$icon = $icon_cache[$message['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				eval("\$icon = \"".$templates->get("private_messagebit_icon")."\";");
+				eval($templates->render("private_messagebit_icon", "icon"));
 			}
 			else
 			{
@@ -2380,12 +2380,12 @@ if(!$mybb->input['action'])
 
 			$plugins->run_hooks("private_message");
 
-			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
+			eval($templates->render("private_messagebit", "messagelist", true));
 		}
 	}
 	else
 	{
-		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
+		eval($templates->render("private_nomessages", "messagelist", true));
 	}
 
 	$pmspacebar = '';
@@ -2437,29 +2437,29 @@ if(!$mybb->input['action'])
 			$spaceused2 = 0;
 		}
 
-		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
+		eval($templates->render("private_pmspace", "pmspacebar"));
 	}
 
 	$composelink = '';
 	if($mybb->usergroup['cansendpms'] == 1)
 	{
-		eval("\$composelink = \"".$templates->get("private_composelink")."\";");
+		eval($templates->render("private_composelink", "composelink"));
 	}
 
 	$emptyexportlink = '';
 	if($mybb->user['totalpms'] > 0)
 	{
-		eval("\$emptyexportlink = \"".$templates->get("private_emptyexportlink")."\";");
+		eval($templates->render("private_emptyexportlink", "emptyexportlink"));
 	}
 
 	$limitwarning = '';
 	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 1)
 	{
-		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
+		eval($templates->render("private_limitwarning", "limitwarning"));
 	}
 
 	$plugins->run_hooks("private_end");
 
-	eval("\$folder = \"".$templates->get("private")."\";");
+	eval($templates->render("private", "folder"));
 	output_page($folder);
 }
