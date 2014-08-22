@@ -635,11 +635,11 @@ form input.valid {
 
 form label.error {
 	color: #f30;
-	margin: 5px 0;
-	padding: 5px;
+	margin: 5px;
+	padding: 0px;
+	display: block;
 	font-weight: bold;
 	font-size: 11px;
-	padding-left: 22px;
 }
 
 form #message {
