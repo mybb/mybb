@@ -5720,7 +5720,7 @@ if(use_xmlhttprequest == "1")
 {
 	MyBB.select2();
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -11949,7 +11949,7 @@ if(use_xmlhttprequest == "1")
 							<div class="float_left" style="width: 120px; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
 							<script type="text/javascript">
-                            <!--
+							<!--
 								if(use_xmlhttprequest == "1")
 								{
 									MyBB.select2();
@@ -12017,7 +12017,7 @@ if(use_xmlhttprequest == "1")
 							<div class="float_left" style="width: 120px; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
-                            <!--
+							<!--
 								if(use_xmlhttprequest == "1")
 								{
 									MyBB.select2();
@@ -12051,8 +12051,8 @@ if(use_xmlhttprequest == "1")
 											}
 										},
 									});
-                                }
-                            // -->
+								}
+							// -->
 							</script>
 						</fieldset>
 						<fieldset id="ignored_container">
