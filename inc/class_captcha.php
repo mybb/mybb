@@ -178,8 +178,8 @@ class captcha
 		);
 
 		$db->insert_query("captcha", $insert_array);
-		eval("\$this->html = \"".$templates->get($this->captcha_template)."\";");
-		//eval("\$this->html = \"".$templates->get("member_register_regimage")."\";");
+		eval($templates->render($this->captcha_template, "this->html"));
+		//eval($templates->render("member_register_regimage", "this->html"));
 	}
 
 	function build_recaptcha()
@@ -196,8 +196,8 @@ class captcha
 			$server = $this->secure_server;
 		}
 
-		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
-		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
+		eval($templates->render($this->captcha_template, "this->html", false, 1, 0));
+		//eval($templates->render("member_register_regimage_recaptcha", "this->html"));
 	}
 
 	function build_ayah()
@@ -216,8 +216,8 @@ class captcha
 
 		if(!empty($output))
 		{
-			eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
-			//eval("\$this->html = \"".$templates->get("member_register_regimage_ayah")."\";");
+			eval($templates->render($this->captcha_template, "this->html", false, 1, 0));
+			//eval($templates->render("member_register_regimage_ayah", "this->html"));
 		}
 	}
 
@@ -253,7 +253,7 @@ class captcha
 			continue;
 		}
 
-		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
+		eval($templates->render("post_captcha_hidden", "this->html"));
 		return $this->html;
 	}
 

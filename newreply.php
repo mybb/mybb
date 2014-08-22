@@ -155,7 +155,7 @@ if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$my
 // Display a login box or change user box?
 if($mybb->user['uid'] != 0)
 {
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	eval($templates->render("changeuserbox", "loginbox"));
 }
 else
 {
@@ -167,7 +167,7 @@ else
 	{
 		$username = htmlspecialchars_uni($mybb->get_input('username'));
 	}
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+	eval($templates->render("loginbox", "loginbox"));
 }
 
 // Check to see if the thread is closed, and if the user is a mod.
@@ -824,7 +824,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$multiquote_deselect = $lang->multiquote_external_deselect;
 					$multiquote_quote = $lang->multiquote_external_quote;
 				}
-				eval("\$multiquote_external = \"".$templates->get("newreply_multiquote_external")."\";");
+				eval($templates->render("newreply_multiquote_external", "multiquote_external"));
 			}
 			if(is_array($quoted_ids) && count($quoted_ids) > 0)
 			{
@@ -1100,7 +1100,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			}
 
 			$postbit = build_postbit($post, 1);
-			eval("\$preview = \"".$templates->get("previewpost")."\";");
+			eval($templates->render("previewpost", "preview"));
 		}
 	}
 
@@ -1147,19 +1147,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 			{
-				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+				eval($templates->render("post_attachments_attachment_postinsert", "postinsert"));
 			}
 
 			$attach_mod_options = '';
-			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval($templates->render("post_attachments_attachment_remove", "attach_rem_options"));
 
 			if($attachment['visible'] != 1)
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+				eval($templates->render("post_attachments_attachment_unapproved", "attachments", true));
 			}
 			else
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+				eval($templates->render("post_attachments_attachment", "attachments", true));
 			}
 			$attachcount++;
 		}
@@ -1187,26 +1187,26 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
+			eval($templates->render("post_attachments_add", "attach_add_options"));
 		}
 
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
-			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
+			eval($templates->render("post_attachments_update", "attach_update_options"));
 		}
 
 		if($attach_add_options || $attach_update_options)
 		{
-			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
+			eval($templates->render("post_attachments_new", "newattach"));
 		}
 
-		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
+		eval($templates->render("post_attachments", "attachbox"));
 	}
 
 	// If the user is logged in, provide a save draft button.
 	if($mybb->user['uid'])
 	{
-		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
+		eval($templates->render("post_savedraftbutton", "savedraftbutton", false, 1, 0));
 	}
 
 	// Show captcha image for guests if enabled
@@ -1298,7 +1298,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$numposts = $mybb->settings['postsperpage'];
 			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], get_thread_link($tid));
-			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
+			eval($templates->render("newreply_threadreview_more", "reviewmore"));
 		}
 
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND {$visibility}", array("order_by" => "dateline", "order_dir" => "desc", "limit" => $mybb->settings['postsperpage']));
@@ -1364,7 +1364,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			get_post_attachments($post['pid'], $post);
 			$reviewmessage = $post['message'];
-			eval("\$reviewbits .= \"".$templates->get("newreply_threadreview_post")."\";");
+			eval($templates->render("newreply_threadreview_post", "reviewbits", true));
 			if($altbg == "trow1")
 			{
 				$altbg = "trow2";
@@ -1374,18 +1374,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$altbg = "trow1";
 			}
 		}
-		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
+		eval($templates->render("newreply_threadreview", "threadreview"));
 	}
 
 	// Can we disable smilies or are they disabled already?
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
-		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies")."\";");
+		eval($templates->render("newreply_disablesmilies", "disablesmilies"));
 	}
 	else
 	{
-		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies_hidden")."\";");
+		eval($templates->render("newreply_disablesmilies_hidden", "disablesmilies"));
 	}
 
 	$modoptions = '';
@@ -1430,7 +1430,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$stickycheck = '';
 		}
 
-		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
+		eval($templates->render("newreply_modoptions", "modoptions"));
 		$bgcolor = "trow1";
 	}
 	else
@@ -1439,7 +1439,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+	eval($templates->render("post_subscription_method", "subscriptionmethod"));
 
 	$lang->post_reply_to = $lang->sprintf($lang->post_reply_to, $thread['subject']);
 	$lang->reply_to = $lang->sprintf($lang->reply_to, $thread['subject']);
@@ -1471,11 +1471,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 		if($forum['rulestype'] == 3)
 		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules")."\";");
+			eval($templates->render("forumdisplay_rules", "forumrules"));
 		}
 		else if($forum['rulestype'] == 2)
 		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
+			eval($templates->render("forumdisplay_rules_link", "forumrules"));
 		}
 	}
 
@@ -1485,7 +1485,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
 		{
 			$moderation_text = $lang->moderation_forum_attachments;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 	}
 	if(!is_moderator($forum['fid'], "canapproveunapproveposts"))
@@ -1493,13 +1493,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		if($forumpermissions['modposts'] == 1)
 		{
 			$moderation_text = $lang->moderation_forum_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 
 		if($mybb->user['moderateposts'] == 1)
 		{
 			$moderation_text = $lang->moderation_user_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 	}
 
@@ -1507,7 +1507,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	$forum['name'] = strip_tags($forum['name']);
 
-	eval("\$newreply = \"".$templates->get("newreply")."\";");
+	eval($templates->render("newreply", "newreply"));
 	output_page($newreply);
 }
 

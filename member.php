@@ -666,7 +666,7 @@ if($mybb->input['action'] == "coppa_form")
 
 	$plugins->run_hooks("member_coppa_form");
 
-	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
+	eval($templates->render("member_coppa_form", "coppa_form"));
 	output_page($coppa_form);
 }
 
@@ -686,7 +686,7 @@ if($mybb->input['action'] == "register")
 			$selected = " selected=\"selected\"";
 		}
 
-		eval("\$bdaysel .= \"".$templates->get("member_register_day")."\";");
+		eval($templates->render("member_register_day", "bdaysel", true));
 	}
 
 	$mybb->input['bday2'] = $mybb->get_input('bday2', 1);
@@ -737,7 +737,7 @@ if($mybb->input['action'] == "register")
 
 			my_unsetcookie("coppauser");
 
-			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
+			eval($templates->render("member_register_coppa", "coppa"));
 			output_page($coppa);
 			exit;
 		}
@@ -754,12 +754,12 @@ if($mybb->input['action'] == "register")
 				error($lang->error_need_to_be_thirteen);
 			}
 			$lang->coppa_agreement_1 = $lang->sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
-			eval("\$coppa_agreement = \"".$templates->get("member_register_agreement_coppa")."\";");
+			eval($templates->render("member_register_agreement_coppa", "coppa_agreement"));
 		}
 
 		$plugins->run_hooks("member_register_agreement");
 
-		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
+		eval($templates->render("member_register_agreement", "agreement"));
 		output_page($agreement);
 	}
 	else
@@ -790,10 +790,10 @@ if($mybb->input['action'] == "register")
 				{
 					$val = trim($val);
 					$tpp_option = $lang->sprintf($lang->tpp_option, $val);
-					eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
+					eval($templates->render("usercp_options_tppselect_option", "tppoptions", true));
 				}
 			}
-			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
+			eval($templates->render("usercp_options_tppselect", "tppselect"));
 		}
 		if($mybb->settings['userpppoptions'])
 		{
@@ -805,10 +805,10 @@ if($mybb->input['action'] == "register")
 				{
 					$val = trim($val);
 					$ppp_option = $lang->sprintf($lang->ppp_option, $val);
-					eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
+					eval($templates->render("usercp_options_pppselect_option", "pppoptions", true));
 				}
 			}
-			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
+			eval($templates->render("usercp_options_pppselect", "pppselect"));
 		}
 		if($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid'])
 		{
@@ -844,7 +844,7 @@ if($mybb->input['action'] == "register")
 			{
 				$refbg = "trow2";
 			}
-			eval("\$referrer = \"".$templates->get("member_register_referrer")."\";");
+			eval($templates->render("member_register_referrer", "referrer"));
 		}
 		else
 		{
@@ -920,14 +920,14 @@ if($mybb->input['action'] == "register")
 								$sel = " selected=\"selected\"";
 							}
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+							eval($templates->render("usercp_profile_profilefields_select_option", "select", true));
 						}
 						if(!$profilefield['length'])
 						{
 							$profilefield['length'] = 3;
 						}
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
+						eval($templates->render("usercp_profile_profilefields_multiselect", "code"));
 					}
 				}
 				elseif($type == "select")
@@ -945,14 +945,14 @@ if($mybb->input['action'] == "register")
 								$sel = " selected=\"selected\"";
 							}
 
-							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+							eval($templates->render("usercp_profile_profilefields_select_option", "select", true));
 						}
 						if(!$profilefield['length'])
 						{
 							$profilefield['length'] = 1;
 						}
 
-						eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+						eval($templates->render("usercp_profile_profilefields_select", "code"));
 					}
 				}
 				elseif($type == "radio")
@@ -968,7 +968,7 @@ if($mybb->input['action'] == "register")
 								$checked = "checked=\"checked\"";
 							}
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+							eval($templates->render("usercp_profile_profilefields_radio", "code", true));
 						}
 					}
 				}
@@ -1000,14 +1000,14 @@ if($mybb->input['action'] == "register")
 								$checked = "checked=\"checked\"";
 							}
 
-							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+							eval($templates->render("usercp_profile_profilefields_checkbox", "code", true));
 						}
 					}
 				}
 				elseif($type == "textarea")
 				{
 					$value = htmlspecialchars_uni($userfield);
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
+					eval($templates->render("usercp_profile_profilefields_textarea", "code"));
 				}
 				else
 				{
@@ -1018,7 +1018,7 @@ if($mybb->input['action'] == "register")
 						$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 					}
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+					eval($templates->render("usercp_profile_profilefields_text", "code"));
 				}
 
 				if($profilefield['required'] == 1)
@@ -1042,11 +1042,11 @@ if($mybb->input['action'] == "register")
 						}
 					});\n";
 
-					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
+					eval($templates->render("member_register_customfield", "requiredfields", true));
 				}
 				else
 				{
-					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
+					eval($templates->render("member_register_customfield", "customfields", true));
 				}
 
 				$code = '';
@@ -1061,11 +1061,11 @@ if($mybb->input['action'] == "register")
 
 		if(!empty($requiredfields))
 		{
-			eval("\$requiredfields = \"".$templates->get("member_register_requiredfields")."\";");
+			eval($templates->render("member_register_requiredfields", "requiredfields"));
 		}
 		if(!empty($customfields))
 		{
-			eval("\$customfields = \"".$templates->get("member_register_additionalfields")."\";");
+			eval($templates->render("member_register_additionalfields", "customfields"));
 		}
 		if(!isset($fromreg))
 		{
@@ -1140,10 +1140,10 @@ if($mybb->input['action'] == "register")
 				$num = $db->fetch_field($q, 'num');
 				if($num > 1)
 				{
-					eval("\$refresh = \"".$templates->get("member_register_question_refresh")."\";");
+					eval($templates->render("member_register_question_refresh", "refresh"));
 				}
 				
-				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
+				eval($templates->render("member_register_question", "questionbox"));
 				
 				$validator_extra .= "
 				$(\"#answer\").rules(\"add\", {
@@ -1171,7 +1171,7 @@ if($mybb->input['action'] == "register")
 		{
 			$captcha_field = $mybb->settings['hiddencaptchaimagefield'];
 
-			eval("\$hiddencaptcha = \"".$templates->get("member_register_hiddencaptcha")."\";");
+			eval($templates->render("member_register_hiddencaptcha", "hiddencaptcha"));
 		}
 		if($mybb->settings['regtype'] != "randompass")
 		{
@@ -1228,7 +1228,7 @@ if($mybb->input['action'] == "register")
 					}
 				});\n";
 
-			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
+			eval($templates->render("member_register_password", "passboxes"));
 		}
 
 		// JS validator extra
@@ -1251,10 +1251,10 @@ if($mybb->input['action'] == "register")
 					$sel = " selected=\"selected\"";
 				}
 
-				eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
+				eval($templates->render("usercp_options_language_option", "langoptions", true));
 			}
 
-			eval('$boardlanguage = "'.$templates->get('member_register_language').'";');
+			eval($templates->render("member_register_language", "boardlanguage"));
 		}
 
 		// Set the time so we can find automated signups
@@ -1262,7 +1262,7 @@ if($mybb->input['action'] == "register")
 
 		$plugins->run_hooks("member_register_end");
 
-		eval("\$registration = \"".$templates->get("member_register")."\";");
+		eval($templates->render("member_register", "registration"));
 		output_page($registration);
 	}
 }
@@ -1367,7 +1367,7 @@ if($mybb->input['action'] == "activate")
 			$user['username'] = '';
 		}
 
-		eval("\$activate = \"".$templates->get("member_activate")."\";");
+		eval($templates->render("member_activate", "activate"));
 		output_page($activate);
 	}
 }
@@ -1395,7 +1395,7 @@ if($mybb->input['action'] == "resendactivation")
 
 	$plugins->run_hooks("member_resendactivation_end");
 
-	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
+	eval($templates->render("member_resendactivation", "activate"));
 	output_page($activate);
 }
 
@@ -1474,7 +1474,7 @@ if($mybb->input['action'] == "lostpw")
 {
 	$plugins->run_hooks("member_lostpw");
 
-	eval("\$lostpw = \"".$templates->get("member_lostpw")."\";");
+	eval($templates->render("member_lostpw", "lostpw"));
 	output_page($lostpw);
 }
 
@@ -1628,7 +1628,7 @@ if($mybb->input['action'] == "resetpassword")
 			$user['username'] = '';
 		}
 
-		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
+		eval($templates->render("member_resetpassword", "activate"));
 		output_page($activate);
 	}
 }
@@ -1730,7 +1730,7 @@ if($mybb->input['action'] == "login")
 	if($mybb->user['uid'] != 0)
 	{
 		$lang->already_logged_in = $lang->sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
-		eval("\$member_loggedin_notice = \"".$templates->get("member_loggedin_notice")."\";");
+		eval($templates->render("member_loggedin_notice", "member_loggedin_notice"));
 	}
 
 	// Checks to make sure the user can login; they haven't had too many tries at logging in.
@@ -1814,7 +1814,7 @@ if($mybb->input['action'] == "login")
 
 	$plugins->run_hooks("member_login_end");
 
-	eval("\$login = \"".$templates->get("member_login")."\";");
+	eval($templates->render("member_login", "login"));
 	output_page($login);
 }
 
@@ -1874,7 +1874,7 @@ if($mybb->input['action'] == "viewnotes")
 
 	$user['usernotes'] = nl2br(htmlspecialchars_uni($user['usernotes']));
 
-	eval("\$viewnotes = \"".$templates->get("member_viewnotes", 1, 0)."\";");
+	eval($templates->render("member_viewnotes", "viewnotes", false, 1, 0));
 	echo $viewnotes;
 	exit;
 }
@@ -1934,12 +1934,12 @@ if($mybb->input['action'] == "profile")
 	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
 
 	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
-	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
+	eval($templates->render("member_profile_avatar", "avatar"));
 
 	$sendemail = '';
 	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
-		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
+		eval($templates->render("member_profile_email", "sendemail"));
 	}
 	else
 	{
@@ -1966,7 +1966,7 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
-		eval("\$website = \"".$templates->get("member_profile_website")."\";");
+		eval($templates->render("member_profile_website", "website"));
 	}
 
 	$signature = '';
@@ -1992,7 +1992,7 @@ if($mybb->input['action'] == "profile")
 		}
 
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
-		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
+		eval($templates->render("member_profile_signature", "signature"));
 	}
 
 	$daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
@@ -2071,7 +2071,7 @@ if($mybb->input['action'] == "profile")
 			}
 			$tmpl = 'member_profile_contact_fields_'.$field;
 
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
+			eval($templates->render($tmpl, '$contact_fields[\''.$field.'\']'));
 		}
 		else
 		{
@@ -2128,7 +2128,7 @@ if($mybb->input['action'] == "profile")
 		// Check if our away status is set to 1, it may have been updated already (see a few lines above)
 		if($memprofile['away'] == 1)
 		{
-			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
+			eval($templates->render("member_profile_away", "awaybit"));
 		}
 	}
 	if($memprofile['dst'] == 1)
@@ -2302,7 +2302,7 @@ if($mybb->input['action'] == "profile")
 		}
 		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
 		$displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
-		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
+		eval($templates->render("member_profile_groupimage", "groupimage"));
 	}
 
 	if(empty($starimage))
@@ -2317,7 +2317,7 @@ if($mybb->input['action'] == "profile")
 		$userstars = '';
 		for($i = 0; $i < $stars; ++$i)
 		{
-			eval("\$userstars .= \"".$templates->get("member_profile_userstar", 1, 0)."\";");
+			eval($templates->render("member_profile_userstar", "userstars", true, 1, 0));
 		}
 	}
 
@@ -2353,12 +2353,12 @@ if($mybb->input['action'] == "profile")
 			$location = build_friendly_wol_location($activity);
 			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
 
-			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+			eval($templates->render("member_profile_online", "online_status"));
 		}
 		// User is offline
 		else
 		{
-			eval("\$online_status = \"".$templates->get("member_profile_offline")."\";");
+			eval($templates->render("member_profile_offline", "online_status"));
 		}
 	}
 
@@ -2384,7 +2384,7 @@ if($mybb->input['action'] == "profile")
 		// Reset the background colours to keep it inline
 		$bg_color = alt_trow(true);
 
-		eval("\$referrals = \"".$templates->get("member_profile_referrals")."\";");
+		eval($templates->render("member_profile_referrals", "referrals"));
 	}
 	else
 	{
@@ -2403,10 +2403,10 @@ if($mybb->input['action'] == "profile")
 		$vote_link = '';
 		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 		{
-			eval("\$vote_link = \"".$templates->get("member_profile_reputation_vote")."\";");
+			eval($templates->render("member_profile_reputation_vote", "vote_link"));
 		}
 
-		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
+		eval($templates->render("member_profile_reputation", "reputation"));
 	}
 
 	$warning_level = '';
@@ -2425,11 +2425,11 @@ if($mybb->input['action'] == "profile")
 		$warning_level = get_colored_warning_level($warning_level);
 		if($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid'])
 		{
-			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
+			eval($templates->render("member_profile_warn", "warn_user"));
 			$warning_link = "warnings.php?uid={$memprofile['uid']}";
 		}
 
-		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
+		eval($templates->render("member_profile_warninglevel", "warning_level"));
 	}
 
 	$bgcolor = $alttrow = 'trow1';
@@ -2466,12 +2466,12 @@ if($mybb->input['action'] == "profile")
 					{
 						if($val != '')
 						{
-							eval("\$customfield_val .= \"".$templates->get("member_profile_customfields_field_multi_item")."\";");
+							eval($templates->render("member_profile_customfields_field_multi_item", "customfield_val", true));
 						}
 					}
 					if($customfield_val != '')
 					{
-						eval("\$customfieldval = \"".$templates->get("member_profile_customfields_field_multi")."\";");
+						eval($templates->render("member_profile_customfields_field_multi", "customfieldval"));
 					}
 				}
 				else
@@ -2505,14 +2505,14 @@ if($mybb->input['action'] == "profile")
 			}
 
 			$customfield['name'] = htmlspecialchars_uni($customfield['name']);
-			eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
+			eval($templates->render("member_profile_customfields_field", "customfields", true));
 			$bgcolor = alt_trow();
 		}
 	}
 
 	if($customfields)
 	{
-		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
+		eval($templates->render("member_profile_customfields", "profilefields"));
 	}
 
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
@@ -2526,7 +2526,7 @@ if($mybb->input['action'] == "profile")
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
-		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
+		eval($templates->render("member_profile_adminoptions", "adminoptions"));
 	}
 
 	$modoptions = $viewnotes = $editnotes = $editprofile = $banuser = $manageuser = '';
@@ -2539,7 +2539,7 @@ if($mybb->input['action'] == "profile")
 		{
 			if(strlen($memprofile['usernotes']) > 100)
 			{
-				eval("\$viewnotes = \"".$templates->get("member_profile_modoptions_viewnotes")."\";");
+				eval($templates->render("member_profile_modoptions_viewnotes", "viewnotes"));
 				$memprofile['usernotes'] = my_substr($memprofile['usernotes'], 0, 100)."... {$viewnotes}";
 			}
 		}
@@ -2550,26 +2550,26 @@ if($mybb->input['action'] == "profile")
 
 		if($mybb->usergroup['caneditprofiles'] == 1)
 		{
-			eval("\$editprofile = \"".$templates->get("member_profile_modoptions_editprofile")."\";");
-			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
+			eval($templates->render("member_profile_modoptions_editprofile", "editprofile"));
+			eval($templates->render("member_profile_modoptions_editnotes", "editnotes"));
 		}
 
 		if($mybb->usergroup['canbanusers'] == 1)
 		{
-			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
+			eval($templates->render("member_profile_modoptions_banuser", "banuser"));
 		}
 
 		if($can_purge_spammer)
 		{
-			eval("\$purgespammer = \"".$templates->get('member_profile_modoptions_purgespammer')."\";");
+			eval($templates->render('member_profile_modoptions_purgespammer', "purgespammer"));
 		}
 
 		if(!empty($editprofile) || !empty($banuser) || !empty($purgespammer))
 		{
-			eval("\$manageuser = \"".$templates->get("member_profile_modoptions_manageuser")."\";");
+			eval($templates->render("member_profile_modoptions_manageuser", "manageuser"));
 		}
 
-		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
+		eval($templates->render("member_profile_modoptions", "modoptions"));
 	}
 
 	$add_remove_options = array();
@@ -2590,7 +2590,7 @@ if($mybb->input['action'] == "profile")
 
 		if(!in_array($uid, $ignore_list))
 		{
-			eval("\$buddy_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Buddy
+			eval($templates->render("member_profile_addremove", "buddy_options")); // Add/Remove Buddy
 		}
 
 		if(in_array($uid, $ignore_list))
@@ -2604,19 +2604,19 @@ if($mybb->input['action'] == "profile")
 
 		if(!in_array($uid, $buddy_list))
 		{
-			eval("\$ignore_options = \"".$templates->get("member_profile_addremove")."\";"); // Add/Remove Ignore
+			eval($templates->render("member_profile_addremove", "ignore_options")); // Add/Remove Ignore
 		}
 
 		if(isset($memperms['canbereported']) && $memperms['canbereported'] == 1)
 		{
 			$add_remove_options = array('url' => "javascript:Report.reportUser({$memprofile['uid']});", 'class' => 'report_user_button', 'lang' => $lang->report_user);
-			eval("\$report_options = \"".$templates->get("member_profile_addremove")."\";"); // Report User
+			eval($templates->render("member_profile_addremove", "report_options")); // Report User
 		}
 	}
 
 	$plugins->run_hooks("member_profile_end");
 
-	eval("\$profile = \"".$templates->get("member_profile")."\";");
+	eval($templates->render("member_profile", "profile"));
 	output_page($profile);
 }
 
@@ -2921,16 +2921,16 @@ if($mybb->input['action'] == "emailuser")
 	$from_email = '';
 	if($mybb->user['uid'] == 0)
 	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_guest")."\";");
+		eval($templates->render("member_emailuser_guest", "from_email"));
 	}
 	else
 	{
-		eval("\$from_email = \"".$templates->get("member_emailuser_hidden")."\";");
+		eval($templates->render("member_emailuser_hidden", "from_email"));
 	}
 
 	$plugins->run_hooks("member_emailuser_end");
 
-	eval("\$emailuser = \"".$templates->get("member_emailuser")."\";");
+	eval($templates->render("member_emailuser", "emailuser"));
 	output_page($emailuser);
 }
 

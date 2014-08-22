@@ -438,7 +438,7 @@ $plugins->run_hooks('global_intermediate');
 $bbclosedwarning = '';
 if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed'] == 1)
 {
-	eval('$bbclosedwarning = "'.$templates->get('global_boardclosed_warning').'";');
+	eval($templates->render("global_boardclosed_warning", "bbclosedwarning"));
 }
 
 // Prepare the main templates for use
@@ -451,12 +451,12 @@ if($mybb->user['uid'] != 0)
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		$admin_dir = $config['admin_dir'];
-		eval('$admincplink = "'.$templates->get('header_welcomeblock_member_admin').'";');
+		eval($templates->render("header_welcomeblock_member_admin", "admincplink"));
 	}
 
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
-		eval('$modcplink = "'.$templates->get('header_welcomeblock_member_moderator').'";');
+		eval($templates->render("header_welcomeblock_member_moderator", "modcplink"));
 	}
 
 	// Format the welcome back message
@@ -464,7 +464,7 @@ if($mybb->user['uid'] != 0)
 
 	// Tell the user their PM usage
 	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
-	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_member').'";');
+	eval($templates->render("header_welcomeblock_member", "welcomeblock"));
 }
 // Otherwise, we have a guest
 else
@@ -484,30 +484,30 @@ else
 			$login_username = $lang->login_username;
 			break;
 	}
-	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
+	eval($templates->render("header_welcomeblock_guest", "welcomeblock"));
 }
 
 // Display menu links and quick search if user has permission
 $menu_search = $menu_memberlist = $menu_portal = $menu_calendar = $quicksearch = '';
 if($mybb->usergroup['cansearch'] == 1)
 {
-	eval('$menu_search = "'.$templates->get('header_menu_search').'";');
-	eval('$quicksearch = "'.$templates->get('header_quicksearch').'";');
+	eval($templates->render("header_menu_search", "menu_search"));
+	eval($templates->render("header_quicksearch", "quicksearch"));
 }
 
 if($mybb->settings['enablememberlist'] == 1 && $mybb->usergroup['canviewmemberlist'] == 1)
 {
-	eval('$menu_memberlist = "'.$templates->get('header_menu_memberlist').'";');
+	eval($templates->render("header_menu_memberlist", "menu_memberlist"));
 }
 
 if($mybb->settings['enablecalendar'] == 1 && $mybb->usergroup['canviewcalendar'] == 1)
 {
-	eval('$menu_calendar = "'.$templates->get('header_menu_calendar').'";');
+	eval($templates->render("header_menu_calendar", "menu_calendar"));
 }
 
 if($mybb->settings['portal'] == 1)
 {
-	eval('$menu_portal = "'.$templates->get('header_menu_portal').'";');
+	eval($templates->render("header_menu_portal", "menu_portal"));
 }
 
 // See if there are any pending join requests for group leaders
@@ -544,7 +544,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 			$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
 		}
 
-		eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
+		eval($templates->render("global_pending_joinrequests", "pending_joinrequests"));
 	}
 }
 
@@ -626,7 +626,7 @@ if($mybb->usergroup['cancp'] == 1 || ($mybb->user['ismoderator'] && $mybb->userg
 					$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
 				}
 
-				eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+				eval($templates->render("global_unreadreports", "unreadreports"));
 			}
 		}
 	}
@@ -670,7 +670,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 	}
 
 	// Display a nice warning to the user
-	eval('$bannedwarning = "'.$templates->get('global_bannedwarning').'";');
+	eval($templates->render("global_bannedwarning", "bannedwarning"));
 }
 
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
@@ -715,7 +715,7 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	{
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $mybb->settings['bburl'], $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
-	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
+	eval($templates->render("global_pm_alert", "pm_notice"));
 }
 
 if($mybb->usergroup['cancp'] == 1)
@@ -750,7 +750,7 @@ if($mybb->usergroup['cancp'] == 1)
 		{
 			$awaiting_message = $lang->sprintf($lang->awaiting_message_plural, $awaitingusers);
 		}
-		eval('$awaitingusers = "'.$templates->get('global_awaiting_activation').'";');
+		eval($templates->render("global_awaiting_activation", "awaitingusers"));
 	}
 	else
 	{
@@ -759,10 +759,10 @@ if($mybb->usergroup['cancp'] == 1)
 }
 
 // Set up some of the default templates
-eval('$headerinclude = "'.$templates->get('headerinclude').'";');
-eval('$gobutton = "'.$templates->get('gobutton').'";');
-eval('$htmldoctype = "'.$templates->get('htmldoctype', 1, 0).'";');
-eval('$header = "'.$templates->get('header').'";');
+eval($templates->render("headerinclude", "headerinclude"));
+eval($templates->render("gobutton", "gobutton"));
+eval($templates->render("htmldoctype", "htmldoctype", false, 1, 0));
+eval($templates->render("header", "header"));
 
 $copy_year = my_date('Y', TIME_NOW);
 
@@ -783,7 +783,7 @@ if(!$task_cache['nextrun'])
 
 if($task_cache['nextrun'] <= TIME_NOW)
 {
-	eval("\$task_image = \"".$templates->get("task_image")."\";");
+	eval($templates->render("task_image", "task_image"));
 }
 
 // Are we showing the quick language selection box?
@@ -808,11 +808,11 @@ if($mybb->settings['showlanguageselect'] != 0)
 				$selected = '';
 			}
 
-			eval('$lang_options .= "'.$templates->get('footer_languageselect_option').'";');
+			eval($templates->render("footer_languageselect_option", "lang_options", true));
 		}
 
 		$lang_redirect_url = get_current_location(true, 'language');
-		eval('$lang_select = "'.$templates->get('footer_languageselect').'";');
+		eval($templates->render("footer_languageselect", "lang_select"));
 	}
 }
 
@@ -825,7 +825,7 @@ if($mybb->settings['showthemeselect'] != 0)
 	if(!empty($theme_options))
 	{
 		$theme_redirect_url = get_current_location(true, 'theme');
-		eval('$theme_select = "'.$templates->get('footer_themeselect').'";');
+		eval($templates->render("footer_themeselect", "theme_select"));
 	}
 }
 
@@ -838,7 +838,7 @@ if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}
 
-	eval('$contact_us = "'.$templates->get('footer_contactus').'";');
+	eval($templates->render("footer_contactus", "contact_us"));
 }
 
 // DST Auto detection enabled?
@@ -847,7 +847,7 @@ if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
 	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { $([document, window]).bind(\"load\", function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
 }
-eval('$footer = "'.$templates->get('footer').'";');
+eval($templates->render("footer", "footer"));
 
 // Add our main parts to the navigation
 $navbits = array();

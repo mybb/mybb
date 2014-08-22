@@ -409,7 +409,7 @@ else if($mybb->input['action'] == "edit_post")
 		//$post['message'] = htmlspecialchars_uni($post['message']);
 
 		// Send the contents of the post.
-		/*eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
+		/*eval($templates->render("xmlhttp_inline_post_editor", "inline_editor"));
 		echo "<?xml version=\"1.0\" encoding=\"{$charset}\"?".">";
 		echo "<form>".$inline_editor."</form>";*/
 		echo $post['message'];
@@ -542,9 +542,9 @@ else if($mybb->input['action'] == "edit_post")
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
 				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+				eval($templates->render("postbit_editedby_editreason", "editreason"));
 			}
-			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+			eval($templates->render("postbit_editedby", "editedmsg"));
 		}
 
 		// Send our headers.
@@ -927,11 +927,11 @@ else if($mybb->input['action'] == "get_buddyselect")
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
-				eval("\$online[] = \"".$templates->get("xmlhttp_buddyselect_online")."\";");
+				eval($templates->render("xmlhttp_buddyselect_online", "online[]"));
 			}
 			else
 			{
-				eval("\$offline[] = \"".$templates->get("xmlhttp_buddyselect_offline")."\";");
+				eval($templates->render("xmlhttp_buddyselect_offline", "offline[]"));
 			}
 		}
 		$online = implode("", $online);
@@ -939,7 +939,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 
 		$plugins->run_hooks("xmlhttp_get_buddyselect_end");
 
-		eval("\$buddy_select = \"".$templates->get("xmlhttp_buddyselect")."\";");
+		eval($templates->render("xmlhttp_buddyselect", "buddy_select"));
 		echo $buddy_select;
 	}
 	else
