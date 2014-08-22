@@ -61,7 +61,7 @@ class templates
 	 * @param boolean True to output HTML comments, false to not output.
 	 * @return string The template HTML.
 	 */
-	function get($title, $eslashes=1, $htmlcomments=1)
+	function get($title, $eslashes=true, $htmlcomments=true)
 	{
 		global $db, $theme, $mybb;
 
@@ -128,9 +128,12 @@ class templates
 	 *
 	 * @param string The name of the template to get.
 	 * @param string The name of the variable to render to.
-	 * @param boolean True if template is to be appended to end of variable, false if it is to replace it.
+	 * @param boolean True if template is to be appended to end of variable, false to overwrite it.
+	 * @param boolean True if template contents must be escaped, false if not.
+	 * @param boolean True to output HTML comments, false to not output.
+	 * @return string The eval()-ready PHP code for rendering the template
 	 */
-	function render($template, $variable, $append=false)
+	function render($template, $variable, $append=false, $eslashes=true, $htmlcomments=true)
 	{
 		$assignment = '="';
 		
@@ -139,7 +142,7 @@ class templates
 			$assignment = '.="';
 		}
 		
-		return '$'.$variable.$assignment.$this->get($template).'";';
+		return '$'.$variable.$assignment.$this->get($template, $eslashes, $htmlcomments).'";';
 	}
 
 	/**
