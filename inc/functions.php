@@ -1769,11 +1769,6 @@ function get_post_icons()
 		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
 
 		++$listed;
-		if($listed == 10)
-		{
-			$iconlist .= "<br />";
-			$listed = 0;
-		}
 	}
 
 	eval("\$posticons = \"".$templates->get("posticons")."\";");

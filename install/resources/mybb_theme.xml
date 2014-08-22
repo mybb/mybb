@@ -1386,6 +1386,10 @@ a.button.report_user_button span {
 	display: none;
 }
 
+.posticons_label {
+	white-space: nowrap;
+}
+
 /** jGrowl Start **/
 
 /** Special IE6 Style Positioning **/
@@ -9572,10 +9576,10 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_warninglevel_formatted" version="1800"><![CDATA[<span class="{$warning_class}">{$level}%</span>]]></template>
 		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
 		<template name="posticons" version="1410"><![CDATA[<tr>
-<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
+<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>]]></template>
-		<template name="posticons_icon" version="1800"><![CDATA[<label><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
+		<template name="posticons_icon" version="1800"><![CDATA[<label class="posticons_label"><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
 		<template name="printthread" version="1600"><![CDATA[<html>
 <head>
 <title>{$thread['threadprefix']} {$thread['subject']} - {$lang->printable_version}</title>
