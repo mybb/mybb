@@ -9575,8 +9575,8 @@ if(use_xmlhttprequest == "1")
 		<template name="postbit_warninglevel" version="1400"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
 		<template name="postbit_warninglevel_formatted" version="1800"><![CDATA[<span class="{$warning_class}">{$level}%</span>]]></template>
 		<template name="postbit_www" version="1800"><![CDATA[<a href="{$post['website']}" target="_blank" title="{$lang->postbit_website}" class="postbit_website"><span>{$lang->postbit_button_website}</span></a>]]></template>
-		<template name="posticons" version="1410"><![CDATA[<tr>
-<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><span class="smalltext"><label><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
+		<template name="posticons" version="1800"><![CDATA[<tr>
+<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><span class="smalltext"><label class="posticons_label"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</label></span></td>
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>]]></template>
 		<template name="posticons_icon" version="1800"><![CDATA[<label class="posticons_label"><input type="radio" name="icon" value="{$dbicon['iid']}"{$checked} /> <img src="{$dbicon['path']}" alt="{$dbicon['name']}" title="{$dbicon['name']}" /></label>]]></template>
