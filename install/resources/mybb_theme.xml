@@ -4338,9 +4338,9 @@ a.button {
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -4395,11 +4395,11 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#inviteusername").select2({
-		placeholder: "Search for a user",
+		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -5300,9 +5300,9 @@ $().ready(function() {
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#referrer").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -5572,9 +5572,9 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -5716,9 +5716,9 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "Search for a user",
 		minimumInputLength: 3,
@@ -6593,9 +6593,9 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -7094,9 +7094,9 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->find_users}",
 		minimumInputLength: 3,
@@ -7817,9 +7817,9 @@ if(use_xmlhttprequest == "1")
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -10227,9 +10227,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -10759,9 +10759,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/select2/select2.min.js"></script>
 <script type="text/javascript">
 <!--
-MyBB.select2();
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#author").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -11950,9 +11950,9 @@ if(use_xmlhttprequest == "1")
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
 							<script type="text/javascript">
                             <!--
-								MyBB.select2();
-                                if(use_xmlhttprequest == "1")
-                                {
+								if(use_xmlhttprequest == "1")
+								{
+									MyBB.select2();
 									$("#buddy_add_username").select2({
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 3,
@@ -12018,9 +12018,9 @@ if(use_xmlhttprequest == "1")
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
                             <!--
-								MyBB.select2();
-                                if(use_xmlhttprequest == "1")
-                                {
+								if(use_xmlhttprequest == "1")
+								{
+									MyBB.select2();
 									$("#ignored_add_username").select2({
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 3,
