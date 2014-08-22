@@ -122,6 +122,25 @@ class templates
 		}
 		return $template;
 	}
+	
+	/**
+	 * Prepare a template for rendering to a variable/
+	 *
+	 * @param string The name of the template to get.
+	 * @param string The name of the variable to render to.
+	 * @param boolean True if template is to be appended to end of variable, false if it is to replace it.
+	 */
+	function render($template, $variable, $append=false)
+	{
+		$assignment = '="';
+		
+		if($append)
+		{
+			$assignment = '.="';
+		}
+		
+		return '$'.$variable.$assignment.$this->get($template).'";';
+	}
 
 	/**
 	 * Fetch a template directly from the install/resources/mybb_theme.xml directory if it exists (DEVELOPMENT MODE)
