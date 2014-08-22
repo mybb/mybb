@@ -990,6 +990,11 @@ function upgrade30_dbchanges6()
 		$db->drop_column("privatemessages", "ipaddress");
 	}
 
+	if($db->field_exists('maxoptions', 'polls'))
+	{
+		$db->drop_column("polls", "maxoptions");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
