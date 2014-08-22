@@ -1733,7 +1733,6 @@ function get_post_icons()
 {
 	global $mybb, $cache, $icon, $theme, $templates, $lang;
 
-	$listed = 0;
 	if(isset($mybb->input['icon']))
 	{
 		$icon = $mybb->get_input('icon');
@@ -1767,8 +1766,6 @@ function get_post_icons()
 		}
 
 		eval("\$iconlist .= \"".$templates->get("posticons_icon")."\";");
-
-		++$listed;
 	}
 
 	eval("\$posticons = \"".$templates->get("posticons")."\";");
