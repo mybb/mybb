@@ -4379,6 +4379,7 @@ a.button {
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -4433,6 +4434,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#inviteusername").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -5335,6 +5337,7 @@ $().ready(function() {
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#referrer").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -5604,6 +5607,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -5745,6 +5749,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -6629,6 +6634,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -7127,6 +7133,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->find_users}",
 		minimumInputLength: 3,
@@ -7846,6 +7853,7 @@ if(use_xmlhttprequest == "1")
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#username").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -10273,6 +10281,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#to").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -10804,6 +10813,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <!--
 if(use_xmlhttprequest == "1")
 {
+	MyBB.select2();
 	$("#author").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -11996,9 +12006,10 @@ if(use_xmlhttprequest == "1")
 							<div class="float_left" style="width: 120px; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" class="button" /></div>
 							<script type="text/javascript">
-                            <!--
-                                if(use_xmlhttprequest == "1")
-                                {
+							<!--
+								if(use_xmlhttprequest == "1")
+								{
+									MyBB.select2();
 									$("#buddy_add_username").select2({
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 3,
@@ -12067,9 +12078,10 @@ if(use_xmlhttprequest == "1")
 							<div class="float_left" style="width: 120px; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" class="textbox" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" class="button" /></div>
 							<script type="text/javascript">
-                            <!--
-                                if(use_xmlhttprequest == "1")
-                                {
+							<!--
+								if(use_xmlhttprequest == "1")
+								{
+									MyBB.select2();
 									$("#ignored_add_username").select2({
 										placeholder: "{$lang->search_user}",
 										minimumInputLength: 3,
@@ -12107,8 +12119,8 @@ if(use_xmlhttprequest == "1")
 											}
 										},
 									});
-                                }
-                            // -->
+								}
+							// -->
 							</script>
 						</fieldset>
 						<fieldset id="ignored_container">
@@ -13799,6 +13811,18 @@ $(function() {
 <script type="text/javascript">
 <!--
 	lang.unknown_error = "{$lang->unknown_error}";
+
+	lang.select2_match = "{$lang->select2_match}";
+	lang.select2_matches = "{$lang->select2_matches}";
+	lang.select2_nomatches = "{$lang->select2_nomatches}";
+	lang.select2_inputtooshort_single = "{$lang->select2_inputtooshort_single}";
+	lang.select2_inputtooshort_plural = "{$lang->select2_inputtooshort_plural}";
+	lang.select2_inputtoolong_single = "{$lang->select2_inputtoolong_single}";
+	lang.select2_inputtoolong_plural = "{$lang->select2_inputtoolong_plural}";
+	lang.select2_selectiontoobig_single = "{$lang->select2_selectiontoobig_single}";
+	lang.select2_selectiontoobig_plural = "{$lang->select2_selectiontoobig_plural}";
+	lang.select2_loadmore = "{$lang->select2_loadmore}";
+	lang.select2_searching = "{$lang->select2_searching}";
 
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";

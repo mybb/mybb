@@ -535,3 +535,15 @@ $l['moderation_forum_edits_quick'] = "Please note edited posts in this forum mus
 $l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the users.";
 $l['awaiting_message_plural'] = "There is {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
+$l['select2_match'] = "One result is available, press enter to select it.";
+$l['select2_matches'] = "{1} results are available, use up and down arrow keys to navigate.";
+$l['select2_nomatches'] = "No matches found";
+$l['select2_inputtooshort_single'] = "Please enter one or more character";
+$l['select2_inputtooshort_plural'] = "Please enter {1} or more characters";
+$l['select2_inputtoolong_single'] = "Please delete one character";
+$l['select2_inputtoolong_plural'] = "Please delete {1} characters";
+$l['select2_selectiontoobig_single'] = "You can only select one item";
+$l['select2_selectiontoobig_plural'] = "You can only select {1} items";
+$l['select2_loadmore'] = "Loading more results…";
+$l['select2_searching'] = "Searching…";
+
