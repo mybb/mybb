@@ -2511,7 +2511,7 @@ function delete_thread($tid)
  *
  * @param int The thread ID
  */
-function delete_post($pid, $tid="")
+function delete_post($pid)
 {
 	global $moderation;
 
