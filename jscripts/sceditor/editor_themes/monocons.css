@@ -695,7 +695,6 @@ div.sceditor-grip:before {
   text-shadow: 0 1px #fff;
 }
 
-
 /* Additonal buttons (for MyBB) */
 .sceditor-button-video div  {
     
@@ -714,11 +713,4 @@ div.sceditor-grip:before {
 
 .sceditor-button-php div:before {
   content: "\e025";
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-	height: auto;
-	width: auto;
 }
