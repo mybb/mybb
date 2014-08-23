@@ -311,6 +311,7 @@ a:active {
 	height: 30px;
 	width: 30px;
 	background: url(images/forum_icon_sprite.png) no-repeat 0 0;
+	display: inline-block;
 }
 
 .forum_on {
@@ -3713,7 +3714,7 @@ a.button {
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date}<br />{$lang->by} {$lastpost_profilelink}</span>]]></template>
 		<template name="forumbit_depth2_cat" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$subforums}</div>
 </td>
@@ -3722,7 +3723,7 @@ a.button {
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth2_forum" version="1800"><![CDATA[<tr>
-<td class="{$bgcolor}" align="center" valign="top" width="1"><div class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></div></td>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><span class="forum_status forum_{$lightbulb['folder']} ajax_mark_read" title="{$lightbulb['altonoff']}" id="mark_read_{$forum['fid']}"></span></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
 </td>
@@ -4257,16 +4258,16 @@ a.button {
 {$boardstats}
 
 <dl class="forum_legend smalltext">
-	<dt><div class="forum_status forum_on" title="{$lang->new_posts}"></div></dt>
+	<dt><span class="forum_status forum_on" title="{$lang->new_posts}"></span></dt>
 	<dd>{$lang->new_posts}</dd>
 
-	<dt><div class="forum_status forum_off" title="{$lang->no_new_posts}"></div></dt>
+	<dt><span class="forum_status forum_off" title="{$lang->no_new_posts}"></span></dt>
 	<dd>{$lang->no_new_posts}</dd>
 
-	<dt><div class="forum_status forum_offlock" title="{$lang->forum_locked}"></div></dt>
+	<dt><span class="forum_status forum_offlock" title="{$lang->forum_locked}"></span></dt>
 	<dd>{$lang->forum_locked}</dd>
 
-	<dt><div class="forum_status forum_offlink" title="{$lang->forum_redirect}"></div></dt>
+	<dt><span class="forum_status forum_offlink" title="{$lang->forum_redirect}"></span></dt>
 	<dd>{$lang->forum_redirect}</dd>
 </dl>
 <br class="clear" />
