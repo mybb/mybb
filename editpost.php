@@ -267,18 +267,19 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))
 			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+
 				if($mybb->settings['soft_delete'] == 1)
 				{
 					$modlogdata['pid'] = $pid;
-				
-					require_once MYBB_ROOT."inc/class_moderation.php";
-					$moderation = new Moderation;
+
 					$moderation->soft_delete_threads(array($tid));
 					log_moderator_action($modlogdata, $lang->thread_soft_deleted);
 				}
 				else
 				{
-					delete_thread($tid);
+					$moderation->delete_thread($tid);
 					mark_reports($tid, "thread");
 					log_moderator_action($modlogdata, $lang->thread_deleted);
 				}
@@ -310,21 +311,23 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts"))
 			{
 				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+
 				if($mybb->settings['soft_delete'] == 1)
 				{
 					$modlogdata['pid'] = $pid;
-					
-					require_once MYBB_ROOT."inc/class_moderation.php";
-					$moderation = new Moderation;
+
 					$moderation->soft_delete_posts(array($pid));
 					log_moderator_action($modlogdata, $lang->post_soft_deleted);
 				}
 				else
 				{
-					delete_post($pid, $tid);
+					$moderation->delete_post($pid);
 					mark_reports($pid, "post");
 					log_moderator_action($modlogdata, $lang->post_deleted);
 				}
+
 				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
