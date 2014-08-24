@@ -262,7 +262,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="soft_delete">
 			<title>Enable Soft Delete</title>
-			<description><![CDATA[If enabled it allows to restore posts and threads deleted by users. Otherwise these posts and threads will be destroyed permanently.]]></description>
+			<description><![CDATA[If enabled, it allows you to restore posts and threads deleted by users. Otherwise, these posts and threads will be deleted permanently.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
