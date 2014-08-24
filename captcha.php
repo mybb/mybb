@@ -32,7 +32,7 @@ if($mybb->input['imagehash'] == "test")
 }
 elseif($mybb->input['imagehash'])
 {
-	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string((string)$mybb->input['imagehash'])."' AND used=0", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->get_input('imagehash'))."' AND used=0", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
 	if(!$regimage)
 	{

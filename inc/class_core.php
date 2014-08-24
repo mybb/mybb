@@ -446,36 +446,36 @@ class MyBB {
 		$path = (string) $path;
 		$path = ltrim($path, '/');
 
-        if(substr($path, 0, 4) != 'http')
-        {
-            if(substr($path, 0, 2) == './')
-            {
-                $path = substr($path, 2);
-            }
+		if(substr($path, 0, 4) != 'http')
+		{
+			if(substr($path, 0, 2) == './')
+			{
+				$path = substr($path, 2);
+			}
 
-            $base_path = '';
-            if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
-            {
-                $base_path = rtrim($this->settings['cdnurl'], '/');
-            }
-            else
-            {
-                $base_path = rtrim($this->settings['bburl'], '/');
-            }
+			$base_path = '';
+			if($use_cdn && $this->settings['usecdn'] && !empty($this->settings['cdnurl']))
+			{
+				$base_path = rtrim($this->settings['cdnurl'], '/');
+			}
+			else
+			{
+				$base_path = rtrim($this->settings['bburl'], '/');
+			}
 
-            $url = $base_path;
+			$url = $base_path;
 
-            if(!empty($path))
-            {
-                $url = $base_path . '/' . $path;
-            }
-        }
-        else
-        {
-            $url = $path;
-        }
+			if(!empty($path))
+			{
+				$url = $base_path . '/' . $path;
+			}
+		}
+		else
+		{
+			$url = $path;
+		}
 
-        return $url;
+		return $url;
 	}
 
 	/**
