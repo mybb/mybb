@@ -358,7 +358,7 @@ if($mybb->input['action'] == "group")
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_group_perms, array("colspan" => "2"));
+		$table->construct_cell($lang->no_group_perms, array("colspan" => "3"));
 		$table->construct_row();
 	}
 
@@ -510,7 +510,7 @@ if(!$mybb->input['action'])
 
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_user_perms, array("colspan" => "2"));
+		$table->construct_cell($lang->no_user_perms, array("colspan" => "3"));
 		$table->construct_row();
 	}
 
