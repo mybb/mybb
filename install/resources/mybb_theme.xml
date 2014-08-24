@@ -435,6 +435,10 @@ table {
 	border-color: #fff #ffb8be #ffb8be #fff;
 }
 
+.no_bottom_border {
+	border-bottom: 0;
+}
+
 .post.unapproved_post {
 	background: #ffdde0;
 }
@@ -2387,7 +2391,7 @@ a.button {
 </head>
 <body>
 {$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear no_bottom_border">
 <tr>
 <td class="thead"><strong>{$lang->forum_announcement}</strong></td>
 <tr><td id="posts_container">
@@ -10079,7 +10083,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td style="vertical-align: top;">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear no_bottom_border">
 <tr>
 <td class="thead">
 <strong>{$pm['subject']}</strong>
@@ -10764,7 +10768,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="tcat"><strong>{$lang->search_options}</strong></td>
 </tr>
 <tr>
-<td class="trow1" rowspan="{$rowspan}">{$srchlist}</td>
+<td class="trow1 no_bottom_border" rowspan="{$rowspan}">{$srchlist}</td>
 <td class="trow1">
 <select name="findthreadst">
 <option value="1">{$lang->threads_at_least}</option>
@@ -13848,7 +13852,7 @@ $(function() {
 <td class="trow2"><strong>{$lang->username}</strong></td>
 <td class="trow2"><input type="text" class="textbox" name="username" size="30" value="{$username}" /></td>
 </tr>]]></template>
-		<template name="previewpost" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear">
+		<template name="previewpost" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear no_bottom_border">
 <tr>
 <td class="thead"><strong>{$lang->post_preview}</strong></td>
 </tr>
