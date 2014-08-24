@@ -6247,8 +6247,8 @@ if(use_xmlhttprequest == "1")
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
-		<template name="modcp_announcements_announcement_active" version="1800"><![CDATA[<img src="{$theme['imgdir']}/minion.png" alt="({$lang->active})" title="{$lang->active_announcement}"  style="vertical-align: middle;" />]]></template>
-		<template name="modcp_announcements_announcement_expired" version="1800"><![CDATA[<img src="{$theme['imgdir']}/minioff.png" alt="({$lang->expired})" title="{$lang->expired_announcement}"  style="vertical-align: middle;" />]]></template>
+		<template name="modcp_announcements_announcement_active" version="1800"><![CDATA[<div class="subforumicon subforum_minion" title="{$lang->active_announcement}"></div>]]></template>
+		<template name="modcp_announcements_announcement_expired" version="1800"><![CDATA[<div class="subforumicon subforum_minioff" title="{$lang->expired_announcement}"></div>]]></template>
 		<template name="modcp_announcements_announcement_global" version="1400"><![CDATA[					<tr>
 						<td class="{$trow}">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
