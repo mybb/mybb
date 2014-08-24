@@ -1,0 +1,25 @@
+# Config Files
+inc/config.php
+inc/config.default.php
+inc/settings.php
+
+# Cache Directory
+cache/*
+
+# Uploads Directory
+uploads/*
+
+# MyBB Misc
+install/lock
+error.log
+.htaccess
+
+# Generic OS stuff
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
