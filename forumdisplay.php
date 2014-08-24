@@ -1073,7 +1073,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 			else
 			{
-				$thread['averagerating'] = floatval(round($thread['averagerating'], 2));
+				$thread['averagerating'] = (float)round($thread['averagerating'], 2);
 				$thread['width'] = (int)round($thread['averagerating'])*20;
 				$thread['numratings'] = (int)$thread['numratings'];
 

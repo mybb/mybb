@@ -703,7 +703,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$thread['averagerating'] = floatval(round($thread['totalratings']/$thread['numratings'], 2));
+			$thread['averagerating'] = (float)round($thread['totalratings']/$thread['numratings'], 2);
 			$thread['width'] = (int)round($thread['averagerating'])*20;
 			$thread['numratings'] = (int)$thread['numratings'];
 		}
