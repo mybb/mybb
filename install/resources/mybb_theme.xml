@@ -4814,8 +4814,8 @@ if(use_xmlhttprequest == "1")
 </ul>]]></template>
 		<template name="member_profile_customfields_field_multi_item" version="1800"><![CDATA[<li style="margin-left: 0;">{$val}</li>]]></template>
 		<template name="member_profile_email" version="120"><![CDATA[<tr>
-<td class="trow2"><strong>{$lang->email}</strong></td>
-<td class="trow2"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
+<td class="{$bgcolor}"><strong>{$lang->email}</strong></td>
+<td class="{$bgcolor}"><a href="member.php?action=emailuser&amp;uid={$memprofile['uid']}">{$lang->send_user_email}</a></td>
 </tr>]]></template>
 		<template name="member_profile_groupimage" version="120"><![CDATA[<img src="{$displaygroup['image']}" alt="{$usertitle}" title="{$usertitle}" /><br />]]></template>
 		<template name="member_profile_modoptions" version="1800"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
@@ -4848,8 +4848,8 @@ if(use_xmlhttprequest == "1")
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_pm" version="1800"><![CDATA[<tr>
-	<td class="{$bgcolors['pm']}"><strong>{$lang->pm}</strong></td>
-	<td class="{$bgcolors['pm']}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
+	<td class="{$bgcolor}"><strong>{$lang->pm}</strong></td>
+	<td class="{$bgcolor}"><a href="private.php?action=send&amp;uid={$memprofile['uid']}">{$lang->send_pm}</a></td>
 </tr>]]></template>
 		<template name="member_profile_referrals" version="1600"><![CDATA[<tr>
 <td class="{$bg_color}"><strong>{$lang->members_referred}</strong></td>
@@ -4876,8 +4876,8 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_website" version="1800"><![CDATA[<tr>
-	<td class="trow1"><strong>{$lang->homepage}</strong></td>
-	<td class="trow1"><a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a></td>
+	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
+	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a></td>
 </tr>]]></template>
 		<template name="member_register" version="1800"><![CDATA[<html>
 <head>

@@ -1933,43 +1933,25 @@ if($mybb->input['action'] == "profile")
 	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
 	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
 
-	$sendemail = '';
-	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
-	{
-		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
-	}
-	else
-	{
-		$alttrow = "trow1"; // To properly sort the contact details below
-	}
-
-	// Clean alt_trow for the contact details
-	$cat_array = array(
-		"pm",
-		"icq",
-		"aim",
-		"yahoo",
-		"skype",
-		"google",
-	);
-
-	$bgcolors = array();
-	foreach($cat_array as $cat)
-	{
-		$bgcolors[$cat] = alt_trow();
-	}
+	$website = $sendemail = $sendpm = $contact_details = '';
 	
-	$sendpm= '';
-	if($mybb->settings['enablepms'] == 1 && $memprofile['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
-	{
-		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
-	}
-
-	$website = '';
 	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
+		$bgcolor = alt_trow();
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
+	}
+	
+	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
+	{
+		$bgcolor = alt_trow();	
+		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
+	}
+	
+	if($mybb->settings['enablepms'] == 1 && $memprofile['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	{
+		$bgcolor = alt_trow();	
+		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
 	}
 	
 	$contact_fields = array();
@@ -1991,6 +1973,7 @@ if($mybb->input['action'] == "profile")
 			}
 			$tmpl = 'member_profile_contact_fields_'.$field;
 
+			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
 		}
 		else
@@ -1999,7 +1982,6 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 	
-	$contact_details = '';
 	if(!empty($contact_fields) || $sendemail || $sendpm || $website)
 	{
 		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
@@ -2388,19 +2370,16 @@ if($mybb->input['action'] == "profile")
 		$timeonline = $lang->timeonline_hidden;
 	}
 
+	// Reset the background colours to keep it inline
+	$alttrow = 'trow1';
+	
 	// Build Referral
 	$referrals = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
-		// Reset the background colours to keep it inline
-		$bg_color = alt_trow(true);
+		$bg_color = alt_trow();
 
 		eval("\$referrals = \"".$templates->get("member_profile_referrals")."\";");
-	}
-	else
-	{
-		// Manually set to override colours...
-		$alttrow = 'trow2';
 	}
 
 	// Fetch the reputation for this user
