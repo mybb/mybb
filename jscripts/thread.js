@@ -19,15 +19,17 @@ var Thread = {
 			var post_ids = quoted.split("|");
 
 			$.each(post_ids, function(key, value) {
-				if($("#multiquote_"+value))
+				var mquote_a = $("#multiquote_"+value).closest('a');
+				if(mquote_a)
 				{
-					$("#multiquote_"+value).parents("a:first").attr('class', 'postbit_multiquote_on');
+					mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 				}
 			});
 
-			if($('#quickreply_multiquote'))
+			var mquote_quick = $('#quickreply_multiquote');
+			if(mquote_quick)
 			{
-				$('#quickreply_multiquote').show();
+				mquote_quick.show();
 			}
 		}
 		return true;
@@ -53,27 +55,28 @@ var Thread = {
 				}
 			});
 		}
-
+		
+		var mquote_a = $("#multiquote_"+pid).closest('a')
 		if(is_new == true)
 		{
 			new_post_ids[new_post_ids.length] = pid;
-			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote');
-			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote_on');
+			mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 		}
 		else
 		{
-			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote_on');
-			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote');
+			mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 		}
-		if($('#quickreply_multiquote'))
+		
+		var mquote_quick = $('#quickreply_multiquote');
+		if(mquote_quick)
 		{
 			if(new_post_ids.length > 0)
 			{
-				$('#quickreply_multiquote').show();
+				mquote_quick.show();
 			}
 			else
 			{
-				$('#quickreply_multiquote').hide();
+				mquote_quick.hide();
 			}
 		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
@@ -84,7 +87,8 @@ var Thread = {
 		if(use_xmlhttprequest == 1)
 		{
 			// Spinner!
-			$('#quickreply_spinner').show();
+			var mquote_spinner = $('#quickreply_spinner');
+			mquote_spinner.show();
 
 			$.ajax(
 			{
@@ -95,7 +99,7 @@ var Thread = {
 					Thread.multiQuotedLoaded(request, status);
 					
 					// Get rid of spinner
-					$('#quickreply_spinner').hide();
+					mquote_spinner.hide();
 				}
 			});
 
@@ -122,18 +126,18 @@ var Thread = {
 			}
 		}
 
-		var id = 'message';
 		if(typeof $('textarea').sceditor != 'undefined')
 		{
 			$('textarea').sceditor('instance').insert(json.message);
 		}
 		else
 		{
-			if($('#' + id).value)
+			var id = $('#message');
+			if(id.value)
 			{
-				$('#' + id).value += "\n";
+				id.value += "\n";
 			}
-			$('#' + id).val($('#' + id).val() + json.message);
+			id.val(id.val() + json.message);
 		}
 
 		Thread.clearMultiQuoted();
@@ -152,10 +156,10 @@ var Thread = {
 			var post_ids = quoted.split("|");
 
 			$.each(post_ids, function(key, post_id) {
-				if($("#multiquote_"+post_id).parents("a:first"))
+				var mquote_a = $("#multiquote_"+post_id).closest('a');
+				if(mquote_a)
 				{
-					$("#multiquote_"+post_id).parents("a:first").removeClass('postbit_multiquote_on');
-					$("#multiquote_"+post_id).parents("a:first").addClass('postbit_multiquote');
+					mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 				}
 			});
 		}
@@ -311,7 +315,8 @@ var Thread = {
 		var post_body = $('#quick_reply_form').serialize();
 		
 		// Spinner!
-		$('#quickreply_spinner').show();
+		var qreply_spinner = $('#quickreply_spinner');
+		qreply_spinner.show();
 
 		$.ajax(
 		{
@@ -324,7 +329,7 @@ var Thread = {
 		  		Thread.quickReplyDone(request, status);
 				
 				// Get rid of spinner
-				$('#quickreply_spinner').hide();
+				qreply_spinner.hide();
           	}
 		});
 
@@ -368,16 +373,14 @@ var Thread = {
 						$('#imagehash').val(imghash);
 						if(cap[3])
 						{
-							$('#imagestring').attr('type', 'hidden');
-							$('#imagestring').val(cap[3]);
+							$('#imagestring').attr('type', 'hidden').val(cap[3]);
 							// hide the captcha
 							$('#captcha_trow').css('display', 'none');
 						}
 						else
 						{
 							$('#captcha_img').attr('src', "captcha.php?action=regimage&imagehash="+imghash);
-							$('#imagestring').attr('type', 'text');
-							$('#imagestring').val('');
+							$('#imagestring').attr('type', 'text').val('');
 							$('#captcha_trow').css('display', '');
 						}
 					}
@@ -410,9 +413,10 @@ var Thread = {
 
 			$('#quick_reply_form')[0].reset();
 
-			if($('#lastpid'))
+			var lastpid = $('#lastpid');
+			if(lastpid)
 			{
-				$('#lastpid').val(pid);
+				lastpid.val(pid);
 			}
 		}
 		else
@@ -461,9 +465,8 @@ var Thread = {
 								// Soft deleted
 								if(json.data == 1)
 								{
-									// Change CSS class of div 'pid_[pid]'
-									$("#post_"+pid).addClass("unapproved_post");
-									$("#post_"+pid).addClass("deleted_post");
+									// Change CSS class of div 'post_[pid]'
+									$("#post_"+pid).addClass("unapproved_post").addClass("deleted_post");
 
 									$("#quick_delete_" + pid).hide();
 									$("#quick_restore_" + pid).show();
@@ -535,9 +538,8 @@ var Thread = {
 							}
 							else if(json.hasOwnProperty("data"))
 							{
-								// Change CSS class of div 'pid_[pid]'
-								$("#post_"+pid).removeClass("unapproved_post");
-								$("#post_"+pid).removeClass("deleted_post");
+								// Change CSS class of div 'post_[pid]'
+								$("#post_"+pid).removeClass("unapproved_post").removeClass("deleted_post");
 
 								$("#quick_delete_" + pid).show();
 								$("#quick_restore_" + pid).hide();
