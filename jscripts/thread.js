@@ -264,7 +264,7 @@ var Thread = {
 		{
 			$(this).bind("click", function(e)
 			{
-				e.stopPropagation();
+				e.preventDefault();
 
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
