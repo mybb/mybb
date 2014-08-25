@@ -1180,8 +1180,7 @@ if($mybb->input['action'] == "read")
 			$quoted_message = remove_message_quotes($quoted_message, $mybb->settings['maxpmquotedepth']);
 		}
 
-		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
-		$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
+		$subject = preg_replace("#(FW|RE):( *)#is", '', $pm['subject']);
 
 		if($mybb->user['uid'] == $pm['fromid'])
 		{
