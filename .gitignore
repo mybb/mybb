@@ -3,6 +3,10 @@ inc/config.php
 inc/config.default.php
 inc/settings.php
 
+# MyBB Admin Backups
+admin/backups/*
+!admin/backups/index.html
+
 # Cache Directory
 cache/*
 
@@ -13,6 +17,13 @@ uploads/*
 install/lock
 error.log
 .htaccess
+.htgroup
+.htpasswd
+
+# Eclipse IDE project files
+.settings
+.project
+.buildpath
 
 # Generic OS stuff
 .DS_Store
