@@ -213,7 +213,7 @@ if(!empty($firstposts))
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$attachment['icon'] = get_attachment_icon($ext);
-				eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+				$attbit = eval($templates->render("postbit_attachments_attachment"));
 				if(stripos($parsed_message, "[attachment=".$attachment['aid']."]") !== false)
 				{
 					$parsed_message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $parsed_message);

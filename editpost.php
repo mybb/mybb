@@ -204,7 +204,7 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 	if(!empty($attachedfile['error']))
 	{
-		eval("\$attacherror = \"".$templates->get("error_attacherror")."\";");
+		$attacherror = eval($templates->render("error_attacherror"));
 		$mybb->input['action'] = "editpost";
 	}
 	if(!isset($mybb->input['submit']))
@@ -555,13 +555,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$posticons = get_post_icons();
 	}
 
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	$loginbox = eval($templates->render("changeuserbox"));
 
 	$deletebox = '';
 	// Can we delete posts?
 	if($post['visible'] != -1 && (is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid']))
 	{
-		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+		$deletebox = eval($templates->render("editpost_delete"));
 	}
 
 	$bgcolor = "trow1";
@@ -578,7 +578,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 			{
-				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+				$postinsert = eval($templates->render("post_attachments_attachment_postinsert"));
 			}
 			// Moderating options
 			$attach_mod_options = '';
@@ -586,24 +586,24 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			{
 				if($attachment['visible'] == 1)
 				{
-					eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_unapprove")."\";");
+					$attach_mod_options = eval($templates->render("post_attachments_attachment_mod_unapprove"));
 				}
 				else
 				{
-					eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_approve")."\";");
+					$attach_mod_options = eval($templates->render("post_attachments_attachment_mod_approve"));
 				}
 			}
 
 			// Remove Attachment
-			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			$attach_rem_options = eval($templates->render("post_attachments_attachment_remove"));
 
 			if($attachment['visible'] != 1)
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+				$attachments .= eval($templates->render("post_attachments_attachment_unapproved"));
 			}
 			else
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+				$attachments .= eval($templates->render("post_attachments_attachment"));
 			}
 			$attachcount++;
 		}
@@ -629,19 +629,19 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
+			$attach_add_options = eval($templates->render("post_attachments_add"));
 		}
 
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
-			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
+			$attach_update_options = eval($templates->render("post_attachments_update"));
 		}
 
 		if($attach_add_options || $attach_update_options)
 		{
-			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
+			$newattach = eval($templates->render("post_attachments_new"));
 		}
-		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
+		$attachbox = eval($templates->render("post_attachments"));
 	}
 	if(!$mybb->get_input('attachmentaid', 1) && !$mybb->get_input('newattachment') && !$mybb->get_input('updateattachment') && !isset($mybb->input['previewpost']))
 	{
@@ -791,7 +791,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
 
 		$postbit = build_postbit($postinfo, 1);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
+		$preview = eval($templates->render("previewpost"));
 	}
 	else if(!$post_errors)
 	{
@@ -852,7 +852,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$editreason = '';
 	if($mybb->settings['alloweditreason'] == 1)
 	{
-		eval("\$editreason = \"".$templates->get("editpost_reason")."\";");
+		$editreason = eval($templates->render("editpost_reason"));
 		$bgcolor = "trow2";
 		$bgcolor2 = "trow1";
 	}
@@ -863,7 +863,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+	$subscriptionmethod = eval($templates->render("post_subscription_method"));
 
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
@@ -874,7 +874,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";
 		$postpollchecked = '';
-		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
+		$pollbox = eval($templates->render("newthread_postpoll"));
 	}
 	else
 	{
@@ -885,11 +885,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
-		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
+		$disablesmilies = eval($templates->render("editpost_disablesmilies"));
 	}
 	else
 	{
-		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies_hidden")."\";");
+		$disablesmilies = eval($templates->render("editpost_disablesmilies_hidden"));
 	}
 
 	$moderation_notice = '';
@@ -898,7 +898,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
 		{
 			$moderation_text = $lang->moderation_forum_attachments;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			$moderation_notice = eval($templates->render("global_moderation_notice"));
 		}
 	}
 
@@ -907,7 +907,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		if($forumpermissions['mod_edit_posts'] == 1)
 		{
 			$moderation_text = $lang->moderation_forum_edits;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			$moderation_notice = eval($templates->render("global_moderation_notice"));
 		}
 	}
 
@@ -915,6 +915,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	$forum['name'] = strip_tags($forum['name']);
 
-	eval("\$editpost = \"".$templates->get("editpost")."\";");
+	$editpost = eval($templates->render("editpost"));
 	output_page($editpost);
 }

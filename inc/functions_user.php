@@ -401,7 +401,7 @@ function usercp_menu()
 	$plugins->run_hooks("usercp_menu");
 	global $usercpmenu;
 
-	eval("\$usercpnav = \"".$templates->get("usercp_nav")."\";");
+	$usercpnav = eval($templates->render("usercp_nav"));
 
 	$plugins->run_hooks("usercp_menu_built");
 }
@@ -427,7 +427,7 @@ function usercp_menu_messenger()
 	$ucp_nav_compose = '';
 	if($mybb->usergroup['cansendpms'] == 1)
 	{
-		eval("\$ucp_nav_compose = \"".$templates->get("usercp_nav_messenger_compose")."\";");
+		$ucp_nav_compose = eval($templates->render("usercp_nav_messenger_compose"));
 	}
 
 	$folderlinks = $folder_id = $folder_name = '';
@@ -452,7 +452,7 @@ function usercp_menu_messenger()
 		$folder_id = $folderinfo[0];
 		$folder_name = $folderinfo[1];
 
-		eval("\$folderlinks .= \"".$templates->get("usercp_nav_messenger_folder")."\";");
+		$folderlinks .= eval($templates->render("usercp_nav_messenger_folder"));
 	}
 
 	if(!isset($collapsedimg['usercppms']))
@@ -479,7 +479,7 @@ function usercp_menu_profile()
 	$changenameop = '';
 	if($mybb->usergroup['canchangename'] != 0)
 	{
-		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
+		$changenameop = eval($templates->render("usercp_nav_changename"));
 	}
 
 	$changesigop = '';
@@ -487,7 +487,7 @@ function usercp_menu_profile()
 	{
 		if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
 		{
-			eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
+			$changesigop = eval($templates->render("usercp_nav_editsignature"));
 		}
 	}
 
@@ -501,7 +501,7 @@ function usercp_menu_profile()
 		$collapsed['usercpprofile_e'] = '';
 	}
 
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");
+	$usercpmenu .= eval($templates->render("usercp_nav_profile"));
 }
 
 /**
@@ -525,7 +525,7 @@ function usercp_menu_misc()
 
 	if($mybb->settings['enableattachments'] != 0)
 	{
-		eval("\$attachmentop = \"".$templates->get("usercp_nav_attachments")."\";");
+		$attachmentop = eval($templates->render("usercp_nav_attachments"));
 	}
 
 	if(!isset($collapsedimg['usercpmisc']))
@@ -539,7 +539,7 @@ function usercp_menu_misc()
 	}
 
 	$profile_link = get_profile_link($mybb->user['uid']);
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
+	$usercpmenu .= eval($templates->render("usercp_nav_misc"));
 }
 
 /**

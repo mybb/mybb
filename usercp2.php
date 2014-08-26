@@ -165,7 +165,7 @@ elseif($mybb->get_input('action') == "addsubscription")
 
 		$plugins->run_hooks("usercp2_addsubscription_thread");
 
-		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
+		$add_subscription = eval($templates->render("usercp_addsubscription_thread"));
 		output_page($add_subscription);
 		exit;
 	}

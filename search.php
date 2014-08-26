@@ -169,7 +169,7 @@ if($mybb->input['action'] == "results")
 	
 	$orderarrow = array('replies' => '', 'views' => '', 'subject' => '', 'forum' => '', 'starter' => '', 'lastpost' => '', 'dateline' => '');
 
-	eval("\$orderarrow['$sortby'] = \"".$templates->get("search_orderarrow")."\";");
+	$orderarrow['$sortby'] = eval($templates->render("search_orderarrow"));
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
@@ -223,7 +223,7 @@ if($mybb->input['action'] == "results")
 	}
 	if($is_supermod || is_moderator())
 	{
-		eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
+		$inlinemodcol = eval($templates->render("search_results_inlinemodcol"));
 		$inlinecookie = "inlinemod_search".$sid;
 		$inlinecount = 0;
 		$is_mod = true;
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "results")
 			{
 				$posticon = $icon_cache[$thread['icon']];
 				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
-				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
+				$icon = eval($templates->render("search_results_icon"));
 			}
 			else
 			{
@@ -484,7 +484,7 @@ if($mybb->input['action'] == "results")
 				$new_class = "subject_new";
 				$folder_label .= $lang->icon_new;
 				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost").$highlight;
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+				$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 				$unreadpost = 1;
 			}
 			else
@@ -527,7 +527,7 @@ if($mybb->input['action'] == "results")
 				{
 					$pagesstop = $mybb->settings['maxmultipagelinks'] - 1;
 					$page_link = get_thread_link($thread['tid'], $thread['pages']).$highlight;
-					eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
+					$morelink = eval($templates->render("forumdisplay_thread_multipage_more"));
 				}
 				else
 				{
@@ -536,9 +536,9 @@ if($mybb->input['action'] == "results")
 				for($i = 1; $i <= $pagesstop; ++$i)
 				{
 					$page_link = get_thread_link($thread['tid'], $i).$highlight;
-					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
+					$threadpages .= eval($templates->render("forumdisplay_thread_multipage_page"));
 				}
-				eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
+				$thread['multipage'] = eval($templates->render("forumdisplay_thread_multipage"));
 			}
 			else
 			{
@@ -596,7 +596,7 @@ if($mybb->input['action'] == "results")
 					$attachment_count = $lang->attachment_count;
 				}
 
-				eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
+				$attachment_count = eval($templates->render("forumdisplay_thread_attachment_count"));
 			}
 			else
 			{
@@ -618,15 +618,15 @@ if($mybb->input['action'] == "results")
 				{
 					$inlinecheck = '';
 				}
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_inlinecheck")."\";");
+				$inline_mod_checkbox = eval($templates->render("search_results_threads_inlinecheck"));
 			}
 			elseif($is_mod)
 			{
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_nocheck")."\";");
+				$inline_mod_checkbox = eval($templates->render("search_results_threads_nocheck"));
 			}
 
 			$plugins->run_hooks("search_results_thread");
-			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");
+			$results .= eval($templates->render("search_results_threads_thread"));
 		}
 		if(!$results)
 		{
@@ -645,7 +645,7 @@ if($mybb->input['action'] == "results")
 			$lang->page_selected = $lang->sprintf($lang->page_selected, count($thread_cache));
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
 			$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
-			eval("\$selectall = \"".$templates->get("search_threads_inlinemoderation_selectall")."\";");
+			$selectall = eval($templates->render("search_threads_inlinemoderation_selectall"));
 
 			$customthreadtools = '';
 			switch($db->type)
@@ -660,19 +660,19 @@ if($mybb->input['action'] == "results")
 
 			while($tool = $db->fetch_array($query))
 			{
-				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
+				$customthreadtools .= eval($templates->render("search_results_threads_inlinemoderation_custom_tool"));
 			}
 			// Build inline moderation dropdown
 			if(!empty($customthreadtools))
 			{
-				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
+				$customthreadtools = eval($templates->render("search_results_threads_inlinemoderation_custom"));
 			}
-			eval("\$inlinemod = \"".$templates->get("search_results_threads_inlinemoderation")."\";");
+			$inlinemod = eval($templates->render("search_results_threads_inlinemoderation"));
 		}
 
 		$plugins->run_hooks("search_results_end");
 
-		eval("\$searchresults = \"".$templates->get("search_results_threads")."\";");
+		$searchresults = eval($templates->render("search_results_threads"));
 		output_page($searchresults);
 	}
 	else // Displaying results as posts
@@ -822,7 +822,7 @@ if($mybb->input['action'] == "results")
 			{
 				$posticon = $icon_cache[$post['icon']];
 				$posticon['path'] = str_replace("{theme}", $theme['imgdir'], $posticon['path']);
-				eval("\$icon = \"".$templates->get("search_results_icon")."\";");
+				$icon = eval($templates->render("search_results_icon"));
 			}
 			else
 			{
@@ -904,7 +904,7 @@ if($mybb->input['action'] == "results")
 			{
 				$folder .= "new";
 				$folder_label .= $lang->icon_new;
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+				$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 				$unreadpost = 1;
 			}
 			else
@@ -983,15 +983,15 @@ if($mybb->input['action'] == "results")
 				{
 					$inlinecheck = '';
 				}
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
+				$inline_mod_checkbox = eval($templates->render("search_results_posts_inlinecheck"));
 			}
 			elseif($is_mod)
 			{
-				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_nocheck")."\";");
+				$inline_mod_checkbox = eval($templates->render("search_results_posts_nocheck"));
 			}
 
 			$plugins->run_hooks("search_results_post");
-			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");
+			$results .= eval($templates->render("search_results_posts_post"));
 		}
 		if(!$results)
 		{
@@ -1011,7 +1011,7 @@ if($mybb->input['action'] == "results")
 			$lang->page_selected = $lang->sprintf($lang->page_selected, (int)$num_results);
 			$lang->select_all = $lang->sprintf($lang->select_all, (int)$postcount);
 			$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$postcount);
-			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
+			$selectall = eval($templates->render("search_posts_inlinemoderation_selectall"));
 
 			$customthreadtools = $customposttools = '';
 			switch($db->type)
@@ -1026,19 +1026,19 @@ if($mybb->input['action'] == "results")
 
 			while($tool = $db->fetch_array($query))
 			{
-				eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
+				$customposttools .= eval($templates->render("search_results_posts_inlinemoderation_custom_tool"));
 			}
 			// Build inline moderation dropdown
 			if(!empty($customposttools))
 			{
-				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
+				$customposttools = eval($templates->render("search_results_posts_inlinemoderation_custom"));
 			}
-			eval("\$inlinemod = \"".$templates->get("search_results_posts_inlinemoderation")."\";");
+			$inlinemod = eval($templates->render("search_results_posts_inlinemoderation"));
 		}
 
 		$plugins->run_hooks("search_results_end");
 
-		eval("\$searchresults = \"".$templates->get("search_results_posts")."\";");
+		$searchresults = eval($templates->render("search_results_posts"));
 		output_page($searchresults);
 	}
 }
@@ -1615,12 +1615,12 @@ else
 	if(is_moderator())
 	{
 		$rowspan += 2;
-		eval("\$moderator_options = \"".$templates->get("search_moderator_options")."\";");
+		$moderator_options = eval($templates->render("search_moderator_options"));
 	}
 
 	$plugins->run_hooks("search_end");
 
-	eval("\$search = \"".$templates->get("search")."\";");
+	$search = eval($templates->render("search"));
 	output_page($search);
 }
 

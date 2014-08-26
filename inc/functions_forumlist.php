@@ -235,7 +235,7 @@ function build_forumbits($pid=0, $depth=1)
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)
 			{
-				eval("\$subforums = \"".$templates->get("forumbit_subforums")."\";");
+				$subforums = eval($templates->render("forumbit_subforums"));
 			}
 			// A depth of three indicates a comma separated list of forums within a forum
 			else if($depth == 3)
@@ -248,11 +248,11 @@ function build_forumbits($pid=0, $depth=1)
 					if($mybb->settings['subforumsstatusicons'] == 1)
 					{
 						$lightbulb['folder'] = "mini".$lightbulb['folder'];
-						eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
+						$statusicon = eval($templates->render("forumbit_depth3_statusicon", 1, 0));
 					}
 
 					// Fetch the template and append it to the list
-					eval("\$forum_list .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
+					$forum_list .= eval($templates->render("forumbit_depth3", 1, 0));
 					$comma = $lang->comma;
 				}
 
@@ -284,7 +284,7 @@ function build_forumbits($pid=0, $depth=1)
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
-					eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
+					$lastpost = eval($templates->render("forumbit_depth2_forum_lastpost_never"));
 				}
 				elseif($hideinfo != true)
 				{
@@ -305,7 +305,7 @@ function build_forumbits($pid=0, $depth=1)
 					// Call lastpost template
 					if($depth != 1)
 					{
-						eval("\$lastpost = \"".$templates->get("forumbit_depth{$depth}_forum_lastpost")."\";");
+						$lastpost = eval($templates->render("forumbit_depth{$depth}_forum_lastpost"));
 					}
 				}
 
@@ -320,7 +320,7 @@ function build_forumbits($pid=0, $depth=1)
 						$forum_viewers_text = $lang->sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
 					$forum_viewers_text_plain = $forum_viewers_text;
-					eval("\$forum_viewers_text = \"".$templates->get("forumbit_depth2_forum_viewers")."\";");
+					$forum_viewers_text = eval($templates->render("forumbit_depth2_forum_viewers"));
 				}
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set counters to "-"
@@ -339,7 +339,7 @@ function build_forumbits($pid=0, $depth=1)
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost to "-"
 			if($forum['linkto'] != '' || $hideinfo == true || $hidelastpostinfo == true)
 			{
-				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
+				$lastpost = eval($templates->render("forumbit_depth2_forum_lastpost_hidden"));
 			}
 
 			// Moderator column is not off
@@ -371,7 +371,7 @@ function build_forumbits($pid=0, $depth=1)
 
 									$moderator['title'] = htmlspecialchars_uni($moderator['title']);
 
-									eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
+									$moderators .= eval($templates->render("forumbit_moderators_group", 1, 0));
 									$done_moderators['groups'][] = $moderator['id'];
 								}
 								else
@@ -384,7 +384,7 @@ function build_forumbits($pid=0, $depth=1)
 									$moderator['profilelink'] = get_profile_link($moderator['id']);
 									$moderator['username'] = htmlspecialchars_uni($moderator['username']);
 
-									eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
+									$moderators .= eval($templates->render("forumbit_moderators_user", 1, 0));
 									$done_moderators['users'][] = $moderator['id'];
 								}
 								$comma = $lang->comma;
@@ -397,7 +397,7 @@ function build_forumbits($pid=0, $depth=1)
 				// If we have a moderators list, load the template
 				if($moderators)
 				{
-					eval("\$modlist = \"".$templates->get("forumbit_moderators")."\";");
+					$modlist = eval($templates->render("forumbit_moderators"));
 				}
 				else
 				{
@@ -432,7 +432,7 @@ function build_forumbits($pid=0, $depth=1)
 			$bgcolor = alt_trow();
 
 			// Add the forum to the list
-			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
+			$forum_list .= eval($templates->render("forumbit_depth$depth$forumcat"));
 		}
 	}
 
@@ -563,7 +563,7 @@ function get_forum_unapproved($forum)
 			}
 
 			$forum['unapprovedposts'] = my_number_format($forum['unapprovedposts']);
-			eval("\$unapproved_posts = \"".$templates->get("forumbit_depth2_forum_unapproved_posts")."\";");
+			$unapproved_posts = eval($templates->render("forumbit_depth2_forum_unapproved_posts"));
 		}
 		// Forum has one or more unapproved threads, format language string accordingly
 		if($forum['unapprovedthreads'])
@@ -578,7 +578,7 @@ function get_forum_unapproved($forum)
 			}
 
 			$forum['unapprovedthreads'] = my_number_format($forum['unapprovedthreads']);
-			eval("\$unapproved_threads = \"".$templates->get("forumbit_depth2_forum_unapproved_threads")."\";");
+			$unapproved_threads = eval($templates->render("forumbit_depth2_forum_unapproved_threads"));
 		}
 	}
 	return array(

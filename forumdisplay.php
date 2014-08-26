@@ -156,7 +156,7 @@ $forums = $child_forums['forum_list'];
 if($forums)
 {
 	$lang->sub_forums_in = $lang->sprintf($lang->sub_forums_in, $foruminfo['name']);
-	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
+	$subforums = eval($templates->render("forumdisplay_subforums"));
 }
 
 $excols = "forumdisplay";
@@ -178,12 +178,12 @@ if($mybb->settings['enableforumjump'] != 0)
 
 if($foruminfo['type'] == "f" && $foruminfo['open'] != 0 && $fpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] == 0)
 {
-	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
+	$newthread = eval($templates->render("forumdisplay_newthread"));
 }
 
 if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 {
-	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
+	$searchforum = eval($templates->render("forumdisplay_searchforum"));
 }
 
 // Gather forum stats
@@ -232,7 +232,7 @@ foreach($parentlistexploded as $mfid)
 
 					$moderator['title'] = htmlspecialchars_uni($moderator['title']);
 
-					eval("\$moderators .= \"".$templates->get("forumbit_moderators_group", 1, 0)."\";");
+					$moderators .= eval($templates->render("forumbit_moderators_group", 1, 0));
 					$done_moderators['groups'][] = $moderator['id'];
 				}
 				else
@@ -245,7 +245,7 @@ foreach($parentlistexploded as $mfid)
 					$moderator['profilelink'] = get_profile_link($moderator['id']);
 					$moderator['username'] = format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup']);
 
-					eval("\$moderators .= \"".$templates->get("forumbit_moderators_user", 1, 0)."\";");
+					$moderators .= eval($templates->render("forumbit_moderators_user", 1, 0));
 					$done_moderators['users'][] = $moderator['id'];
 				}
 				$comma = $lang->comma;
@@ -263,7 +263,7 @@ $comma = '';
 // If we have a moderators list, load the template
 if($moderators)
 {
-	eval("\$moderatedby = \"".$templates->get("forumdisplay_moderatedby")."\";");
+	$moderatedby = eval($templates->render("forumdisplay_moderatedby"));
 }
 else
 {
@@ -316,7 +316,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("forumdisplay_usersbrowsing_user", 1, 0)."\";");
+					$onlinemembers .= eval($templates->render("forumdisplay_usersbrowsing_user", 1, 0));
 					$comma = $lang->comma;
 				}
 			}
@@ -347,7 +347,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		$onlinesep2 = $lang->comma;
 	}
 
-	eval("\$usersbrowsing = \"".$templates->get("forumdisplay_usersbrowsing")."\";");
+	$usersbrowsing = eval($templates->render("forumdisplay_usersbrowsing"));
 }
 
 // Do we have any forum rules to show for this forum?
@@ -369,11 +369,11 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	$foruminfo['rules'] = $parser->parse_message($foruminfo['rules'], $rules_parser);
 	if($foruminfo['rulestype'] == 1 || $foruminfo['rulestype'] == 3)
 	{
-		eval("\$rules = \"".$templates->get("forumdisplay_rules")."\";");
+		$rules = eval($templates->render("forumdisplay_rules"));
 	}
 	else if($foruminfo['rulestype'] == 2)
 	{
-		eval("\$rules = \"".$templates->get("forumdisplay_rules_link")."\";");
+		$rules = eval($templates->render("forumdisplay_rules_link"));
 	}
 }
 
@@ -386,7 +386,7 @@ $tvisibleonly = "AND t.visible='1'";
 // Check if the active user is a moderator and get the inline moderation tools.
 if(is_moderator($fid))
 {
-	eval("\$inlinemodcol = \"".$templates->get("forumdisplay_inlinemoderation_col")."\";");
+	$inlinemodcol = eval($templates->render("forumdisplay_inlinemoderation_col"));
 	$ismod = true;
 	$inlinecount = "0";
 	$inlinemod = '';
@@ -576,7 +576,7 @@ else
 	$sorturl = get_forum_link($fid).$string."datecut=$datecut&amp;prefix=$tprefix";
 }
 
-eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
+$orderarrow['$sortby'] = eval($templates->render("forumdisplay_orderarrow"));
 
 $threadcount = 0;
 $useronly = $tuseronly = "";
@@ -710,8 +710,8 @@ if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 
 	}
 
 	$lpbackground = "trow2";
-	eval("\$ratingcol = \"".$templates->get("forumdisplay_threadlist_rating")."\";");
-	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
+	$ratingcol = eval($templates->render("forumdisplay_threadlist_rating"));
+	$ratingsort = eval($templates->render("forumdisplay_threadlist_sortrating"));
 	$colspan = "7";
 }
 else
@@ -788,7 +788,7 @@ if($has_announcements == true)
 
 		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 		{
-			eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
+			$rating = eval($templates->render("forumdisplay_announcement_rating"));
 			$lpbackground = "trow2";
 		}
 		else
@@ -799,7 +799,7 @@ if($has_announcements == true)
 
 		if($ismod)
 		{
-			eval("\$modann = \"".$templates->get("forumdisplay_announcements_announcement_modbit")."\";");
+			$modann = eval($templates->render("forumdisplay_announcements_announcement_modbit"));
 		}
 		else
 		{
@@ -807,13 +807,13 @@ if($has_announcements == true)
 		}
 
 		$plugins->run_hooks("forumdisplay_announcement");
-		eval("\$announcements .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
+		$announcements .= eval($templates->render("forumdisplay_announcements_announcement"));
 		$bgcolor = alt_trow();
 	}
 
 	if($announcements)
 	{
-		eval("\$announcementlist = \"".$templates->get("forumdisplay_announcements")."\";");
+		$announcementlist = eval($templates->render("forumdisplay_announcements"));
 		$shownormalsep = true;
 	}
 
@@ -902,7 +902,7 @@ if(is_moderator($fid) && $threadcount > $perpage)
 	$lang->page_selected = $lang->sprintf($lang->page_selected, count($threadcache));
 	$lang->select_all = $lang->sprintf($lang->select_all, (int)$threadcount);
 	$lang->all_selected = $lang->sprintf($lang->all_selected, (int)$threadcount);
-	eval("\$selectall = \"".$templates->get("forumdisplay_inlinemoderation_selectall")."\";");
+	$selectall = eval($templates->render("forumdisplay_inlinemoderation_selectall"));
 }
 
 if(!empty($tids))
@@ -1039,7 +1039,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			$icon = $icon_cache[$thread['icon']];
 			$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-			eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
+			$icon = eval($templates->render("forumdisplay_thread_icon"));
 		}
 		else
 		{
@@ -1054,13 +1054,13 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if($thread['sticky'] == "1" && !isset($donestickysep))
 		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
+			$threads .= eval($templates->render("forumdisplay_sticky_sep"));
 			$shownormalsep = true;
 			$donestickysep = true;
 		}
 		else if($thread['sticky'] == 0 && !empty($shownormalsep))
 		{
-			eval("\$threads .= \"".$templates->get("forumdisplay_threads_sep")."\";");
+			$threads .= eval($templates->render("forumdisplay_threads_sep"));
 			$shownormalsep = false;
 		}
 
@@ -1069,7 +1069,7 @@ if(!empty($threadcache) && is_array($threadcache))
 		{
 			if($moved[0] == "moved")
 			{
-				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating_moved")."\";");
+				$rating = eval($templates->render("forumdisplay_thread_rating_moved"));
 			}
 			else
 			{
@@ -1084,7 +1084,7 @@ if(!empty($threadcache) && is_array($threadcache))
 				}
 
 				$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
-				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
+				$rating = eval($templates->render("forumdisplay_thread_rating"));
 			}
 		}
 
@@ -1108,7 +1108,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			{
 				$pagesstop = $mybb->settings['maxmultipagelinks'] - 1;
 				$page_link = get_thread_link($thread['tid'], $thread['pages']);
-				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
+				$morelink = eval($templates->render("forumdisplay_thread_multipage_more"));
 			}
 			else
 			{
@@ -1118,10 +1118,10 @@ if(!empty($threadcache) && is_array($threadcache))
 			for($i = 1; $i <= $pagesstop; ++$i)
 			{
 				$page_link = get_thread_link($thread['tid'], $i);
-				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
+				$threadpages .= eval($templates->render("forumdisplay_thread_multipage_page"));
 			}
 
-			eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
+			$thread['multipage'] = eval($templates->render("forumdisplay_thread_multipage"));
 		}
 		else
 		{
@@ -1143,7 +1143,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 
 			$multitid = $thread['tid'];
-			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
+			$modbit = eval($templates->render("forumdisplay_thread_modbit"));
 		}
 		else
 		{
@@ -1202,7 +1202,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			$folder_label .= $lang->icon_new;
 			$new_class = "subject_new";
 			$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-			eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+			$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 			$unreadpost = 1;
 		}
 		else
@@ -1270,7 +1270,7 @@ if(!empty($threadcache) && is_array($threadcache))
 			}
 
 			$thread['unapprovedposts'] = my_number_format($thread['unapprovedposts']);
-			eval("\$unapproved_posts = \"".$templates->get("forumdisplay_thread_unapproved_posts")."\";");
+			$unapproved_posts = eval($templates->render("forumdisplay_thread_unapproved_posts"));
 		}
 		else
 		{
@@ -1289,7 +1289,7 @@ if(!empty($threadcache) && is_array($threadcache))
 				$attachment_count = $lang->attachment_count;
 			}
 
-			eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
+			$attachment_count = eval($templates->render("forumdisplay_thread_attachment_count"));
 		}
 		else
 		{
@@ -1298,7 +1298,7 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		$plugins->run_hooks("forumdisplay_thread_end");
 
-		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
+		$threads .= eval($templates->render("forumdisplay_thread"));
 	}
 
 	$customthreadtools = $standardthreadtools = '';
@@ -1334,12 +1334,12 @@ if(!empty($threadcache) && is_array($threadcache))
 
 			while($tool = $db->fetch_array($query))
 			{
-				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+				$customthreadtools .= eval($templates->render("forumdisplay_inlinemoderation_custom_tool"));
 			}
 
 			if($customthreadtools)
 			{
-				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
+				$customthreadtools = eval($templates->render("forumdisplay_inlinemoderation_custom"));
 			}
 		}
 
@@ -1347,48 +1347,48 @@ if(!empty($threadcache) && is_array($threadcache))
 
 		if(is_moderator($fid, "canopenclosethreads"))
 		{
-			eval("\$inlinemodopenclose = \"".$templates->get("forumdisplay_inlinemoderation_openclose")."\";");
+			$inlinemodopenclose = eval($templates->render("forumdisplay_inlinemoderation_openclose"));
 		}
 
 		if(is_moderator($fid, "canstickunstickthreads"))
 		{
-			eval("\$inlinemodstickunstick = \"".$templates->get("forumdisplay_inlinemoderation_stickunstick")."\";");
+			$inlinemodstickunstick = eval($templates->render("forumdisplay_inlinemoderation_stickunstick"));
 		}
 
 		if(is_moderator($fid, "cansoftdeletethreads"))
 		{
-			eval("\$inlinemodsoftdelete = \"".$templates->get("forumdisplay_inlinemoderation_softdelete")."\";");
+			$inlinemodsoftdelete = eval($templates->render("forumdisplay_inlinemoderation_softdelete"));
 		}
 
 		if(is_moderator($fid, "canrestorethreads"))
 		{
-			eval("\$inlinemodrestore = \"".$templates->get("forumdisplay_inlinemoderation_restore")."\";");
+			$inlinemodrestore = eval($templates->render("forumdisplay_inlinemoderation_restore"));
 		}
 
 		if(is_moderator($fid, "candeletethreads"))
 		{
-			eval("\$inlinemoddelete = \"".$templates->get("forumdisplay_inlinemoderation_delete")."\";");
+			$inlinemoddelete = eval($templates->render("forumdisplay_inlinemoderation_delete"));
 		}
 
 		if(is_moderator($fid, "canmanagethreads"))
 		{
-			eval("\$inlinemodmanage = \"".$templates->get("forumdisplay_inlinemoderation_manage")."\";");
+			$inlinemodmanage = eval($templates->render("forumdisplay_inlinemoderation_manage"));
 		}
 
 		if(is_moderator($fid, "canapproveunapproveposts"))
 		{
-			eval("\$inlinemodapproveunapprove = \"".$templates->get("forumdisplay_inlinemoderation_approveunapprove")."\";");
+			$inlinemodapproveunapprove = eval($templates->render("forumdisplay_inlinemoderation_approveunapprove"));
 		}
 
 		if(!empty($inlinemodopenclose) || !empty($inlinemodstickunstick) || !empty($inlinemodsoftdelete) || !empty($inlinemodrestore) || !empty($inlinemoddelete) || !empty($inlinemodmanage) || !empty($inlinemodapproveunapprove))
 		{
-			eval("\$standardthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_standard")."\";");
+			$standardthreadtools = eval($templates->render("forumdisplay_inlinemoderation_standard"));
 		}
 
 		// Only show inline mod menu if there's options to show
 		if(!empty($standardthreadtools) || !empty($customthreadtools))
 		{
-			eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
+			$inlinemod = eval($templates->render("forumdisplay_inlinemoderation"));
 		}
 	}
 }
@@ -1424,13 +1424,13 @@ if($foruminfo['type'] != "c")
 {
 	if(!$threadcount)
 	{
-		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
+		$threads = eval($templates->render("forumdisplay_nothreads"));
 	}
 
 	$clearstoredpass = '';
 	if($foruminfo['password'] != '')
 	{
-		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
+		$clearstoredpass = eval($templates->render("forumdisplay_threadlist_clearpass"));
 	}
 
 	$post_code_string = '';
@@ -1442,8 +1442,8 @@ if($foruminfo['type'] != "c")
 	$prefixselect = build_forum_prefix_select($fid, $tprefix);
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
-	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
-	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
+	$rssdiscovery = eval($templates->render("forumdisplay_rssdiscovery"));
+	$threadslist = eval($templates->render("forumdisplay_threadlist"));
 }
 else
 {
@@ -1460,5 +1460,5 @@ $plugins->run_hooks("forumdisplay_end");
 
 $foruminfo['name'] = strip_tags($foruminfo['name']);
 
-eval("\$forums = \"".$templates->get("forumdisplay")."\";");
+$forums = eval($templates->render("forumdisplay"));
 output_page($forums);

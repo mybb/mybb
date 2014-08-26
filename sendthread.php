@@ -278,15 +278,15 @@ if(!$mybb->input['action'])
 	$from_email = '';
 	if($mybb->user['uid'] == 0)
 	{
-		eval("\$from_email = \"".$templates->get("sendthread_fromemail")."\";");
+		$from_email = eval($templates->render("sendthread_fromemail"));
 	}
 	else
 	{
-		eval("\$from_email = \"".$templates->get("sendthread_fromemail_hidden")."\";");
+		$from_email = eval($templates->render("sendthread_fromemail_hidden"));
 	}
 
 	$plugins->run_hooks("sendthread_end");
 
-	eval("\$sendtofriend = \"".$templates->get("sendthread")."\";");
+	$sendtofriend = eval($templates->render("sendthread"));
 	output_page($sendtofriend);
 }

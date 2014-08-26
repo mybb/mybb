@@ -56,11 +56,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$message = $lang->add_no_permission;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -72,11 +72,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$message = $lang->add_disabled;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -88,11 +88,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$message = $lang->add_yours;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -117,11 +117,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$message = $lang->add_maxperday;
 			if($mybb->input['nomodal'])
 			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+				$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 			}
 			else
 			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+				$error = eval($templates->render("reputation_add_error", 1, 0));
 			}
 			echo $error;
 			exit;
@@ -140,11 +140,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 			$message = $lang->add_maxperuser;
 			if($mybb->input['nomodal'])
 			{
-				eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+				$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 			}
 			else
 			{
-				eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+				$error = eval($templates->render("reputation_add_error", 1, 0));
 			}
 			echo $error;
 			exit;
@@ -199,11 +199,11 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 					$message = $lang->add_maxperthread;
 					if($mybb->input['nomodal'])
 					{
-						eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+						$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 					}
 					else
 					{
-						eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+						$error = eval($templates->render("reputation_add_error", 1, 0));
 					}
 					echo $error;
 					exit;
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$reputation_value = $db->fetch_field($query, "reputation_count");
 
 		$db->update_query("users", array('reputation' => (int)$reputation_value), "uid='{$uid}'");
-		eval("\$error = \"".$templates->get("reputation_deleted", 1, 0)."\";");
+		$error = eval($templates->render("reputation_deleted", 1, 0));
 		echo $error;
 		exit;
 	}
@@ -279,11 +279,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->add_no_comment;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -295,11 +295,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->add_invalidpower;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -311,11 +311,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->add_negative_disabled;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -327,11 +327,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->add_neutral_disabled;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -343,11 +343,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->add_positive_disabled;
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -359,11 +359,11 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		$message = $lang->sprintf($lang->add_toolong, $mybb->settings['maxreplength']);
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 		echo $error;
 		exit;
@@ -416,7 +416,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("reputation_do_add_end");
 
-	eval("\$reputation = \"".$templates->get("reputation_added", 1, 0)."\";");
+	$reputation = eval($templates->render("reputation_added", 1, 0));
 	echo $reputation;
 	exit;
 }
@@ -440,7 +440,7 @@ if($mybb->input['action'] == "add")
 			$comments = htmlspecialchars_uni($existing_post_reputation['comments']);
 		}
 
-		eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
+		$delete_button = eval($templates->render("reputation_add_delete"));
 	}
 	// Otherwise we're adding an entirely new reputation for this user.
 	else
@@ -483,7 +483,7 @@ if($mybb->input['action'] == "add")
 		if($mybb->settings['neurep'])
 		{
 			$neutral_title = $lang->power_neutral;
-			eval("\$neutral_power = \"".$templates->get("reputation_add_neutral")."\";");
+			$neutral_power = eval($templates->render("reputation_add_neutral"));
 		}
 
 		for($value = 1; $value <= $reputationpower; ++$value)
@@ -491,21 +491,21 @@ if($mybb->input['action'] == "add")
 			if($mybb->settings['posrep'])
 			{
 				$positive_title = $lang->sprintf($lang->power_positive, "+".$value);
-				eval("\$positive_power = \"".$templates->get("reputation_add_positive")."\";");
+				$positive_power = eval($templates->render("reputation_add_positive"));
 			}
 
 			if($mybb->settings['negrep'])
 			{
 				$negative_title = $lang->sprintf($lang->power_negative, "-".$value);
 				$neg_value = "-{$value}";
-				eval("\$negative_power .= \"".$templates->get("reputation_add_negative")."\";");
+				$negative_power .= eval($templates->render("reputation_add_negative"));
 			}
 		}
 
 		$mybb->input['pid'] = $mybb->get_input('pid', 1);
 
 		$plugins->run_hooks("reputation_add_end");
-		eval("\$reputation_add = \"".$templates->get("reputation_add", 1, 0)."\";");
+		$reputation_add = eval($templates->render("reputation_add", 1, 0));
 	}
 	else
 	{
@@ -514,11 +514,11 @@ if($mybb->input['action'] == "add")
 		$plugins->run_hooks("reputation_add_end_error");
 		if($mybb->input['nomodal'])
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error_nomodal", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error_nomodal", 1, 0));
 		}
 		else
 		{
-			eval("\$error = \"".$templates->get("reputation_add_error", 1, 0)."\";");
+			$error = eval($templates->render("reputation_add_error", 1, 0));
 		}
 	}
 
@@ -628,7 +628,7 @@ if(!$mybb->input['action'])
 	// If the user has permission to add reputations - show the image
 	if($mybb->usergroup['cangivereputations'] == 1 && $mybb->user['uid'] != $user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 	{
-		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
+		$add_reputation = eval($templates->render("reputation_addlink"));
 	}
 	else
 	{
@@ -966,13 +966,13 @@ if(!$mybb->input['action'])
 		$delete_link = '';
 		if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
-			eval("\$delete_link = \"".$templates->get("reputation_vote_delete")."\";");
+			$delete_link = eval($templates->render("reputation_vote_delete"));
 		}
 
 		$report_link = '';
 		if($mybb->user['uid'] != 0)
 		{
-			eval("\$report_link = \"".$templates->get("reputation_vote_report")."\";");
+			$report_link = eval($templates->render("reputation_vote_report"));
 		}
 
 		// Parse smilies in the reputation vote
@@ -992,16 +992,16 @@ if(!$mybb->input['action'])
 
 		$plugins->run_hooks("reputation_vote");
 
-		eval("\$reputation_votes .= \"".$templates->get("reputation_vote")."\";");
+		$reputation_votes .= eval($templates->render("reputation_vote"));
 	}
 
 	// If we don't have any reputations display a nice message.
 	if(!$reputation_votes)
 	{
-		eval("\$reputation_votes = \"".$templates->get("reputation_no_votes")."\";");
+		$reputation_votes = eval($templates->render("reputation_no_votes"));
 	}
 
 	$plugins->run_hooks("reputation_end");
-	eval("\$reputation = \"".$templates->get("reputation")."\";");
+	$reputation = eval($templates->render("reputation"));
 	output_page($reputation);
 }

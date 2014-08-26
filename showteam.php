@@ -80,7 +80,7 @@ while($user = $db->fetch_array($query))
 			if($forum_permissions[$forum['fid']]['canview'] == 1)
 			{
 				$forum_url = get_forum_link($forum['fid']);
-				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
+				$forumlist .= eval($templates->render("showteam_moderators_forum"));
 			}
 		}
 		$user['forumlist'] = $forumlist;
@@ -132,12 +132,12 @@ foreach($usergroups as $usergroup)
 		$emailcode = $pmcode = '';
 		if($user['hideemail'] != 1)
 		{
-			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
+			$emailcode = eval($templates->render("postbit_email"));
 		}
 
 		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
-			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
+			$pmcode = eval($templates->render("postbit_pm"));
 		}
 
 		// For the online image
@@ -174,22 +174,22 @@ foreach($usergroups as $usergroup)
 		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 		{
 			$forumslist = $user['forumlist'];
-			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
+			$modrows .= eval($templates->render("showteam_moderators_mod"));
 		}
 		else
 		{
-			eval("\$usergrouprows .= \"".$templates->get("showteam_usergroup_user")."\";");
+			$usergrouprows .= eval($templates->render("showteam_usergroup_user"));
 		}
 	}
 
 	if($modrows && $usergroup['gid'] == 6)
 	{
-		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
+		$grouplist .= eval($templates->render("showteam_moderators"));
 	}
 
 	if($usergrouprows)
 	{
-		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
+		$grouplist .= eval($templates->render("showteam_usergroup"));
 	}
 }
 
@@ -200,5 +200,5 @@ if(empty($grouplist))
 
 $plugins->run_hooks("showteam_end");
 
-eval("\$showteam = \"".$templates->get("showteam")."\";");
+$showteam = eval($templates->render("showteam"));
 output_page($showteam);

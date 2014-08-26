@@ -213,7 +213,7 @@ elseif($mybb->input['action'] == "joinrequests")
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-		eval("\$users .= \"".$templates->get("managegroup_joinrequests_request")."\";");
+		$users .= eval($templates->render("managegroup_joinrequests_request"));
 	}
 	if(!$users)
 	{
@@ -223,7 +223,7 @@ elseif($mybb->input['action'] == "joinrequests")
 
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
-	eval("\$joinrequests = \"".$templates->get("managegroup_joinrequests")."\";");
+	$joinrequests = eval($templates->render("managegroup_joinrequests"));
 	output_page($joinrequests);
 }
 elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "post")
@@ -273,7 +273,7 @@ else
 		if($numrequests['req'])
 		{
 			$lang->num_requests_pending = $lang->sprintf($lang->num_requests_pending, $numrequests['req']);
-			eval("\$joinrequests = \"".$templates->get("managegroup_requestnote")."\";");
+			$joinrequests = eval($templates->render("managegroup_requestnote"));
 		}
 		$usergrouptype = $lang->group_public_moderated;
 	}
@@ -320,10 +320,10 @@ else
 			}
 
 			++$loop;
-			eval("\$leaders .= \"".$templates->get("managegroup_leaders_bit")."\";");
+			$leaders .= eval($templates->render("managegroup_leaders_bit"));
 		}
 
-		eval("\$group_leaders = \"".$templates->get("managegroup_leaders")."\";");
+		$group_leaders = eval($templates->render("managegroup_leaders"));
 	}
 
 	switch($db->type)
@@ -362,12 +362,12 @@ else
 		$sendpm = $email = '';
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
-			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
+			$sendpm = eval($templates->render("postbit_pm"));
 		}
 
 		if($user['hideemail'] != 1)
 		{
-			eval("\$email = \"".$templates->get("postbit_email")."\";");
+			$email = eval($templates->render("postbit_email"));
 		}
 		else
 		{
@@ -390,32 +390,32 @@ else
 		$checkbox = '';
 		if($groupleader['canmanagemembers'] == 1)
 		{
-			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
+			$checkbox = eval($templates->render("managegroup_user_checkbox"));
 		}
 
-		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
+		$users .= eval($templates->render("managegroup_user"));
 	}
 
 	if(!$users)
 	{
-		eval("\$users = \"".$templates->get("managegroup_no_users")."\";");
+		$users = eval($templates->render("managegroup_no_users"));
 	}
 
 	$add_user = '';
 	$remove_users = '';
 	if($groupleader['canmanagemembers'] == 1)
 	{
-		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
-		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");
+		$add_user = eval($templates->render("managegroup_adduser"));
+		$remove_users = eval($templates->render("managegroup_removeusers"));
 	}
 
 	if($usergroup['type'] == 5 && $groupleader['caninvitemembers'] == 1)
 	{
-		eval("\$invite_user = \"".$templates->get("managegroup_inviteuser")."\";");
+		$invite_user = eval($templates->render("managegroup_inviteuser"));
 	}
 
 	$plugins->run_hooks("managegroup_end");
 
-	eval("\$manageusers = \"".$templates->get("managegroup")."\";");
+	$manageusers = eval($templates->render("managegroup"));
 	output_page($manageusers);
 }
