@@ -111,7 +111,7 @@ if($forum['allowpicons'] != 0)
 // If we have a currently logged in user then fetch the change user box.
 if($mybb->user['uid'] != 0)
 {
-	eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+	eval($templates->render("changeuserbox", "loginbox"));
 }
 
 // Otherwise we have a guest, determine the "username" and get the login box.
@@ -125,7 +125,7 @@ else
 	{
 		$username = htmlspecialchars_uni($mybb->get_input('username'));
 	}
-	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
+	eval($templates->render("loginbox", "loginbox"));
 }
 
 // If we're not performing a new thread insert and not editing a draft then we're posting a new thread.
@@ -593,7 +593,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 						$multiquote_deselect = $lang->multiquote_external_deselect;
 						$multiquote_quote = $lang->multiquote_external_quote;
 					}
-					eval("\$multiquote_external = \"".$templates->get("newthread_multiquote_external")."\";");
+					eval($templates->render("newthread_multiquote_external", "multiquote_external"));
 				}
 			}
 		}
@@ -857,7 +857,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			}
 
 			$postbit = build_postbit($post, 1);
-			eval("\$preview = \"".$templates->get("previewpost")."\";");
+			eval($templates->render("previewpost", "preview"));
 		}
 		$message = htmlspecialchars_uni($mybb->get_input('message'));
 		$subject = htmlspecialchars_uni($mybb->get_input('subject'));
@@ -884,11 +884,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	$disablesmilies = '';
 	if($forum['allowsmilies'] != 0)
 	{
-		eval("\$disablesmilies = \"".$templates->get("newthread_disablesmilies")."\";");
+		eval($templates->render("newthread_disablesmilies", "disablesmilies"));
 	}
 	else
 	{
-		eval("\$disablesmilies = \"".$templates->get("newthread_disablesmilies_hidden")."\";");
+		eval($templates->render("newthread_disablesmilies_hidden", "disablesmilies"));
 	}
 
 	$modoptions = '';
@@ -912,7 +912,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$stickycheck = '';
 		}
-		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
+		eval($templates->render("newreply_modoptions", "modoptions"));
 		$bgcolor = "trow1";
 		$bgcolor2 = "trow2";
 	}
@@ -923,7 +923,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 
 	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+	eval($templates->render("post_subscription_method", "subscriptionmethod"));
 
 	if($mybb->settings['enableattachments'] != 0 && $forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
@@ -946,19 +946,19 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 			{
-				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
+				eval($templates->render("post_attachments_attachment_postinsert", "postinsert"));
 			}
 
-			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+			eval($templates->render("post_attachments_attachment_remove", "attach_rem_options"));
 
 			$attach_mod_options = '';
 			if($attachment['visible'] != 1)
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
+				eval($templates->render("post_attachments_attachment_unapproved", "attachments", true));
 			}
 			else
 			{
-				eval("\$attachments .= \"".$templates->get("post_attachments_attachment")."\";");
+				eval($templates->render("post_attachments_attachment", "attachments", true));
 			}
 			$attachcount++;
 		}
@@ -980,26 +980,26 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !isset($noshowattach))
 		{
-			eval("\$attach_add_options = \"".$templates->get("post_attachments_add")."\";");
+			eval($templates->render("post_attachments_add", "attach_add_options"));
 		}
 
 		if(($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']) && $attachcount > 0)
 		{
-			eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
+			eval($templates->render("post_attachments_update", "attach_update_options"));
 		}
 
 		if($attach_add_options || $attach_update_options)
 		{
-			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
+			eval($templates->render("post_attachments_new", "newattach"));
 		}
-		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
+		eval($templates->render("post_attachments", "attachbox"));
 
 		$bgcolor = alt_trow();
 	}
 
 	if($mybb->user['uid'])
 	{
-		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
+		eval($templates->render("post_savedraftbutton", "savedraftbutton", false, 1, 0));
 	}
 
 	$captcha = '';
@@ -1067,7 +1067,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	if($forumpermissions['canpostpolls'] != 0)
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
-		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
+		eval($templates->render("newthread_postpoll", "pollbox"));
 	}
 
 	// Do we have any forum rules to show for this forum?
@@ -1097,11 +1097,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 		if($forum['rulestype'] == 3)
 		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules")."\";");
+			eval($templates->render("forumdisplay_rules", "forumrules"));
 		}
 		else if($forum['rulestype'] == 2)
 		{
-			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
+			eval($templates->render("forumdisplay_rules_link", "forumrules"));
 		}
 	}
 
@@ -1111,7 +1111,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		if($forumpermissions['modattachments'] == 1  && $forumpermissions['canpostattachments'] != 0)
 		{
 			$moderation_text = $lang->moderation_forum_attachments;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 	}
 
@@ -1120,7 +1120,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		if($forumpermissions['modthreads'] == 1)
 		{
 			$moderation_text = $lang->moderation_forum_thread;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 	}
 
@@ -1129,7 +1129,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		if($mybb->user['moderateposts'] == 1)
 		{
 			$moderation_text = $lang->moderation_user_posts;
-			eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+			eval($templates->render("global_moderation_notice", "moderation_notice"));
 		}
 	}
 
@@ -1138,7 +1138,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	$forum['name'] = strip_tags($forum['name']);
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 
-	eval("\$newthread = \"".$templates->get("newthread")."\";");
+	eval($templates->render("newthread", "newthread"));
 	output_page($newthread);
 }
 

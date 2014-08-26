@@ -109,7 +109,7 @@ if(isset($forum))
 	check_forum_password($forum['fid']);
 }
 
-eval("\$loginbox = \"".$templates->get("changeuserbox")."\";");
+eval($templates->render("changeuserbox", "loginbox"));
 
 $allowable_moderation_actions = array("getip", "getpmip", "cancel_delayedmoderation", "delayedmoderation", "threadnotes", "purgespammer", "viewthreadnotes");
 
@@ -216,7 +216,7 @@ switch($mybb->input['action'])
 				$checked = "checked=\"checked\"";
 			}
 
-			eval("\$customthreadtools .= \"".$templates->get("moderation_delayedmoderation_custommodtool")."\";");
+			eval($templates->render("moderation_delayedmoderation_custommodtool", "customthreadtools", true));
 		}
 
 		$mybb->input['delayedmoderation'] = $mybb->get_input('delayedmoderation', 2);
@@ -505,13 +505,13 @@ switch($mybb->input['action'])
 				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
 			}
 
-			eval("\$delayedmods .= \"".$templates->get("moderation_delayedmodaction_notes")."\";");
+			eval($templates->render("moderation_delayedmodaction_notes", "delayedmods", true));
 			$trow = alt_trow();
 		}
 		if(!$delayedmods)
 		{
 			$cols = 5;
-			eval("\$delayedmods = \"".$templates->get("moderation_delayedmodaction_error")."\";");
+			eval($templates->render("moderation_delayedmodaction_error", "delayedmods"));
 		}
 
 		$url = '';
@@ -519,7 +519,7 @@ switch($mybb->input['action'])
 		{
 			$lang->threads = $lang->thread;
 			$threads = "<a href=\"".get_thread_link($tid)."\">{$thread['subject']}</a>";
-			eval("\$moderation_delayedmoderation_merge = \"".$templates->get("moderation_delayedmoderation_merge")."\";");
+			eval($templates->render("moderation_delayedmoderation_merge", "moderation_delayedmoderation_merge"));
 		}
 		else
 		{
@@ -541,7 +541,7 @@ switch($mybb->input['action'])
 			$moderation_delayedmoderation_merge = '';
 		}
 		$mybb->input['redirect_expire'] = $mybb->get_input('redirect_expire');
-		eval("\$moderation_delayedmoderation_move = \"".$templates->get("moderation_delayedmoderation_move")."\";");
+		eval($templates->render("moderation_delayedmoderation_move", "moderation_delayedmoderation_move"));
 
 		// Generate form elements for date form
 		$dateday = '';
@@ -552,7 +552,7 @@ switch($mybb->input['action'])
 			{
 				$selected = ' selected="selected"';
 			}
-			eval('$dateday .= "'.$templates->get('moderation_delayedmoderation_date_day').'";');
+			eval($templates->render("moderation_delayedmoderation_date_day", "dateday", true));
 		}
 
 		$datemonth = array();
@@ -566,14 +566,14 @@ switch($mybb->input['action'])
 		}
 		
 
-		eval('$datemonth = "'.$templates->get('moderation_delayedmoderation_date_month').'";');
+		eval($templates->render("moderation_delayedmoderation_date_month", "datemonth"));
 
 		$dateyear = gmdate('Y', TIME_NOW);
 		$datetime = gmdate('g:i a', TIME_NOW);
 
 		$plugins->run_hooks("moderation_delayedmoderation");
 
-		eval("\$delayedmoderation = \"".$templates->get("moderation_delayedmoderation")."\";");
+		eval($templates->render("moderation_delayedmoderation", "delayedmoderation"));
 		output_page($delayedmoderation);
 		break;
 	// Open or close a thread
@@ -672,7 +672,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_deletethread");
 
-		eval("\$deletethread = \"".$templates->get("moderation_deletethread")."\";");
+		eval($templates->render("moderation_deletethread", "deletethread"));
 		output_page($deletethread);
 		break;
 
@@ -726,7 +726,7 @@ switch($mybb->input['action'])
 			error($lang->error_invalidpoll);
 		}
 
-		eval("\$deletepoll = \"".$templates->get("moderation_deletepoll")."\";");
+		eval($templates->render("moderation_deletepoll", "deletepoll"));
 		output_page($deletepoll);
 		break;
 
@@ -863,7 +863,7 @@ switch($mybb->input['action'])
 		$plugins->run_hooks("moderation_move");
 
 		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
-		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
+		eval($templates->render("moderation_move", "movethread"));
 		output_page($movethread);
 		break;
 
@@ -943,7 +943,7 @@ switch($mybb->input['action'])
 
 		$thread['notes'] = nl2br(htmlspecialchars_uni($thread['notes']));
 
-		eval("\$viewthreadnotes = \"".$templates->get("moderation_viewthreadnotes", 1, 0)."\";");
+		eval($templates->render("moderation_viewthreadnotes", "viewthreadnotes", false, 1, 0));
 		echo $viewthreadnotes;
 		break;
 
@@ -990,12 +990,12 @@ switch($mybb->input['action'])
 					$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
 				}
 
-				eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
+				eval($templates->render("moderation_threadnotes_modaction", "modactions", true));
 				$trow = alt_trow();
 			}
 			if(!$modactions)
 			{
-				eval("\$modactions = \"".$templates->get("moderation_threadnotes_modaction_error")."\";");
+				eval($templates->render("moderation_threadnotes_modaction_error", "modactions"));
 			}
 		}
 
@@ -1088,18 +1088,18 @@ switch($mybb->input['action'])
 				$info .= "<strong>{$lang->thread_to_merge_with}</strong> <a href=\"".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."\">".htmlspecialchars_uni($delayedmod['inputs']['threadurl'])."</a><br />";
 			}
 
-			eval("\$delayedmods .= \"".$templates->get("moderation_threadnotes_delayedmodaction")."\";");
+			eval($templates->render("moderation_threadnotes_delayedmodaction", "delayedmods", true));
 			$trow = alt_trow();
 		}
 		if(!$delayedmods)
 		{
 			$cols = 4;
-			eval("\$delayedmods = \"".$templates->get("moderation_delayedmodaction_error")."\";");
+			eval($templates->render("moderation_delayedmodaction_error", "delayedmods"));
 		}
 
 		$plugins->run_hooks("moderation_threadnotes");
 
-		eval("\$threadnotes = \"".$templates->get("moderation_threadnotes")."\";");
+		eval($templates->render("moderation_threadnotes", "threadnotes"));
 		output_page($threadnotes);
 		break;
 
@@ -1146,10 +1146,10 @@ switch($mybb->input['action'])
 		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $post['ipaddress'];
-			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
+			eval($templates->render("moderation_getip_modoptions", "modoptions"));
 		}
 
-		eval("\$getip = \"".$templates->get("moderation_getip")."\";");
+		eval($templates->render("moderation_getip", "getip"));
 		output_page($getip);
 		break;
 
@@ -1185,10 +1185,10 @@ switch($mybb->input['action'])
 		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canuseipsearch'] == 1)
 		{
 			$ipaddress = $pm['ipaddress'];
-			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
+			eval($templates->render("moderation_getip_modoptions", "modoptions"));
 		}
 
-		eval("\$getpmip = \"".$templates->get("moderation_getpmip")."\";");
+		eval($templates->render("moderation_getpmip", "getpmip"));
 		output_page($getpmip);
 		break;
 
@@ -1202,7 +1202,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_merge");
 
-		eval("\$merge = \"".$templates->get("moderation_merge")."\";");
+		eval($templates->render("moderation_merge", "merge"));
 		output_page($merge);
 		break;
 
@@ -1343,14 +1343,14 @@ switch($mybb->input['action'])
 			}
 
 			$message = $parser->parse_message($post['message'], $parser_options);
-			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
+			eval($templates->render("moderation_split_post", "posts", true));
 			$altbg = alt_trow();
 		}
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");
 
-		eval("\$split = \"".$templates->get("moderation_split")."\";");
+		eval($templates->render("moderation_split", "split"));
 		output_page($split);
 		break;
 
@@ -1472,7 +1472,7 @@ switch($mybb->input['action'])
 			clearinline($fid, 'forum');
 		}
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
-		eval("\$multidelete = \"".$templates->get("moderation_inline_deletethreads")."\";");
+		eval($templates->render("moderation_inline_deletethreads", "multidelete"));
 		output_page($multidelete);
 		break;
 
@@ -1884,7 +1884,7 @@ switch($mybb->input['action'])
 		}
 		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
-		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
+		eval($templates->render("moderation_inline_movethreads", "movethread"));
 		output_page($movethread);
 		break;
 
@@ -1957,7 +1957,7 @@ switch($mybb->input['action'])
 
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 
-		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");
+		eval($templates->render("moderation_inline_deleteposts", "multidelete"));
 		output_page($multidelete);
 		break;
 
@@ -2097,7 +2097,7 @@ switch($mybb->input['action'])
 			}
 
 			$message = $parser->parse_message($post['message'], $parser_options);
-			eval("\$postlist .= \"".$templates->get("moderation_mergeposts_post")."\";");
+			eval($templates->render("moderation_mergeposts_post", "postlist", true));
 			$altbg = alt_trow();
 		}
 
@@ -2113,7 +2113,7 @@ switch($mybb->input['action'])
 
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 
-		eval("\$multimerge = \"".$templates->get("moderation_inline_mergeposts")."\";");
+		eval($templates->render("moderation_inline_mergeposts", "multimerge"));
 		output_page($multimerge);
 		break;
 
@@ -2226,7 +2226,7 @@ switch($mybb->input['action'])
 
 		$return_url = htmlspecialchars_uni($mybb->get_input('url'));
 
-		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
+		eval($templates->render("moderation_inline_splitposts", "splitposts"));
 		output_page($splitposts);
 		break;
 
@@ -2411,7 +2411,7 @@ switch($mybb->input['action'])
 			clearinline($tid, 'thread');
 		}
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
-		eval("\$moveposts = \"".$templates->get("moderation_inline_moveposts")."\";");
+		eval($templates->render("moderation_inline_moveposts", "moveposts"));
 		output_page($moveposts);
 		break;
 
@@ -2867,7 +2867,7 @@ switch($mybb->input['action'])
 			{
 				$lang->purgespammer_purge_desc = $lang->sprintf($lang->purgespammer_purge_desc, $lang->purgespammer_delete);				
 			}
-			eval("\$purgespammer = \"".$templates->get('moderation_purgespammer')."\";");
+			eval($templates->render('moderation_purgespammer', "purgespammer"));
 			output_page($purgespammer);
 		}
 		break;
@@ -2895,7 +2895,7 @@ switch($mybb->input['action'])
 
 				$plugins->run_hooks('moderation_confirmation');
 
-				eval('$page = "'.$templates->get('moderation_confirmation').'";');
+				eval($templates->render("moderation_confirmation", "page"));
 
 				output_page($page);
 				exit;

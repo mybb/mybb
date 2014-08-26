@@ -28,13 +28,13 @@ $lang->load('index');
 $logoutlink = '';
 if($mybb->user['uid'] != 0)
 {
-	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
+	eval($templates->render("index_logoutlink", "logoutlink"));
 }
 
 $statspage = '';
 if($mybb->settings['statsenabled'] != 0)
 {
-	eval('$statspage = "'.$templates->get('index_statspage').'";');
+	eval($templates->render("index_statspage", "statspage"));
 }
 
 $whosonline = '';
@@ -102,7 +102,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					// Properly format the username and assign the template.
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
+					eval($templates->render("index_whosonline_memberbit", "onlinemembers", true, 1, 0));
 					$comma = $lang->comma;
 				}
 				// This user has been handled.
@@ -164,7 +164,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		$guestbit = $lang->online_guest_singular;
 	}
 	$lang->online_note = $lang->sprintf($lang->online_note, my_number_format($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
-	eval('$whosonline = "'.$templates->get('index_whosonline').'";');
+	eval($templates->render("index_whosonline", "whosonline"));
 }
 
 // Build the birthdays for to show on the index page.
@@ -243,7 +243,7 @@ if($mybb->settings['showbirthdays'] != 0)
 
 				$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
 				$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
-				eval('$bdays .= "'.$templates->get('index_birthdays_birthday', 1, 0).'";');
+				eval($templates->render("index_birthdays_birthday", "bdays", true, 1, 0));
 				++$bdaycount;
 				$comma = $lang->comma;
 			}
@@ -263,7 +263,7 @@ if($mybb->settings['showbirthdays'] != 0)
 	// If there are one or more birthdays, show them.
 	if($bdaycount > 0 || $hiddencount > 0)
 	{
-		eval('$birthdays = "'.$templates->get('index_birthdays').'";');
+		eval($templates->render("index_birthdays", "birthdays"));
 	}
 }
 
@@ -305,7 +305,7 @@ if($mybb->settings['showindexstats'] != 0)
 	// Then format that language string.
 	$lang->stats_mostonline = $lang->sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 
-	eval('$forumstats = "'.$templates->get('index_stats').'";');
+	eval($templates->render("index_stats", "forumstats"));
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
@@ -324,7 +324,7 @@ if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) |
 		$post_code_string = '&amp;my_post_key='.$mybb->post_code;
 	}
 
-	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
+	eval($templates->render("index_boardstats", "boardstats"));
 }
 
 if($mybb->user['uid'] == 0)
@@ -386,5 +386,5 @@ $forums = $forum_list['forum_list'];
 
 $plugins->run_hooks('index_end');
 
-eval('$index = "'.$templates->get('index').'";');
+eval($templates->render("index", "index"));
 output_page($index);

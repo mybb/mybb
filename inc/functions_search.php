@@ -67,7 +67,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 					}
 					if(empty($forum['password']) || $pwverified == 1)
 					{
-						eval("\$forumlistbits .= \"".$templates->get("search_forumlist_forum")."\";");
+						eval($templates->render("search_forumlist_forum", "forumlistbits", true));
 					}
 					if(!empty($pforumcache[$forum['fid']]))
 					{
@@ -80,7 +80,7 @@ function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth=''
 	}
 	if($addselect)
 	{
-		eval("\$forumlist = \"".$templates->get("search_forumlist")."\";");
+		eval($templates->render("search_forumlist", "forumlist"));
 	}
 	return $forumlist;
 }

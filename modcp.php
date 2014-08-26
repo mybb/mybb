@@ -233,57 +233,57 @@ if(!isset($collapsed['modcpusers_e']))
 $nav_announcements = $nav_modqueue = $nav_reportcenter = $nav_modlogs = $nav_editprofile = $nav_banning = $nav_warninglogs = $nav_ipsearch = $nav_forums_posts = $modcp_nav_users = '';
 if(($numannouncements > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanageannounce'] == 1)
 {
-	eval("\$nav_announcements = \"".$templates->get("modcp_nav_announcements")."\";");
+	eval($templates->render("modcp_nav_announcements", "nav_announcements"));
 }
 
 if(($nummodqueuethreads > 0 || $nummodqueueposts > 0 || $nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagemodqueue'] == 1)
 {
-	eval("\$nav_modqueue = \"".$templates->get("modcp_nav_modqueue")."\";");
+	eval($templates->render("modcp_nav_modqueue", "nav_modqueue"));
 }
 
 if(($numreportedposts > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canmanagereportedcontent'] == 1)
 {
-	eval("\$nav_reportcenter = \"".$templates->get("modcp_nav_reportcenter")."\";");
+	eval($templates->render("modcp_nav_reportcenter", "nav_reportcenter"));
 }
 
 if(($nummodlogs > 0 || $mybb->usergroup['issupermod'] == 1) && $mybb->usergroup['canviewmodlogs'] == 1)
 {
-	eval("\$nav_modlogs = \"".$templates->get("modcp_nav_modlogs")."\";");
+	eval($templates->render("modcp_nav_modlogs", "nav_modlogs"));
 }
 
 if($mybb->usergroup['caneditprofiles'] == 1)
 {
-	eval("\$nav_editprofile = \"".$templates->get("modcp_nav_editprofile")."\";");
+	eval($templates->render("modcp_nav_editprofile", "nav_editprofile"));
 }
 
 if($mybb->usergroup['canbanusers'] == 1)
 {
-	eval("\$nav_banning = \"".$templates->get("modcp_nav_banning")."\";");
+	eval($templates->render("modcp_nav_banning", "nav_banning"));
 }
 
 if($mybb->usergroup['canviewwarnlogs'] == 1)
 {
-	eval("\$nav_warninglogs = \"".$templates->get("modcp_nav_warninglogs")."\";");
+	eval($templates->render("modcp_nav_warninglogs", "nav_warninglogs"));
 }
 
 if($mybb->usergroup['canuseipsearch'] == 1)
 {
-	eval("\$nav_ipsearch = \"".$templates->get("modcp_nav_ipsearch")."\";");
+	eval($templates->render("modcp_nav_ipsearch", "nav_ipsearch"));
 }
 
 $plugins->run_hooks("modcp_nav");
 
 if(!empty($nav_announcements) || !empty($nav_modqueue) || !empty($nav_reportcenter) || !empty($nav_modlogs))
 {
-	eval("\$modcp_nav_forums_posts = \"".$templates->get("modcp_nav_forums_posts")."\";");
+	eval($templates->render("modcp_nav_forums_posts", "modcp_nav_forums_posts"));
 }
 
 if(!empty($nav_editprofile) || !empty($nav_banning) || !empty($nav_warninglogs) || !empty($nav_ipsearch))
 {
-	eval("\$modcp_nav_users = \"".$templates->get("modcp_nav_users")."\";");
+	eval($templates->render("modcp_nav_users", "modcp_nav_users"));
 }
 
-eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
+eval($templates->render("modcp_nav", "modcp_nav"));
 
 $plugins->run_hooks("modcp_start");
 
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "reports")
 	if($postcount > $perpage)
 	{
 		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
-		eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
+		eval($templates->render("modcp_reports_multipage", "reportspages"));
 	}
 
 	$plugins->run_hooks("modcp_reports_start");
@@ -407,7 +407,7 @@ if($mybb->input['action'] == "reports")
 	if(!$db->num_rows($query))
 	{
 		// No unread reports
-		eval("\$reports = \"".$templates->get("modcp_reports_noreports")."\";");
+		eval($templates->render("modcp_reports_noreports", "reports"));
 	}
 	else
 	{
@@ -577,13 +577,13 @@ if($mybb->input['action'] == "reports")
 			}
 
 			$plugins->run_hooks("modcp_reports_report");
-			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
+			eval($templates->render("modcp_reports_report", "reports", true));
 		}
 	}
 
 	$plugins->run_hooks("modcp_reports_end");
 
-	eval("\$reportedcontent = \"".$templates->get("modcp_reports")."\";");
+	eval($templates->render("modcp_reports", "reportedcontent"));
 	output_page($reportedcontent);
 }
 
@@ -674,7 +674,7 @@ if($mybb->input['action'] == "allreports")
 	$allreportspages = '';
 	if($postcount > $perpage)
 	{
-		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
+		eval($templates->render("modcp_reports_multipage", "allreportspages"));
 	}
 
 	$plugins->run_hooks("modcp_allreports_start");
@@ -695,7 +695,7 @@ if($mybb->input['action'] == "allreports")
 	$allreports = '';
 	if(!$db->num_rows($query))
 	{
-		eval("\$allreports = \"".$templates->get("modcp_reports_allnoreports")."\";");
+		eval($templates->render("modcp_reports_allnoreports", "allreports"));
 	}
 	else
 	{
@@ -749,13 +749,13 @@ if($mybb->input['action'] == "allreports")
 			$report_data['time'] = my_date('relative', $report['dateline']);
 
 			$plugins->run_hooks("modcp_allreports_report");
-			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
+			eval($templates->render("modcp_reports_allreport", "allreports", true));
 		}
 	}
 
 	$plugins->run_hooks("modcp_allreports_end");
 
-	eval("\$allreportedcontent = \"".$templates->get("modcp_reports_allreports")."\";");
+	eval($templates->render("modcp_reports_allreports", "allreportedcontent"));
 	output_page($allreportedcontent);
 }
 
@@ -879,7 +879,7 @@ if($mybb->input['action'] == "modlogs")
 	$resultspages = '';
 	if($postcount > $perpage)
 	{
-		eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
+		eval($templates->render("modcp_modlogs_multipage", "resultspages"));
 	}
 	$query = $db->query("
 		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
@@ -907,18 +907,18 @@ if($mybb->input['action'] == "modlogs")
 		{
 			$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
 			$logitem['thread'] = get_thread_link($logitem['tid']);
-			eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
+			eval($templates->render("modcp_modlogs_result_thread", "information", true));
 		}
 		if($logitem['fname'])
 		{
 			$logitem['forum'] = get_forum_link($logitem['fid']);
-			eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
+			eval($templates->render("modcp_modlogs_result_forum", "information", true));
 		}
 		if($logitem['psubject'])
 		{
 			$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
 			$logitem['post'] = get_post_link($logitem['pid']);
-			eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
+			eval($templates->render("modcp_modlogs_result_post", "information", true));
 		}
 
 		// Edited a user or managed announcement?
@@ -933,16 +933,16 @@ if($mybb->input['action'] == "modlogs")
 			{
 				$data['subject'] = htmlspecialchars_uni($data['subject']);
 				$data['announcement'] = get_announcement_link($data['aid']);
-				eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
+				eval($templates->render("modcp_modlogs_result_announcement", "information", true));
 			}
 		}
 
-		eval("\$results .= \"".$templates->get("modcp_modlogs_result")."\";");
+		eval($templates->render("modcp_modlogs_result", "results", true));
 	}
 
 	if(!$results)
 	{
-		eval("\$results = \"".$templates->get("modcp_modlogs_noresults")."\";");
+		eval($templates->render("modcp_modlogs_noresults", "results"));
 	}
 
 	$plugins->run_hooks("modcp_modlogs_filter");
@@ -974,12 +974,12 @@ if($mybb->input['action'] == "modlogs")
 		}
 
 		$user['username'] = htmlspecialchars_uni($user['username']);
-		eval("\$user_options .= \"".$templates->get("modcp_modlogs_user")."\";");
+		eval($templates->render("modcp_modlogs_user", "user_options", true));
 	}
 
 	$forum_select = build_forum_jump("", $mybb->get_input('fid', 1), 1, '', 0, true, '', "fid");
 
-	eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
+	eval($templates->render("modcp_modlogs", "modlogs"));
 	output_page($modlogs);
 }
 
@@ -1039,7 +1039,7 @@ if($mybb->input['action'] == "delete_announcement")
 
 	$plugins->run_hooks("modcp_delete_announcement");
 
-	eval("\$announcements = \"".$templates->get("modcp_announcements_delete")."\";");
+	eval($templates->render("modcp_announcements_delete", "announcements"));
 	output_page($announcements);
 }
 
@@ -1274,23 +1274,23 @@ if($mybb->input['action'] == "new_announcement")
 		if($startday == $day)
 		{
 			$selected = " selected=\"selected\"";
-			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "startdateday", true));
 		}
 		else
 		{
 			$selected = '';
-			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "startdateday", true));
 		}
 
 		if($endday == $day)
 		{
 			$selected = " selected=\"selected\"";
-			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "enddateday", true));
 		}
 		else
 		{
 			$selected = '';
-			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "enddateday", true));
 		}
 	}
 
@@ -1305,8 +1305,8 @@ if($mybb->input['action'] == "new_announcement")
 
 	$startdatemonth = $enddatemonth = '';
 
-	eval("\$startdatemonth .= \"".$templates->get("modcp_announcements_month_start")."\";");
-	eval("\$enddatemonth .= \"".$templates->get("modcp_announcements_month_end")."\";");
+	eval($templates->render("modcp_announcements_month_start", "startdatemonth", true));
+	eval($templates->render("modcp_announcements_month_end", "enddatemonth", true));
 
 	$title = htmlspecialchars_uni($announcement['subject']);
 	$message = htmlspecialchars_uni($announcement['message']);
@@ -1393,7 +1393,7 @@ if($mybb->input['action'] == "new_announcement")
 
 		require_once MYBB_ROOT."inc/functions_post.php";
 		$postbit = build_postbit($announcementarray, 1);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
+		eval($templates->render("previewpost", "preview"));
 	}
 	else
 	{
@@ -1402,7 +1402,7 @@ if($mybb->input['action'] == "new_announcement")
 
 	$plugins->run_hooks("modcp_new_announcement");
 
-	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
+	eval($templates->render("modcp_announcements_new", "announcements"));
 	output_page($announcements);
 }
 
@@ -1674,23 +1674,23 @@ if($mybb->input['action'] == "edit_announcement")
 		if($startday == $day)
 		{
 			$selected = " selected=\"selected\"";
-			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "startdateday", true));
 		}
 		else
 		{
 			$selected = '';
-			eval("\$startdateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "startdateday", true));
 		}
 
 		if($endday == $day)
 		{
 			$selected = " selected=\"selected\"";
-			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "enddateday", true));
 		}
 		else
 		{
 			$selected = '';
-			eval("\$enddateday .= \"".$templates->get("modcp_announcements_day")."\";");
+			eval($templates->render("modcp_announcements_day", "enddateday", true));
 		}
 	}
 
@@ -1705,8 +1705,8 @@ if($mybb->input['action'] == "edit_announcement")
 
 	$startdatemonth = $enddatemonth = '';
 
-	eval("\$startdatemonth .= \"".$templates->get("modcp_announcements_month_start")."\";");
-	eval("\$enddatemonth .= \"".$templates->get("modcp_announcements_month_end")."\";");
+	eval($templates->render("modcp_announcements_month_start", "startdatemonth", true));
+	eval($templates->render("modcp_announcements_month_end", "enddatemonth", true));
 
 	$title = htmlspecialchars_uni($announcement['subject']);
 	$message = htmlspecialchars_uni($announcement['message']);
@@ -1793,7 +1793,7 @@ if($mybb->input['action'] == "edit_announcement")
 
 		require_once MYBB_ROOT."inc/functions_post.php";
 		$postbit = build_postbit($announcementarray, 3);
-		eval("\$preview = \"".$templates->get("previewpost")."\";");
+		eval($templates->render("previewpost", "preview"));
 	}
 	else
 	{
@@ -1802,7 +1802,7 @@ if($mybb->input['action'] == "edit_announcement")
 
 	$plugins->run_hooks("modcp_edit_announcement");
 
-	eval("\$announcements = \"".$templates->get("modcp_announcements_edit")."\";");
+	eval($templates->render("modcp_announcements_edit", "announcements"));
 	output_page($announcements);
 }
 
@@ -1844,24 +1844,24 @@ if($mybb->input['action'] == "announcements")
 				$trow = alt_trow();
 				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 				{
-					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_expired")."\";");
+					eval($templates->render("modcp_announcements_announcement_expired", "icon"));
 				}
 				else
 				{
-					eval("\$icon = \"".$templates->get("modcp_announcements_announcement_active")."\";");
+					eval($templates->render("modcp_announcements_announcement_active", "icon"));
 				}
 
 				$subject = htmlspecialchars_uni($announcement['subject']);
 
-				eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
+				eval($templates->render("modcp_announcements_announcement_global", "announcements_global", true));
 			}
 		}
 		else
 		{
 			// No global announcements
-			eval("\$announcements_global = \"".$templates->get("modcp_no_announcements_global")."\";");
+			eval($templates->render("modcp_no_announcements_global", "announcements_global"));
 		}
-		eval("\$announcements_global = \"".$templates->get("modcp_announcements_global")."\";");
+		eval($templates->render("modcp_announcements_global", "announcements_global"));
 	}
 
 	$announcements_forum = '';
@@ -1869,12 +1869,12 @@ if($mybb->input['action'] == "announcements")
 
 	if(!$announcements_forum)
 	{
-		eval("\$announcements_forum = \"".$templates->get("modcp_no_announcements_forum")."\";");
+		eval($templates->render("modcp_no_announcements_forum", "announcements_forum"));
 	}
 
 	$plugins->run_hooks("modcp_announcements");
 
-	eval("\$announcements = \"".$templates->get("modcp_announcements")."\";");
+	eval($templates->render("modcp_announcements", "announcements"));
 	output_page($announcements);
 }
 
@@ -2121,13 +2121,13 @@ if($mybb->input['action'] == "modqueue")
 			}
 
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
-			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
-			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
+			eval($templates->render("modcp_modqueue_link_forum", "forum"));
+			eval($templates->render("modcp_modqueue_threads_thread", "threads", true));
 		}
 
 		if(!$threads && $mybb->input['type'] == "threads")
 		{
-			eval("\$threads = \"".$templates->get("modcp_modqueue_threads_empty")."\";");
+			eval($templates->render("modcp_modqueue_threads_empty", "threads"));
 		}
 
 		if($threads)
@@ -2139,17 +2139,17 @@ if($mybb->input['action'] == "modqueue")
 			if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
 				$navsep = " | ";
-				eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+				eval($templates->render("modcp_modqueue_post_link", "post_link"));
 			}
 
 			if($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))
 			{
 				$navsep = " | ";
-				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+				eval($templates->render("modcp_modqueue_attachment_link", "attachment_link"));
 			}
 
-			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
+			eval($templates->render("modcp_modqueue_masscontrols", "mass_controls"));
+			eval($templates->render("modcp_modqueue_threads", "threadqueue"));
 			output_page($threadqueue);
 		}
 		$type = 'threads';
@@ -2240,15 +2240,15 @@ if($mybb->input['action'] == "modqueue")
 				$profile_link = build_profile_link($post['username'], $post['uid']);
 			}
 
-			eval("\$thread = \"".$templates->get("modcp_modqueue_link_thread")."\";");
-			eval("\$forum = \"".$templates->get("modcp_modqueue_link_forum")."\";");
+			eval($templates->render("modcp_modqueue_link_thread", "thread"));
+			eval($templates->render("modcp_modqueue_link_forum", "forum"));
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
-			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
+			eval($templates->render("modcp_modqueue_posts_post", "posts", true));
 		}
 
 		if(!$posts && $mybb->input['type'] == "posts")
 		{
-			eval("\$posts = \"".$templates->get("modcp_modqueue_posts_empty")."\";");
+			eval($templates->render("modcp_modqueue_posts_empty", "posts"));
 		}
 
 		if($posts)
@@ -2260,17 +2260,17 @@ if($mybb->input['action'] == "modqueue")
 			if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
 				$navsep = " | ";
-				eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+				eval($templates->render("modcp_modqueue_thread_link", "thread_link"));
 			}
 
 			if($mybb->settings['enableattachments'] == 1 && ($nummodqueueattach > 0 || $mybb->usergroup['issupermod'] == 1))
 			{
 				$navsep = " | ";
-				eval("\$attachment_link = \"".$templates->get("modcp_modqueue_attachment_link")."\";");
+				eval($templates->render("modcp_modqueue_attachment_link", "attachment_link"));
 			}
 
-			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
+			eval($templates->render("modcp_modqueue_masscontrols", "mass_controls"));
+			eval($templates->render("modcp_modqueue_posts", "postqueue"));
 			output_page($postqueue);
 		}
 	}
@@ -2359,12 +2359,12 @@ if($mybb->input['action'] == "modqueue")
 			$thread_link = get_thread_link($attachment['tid']);
 			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
 
-			eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
+			eval($templates->render("modcp_modqueue_attachments_attachment", "attachments", true));
 		}
 
 		if(!$attachments && $mybb->input['type'] == "attachments")
 		{
-			eval("\$attachments = \"".$templates->get("modcp_modqueue_attachments_empty")."\";");
+			eval($templates->render("modcp_modqueue_attachments_empty", "attachments"));
 		}
 
 		if($attachments)
@@ -2375,18 +2375,18 @@ if($mybb->input['action'] == "modqueue")
 
 			if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
-				eval("\$thread_link = \"".$templates->get("modcp_modqueue_thread_link")."\";");
+				eval($templates->render("modcp_modqueue_thread_link", "thread_link"));
 				$navsep = " | ";
 			}
 
 			if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
 			{
-				eval("\$post_link = \"".$templates->get("modcp_modqueue_post_link")."\";");
+				eval($templates->render("modcp_modqueue_post_link", "post_link"));
 				$navsep = " | ";
 			}
 
-			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
-			eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
+			eval($templates->render("modcp_modqueue_masscontrols", "mass_controls"));
+			eval($templates->render("modcp_modqueue_attachments", "attachmentqueue"));
 			output_page($attachmentqueue);
 		}
 	}
@@ -2398,7 +2398,7 @@ if($mybb->input['action'] == "modqueue")
 
 		$plugins->run_hooks("modcp_modqueue_end");
 
-		eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
+		eval($templates->render("modcp_modqueue_empty", "queue"));
 		output_page($queue);
 	}
 }
@@ -2757,7 +2757,7 @@ if($mybb->input['action'] == "editprofile")
 			$selected = '';
 		}
 
-		eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
+		eval($templates->render("usercp_profile_day", "bdaydaysel", true));
 	}
 
 	$bdaymonthsel = array();
@@ -2814,7 +2814,7 @@ if($mybb->input['action'] == "editprofile")
 				$selected = '';
 			}
 
-			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
+			eval($templates->render("usercp_profile_day", "returndatesel", true));
 		}
 
 		$returndatemonthsel = array();
@@ -2832,7 +2832,7 @@ if($mybb->input['action'] == "editprofile")
 			$returndate[2] = '';
 		}
 
-		eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
+		eval($templates->render("usercp_profile_away", "awaysection"));
 	}
 
 	$plugins->run_hooks("modcp_editprofile_start");
@@ -2912,14 +2912,14 @@ if($mybb->input['action'] == "editprofile")
 							$sel = " selected=\"selected\"";
 						}
 
-						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						eval($templates->render("usercp_profile_profilefields_select_option", "select", true));
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 3;
 					}
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
+					eval($templates->render("usercp_profile_profilefields_multiselect", "code"));
 				}
 			}
 			elseif($type == "select")
@@ -2937,14 +2937,14 @@ if($mybb->input['action'] == "editprofile")
 							$sel = " selected=\"selected\"";
 						}
 
-						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						eval($templates->render("usercp_profile_profilefields_select_option", "select", true));
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 1;
 					}
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+					eval($templates->render("usercp_profile_profilefields_select", "code"));
 				}
 			}
 			elseif($type == "radio")
@@ -2960,7 +2960,7 @@ if($mybb->input['action'] == "editprofile")
 							$checked = " checked=\"checked\"";
 						}
 
-						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+						eval($templates->render("usercp_profile_profilefields_radio", "code", true));
 					}
 				}
 			}
@@ -2992,14 +2992,14 @@ if($mybb->input['action'] == "editprofile")
 							$checked = " checked=\"checked\"";
 						}
 
-						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+						eval($templates->render("usercp_profile_profilefields_checkbox", "code", true));
 					}
 				}
 			}
 			elseif($type == "textarea")
 			{
 				$value = htmlspecialchars_uni($userfield);
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
+				eval($templates->render("usercp_profile_profilefields_textarea", "code"));
 			}
 			else
 			{
@@ -3010,16 +3010,16 @@ if($mybb->input['action'] == "editprofile")
 					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 				}
 
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+				eval($templates->render("usercp_profile_profilefields_text", "code"));
 			}
 
 			if($profilefield['required'] == 1)
 			{
-				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+				eval($templates->render("usercp_profile_customfield", "requiredfields", true));
 			}
 			else
 			{
-				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+				eval($templates->render("usercp_profile_customfield", "customfields", true));
 			}
 			$altbg = alt_trow();
 			$code = "";
@@ -3033,7 +3033,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 	if($customfields)
 	{
-		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
+		eval($templates->render("usercp_profile_profilefields", "customfields"));
 	}
 
 	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
@@ -3134,13 +3134,13 @@ if($mybb->input['action'] == "editprofile")
 			switch($option['option'])
 			{
 				case "suspendsignature":
-					eval("\$suspendsignature_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
+					eval($templates->render("modcp_editprofile_suspensions_info", "suspendsignature_info"));
 					break;
 				case "moderateposts":
-					eval("\$moderateposts_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
+					eval($templates->render("modcp_editprofile_suspensions_info", "moderateposts_info"));
 					break;
 				case "suspendposting":
-					eval("\$suspendposting_info = \"".$templates->get("modcp_editprofile_suspensions_info")."\";");
+					eval($templates->render("modcp_editprofile_suspensions_info", "suspendposting_info"));
 					break;
 			}
 		}
@@ -3159,25 +3159,25 @@ if($mybb->input['action'] == "editprofile")
 				$selected = '';
 			}
 
-			eval("\$selection_options .= \"".$templates->get("modcp_editprofile_select_option")."\";");
+			eval($templates->render("modcp_editprofile_select_option", "selection_options", true));
 		}
 
 		$select_name = $option['select_option']."_period";
 		switch($option['option'])
 		{
 			case "suspendsignature":
-				eval("\$action_options = \"".$templates->get("modcp_editprofile_select")."\";");
+				eval($templates->render("modcp_editprofile_select", "action_options"));
 				break;
 			case "moderateposts":
-				eval("\$modpost_options = \"".$templates->get("modcp_editprofile_select")."\";");
+				eval($templates->render("modcp_editprofile_select", "modpost_options"));
 				break;
 			case "suspendposting":
-				eval("\$suspost_options = \"".$templates->get("modcp_editprofile_select")."\";");
+				eval($templates->render("modcp_editprofile_select", "suspost_options"));
 				break;
 		}
 	}
 
-	eval("\$suspend_signature = \"".$templates->get("modcp_editprofile_signature")."\";");
+	eval($templates->render("modcp_editprofile_signature", "suspend_signature"));
 
 	if(!isset($newtitle))
 	{
@@ -3186,7 +3186,7 @@ if($mybb->input['action'] == "editprofile")
 
 	$plugins->run_hooks("modcp_editprofile_end");
 
-	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
+	eval($templates->render("modcp_editprofile", "edituser"));
 	output_page($edituser);
 }
 
@@ -3309,18 +3309,18 @@ if($mybb->input['action'] == "finduser")
 		}
 
 		$usergroup = $usergroups_cache[$user['usergroup']]['title'];
-		eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
+		eval($templates->render("modcp_finduser_user", "users", true));
 	}
 
 	// No results?
 	if(!$users)
 	{
-		eval("\$users = \"".$templates->get("modcp_finduser_noresults")."\";");
+		eval($templates->render("modcp_finduser_noresults", "users"));
 	}
 
 	$plugins->run_hooks("modcp_finduser_end");
 
-	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
+	eval($templates->render("modcp_finduser", "finduser"));
 	output_page($finduser);
 }
 
@@ -3504,7 +3504,7 @@ if($mybb->input['action'] == "warninglogs")
 		if($row['daterevoked'] > 0)
 		{
 			$revoked_date = my_date('relative', $row['daterevoked']);
-			eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
+			eval($templates->render("modcp_warninglogs_warning_revoked", "revoked_text"));
 		}
 		if($row['expires'] > 0)
 		{
@@ -3525,17 +3525,17 @@ if($mybb->input['action'] == "warninglogs")
 			$points = '+'.$row['points'];
 		}
 
-		eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
+		eval($templates->render("modcp_warninglogs_warning", "warning_list", true));
 	}
 
 	if(!$warning_list)
 	{
-		eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
+		eval($templates->render("modcp_warninglogs_nologs", "warning_list"));
 	}
 
 	$plugins->run_hooks("modcp_warninglogs_end");
 
-	eval("\$warninglogs = \"".$templates->get("modcp_warninglogs")."\";");
+	eval($templates->render("modcp_warninglogs", "warninglogs"));
 	output_page($warninglogs);
 }
 
@@ -3689,28 +3689,28 @@ if($mybb->input['action'] == "ipsearch")
 				{
 					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
 					{
-						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
+						eval($templates->render("modcp_ipsearch_result_regip", "subject"));
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 					}
 					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
 					{
-						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
+						eval($templates->render("modcp_ipsearch_result_lastip", "subject"));
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 					}
 				}
 				elseif($ipaddress['regip'] == $ip_range)
 				{
-					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
+					eval($templates->render("modcp_ipsearch_result_regip", "subject"));
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 				}
 				elseif($ipaddress['lastip'] == $ip_range)
 				{
-					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
+					eval($templates->render("modcp_ipsearch_result_lastip", "subject"));
 					$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
 				}
 				if($ip)
 				{
-					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+					eval($templates->render("modcp_ipsearch_result", "results", true));
 					$result = true;
 				}
 				if($result)
@@ -3775,15 +3775,15 @@ if($mybb->input['action'] == "ipsearch")
 					$ipaddress['subject'] = htmlspecialchars_uni($ipaddress['subject']);
 					$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 
-					eval("\$subject = \"".$templates->get("modcp_ipsearch_result_post")."\";");
-					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+					eval($templates->render("modcp_ipsearch_result_post", "subject"));
+					eval($templates->render("modcp_ipsearch_result", "results", true));
 				}
 			}
 		}
 
 		if(!$results)
 		{
-			eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");
+			eval($templates->render("modcp_ipsearch_noresults", "results"));
 		}
 
 		if($ipaddressvalue)
@@ -3800,10 +3800,10 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			$ipaddress = htmlspecialchars_uni($mybb->input['ipaddress']);
 			$ipaddress_url = urlencode($mybb->input['ipaddress']);
-			eval("\$misc_info_link = \"".$templates->get("modcp_ipsearch_results_information")."\";");
+			eval($templates->render("modcp_ipsearch_results_information", "misc_info_link"));
 		}
 
-		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
+		eval($templates->render("modcp_ipsearch_results", "ipsearch_results"));
 	}
 
 	// Fetch filter options
@@ -3824,7 +3824,7 @@ if($mybb->input['action'] == "ipsearch")
 
 	$plugins->run_hooks("modcp_ipsearch_end");
 
-	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
+	eval($templates->render("modcp_ipsearch", "ipsearch"));
 	output_page($ipsearch);
 }
 
@@ -3867,7 +3867,7 @@ if($mybb->input['action'] == "iplookup")
 
 	$plugins->run_hooks("modcp_iplookup_end");
 
-	eval("\$iplookup = \"".$templates->get('modcp_ipsearch_misc_info', 1, 0)."\";");
+	eval($templates->render('modcp_ipsearch_misc_info', "iplookup", false, 1, 0));
 	echo($iplookup);
 	exit;
 }
@@ -3944,7 +3944,7 @@ if($mybb->input['action'] == "banning")
 		$edit_link = '';
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
-			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
+			eval($templates->render("modcp_banning_edit", "edit_link"));
 		}
 
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
@@ -3991,17 +3991,17 @@ if($mybb->input['action'] == "banning")
 			}
 		}
 
-		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
+		eval($templates->render("modcp_banning_ban", "bannedusers", true));
 	}
 
 	if(!$bannedusers)
 	{
-		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+		eval($templates->render("modcp_banning_nobanned", "bannedusers"));
 	}
 
 	$plugins->run_hooks("modcp_banning");
 
-	eval("\$bannedpage = \"".$templates->get("modcp_banning")."\";");
+	eval($templates->render("modcp_banning", "bannedpage"));
 	output_page($bannedpage);
 }
 
@@ -4270,7 +4270,7 @@ if($mybb->input['action'] == "banuser")
 			$uid = $mybb->input['uid'];
 			$user = get_user($banned['uid']);
 			$lang->ban_user = $lang->edit_ban; // Swap over lang variables
-			eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
+			eval($templates->render("modcp_banuser_editusername", "banuser_username"));
 		}
 	}
 
@@ -4286,7 +4286,7 @@ if($mybb->input['action'] == "banuser")
 		{
 			$username = htmlspecialchars_uni($mybb->get_input('username'));
 		}
-		eval("\$banuser_username = \"".$templates->get("modcp_banuser_addusername")."\";");
+		eval($templates->render("modcp_banuser_addusername", "banuser_username"));
 	}
 
 	// Coming back to this page from an error?
@@ -4318,7 +4318,7 @@ if($mybb->input['action'] == "banuser")
 			$thattime = " ({$thatime})";
 		}
 
-		eval("\$liftlist .= \"".$templates->get("modcp_banuser_liftlist")."\";");
+		eval($templates->render("modcp_banuser_liftlist", "liftlist", true));
 	}
 
 	$bangroup_option = $bangroups = '';
@@ -4336,23 +4336,23 @@ if($mybb->input['action'] == "banuser")
 			}
 
 			$group['title'] = htmlspecialchars_uni($group['title']);
-			eval("\$bangroup_option .= \"".$templates->get("modcp_banuser_bangroups_group")."\";");
+			eval($templates->render("modcp_banuser_bangroups_group", "bangroup_option", true));
 			++$numgroups;
 		}
 	}
 
 	if($numgroups > 1)
 	{
-		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups")."\";");
+		eval($templates->render("modcp_banuser_bangroups", "bangroups"));
 	}
 	else
 	{
-		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
+		eval($templates->render("modcp_banuser_bangroups_hidden", "bangroups"));
 	}
 
 	if(!empty($user['uid']))
 	{
-		eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
+		eval($templates->render("modcp_banuser_lift", "lift_link"));
 		$uid = $user['uid'];
 	}
 	else
@@ -4363,7 +4363,7 @@ if($mybb->input['action'] == "banuser")
 
 	$plugins->run_hooks("modcp_banuser_end");
 
-	eval("\$banuser = \"".$templates->get("modcp_banuser")."\";");
+	eval($templates->render("modcp_banuser", "banuser"));
 	output_page($banuser);
 }
 
@@ -4429,14 +4429,14 @@ if(!$mybb->input['action'])
 				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$unapproved_attachments = my_number_format($unapproved_attachments);
 
-				eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
+				eval($templates->render("modcp_lastattachment", "latest_attachment"));
 			}
 			else
 			{
-				eval("\$latest_attachment = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
+				eval($templates->render("modcp_awaitingmoderation_none", "latest_attachment"));
 			}
 
-			eval("\$awaitingattachments = \"".$templates->get("modcp_awaitingattachments")."\";");
+			eval($templates->render("modcp_awaitingattachments", "awaitingattachments"));
 		}
 
 		if($nummodqueueposts > 0 || $mybb->usergroup['issupermod'] == 1)
@@ -4472,14 +4472,14 @@ if(!$mybb->input['action'])
 				$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
 				$unapproved_posts = my_number_format($unapproved_posts);
 
-				eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
+				eval($templates->render("modcp_lastpost", "latest_post"));
 			}
 			else
 			{
-				eval("\$latest_post = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
+				eval($templates->render("modcp_awaitingmoderation_none", "latest_post"));
 			}
 
-			eval("\$awaitingposts = \"".$templates->get("modcp_awaitingposts")."\";");
+			eval($templates->render("modcp_awaitingposts", "awaitingposts"));
 		}
 
 		if($nummodqueuethreads > 0 || $mybb->usergroup['issupermod'] == 1)
@@ -4503,19 +4503,19 @@ if(!$mybb->input['action'])
 				$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
 				$unapproved_threads = my_number_format($unapproved_threads);
 
-				eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
+				eval($templates->render("modcp_lastthread", "latest_thread"));
 			}
 			else
 			{
-				eval("\$latest_thread = \"".$templates->get("modcp_awaitingmoderation_none")."\";");
+				eval($templates->render("modcp_awaitingmoderation_none", "latest_thread"));
 			}
 
-			eval("\$awaitingthreads = \"".$templates->get("modcp_awaitingthreads")."\";");
+			eval($templates->render("modcp_awaitingthreads", "awaitingthreads"));
 		}
 
 		if(!empty($awaitingattachments) || !empty($awaitingposts) || !empty($awaitingthreads))
 		{
-			eval("\$awaitingmoderation = \"".$templates->get("modcp_awaitingmoderation")."\";");
+			eval($templates->render("modcp_awaitingmoderation", "awaitingmoderation"));
 		}
 	}
 
@@ -4555,18 +4555,18 @@ if(!$mybb->input['action'])
 			{
 				$logitem['tsubject'] = htmlspecialchars_uni($logitem['tsubject']);
 				$logitem['thread'] = get_thread_link($logitem['tid']);
-				eval("\$information .= \"".$templates->get("modcp_modlogs_result_thread")."\";");
+				eval($templates->render("modcp_modlogs_result_thread", "information", true));
 			}
 			if($logitem['fname'])
 			{
 				$logitem['forum'] = get_forum_link($logitem['fid']);
-				eval("\$information .= \"".$templates->get("modcp_modlogs_result_forum")."\";");
+				eval($templates->render("modcp_modlogs_result_forum", "information", true));
 			}
 			if($logitem['psubject'])
 			{
 				$logitem['psubject'] = htmlspecialchars_uni($logitem['psubject']);
 				$logitem['post'] = get_post_link($logitem['pid']);
-				eval("\$information .= \"".$templates->get("modcp_modlogs_result_post")."\";");
+				eval($templates->render("modcp_modlogs_result_post", "information", true));
 			}
 
 			// Edited a user or managed announcement?
@@ -4581,19 +4581,19 @@ if(!$mybb->input['action'])
 				{
 					$data['subject'] = htmlspecialchars_uni($data['subject']);
 					$data['announcement'] = get_announcement_link($data['aid']);
-					eval("\$information .= \"".$templates->get("modcp_modlogs_result_announcement")."\";");
+					eval($templates->render("modcp_modlogs_result_announcement", "information", true));
 				}
 			}
 
-			eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");
+			eval($templates->render("modcp_modlogs_result", "modlogresults", true));
 		}
 
 		if(!$modlogresults)
 		{
-			eval("\$modlogresults = \"".$templates->get("modcp_modlogs_nologs")."\";");
+			eval($templates->render("modcp_modlogs_nologs", "modlogresults"));
 		}
 
-		eval("\$latestfivemodactions = \"".$templates->get("modcp_latestfivemodactions")."\";");
+		eval($templates->render("modcp_latestfivemodactions", "latestfivemodactions"));
 	}
 
 	$query = $db->query("
@@ -4616,7 +4616,7 @@ if(!$mybb->input['action'])
 		$edit_link = '';
 		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
-			eval("\$edit_link = \"".$templates->get("modcp_banning_edit")."\";");
+			eval($templates->render("modcp_banning_edit", "edit_link"));
 		}
 
 		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
@@ -4667,12 +4667,12 @@ if(!$mybb->input['action'])
 			}
 		}
 
-		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
+		eval($templates->render("modcp_banning_ban", "bannedusers", true));
 	}
 
 	if(!$bannedusers)
 	{
-		eval("\$bannedusers = \"".$templates->get("modcp_nobanned")."\";");
+		eval($templates->render("modcp_nobanned", "bannedusers"));
 	}
 
 	$modnotes = $cache->read("modnotes");
@@ -4680,6 +4680,6 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("modcp_end");
 
-	eval("\$modcp = \"".$templates->get("modcp")."\";");
+	eval($templates->render("modcp", "modcp"));
 	output_page($modcp);
 }

@@ -153,7 +153,7 @@ if(!$forum || $forum['type'] != "f")
 $threadnoteslink = '';
 if(is_moderator($fid, "canmanagethreads") && !empty($thread['notes']))
 {
-	eval('$threadnoteslink = "'.$templates->get('showthread_threadnoteslink').'";');
+	eval($templates->render("showthread_threadnoteslink", "threadnoteslink"));
 }
 
 // Check if this forum is password protected and we have a valid password
@@ -533,17 +533,17 @@ if($mybb->input['action'] == "thread")
 					$percent = number_format($votes / $poll['totvotes'] * 100, 2);
 				}
 				$imagewidth = round($percent);
-				eval("\$polloptions .= \"".$templates->get("showthread_poll_resultbit")."\";");
+				eval($templates->render("showthread_poll_resultbit", "polloptions", true));
 			}
 			else
 			{
 				if($poll['multiple'] == 1)
 				{
-					eval("\$polloptions .= \"".$templates->get("showthread_poll_option_multiple")."\";");
+					eval($templates->render("showthread_poll_option_multiple", "polloptions", true));
 				}
 				else
 				{
-					eval("\$polloptions .= \"".$templates->get("showthread_poll_option")."\";");
+					eval($templates->render("showthread_poll_option", "polloptions", true));
 				}
 			}
 		}
@@ -562,7 +562,7 @@ if($mybb->input['action'] == "thread")
 		$edit_poll = '';
 		if(is_moderator($fid, 'canmanagepolls'))
 		{
-			eval("\$edit_poll = \"".$templates->get("showthread_poll_editpoll")."\";");
+			eval($templates->render("showthread_poll_editpoll", "edit_poll"));
 		}
 
 		// Decide what poll status to show depending on the status of the poll and whether or not the user voted already.
@@ -574,7 +574,7 @@ if($mybb->input['action'] == "thread")
 
 				if($mybb->usergroup['canundovotes'] == 1)
 				{
-					eval("\$pollstatus .= \"".$templates->get("showthread_poll_undovote")."\";");
+					eval($templates->render("showthread_poll_undovote", "pollstatus", true));
 				}
 			}
 			else
@@ -582,7 +582,7 @@ if($mybb->input['action'] == "thread")
 				$pollstatus = $lang->poll_closed;
 			}
 			$lang->total_votes = $lang->sprintf($lang->total_votes, $totalvotes);
-			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
+			eval($templates->render("showthread_poll_results", "pollbox"));
 			$plugins->run_hooks("showthread_poll_results");
 		}
 		else
@@ -599,7 +599,7 @@ if($mybb->input['action'] == "thread")
 				$publicnote = $lang->public_note;
 			}
 
-			eval("\$pollbox = \"".$templates->get("showthread_poll")."\";");
+			eval($templates->render("showthread_poll", "pollbox"));
 			$plugins->run_hooks("showthread_poll");
 		}
 
@@ -628,17 +628,17 @@ if($mybb->input['action'] == "thread")
 	{
 		if($forumpermissions['canpostthreads'] != 0 && $mybb->user['suspendposting'] != 1)
 		{
-			eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
+			eval($templates->render("showthread_newthread", "newthread"));
 		}
 
 		// Show the appropriate reply button if this thread is open or closed
 		if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply")."\";");
+			eval($templates->render("showthread_newreply", "newreply"));
 		}
 		elseif($thread['closed'] == 1)
 		{
-			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
+			eval($templates->render("showthread_newreply_closed", "newreply"));
 		}
 	}
 
@@ -659,12 +659,12 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($thread['fid'], "canopenclosethreads"))
 		{
-			eval("\$closeoption .= \"".$templates->get("showthread_quickreply_options_close")."\";");
+			eval($templates->render("showthread_quickreply_options_close", "closeoption", true));
 		}
 
 		if(is_moderator($thread['fid'], "canstickunstickthreads"))
 		{
-			eval("\$closeoption .= \"".$templates->get("showthread_quickreply_options_stick")."\";");
+			eval($templates->render("showthread_quickreply_options_stick", "closeoption", true));
 		}
 
 		$inlinecount = "0";
@@ -723,7 +723,7 @@ if($mybb->input['action'] == "thread")
 		}
 
 		$ratingvotesav = $lang->sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
-		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
+		eval($templates->render("showthread_ratethread", "ratethread"));
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
 	if($ismod && is_moderator($fid, "canviewdeleted") == true && is_moderator($fid, "canviewunapprove") == false)
@@ -746,7 +746,7 @@ if($mybb->input['action'] == "thread")
 	// Can this user perform searches? If so, we can show them the "Search thread" form
 	if($forumpermissions['cansearch'] != 0)
 	{
-		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
+		eval($templates->render("showthread_search", "search_thread"));
 	}
 
 	// Fetch the ignore list for the current user if they have one
@@ -868,7 +868,7 @@ if($mybb->input['action'] == "thread")
 
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
-		eval("\$threadexbox = \"".$templates->get("showthread_threadedbox")."\";");
+		eval($templates->render("showthread_threadedbox", "threadexbox"));
 		$plugins->run_hooks("showthread_threaded");
 	}
 	else // Linear display
@@ -999,7 +999,7 @@ if($mybb->input['action'] == "thread")
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
 		if($postcount > $perpage)
 		{
-			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
+			eval($templates->render("showthread_multipage", "threadpages"));
 		}
 
 		// Lets get the pids of the posts on this page.
@@ -1106,7 +1106,7 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
 				$icon = $icon_cache[$similar_thread['icon']];
-				eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
+				eval($templates->render("forumdisplay_thread_icon", "icon"));
 			}
 			else
 			{
@@ -1152,11 +1152,11 @@ if($mybb->input['action'] == "thread")
 			}
 			$similar_thread['replies'] = my_number_format($similar_thread['replies']);
 			$similar_thread['views'] = my_number_format($similar_thread['views']);
-			eval("\$similarthreadbits .= \"".$templates->get("showthread_similarthreads_bit")."\";");
+			eval($templates->render("showthread_similarthreads_bit", "similarthreadbits", true));
 		}
 		if($count)
 		{
-			eval("\$similarthreads = \"".$templates->get("showthread_similarthreads")."\";");
+			eval($templates->render("showthread_similarthreads", "similarthreads"));
 		}
 	}
 
@@ -1190,7 +1190,7 @@ if($mybb->input['action'] == "thread")
 		$option_signature = '';
 		if($mybb->usergroup['canusesig'] && !$mybb->user['suspendsignature'])
 		{
-			eval("\$option_signature = \"".$templates->get('showthread_quickreply_options_signature')."\";");
+			eval($templates->render('showthread_quickreply_options_signature', "option_signature"));
 		}
 
 		if(isset($mybb->user['emailnotify']) && $mybb->user['emailnotify'] == 1)
@@ -1210,18 +1210,18 @@ if($mybb->input['action'] == "thread")
 			if($forumpermissions['modposts'] == 1)
 			{
 				$moderation_text = $lang->moderation_forum_posts;
-				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+				eval($templates->render("global_moderation_notice", "moderation_notice"));
 			}
 			
 			if($mybb->user['moderateposts'] == 1)
 			{
 				$moderation_text = $lang->moderation_user_posts;
-				eval('$moderation_notice = "'.$templates->get('global_moderation_notice').'";');
+				eval($templates->render("global_moderation_notice", "moderation_notice"));
 			}
 		}
 
 	    $posthash = md5($mybb->user['uid'].random_str());
-		eval("\$quickreply = \"".$templates->get("showthread_quickreply")."\";");
+		eval($templates->render("showthread_quickreply", "quickreply"));
 	}
 
 	$moderationoptions = '';
@@ -1238,11 +1238,11 @@ if($mybb->input['action'] == "thread")
 
 			if(strlen($thread['notes']) > 200)
 			{
-				eval("\$viewnotes = \"".$templates->get("showthread_threadnotes_viewnotes")."\";");
+				eval($templates->render("showthread_threadnotes_viewnotes", "viewnotes"));
 				$thread['notes'] = my_substr($thread['notes'], 0, 200)."... {$viewnotes}";
 			}
 
-			eval("\$threadnotesbox = \"".$templates->get("showthread_threadnotes")."\";");
+			eval($templates->render("showthread_threadnotes", "threadnotesbox"));
 		}
 
 		if(is_moderator($forum['fid'], "canusecustomtools") && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$forum['fid']]['modtools'])))
@@ -1262,18 +1262,18 @@ if($mybb->input['action'] == "thread")
 			{
 				if($tool['type'] == 'p')
 				{
-					eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
+					eval($templates->render("showthread_inlinemoderation_custom_tool", "customposttools", true));
 				}
 				else
 				{
-					eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom_tool")."\";");
+					eval($templates->render("showthread_moderationoptions_custom_tool", "customthreadtools", true));
 				}
 			}
 
 			// Build inline moderation dropdown
 			if(!empty($customposttools))
 			{
-				eval("\$customposttools = \"".$templates->get("showthread_inlinemoderation_custom")."\";");
+				eval($templates->render("showthread_inlinemoderation_custom", "customposttools"));
 			}
 		}
 
@@ -1281,72 +1281,72 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "cansoftdeleteposts"))
 		{
-			eval("\$inlinemodsoftdelete = \"".$templates->get("showthread_inlinemoderation_softdelete")."\";");
+			eval($templates->render("showthread_inlinemoderation_softdelete", "inlinemodsoftdelete"));
 		}
 
 		if(is_moderator($forum['fid'], "canrestoreposts"))
 		{
-			eval("\$inlinemodrestore = \"".$templates->get("showthread_inlinemoderation_restore")."\";");
+			eval($templates->render("showthread_inlinemoderation_restore", "inlinemodrestore"));
 		}
 
 		if(is_moderator($forum['fid'], "candeleteposts"))
 		{
-			eval("\$inlinemoddelete = \"".$templates->get("showthread_inlinemoderation_delete")."\";");
+			eval($templates->render("showthread_inlinemoderation_delete", "inlinemoddelete"));
 		}
 
 		if(is_moderator($forum['fid'], "canmanagethreads"))
 		{
-			eval("\$inlinemodmanage = \"".$templates->get("showthread_inlinemoderation_manage")."\";");
+			eval($templates->render("showthread_inlinemoderation_manage", "inlinemodmanage"));
 		}
 
 		if(is_moderator($forum['fid'], "canapproveunapproveposts"))
 		{
-			eval("\$inlinemodapprove = \"".$templates->get("showthread_inlinemoderation_approve")."\";");
+			eval($templates->render("showthread_inlinemoderation_approve", "inlinemodapprove"));
 		}
 
 		if(!empty($inlinemodsoftdelete) || !empty($inlinemodrestore) || !empty($inlinemoddelete) || !empty($inlinemodmanage) || !empty($inlinemodapprove))
 		{
-			eval("\$standardposttools = \"".$templates->get("showthread_inlinemoderation_standard")."\";");
+			eval($templates->render("showthread_inlinemoderation_standard", "standardposttools"));
 		}
 
 		// Only show inline mod menu if there's options to show
 		if(!empty($standardposttools) || !empty($customposttools))
 		{
-			eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
+			eval($templates->render("showthread_inlinemoderation", "inlinemod"));
 		}
 
 		// Build thread moderation dropdown
 		if(!empty($customthreadtools))
 		{
-			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
+			eval($templates->render("showthread_moderationoptions_custom", "customthreadtools"));
 		}
 
 		$openclosethread = $stickunstickthread = $deletethread = $threadnotes = $managethread = $adminpolloptions = $approveunapprovethread = $softdeletethread = '';
 
 		if(is_moderator($forum['fid'], "canopenclosethreads"))
 		{
-			eval("\$openclosethread = \"".$templates->get("showthread_moderationoptions_openclose")."\";");
+			eval($templates->render("showthread_moderationoptions_openclose", "openclosethread"));
 		}
 
 		if(is_moderator($forum['fid'], "canstickunstickthreads"))
 		{
-			eval("\$stickunstickthread = \"".$templates->get("showthread_moderationoptions_stickunstick")."\";");
+			eval($templates->render("showthread_moderationoptions_stickunstick", "stickunstickthread"));
 		}
 
 		if(is_moderator($forum['fid'], "candeletethreads"))
 		{
-			eval("\$deletethread = \"".$templates->get("showthread_moderationoptions_delete")."\";");
+			eval($templates->render("showthread_moderationoptions_delete", "deletethread"));
 		}
 
 		if(is_moderator($forum['fid'], "canmanagethreads"))
 		{
-			eval("\$threadnotes = \"".$templates->get("showthread_moderationoptions_threadnotes")."\";");
-			eval("\$managethread = \"".$templates->get("showthread_moderationoptions_manage")."\";");
+			eval($templates->render("showthread_moderationoptions_threadnotes", "threadnotes"));
+			eval($templates->render("showthread_moderationoptions_manage", "managethread"));
 		}
 
 		if($pollbox && is_moderator($forum['fid'], "canmanagepolls"))
 		{
-			eval("\$adminpolloptions = \"".$templates->get("showthread_moderationoptions_deletepoll")."\";");
+			eval($templates->render("showthread_moderationoptions_deletepoll", "adminpolloptions"));
 		}
 
 		if(is_moderator($forum['fid'], "canapproveunapprovethreads"))
@@ -1375,13 +1375,13 @@ if($mybb->input['action'] == "thread")
 
 		if(!empty($openclosethread) || !empty($stickunstickthread) || !empty($deletethread) || !empty($managethread) || !empty($adminpolloptions) || !empty($approveunapprovethread) || !empty($softdeletethread))
 		{
-			eval("\$standardthreadtools = \"".$templates->get("showthread_moderationoptions_standard")."\";");
+			eval($templates->render("showthread_moderationoptions_standard", "standardthreadtools"));
 		}
 
 		// Only show mod menu if there's any options to show
 		if(!empty($standardthreadtools) || !empty($customthreadtools))
 		{
-			eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
+			eval($templates->render("showthread_moderationoptions", "moderationoptions"));
 		}
 	}
 
@@ -1389,7 +1389,7 @@ if($mybb->input['action'] == "thread")
 	$sendthread = '';
 	if($mybb->usergroup['cansendemail'] == 1)
 	{
-		eval("\$sendthread = \"".$templates->get("showthread_send_thread")."\";");
+		eval($templates->render("showthread_send_thread", "sendthread"));
 	}
 
 	// Display 'add poll' link to thread creator (or mods) if thread doesn't have a poll already
@@ -1397,7 +1397,7 @@ if($mybb->input['action'] == "thread")
 	$time = TIME_NOW;
 	if(!$thread['poll'] && ($thread['uid'] == $mybb->user['uid'] || $ismod == true) && $forumpermissions['canpostpolls'] == 1 && $forum['open'] != 0 && $thread['closed'] != 1 && ($ismod == true || $thread['dateline'] > ($time-($mybb->settings['polltimelimit']*60*60)) || $mybb->settings['polltimelimit'] == 0))
 	{
-		eval("\$addpoll = \"".$templates->get("showthread_add_poll")."\";");
+		eval($templates->render("showthread_add_poll", "addpoll"));
 	}
 
 	// Subscription status
@@ -1418,7 +1418,7 @@ if($mybb->input['action'] == "thread")
 	$classic_header = '';
 	if($mybb->settings['postlayout'] == "classic")
 	{
-		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");
+		eval($templates->render("showthread_classic_header", "classic_header"));
 	}
 
 	// Get users viewing this thread
@@ -1465,7 +1465,7 @@ if($mybb->input['action'] == "thread")
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
 
-					eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");
+					eval($templates->render("showthread_usersbrowsing_user", "onlinemembers", true, 1, 0));
 					$comma = $lang->comma;
 				}
 			}
@@ -1495,12 +1495,12 @@ if($mybb->input['action'] == "thread")
 			$onlinesep2 = $lang->comma;
 		}
 
-		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
+		eval($templates->render("showthread_usersbrowsing", "usersbrowsing"));
 	}
 
 	$plugins->run_hooks("showthread_end");
 
-	eval("\$showthread = \"".$templates->get("showthread")."\";");
+	eval($templates->render("showthread", "showthread"));
 	output_page($showthread);
 }
 
@@ -1541,11 +1541,11 @@ function buildtree($replyto="0", $indent="0")
 
 			if($mybb->input['pid'] == $post['pid'])
 			{
-				eval("\$posts .= \"".$templates->get("showthread_threaded_bitactive")."\";");
+				eval($templates->render("showthread_threaded_bitactive", "posts", true));
 			}
 			else
 			{
-				eval("\$posts .= \"".$templates->get("showthread_threaded_bit")."\";");
+				eval($templates->render("showthread_threaded_bit", "posts", true));
 			}
 
 			if($tree[$post['pid']])

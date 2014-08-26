@@ -122,6 +122,28 @@ class templates
 		}
 		return $template;
 	}
+	
+	/**
+	 * Prepare a template for rendering to a variable/
+	 *
+	 * @param string The name of the template to get.
+	 * @param string The name of the variable to render to.
+	 * @param boolean True if template is to be appended to end of variable, false to overwrite it.
+	 * @param boolean True if template contents must be escaped, false if not.
+	 * @param boolean True to output HTML comments, false to not output.
+	 * @return string The eval()-ready PHP code for rendering the template
+	 */
+	function render($template, $variable, $append=false, $eslashes=true, $htmlcomments=true)
+	{
+		$assignment = '="';
+		
+		if($append)
+		{
+			$assignment = '.="';
+		}
+		
+		return '$'.$variable.$assignment.$this->get($template, $eslashes, $htmlcomments).'";';
+	}
 
 	/**
 	 * Fetch a template directly from the install/resources/mybb_theme.xml directory if it exists (DEVELOPMENT MODE)

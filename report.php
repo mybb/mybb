@@ -164,7 +164,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 		$plugins->run_hooks("report_do_report_end");
 
-		eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
+		eval($templates->render("report_thanks", "report_thanks"));
 		echo $report_thanks;
 		exit;
 	}
@@ -204,7 +204,7 @@ if(empty($error) && $verified == true && $mybb->input['action'] == "do_report" &
 
 			$plugins->run_hooks("report_do_report_end");
 
-			eval("\$report_thanks = \"".$templates->get("report_thanks")."\";");
+			eval($templates->render("report_thanks", "report_thanks"));
 			echo $report_thanks;
 			exit;
 		}
@@ -227,22 +227,22 @@ if(!$mybb->input['action'])
 	{
 		if($mybb->input['no_modal'])
 		{
-			eval("\$report_reasons = \"".$templates->get("report_error_nomodal")."\";");
+			eval($templates->render("report_error_nomodal", "report_reasons"));
 		}
 		else
 		{
-			eval("\$report_reasons = \"".$templates->get("report_error")."\";");
+			eval($templates->render("report_error", "report_reasons"));
 		}
 	}
 	else
 	{
 		if(!empty($report))
 		{
-			eval("\$report_reasons = \"".$templates->get("report_duplicate")."\";");
+			eval($templates->render("report_duplicate", "report_reasons"));
 		}
 		else
 		{
-			eval("\$report_reasons = \"".$templates->get("report_reasons")."\";");
+			eval($templates->render("report_reasons", "report_reasons"));
 		}
 	}
 
@@ -254,7 +254,7 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("report_end");
 
-	eval("\$report = \"".$templates->get("report", 1, 0)."\";");
+	eval($templates->render("report", "report", false, 1, 0));
 	echo $report;
 	exit;
 }
