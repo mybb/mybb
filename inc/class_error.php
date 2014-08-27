@@ -277,7 +277,7 @@ class errorHandler {
 
 		if($template_exists == true)
 		{
-			eval("\$warning = \"".$templates->get("php_warnings")."\";");
+			$warning = eval($templates->render("php_warnings"));
 		}
 
 		return $warning;

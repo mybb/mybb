@@ -358,7 +358,7 @@ if($mybb->input['action'] == "profile")
 			$selected = '';
 		}
 
-		eval("\$bdaydaysel .= \"".$templates->get("usercp_profile_day")."\";");
+		$bdaydaysel .= eval($templates->render("usercp_profile_day"));
 	}
 
 	$bdaymonthsel = array();
@@ -431,12 +431,12 @@ if($mybb->input['action'] == "profile")
 		$lang_string = $lang->{$lang_string};
 		$cfvalue = htmlspecialchars_uni($user[$cfield]);
 
-		eval('$contact_fields[$cfield] = "'.$templates->get('usercp_profile_contact_fields_field').'";');
+		$contact_fields[$cfield] = eval($templates->render("usercp_profile_contact_fields_field"));
 	}
 
 	if(!empty($cfieldsshow))
 	{
-		eval('$contactfields = "'.$templates->get('usercp_profile_contact_fields').'";');
+		$contactfields = eval($templates->render("usercp_profile_contact_fields"));
 	}
 
 	if($mybb->settings['allowaway'] != 0)
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "profile")
 				$selected = '';
 			}
 
-			eval("\$returndatesel .= \"".$templates->get("usercp_profile_day")."\";");
+			$returndatesel .= eval($templates->render("usercp_profile_day"));
 		}
 
 		$returndatemonthsel = array();
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "profile")
 		}
 		$returndatemonthsel[$returndate[1]] = "selected";
 
-		eval("\$awaysection = \"".$templates->get("usercp_profile_away")."\";");
+		$awaysection = eval($templates->render("usercp_profile_away"));
 	}
 
 	// Custom profile fields baby!
@@ -589,14 +589,14 @@ if($mybb->input['action'] == "profile")
 							$sel = " selected=\"selected\"";
 						}
 
-						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						$select .= eval($templates->render("usercp_profile_profilefields_select_option"));
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 3;
 					}
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_multiselect")."\";");
+					$code = eval($templates->render("usercp_profile_profilefields_multiselect"));
 				}
 			}
 			elseif($type == "select")
@@ -614,14 +614,14 @@ if($mybb->input['action'] == "profile")
 							$sel = " selected=\"selected\"";
 						}
 
-						eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
+						$select .= eval($templates->render("usercp_profile_profilefields_select_option"));
 					}
 					if(!$profilefield['length'])
 					{
 						$profilefield['length'] = 1;
 					}
 
-					eval("\$code = \"".$templates->get("usercp_profile_profilefields_select")."\";");
+					$code = eval($templates->render("usercp_profile_profilefields_select"));
 				}
 			}
 			elseif($type == "radio")
@@ -637,7 +637,7 @@ if($mybb->input['action'] == "profile")
 							$checked = " checked=\"checked\"";
 						}
 
-						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
+						$code .= eval($templates->render("usercp_profile_profilefields_radio"));
 					}
 				}
 			}
@@ -669,14 +669,14 @@ if($mybb->input['action'] == "profile")
 							$checked = " checked=\"checked\"";
 						}
 
-						eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
+						$code .= eval($templates->render("usercp_profile_profilefields_checkbox"));
 					}
 				}
 			}
 			elseif($type == "textarea")
 			{
 				$value = htmlspecialchars_uni($userfield);
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_textarea")."\";");
+				$code = eval($templates->render("usercp_profile_profilefields_textarea"));
 			}
 			else
 			{
@@ -687,16 +687,16 @@ if($mybb->input['action'] == "profile")
 					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
 				}
 
-				eval("\$code = \"".$templates->get("usercp_profile_profilefields_text")."\";");
+				$code = eval($templates->render("usercp_profile_profilefields_text"));
 			}
 
 			if($profilefield['required'] == 1)
 			{
-				eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+				$requiredfields .= eval($templates->render("usercp_profile_customfield"));
 			}
 			else
 			{
-				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
+				$customfields .= eval($templates->render("usercp_profile_customfield"));
 			}
 			$altbg = alt_trow();
 			$code = "";
@@ -710,7 +710,7 @@ if($mybb->input['action'] == "profile")
 	}
 	if($customfields)
 	{
-		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
+		$customfields = eval($templates->render("usercp_profile_profilefields"));
 	}
 
 	if($mybb->usergroup['cancustomtitle'] == 1)
@@ -751,15 +751,15 @@ if($mybb->input['action'] == "profile")
 		$currentcustom = $reverttitle = '';
 		if(!empty($mybb->user['usertitle']))
 		{
-			eval("\$currentcustom = \"".$templates->get("usercp_profile_customtitle_currentcustom")."\";");
+			$currentcustom = eval($templates->render("usercp_profile_customtitle_currentcustom"));
 
 			if($mybb->user['usertitle'] != $mybb->usergroup['usertitle'])
 			{
-				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
+				$reverttitle = eval($templates->render("usercp_profile_customtitle_reverttitle"));
 			}
 		}
 
-		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
+		$customtitle = eval($templates->render("usercp_profile_customtitle"));
 	}
 	else
 	{
@@ -768,12 +768,12 @@ if($mybb->input['action'] == "profile")
 
 	if($mybb->usergroup['canchangewebsite'] == 1)
 	{
-		eval("\$website = \"".$templates->get("usercp_profile_website")."\";");
+		$website = eval($templates->render("usercp_profile_website"));
 	}
 	
 	$plugins->run_hooks("usercp_profile_end");
 
-	eval("\$editprofile = \"".$templates->get("usercp_profile")."\";");
+	$editprofile = eval($templates->render("usercp_profile"));
 	output_page($editprofile);
 }
 
@@ -878,10 +878,10 @@ if($mybb->input['action'] == "options")
 				$sel = " selected=\"selected\"";
 			}
 
-			eval('$langoptions .= "'.$templates->get('usercp_options_language_option').'";');
+			$langoptions .= eval($templates->render("usercp_options_language_option"));
 		}
 
-		eval('$board_language = "'.$templates->get('usercp_options_language').'";');
+		$board_language = eval($templates->render("usercp_options_language"));
 	}
 
 	// Lets work out which options the user has selected and check the boxes
@@ -1094,7 +1094,7 @@ if($mybb->input['action'] == "options")
 		}
 
 		$dateformat = my_date($format, TIME_NOW, "", 0);
-		eval("\$date_format_options .= \"".$templates->get("usercp_options_date_format")."\";");
+		$date_format_options .= eval($templates->render("usercp_options_date_format"));
 	}
 
 	$time_format_options = $timeformat = '';
@@ -1107,7 +1107,7 @@ if($mybb->input['action'] == "options")
 		}
 
 		$timeformat = my_date($format, TIME_NOW, "", 0);
-		eval("\$time_format_options .= \"".$templates->get("usercp_options_time_format")."\";");
+		$time_format_options .= eval($templates->render("usercp_options_time_format"));
 	}
 
 	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
@@ -1115,7 +1115,7 @@ if($mybb->input['action'] == "options")
 	$pms_from_buddys = '';
 	if($mybb->settings['allowbuddyonly'] == 1)
 	{
-		eval("\$pms_from_buddys = \"".$templates->get("usercp_options_pms_from_buddys")."\";");
+		$pms_from_buddys = eval($templates->render("usercp_options_pms_from_buddys"));
 	}
 
 	$threadview = array('linear' => '', 'threaded' => '');
@@ -1138,7 +1138,7 @@ if($mybb->input['action'] == "options")
 
 	if(!empty($stylelist))
 	{
-		eval('$board_style = "'.$templates->get('usercp_options_style').'";');
+		$board_style = eval($templates->render("usercp_options_style"));
 	}
 
 	$tppselect = $pppselect = '';
@@ -1158,10 +1158,10 @@ if($mybb->input['action'] == "options")
 				}
 
 				$tpp_option = $lang->sprintf($lang->tpp_option, $val);
-				eval("\$tppoptions .= \"".$templates->get("usercp_options_tppselect_option")."\";");
+				$tppoptions .= eval($templates->render("usercp_options_tppselect_option"));
 			}
 		}
-		eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
+		$tppselect = eval($templates->render("usercp_options_tppselect"));
 	}
 
 	if($mybb->settings['userpppoptions'])
@@ -1180,15 +1180,15 @@ if($mybb->input['action'] == "options")
 				}
 
 				$ppp_option = $lang->sprintf($lang->ppp_option, $val);
-				eval("\$pppoptions .= \"".$templates->get("usercp_options_pppselect_option")."\";");
+				$pppoptions .= eval($templates->render("usercp_options_pppselect_option"));
 			}
 		}
-		eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
+		$pppselect = eval($templates->render("usercp_options_pppselect"));
 	}
 
 	$plugins->run_hooks("usercp_options_end");
 
-	eval("\$editprofile = \"".$templates->get("usercp_options")."\";");
+	$editprofile = eval($templates->render("usercp_options"));
 	output_page($editprofile);
 }
 
@@ -1284,7 +1284,7 @@ if($mybb->input['action'] == "email")
 
 	$plugins->run_hooks("usercp_email");
 
-	eval("\$changemail = \"".$templates->get("usercp_email")."\";");
+	$changemail = eval($templates->render("usercp_email"));
 	output_page($changemail);
 }
 
@@ -1343,7 +1343,7 @@ if($mybb->input['action'] == "password")
 {
 	$plugins->run_hooks("usercp_password");
 
-	eval("\$editpassword = \"".$templates->get("usercp_password")."\";");
+	$editpassword = eval($templates->render("usercp_password"));
 	output_page($editpassword);
 }
 
@@ -1404,7 +1404,7 @@ if($mybb->input['action'] == "changename")
 
 	$plugins->run_hooks("usercp_changename_end");
 
-	eval("\$changename = \"".$templates->get("usercp_changename")."\";");
+	$changename = eval($templates->render("usercp_changename"));
 	output_page($changename);
 }
 
@@ -1642,7 +1642,7 @@ if($mybb->input['action'] == "subscriptions")
 			{
 				$icon = $icon_cache[$thread['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
+				$icon = eval($templates->render("usercp_subscriptions_thread_icon"));
 			}
 			else
 			{
@@ -1716,7 +1716,7 @@ if($mybb->input['action'] == "subscriptions")
 				$folder_label .= $lang->icon_new;
 				$new_class = "subject_new";
 				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+				$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 				$unreadpost = 1;
 			}
 			else
@@ -1775,21 +1775,21 @@ if($mybb->input['action'] == "subscriptions")
 					$notification_type = $lang->no_notification;
 			}
 
-			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
+			$threads .= eval($templates->render("usercp_subscriptions_thread"));
 		}
 
 		// Provide remove options
-		eval("\$remove_options = \"".$templates->get("usercp_subscriptions_remove")."\";");
+		$remove_options = eval($templates->render("usercp_subscriptions_remove"));
 	}
 	else
 	{
 		$remove_options = '';
-		eval("\$threads = \"".$templates->get("usercp_subscriptions_none")."\";");
+		$threads = eval($templates->render("usercp_subscriptions_none"));
 	}
 
 	$plugins->run_hooks("usercp_subscriptions_end");
 
-	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
+	$subscriptions = eval($templates->render("usercp_subscriptions"));
 	output_page($subscriptions);
 }
 
@@ -1876,12 +1876,12 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
 		{
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_never")."\";");
+			$lastpost = eval($templates->render("forumbit_depth2_forum_lastpost_never"));
 		}
 		// Hide last post
 		elseif(isset($forumpermissions['canonlyviewownthreads']) && $forumpermissions['canonlyviewownthreads'] != 0 && $forum['lastposteruid'] != $mybb->user['uid'])
 		{
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost_hidden")."\";");
+			$lastpost = eval($templates->render("forumbit_depth2_forum_lastpost_hidden"));
 		}
 		else
 		{
@@ -1896,7 +1896,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 				$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
 			}
 			$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
-			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
+			$lastpost = eval($templates->render("forumbit_depth2_forum_lastpost"));
 		}
 
 		if($mybb->settings['showdescriptions'] == 0)
@@ -1904,17 +1904,17 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$forum['description'] = "";
 		}
 
-		eval("\$forums .= \"".$templates->get("usercp_forumsubscriptions_forum")."\";");
+		$forums .= eval($templates->render("usercp_forumsubscriptions_forum"));
 	}
 
 	if(!$forums)
 	{
-		eval("\$forums = \"".$templates->get("usercp_forumsubscriptions_none")."\";");
+		$forums = eval($templates->render("usercp_forumsubscriptions_none"));
 	}
 
 	$plugins->run_hooks("usercp_forumsubscriptions_end");
 
-	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
+	$forumsubscriptions = eval($templates->render("usercp_forumsubscriptions"));
 	output_page($forumsubscriptions);
 }
 
@@ -2013,7 +2013,7 @@ if($mybb->input['action'] == "editsig")
 		}
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
-		eval("\$signature = \"".$templates->get($template)."\";");
+		$signature = eval($templates->render($template));
 	}
 
 	// User has a current signature, so let's display it (but show an error message)
@@ -2022,7 +2022,7 @@ if($mybb->input['action'] == "editsig")
 		$plugins->run_hooks("usercp_editsig_end");
 
 		// User either doesn't have permission, or has their signature suspended
-		eval("\$editsig = \"".$templates->get("usercp_editsig_suspended")."\";");
+		$editsig = eval($templates->render("usercp_editsig_suspended"));
 	}
 	else
 	{
@@ -2070,7 +2070,7 @@ if($mybb->input['action'] == "editsig")
 
 		$plugins->run_hooks("usercp_editsig_end");
 
-		eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
+		$editsig = eval($templates->render("usercp_editsig"));
 	}
 
 	output_page($editsig);
@@ -2252,7 +2252,7 @@ if($mybb->input['action'] == "avatar")
 	}
 
 	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
-	eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
+	$currentavatar = eval($templates->render("usercp_avatar_current"));
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
@@ -2269,23 +2269,23 @@ if($mybb->input['action'] == "avatar")
 	$auto_resize = '';
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
-		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_auto")."\";");
+		$auto_resize = eval($templates->render("usercp_avatar_auto_resize_auto"));
 	}
 	else if($mybb->settings['avatarresizing'] == "user")
 	{
-		eval("\$auto_resize = \"".$templates->get("usercp_avatar_auto_resize_user")."\";");
+		$auto_resize = eval($templates->render("usercp_avatar_auto_resize_user"));
 	}
 
 	$avatarupload = '';
 	if($mybb->usergroup['canuploadavatars'] == 1)
 	{
-		eval("\$avatarupload = \"".$templates->get("usercp_avatar_upload")."\";");
+		$avatarupload = eval($templates->render("usercp_avatar_upload"));
 	}
 
 	$removeavatar = '';
 	if(!empty($mybb->user['avatar']))
 	{
-		eval("\$removeavatar = \"".$templates->get("usercp_avatar_remove")."\";");
+		$removeavatar = eval($templates->render("usercp_avatar_remove"));
 	}
 
 	$plugins->run_hooks("usercp_avatar_end");
@@ -2295,7 +2295,7 @@ if($mybb->input['action'] == "avatar")
 		$avatar_error = '';
 	}
 
-	eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
+	$avatar = eval($templates->render("usercp_avatar"));
 	output_page($avatar);
 }
 
@@ -2857,7 +2857,7 @@ if($mybb->input['action'] == "editlists")
 			{
 				$status = "offline";
 			}
-			eval("\$buddy_list .= \"".$templates->get("usercp_editlists_user")."\";");
+			$buddy_list .= eval($templates->render("usercp_editlists_user"));
 			++$buddy_count;
 		}
 	}
@@ -2865,7 +2865,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_buddies = $lang->sprintf($lang->current_buddies, $buddy_count);
 	if(!$buddy_list)
 	{
-		eval("\$buddy_list = \"".$templates->get("usercp_editlists_no_buddies")."\";");
+		$buddy_list = eval($templates->render("usercp_editlists_no_buddies"));
 	}
 
 	// Fetch out ignore list users
@@ -2886,7 +2886,7 @@ if($mybb->input['action'] == "editlists")
 			{
 				$status = "offline";
 			}
-			eval("\$ignore_list .= \"".$templates->get("usercp_editlists_user")."\";");
+			$ignore_list .= eval($templates->render("usercp_editlists_user"));
 			++$ignore_count;
 		}
 	}
@@ -2894,7 +2894,7 @@ if($mybb->input['action'] == "editlists")
 	$lang->current_ignored_users = $lang->sprintf($lang->current_ignored_users, $ignore_count);
 	if(!$ignore_list)
 	{
-		eval("\$ignore_list = \"".$templates->get("usercp_editlists_no_ignored")."\";");
+		$ignore_list = eval($templates->render("usercp_editlists_no_ignored"));
 	}
 
 	// If an AJAX request from buddy management, echo out whatever the new list is.
@@ -2921,15 +2921,15 @@ if($mybb->input['action'] == "editlists")
 					$bgcolor = alt_trow();
 					$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
 					$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
-					eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request", 1, 0)."\";");
+					$sent_rows .= eval($templates->render("usercp_editlists_sent_request", 1, 0));
 				}
 				
 				if($sent_rows == '')
 				{
-					eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests", 1, 0)."\";");
+					$sent_rows = eval($templates->render("usercp_editlists_no_requests", 1, 0));
 				}
 				
-				eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests", 1, 0)."\";");
+				$sent_requests = eval($templates->render("usercp_editlists_sent_requests", 1, 0));
 			
 				echo $sentrequests;
 				echo $sent_requests."<script type=\"text/javascript\">{$message_js}</script>";
@@ -2955,15 +2955,15 @@ if($mybb->input['action'] == "editlists")
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['uid']);
 		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
-		eval("\$received_rows .= \"".$templates->get("usercp_editlists_received_request")."\";");
+		$received_rows .= eval($templates->render("usercp_editlists_received_request"));
 	}
 	
 	if($received_rows == '')
 	{
-		eval("\$received_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+		$received_rows = eval($templates->render("usercp_editlists_no_requests"));
 	}
 	
-	eval("\$received_requests = \"".$templates->get("usercp_editlists_received_requests")."\";");
+	$received_requests = eval($templates->render("usercp_editlists_received_requests"));
 	
 	$sent_rows = '';
 	$query = $db->query("
@@ -2977,19 +2977,19 @@ if($mybb->input['action'] == "editlists")
 		$bgcolor = alt_trow();
 		$request['username'] = build_profile_link(htmlspecialchars_uni($request['username']), (int)$request['touid']);
 		$request['date'] = my_date($mybb->settings['dateformat'], $request['date'])." ".my_date($mybb->settings['timeformat'], $request['date']);
-		eval("\$sent_rows .= \"".$templates->get("usercp_editlists_sent_request")."\";");
+		$sent_rows .= eval($templates->render("usercp_editlists_sent_request"));
 	}
 	
 	if($sent_rows == '')
 	{
-		eval("\$sent_rows = \"".$templates->get("usercp_editlists_no_requests")."\";");
+		$sent_rows = eval($templates->render("usercp_editlists_no_requests"));
 	}
 	
-	eval("\$sent_requests = \"".$templates->get("usercp_editlists_sent_requests")."\";");
+	$sent_requests = eval($templates->render("usercp_editlists_sent_requests"));
 	
 	$plugins->run_hooks("usercp_editlists_end");
 
-	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
+	$listpage = eval($templates->render("usercp_editlists"));
 	output_page($listpage);
 }
 
@@ -3023,7 +3023,7 @@ if($mybb->input['action'] == "drafts")
 			{
 				$draft['threadlink'] = get_thread_link($draft['tid']);
 				$draft['threadsubject'] = htmlspecialchars_uni($draft['threadsubject']);
-				eval("\$detail = \"".$templates->get("usercp_drafts_draft_thread")."\";");
+				$detail = eval($templates->render("usercp_drafts_draft_thread"));
 				$editurl = "newreply.php?action=editdraft&amp;pid={$draft['pid']}";
 				$id = $draft['pid'];
 				$type = "post";
@@ -3032,7 +3032,7 @@ if($mybb->input['action'] == "drafts")
 			{
 				$draft['forumlink'] = get_forum_link($draft['fid']);
 				$draft['forumname'] = htmlspecialchars_uni($draft['forumname']);
-				eval("\$detail = \"".$templates->get("usercp_drafts_draft_forum")."\";");
+				$detail = eval($templates->render("usercp_drafts_draft_forum"));
 				$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 				$id = $draft['tid'];
 				$type = "thread";
@@ -3040,18 +3040,18 @@ if($mybb->input['action'] == "drafts")
 
 			$draft['subject'] = htmlspecialchars_uni($draft['subject']);
 			$savedate = my_date('relative', $draft['dateline']);
-			eval("\$drafts .= \"".$templates->get("usercp_drafts_draft")."\";");
+			$drafts .= eval($templates->render("usercp_drafts_draft"));
 		}
 	}
 	else
 	{
 		$disable_delete_drafts = 'disabled="disabled"';
-		eval("\$drafts = \"".$templates->get("usercp_drafts_none")."\";");
+		$drafts = eval($templates->render("usercp_drafts_none"));
 	}
 
 	$plugins->run_hooks("usercp_drafts_end");
 
-	eval("\$draftlist = \"".$templates->get("usercp_drafts")."\";");
+	$draftlist = eval($templates->render("usercp_drafts"));
 	output_page($draftlist);
 }
 
@@ -3241,7 +3241,7 @@ if($mybb->input['action'] == "usergroups")
 		elseif($usergroup['type'] == 4)
 		{
 			$joingroup = $mybb->get_input('joingroup', 1);
-			eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
+			$joinpage = eval($templates->render("usercp_usergroups_joingroup"));
 			output_page($joinpage);
 			exit;
 		}
@@ -3314,44 +3314,44 @@ if($mybb->input['action'] == "usergroups")
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';
-		eval("\$memberlistlink = \"".$templates->get("usercp_usergroups_leader_usergroup_memberlist")."\";");
+		$memberlistlink = eval($templates->render("usercp_usergroups_leader_usergroup_memberlist"));
 		if($usergroup['type'] != 4)
 		{
 			$usergroup['joinrequests'] = '--';
 		}
 		if($usergroup['joinrequests'] > 0 && $usergroup['canmanagerequests'] == 1)
 		{
-			eval("\$moderaterequestslink = \"".$templates->get("usercp_usergroups_leader_usergroup_moderaterequests")."\";");
+			$moderaterequestslink = eval($templates->render("usercp_usergroups_leader_usergroup_moderaterequests"));
 		}
 		$groupleader[$usergroup['gid']] = 1;
 		$trow = alt_trow();
-		eval("\$groupsledlist .= \"".$templates->get("usercp_usergroups_leader_usergroup")."\";");
+		$groupsledlist .= eval($templates->render("usercp_usergroups_leader_usergroup"));
 	}
 	$leadinggroups = '';
 	if($groupsledlist)
 	{
-		eval("\$leadinggroups = \"".$templates->get("usercp_usergroups_leader")."\";");
+		$leadinggroups = eval($templates->render("usercp_usergroups_leader"));
 	}
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
 	$usergroup = $usergroups[$mybb->user['usergroup']];
-	eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveprimary")."\";");
+	$leavelink = eval($templates->render("usercp_usergroups_memberof_usergroup_leaveprimary"));
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 	{
-		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
+		$displaycode = eval($templates->render("usercp_usergroups_memberof_usergroup_display"));
 	}
 	elseif($usergroup['candisplaygroup'] == 1)
 	{
-		eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
+		$displaycode = eval($templates->render("usercp_usergroups_memberof_usergroup_setdisplay"));
 	}
 	else
 	{
 		$displaycode = '';
 	}
 
-	eval("\$memberoflist = \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
+	$memberoflist = eval($templates->render("usercp_usergroups_memberof_usergroup"));
 	$showmemberof = false;
 	if($mybb->user['additionalgroups'])
 	{
@@ -3362,39 +3362,39 @@ if($mybb->input['action'] == "usergroups")
 
 			if(isset($groupleader[$usergroup['gid']]))
 			{
-				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveleader")."\";");
+				$leavelink = eval($templates->render("usercp_usergroups_memberof_usergroup_leaveleader"));
 			}
 			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3 && $usergroup['type'] != 5)
 			{
-				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leaveother")."\";");
+				$leavelink = eval($templates->render("usercp_usergroups_memberof_usergroup_leaveother"));
 			}
 			else
 			{
-				eval("\$leavelink = \"".$templates->get("usercp_usergroups_memberof_usergroup_leave")."\";");
+				$leavelink = eval($templates->render("usercp_usergroups_memberof_usergroup_leave"));
 			}
 
 			$description = '';
 			if($usergroup['description'])
 			{
-				eval("\$description = \"".$templates->get("usercp_usergroups_memberof_usergroup_description")."\";");
+				$description = eval($templates->render("usercp_usergroups_memberof_usergroup_description"));
 			}
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
-				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_display")."\";");
+				$displaycode = eval($templates->render("usercp_usergroups_memberof_usergroup_display"));
 			}
 			elseif($usergroup['candisplaygroup'] == 1)
 			{
-				eval("\$displaycode = \"".$templates->get("usercp_usergroups_memberof_usergroup_setdisplay")."\";");
+				$displaycode = eval($templates->render("usercp_usergroups_memberof_usergroup_setdisplay"));
 			}
 			else
 			{
 				$displaycode = '';
 			}
-			eval("\$memberoflist .= \"".$templates->get("usercp_usergroups_memberof_usergroup")."\";");
+			$memberoflist .= eval($templates->render("usercp_usergroups_memberof_usergroup"));
 		}
 	}
-	eval("\$membergroups = \"".$templates->get("usercp_usergroups_memberof")."\";");
+	$membergroups = eval($templates->render("usercp_usergroups_memberof"));
 
 	// List of groups this user has applied for but has not been accepted in to
 	$query = $db->simple_select("joinrequests", "*", "uid='".$mybb->user['uid']."'");
@@ -3419,7 +3419,7 @@ if($mybb->input['action'] == "usergroups")
 		$description = '';
 		if($usergroup['description'])
 		{
-			eval("\$description = \"".$templates->get("usercp_usergroups_joinable_usergroup_description")."\";");
+			$description = eval($templates->render("usercp_usergroups_joinable_usergroup_description"));
 		}
 
 		// Moderating join requests?
@@ -3451,7 +3451,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		else
 		{
-			eval("\$joinlink = \"".$templates->get("usercp_usergroups_joinable_usergroup_join")."\";");
+			$joinlink = eval($templates->render("usercp_usergroups_joinable_usergroup_join"));
 		}
 
 		$usergroupleaders = '';
@@ -3471,17 +3471,17 @@ if($mybb->input['action'] == "usergroups")
 		if(my_strpos($usergroupleaders, $mybb->user['username']) === false)
 		{
 			// User is already a leader of the group, so don't show as a "Join Group"
-			eval("\$joinablegrouplist .= \"".$templates->get("usercp_usergroups_joinable_usergroup")."\";");
+			$joinablegrouplist .= eval($templates->render("usercp_usergroups_joinable_usergroup"));
 		}
 	}
 	if($joinablegrouplist)
 	{
-		eval("\$joinablegroups = \"".$templates->get("usercp_usergroups_joinable")."\";");
+		$joinablegroups = eval($templates->render("usercp_usergroups_joinable"));
 	}
 
 	$plugins->run_hooks("usercp_usergroups_end");
 
-	eval("\$groupmemberships = \"".$templates->get("usercp_usergroups")."\";");
+	$groupmemberships = eval($templates->render("usercp_usergroups"));
 	output_page($groupmemberships);
 }
 
@@ -3546,7 +3546,7 @@ if($mybb->input['action'] == "attachments")
 			$attachdate = my_date('relative', $attachment['dateline']);
 			$altbg = alt_trow();
 
-			eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
+			$attachments .= eval($templates->render("usercp_attachments_attachment"));
 
 			// Add to bandwidth total
 			$bandwidth += ($attachment['filesize'] * $attachment['downloads']);
@@ -3582,13 +3582,13 @@ if($mybb->input['action'] == "attachments")
 
 	if(!$attachments)
 	{
-		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");
+		$attachments = eval($templates->render("usercp_attachments_none"));
 		$usagenote = '';
 	}
 
 	$plugins->run_hooks("usercp_attachments_end");
 
-	eval("\$manageattachments = \"".$templates->get("usercp_attachments")."\";");
+	$manageattachments = eval($templates->render("usercp_attachments"));
 	output_page($manageattachments);
 }
 
@@ -3664,19 +3664,19 @@ if(!$mybb->input['action'])
 	$regdate = my_date('relative', $mybb->user['regdate']);
 
 	$useravatar = format_avatar(htmlspecialchars_uni($mybb->user['avatar']), $mybb->user['avatardimensions'], '100x100');
-	eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
+	$avatar = eval($templates->render("usercp_currentavatar"));
 
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 	if($mybb->user['usergroup'] == 5 && $mybb->settings['regtype'] != "admin")
 	{
-		eval("\$usergroup .= \"".$templates->get("usercp_resendactivation")."\";");
+		$usergroup .= eval($templates->render("usercp_resendactivation"));
 	}
 	// Make reputations row
 	$reputations = '';
 	if($mybb->usergroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation_link = get_reputation($mybb->user['reputation']);
-		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
+		$reputation = eval($templates->render("usercp_reputation"));
 	}
 
 	$latest_warnings = '';
@@ -3721,7 +3721,7 @@ if(!$mybb->input['action'])
 					$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 					$warning['postlink'] = get_post_link($warning['pid']);
-					eval("\$post_link .= \"".$templates->get("usercp_warnings_warning_post")."\";");
+					$post_link .= eval($templates->render("usercp_warnings_warning_post"));
 				}
 				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 				$date_issued = my_date('relative', $warning['dateline']);
@@ -3759,11 +3759,11 @@ if(!$mybb->input['action'])
 				}
 
 				$alt_bg = alt_trow();
-				eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
+				$warnings .= eval($templates->render("usercp_warnings_warning"));
 			}
 			if($warnings)
 			{
-				eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
+				$latest_warnings = eval($templates->render("usercp_warnings"));
 			}
 		}
 	}
@@ -3779,13 +3779,13 @@ if(!$mybb->input['action'])
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		$referral_link = $lang->sprintf($lang->referral_link, $settings['bburl'], $mybb->user['uid']);
-		eval("\$referral_info = \"".$templates->get("usercp_referrals")."\";");
+		$referral_info = eval($templates->render("usercp_referrals"));
 	}
 
 	// User Notepad
 	$plugins->run_hooks("usercp_notepad_start");
 	$mybb->user['notepad'] = htmlspecialchars_uni($mybb->user['notepad']);
-	eval("\$user_notepad = \"".$templates->get("usercp_notepad")."\";");
+	$user_notepad = eval($templates->render("usercp_notepad"));
 	$plugins->run_hooks("usercp_notepad_end");
 
 	// Thread Subscriptions with New Posts
@@ -3883,7 +3883,7 @@ if(!$mybb->input['action'])
 						{
 							$icon = $icon_cache[$thread['icon']];
 							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
+							$icon = eval($templates->render("usercp_subscriptions_thread_icon"));
 						}
 						else
 						{
@@ -3903,7 +3903,7 @@ if(!$mybb->input['action'])
 							$folder_label .= $lang->icon_new;
 							$new_class = "subject_new";
 							$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-							eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+							$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 						}
 						else
 						{
@@ -3935,10 +3935,10 @@ if(!$mybb->input['action'])
 						$thread['views'] = my_number_format($thread['views']);
 						$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
-						eval("\$latest_subscribed_threads .= \"".$templates->get("usercp_latest_subscribed_threads")."\";");
+						$latest_subscribed_threads .= eval($templates->render("usercp_latest_subscribed_threads"));
 					}
 				}
-				eval("\$latest_subscribed = \"".$templates->get("usercp_latest_subscribed")."\";");
+				$latest_subscribed = eval($templates->render("usercp_latest_subscribed"));
 			}
 		}
 	}
@@ -4069,7 +4069,7 @@ if(!$mybb->input['action'])
 				{
 					$icon = $icon_cache[$thread['icon']];
 					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
+					$icon = eval($templates->render("usercp_subscriptions_thread_icon"));
 				}
 				else
 				{
@@ -4127,7 +4127,7 @@ if(!$mybb->input['action'])
 					$folder_label .= $lang->icon_new;
 					$new_class = "subject_new";
 					$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
-					eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+					$gotounread = eval($templates->render("forumdisplay_thread_gotounread"));
 					$unreadpost = 1;
 				}
 				else
@@ -4173,16 +4173,16 @@ if(!$mybb->input['action'])
 				$thread['views'] = my_number_format($thread['views']);
 				$thread['author'] = build_profile_link($thread['username'], $thread['uid']);
 
-				eval("\$latest_threads_threads .= \"".$templates->get("usercp_latest_threads_threads")."\";");
+				$latest_threads_threads .= eval($templates->render("usercp_latest_threads_threads"));
 			}
 		}
 
-		eval("\$latest_threads = \"".$templates->get("usercp_latest_threads")."\";");
+		$latest_threads = eval($templates->render("usercp_latest_threads"));
 	}
 
 	$plugins->run_hooks("usercp_end");
 
-	eval("\$usercp = \"".$templates->get("usercp")."\";");
+	$usercp = eval($templates->render("usercp"));
 	output_page($usercp);
 }
 

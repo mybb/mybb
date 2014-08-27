@@ -38,7 +38,7 @@ if($mybb->get_input('action') == "search")
 {
 	$plugins->run_hooks("memberlist_search");
 	add_breadcrumb($lang->nav_memberlist_search);
-	eval("\$search_page = \"".$templates->get("memberlist_search")."\";");
+	$search_page = eval($templates->render("memberlist_search"));
 	output_page($search_page);
 }
 else
@@ -279,13 +279,13 @@ else
 	}
 
 	$sort = htmlspecialchars_uni($mybb->input['sort']);
-	eval("\$orderarrow['{$sort}'] = \"".$templates->get("memberlist_orderarrow")."\";");
+	$orderarrow['{$sort}'] = eval($templates->render("memberlist_orderarrow"));
 
 	// Referral?
 	if($mybb->settings['usereferrals'] == 1)
 	{
 		$colspan = 7;
-		eval("\$referral_header = \"".$templates->get("memberlist_referrals")."\";");
+		$referral_header = eval($templates->render("memberlist_referrals"));
 	}
 
 	$multipage = multipage($num_users, $per_page, $page, $search_url);
@@ -326,7 +326,7 @@ else
 		// Build referral?
 		if($mybb->settings['usereferrals'] == 1)
 		{
-			eval("\$referral_bit = \"".$templates->get("memberlist_referrals_bit")."\";");
+			$referral_bit = eval($templates->render("memberlist_referrals_bit"));
 		}
 
 		$usergroup['groupimage'] = '';
@@ -343,7 +343,7 @@ else
 			}
 			$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 			$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
-			eval("\$usergroup['groupimage'] = \"".$templates->get("memberlist_user_groupimage")."\";");
+			$usergroup['groupimage'] = eval($templates->render("memberlist_user_groupimage"));
 		}
 
 		$has_custom_title = 0;
@@ -391,7 +391,7 @@ else
 
 			for($i = 0; $i < $user['stars']; ++$i)
 			{
-				eval("\$user['userstars'] .= \"".$templates->get("memberlist_user_userstar", 1, 0)."\";");
+				$user['userstars'] .= eval($templates->render("memberlist_user_userstar", 1, 0));
 			}
 		}
 
@@ -402,7 +402,7 @@ else
 
 		// Show avatar
 		$useravatar = format_avatar(htmlspecialchars_uni($user['avatar']), $user['avatardimensions'], my_strtolower($mybb->settings['memberlistmaxavatarsize']));
-		eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
+		$user['avatar'] = eval($templates->render("memberlist_user_avatar"));
 
 		if($user['invisible'] == 1 && $mybb->usergroup['canviewwolinvis'] != 1 && $user['uid'] != $mybb->user['uid'])
 		{
@@ -422,17 +422,17 @@ else
 		$user['regdate'] = my_date('relative', $user['regdate']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		$user['threadnum'] = my_number_format($user['threadnum']);
-		eval("\$users .= \"".$templates->get("memberlist_user")."\";");
+		$users .= eval($templates->render("memberlist_user"));
 	}
 
 	// Do we have no results?
 	if(!$users)
 	{
-		eval("\$users = \"".$templates->get("memberlist_error")."\";");
+		$users = eval($templates->render("memberlist_error"));
 	}
 
 	$plugins->run_hooks("memberlist_end");
 
-	eval("\$memberlist = \"".$templates->get("memberlist")."\";");
+	$memberlist = eval($templates->render("memberlist"));
 	output_page($memberlist);
 }

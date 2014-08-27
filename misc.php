@@ -155,7 +155,7 @@ elseif($mybb->input['action'] == "rules")
 
 		$plugins->run_hooks("misc_rules_end");
 
-		eval("\$rules = \"".$templates->get("misc_rules_forum")."\";");
+		$rules = eval($templates->render("misc_rules_forum"));
 		output_page($rules);
 	}
 
@@ -344,17 +344,17 @@ elseif($mybb->input['action'] == "helpresults")
 
 		$plugins->run_hooks("misc_helpresults_bit");
 
-		eval("\$helpdoclist .= \"".$templates->get("misc_helpresults_bit")."\";");
+		$helpdoclist .= eval($templates->render("misc_helpresults_bit"));
 	}
 
 	if($db->num_rows($query) == 0)
 	{
-		eval("\$helpdoclist = \"".$templates->get("misc_helpresults_noresults")."\";");
+		$helpdoclist = eval($templates->render("misc_helpresults_noresults"));
 	}
 
 	$plugins->run_hooks("misc_helpresults_end");
 
-	eval("\$helpresults = \"".$templates->get("misc_helpresults")."\";");
+	$helpresults = eval($templates->render("misc_helpresults"));
 	output_page($helpresults);
 }
 elseif($mybb->input['action'] == "help")
@@ -419,7 +419,7 @@ elseif($mybb->input['action'] == "help")
 
 			$plugins->run_hooks("misc_help_helpdoc_end");
 
-			eval("\$helppage = \"".$templates->get("misc_help_helpdoc")."\";");
+			$helppage = eval($templates->render("misc_help_helpdoc"));
 			output_page($helppage);
 		}
 		else
@@ -477,7 +477,7 @@ elseif($mybb->input['action'] == "help")
 								}
 							}
 							$altbg = alt_trow();
-							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");
+							$helpbits .= eval($templates->render("misc_help_section_bit"));
 						}
 					}
 					$expdisplay = '';
@@ -494,18 +494,18 @@ elseif($mybb->input['action'] == "help")
 						$expthead = "";
 					}
 				}
-				eval("\$sections .= \"".$templates->get("misc_help_section")."\";");
+				$sections .= eval($templates->render("misc_help_section"));
 			}
 		}
 
 		if($mybb->settings['helpsearch'] == 1)
 		{
-			eval("\$search = \"".$templates->get("misc_help_search")."\";");
+			$search = eval($templates->render("misc_help_search"));
 		}
 
 		$plugins->run_hooks("misc_help_section_end");
 
-		eval("\$help = \"".$templates->get("misc_help")."\";");
+		$help = eval($templates->render("misc_help"));
 		output_page($help);
 	}
 }
@@ -555,7 +555,7 @@ elseif($mybb->input['action'] == "buddypopup")
 			$send_pm = '';
 			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
 			{
-				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
+				$send_pm = eval($templates->render("misc_buddypopup_user_sendpm"));
 			}
 
 			if($buddy['lastactive'])
@@ -572,12 +572,12 @@ elseif($mybb->input['action'] == "buddypopup")
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				$bonline_alt = alt_trow();
-				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
+				$buddys['online'] .= eval($templates->render("misc_buddypopup_user_online"));
 			}
 			else
 			{
 				$boffline_alt = alt_trow();
-				eval("\$buddys['offline'] .= \"".$templates->get("misc_buddypopup_user_offline")."\";");
+				$buddys['offline'] .= eval($templates->render("misc_buddypopup_user_offline"));
 			}
 		}
 
@@ -585,28 +585,28 @@ elseif($mybb->input['action'] == "buddypopup")
 		if(empty($buddys['online']))
 		{
 			$error = $lang->online_none;
-			eval("\$buddys['online'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
+			$buddys['online'] = eval($templates->render("misc_buddypopup_user_none"));
 		}
 
 		if(empty($buddys['offline']))
 		{
 			$error = $lang->offline_none;
-			eval("\$buddys['offline'] = \"".$templates->get("misc_buddypopup_user_none")."\";");
+			$buddys['offline'] = eval($templates->render("misc_buddypopup_user_none"));
 		}
 
-		eval("\$buddies = \"".$templates->get("misc_buddypopup_user")."\";");
+		$buddies = eval($templates->render("misc_buddypopup_user"));
 	}
 	else
 	{
 		// No buddies? :(
 		$colspan = '';
 		$error = $lang->no_buddies;
-		eval("\$buddies = \"".$templates->get("misc_buddypopup_user_none")."\";");
+		$buddies = eval($templates->render("misc_buddypopup_user_none"));
 	}
 
 	$plugins->run_hooks("misc_buddypopup_end");
 
-	eval("\$buddylist = \"".$templates->get("misc_buddypopup", 1, 0)."\";");
+	$buddylist = eval($templates->render("misc_buddypopup", 1, 0));
 	echo $buddylist;
 	exit;
 }
@@ -688,12 +688,12 @@ elseif($mybb->input['action'] == "whoposted")
 		}
 		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
 		$numposts += $poster['posts'];
-		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
+		$whoposted .= eval($templates->render("misc_whoposted_poster"));
 		$altbg = alt_trow();
 	}
 	$numposts = my_number_format($numposts);
 	$poster['posts'] = my_number_format($poster['posts']);
-	eval("\$whop = \"".$templates->get("misc_whoposted", 1, 0)."\";");
+	$whop = eval($templates->render("misc_whoposted", 1, 0));
 	echo $whop;
 	exit;
 }
@@ -719,8 +719,8 @@ elseif($mybb->input['action'] == "smilies")
 				$smilie['insert'] = addslashes($smilie['find']);
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
-				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
-				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
+				$smilie_image = eval($templates->render("smilie", 1, 0));
+				$smilies .= eval($templates->render("misc_smilies_popup_smilie"));
 				if($e == 2)
 				{
 					$smilies .= "</tr><tr>";
@@ -735,9 +735,9 @@ elseif($mybb->input['action'] == "smilies")
 		}
 		if($e == 2)
 		{
-			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_empty")."\";");
+			$smilies .= eval($templates->render("misc_smilies_popup_empty"));
 		}
-		eval("\$smiliespage = \"".$templates->get("misc_smilies_popup", 1, 0)."\";");
+		$smiliespage = eval($templates->render("misc_smilies_popup", 1, 0));
 		output_page($smiliespage);
 	}
 	else
@@ -751,12 +751,12 @@ elseif($mybb->input['action'] == "smilies")
 			foreach($smilies_cache as $smilie)
 			{
 				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				eval('$smilie_image = "'.$templates->get('smilie').'";');
-				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
+				$smilie_image = eval($templates->render("smilie"));
+				$smilies .= eval($templates->render("misc_smilies_smilie"));
 				$class = alt_trow();
 			}
 		}
-		eval("\$smiliespage = \"".$templates->get("misc_smilies")."\";");
+		$smiliespage = eval($templates->render("misc_smilies"));
 		output_page($smiliespage);
 	}
 }
@@ -792,21 +792,21 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		$imtype = "aim";
 		$imtype_lang = $lang->aol_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
+		$navigationbar .= eval($templates->render("misc_imcenter_nav"));
 		$navsep = ' - ';
 	}
 	if($user['skype'])
 	{
 		$imtype = "skype";
 		$imtype_lang = $lang->skype;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
+		$navigationbar .= eval($templates->render("misc_imcenter_nav"));
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
 		$imtype = "yahoo";
 		$imtype_lang = $lang->yahoo_im;
-		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
+		$navigationbar .= eval($templates->render("misc_imcenter_nav"));
 	}
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
@@ -815,7 +815,7 @@ elseif($mybb->input['action'] == "imcenter")
 	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
 
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
-	eval("\$imcenter = \"".$templates->get($imtemplate, 1, 0)."\";");
+	$imcenter = eval($templates->render($imtemplate, 1, 0));
 	echo $imcenter;
 	exit;
 }
@@ -908,7 +908,7 @@ elseif($mybb->input['action'] == "syndication")
 				$url .= "limit=$limit";
 			}
 		}
-		eval("\$feedurl = \"".$templates->get("misc_syndication_feedurl")."\";");
+		$feedurl = eval($templates->render("misc_syndication_feedurl"));
 	}
 	unset($GLOBALS['forumcache']);
 
@@ -927,7 +927,7 @@ elseif($mybb->input['action'] == "syndication")
 
 	$plugins->run_hooks("misc_syndication_end");
 
-	eval("\$syndication = \"".$templates->get("misc_syndication")."\";");
+	$syndication = eval($templates->render("misc_syndication"));
 	output_page($syndication);
 }
 elseif($mybb->input['action'] == "clearcookies")
@@ -1024,7 +1024,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 			$addsel = '';
 		}
 
-		eval("\$forumlist = \"".$templates->get("misc_syndication_forumlist")."\";");
+		$forumlist = eval($templates->render("misc_syndication_forumlist"));
 	}
 
 	return $forumlist;

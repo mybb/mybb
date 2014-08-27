@@ -153,7 +153,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 		{
 			$lang->new_posts = $lang->sprintf($lang->new_posts, $newposts);
 		}
-		eval("\$welcometext = \"".$templates->get("portal_welcome_membertext")."\";");
+		$welcometext = eval($templates->render("portal_welcome_membertext"));
 
 	}
 	else
@@ -175,10 +175,10 @@ if($mybb->settings['portal_showwelcome'] != 0)
 				$username = $lang->username;
 				break;
 		}
-		eval("\$welcometext = \"".$templates->get("portal_welcome_guesttext")."\";");
+		$welcometext = eval($templates->render("portal_welcome_guesttext"));
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
-	eval("\$welcome = \"".$templates->get("portal_welcome")."\";");
+	$welcome = eval($templates->render("portal_welcome"));
 }
 
 $pms = '';
@@ -191,7 +191,7 @@ if($mybb->settings['portal_showpms'] != 0)
 		$messages['pms_unread'] = $mybb->user['pms_unread'];
 
 		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_unread']);
-		eval("\$pms = \"".$templates->get("portal_pms")."\";");
+		$pms = eval($templates->render("portal_pms"));
 	}
 }
 
@@ -211,14 +211,14 @@ if($mybb->settings['portal_showstats'] != 0)
 	{
 		$newestmember = build_profile_link($stats['lastusername'], $stats['lastuid']);
 	}
-	eval("\$stats = \"".$templates->get("portal_stats")."\";");
+	$stats = eval($templates->render("portal_stats"));
 }
 
 $search = '';
 // Search box
 if($mybb->settings['portal_showsearch'] != 0)
 {
-	eval("\$search = \"".$templates->get("portal_search")."\";");
+	$search = eval($templates->render("portal_search"));
 }
 
 $whosonline = '';
@@ -292,7 +292,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
+					$onlinemembers .= eval($templates->render("portal_whosonline_memberbit", 1, 0));
 					$comma = $lang->comma;
 				}
 			}
@@ -334,7 +334,7 @@ if($mybb->settings['portal_showwol'] != 0 && $mybb->usergroup['canviewonline'] !
 	  $lang->online_users = $lang->sprintf($lang->online_users, $onlinecount);
 	}
 	$lang->online_counts = $lang->sprintf($lang->online_counts, $membercount, $guestcount);
-	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
+	$whosonline = eval($templates->render("portal_whosonline"));
 }
 
 $latestthreads = '';
@@ -390,13 +390,13 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		$thread['forumlink'] = get_thread_link($thread['fid']);
 		$thread['forumname'] = $forum_cache[$thread['fid']]['name'];
-		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
+		$threadlist .= eval($templates->render("portal_latestthreads_thread"));
 		$altbg = alt_trow();
 	}
 	if($threadlist)
 	{
 		// Show the table only if there are threads
-		eval("\$latestthreads = \"".$templates->get("portal_latestthreads")."\";");
+		$latestthreads = eval($templates->render("portal_latestthreads"));
 	}
 }
 
@@ -556,7 +556,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$icon = $icon_cache[$announcement['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
-				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
+				$icon = eval($templates->render("portal_announcement_icon"));
 			}
 			else
 			{
@@ -564,24 +564,24 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			}
 
 			$useravatar = format_avatar(htmlspecialchars_uni($announcement['avatar']), $announcement['avatardimensions']);
-			eval("\$avatar = \"".$templates->get("portal_announcement_avatar")."\";");
+			$avatar = eval($templates->render("portal_announcement_avatar"));
 
 			$anndate = my_date('relative', $announcement['dateline']);
 
 			if($announcement['replies'])
 			{
-				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments")."\";");
+				$numcomments = eval($templates->render("portal_announcement_numcomments"));
 			}
 			else
 			{
-				eval("\$numcomments = \"".$templates->get("portal_announcement_numcomments_no")."\";");
+				$numcomments = eval($templates->render("portal_announcement_numcomments_no"));
 				$lastcomment = '';
 			}
 
 			$senditem = '';
 			if($mybb->user['uid'] > 0 && $mybb->usergroup['cansendemail'] == 1)
 			{
-				eval("\$senditem = \"".$templates->get("portal_announcement_send_item")."\";");
+				$senditem = eval($templates->render("portal_announcement_send_item"));
 			}
 
 			$plugins->run_hooks("portal_announcement");
@@ -638,17 +638,17 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 						{
 							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 							{ // We have a thumbnail to show (and its not the "SMALL" enough image
-								eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+								$attbit = eval($templates->render("postbit_attachments_thumbnails_thumbnail"));
 							}
 							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
 							{
 								// Image is small enough to show - no thumbnail
-								eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
+								$attbit = eval($templates->render("postbit_attachments_images_image"));
 							}
 							else
 							{
 								// Show standard link to attachment
-								eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+								$attbit = eval($templates->render("postbit_attachments_attachment"));
 							}
 							$message = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $message);
 						}
@@ -656,7 +656,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 						{
 							if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != '')
 							{ // We have a thumbnail to show
-								eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+								$post['thumblist'] .= eval($templates->render("postbit_attachments_thumbnails_thumbnail"));
 								if($tcount == 5)
 								{
 									$thumblist .= "<br />";
@@ -667,11 +667,11 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 							elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
 							{
 								// Image is small enough to show - no thumbnail
-								eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+								$post['imagelist'] .= eval($templates->render("postbit_attachments_images_image"));
 							}
 							else
 							{
-								eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
+								$post['attachmentlist'] .= eval($templates->render("postbit_attachments_attachment"));
 							}
 						}
 					}
@@ -682,19 +682,19 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 				}
 				if($post['thumblist'])
 				{
-					eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+					$post['attachedthumbs'] = eval($templates->render("postbit_attachments_thumbnails"));
 				}
 				if($post['imagelist'])
 				{
-					eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
+					$post['attachedimages'] = eval($templates->render("postbit_attachments_images"));
 				}
 				if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
 				{
-					eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
+					$post['attachments'] = eval($templates->render("postbit_attachments"));
 				}
 			}
 
-			eval("\$announcements .= \"".$templates->get("portal_announcement")."\";");
+			$announcements .= eval($templates->render("portal_announcement"));
 			unset($post);
 		}
 	}
@@ -702,5 +702,5 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 
 $plugins->run_hooks("portal_end");
 
-eval("\$portal = \"".$templates->get("portal")."\";");
+$portal = eval($templates->render("portal"));
 output_page($portal);

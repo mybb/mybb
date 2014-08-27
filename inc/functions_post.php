@@ -223,7 +223,7 @@ function build_postbit($post, $post_type=0)
 
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
-		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
+		$post['groupimage'] = eval($templates->render("postbit_groupimage"));
 
 		if($mybb->settings['postlayout'] == "classic")
 		{
@@ -284,7 +284,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] = '';
 			for($i = 0; $i < $post['stars']; ++$i)
 			{
-				eval("\$post['userstars'] .= \"".$templates->get("postbit_userstar", 1, 0)."\";");
+				$post['userstars'] .= eval($templates->render("postbit_userstar", 1, 0));
 			}
 
 			$post['userstars'] .= "<br />";
@@ -298,17 +298,17 @@ function build_postbit($post, $post_type=0)
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		if($post['lastactive'] > $timecut && ($post['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1) && $post['lastvisit'] != $post['lastactive'])
 		{
-			eval("\$post['onlinestatus'] = \"".$templates->get("postbit_online")."\";");
+			$post['onlinestatus'] = eval($templates->render("postbit_online"));
 		}
 		else
 		{
 			if($post['away'] == 1 && $mybb->settings['allowaway'] != 0)
 			{
-				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_away")."\";");
+				$post['onlinestatus'] = eval($templates->render("postbit_away"));
 			}
 			else
 			{
-				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_offline")."\";");
+				$post['onlinestatus'] = eval($templates->render("postbit_offline"));
 			}
 		}
 
@@ -316,18 +316,18 @@ function build_postbit($post, $post_type=0)
 		if(isset($mybb->user['showavatars']) && $mybb->user['showavatars'] != 0 || $mybb->user['uid'] == 0)
 		{
 			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions'], $mybb->settings['postmaxavatarsize']);
-			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
+			$post['useravatar'] = eval($templates->render("postbit_avatar"));
 		}
 		else
 		{
 			$post['useravatar'] = '';
 		}
 
-		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
+		$post['button_find'] = eval($templates->render("postbit_find"));
 
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
-			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
+			$post['button_pm'] = eval($templates->render("postbit_pm"));
 		}
 
 		$post['button_rep'] = '';
@@ -338,13 +338,13 @@ function build_postbit($post, $post_type=0)
 				$post['pid'] = 0;
 			}
 
-			eval("\$post['button_rep'] = \"".$templates->get("postbit_rep_button")."\";");
+			$post['button_rep'] = eval($templates->render("postbit_rep_button"));
 		}
 
 		if($post['website'] != "" && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $usergroup['canchangewebsite'] == 1)
 		{
 			$post['website'] = htmlspecialchars_uni($post['website']);
-			eval("\$post['button_www'] = \"".$templates->get("postbit_www")."\";");
+			$post['button_www'] = eval($templates->render("postbit_www"));
 		}
 		else
 		{
@@ -353,7 +353,7 @@ function build_postbit($post, $post_type=0)
 
 		if($post['hideemail'] != 1 && $mybb->usergroup['cansendemail'] == 1)
 		{
-			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
+			$post['button_email'] = eval($templates->render("postbit_email"));
 		}
 		else
 		{
@@ -366,7 +366,7 @@ function build_postbit($post, $post_type=0)
 		if($post_type != 3 && $usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1)
 		{
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
-			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
+			$post['replink'] = eval($templates->render("postbit_reputation"));
 		}
 
 		// Showing the warning level? (only show if not announcement)
@@ -382,7 +382,7 @@ function build_postbit($post, $post_type=0)
 			// If we can warn them, it's not the same person, and we're in a PM or a post.
 			if($mybb->usergroup['canwarnusers'] != 0 && $post['uid'] != $mybb->user['uid'] && ($post_type == 0 || $post_type == 2))
 			{
-				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
+				$post['button_warn'] = eval($templates->render("postbit_warn"));
 				$warning_link = "warnings.php?uid={$post['uid']}";
 			}
 			else
@@ -390,12 +390,12 @@ function build_postbit($post, $post_type=0)
 				$post['button_warn'] = '';
 				$warning_link = "usercp.php";
 			}
-			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
+			$post['warninglevel'] = eval($templates->render("postbit_warninglevel"));
 		}
 
 		if($post_type != 3 && $post_type != 1 && purgespammer_show($post['postnum'], $post['usergroup'], $post['uid']))
 		{
-			eval("\$post['button_purgespammer'] = \"".$templates->get('postbit_purgespammer')."\";");
+			$post['button_purgespammer'] = eval($templates->render('postbit_purgespammer'));
 		}
 
 		// Display profile fields on posts - only if field is filled in
@@ -419,12 +419,12 @@ function build_postbit($post, $post_type=0)
 						{
 							if($val != '')
 							{
-								eval("\$post['fieldvalue_option'] .= \"".$templates->get("postbit_profilefield_multiselect_value")."\";");
+								$post['fieldvalue_option'] .= eval($templates->render("postbit_profilefield_multiselect_value"));
 							}
 						}
 						if($post['fieldvalue_option'] != '')
 						{
-							eval("\$post['fieldvalue'] .= \"".$templates->get("postbit_profilefield_multiselect")."\";");
+							$post['fieldvalue'] .= eval($templates->render("postbit_profilefield_multiselect"));
 						}
 					}
 					else
@@ -456,12 +456,12 @@ function build_postbit($post, $post_type=0)
 						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
 					}
 
-					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
+					$post['profilefield'] .= eval($templates->render("postbit_profilefield"));
 				}
 			}
 		}
 
-		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
+		$post['user_details'] = eval($templates->render("postbit_author_user"));
 	}
 	else
 	{ // Message was posted by a guest or an unknown user
@@ -488,7 +488,7 @@ function build_postbit($post, $post_type=0)
 		$post['button_find'] = '';
 		$post['onlinestatus'] = '';
 		$post['replink'] = '';
-		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
+		$post['user_details'] = eval($templates->render("postbit_author_guest"));
 	}
 
 	$post['button_edit'] = '';
@@ -507,13 +507,13 @@ function build_postbit($post, $post_type=0)
 	{
 		global $replyall;
 
-		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
-		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
-		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
+		$post['button_reply_pm'] = eval($templates->render("postbit_reply_pm"));
+		$post['button_forward_pm'] = eval($templates->render("postbit_forward_pm"));
+		$post['button_delete_pm'] = eval($templates->render("postbit_delete_pm"));
 
 		if($replyall == true)
 		{
-			eval("\$post['button_replyall_pm'] = \"".$templates->get("postbit_replyall_pm")."\";");
+			$post['button_replyall_pm'] = eval($templates->render("postbit_replyall_pm"));
 		}
 	}
 
@@ -531,14 +531,14 @@ function build_postbit($post, $post_type=0)
 			{
 				$post['editreason'] = $parser->parse_badwords($post['editreason']);
 				$post['editreason'] = htmlspecialchars_uni($post['editreason']);
-				eval("\$editreason = \"".$templates->get("postbit_editedby_editreason")."\";");
+				$editreason = eval($templates->render("postbit_editedby_editreason"));
 			}
-			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
+			$post['editedmsg'] = eval($templates->render("postbit_editedby"));
 		}
 
 		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
-			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
+			$post['button_edit'] = eval($templates->render("postbit_edit"));
 		}
 
 		// Quick Delete button
@@ -566,7 +566,7 @@ function build_postbit($post, $post_type=0)
 				{
 					$display = "none";
 				}
-				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+				$post['button_quickdelete'] = eval($templates->render("postbit_quickdelete"));
 
 				// Restore Post
 				if(is_moderator($fid, "canrestoreposts"))
@@ -577,7 +577,7 @@ function build_postbit($post, $post_type=0)
 						$display = "";
 					}
 					$postbit_qrestore = $lang->postbit_qrestore_post;
-					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+					$post['button_quickrestore'] = eval($templates->render("postbit_quickrestore"));
 				}
 			}
 			else if((is_moderator($fid, "candeletethreads") || $can_delete_thread == 1) && $postcounter == 1)
@@ -589,7 +589,7 @@ function build_postbit($post, $post_type=0)
 					$display = "none";
 				}
 				$postbit_qrestore = $lang->postbit_qrestore_thread;
-				eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
+				$post['button_quickdelete'] = eval($templates->render("postbit_quickdelete"));
 
 				// Restore Post
 				if(is_moderator($fid, "canrestoreposts"))
@@ -599,7 +599,7 @@ function build_postbit($post, $post_type=0)
 					{
 						$display = "";
 					}
-					eval("\$post['button_quickrestore'] = \"".$templates->get("postbit_quickrestore")."\";");
+					$post['button_quickrestore'] = eval($templates->render("postbit_quickrestore"));
 				}
 			}
 		}
@@ -617,7 +617,7 @@ function build_postbit($post, $post_type=0)
 				$inlinecheck = "";
 			}
 
-			eval("\$post['inlinecheck'] = \"".$templates->get("postbit_inlinecheck")."\";");
+			$post['inlinecheck'] = eval($templates->render("postbit_inlinecheck"));
 
 			if($post['visible'] == 0)
 			{
@@ -630,30 +630,30 @@ function build_postbit($post, $post_type=0)
 		}
 		$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 		$post_number = my_number_format($postcounter);
-		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
+		$post['posturl'] = eval($templates->render("postbit_posturl"));
 		global $forum, $thread;
 
 		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'], "canpostclosedthreads")) && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1))
 		{
-			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
+			$post['button_quote'] = eval($templates->render("postbit_quote"));
 		}
 
 		if($forumpermissions['canpostreplys'] != 0 && ($thread['uid'] == $mybb->user['uid'] || $forumpermissions['canonlyreplyownthreads'] != 1) && ($thread['closed'] != 1 || is_moderator($fid, "canpostclosedthreads")) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
-			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
+			$post['button_multiquote'] = eval($templates->render("postbit_multiquote"));
 		}
 
 		if($mybb->user['uid'] != "0")
 		{
-			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
+			$post['button_report'] = eval($templates->render("postbit_report"));
 		}
 	}
 	elseif($post_type == 3) // announcement
 	{
 		if($mybb->usergroup['canmodcp'] == 1 && $mybb->usergroup['canmanageannounce'] == 1 && is_moderator($fid, "canmanageannouncements"))
 		{
-			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
-			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
+			$post['button_edit'] = eval($templates->render("announcement_edit"));
+			$post['button_quickdelete'] = eval($templates->render("announcement_quickdelete"));
 		}
 	}
 
@@ -672,7 +672,7 @@ function build_postbit($post, $post_type=0)
 		{
 			if($show_ips == "show")
 			{
-				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
+				$post['iplogged'] = eval($templates->render("postbit_iplogged_show"));
 			}
 			else if($show_ips == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
@@ -681,7 +681,7 @@ function build_postbit($post, $post_type=0)
 				{
 					$action = 'getpmip';
 				}
-				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
+				$post['iplogged'] = eval($templates->render("postbit_iplogged_hiden"));
 			}
 		}
 	}
@@ -738,7 +738,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
-		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");
+		$post['signature'] = eval($templates->render("postbit_signature"));
 	}
 	else
 	{
@@ -754,7 +754,7 @@ function build_postbit($post, $post_type=0)
 		$icon['path'] = htmlspecialchars_uni($icon['path']);
 		$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
 		$icon['name'] = htmlspecialchars_uni($icon['name']);
-		eval("\$post['icon'] = \"".$templates->get("postbit_icon")."\";");
+		$post['icon'] = eval($templates->render("postbit_icon"));
 	}
 	else
 	{
@@ -780,7 +780,7 @@ function build_postbit($post, $post_type=0)
 			if(is_array($ignored_users) && $post['uid'] != 0 && isset($ignored_users[$post['uid']]) && $ignored_users[$post['uid']] == 1)
 			{
 				$ignored_message = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
-				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+				$ignore_bit = eval($templates->render("postbit_ignored"));
 				$post_visibility = "display: none;";
 			}
 			break;
@@ -788,11 +788,11 @@ function build_postbit($post, $post_type=0)
 
 	if($mybb->settings['postlayout'] == "classic")
 	{
-		eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
+		$postbit = eval($templates->render("postbit_classic"));
 	}
 	else
 	{
-		eval("\$postbit = \"".$templates->get("postbit")."\";");
+		$postbit = eval($templates->render("postbit"));
 	}
 	$GLOBALS['post'] = "";
 
@@ -846,15 +846,15 @@ function get_post_attachments($id, &$post)
 					// Show as download for all other cases
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
 					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+						$attbit = eval($templates->render("postbit_attachments_thumbnails_thumbnail"));
 					}
 					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
+						$attbit = eval($templates->render("postbit_attachments_images_image"));
 					}
 					else
 					{
-						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
+						$attbit = eval($templates->render("postbit_attachments_attachment"));
 					}
 					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
 				}
@@ -865,7 +865,7 @@ function get_post_attachments($id, &$post)
 					// Show as download for all other cases
 					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
 					{
-						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
+						$post['thumblist'] .= eval($templates->render("postbit_attachments_thumbnails_thumbnail"));
 						if($tcount == 5)
 						{
 							$thumblist .= "<br />";
@@ -875,11 +875,11 @@ function get_post_attachments($id, &$post)
 					}
 					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
-						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
+						$post['imagelist'] .= eval($templates->render("postbit_attachments_images_image"));
 					}
 					else
 					{
-						eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment")."\";");
+						$post['attachmentlist'] .= eval($templates->render("postbit_attachments_attachment"));
 					}
 				}
 			}
@@ -898,11 +898,11 @@ function get_post_attachments($id, &$post)
 			{
 				$postbit_unapproved_attachments = $lang->sprintf($lang->postbit_unapproved_attachments, $validationcount);
 			}
-			eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment_unapproved")."\";");
+			$post['attachmentlist'] .= eval($templates->render("postbit_attachments_attachment_unapproved"));
 		}
 		if($post['thumblist'])
 		{
-			eval("\$post['attachedthumbs'] = \"".$templates->get("postbit_attachments_thumbnails")."\";");
+			$post['attachedthumbs'] = eval($templates->render("postbit_attachments_thumbnails"));
 		}
 		else
 		{
@@ -910,7 +910,7 @@ function get_post_attachments($id, &$post)
 		}
 		if($post['imagelist'])
 		{
-			eval("\$post['attachedimages'] = \"".$templates->get("postbit_attachments_images")."\";");
+			$post['attachedimages'] = eval($templates->render("postbit_attachments_images"));
 		}
 		else
 		{
@@ -918,7 +918,7 @@ function get_post_attachments($id, &$post)
 		}
 		if($post['attachmentlist'] || $post['thumblist'] || $post['imagelist'])
 		{
-			eval("\$post['attachments'] = \"".$templates->get("postbit_attachments")."\";");
+			$post['attachments'] = eval($templates->render("postbit_attachments"));
 		}
 	}
 }

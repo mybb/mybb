@@ -97,7 +97,7 @@ if(!empty($most_replied))
 			$numberbit = my_number_format($thread['replies']);
 			$numbertype = $lang->replies;
 			$thread['threadlink'] = get_thread_link($thread['tid']);
-			eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
+			$mostreplies .= eval($templates->render("stats_thread"));
 		}
 	}
 }
@@ -122,7 +122,7 @@ if(!empty($most_viewed))
 			$numberbit = my_number_format($thread['views']);
 			$numbertype = $lang->views;
 			$thread['threadlink'] = get_thread_link($thread['tid']);
-			eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
+			$mostviews .= eval($templates->render("stats_thread"));
 		}
 	}
 }
@@ -203,5 +203,5 @@ $stats['newest_user'] = build_profile_link($stats['lastusername'], $stats['lastu
 
 $plugins->run_hooks("stats_end");
 
-eval("\$stats = \"".$templates->get("stats")."\";");
+$stats = eval($templates->render("stats"));
 output_page($stats);

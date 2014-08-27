@@ -280,5 +280,5 @@ else
 
 $plugins->run_hooks('contact_end');
 
-eval("\$page = \"".$templates->get("contact")."\";");
+$page = eval($templates->render("contact"));
 output_page($page);

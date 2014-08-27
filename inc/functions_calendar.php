@@ -83,7 +83,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	foreach($weekdays as $weekday)
 	{
 		$weekday_name = fetch_weekday_name($weekday, true);
-		eval("\$weekday_headers .= \"".$templates->get("calendar_mini_weekdayheader")."\";");
+		$weekday_headers .= eval($templates->render("calendar_mini_weekdayheader"));
 	}
 
 	$in_month = 0;
@@ -159,16 +159,16 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 			{
 				$day_link = $day;
 			}
-			eval("\$day_bits .= \"".$templates->get("calendar_mini_weekrow_day")."\";");
+			$day_bits .= eval($templates->render("calendar_mini_weekrow_day"));
 			++$day;
 		}
 		if($day_bits)
 		{
-			eval("\$calendar_rows .= \"".$templates->get("calendar_mini_weekrow")."\";");
+			$calendar_rows .= eval($templates->render("calendar_mini_weekrow"));
 		}
 		$day_bits = "";
 	}
-	eval("\$mini_calendar = \"".$templates->get("calendar_mini")."\";");
+	$mini_calendar = eval($templates->render("calendar_mini"));
 	return $mini_calendar;
 }
 
@@ -359,10 +359,10 @@ function build_calendar_jump($selected=0)
 			$sel = "selected=\"selected\"";
 		}
 
-		eval("\$jump_options .= \"".$templates->get("calendar_jump_option")."\";");
+		$jump_options .= eval($templates->render("calendar_jump_option"));
 	}
 
-	eval("\$calendar_jump = \"".$templates->get("calendar_jump")."\";");
+	$calendar_jump = eval($templates->render("calendar_jump"));
 	return $calendar_jump;
 }
 

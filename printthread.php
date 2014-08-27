@@ -181,12 +181,12 @@ while($postrow = $db->fetch_array($query))
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);
 	$plugins->run_hooks("printthread_post");
-	eval("\$postrows .= \"".$templates->get("printthread_post")."\";");
+	$postrows .= eval($templates->render("printthread_post"));
 }
 
 $plugins->run_hooks("printthread_end");
 
-eval("\$printable = \"".$templates->get("printthread")."\";");
+$printable = eval($templates->render("printthread"));
 output_page($printable);
 
 function makeprintablenav($pid="0", $depth="--")
@@ -240,15 +240,15 @@ function printthread_multipage($count, $perpage, $current_page, $url)
 		{
 			if($page == $current_page)
 			{
-				eval("\$mppage .= \"".$templates->get("printthread_multipage_page_current")."\";");
+				$mppage .= eval($templates->render("printthread_multipage_page_current"));
 			}
 			else
 			{
-				eval("\$mppage .= \"".$templates->get("printthread_multipage_page")."\";");
+				$mppage .= eval($templates->render("printthread_multipage_page"));
 			}
 		}
 
-		eval("\$multipage = \"".$templates->get("printthread_multipage")."\";");
+		$multipage = eval($templates->render("printthread_multipage"));
 	}
 	return $multipage;
 }

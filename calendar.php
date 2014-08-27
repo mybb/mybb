@@ -418,34 +418,34 @@ if($mybb->input['action'] == "addevent")
 		if($year == $single_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
+			$single_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
+			$single_years .= eval($templates->render("calendar_year"));
 		}
 
 		if($year == $start_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+			$start_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+			$start_years .= eval($templates->render("calendar_year"));
 		}
 
 		if($year == $end_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+			$end_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+			$end_years .= eval($templates->render("calendar_year"));
 		}
 	}
 
@@ -457,34 +457,34 @@ if($mybb->input['action'] == "addevent")
 		if($day == $single_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
+			$single_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
+			$single_days .= eval($templates->render("calendar_day"));
 		}
 
 		if($day == $start_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+			$start_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+			$start_days .= eval($templates->render("calendar_day"));
 		}
 
 		if($day == $end_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+			$end_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+			$end_days .= eval($templates->render("calendar_day"));
 		}
 	}
 
@@ -529,24 +529,24 @@ if($mybb->input['action'] == "addevent")
 			}
 
 			++$calendarcount;
-			eval("\$select_calendar .= \"".$templates->get("calendar_select")."\";");
+			$select_calendar .= eval($templates->render("calendar_select"));
 		}
 	}
 
 	if($calendarcount > 1)
 	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect")."\";");
+		$calendar_select .= eval($templates->render("calendar_addevent_calendarselect"));
 	}
 	else
 	{
-		eval("\$calendar_select .= \"".$templates->get("calendar_addevent_calendarselect_hidden")."\";");
+		$calendar_select .= eval($templates->render("calendar_addevent_calendarselect_hidden"));
 	}
 
 	$event_errors = '';
 
 	$plugins->run_hooks("calendar_addevent_end");
 
-	eval("\$addevent = \"".$templates->get("calendar_addevent")."\";");
+	$addevent = eval($templates->render("calendar_addevent"));
 	output_page($addevent);
 }
 
@@ -1043,34 +1043,34 @@ if($mybb->input['action'] == "editevent")
 		if($year == $single_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
+			$single_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$single_years .= \"".$templates->get("calendar_year")."\";");
+			$single_years .= eval($templates->render("calendar_year"));
 		}
 
 		if($year == $start_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+			$start_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$start_years .= \"".$templates->get("calendar_year")."\";");
+			$start_years .= eval($templates->render("calendar_year"));
 		}
 
 		if($year == $end_year)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+			$end_years .= eval($templates->render("calendar_year"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$end_years .= \"".$templates->get("calendar_year")."\";");
+			$end_years .= eval($templates->render("calendar_year"));
 		}
 	}
 
@@ -1082,34 +1082,34 @@ if($mybb->input['action'] == "editevent")
 		if($day == $single_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
+			$single_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$single_days .= \"".$templates->get("calendar_day")."\";");
+			$single_days .= eval($templates->render("calendar_day"));
 		}
 
 		if($day == $start_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+			$start_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$start_days .= \"".$templates->get("calendar_day")."\";");
+			$start_days .= eval($templates->render("calendar_day"));
 		}
 
 		if($day == $end_day)
 		{
 			$selected = "selected=\"selected\"";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+			$end_days .= eval($templates->render("calendar_day"));
 		}
 		else
 		{
 			$selected = "";
-			eval("\$end_days .= \"".$templates->get("calendar_day")."\";");
+			$end_days .= eval($templates->render("calendar_day"));
 		}
 	}
 
@@ -1117,7 +1117,7 @@ if($mybb->input['action'] == "editevent")
 
 	$plugins->run_hooks("calendar_editevent_end");
 
-	eval("\$editevent = \"".$templates->get("calendar_editevent")."\";");
+	$editevent = eval($templates->render("calendar_editevent"));
 	output_page($editevent);
 }
 
@@ -1170,13 +1170,13 @@ if($mybb->input['action'] == "move")
 		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
 		{
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-			eval("\$calendar_select .= \"".$templates->get("calendar_select")."\";");
+			$calendar_select .= eval($templates->render("calendar_select"));
 		}
 	}
 
 	$plugins->run_hooks("calendar_move_end");
 
-	eval("\$moveevent = \"".$templates->get("calendar_move")."\";");
+	$moveevent = eval($templates->render("calendar_move"));
 	output_page($moveevent);
 }
 
@@ -1459,7 +1459,7 @@ if($mybb->input['action'] == "event")
 		$event['userstars'] = '';
 		for($i = 0; $i < $event['stars']; ++$i)
 		{
-			eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
+			$event['userstars'] .= eval($templates->render("calendar_event_userstar", 1, 0));
 		}
 
 		if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1541,13 +1541,13 @@ if($mybb->input['action'] == "event")
 	$repeats = fetch_friendly_repetition($event);
 	if($repeats)
 	{
-		eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
+		$repeats = eval($templates->render("calendar_repeats"));
 	}
 
 	$event_class = '';
 	if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
 	{
-		eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
+		$edit_event = eval($templates->render("calendar_event_editbutton"));
 		if($calendar_permissions['canmoderateevents'] == 1)
 		{
 			if($event['visible'] == 1)
@@ -1560,7 +1560,7 @@ if($mybb->input['action'] == "event")
 				$approve = $lang->approve_event;
 				$approve_value = "approve";
 			}
-			eval("\$moderator_options = \"".$templates->get("calendar_event_modoptions")."\";");
+			$moderator_options = eval($templates->render("calendar_event_modoptions"));
 		}
 
 		if($event['visible'] == 0)
@@ -1574,18 +1574,18 @@ if($mybb->input['action'] == "event")
 	$yearsel = '';
 	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
+		$yearsel .= eval($templates->render("calendar_year_sel"));
 	}
 
 	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
+		$addevent = eval($templates->render("calendar_addeventlink"));
 	}
 
 	// Now output the page
 	$plugins->run_hooks("calendar_event_end");
-	eval("\$event = \"".$templates->get("calendar_event")."\";");
+	$event = eval($templates->render("calendar_event"));
 	output_page($event);
 }
 
@@ -1681,7 +1681,7 @@ if($mybb->input['action'] == "dayview")
 
 					$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
 					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
-					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
+					$birthday_list .= eval($templates->render("calendar_dayview_birthdays_bday", 1, 0));
 					$comma = $lang->comma;
 				}
 				else
@@ -1702,7 +1702,7 @@ if($mybb->input['action'] == "dayview")
 		{
 			$bdaydate = my_date($mybb->settings['dateformat'], gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
 			$lang->birthdays_on_day = $lang->sprintf($lang->birthdays_on_day, $bdaydate);
-			eval("\$birthdays = \"".$templates->get("calendar_dayview_birthdays", 1, 0)."\";");
+			$birthdays = eval($templates->render("calendar_dayview_birthdays", 1, 0));
 		}
 	}
 
@@ -1801,7 +1801,7 @@ if($mybb->input['action'] == "dayview")
 				$event['userstars'] = '';
 				for($i = 0; $i < $event['stars']; ++$i)
 				{
-					eval("\$event['userstars'] .= \"".$templates->get("calendar_event_userstar", 1, 0)."\";");
+					$event['userstars'] .= eval($templates->render("calendar_event_userstar", 1, 0));
 				}
 
 				if($event['userstars'] && $event['starimage'] && $event['stars'])
@@ -1881,13 +1881,13 @@ if($mybb->input['action'] == "dayview")
 			$repeats = fetch_friendly_repetition($event);
 			if($repeats)
 			{
-				eval("\$repeats = \"".$templates->get("calendar_repeats")."\";");
+				$repeats = eval($templates->render("calendar_repeats"));
 			}
 
 			$edit_event = $moderator_options = $event_class = "";
 			if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
 			{
-				eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
+				$edit_event = eval($templates->render("calendar_event_editbutton"));
 				if($calendar_permissions['canmoderateevents'] == 1)
 				{
 					if($event['visible'] == 1)
@@ -1900,39 +1900,39 @@ if($mybb->input['action'] == "dayview")
 						$approve = $lang->approve_event;
 						$approve_value = "approve";
 					}
-					eval("\$moderator_options = \"".$templates->get("calendar_event_modoptions")."\";");
+					$moderator_options = eval($templates->render("calendar_event_modoptions"));
 				}
 				if($event['visible'] == 0)
 				{
 					$event_class = " trow_shaded";
 				}
 			}
-			eval("\$events .= \"".$templates->get("calendar_dayview_event")."\";");
+			$events .= eval($templates->render("calendar_dayview_event"));
 		}
 	}
 
 	$yearsel = '';
 	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
+		$yearsel .= eval($templates->render("calendar_year_sel"));
 	}
 
 	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
+		$addevent = eval($templates->render("calendar_addeventlink"));
 	}
 
 	if(!$events)
 	{
 		$lang->no_events = $lang->sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
-		eval("\$events = \"".$templates->get("calendar_dayview_noevents")."\";");
+		$events = eval($templates->render("calendar_dayview_noevents"));
 	}
 
 	// Now output the page
 	$plugins->run_hooks("calendar_dayview_end");
 
-	eval("\$day_view = \"".$templates->get("calendar_dayview")."\";");
+	$day_view = eval($templates->render("calendar_dayview"));
 	output_page($day_view);
 }
 
@@ -1970,7 +1970,7 @@ if($mybb->input['action'] == "weekview")
 	$yearsel = '';
 	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
+		$yearsel .= eval($templates->render("calendar_year_sel"));
 	}
 
 	// No incoming week, show THIS week
@@ -2126,7 +2126,7 @@ if($mybb->input['action'] == "weekview")
 				$event_time = '';
 				if($time_period)
 				{
-					eval("\$event_time = \"".$templates->get("calendar_weekview_day_event_time")."\";");
+					$event_time = eval($templates->render("calendar_weekview_day_event_time"));
 				}
 				if($event['private'] == 1)
 				{
@@ -2140,7 +2140,7 @@ if($mybb->input['action'] == "weekview")
 				{
 					$event_class .= " trow_shaded";
 				}
-				eval("\$day_events .= \"".$templates->get("calendar_weekview_day_event")."\";");
+				$day_events .= eval($templates->render("calendar_weekview_day_event"));
 			}
 		}
 
@@ -2159,7 +2159,7 @@ if($mybb->input['action'] == "weekview")
 			}
 
 			$calendar_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
-			eval("\$day_birthdays = \"".$templates->get("calendar_weekview_day_birthdays")."\";");
+			$day_birthdays = eval($templates->render("calendar_weekview_day_birthdays"));
 		}
 
 		$day_link = get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day);
@@ -2167,7 +2167,7 @@ if($mybb->input['action'] == "weekview")
 		{
 			$day_bits[$weekday_month] = '';
 		}
-		eval("\$day_bits[$weekday_month] .= \"".$templates->get("calendar_weekview_day")."\";");
+		$day_bits[$weekday_month] .= eval($templates->render("calendar_weekview_day"));
 		$day_events = $day_birthdays = "";
 		$weekday_date = gmmktime(0, 0, 0, $weekday_month, $weekday_day+1, $weekday_year);
 	}
@@ -2185,19 +2185,19 @@ if($mybb->input['action'] == "weekview")
 		// Fetch out the days for this month
 		$days = $day_bits[$month[0]];
 
-		eval("\$weekday_bits .= \"".$templates->get("calendar_weekview_month")."\";");
+		$weekday_bits .= eval($templates->render("calendar_weekview_month"));
 	}
 
 	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
+		$addevent = eval($templates->render("calendar_addeventlink"));
 	}
 
 	// Now output the page
 	$plugins->run_hooks("calendar_weekview_end");
 
-	eval("\$weekview = \"".$templates->get("calendar_weekview")."\";");
+	$weekview = eval($templates->render("calendar_weekview"));
 	output_page($weekview);
 }
 
@@ -2331,7 +2331,7 @@ if(!$mybb->input['action'])
 	foreach($weekdays as $weekday)
 	{
 		$weekday_name = fetch_weekday_name($weekday);
-		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
+		$weekday_headers .= eval($templates->render("calendar_weekdayheader"));
 	}
 
 	$in_month = 0;
@@ -2417,7 +2417,7 @@ if(!$mybb->input['action'])
 						{
 							$event_class .= " trow_shaded";
 						}
-						eval("\$day_events .= \"".$templates->get("calendar_eventbit")."\";");
+						$day_events .= eval($templates->render("calendar_eventbit"));
 					}
 				}
 			}
@@ -2437,7 +2437,7 @@ if(!$mybb->input['action'])
 				}
 
 				$calendar['link'] = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-				eval("\$day_birthdays = \"".$templates->get("calendar_weekrow_day_birthdays")."\";");
+				$day_birthdays = eval($templates->render("calendar_weekrow_day_birthdays"));
 			}
 
 			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
@@ -2457,13 +2457,13 @@ if(!$mybb->input['action'])
 			{
 				$day_class = "trow2";
 			}
-			eval("\$day_bits .= \"".$templates->get("calendar_weekrow_day")."\";");
+			$day_bits .= eval($templates->render("calendar_weekrow_day"));
 			$day_birthdays = $day_events = "";
 			++$day;
 		}
 		if($day_bits)
 		{
-			eval("\$calendar_rows .= \"".$templates->get("calendar_weekrow")."\";");
+			$calendar_rows .= eval($templates->render("calendar_weekrow"));
 		}
 		$day_bits = "";
 	}
@@ -2471,17 +2471,17 @@ if(!$mybb->input['action'])
 	$yearsel = '';
 	for($year_sel = my_date("Y"); $year_sel < (my_date("Y") + 5); ++$year_sel)
 	{
-		eval("\$yearsel .= \"".$templates->get("calendar_year_sel")."\";");
+		$yearsel .= eval($templates->render("calendar_year_sel"));
 	}
 
 	$addevent = '';
 	if($mybb->usergroup['canaddevents'] == 1)
 	{
-		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
+		$addevent = eval($templates->render("calendar_addeventlink"));
 	}
 
 	$plugins->run_hooks("calendar_end");
 
-	eval("\$calendar = \"".$templates->get("calendar")."\";");
+	$calendar = eval($templates->render("calendar"));
 	output_page($calendar);
 }
