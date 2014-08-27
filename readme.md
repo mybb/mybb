@@ -20,3 +20,6 @@ Visit our community at [MyBB.com](http://www.mybb.com) for support.
 
 ### License
 MyBB is licensed under [GNU Lesser General Public License v3](http://www.mybb.com/about/license).
+
+
+Some icons by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com/).
