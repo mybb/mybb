@@ -414,14 +414,12 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
-	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
 	// Hide tracking link if no permission
-	$tracking = '';
+	$ucp_nav_tracking = '';
 	if($mybb->usergroup['cantrackpms'])
 	{
-		$tracking = $templates->get("usercp_nav_messenger_tracking");
+		$ucp_nav_tracking = eval($templates->render("usercp_nav_messenger_tracking"));
 	}
-	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
 
 	// Hide compose link if no permission
 	$ucp_nav_compose = '';
@@ -465,7 +463,7 @@ function usercp_menu_messenger()
 		$collapsed['usercppms_e'] = '';
 	}
 
-	eval("\$usercpmenu .= \"".$usercp_nav_messenger."\";");
+	$usercpmenu .= eval($templates->render("usercp_nav_messenger"));
 }
 
 /**
