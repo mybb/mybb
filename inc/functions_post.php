@@ -265,6 +265,8 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 		}
+		
+		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		if($usergroup['stars'])
 		{
@@ -475,6 +477,8 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
+		
+		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		$usergroup['title'] = $lang->na;
 

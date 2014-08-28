@@ -2740,6 +2740,8 @@ if($mybb->input['action'] == "editprofile")
 		}
 	}
 
+	$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
+	
 	if(empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';

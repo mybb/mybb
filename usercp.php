@@ -747,6 +747,8 @@ if($mybb->input['action'] == "profile")
 				$user['usertitle'] = $mybb->user['usertitle'];
 			}
 		}
+		
+		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		$currentcustom = $reverttitle = '';
 		if(!empty($mybb->user['usertitle']))
@@ -758,7 +760,7 @@ if($mybb->input['action'] == "profile")
 				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
 			}
 		}
-
+		
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else

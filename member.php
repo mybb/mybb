@@ -2258,6 +2258,8 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 	}
+	
+	$usertitle = htmlspecialchars_uni($usertitle);
 
 	if($displaygroup['stars'] || $displaygroup['usertitle'])
 	{
