@@ -808,6 +808,10 @@ elseif($mybb->input['action'] == "imcenter")
 		$imtype_lang = $lang->yahoo_im;
 		eval("\$navigationbar .= \"".$templates->get("misc_imcenter_nav")."\";");
 	}
+	
+	$user['skype'] = htmlspecialchars_uni($user['skype']);
+	$user['yahoo'] = htmlspecialchars_uni($user['yahoo']);
+	$user['aim'] = htmlspecialchars_uni($user['aim']);
 
 	$lang->chat_on_skype = $lang->sprintf($lang->chat_on_skype, $user['username']);
 	$lang->call_on_skype = $lang->sprintf($lang->call_on_skype, $user['username']);
