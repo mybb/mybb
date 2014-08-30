@@ -444,6 +444,14 @@ $page->style = $cp_style;
 // Do not have a valid Admin user, throw back to login page.
 if(!isset($mybb->user['uid']) || $logged_out == true)
 {
+	// Try to assume user language for login form before he is loged in.
+	if(!empty($mybb->cookies['mybb']['frontendlang']) && file_exists(MYBB_ROOT."inc/languages/".basename($mybb->cookies['mybb']['frontendlang'])."/admin/global.lang.php"))
+	{
+		$cp_language = basename($mybb->cookies['mybb']['frontendlang']);
+		$lang->set_language($cp_language, "admin");
+		$lang->load("global");
+	}
+	
 	if($logged_out == true)
 	{
 		$page->show_login($lang->success_logged_out);
