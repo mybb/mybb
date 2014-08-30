@@ -82,7 +82,7 @@ $breadcrumbprefix = '';
 if($thread['prefix'])
 {
 	$threadprefixes = build_prefixes();
-	if(isset($threadprefixes[$thread['prefix']]))
+	if(!empty($threadprefixes[$thread['prefix']]))
 	{
 		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 	}
@@ -267,18 +267,19 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeletethreads"))
 			{
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+
 				if($mybb->settings['soft_delete'] == 1)
 				{
 					$modlogdata['pid'] = $pid;
-				
-					require_once MYBB_ROOT."inc/class_moderation.php";
-					$moderation = new Moderation;
+
 					$moderation->soft_delete_threads(array($tid));
 					log_moderator_action($modlogdata, $lang->thread_soft_deleted);
 				}
 				else
 				{
-					delete_thread($tid);
+					$moderation->delete_thread($tid);
 					mark_reports($tid, "thread");
 					log_moderator_action($modlogdata, $lang->thread_deleted);
 				}
@@ -310,21 +311,23 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts"))
 			{
 				// Select the first post before this
+				require_once MYBB_ROOT."inc/class_moderation.php";
+				$moderation = new Moderation;
+
 				if($mybb->settings['soft_delete'] == 1)
 				{
 					$modlogdata['pid'] = $pid;
-					
-					require_once MYBB_ROOT."inc/class_moderation.php";
-					$moderation = new Moderation;
+
 					$moderation->soft_delete_posts(array($pid));
 					log_moderator_action($modlogdata, $lang->post_soft_deleted);
 				}
 				else
 				{
-					delete_post($pid, $tid);
+					$moderation->delete_post($pid);
 					mark_reports($pid, "post");
 					log_moderator_action($modlogdata, $lang->post_deleted);
 				}
+
 				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
@@ -462,8 +465,8 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		"prefix" => $mybb->get_input('threadprefix', 1),
 		"subject" => $mybb->get_input('subject'),
 		"icon" => $mybb->get_input('icon', 1),
-		"uid" => $mybb->user['uid'],
-		"username" => $mybb->user['username'],
+		"uid" => $post['uid'],
+		"username" => $post['username'],
 		"edit_uid" => $mybb->user['uid'],
 		"message" => $mybb->get_input('message'),
 		"editreason" => $mybb->get_input('editreason'),
@@ -678,12 +681,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->get_input('message'),
 		);
-
-		if(!isset($mybb->input['previewpost']))
-		{
-			$post['uid'] = $mybb->user['uid'];
-			$post['username'] = $mybb->user['username'];
-		}
 
 		$postoptions = $mybb->get_input('postoptions', 2);
 		if(!isset($postoptions['signature']))

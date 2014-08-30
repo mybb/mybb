@@ -203,7 +203,7 @@ class EventDataHandler extends DataHandler
 
 		if(array_key_exists('timezone', $event))
 		{
-			$event['timezone'] = floatval($event['timezone']);
+			$event['timezone'] = (float)$event['timezone'];
 			if($event['timezone'] > 12 || $event['timezone'] < -12)
 			{
 				$this->set_error("invalid_timezone");
@@ -489,7 +489,7 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['timezone']))
 		{
-			$this->event_insert_data['timezone'] = $db->escape_string(floatval($event['timezone']));
+			$this->event_insert_data['timezone'] = $db->escape_string((float)$event['timezone']);
 		}
 
 		if(isset($event['ignoretimezone']))
@@ -594,7 +594,7 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['timezone']))
 		{
-			$this->event_update_data['timezone'] = $db->escape_string(floatval($event['timezone']));
+			$this->event_update_data['timezone'] = $db->escape_string((float)$event['timezone']);
 		}
 
 		if(isset($event['ignoretimezone']))

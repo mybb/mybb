@@ -2591,7 +2591,8 @@ if($mybb->input['action'] == "inline_edit")
 						$userhandler = new UserDataHandler('delete');
 
 						// Delete users
-						$userhandler->delete_user($selected);
+						$deleted = $userhandler->delete_user($selected);
+						$to_be_deleted = $deleted['deleted_users']; // Get the correct number of deleted users
 
 						// Update forum stats, remove the cookie and redirect the user
 						my_unsetcookie("inlinemod_useracp");

@@ -79,7 +79,15 @@ class templates
 
 		if(!isset($this->cache[$title]))
 		{
-			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			// Only load master and global templates if template is needed in Admin CP
+			if(empty($theme['templateset']))
+			{
+				$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			}
+			else
+			{
+				$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			}
 
 			$gettemplate = $db->fetch_array($query);
 			if($mybb->debug_mode)
@@ -113,6 +121,19 @@ class templates
 			$template = str_replace("\\'", "'", addslashes($template));
 		}
 		return $template;
+	}
+	
+	/**
+	 * Prepare a template for rendering to a variable.
+	 *
+	 * @param string The name of the template to get.
+	 * @param boolean True if template contents must be escaped, false if not.
+	 * @param boolean True to output HTML comments, false to not output.
+	 * @return string The eval()-ready PHP code for rendering the template
+	 */
+	function render($template, $eslashes=true, $htmlcomments=true)
+	{
+		return 'return "'.$this->get($template, $eslashes, $htmlcomments).'";';
 	}
 
 	/**

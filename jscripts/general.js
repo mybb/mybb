@@ -38,7 +38,7 @@ var MyBB = {
 			mark_read_imgs.each(function()
 			{
 				var element = $(this);
-				if(element.attr("src").match("off.png") || element.attr("src").match("offlock.png") || element.attr("src").match("offlink.png") || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
+				if(element.hasClass('forum_off') || element.hasClass('forum_offlock') || element.hasClass('forum_offlink') || element.hasClass('subforum_minioff') || element.hasClass('subforum_miniofflock') || element.hasClass('subforum_miniofflink') || (element.attr("title") && element.attr("title") == lang.no_new_posts)) return;
 
 				element.click(function()
 				{
@@ -249,9 +249,15 @@ var MyBB = {
 	{
 		if(request == 1)
 		{
-			$("#mark_read_"+fid).attr("src", $("#mark_read_"+fid).attr("src").replace("on.png", "off.png"))
-								.css("cursor", "default")
-								.attr("title", lang.no_new_posts);
+			if($("#mark_read_"+fid).hasClass('subforum_minion'))
+			{
+				$("#mark_read_"+fid).removeClass('subforum_minion').addClass('subforum_minioff');
+			}
+			else
+			{
+				$("#mark_read_"+fid).removeClass('forum_on').addClass('forum_off');
+			}
+			$("#mark_read_"+fid).css("cursor", "default").attr("title", lang.no_new_posts);
 		}
 	},
 
@@ -401,6 +407,67 @@ var MyBB = {
 		});
 
 		return false;
+	},
+
+	// Fixes https://github.com/mybb/mybb/issues/1232
+	select2: function()
+	{
+		if(typeof $.fn.select2 !== "undefined")
+		{
+			$.extend($.fn.select2.defaults, {
+				formatMatches: function (matches) {
+					if(matches == 1)
+					{
+						return lang.select2_match;
+					}
+					else
+					{
+						return lang.select2_matches.replace('{1}',matches);
+					}
+				},
+				formatNoMatches: function () {
+					return lang.select2_nomatches;
+				},
+				formatInputTooShort: function (input, min) {
+					var n = min - input.length;
+					if( n == 1)
+					{
+						return lang.select2_inputtooshort_single;
+					}
+					else
+					{
+						return lang.select2_inputtooshort_plural.replace('{1}', n);
+					}
+				},
+				formatInputTooLong: function (input, max) {
+					var n = input.length - max;
+					if( n == 1)
+					{
+						return lang.select2_inputtoolong_single;
+					}
+					else
+					{
+						return lang.select2_inputtoolong_plural.replace('{1}', n);
+					}
+				},
+				formatSelectionTooBig: function (limit) {
+					if( limit == 1)
+					{
+						return lang.select2_selectiontoobig_single;
+					}
+					else
+					{
+						return lang.select2_selectiontoobig_plural.replace('{1}', limit);
+					}
+				},
+				formatLoadMore: function (pageNumber) {
+					return lang.select2_loadmore;
+				},
+				formatSearching: function () {
+					return lang.select2_searching;
+				}
+			});
+		}
 	}
 };
 

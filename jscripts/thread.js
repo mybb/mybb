@@ -5,6 +5,9 @@ var Thread = {
 			Thread.quickEdit();
 			Thread.initQuickReply();
 			Thread.initMultiQuote();
+			
+			// Set spinner image
+			$('#quickreply_spinner img').attr('src', spinner_image);
 		});
 	},
 
@@ -16,15 +19,17 @@ var Thread = {
 			var post_ids = quoted.split("|");
 
 			$.each(post_ids, function(key, value) {
-				if($("#multiquote_"+value))
+				var mquote_a = $("#multiquote_"+value).closest('a');
+				if(mquote_a)
 				{
-					$("#multiquote_"+value).parents("a:first").attr('class', 'postbit_multiquote_on');
+					mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 				}
 			});
 
-			if($('#quickreply_multiquote'))
+			var mquote_quick = $('#quickreply_multiquote');
+			if(mquote_quick)
 			{
-				$('#quickreply_multiquote').show();
+				mquote_quick.show();
 			}
 		}
 		return true;
@@ -50,27 +55,28 @@ var Thread = {
 				}
 			});
 		}
-
+		
+		var mquote_a = $("#multiquote_"+pid).closest('a')
 		if(is_new == true)
 		{
 			new_post_ids[new_post_ids.length] = pid;
-			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote');
-			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote_on');
+			mquote_a.removeClass('postbit_multiquote').addClass('postbit_multiquote_on');
 		}
 		else
 		{
-			$("#multiquote_"+pid).parents("a:first").removeClass('postbit_multiquote_on');
-			$("#multiquote_"+pid).parents("a:first").addClass('postbit_multiquote');
+			mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 		}
-		if($('#quickreply_multiquote'))
+		
+		var mquote_quick = $('#quickreply_multiquote');
+		if(mquote_quick)
 		{
 			if(new_post_ids.length > 0)
 			{
-				$('#quickreply_multiquote').show();
+				mquote_quick.show();
 			}
 			else
 			{
-				$('#quickreply_multiquote').hide();
+				mquote_quick.hide();
 			}
 		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
@@ -80,6 +86,10 @@ var Thread = {
 	{
 		if(use_xmlhttprequest == 1)
 		{
+			// Spinner!
+			var mquote_spinner = $('#quickreply_spinner');
+			mquote_spinner.show();
+
 			$.ajax(
 			{
 				url: 'xmlhttp.php?action=get_multiquoted&load_all=1',
@@ -87,6 +97,9 @@ var Thread = {
 				complete: function (request, status)
 				{
 					Thread.multiQuotedLoaded(request, status);
+					
+					// Get rid of spinner
+					mquote_spinner.hide();
 				}
 			});
 
@@ -113,18 +126,18 @@ var Thread = {
 			}
 		}
 
-		var id = 'message';
 		if(typeof $('textarea').sceditor != 'undefined')
 		{
 			$('textarea').sceditor('instance').insert(json.message);
 		}
 		else
 		{
-			if($('#' + id).value)
+			var id = $('#message');
+			if(id.value)
 			{
-				$('#' + id).value += "\n";
+				id.value += "\n";
 			}
-			$('#' + id).val($('#' + id).val() + json.message);
+			id.val(id.val() + json.message);
 		}
 
 		Thread.clearMultiQuoted();
@@ -143,10 +156,10 @@ var Thread = {
 			var post_ids = quoted.split("|");
 
 			$.each(post_ids, function(key, post_id) {
-				if($("#multiquote_"+post_id).parents("a:first"))
+				var mquote_a = $("#multiquote_"+post_id).closest('a');
+				if(mquote_a)
 				{
-					$("#multiquote_"+post_id).parents("a:first").removeClass('postbit_multiquote_on');
-					$("#multiquote_"+post_id).parents("a:first").addClass('postbit_multiquote');
+					mquote_a.removeClass('postbit_multiquote_on').addClass('postbit_multiquote');
 				}
 			});
 		}
@@ -165,7 +178,7 @@ var Thread = {
 
 			$('#pid_' + pid).editable("xmlhttp.php?action=edit_post&do=update_post&pid=" + pid + '&my_post_key=' + my_post_key,
 			{
-				indicator: '<img src="'+spinner_image+'">',
+				indicator: spinner,
 				loadurl: "xmlhttp.php?action=edit_post&do=get_post&pid=" + pid,
 				type: "textarea",
 				rows: 12,
@@ -251,7 +264,7 @@ var Thread = {
 		{
 			$(this).bind("click", function(e)
 			{
-				e.stopPropagation();
+				e.preventDefault();
 
 				// Take pid out of the id attribute
 				id = $(this).attr('id');
@@ -270,7 +283,7 @@ var Thread = {
 				$('#pid_' + pid + ' textarea').attr('id', 'quickedit_' + pid);
 				if(allowEditReason == 1 && $('#quickedit_' + pid + '_editreason').length == 0)
 				{
-					$('#quickedit_' + pid).after(lang.editreason + ': <input type="text" class="textbox" name="editreason" size="50" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
+					$('#quickedit_' + pid).after('<label for="editreason">' + lang.editreason + ':</label> <input type="text" class="textbox" style="margin: 6px 0;" name="editreason" size="40" maxlength="150" id="quickedit_' + pid + '_editreason" /><br />');
 				}
 			});
         });
@@ -300,6 +313,10 @@ var Thread = {
 
 		this.quick_replying = 1;
 		var post_body = $('#quick_reply_form').serialize();
+		
+		// Spinner!
+		var qreply_spinner = $('#quickreply_spinner');
+		qreply_spinner.show();
 
 		$.ajax(
 		{
@@ -310,6 +327,9 @@ var Thread = {
         	complete: function (request, status)
         	{
 		  		Thread.quickReplyDone(request, status);
+				
+				// Get rid of spinner
+				qreply_spinner.hide();
           	}
 		});
 
@@ -353,16 +373,14 @@ var Thread = {
 						$('#imagehash').val(imghash);
 						if(cap[3])
 						{
-							$('#imagestring').attr('type', 'hidden');
-							$('#imagestring').val(cap[3]);
+							$('#imagestring').attr('type', 'hidden').val(cap[3]);
 							// hide the captcha
 							$('#captcha_trow').css('display', 'none');
 						}
 						else
 						{
 							$('#captcha_img').attr('src', "captcha.php?action=regimage&imagehash="+imghash);
-							$('#imagestring').attr('type', 'text');
-							$('#imagestring').val('');
+							$('#imagestring').attr('type', 'text').val('');
 							$('#captcha_trow').css('display', '');
 						}
 					}
@@ -395,9 +413,10 @@ var Thread = {
 
 			$('#quick_reply_form')[0].reset();
 
-			if($('#lastpid'))
+			var lastpid = $('#lastpid');
+			if(lastpid)
 			{
-				$('#lastpid').val(pid);
+				lastpid.val(pid);
 			}
 		}
 		else
@@ -446,9 +465,8 @@ var Thread = {
 								// Soft deleted
 								if(json.data == 1)
 								{
-									// Change CSS class of div 'pid_[pid]'
-									$("#post_"+pid).addClass("unapproved_post");
-									$("#post_"+pid).addClass("deleted_post");
+									// Change CSS class of div 'post_[pid]'
+									$("#post_"+pid).addClass("unapproved_post").addClass("deleted_post");
 
 									$("#quick_delete_" + pid).hide();
 									$("#quick_restore_" + pid).show();
@@ -520,9 +538,8 @@ var Thread = {
 							}
 							else if(json.hasOwnProperty("data"))
 							{
-								// Change CSS class of div 'pid_[pid]'
-								$("#post_"+pid).removeClass("unapproved_post");
-								$("#post_"+pid).removeClass("deleted_post");
+								// Change CSS class of div 'post_[pid]'
+								$("#post_"+pid).removeClass("unapproved_post").removeClass("deleted_post");
 
 								$("#quick_delete_" + pid).show();
 								$("#quick_restore_" + pid).hide();

@@ -229,7 +229,7 @@ if($mybb->input['action'] == 'add_prefix')
 if($mybb->input['action'] == 'edit_prefix')
 {
 	$prefix = build_prefixes($mybb->input['pid']);
-	if(!$prefix['pid'])
+	if(empty($prefix['pid']))
 	{
 		flash_message($lang->error_invalid_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
@@ -462,7 +462,7 @@ if($mybb->input['action'] == 'edit_prefix')
 if($mybb->input['action'] == 'delete_prefix')
 {
 	$prefix = build_prefixes($mybb->input['pid']);
-	if(!$prefix['pid'])
+	if(empty($prefix['pid']))
 	{
 		flash_message($lang->error_invalid_thread_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
@@ -512,7 +512,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'colspan' => 2));
 
 	$prefixes = build_prefixes();
-	if($prefixes)
+	if(!empty($prefixes))
 	{
 		foreach($prefixes as $prefix)
 		{

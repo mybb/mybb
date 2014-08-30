@@ -265,6 +265,8 @@ function build_postbit($post, $post_type=0)
 				}
 			}
 		}
+		
+		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		if($usergroup['stars'])
 		{
@@ -429,7 +431,7 @@ function build_postbit($post, $post_type=0)
 					}
 					else
 					{
-						$parser_options = array(
+						$field_parser_options = array(
 							"allow_html" => $field['allowhtml'],
 							"allow_mycode" => $field['allowmycode'],
 							"allow_smilies" => $field['allowsmilies'],
@@ -441,19 +443,19 @@ function build_postbit($post, $post_type=0)
 
 						if($customfield['type'] == "textarea")
 						{
-							$parser_options['me_username'] = $post['username'];
+							$field_parser_options['me_username'] = $post['username'];
 						}
 						else
 						{
-							$parser_options['nl2br'] = 0;
+							$field_parser_options['nl2br'] = 0;
 						}
 
 						if($mybb->user['showimages'] != 1 && $mybb->user['uid'] != 0 || $mybb->settings['guestimages'] != 1 && $mybb->user['uid'] == 0)
 						{
-							$parser_options['allow_imgcode'] = 0;
+							$field_parser_options['allow_imgcode'] = 0;
 						}
 
-						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $parser_options);
+						$post['fieldvalue'] = $parser->parse_message($post[$fieldfid], $field_parser_options);
 					}
 
 					eval("\$post['profilefield'] .= \"".$templates->get("postbit_profilefield")."\";");
@@ -475,6 +477,8 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['usertitle'] = $lang->guest;
 		}
+		
+		$post['usertitle'] = htmlspecialchars_uni($post['usertitle']);
 
 		$usergroup['title'] = $lang->na;
 

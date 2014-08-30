@@ -624,6 +624,8 @@ if(!$mybb->input['action'])
 		}
 		unset($usertitles, $title);
 	}
+	
+	$usertitle = htmlspecialchars_uni($usertitle);
 
 	// If the user has permission to add reputations - show the image
 	if($mybb->usergroup['cangivereputations'] == 1 && $mybb->user['uid'] != $user['uid'] && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))

@@ -326,28 +326,42 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$update_tool['forums'] = '';
 			$update_tool['groups'] = '';
 
-			if(is_array($mybb->input['forum_1_forums']))
+			if($mybb->input['forum_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['forum_1_forums'] as $fid)
+				if(is_array($mybb->input['forum_1_forums']))
 				{
-					$checked[] = (int)$fid;
-				}
+					$checked = array();
 
-				$update_tool['forums'] = implode(',', $checked);
+					foreach($mybb->input['forum_1_forums'] as $fid)
+					{
+						$checked[] = (int)$fid;
+					}
+
+					$update_tool['forums'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$update_tool['forums'] = "-1";
 			}
 
-			if(is_array($mybb->input['group_1_groups']))
+			if($mybb->input['group_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['group_1_groups'] as $gid)
+				if(is_array($mybb->input['group_1_groups']))
 				{
-					$checked[] = (int)$gid;
-				}
+					$checked = array();
 
-				$update_tool['groups'] = implode(',', $checked);
+					foreach($mybb->input['group_1_groups'] as $gid)
+					{
+						$checked[] = (int)$gid;
+					}
+
+					$update_tool['groups'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$update_tool['groups'] = "-1";
 			}
 
 			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
@@ -1319,28 +1333,42 @@ if($mybb->input['action'] == "edit_post_tool")
 			$update_tool['forums'] = '';
 			$update_tool['groups'] = '';
 
-			if(is_array($mybb->input['forum_1_forums']))
+			if($mybb->input['forum_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['forum_1_forums'] as $fid)
+				if(is_array($mybb->input['forum_1_forums']))
 				{
-					$checked[] = (int)$fid;
-				}
+					$checked = array();
 
-				$update_tool['forums'] = implode(',', $checked);
+					foreach($mybb->input['forum_1_forums'] as $fid)
+					{
+						$checked[] = (int)$fid;
+					}
+
+					$update_tool['forums'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$update_tool['forums'] = "-1";
 			}
 
-			if(is_array($mybb->input['group_1_groups']))
+			if($mybb->input['group_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['group_1_groups'] as $gid)
+				if(is_array($mybb->input['group_1_groups']))
 				{
-					$checked[] = (int)$gid;
-				}
+					$checked = array();
 
-				$update_tool['groups'] = implode(',', $checked);
+					foreach($mybb->input['group_1_groups'] as $gid)
+					{
+						$checked[] = (int)$gid;
+					}
+
+					$update_tool['groups'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$update_tool['groups'] = "-1";
 			}
 
 			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
@@ -1942,28 +1970,42 @@ if($mybb->input['action'] == "add_post_tool")
 			$new_tool['forums'] = '';
 			$new_tool['groups'] = '';
 
-			if(is_array($mybb->input['forum_1_forums']))
+			if($mybb->input['forum_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['forum_1_forums'] as $fid)
+				if(is_array($mybb->input['forum_1_forums']))
 				{
-					$checked[] = (int)$fid;
-				}
+					$checked = array();
 
-				$new_tool['forums'] = implode(',', $checked);
+					foreach($mybb->input['forum_1_forums'] as $fid)
+					{
+						$checked[] = (int)$fid;
+					}
+
+					$new_tool['forums'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$new_tool['forums'] = "-1";
 			}
 
-			if(is_array($mybb->input['group_1_groups']))
+			if($mybb->input['group_type'] == 2)
 			{
-				$checked = array();
-
-				foreach($mybb->input['group_1_groups'] as $gid)
+				if(is_array($mybb->input['group_1_groups']))
 				{
-					$checked[] = (int)$gid;
-				}
+					$checked = array();
 
-				$new_tool['groups'] = implode(',', $checked);
+					foreach($mybb->input['group_1_groups'] as $gid)
+					{
+						$checked[] = (int)$gid;
+					}
+
+					$new_tool['groups'] = implode(',', $checked);
+				}
+			}
+			else
+			{
+				$new_tool['groups'] = "-1";
 			}
 
 			$tid = $db->insert_query("modtools", $new_tool);

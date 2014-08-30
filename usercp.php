@@ -747,6 +747,8 @@ if($mybb->input['action'] == "profile")
 				$user['usertitle'] = $mybb->user['usertitle'];
 			}
 		}
+		
+		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		$currentcustom = $reverttitle = '';
 		if(!empty($mybb->user['usertitle']))
@@ -758,7 +760,7 @@ if($mybb->input['action'] == "profile")
 				eval("\$reverttitle = \"".$templates->get("usercp_profile_customtitle_reverttitle")."\";");
 			}
 		}
-
+		
 		eval("\$customtitle = \"".$templates->get("usercp_profile_customtitle")."\";");
 	}
 	else
@@ -1624,7 +1626,7 @@ if($mybb->input['action'] == "subscriptions")
 			$thread['threadprefix'] = '';
 
 			// If this thread has a prefix, insert a space between prefix and subject
-			if($thread['prefix'] != 0 && isset($threadprefixes[$thread['prefix']]))
+			if($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']]))
 			{
 				$thread['threadprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 			}
@@ -3869,7 +3871,7 @@ if(!$mybb->input['action'])
 						$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 						// If this thread has a prefix...
-						if($thread['prefix'] != 0 && isset($threadprefixes[$thread['prefix']]))
+						if($thread['prefix'] != 0 && !empty($threadprefixes[$thread['prefix']]))
 						{
 							$thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 						}
@@ -4050,7 +4052,7 @@ if(!$mybb->input['action'])
 				// If this thread has a prefix...
 				if($thread['prefix'] != 0)
 				{
-					if(isset($threadprefixes[$thread['prefix']]))
+					if(!empty($threadprefixes[$thread['prefix']]))
 					{
 						$thread['displayprefix'] = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 					}

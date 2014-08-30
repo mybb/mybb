@@ -20,7 +20,8 @@ $templatelist .= ",member_profile_email,member_profile_offline,member_profile_re
 $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile_groupimage,member_profile_referrals,member_profile_website,member_profile_reputation_vote,member_activate,member_resendactivation,member_lostpw,member_register_additionalfields,member_register_password,usercp_options_pppselect_option";
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
-$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day,member_emailuser_hidden, member_profile_contact_fields_aim, member_profile_contact_fields_google, member_profile_contact_fields_icq, member_profile_contact_fields_skype, member_profile_contact_fields_yahoo";
+$templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1660,6 +1661,9 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		'imagestring' => $mybb->get_input('imagestring')
 	);
 
+	$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+
 	$loginhandler->set_data($user);
 	$validated = $loginhandler->validate_login();
 
@@ -1677,7 +1681,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 		// If we need a captcha set it here
-		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] >= $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] >= $mybb->settings['failedcaptchalogincount']))
+		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
 		{
 			$do_captcha = true;
 			$correct = $loginhandler->captcha_verified;
@@ -1933,41 +1937,62 @@ if($mybb->input['action'] == "profile")
 	$useravatar = format_avatar($memprofile['avatar'], $memprofile['avatardimensions']);
 	eval("\$avatar = \"".$templates->get("member_profile_avatar")."\";");
 
-	$sendemail = '';
-	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
-	{
-		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
-	}
-	else
-	{
-		$alttrow = "trow1"; // To properly sort the contact details below
-	}
-
-	// Clean alt_trow for the contact details
-	$cat_array = array(
-		"pm",
-		"icq",
-		"aim",
-		"yahoo",
-		"skype",
-		"google",
-	);
-
-	$bgcolors = array();
-	foreach($cat_array as $cat)
-	{
-		$bgcolors[$cat] = alt_trow();
-	}
-
-	$website = '';
+	$website = $sendemail = $sendpm = $contact_details = '';
+	
 	if($memprofile['website'] && $mybb->settings['hidewebsite'] != -1 && !is_member($mybb->settings['hidewebsite']) && $memperms['canchangewebsite'] == 1)
 	{
 		$memprofile['website'] = htmlspecialchars_uni($memprofile['website']);
+		$bgcolor = alt_trow();
 		eval("\$website = \"".$templates->get("member_profile_website")."\";");
+	}
+	
+	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
+	{
+		$bgcolor = alt_trow();	
+		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
+	}
+	
+	if($mybb->settings['enablepms'] == 1 && $memprofile['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	{
+		$bgcolor = alt_trow();	
+		eval('$sendpm = "'.$templates->get("member_profile_pm").'";');
+	}
+	
+	$contact_fields = array();
+	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
+	{
+		$contact_fields[$field] = '';
+
+		$settingkey = 'allow'.$field.'field';
+
+		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
+		{
+			if($field == 'icq')
+			{
+				$memprofile[$field] = (int)$memprofile[$field];
+			}
+			else
+			{
+				$memprofile[$field] = htmlspecialchars_uni($memprofile[$field]);
+			}
+			$tmpl = 'member_profile_contact_fields_'.$field;
+
+			$bgcolors[$field] = alt_trow();
+			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
+		}
+		else
+		{
+			$memprofile[$field] = '';
+		}
+	}
+	
+	if(!empty($contact_fields) || $sendemail || $sendpm || $website)
+	{
+		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
 	}
 
 	$signature = '';
-	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']))
+	if($memprofile['signature'] && ($memprofile['suspendsignature'] == 0 || $memprofile['suspendsigtime'] < TIME_NOW) && $mybb->settings['hidesignatures'] != -1 && !is_member($mybb->settings['hidesignatures']) && $memperms['canusesig'] && $memperms['canusesigxposts'] <= $memprofile['postnum'])
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -2049,33 +2074,6 @@ if($mybb->input['action'] == "profile")
 		$thread_percent = 100;
 	}
 
-	$contact_fields = array();
-	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
-	{
-		$contact_fields[$field] = '';
-
-		$settingkey = 'allow'.$field.'field';
-
-		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
-		{
-			if($field == 'icq')
-			{
-				$memprofile[$field] = (int)$memprofile[$field];
-			}
-			else
-			{
-				$memprofile[$field] = htmlspecialchars_uni($memprofile[$field]);
-			}
-			$tmpl = 'member_profile_contact_fields_'.$field;
-
-			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
-		}
-		else
-		{
-			$memprofile[$field] = '';
-		}
-	}
-
 	$awaybit = '';
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
@@ -2128,6 +2126,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 		}
 	}
+	
 	if($memprofile['dst'] == 1)
 	{
 		$memprofile['timezone']++;
@@ -2136,6 +2135,7 @@ if($mybb->input['action'] == "profile")
 			$memprofile['timezone'] = "+{$memprofile['timezone']}";
 		}
 	}
+	
 	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
 	$memlocaldate = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
@@ -2258,6 +2258,8 @@ if($mybb->input['action'] == "profile")
 			}
 		}
 	}
+	
+	$usertitle = htmlspecialchars_uni($usertitle);
 
 	if($displaygroup['stars'] || $displaygroup['usertitle'])
 	{
@@ -2374,19 +2376,16 @@ if($mybb->input['action'] == "profile")
 		$timeonline = $lang->timeonline_hidden;
 	}
 
+	// Reset the background colours to keep it inline
+	$alttrow = 'trow1';
+	
 	// Build Referral
 	$referrals = '';
 	if($mybb->settings['usereferrals'] == 1)
 	{
-		// Reset the background colours to keep it inline
-		$bg_color = alt_trow(true);
+		$bg_color = alt_trow();
 
 		eval("\$referrals = \"".$templates->get("member_profile_referrals")."\";");
-	}
-	else
-	{
-		// Manually set to override colours...
-		$alttrow = 'trow2';
 	}
 
 	// Fetch the reputation for this user
@@ -2500,10 +2499,13 @@ if($mybb->input['action'] == "profile")
 					$customfieldval = $parser->parse_message($userfields[$field], $parser_options);
 				}
 			}
-
-			$customfield['name'] = htmlspecialchars_uni($customfield['name']);
-			eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
-			$bgcolor = alt_trow();
+			
+			if($customfieldval)
+			{
+				$customfield['name'] = htmlspecialchars_uni($customfield['name']);
+				eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
+				$bgcolor = alt_trow();
+			}
 		}
 	}
 

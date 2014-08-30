@@ -572,7 +572,6 @@ div.sceditor-group {
     margin:  0 -4px;
 }
 
-
 /* Additional buttons (for MyBB) */
 .sceditor-button-video div  {
     
@@ -583,11 +582,4 @@ div.sceditor-group {
     
   background-image: url(php.png);
     
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-	height: auto;
-	width: auto;
 }

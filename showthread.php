@@ -71,7 +71,7 @@ if($thread['prefix'] != 0)
 {
 	$threadprefix = build_prefixes($thread['prefix']);
 
-	if($threadprefix['prefix'])
+	if(!empty($threadprefix['prefix']))
 	{
 		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
 		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
@@ -703,7 +703,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$thread['averagerating'] = floatval(round($thread['totalratings']/$thread['numratings'], 2));
+			$thread['averagerating'] = (float)round($thread['totalratings']/$thread['numratings'], 2);
 			$thread['width'] = (int)round($thread['averagerating'])*20;
 			$thread['numratings'] = (int)$thread['numratings'];
 		}
@@ -1126,7 +1126,10 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['prefix'] != 0)
 			{
 				$prefix = build_prefixes($similar_thread['prefix']);
-				$similar_thread['threadprefix'] = $prefix['displaystyle'].'&nbsp;';
+				if(!empty($prefix))
+				{
+					$similar_thread['threadprefix'] = $prefix['displaystyle'].'&nbsp;';
+				}
 			}
 
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);

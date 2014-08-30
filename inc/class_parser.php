@@ -347,7 +347,7 @@ class postParser
 
 		if($mybb->settings['allowfontmycode'] == 1)
 		{
-			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_]+)\](.*?)\[/font\]#si";
+			$nestable_mycode['font']['regex'] = "#\[font=([a-z0-9 ,\-_'\"]+)\](.*?)\[/font\]#si";
 			$nestable_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
 			++$nestable_count;
@@ -1460,8 +1460,8 @@ class postParser
 	{
 		$message = " ".$message;
 		// Links should end with slashes, numbers, characters and braces but not with dots, commas or question marks
-		$message = preg_replace_callback("#([\>\s\(\)])(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#iu", array($this, 'mycode_auto_url_callback'), $message);
-		$message = preg_replace_callback("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#iu", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\>\s\(\)])(http|https|ftp|news|irc|ircs|irc6){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
+		$message = preg_replace_callback("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/([^\"\s<\[]|\[\])*)?([\w\/\)]))#iu", array($this, 'mycode_auto_url_callback'), $message);
 		$message = my_substr($message, 1);
 
 		return $message;

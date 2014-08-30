@@ -108,7 +108,7 @@ $loadstyle = '';
 $load_from_forum = $load_from_user = 0;
 $style = array();
 
-// This user has a custom theme set in their profile
+// The user used our new quick theme changer
 if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_key'), true))
 {
 	$mybb->user['style'] = $mybb->get_input('theme');
@@ -134,6 +134,7 @@ else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
 }
 
+// This user has a custom theme set in their profile
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
 	$mybb->user['style'] = (int)$mybb->user['style'];
@@ -655,7 +656,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 
 		if($ban['lifted'] > 0)
 		{
-			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']) . ", " . my_date($mybb->settings['timeformat'], $ban['lifted']);
+			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']) . $lang->comma . my_date($mybb->settings['timeformat'], $ban['lifted']);
 		}
 	}
 
@@ -833,7 +834,7 @@ if($mybb->settings['showthemeselect'] != 0)
 $contact_us = '';
 if(($mybb->settings['contactlink'] == "contact.php" && $mybb->settings['contact'] == 1 && ($mybb->settings['contact_guests'] != 1 && $mybb->user['uid'] == 0 || $mybb->user['uid'] > 0)) || $mybb->settings['contactlink'] != "contact.php")
 {
-	if(my_substr($mybb->settings['contactlink'], 0, 1) != "/" && !in_array(my_substr($mybb->settings['contactlink'], 0, 7), array('http://', 'https://')))
+	if(my_substr($mybb->settings['contactlink'], 0, 1) != '/' && my_substr($mybb->settings['contactlink'], 0, 7) != 'http://' && my_substr($mybb->settings['contactlink'], 0, 8) != 'https://' && my_substr($mybb->settings['contactlink'], 0, 7) != 'mailto:')
 	{
 		$mybb->settings['contactlink'] = $mybb->settings['bburl'].'/'.$mybb->settings['contactlink'];
 	}

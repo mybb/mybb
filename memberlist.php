@@ -372,6 +372,8 @@ else
 				}
 			}
 		}
+		
+		$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
 
 		if(!empty($usergroup['stars']))
 		{

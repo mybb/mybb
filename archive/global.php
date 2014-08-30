@@ -193,6 +193,15 @@ if($mybb->settings['boardclosed'] == 1)
 	}
 }
 
+// Do we require users to login?
+if($mybb->settings['forcelogin'] == 1)
+{
+	if($mybb->user['uid'] == 0)
+	{
+		archive_error($lang->error_mustlogin);
+	}
+}
+
 // Load Limiting - DIRECTORY_SEPARATOR checks if running windows
 if(DIRECTORY_SEPARATOR != '\\')
 {

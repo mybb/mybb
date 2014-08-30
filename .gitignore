@@ -1,0 +1,36 @@
+# Config Files
+inc/config.php
+inc/config.default.php
+inc/settings.php
+
+# MyBB Admin Backups
+admin/backups/*
+!admin/backups/index.html
+
+# Cache Directory
+cache/*
+
+# Uploads Directory
+uploads/*
+
+# MyBB Misc
+install/lock
+error.log
+.htaccess
+.htgroup
+.htpasswd
+
+# Eclipse IDE files
+.settings
+.project
+.buildpath
+
+# Generic OS stuff
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
