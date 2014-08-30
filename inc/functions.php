@@ -1091,7 +1091,7 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
 	if($pages > ($mybb->settings['maxmultipagelinks']+1) && $mybb->settings['jumptopagemultipage'] == 1)
 	{
 		// When the second parameter is set to 1, fetch_page_url thinks it's the first page and removes it from the URL as it's unnecessary
-		$jump_url = fetch_page_url($jump_url, 1);
+		$jump_url = fetch_page_url($url, 1);
 		eval("\$jumptopage = \"".$templates->get("multipage_jump_page")."\";");
 	}
 
