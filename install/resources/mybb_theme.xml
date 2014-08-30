@@ -8077,8 +8077,14 @@ if(use_xmlhttprequest == "1")
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="{$mybb->input['action']}" />
 <input type="hidden" name="modtype" value="{$mybb->input['modtype']}" />
-  <input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="fid" value="{$fid}" />
+<input type="hidden" name="pmid" value="{$pmid}" />
 <input type="hidden" name="confirm" value="1" />
+<input type="hidden" name="inlinetype" value="{$mybb->input['inlinetype']}" />
+<input type="hidden" name="searchid" value="{$mybb->input['searchid']}" />
+<input type="hidden" name="url" value="{$mybb->input['url']}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$thread['subject']} - {$lang->confirm_execute_tool}</strong></td>
