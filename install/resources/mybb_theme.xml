@@ -1643,7 +1643,7 @@ div.jqi .jqibuttons {
 
 div.jqi .jqibuttons button {
 	margin: 0;
-	padding: 15px 20px;
+	padding: 6px 20px;
 	background-color: transparent;
 	font-weight: normal;
 	border: none;
