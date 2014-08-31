@@ -1456,7 +1456,7 @@ function upgrade30_dbchanges_optimize2()
 				$index = array($index);
 			}
 
-			foreach($index as $_index)
+			foreach($index as $key => $_index)
 			{
 				if(!is_array($_index))
 				{
@@ -1468,13 +1468,10 @@ function upgrade30_dbchanges_optimize2()
 				}
 				else
 				{
-					foreach($_index as $key => $values)
+					if(!$db->index_exists($table, $key))
 					{
-						if(!$db->index_exists($table, $key))
-						{
-							$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$key}`(`".implode('`, `', $values)."`)");
-							continue;
-						}
+						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$key}`(`".implode('`, `', $_index)."`)");
+						continue;
 					}
 				}
 			}
