@@ -920,7 +920,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	return $sid;
 }
 
-function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = false)
+function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
 {
 	global $db, $cache;
 
