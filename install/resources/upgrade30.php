@@ -1451,22 +1451,23 @@ function upgrade30_dbchanges_optimize2()
 
 		foreach($update_data as $table => $index)
 		{
-			if(!$db->index_exists($table, $index))
+			if(!is_array($index))
 			{
-				if(!is_array($index))
-				{
-					$index = array($index);
-				}
+				$index = array($index);
+			}
 
-				foreach($index as $_index)
+			foreach($index as $_index => $keys)
+			{
+				if(!is_array($keys))
 				{
-					if(!is_array($_index))
+					if(!$db->index_exists($table, $keys))
 					{
-						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX (`{$_index}`)");
-						continue;
+						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX (`{$keys}`)");
 					}
-
-					foreach($index as $_index => $keys)
+				}
+				else
+				{
+					if(!$db->index_exists($table, $_index))
 					{
 						$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ADD INDEX `{$_index}`(`".implode('`, `', $keys)."`)");
 					}
