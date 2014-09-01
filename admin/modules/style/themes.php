@@ -1442,12 +1442,7 @@ if($mybb->input['action'] == "edit")
 				}
 
 				$count = 1;
-				$plural = 's';
 				$color_list = $sep = '';
-				if(count($colors == 1))
-				{
-					$plural = '';
-				}
 
 				foreach($colors as $color)
 				{
@@ -1462,7 +1457,7 @@ if($mybb->input['action'] == "edit")
 					$sep = ', ';
 				}
 
-				$attached_to = "<small>{$lang->attached_to} ".$lang->sprintf($lang->colors_attached_to, $plural)." {$color_list}</small>";
+				$attached_to = "<small>{$lang->attached_to} ".$lang->sprintf($lang->colors_attached_to)." {$color_list}</small>";
 			}
 
 			if($attached_to == '')
