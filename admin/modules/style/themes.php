@@ -1261,6 +1261,10 @@ if($mybb->input['action'] == "edit")
 		{
 			$cache->update_default_theme();
 		}
+
+		// normalize for consistency
+		update_theme_stylesheet_list($theme['tid'], false, true);
+
 		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
