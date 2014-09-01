@@ -1382,26 +1382,38 @@ if($mybb->input['action'] == "edit")
 		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = '';
-			$got_color = false;
 
 			$applied_to_count = count($style['applied_to']);
 			$count = 0;
 			$sep = " ";
 			$name = "";
 
+			$colors = array();
+
+			if(!is_array($properties['colors']))
+			{
+				$properties['colors'] = array();
+			}
+
 			foreach($style['applied_to'] as $name => $actions)
 			{
-				if(strpos($name, ".php") === false)
-				{
-					$got_color = true; // Maybe...
-					continue;
-				}
-
 				if(!$name)
 				{
 					continue;
 				}
 
+				if(array_key_exists($name, $properties['colors']))
+				{
+					$colors[] = $properties['colors'][$name];
+				}
+
+				if(count($colors))
+				{
+					// Colors override files and are handled below.
+					continue;
+				}
+
+				// It's a file:
 				++$count;
 
 				if($actions[0] != "global")
@@ -1423,24 +1435,9 @@ if($mybb->input['action'] == "edit")
 				$attached_to = "<small>{$lang->attached_to} {$attached_to}</small>";
 			}
 
-			$colors = array();
-			if($got_color == true && is_array($properties['colors']))
+			if(count($colors))
 			{
-				// We might have colors here...
-				foreach($style['applied_to'] as $name => $actions)
-				{
-					if(strpos($name, ".php") !== false)
-					{
-						continue;
-					}
-
-					// Verify this is a color for this theme
-					if(array_key_exists($name, $properties['colors']))
-					{
-						$colors[] =  $properties['colors'][$name];
-					}
-				}
-
+				// Attached to color instead of files.
 				$count = 1;
 				$color_list = $sep = '';
 
@@ -1797,19 +1794,29 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$count = 0;
 	if(is_array($applied_to) && $applied_to['global'][0] != "global")
 	{
-		$got_color = false;
 		$check_actions = "";
+		$stylesheet['colors'] = array();
+
+		if(!is_array($properties['colors']))
+		{
+			$properties['colors'] = array();
+		}
 
 		foreach($applied_to as $name => $actions)
 		{
-			if(strpos($name, ".php") === false)
+			// Verify this is a color for this theme
+			if(array_key_exists($name, $properties['colors']))
 			{
-				$got_color = true; // Maybe...
+				$stylesheet['colors'][] = $name;
+			}
+
+			if(count($stylesheet['colors']))
+			{
+				// Colors override files and are handled below.
 				continue;
 			}
 
-			$short_name = substr($name, 0, -4);
-
+			// It's a file:
 			$action_list = "";
 			if($actions[0] != "global")
 			{
@@ -1859,30 +1866,11 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$global_checked[1] = "";
 		}
 
-		$stylesheet['colors'] = array();
-		if($got_color == true && is_array($properties['colors']))
+		if(!empty($stylesheet['colors']))
 		{
-			// We might have colors here...
-			foreach($applied_to as $name => $actions)
-			{
-				if(strpos($name, ".php") !== false)
-				{
-					continue;
-				}
-
-				// Verify this is a color for this theme
-				if(array_key_exists($name, $properties['colors']))
-				{
-					$stylesheet['colors'][] = $name;
-				}
-			}
-
-			if(!empty($stylesheet['colors']))
-			{
-				$global_checked[3] = "checked=\"checked\"";
-				$global_checked[2] = "";
-				$global_checked[1] = "";
-			}
+			$global_checked[3] = "checked=\"checked\"";
+			$global_checked[2] = "";
+			$global_checked[1] = "";
 		}
 	}
 
@@ -2681,8 +2669,6 @@ if($mybb->input['action'] == "add_stylesheet")
 
 		foreach($mybb->input['applied_to'] as $name => $actions)
 		{
-			$short_name = substr($name, 0, -4);
-
 			$action_list = "";
 			if($actions[0] != "global")
 			{
