@@ -130,7 +130,7 @@ class pluginSystem
 
 					if(array_key_exists('class_method', $hook))
 					{
-						$return_args = call_user_func($hook['class_method'], $arguments);
+						$return_args = call_user_func_array($hook['class_method'], array(&$arguments));
 					}
 					else
 					{
