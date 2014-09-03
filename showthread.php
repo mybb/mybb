@@ -1477,20 +1477,20 @@ if($mybb->input['action'] == "thread")
 			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
 		}
 
-		$onlinesep = '';
-		if($guestcount && $onlinemembers)
-		{
-			$onlinesep = $lang->comma;
-		}
-
 		$invisonline = '';
 		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 		{
 			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
 		}
 
+		$onlinesep = '';
+		if($invisonline != '' && $onlinemembers)
+		{
+			$onlinesep = $lang->comma;
+		}
+		
 		$onlinesep2 = '';
-		if($invisonline != '' && $guestcount)
+		if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 		{
 			$onlinesep2 = $lang->comma;
 		}
