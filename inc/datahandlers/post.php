@@ -144,6 +144,16 @@ class PostDataHandler extends DataHandler
 				$this->errors = array_merge($this->errors, $userhandler->get_errors());
 				return false;
 			}
+			
+			// username does not contain bad characters --> perform specialchar transformation
+			$post['username'] = htmlspecialchars_uni($post['username']);
+			
+			if($userhandler->verify_username_exists())
+			{
+				// username is in use
+				$this->errors = array_merge($this->errors, $userhandler->get_errors());
+				return false;
+			}
 		}
 
 		// After all of this, if we still don't have a username, force the username as "Guest" (Note, this is not translatable as it is always a fallback)

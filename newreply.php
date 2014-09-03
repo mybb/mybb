@@ -310,27 +310,18 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// If this isn't a logged in user, then we need to do some special validation.
 	if($mybb->user['uid'] == 0)
 	{
-		// Check if username exists.
-		if(username_exists($mybb->get_input('username')))
+		// If they didn't specify a username then give them "Guest"
+		if(!$mybb->get_input('username'))
 		{
-			// If it does throw back "username is taken"
-			error($lang->error_usernametaken);
+			$username = $lang->guest;
 		}
-		// This username does not exist.
+		// Otherwise use the name they specified.
 		else
 		{
-			// If they didn't specify a username then give them "Guest"
-			if(!$mybb->get_input('username'))
-			{
-				$username = $lang->guest;
-			}
-			// Otherwise use the name they specified.
-			else
-			{
-				$username = htmlspecialchars_uni($mybb->get_input('username'));
-			}
-			$uid = 0;
+			$username = $mybb->get_input('username');
 		}
+		$uid = 0;
+	
 
 		if($mybb->settings['stopforumspam_on_newreply'])
 		{
@@ -977,27 +968,17 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		// If this isn't a logged in user, then we need to do some special validation.
 		if($mybb->user['uid'] == 0)
 		{
-			// Check if username exists.
-			if(username_exists($mybb->get_input('username')))
+			// If they didn't specify a username then give them "Guest"
+			if(!$mybb->get_input('username'))
 			{
-				// If it does throw back "username is taken"
-				error($lang->error_usernametaken);
+				$username = $lang->guest;
 			}
-			// This username does not exist.
+			// Otherwise use the name they specified.
 			else
 			{
-				// If they didn't specify a username then give them "Guest"
-				if(!$mybb->get_input('username'))
-				{
-					$username = $lang->guest;
-				}
-				// Otherwise use the name they specified.
-				else
-				{
-					$username = htmlspecialchars_uni($mybb->get_input('username'));
-				}
-				$uid = 0;
+				$username = $mybb->get_input('username');
 			}
+			$uid = 0;
 		}
 		// This user is logged in.
 		else
