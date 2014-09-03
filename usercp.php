@@ -1258,7 +1258,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 				$userhandler->update_user();
 				// Email requires no activation
 				$mail_message = $lang->sprintf($lang->email_changeemail_noactivation, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->get_input('email'), $mybb->settings['bburl']);
-				my_mail($mybb->get_input('email'), $lang->emailsubject_changeemail, $mail_message);
+				my_mail($mybb->get_input('email'), $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']), $mail_message);
 				$plugins->run_hooks("usercp_do_email_changed");
 				redirect("usercp.php?action=email", $lang->redirect_emailupdated);
 			}
