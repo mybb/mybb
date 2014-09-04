@@ -152,12 +152,12 @@ var MyBB = {
 			var pid = 0;
 		}
 
-		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid);
+		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid+"&modal=1");
 	},
 
 	viewNotes: function(uid)
 	{
-		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid);
+		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid+"&modal=1");
 	},
 
 	deleteReputation: function(uid, rid)
@@ -218,7 +218,7 @@ var MyBB = {
 
 	whoPosted: function(tid)
 	{
-		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid);
+		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid+"&modal=1");
 	},
 
 	markForumRead: function(event)
