@@ -679,6 +679,10 @@ function generate_question()
 		ORDER BY RAND()
 		LIMIT 1
 	");
+
+	// Change rand() function to random() for PostgreSQL connections.
+	if($db->engine === "pgsql") $query = str_ireplace("ORDER BY RAND()", "ORDER BY RANDOM()", $query);
+
 	$question = $db->fetch_array($query);
 
 	if(!$db->num_rows($query))
