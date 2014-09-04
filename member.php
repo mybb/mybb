@@ -1661,7 +1661,13 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		'imagestring' => $mybb->get_input('imagestring')
 	);
 
-	$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+	$user_loginattempts = get_user_by_username(
+		$user['username'], 
+		array(
+			'fields' => 'loginattempts',
+			'username_method' => $mybb->settings['username_method']
+		)
+	);
 	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 	$loginhandler->set_data($user);
@@ -1673,11 +1679,34 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->request_method = "get";
 
 		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
-
+		
+		switch($mybb->settings['username_method'])
+		{
+			case 1:
+				$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(email) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
+				break;
+			case 2:
+				$db->update_query(
+					"users", 
+					array('loginattempts' => 'loginattempts+1'), 
+					"LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."' OR LOWER(email) = '".$db->escape_string(my_strtolower($user['username']))."'", 
+					1, 
+					true
+				);
+				break;
+			default:
+				$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
+				break;
+		}
 		$errors = $loginhandler->get_friendly_errors();
 
-		$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+		$user_loginattempts = get_user_by_username(
+			$user['username'], 
+			array(
+				'fields' => 'loginattempts',
+				'username_method' => $mybb->settings['username_method']
+			)
+		);
 		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 		// If we need a captcha set it here
