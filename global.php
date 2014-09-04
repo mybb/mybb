@@ -886,7 +886,17 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
-	error($lang->error_boardclosed);
+	
+	if(!$mybb->get_input('modal')) 
+	{
+		error($lang->error_boardclosed);
+	}
+	else
+	{
+		$output = '';
+		eval('$output = "'.$templates->get('board_offline_modal', 1, 0).'";');
+		echo($output);
+	}
 	exit;
 }
 
