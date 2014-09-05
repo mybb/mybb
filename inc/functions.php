@@ -1851,24 +1851,6 @@ function my_unsetcookie($name)
 }
 
 /**
- * Checks if a value exists in an array.
- *
- * @param mixed The searched value.
- * @param array The array.
- * @param bool Check the types of the needle in the haystack.
- * @param bool TRUE if needle is found in the array.
- */
-function my_in_array($needle, $haystack, $strict=false)
-{
-	if(!is_array($haystack))
-	{
-		return false;
-	}
-
-	return in_array($needle, $haystack, $strict=false);
-}
-
-/**
  * Get the contents from a serialised cookie array.
  *
  * @param string The cookie identifier.
