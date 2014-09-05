@@ -16,7 +16,7 @@ if(!defined("IN_MYBB"))
 	
 // cache templates - this is important when it comes to performance
 // THIS_SCRIPT is defined by some of the MyBB scripts, including index.php
-if(THIS_SCRIPT == 'index.php')
+if(defined('THIS_SCRIPT') && THIS_SCRIPT== 'index.php')
 {
     global $templatelist;
     if(isset($templatelist))
@@ -66,7 +66,37 @@ function hello_info()
 */
 function hello_activate()
 {
-	global $mybb, $db;
+	// Include this file because it is where find_replace_templatesets is defined
+	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
+	
+	// Edit the index template and add our variable to above {$forums}
+	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', '{$hello}'."\n".'{$forums}');
+}
+
+/*
+ * _deactivate():
+ *    Called whenever a plugin is deactivated. This should essentially "hide" the plugin from view
+ *    by removing templates/template changes etc. It should not, however, remove any information
+ *    such as tables, fields etc - that should be handled by an _uninstall routine. When a plugin is
+ *    uninstalled, this routine will also be called before _uninstall() if the plugin is active.
+*/
+function hello_deactivate()
+{
+	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
+	
+	// remove edits
+	find_replace_templatesets('index', '#'.preg_quote('{$hello}').'#', '');
+}
+
+/*
+ * _install():
+ *   Called whenever a plugin is installed by clicking the "Install" button in the plugin manager.
+ *   If no install routine exists, the install button is not shown and it assumed any work will be
+ *   performed in the _activate() routine.
+*/
+function hello_install()
+{
+	global $db, $lang, $mybb;
 	
 	// Add a new template (hello_index) to our global templates (sid = -1)
 	$templatearray = array(
@@ -104,43 +134,6 @@ function hello_activate()
 	);
 
 	$db->insert_query("templates", $templatearray);
-	
-	// Include this file because it is where find_replace_templatesets is defined
-	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
-	
-	// Edit the index template and add our variable to above {$forums}
-	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', '{$hello}'."\n".'{$forums}');
-}
-
-/*
- * _deactivate():
- *    Called whenever a plugin is deactivated. This should essentially "hide" the plugin from view
- *    by removing templates/template changes etc. It should not, however, remove any information
- *    such as tables, fields etc - that should be handled by an _uninstall routine. When a plugin is
- *    uninstalled, this routine will also be called before _uninstall() if the plugin is active.
-*/
-function hello_deactivate()
-{
-	global $db;
-	
-	// remove our template
-	$db->delete_query('templates', 'title IN (\'hello_index\') AND sid=\'-1\'');
-	
-	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
-	
-	// remove edits
-	find_replace_templatesets('index', '#'.preg_quote('{$hello}').'#', '');
-}
-
-/*
- * _install():
- *   Called whenever a plugin is installed by clicking the "Install" button in the plugin manager.
- *   If no install routine exists, the install button is not shown and it assumed any work will be
- *   performed in the _activate() routine.
-*/
-function hello_install()
-{
-	global $db, $lang, $mybb;
 
 	// create settings group
 	$insertarray = array(
@@ -221,6 +214,9 @@ function hello_uninstall()
 {
 	global $db, $mybb;
 	
+	// remove our template
+	$db->delete_query('templates', 'title IN (\'hello_index\') AND sid=\'-1\'');
+
 	// delete settings group
 	$db->delete_query("settinggroups", "name = 'hello'");
 	
