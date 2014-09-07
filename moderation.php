@@ -2567,6 +2567,10 @@ switch($mybb->input['action'])
 		$lang->move_selective_posts = $lang->sprintf($lang->move_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->move_selective_posts);
 
+		require_once MYBB_ROOT.'/inc/functions_rebuild.php';
+
+		rebuild_thread_counters($tid);
+
 		moderation_redirect(get_thread_link($newtid), $lang->redirect_moveposts);
 		break;
 
