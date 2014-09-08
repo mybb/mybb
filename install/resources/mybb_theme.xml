@@ -10866,10 +10866,10 @@ if(use_xmlhttprequest == "1")
 <tr>
 <td class="trow1" valign="top">
 <select name="visible">
-<option value="">{$lang->find_all}</option>
-<option value="1">{$lang->find_only_approved}</option>
-<option value="0">{$lang->find_only_unapproved}</option>
-<option value="-1">{$lang->find_only_softdeleted}</option>
+<option value="">{$lang->display_all}</option>
+<option value="1">{$lang->display_only_approved}</option>
+<option value="0">{$lang->display_only_unapproved}</option>
+<option value="-1">{$lang->display_only_softdeleted}</option>
 </select> {$lang->results}
 </td>
 </tr>]]></template>
