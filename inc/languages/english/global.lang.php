@@ -532,8 +532,8 @@ $l['moderation_user_posts'] = "Please note that new posts you make must be appro
 $l['moderation_forum_thread'] = "Please note that new threads in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits'] = "Please note that edited posts in this forum must be approved by a moderator before becoming visible.";
 $l['moderation_forum_edits_quick'] = "Please note edited posts in this forum must be approved by a moderator before becoming visible.";
-$l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the users.";
-$l['awaiting_message_plural'] = "There is {1} accounts awaiting activation. Please go to your ACP to activate the users.";
+$l['awaiting_message_single'] = "There is 1 account awaiting activation. Please go to your ACP to activate the user.";
+$l['awaiting_message_plural'] = "There are {1} accounts awaiting activation. Please go to your ACP to activate the users.";
 
 $l['select2_match'] = "One result is available, press enter to select it.";
 $l['select2_matches'] = "{1} results are available, use up and down arrow keys to navigate.";
