@@ -4324,7 +4324,7 @@ if($mybb->input['action'] == "banuser")
 	}
 
 	$bangroup_option = $bangroups = '';
-	$numgroups = 0;
+	$numgroups = $banned_group = 0;
 	$groupscache = $cache->read("usergroups");
 
 	foreach($groupscache as $key => $group)
@@ -4339,11 +4339,16 @@ if($mybb->input['action'] == "banuser")
 
 			$group['title'] = htmlspecialchars_uni($group['title']);
 			eval("\$bangroup_option .= \"".$templates->get("modcp_banuser_bangroups_group")."\";");
+			$banned_group = $group['gid'];
 			++$numgroups;
 		}
 	}
 
-	if($numgroups > 1)
+	if($numgroups == 0)
+	{
+		error($lang->no_banned_group);
+	}
+	elseif($numgroups > 1)
 	{
 		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups")."\";");
 	}
