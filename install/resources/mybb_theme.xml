@@ -6684,7 +6684,7 @@ if(use_xmlhttprequest == "1")
 								<td class="trow1" width="75%"><select name="usergroup">{$bangroup_option}</select></td>
 							</tr>]]></template>
 		<template name="modcp_banuser_bangroups_group" version="1800"><![CDATA[<option value="{$group['gid']}"{$selected}>{$group['title']}</option>]]></template>
-		<template name="modcp_banuser_bangroups_hidden" version="1800"><![CDATA[<input type="hidden" name="usergroup" value="{$group['gid']}" />]]></template>
+		<template name="modcp_banuser_bangroups_hidden" version="1801"><![CDATA[<input type="hidden" name="usergroup" value="{$banned_group}" />]]></template>
 		<template name="modcp_banuser_editusername" version="1400"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
