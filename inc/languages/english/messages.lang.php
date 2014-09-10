@@ -29,6 +29,7 @@ $l['error_invalidforum'] = "Invalid forum";
 $l['error_closedinvalidforum'] = "You may not post in this forum because either the forum is closed, it is a redirect to another webpage, or it is a category.";
 $l['error_attachtype'] = "The type of file that you attached is not allowed. Please remove the attachment or choose a different type.";
 $l['error_attachsize'] = "The file you attached is too large. The maximum size for that type of file is {1} kilobytes.";
+$l['error_uploadempty'] = "The file specified is empty.";
 $l['error_uploadsize'] = "The size of the uploaded file is too large.";
 $l['error_uploadfailed'] = "The file upload failed. Please choose a valid file and try again. ";
 $l['error_uploadfailed_detail'] = "Error details: ";
