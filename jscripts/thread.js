@@ -351,6 +351,7 @@ var Thread = {
 				{
 					$.jGrowl(lang.quick_reply_post_error + ' ' + message);
 				});
+				$('#quickreply_spinner').hide();
 			}
 		}
 
