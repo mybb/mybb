@@ -430,11 +430,11 @@ unset($rating);
 
 // Pick out some sorting options.
 // First, the date cut for the threads.
-$datecut = 0;
+$datecut = 9999;
 if(empty($mybb->input['datecut']))
 {
 	// If the user manually set a date cut, use it.
-	if(isset($mybb->user['daysprune']))
+	if($mybb->user['daysprune'])
 	{
 		$datecut = $mybb->user['daysprune'];
 	}
@@ -453,8 +453,7 @@ else
 	$datecut = $mybb->get_input('datecut', 1);
 }
 
-$datecut = (int)$datecut;
-$datecutsel[$datecut] = "selected=\"selected\"";
+$datecutsel[(int)$datecut] = ' selected="selected"';
 if($datecut > 0 && $datecut != 9999)
 {
 	$checkdate = TIME_NOW - ($datecut * 86400);
@@ -505,13 +504,13 @@ switch(my_strtolower($mybb->input['order']))
 {
 	case "asc":
 		$sortordernow = "asc";
-        $ordersel['asc'] = "selected=\"selected\"";
+        $ordersel['asc'] = ' selected="selected"';
 		$oppsort = $lang->desc;
 		$oppsortnext = "desc";
 		break;
 	default:
         $sortordernow = "desc";
-		$ordersel['desc'] = "selected=\"selected\"";
+		$ordersel['desc'] = ' selected="selected"';
         $oppsort = $lang->asc;
 		$oppsortnext = "asc";
 		break;
@@ -562,7 +561,7 @@ switch($mybb->input['sortby'])
 }
 
 $sortsel['rating'] = ''; // Needs to be initialized in order to speed-up things. Fixes #2031
-$sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
+$sortsel[$mybb->input['sortby']] = ' selected="selected"';
 
 // Pick the right string to join the sort URL
 if($mybb->seo_support == true)
