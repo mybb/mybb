@@ -95,7 +95,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 					"uid" => $mybb->user['uid'],
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
-					"visibility" => $mybb->get_input('visibiliy', 1),
+					"visibility" => $mybb->get_input('visibility', 1),
 					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
 					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
 					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
@@ -284,7 +284,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$updated_view = array(
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
-					"visibility" => $mybb->get_input('visibiliy', 1),
+					"visibility" => $mybb->get_input('visibility', 1),
 					"fields" => $db->escape_string(serialize($mybb->input['fields'])),
 					"conditions" => $db->escape_string(serialize($mybb->input['conditions'])),
 					"custom_profile_fields" => $db->escape_string(serialize($mybb->input['profile_fields'])),
