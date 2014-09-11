@@ -471,14 +471,24 @@ else
 $tprefix = $mybb->get_input('prefix', 1);
 if($tprefix > 0)
 {
-	$prefixsql = "AND prefix='{$tprefix}'";
-	$prefixsql2 = "AND t.prefix='{$tprefix}'";
+	$prefixsql = "AND prefix = {$tprefix}";
+	$prefixsql2 = "AND t.prefix = {$tprefix}";
+}
+else if($tprefix == -1)
+{
+	$prefixsql = "AND prefix = 0";
+	$prefixsql2 = "AND t.prefix = 0";
+}
+else if($tprefix == -2)
+{
+	$prefixsql = "AND prefix != 0";
+	$prefixsql2 = "AND t.prefix != 0";
 }
 else
 {
-	$prefixsql = '';
-	$prefixsql2 = '';
+	$prefixsql = $prefixsql2 = '';
 }
+
 
 // Pick the sort order.
 if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
@@ -685,7 +695,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($tprefix > 0)
+	if($tprefix != 0)
 	{
 		$page_url .= "{$q}{$and}prefix={$tprefix}";
 	}
