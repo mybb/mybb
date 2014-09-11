@@ -489,7 +489,6 @@ else
 	$prefixsql = $prefixsql2 = '';
 }
 
-
 // Pick the sort order.
 if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 {
