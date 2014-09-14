@@ -4314,7 +4314,7 @@ if($mybb->input['action'] == "banuser")
 		}
 
 		$thattime = '';
-		if($time != '---' && !isset($banned['dateline']))
+		if($time != '---' && isset($banned['dateline']))
 		{
 			$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $banned['dateline']));
 			$thattime = " ({$thatime})";
