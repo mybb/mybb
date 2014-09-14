@@ -5645,7 +5645,7 @@ function get_user_by_username($username, $options=array())
 
 	if(!isset($options['username_method']))
 	{
-		$options['username_method'] = (int)$mybb->settings['username_method'];
+		$options['username_method'] = 0;
 	}
 
 	switch($options['username_method'])
