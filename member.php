@@ -21,7 +21,7 @@ $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden,member_profile_banned";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -2522,6 +2522,39 @@ if($mybb->input['action'] == "profile")
 
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 
+	$bannedbit = '';
+	if($memperms['isbannedgroup'] == 1)
+	{
+		// Fetch details on their ban
+		$query = $db->simple_select('banned', '*', "uid = '{$uid}'", array('limit' => 1));
+		$memban = $db->fetch_array($query);
+
+		if($memban['uid'])
+		{
+			// Format their ban lift date and reason appropriately
+			$banlift = $lang->banned_lifted_never;
+			$reason = htmlspecialchars_uni($memban['reason']);
+
+			if($memban['lifted'] > 0)
+			{
+				$banlift = my_date($mybb->settings['dateformat'], $memban['lifted']) . $lang->comma . my_date($mybb->settings['timeformat'], $memban['lifted']);
+			}
+		}
+
+		if(empty($reason))
+		{
+			$reason = $lang->unknown;
+		}
+
+		if(empty($banlift))
+		{
+			$banlift = $lang->unknown;
+		}
+
+		// Display a nice warning to the user
+		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
+	}
+
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
@@ -2553,7 +2586,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
 		}
 
-		if($mybb->usergroup['canbanusers'] == 1)
+		if($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
 		{
 			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
 		}
