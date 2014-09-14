@@ -495,7 +495,13 @@ class Moderation
 					update_user_counters($uid, $update_array);
 				}
 			}
+
+			foreach($tid_list as $tid)
+			{
+				rebuild_thread_counters($tid);
+			}
 		}
+
 		return true;
 	}
 
@@ -645,6 +651,11 @@ class Moderation
 				);
 				update_user_counters($uid, $update_array);
 			}
+		}
+
+		foreach($tids as $tid)
+		{
+			rebuild_thread_counters($tid);
 		}
 
 		return true;
