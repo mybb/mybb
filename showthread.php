@@ -1459,6 +1459,7 @@ if($mybb->input['action'] == "thread")
 					++$inviscount;
 				}
 
+				$user['ip'] = my_inet_ntop($db->unescape_binary($user['ip']));
 				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['profilelink'] = get_profile_link($user['uid']);
