@@ -718,8 +718,7 @@ class Moderation
 
 		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
 
-		update_thread_counters($post['tid'], $update_array);
-		update_last_post($post['tid']);
+		rebuild_thread_counters($tid);
 
 		// Update unapproved post count
 		if(($post['visible'] == 0 && $post['threadvisible'] != -1) || $post['threadvisible'] == 0)
@@ -929,14 +928,7 @@ class Moderation
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
-				$counters = array(
-					'replies' => signed($counters['replies']),
-					'unapprovedposts' => signed($counters['unapprovedposts']),
-					'deletedposts' => signed($counters['deletedposts']),
-					'attachmentcount' => signed($counters['attachmentcount'])
-				);
-				update_thread_counters($tid, $counters);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 
@@ -961,6 +953,8 @@ class Moderation
 				update_user_counters($uid, array('postnum' => "{$counter}"));
 			}
 		}
+
+		rebuild_thread_counters($tid);
 
 		return $masterpid;
 	}
@@ -1219,7 +1213,7 @@ class Moderation
 					}
 				}
 
-				update_thread_data($newtid);
+				rebuild_thread_counters($newtid);
 
 				$the_thread = $newtid;
 				break;
@@ -1719,8 +1713,9 @@ class Moderation
 			"deletedposts" => "+{$mergethread['unapprovedposts']}",
 			"deletedposts" => "+{$mergethread['deletedposts']}"
 		);
-		update_thread_counters($tid, $updated_stats);
-		update_last_post($tid);
+
+		rebuild_thread_counters($mergetid);
+
 		return true;
 	}
 
@@ -2052,15 +2047,7 @@ class Moderation
 					$db->update_query("posts", $sqlarray, "pid='{$oldthread['pid']}'");
 				}
 
-				foreach($counters as $key => $counter)
-				{
-					if($counter >= 0)
-					{
-						$counters[$key] = "+{$counter}";
-					}
-				}
-				update_thread_counters($tid, $counters);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 
@@ -2080,6 +2067,9 @@ class Moderation
 				update_forum_lastpost($fid);
 			}
 		}
+
+		rebuild_thread_counters($tid);
+		rebuild_thread_counters($newtid);
 
 		return $newtid;
 	}
@@ -2400,12 +2390,7 @@ class Moderation
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
-				$counters_update = array(
-					"unapprovedposts" => "-".$counters['replies'],
-					"replies" => "+".$counters['replies']
-				);
-				update_thread_counters($tid, $counters_update);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 
@@ -2568,14 +2553,7 @@ class Moderation
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
-				$counters_update = array(
-					"unapprovedposts" => "+".$counters['unapprovedposts'],
-					"replies" => "-".$counters['replies'],
-					"deletedposts" => "-".$counters['deletedposts']
-				);
-
-				update_thread_counters($tid, $counters_update);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 
@@ -3156,14 +3134,7 @@ class Moderation
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
-				$counters_update = array(
-					"unapprovedposts" => "-".$counters['unapprovedposts'],
-					"replies" => "-".$counters['replies'],
-					"deletedposts" => "+".$counters['deletedposts']
-				);
-
-				update_thread_counters($tid, $counters_update);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 
@@ -3307,12 +3278,7 @@ class Moderation
 		{
 			foreach($thread_counters as $tid => $counters)
 			{
-				$counters_update = array(
-					"deletedposts" => "-".$counters['replies'],
-					"replies" => "+".$counters['replies']
-				);
-				update_thread_counters($tid, $counters_update);
-				update_last_post($tid);
+				rebuild_thread_counters($tid);
 			}
 		}
 

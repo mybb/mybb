@@ -20,6 +20,7 @@ $templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT.'/inc/functions_rebuild.php';
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 require_once MYBB_ROOT."inc/class_moderation.php";
@@ -2566,10 +2567,6 @@ switch($mybb->input['action'])
 		$pid_list = implode(', ', $posts);
 		$lang->move_selective_posts = $lang->sprintf($lang->move_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->move_selective_posts);
-
-		require_once MYBB_ROOT.'/inc/functions_rebuild.php';
-
-		rebuild_thread_counters($tid);
 
 		moderation_redirect(get_thread_link($newtid), $lang->redirect_moveposts);
 		break;
