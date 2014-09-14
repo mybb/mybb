@@ -5645,7 +5645,7 @@ function get_user_by_username($username, $options=array())
 
 	if(!isset($options['username_method']))
 	{
-		$options['username_method'] = 0;
+		$options['username_method'] = (int)$mybb->settings['username_method'];
 	}
 
 	switch($options['username_method'])
@@ -5667,9 +5667,7 @@ function get_user_by_username($username, $options=array())
 		$fields = array_merge((array)$options['fields'], $fields);
 	}
 
-	$fields = array_flip($fields);
-
-	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+	$query = $db->simple_select('users', implode(',', array_unique($fields)), $sqlwhere, array('limit' => 1));
 
 	if(isset($options['exists']))
 	{
