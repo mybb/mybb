@@ -1661,7 +1661,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		'imagestring' => $mybb->get_input('imagestring')
 	);
 
-	$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+	$options = array(
+		'fields' => 'loginattempts',
+		'username_method' => (int)$mybb->settings['username_method'],
+	);
+
+	$user_loginattempts = get_user_by_username($user['username'], $options);
 	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 	$loginhandler->set_data($user);
@@ -1673,12 +1678,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->request_method = "get";
 
 		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
+		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
 
-		$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
-		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+		$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
 
 		// If we need a captcha set it here
 		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))

@@ -213,7 +213,7 @@ class LoginDataHandler extends DataHandler
 		$user = &$this->data;
 
 		$options = array(
-			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
+			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup', 'loginattempts'),
 			'username_method' => (int)$settings['username_method']
 		);
 
