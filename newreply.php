@@ -229,19 +229,27 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	}
 
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
+	if($forumpermissions['canpostattachments'] != 0)
 	{
-		$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
-		$updateattach = $db->fetch_field($query, "aid");
-
-		require_once MYBB_ROOT."inc/functions_upload.php";
-
-		$update_attachment = false;
-		if($updateattach > 0 && $mybb->get_input('updateattachment'))
+		if ($_FILES['attachment']['size'] > 0)
 		{
-			$update_attachment = true;
+			$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
+			$updateattach = $db->fetch_field($query, "aid");
+
+			require_once MYBB_ROOT."inc/functions_upload.php";
+
+			$update_attachment = false;
+			if($updateattach > 0 && $mybb->get_input('updateattachment'))
+			{
+				$update_attachment = true;
+			}
+			$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
 		}
-		$attachedfile = upload_attachment($_FILES['attachment'], $update_attachment);
+		else
+		{
+			$errors[] = $lang->error_uploadempty;
+			$mybb->input['action'] = "newreply";
+		}
 	}
 
 	if(!empty($attachedfile['error']))
