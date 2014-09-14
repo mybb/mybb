@@ -45,7 +45,7 @@ class LoginDataHandler extends DataHandler
 	
 	private $captcha = false;
 
-	public $username_method = 0;
+	public $username_method = null;
 
 	function verify_attempts($check_captcha = 0)
 	{
@@ -108,20 +108,11 @@ class LoginDataHandler extends DataHandler
 
 	function verify_username()
 	{
-		global $db, $mybb;
-
-		$user = &$this->data;
-
-		$this->login_data = get_user_by_username($user['username']);
-
 		if(!$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
 		}
-
-		// Add username to data
-		$this->login_data['username'] = $user['username'];
 	}
 
 	function verify_password($strict = true)
@@ -136,13 +127,8 @@ class LoginDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
+
 		$password = md5($user['password']);
-
-		$options = array(
-			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
-		);
-
-		$this->login_data = get_user_by_username($this->login_data['username'], $options);
 
 		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
 		{
@@ -220,11 +206,31 @@ class LoginDataHandler extends DataHandler
 		}
 	}
 
+	function get_login_data()
+	{
+		global $db;
+
+		$user = &$this->data;
+
+		$options = array(
+			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
+		);
+
+		if($this->username_method !== null)
+		{
+			$options['username_method'] = (int)$this->username_method;
+		}
+
+		$this->login_data = get_user_by_username($user['username'], $options);
+	}
+
 	function validate_login()
 	{
 		global $plugins, $mybb;
 
 		$user = &$this->data;
+
+		$this->get_login_data();
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
