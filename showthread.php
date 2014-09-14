@@ -1051,8 +1051,11 @@ if($mybb->input['action'] == "thread")
 			WHERE $pids
 			ORDER BY p.dateline
 		");
+
 		while($post = $db->fetch_array($query))
 		{
+			$post['regip'] = my_inet_ntop($db->unescape_binary($post['regip']));
+			$post['lastip'] = my_inet_ntop($db->unescape_binary($post['lastip']));
 			if($thread['firstpost'] == $post['pid'] && $thread['visible'] == 0)
 			{
 				$post['visible'] = 0;
