@@ -94,10 +94,10 @@ $l['search_user'] = "Search for a user";
 
 $l['results'] = "results";
 $l['mod_options'] = "Moderator Options";
-$l['find_all'] = "Find all";
-$l['find_only_approved'] = "Find only approved";
-$l['find_only_unapproved'] = "Find only unapproved";
-$l['find_only_softdeleted'] = "Find only soft deleted";
+$l['display_all'] = "Display all";
+$l['display_only_approved'] = "Display only approved";
+$l['display_only_unapproved'] = "Display only unapproved";
+$l['display_only_softdeleted'] = "Display only soft deleted";
 
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 
