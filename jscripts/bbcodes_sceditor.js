@@ -63,7 +63,7 @@ $(document).ready(function($) {
 			}
 		})
 		.set('li', { format: '[*]{0}', excludeClosing: true })
-		.set('*', { excludeClosing: true, isInline: false });
+		.set('*', { excludeClosing: true, isInline: true });
 
 	$.sceditor.command
 		.set('bulletlist', { txtExec: ['[list]\n[*]', '\n[/list]'] })
