@@ -45,6 +45,8 @@ class LoginDataHandler extends DataHandler
 	
 	private $captcha = false;
 
+	public $username_method = 0;
+
 	function verify_attempts($check_captcha = 0)
 	{
 		global $db, $mybb;
@@ -109,18 +111,17 @@ class LoginDataHandler extends DataHandler
 		global $db, $mybb;
 
 		$user = &$this->data;
-		$username = $db->escape_string(my_strtolower($user['username']));
 
-		$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
+		$this->login_data = get_user_by_username($user['username']);
 
-		if($db->fetch_field($query, 'user') != 1)
+		if(!$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
 		}
 
 		// Add username to data
-		$this->login_data['username'] = $username;
+		$this->login_data['username'] = $user['username'];
 	}
 
 	function verify_password($strict = true)
@@ -136,13 +137,12 @@ class LoginDataHandler extends DataHandler
 
 		$user = &$this->data;
 		$password = md5($user['password']);
-		$username = $this->login_data['username'];
 
 		$options = array(
 			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
 		);
 
-		$this->login_data = get_user_by_username($username, $options);
+		$this->login_data = get_user_by_username($this->login_data['username'], $options);
 
 		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
 		{
