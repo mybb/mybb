@@ -3534,6 +3534,10 @@ function build_users_view($view)
 			}
 			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
+			// Convert IP's to readable
+			$user['regip'] = my_inet_ntop($db->unescape_binary($user['regip']));
+			$user['lastip'] = my_inet_ntop($db->unescape_binary($user['lastip']));
+
 			if($view['view_type'] == "card")
 			{
 				$users .= build_user_view_card($user, $view, $i);
