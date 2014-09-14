@@ -619,7 +619,7 @@ if(!$mybb->input['action'])
 	);
 	$sub_tabs['find_language'] = array(
 		'title' => $lang->find_language_packs,
-		'link' => "http://www.mybb.com/downloads/translations",
+		'link' => "http://community.mybb.com/mods.php?action=browse&category=19",
 		'target' => "_blank"
 	);
 
