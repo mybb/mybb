@@ -208,12 +208,13 @@ class LoginDataHandler extends DataHandler
 
 	function get_login_data()
 	{
-		global $db;
+		global $db, $settings;
 
 		$user = &$this->data;
 
 		$options = array(
-			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
+			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
+			'username_method' => (int)$settings['username_method']
 		);
 
 		if($this->username_method !== null)
