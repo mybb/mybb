@@ -108,6 +108,8 @@ class LoginDataHandler extends DataHandler
 
 	function verify_username()
 	{
+		$this->get_login_data();
+
 		if(!$this->login_data['uid'])
 		{
 			$this->invalid_combination();
@@ -118,6 +120,8 @@ class LoginDataHandler extends DataHandler
 	function verify_password($strict = true)
 	{
 		global $db, $mybb;
+
+		$this->get_login_data();
 
 		if(empty($this->login_data['username']))
 		{
@@ -230,8 +234,6 @@ class LoginDataHandler extends DataHandler
 		global $plugins, $mybb;
 
 		$user = &$this->data;
-
-		$this->get_login_data();
 
 		$plugins->run_hooks('datahandler_login_validate_start', $this);
 
