@@ -4726,7 +4726,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile" version="1800"><![CDATA[<html>
+		<template name="member_profile" version="1801"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
@@ -4755,7 +4755,7 @@ if(use_xmlhttprequest == "1")
 	</table>
 </fieldset>
 <br />
-{$awaybit}
+{$awaybit}{$bannedbit}
 <table width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
 	<tr>
 		<td width="50%" valign="top">
@@ -4818,11 +4818,16 @@ if(use_xmlhttprequest == "1")
 </table>
 <br />]]></template>
 		<template name="member_profile_avatar" version="1800"><![CDATA[<img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} />]]></template>
-		<template name="member_profile_away" version="1800"><![CDATA[<tr>
-<fieldset>
+		<template name="member_profile_away" version="1801"><![CDATA[<fieldset>
 <legend><strong>{$lang->away_note}</strong></legend>
 <em>{$lang->away_reason} {$awayreason}</em><br />
 <span class="smalltext">{$lang->away_since} {$awaydate} &mdash; {$lang->away_returns} {$returndate}</span>
+</fieldset>
+<br />]]></template>
+		<template name="member_profile_banned" version="1801"><![CDATA[<fieldset>
+<legend><strong>{$lang->ban_note}</strong></legend>
+<em>{$lang->banned_warning2}: {$reason}</em><br />
+<span class="smalltext">{$lang->banned_warning3} {$banlift}</span>
 </fieldset>
 <br />]]></template>
 		<template name="member_profile_contact_details" version="1800"><![CDATA[<br />
@@ -6690,7 +6695,7 @@ if(use_xmlhttprequest == "1")
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
 	<td class="trow1" width="75%">{$username}</td>
 </tr>]]></template>
-		<template name="modcp_banuser_lift" version="1800"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
+		<template name="modcp_banuser_lift" version="1801"><![CDATA[<div class="float_right"><a href="modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}">{$lang->lift_ban}</a></div>]]></template>
 		<template name="modcp_banuser_liftlist" version="1800"><![CDATA[<option value="{$time}"{$selected}>{$title}{$thattime}</option>]]></template>
 		<template name="modcp_editprofile" version="1800"><![CDATA[<html>
 <head>
