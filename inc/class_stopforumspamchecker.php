@@ -65,7 +65,7 @@ class StopForumSpamChecker
 	 */
 	public function __construct(&$plugins = null, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
 	{
-		$this->plugins                   = & $plugins;
+		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
 		$this->check_usernames           = (bool)$check_usernames;
 		$this->check_emails              = (bool)$check_emails;
@@ -98,7 +98,7 @@ class StopForumSpamChecker
 
 			if($result !== false)
 			{
-				$result_json = @json_decode($check_url);
+				$result_json = @json_decode($result);
 
 				if(json_last_error() == JSON_ERROR_NONE && $result_json != null && !isset($result_json->error))
 				{

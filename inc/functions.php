@@ -7817,5 +7817,5 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'data'      => $db->escape_string(@serialize($data)),
 	);
 
-	return (bool)$db->insert_array('spamlog', $insert_array);
+	return (bool)$db->insert_query('spamlog', $insert_array);
 }
