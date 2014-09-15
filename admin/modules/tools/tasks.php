@@ -138,9 +138,10 @@ if($mybb->input['action'] == "add")
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
 			$tid = $db->insert_query("tasks", $new_task);
-			$cache->update_tasks();
 
 			$plugins->run_hooks("admin_tools_tasks_add_commit");
+
+			$cache->update_tasks();
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
@@ -337,9 +338,10 @@ if($mybb->input['action'] == "edit")
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
 			$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
-			$cache->update_tasks();
 
 			$plugins->run_hooks("admin_tools_tasks_edit_commit");
+
+			$cache->update_tasks();
 
 			// Log admin action
 			log_admin_action($task['tid'], $mybb->input['title']);
@@ -471,9 +473,10 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("tasklog", "tid='{$task['tid']}'");
 
 		// Fetch next task run
-		$cache->update_tasks();
 
 		$plugins->run_hooks("admin_tools_tasks_delete_commit");
+
+		$cache->update_tasks();
 
 		// Log admin action
 		log_admin_action($task['tid'], $task['title']);
@@ -528,9 +531,10 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 			{
 				$nextrun = fetch_next_run($task);
 				$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
-				$cache->update_tasks();
 
 				$plugins->run_hooks("admin_tools_tasks_enable_commit");
+
+				$cache->update_tasks();
 
 				// Log admin action
 				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
@@ -547,9 +551,10 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		{
 			$nextrun = fetch_next_run($task);
 			$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
-			$cache->update_tasks();
 
 			$plugins->run_hooks("admin_tools_tasks_enable_commit");
+
+			$cache->update_tasks();
 
 			// Log admin action
 			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
@@ -561,9 +566,10 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	else
 	{
 		$db->update_query("tasks", array("enabled" => 0), "tid='{$task['tid']}'");
-		$cache->update_tasks();
 
 		$plugins->run_hooks("admin_tools_tasks_disable_commit");
+
+		$cache->update_tasks();
 
 		// Log admin action
 		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);

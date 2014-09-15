@@ -167,10 +167,11 @@ if($mybb->input['action'] == "copy")
 				// Log admin action (no group permissions)
 				log_admin_action($from, $from_forum['name'], $to, $new_forum['name']);
 			}
-			$cache->update_forums();
-			$cache->update_forumpermissions();
 
 			$plugins->run_hooks("admin_forum_management_copy_commit");
+
+			$cache->update_forums();
+			$cache->update_forumpermissions();
 
 			flash_message($lang->success_forum_copied, 'success');
 			admin_redirect("index.php?module=forum-management&action=edit&fid={$to}");
@@ -332,9 +333,9 @@ if($mybb->input['action'] == "editmod")
 			);
 			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
 
-			$cache->update_moderators();
-
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
+
+			$cache->update_moderators();
 
 			// Log admin action
 			log_admin_action($fid, $forum['name'], $mid, $mod[$fieldname]);
@@ -527,9 +528,9 @@ if($mybb->input['action'] == "permissions")
 			$db->update_query("forumpermissions", $update_array, "pid='{$pid}'");
 		}
 
-		$cache->update_forumpermissions();
-
 		$plugins->run_hooks("admin_forum_management_permissions_commit");
+
+		$cache->update_forumpermissions();
 
 		// Log admin action
 		log_admin_action($fid, $forum['name']);
@@ -896,8 +897,6 @@ if($mybb->input['action'] == "add")
 				}
 			}
 
-			$cache->update_forums();
-
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostpolls = $permissions['canpostpolls'];
@@ -906,6 +905,8 @@ if($mybb->input['action'] == "add")
 			save_quick_perms($fid);
 
 			$plugins->run_hooks("admin_forum_management_add_commit");
+
+			$cache->update_forums();
 
 			// Log admin action
 			log_admin_action($fid, $insert_array['name']);
@@ -1897,9 +1898,10 @@ if($mybb->input['action'] == "deletemod")
 		$mod = $db->fetch_array($query);
 
 		$db->delete_query("moderators", "mid='{$mid}'");
-		$cache->update_moderators();
 
 		$plugins->run_hooks("admin_forum_management_deletemod_commit");
+
+		$cache->update_moderators();
 
 		$forum = get_forum($fid);
 
@@ -1988,10 +1990,6 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
 
-		$cache->update_forums();
-		$cache->update_moderators();
-		$cache->update_forumpermissions();
-
 		$update_stats = array(
 			'numthreads' => "-".$stats['threads'],
 			'numunapprovedthreads' => "-".$stats['unapprovedthreads'],
@@ -2001,6 +1999,10 @@ if($mybb->input['action'] == "delete")
 		update_stats($update_stats);
 
 		$plugins->run_hooks("admin_forum_management_delete_commit");
+
+		$cache->update_forums();
+		$cache->update_moderators();
+		$cache->update_forumpermissions();
 
 		// Log admin action
 		log_admin_action($forum_info['fid'], $forum_info['name']);
@@ -2074,8 +2076,6 @@ if(!$mybb->input['action'])
 				}
 			}
 
-			$cache->update_forums();
-
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostpolls = $permissions['canpostpolls'];
@@ -2085,6 +2085,8 @@ if(!$mybb->input['action'])
 			save_quick_perms($fid);
 
 			$plugins->run_hooks("admin_forum_management_start_permissions_commit");
+
+			$cache->update_forums();
 
 			// Log admin action
 			log_admin_action('quickpermissions', $fid, $forum['name']);
@@ -2175,8 +2177,9 @@ if(!$mybb->input['action'])
 						$db->update_query("users", array('usergroup' => 6), "uid='{$newmod['id']}' AND usergroup='2'");
 					}
 
-					$cache->update_moderators();
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
+
+					$cache->update_moderators();
 
 					// Log admin action
 					log_admin_action('addmod', $mid, $newmod['name'], $fid, $forum['name']);
@@ -2205,9 +2208,9 @@ if(!$mybb->input['action'])
 					$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
 				}
 
-				$cache->update_forums();
-
 				$plugins->run_hooks("admin_forum_management_start_disporder_commit");
+
+				$cache->update_forums();
 
 				// Log admin action
 				log_admin_action('orders', $forum['fid'], $forum['name']);

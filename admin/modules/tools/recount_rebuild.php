@@ -616,9 +616,9 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$cache->update_stats();
-
 			$plugins->run_hooks("admin_tools_recount_rebuild_stats");
+
+			$cache->update_stats();
 
 			// Log admin action
 			log_admin_action("stats");

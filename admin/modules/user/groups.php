@@ -519,9 +519,9 @@ if($mybb->input['action'] == "delete_leader")
 		// Delete the leader
 		$db->delete_query("groupleaders", "lid='{$leader['lid']}'");
 
-		$cache->update_groupleaders();
-
 		$plugins->run_hooks("admin_user_groups_delete_leader_commit_end");
+
+		$cache->update_groupleaders();
 
 		// Log admin action
 		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
@@ -1243,12 +1243,12 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 
+		$plugins->run_hooks("admin_user_groups_delete_commit_end");
+
 		$cache->update_groupleaders();
 		$cache->update_moderators();
 		$cache->update_usergroups();
 		$cache->update_forumpermissions();
-
-		$plugins->run_hooks("admin_user_groups_delete_commit_end");
 
 		// Log admin action
 		log_admin_action($usergroup['gid'], $usergroup['title']);

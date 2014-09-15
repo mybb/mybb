@@ -274,9 +274,9 @@ if($mybb->input['action'] == "delete")
 	{
 		$db->delete_query("attachtypes", "atid='{$attachment_type['atid']}'");
 
-		$cache->update_attachtypes();
-
 		$plugins->run_hooks("admin_config_attachment_types_delete_commit");
+
+		$cache->update_attachtypes();
 
 		// Log admin action
 		log_admin_action($attachment_type['atid'], $attachment_type['extension']);

@@ -76,9 +76,9 @@ if($mybb->input['action'] == "add")
 
 			$sid = $db->insert_query("smilies", $new_smilie);
 
-			$cache->update_smilies();
-
 			$plugins->run_hooks("admin_config_smilies_add_commit");
+
+			$cache->update_smilies();
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
@@ -212,9 +212,9 @@ if($mybb->input['action'] == "edit")
 
 			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', 1)."'");
 
-			$cache->update_smilies();
-
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
+
+			$cache->update_smilies();
 
 			// Log admin action
 			log_admin_action($smilie['sid'], $mybb->input['name']);
@@ -293,9 +293,9 @@ if($mybb->input['action'] == "delete")
 		// Delete the smilie
 		$db->delete_query("smilies", "sid='{$smilie['sid']}'");
 
-		$cache->update_smilies();
-
 		$plugins->run_hooks("admin_config_smilies_delete_commit");
+
+		$cache->update_smilies();
 
 		// Log admin action
 		log_admin_action($smilie['sid'], $smilie['name']);
@@ -476,9 +476,9 @@ if($mybb->input['action'] == "add_multiple")
 				}
 			}
 
-			$cache->update_smilies();
-
 			$plugins->run_hooks("admin_config_smilies_add_multiple_commit");
+
+			$cache->update_smilies();
 
 			// Log admin action
 			log_admin_action();
@@ -570,9 +570,9 @@ if($mybb->input['action'] == "mass_edit")
 			$disporder_list[$disporder] = $disporder;
 		}
 
-		$cache->update_smilies();
-
 		$plugins->run_hooks("admin_config_smilies_mass_edit_commit");
+
+		$cache->update_smilies();
 
 		// Log admin action
 		log_admin_action();

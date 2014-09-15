@@ -42,6 +42,8 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		);
 		$fid = $db->insert_query("banfilters", $new_filter);
 
+		$plugins->run_hooks("admin_config_banning_add_commit");
+
 		if($mybb->input['type'] == 1)
 		{
 			$cache->update_bannedips();
@@ -50,8 +52,6 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		{
 			$cache->update_bannedemails();
 		}
-
-		$plugins->run_hooks("admin_config_banning_add_commit");
 
 		// Log admin action
 		log_admin_action($fid, $mybb->input['filter'], $mybb->input['type']);

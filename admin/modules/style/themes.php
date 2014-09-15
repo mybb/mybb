@@ -1149,12 +1149,12 @@ if($mybb->input['action'] == "edit")
 		{
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
 
+			$plugins->run_hooks("admin_style_themes_edit_commit");
+
 			if($theme['def'] == 1)
 			{
 				$cache->update_default_theme();
 			}
-
-			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
 			log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
