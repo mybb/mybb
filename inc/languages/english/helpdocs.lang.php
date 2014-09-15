@@ -23,7 +23,7 @@ $l['d3_desc'] = "MyBB uses cookies to store certain information about your regis
 $l['d3_document'] = "MyBB makes use of cookies to store your login information if you are registered, and your last visit if you are not.
 <br /><br />Cookies are small text documents stored on your computer; the cookies set by this forum can only be used on this website and pose no security risk.
 <br /><br />Cookies on this forum also track the specific topics you have read and when you last read them.
-<br /><br />To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies&amp;key={1}\">here</a>.";
+<br /><br />To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies&amp;my_post_key={1}\">here</a>.";
 
 // Help Document 4
 $l['d4_name'] = "Logging In and Out";
