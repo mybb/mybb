@@ -170,7 +170,7 @@ else
 	$theme['imglangdir'] = $mybb->get_asset_url($theme['imglangdir']);
 }
 
-$templatelist = "postbit_editedby,xmlhttp_inline_post_editor,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
+$templatelist = "postbit_editedby,xmlhttp_buddyselect_online,xmlhttp_buddyselect_offline,xmlhttp_buddyselect";
 $templates->cache($db->escape_string($templatelist));
 
 if($lang->settings['charset'])
@@ -474,9 +474,6 @@ else if($mybb->input['action'] == "edit_post")
 		//$post['message'] = htmlspecialchars_uni($post['message']);
 
 		// Send the contents of the post.
-		/*eval("\$inline_editor = \"".$templates->get("xmlhttp_inline_post_editor")."\";");
-		echo "<?xml version=\"1.0\" encoding=\"{$charset}\"?".">";
-		echo "<form>".$inline_editor."</form>";*/
 		echo $post['message'];
 		exit;
 	}
