@@ -331,9 +331,9 @@ if($mybb->input['action'] == "edit")
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
-
 			$plugins->run_hooks("admin_config_post_icons_edit_commit");
+
+			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
 
 			$cache->update_posticons();
 

@@ -188,9 +188,10 @@ if($mybb->input['action'] == "edit")
 				"usergroup" => (int)$mybb->input['usergroup'],
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
-			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$plugins->run_hooks("admin_config_spiders_edit_commit");
+
+			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
 

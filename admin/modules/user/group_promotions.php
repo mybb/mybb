@@ -66,9 +66,9 @@ if($mybb->input['action'] == "disable")
 			"enabled" => 0
 		);
 
-		$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
-
 		$plugins->run_hooks("admin_user_group_promotions_disable_commit");
+
+		$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
 
 		// Log admin action
 		log_admin_action($promotion['pid'], $promotion['title']);
@@ -153,9 +153,9 @@ if($mybb->input['action'] == "enable")
 		"enabled" => 1
 	);
 
-	$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
-
 	$plugins->run_hooks("admin_user_group_promotions_enable_commit");
+
+	$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
 
 	// Log admin action
 	log_admin_action($promotion['pid'], $promotion['title']);
@@ -251,9 +251,9 @@ if($mybb->input['action'] == "edit")
 				"logging" => (int)$mybb->input['logging']
 			);
 
-			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', 1)."'");
-
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
+
+			$db->update_query("promotions", $update_promotion, "pid = '".$mybb->get_input('pid', 1)."'");
 
 			// Log admin action
 			log_admin_action($promotion['pid'], $mybb->input['title']);

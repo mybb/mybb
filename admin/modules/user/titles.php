@@ -152,9 +152,9 @@ if($mybb->input['action'] == "edit")
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
-			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
-
 			$plugins->run_hooks("admin_user_titles_edit_commit");
+
+			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
 
 			$cache->update_usertitles();
 

@@ -59,7 +59,6 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 			$updated_user = array(
 				"warningpoints" => $new_warning_points
 			);
-			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
 		}
 
 		// Update warning
@@ -69,9 +68,15 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 			"revokedby" => $mybb->user['uid'],
 			"revokereason" => $db->escape_string($mybb->input['reason'])
 		);
-		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 
 		$plugins->run_hooks("admin_tools_warninglog_do_revoke_commit");
+
+		if($warning['expired'] != 1)
+		{
+			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
+		}
+
+		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 
 		flash_message($lang->redirect_warning_revoked, 'success');
 		admin_redirect("index.php?module=tools-warninglog&amp;action=view&amp;wid={$warning['wid']}");
