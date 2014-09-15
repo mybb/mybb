@@ -672,13 +672,13 @@ function generate_question()
 {
 	global $db;
 
-	$query = $db->query("
-		SELECT qid, shown
-		FROM ".TABLE_PREFIX."questions
-		WHERE active='1'
-		ORDER BY RAND()
-		LIMIT 1
-	");
+	$order_by = 'RAND()';
+	if($db->type == 'pgsql')
+	{
+		$order_by = 'RANDOM()';
+	}
+
+	$query = $db->simple_select('questions', 'qid, shown', 'active=1', array('limit' => 1, 'order_by' => $order_by));
 	$question = $db->fetch_array($query);
 
 	if(!$db->num_rows($query))
