@@ -1371,7 +1371,7 @@ EOF;
 		else
 		{
 			// There's a limit to the suspension!
-			$expired = my_date('relative', $user['suspendsigtime']);
+			$expired = my_date('relative', $user['suspendsigtime'], '', 2);
 			$lang->suspend_expire_info = $lang->sprintf($lang->suspend_expire_info, $expired);
 		}
 		$user_suspend_info = '
@@ -1526,7 +1526,7 @@ EOF;
 		$mybb->input['moderateposting'] = 1;
 		if($user['moderationtime'] != 0)
 		{
-			$expired = my_date('relative', $user['moderationtime']);
+			$expired = my_date('relative', $user['moderationtime'], '', 2);
 			$existing_info = $lang->sprintf($lang->moderate_length, $expired);
 		}
 		else
@@ -1554,7 +1554,7 @@ EOF;
 		}
 		else
 		{
-			$suspost_date = my_date('relative', $user['suspensiontime']);
+			$suspost_date = my_date('relative', $user['suspensiontime'], '', 2);
 			$existing_info = $lang->sprintf($lang->suspend_length, $suspost_date);
 		}
 	}
