@@ -408,13 +408,14 @@ elseif($mybb->input['action'] == "help")
 				if($lang->$langdocvar)
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
-
-					if($langdocvar == "d3_document")
-					{
-						$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->post_code);
-					}
 				}
 			}
+
+			if($helpdoc['hid'] == 3)
+			{
+				$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->post_code);
+			}
+
 			add_breadcrumb($helpdoc['name']);
 
 			$plugins->run_hooks("misc_help_helpdoc_end");
