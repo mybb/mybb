@@ -4621,7 +4621,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
 		WHERE b.bantime != '---' AND b.bantime != 'perm'
-		ORDER BY remaining ASC
+		ORDER BY lifted ASC
 		LIMIT 5
 	");
 
