@@ -337,9 +337,10 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
-			$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
 
 			$plugins->run_hooks("admin_tools_tasks_edit_commit");
+
+			$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
 
 			$cache->update_tasks();
 

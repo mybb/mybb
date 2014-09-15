@@ -51,9 +51,9 @@ if($mybb->input['action'] == "toggle_status")
 		'active' => $new_status,
 	);
 
-	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', 1)."'");
-
 	$plugins->run_hooks("admin_config_mycode_toggle_status_commit");
+
+	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', 1)."'");
 
 	$cache->update_mycode();
 
@@ -248,9 +248,9 @@ if($mybb->input['action'] == "edit")
 				'parseorder' => (int)$mybb->input['parseorder']
 			);
 
-			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', 1)."'");
-
 			$plugins->run_hooks("admin_config_mycode_edit_commit");
+
+			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', 1)."'");
 
 			$cache->update_mycode();
 

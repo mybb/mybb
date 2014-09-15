@@ -210,9 +210,9 @@ if($mybb->input['action'] == "edit")
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 
-			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', 1)."'");
-
 			$plugins->run_hooks("admin_config_smilies_edit_commit");
+
+			$db->update_query("smilies", $updated_smilie, "sid = '".$mybb->get_input('sid', 1)."'");
 
 			$cache->update_smilies();
 

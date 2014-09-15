@@ -144,10 +144,11 @@ if($mybb->input['action'] == "lift")
 			'additionalgroups' => $ban['oldadditionalgroups'],
 			'displaygroup' => $ban['olddisplaygroup']
 		);
-		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 
 		$plugins->run_hooks("admin_user_banning_lift_commit");
+
+		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 
 		$cache->update_banned();
 		$cache->update_moderators();
@@ -393,12 +394,13 @@ if(!$mybb->input['action'])
 					'displaygroup' => 0,
 					'additionalgroups' => '',
 				);
-				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
 
 				$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
 				$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 
 				$plugins->run_hooks("admin_user_banning_start_commit");
+
+				$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
 
 				$cache->update_banned();
 

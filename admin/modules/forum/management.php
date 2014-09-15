@@ -331,9 +331,10 @@ if($mybb->input['action'] == "editmod")
 				'canmanagereportedposts' => (int)$mybb->input['canmanagereportedposts'],
 				'canviewmodlog' => (int)$mybb->input['canviewmodlog']
 			);
-			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
 
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
+
+			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
 
 			$cache->update_moderators();
 
@@ -523,12 +524,13 @@ if($mybb->input['action'] == "permissions")
 			$update_array['gid'] = (int)$mybb->input['gid'];
 			$db->insert_query("forumpermissions", $update_array);
 		}
-		else
+
+		$plugins->run_hooks("admin_forum_management_permissions_commit");
+
+		if(!($fid && !$pid))
 		{
 			$db->update_query("forumpermissions", $update_array, "pid='{$pid}'");
 		}
-
-		$plugins->run_hooks("admin_forum_management_permissions_commit");
 
 		$cache->update_forumpermissions();
 

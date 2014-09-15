@@ -244,9 +244,9 @@ if($mybb->input['action'] == "activate_user")
 		$updated_user['usergroup'] = 2;
 	}
 
-	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
-
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
+
+	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
 	$cache->update_awaitingactivation();
 

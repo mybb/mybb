@@ -74,9 +74,10 @@ if($mybb->input['action'] == "delete")
 		$newperms = array(
 			"permissions" => ''
 		);
-		$db->update_query("adminoptions", $newperms, "uid = '{$uid}'");
 
 		$plugins->run_hooks("admin_user_admin_permissions_delete_commit");
+
+		$db->update_query("adminoptions", $newperms, "uid = '{$uid}'");
 
 		// Log admin action
 		if($uid < 0)

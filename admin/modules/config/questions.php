@@ -130,9 +130,10 @@ if($mybb->input['action'] == "edit")
 				"answer" => $db->escape_string($answer),
 				"active" => (int)$mybb->input['active']
 			);
-			$db->update_query("questions", $updated_question, "qid='{$question['qid']}'");
 
 			$plugins->run_hooks("admin_config_questions_edit_commit");
+
+			$db->update_query("questions", $updated_question, "qid='{$question['qid']}'");
 
 			// Log admin action
 			log_admin_action($question['qid'], $mybb->input['question']);
@@ -231,9 +232,10 @@ if($mybb->input['action'] == "disable")
 	$update_question = array(
 		"active" => 0
 	);
-	$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
 
 	$plugins->run_hooks("admin_config_questions_disable_commit");
+
+	$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
 
 	// Log admin action
 	log_admin_action($question['qid'], $question['question']);
@@ -258,9 +260,10 @@ if($mybb->input['action'] == "enable")
 	$update_question = array(
 		"active" => 1
 	);
-	$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
 
 	$plugins->run_hooks("admin_config_questions_enable_commit");
+
+	$db->update_query("questions", $update_question, "qid = '{$question['qid']}'");
 
 	// Log admin action
 	log_admin_action($question['qid'], $question['question']);

@@ -424,9 +424,9 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
-			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', 1)."'");
-
 			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
+
+			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', 1)."'");
 
 			$cache->update_profilefields();
 
