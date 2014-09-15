@@ -265,11 +265,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended themes = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
 	}
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=style-themes&amp;action=browse{$keywords}&amp;page={page}");
