@@ -254,27 +254,8 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		xmlhttp_error($lang->invalid_post_code);
 	}
 
-	// Editing a post subject.
-	if($mybb->get_input('pid', 1))
-	{
-		// Fetch the post from the database.
-		$post = get_post($mybb->get_input('pid', 1));
-
-		// No result, die.
-		if(!$post)
-		{
-			xmlhttp_error($lang->post_doesnt_exist);
-		}
-
-		// Fetch the thread associated with this post.
-		$thread = get_thread($post['tid']);
-		if(!$thread)
-		{
-			xmlhttp_error($lang->thread_doesnt_exist);
-		}
-	}
 	// We're editing a thread subject.
-	else if($mybb->get_input('tid', 1))
+	if($mybb->get_input('tid', 1))
 	{
 		// Fetch the thread.
 		$thread = get_thread($mybb->get_input('tid', 1));
@@ -398,7 +379,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 
 	// Spit the subject back to the browser.
 	$subject = substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
-	echo json_encode(array("subject" => htmlspecialchars_uni($subject)));
+	echo json_encode(array("subject" => '<a href="showthread.php?tid=asdasdsad">'.htmlspecialchars_uni($subject).'</a>'));
 
 	// Close the connection.
 	exit;
