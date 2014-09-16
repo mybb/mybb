@@ -1758,7 +1758,10 @@ class Moderation
 		}
 
 		// Get the first split post
-		$post_info = get_post($pids[0]);
+		$query = $db->simple_select('posts', 'pid,uid,visible,icon,username,dateline', 'pid IN ('.$pids_list.')', array('order_by' => 'dateline', 'order_dir' => 'asc'));
+
+		$post_info = $db->fetch_array($query);
+
 		$visible = $post_info['visible'];
 
 		$forum_counters[$moveto] = array(
