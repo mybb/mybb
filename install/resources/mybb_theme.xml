@@ -4826,8 +4826,8 @@ if(use_xmlhttprequest == "1")
 <br />]]></template>
 		<template name="member_profile_banned" version="1801"><![CDATA[<fieldset>
 <legend><strong>{$lang->ban_note}</strong></legend>
-<em>{$lang->banned_warning2}: {$reason}</em><br />
-<span class="smalltext">{$lang->banned_warning3} {$banlift}</span>
+<em>{$lang->banned_warning2}: {$memban['reason']}</em><br />
+<span class="smalltext"><strong>{$lang->ban_by}:</strong> {$memban['adminuser']} &mdash; <strong>{$lang->ban_length}:</strong> {$banlength} <span class="smalltext">{$timeremaining}</span></span>
 </fieldset>
 <br />]]></template>
 		<template name="member_profile_contact_details" version="1800"><![CDATA[<br />
