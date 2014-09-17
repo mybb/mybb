@@ -66,11 +66,14 @@ $l['avatar']  = "Avatar:";
 $l['warning_level'] = "Warning Level:";
 $l['warn'] = "Warn";
 $l['away_note'] = "{1} is currently away.";
-$l['ban_note'] = "This forum account is currently banned.";
 $l['away_reason'] = "Reason:";
 $l['away_since'] = "Away Since:";
 $l['away_returns'] = "Returns on:";
 $l['away_no_reason'] = "Not specified.";
+$l['ban_note'] = "This forum account is currently banned.";
+$l['ban_by'] = "Banned By";
+$l['ban_length'] = "Ban Length";
+
 $l['users_additional_info'] = "Additional Info About {1}";
 $l['email'] = "Email:";
 $l['send_user_email'] = "Send {1} an email.";
