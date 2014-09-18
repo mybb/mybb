@@ -729,11 +729,9 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 
-		$smilie['find'] = str_replace("\n", ", ", $smilie['find']);
-
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" class=\"smilie smilie_{$smilie['sid']}\" />", array("class" => "align_center"));
 		$table->construct_cell(htmlspecialchars_uni($smilie['name']));
-		$table->construct_cell(htmlspecialchars_uni($smilie['find']));
+		$table->construct_cell(nl2br(htmlspecialchars_uni($smilie['find'])));
 
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=edit&amp;sid={$smilie['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-smilies&amp;action=delete&amp;sid={$smilie['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
