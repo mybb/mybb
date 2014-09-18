@@ -887,8 +887,8 @@ EOF;
 					$finds_count = count($finds);
 					
 					// Only show the first text to replace in the box
-					$find = htmlspecialchars_uni($finds[0]);
-					$image = htmlspecialchars_uni($image);
+					$find = addslashes(htmlspecialchars_uni($finds[0]));
+					$image = addslashes(htmlspecialchars_uni($image));
 					if(substr($image, 0, 4) != "http")
 					{
 						$image = $mybb->settings['bburl']."/".$image;
@@ -904,7 +904,7 @@ EOF;
 
 					for($j = 1; $j < $finds_count; ++$j)
 					{
-						$find = htmlspecialchars_uni($finds[$j]);
+						$find = addslashes(htmlspecialchars_uni($finds[$j]));
 						$hiddensmilies .= '"'.$find.'": "'.$image.'",';
 					}
 					++$i;

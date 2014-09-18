@@ -716,9 +716,8 @@ elseif($mybb->input['action'] == "smilies")
 				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
 				$smilie['find'] = $temp[0];
 
-				$smilie['insert'] = addslashes($smilie['find']);
-				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
-				$onclick = "  onclick=\"MyBBEditor.insertText('{$smilie['insert']}');\"";
+				$smilie['find'] = addslashes(htmlspecialchars_uni($smilie['find']));
+				$onclick = " onclick=\"MyBBEditor.insertText(' {$smilie['find']} ');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
@@ -750,7 +749,7 @@ elseif($mybb->input['action'] == "smilies")
 			$extra_class = $onclick = '';
 			foreach($smilies_cache as $smilie)
 			{
-				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				$smilie['find'] = nl2br(htmlspecialchars_uni($smilie['find']));
 				eval('$smilie_image = "'.$templates->get('smilie').'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_smilie")."\";");
 				$class = alt_trow();
