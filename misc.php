@@ -716,8 +716,10 @@ elseif($mybb->input['action'] == "smilies")
 				$temp = explode("\n", $smilie['find']); // use temporary variable for php 5.3 compatibility
 				$smilie['find'] = $temp[0];
 
-				$smilie['find'] = addslashes(htmlspecialchars_uni($smilie['find']));
-				$onclick = " onclick=\"MyBBEditor.insertText(' {$smilie['find']} ');\"";
+				$smilie['find'] = htmlspecialchars_uni($smilie['find']);
+				$smilie_insert = addslashes($smilie['find']);
+				
+				$onclick = " onclick=\"MyBBEditor.insertText(' {$smilie_insert} ');\"";
 				eval('$smilie_image = "'.$templates->get('smilie', 1, 0).'";');
 				eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 				if($e == 2)
