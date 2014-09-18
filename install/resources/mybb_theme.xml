@@ -6099,7 +6099,7 @@ if(use_xmlhttprequest == "1")
 <td class="{$class}">{$smilie['find']}</td>]]></template>
 		<template name="misc_smilies_popup_empty" version="1800"><![CDATA[<td colspan="2" class="{$class}">&nbsp;</td>]]></template>
 		<template name="misc_smilies_smilie" version="1800"><![CDATA[<tr>
-<td class="{$class}" align="center">{$smilie_image}</td>
+<td class="{$class}" style="width: 1px; text-align: center;">{$smilie_image}</td>
 <td class="{$class}">{$smilie['name']}</td>
 <td class="{$class}">{$smilie['find']}</td>
 </tr>]]></template>
