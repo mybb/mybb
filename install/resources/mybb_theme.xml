@@ -13944,10 +13944,10 @@ $(function() {
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
 		<template name="board_offline_modal" version="1801"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
-		<table cellspacing="0" cellpadding="5" class="tborder">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
 			<td class="thead">
-				<div><strong>{$mybb->settings['bbname']}</strong></div>
+				<strong>{$mybb->settings['bbname']}</strong>
 			</td>
 		</tr>
 		<tr>
