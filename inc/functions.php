@@ -3067,7 +3067,7 @@ function build_clickable_smilies()
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
-					
+
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
@@ -3418,7 +3418,7 @@ function log_moderator_action($data, $action="")
 		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
-	
+
 	$pid = 0;
 	if(isset($data['pid']))
 	{
@@ -3861,7 +3861,7 @@ function build_breadcrumb()
 					{
 						$mybb->settings['threadsperpage'] = 20;
 					}
-		
+
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
 					{
@@ -7804,7 +7804,6 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	if(!$ip_address)
 	{
 		$ip_address = get_ip();
-		$session->packedip;
 	}
 
 	$ip_address = my_inet_pton($ip_address);
