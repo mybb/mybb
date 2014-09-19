@@ -89,10 +89,10 @@ class StopForumSpamChecker
 
 		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
 		{
-			$username = urlencode($username);
-			$email    = urlencode($email);
+			$username_encoded = urlencode($username);
+			$email_encoded    = urlencode($email);
 
-			$check_url = sprintf(self::STOP_FORUM_SPAM_API_URL_FORMAT, $username, $email, $ip_address);
+			$check_url = sprintf(self::STOP_FORUM_SPAM_API_URL_FORMAT, $username_encoded, $email_encoded, $ip_address);
 
 			$result = fetch_remote_file($check_url);
 
@@ -124,12 +124,12 @@ class StopForumSpamChecker
 				}
 				else
 				{
-					throw new Exception('Error decoding data from StopForumSpam.');
+					throw new Exception($this->lang->stopforumspam_error_decoding);
 				}
 			}
 			else
 			{
-				throw new Exception('Error retrieving data from StopForumSpam.');
+				throw new Exception($this->lang->stopforumspam_error_retrieving);
 			}
 		}
 
