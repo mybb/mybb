@@ -7788,7 +7788,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
  *
  * @param string $username The username that the user was using.
  * @param string $email    The email address the user was using.
- * @param string $ip_address THe IP addres of the user.
+ * @param string $ip_address The IP addres of the user.
  * @param array  $data     An array of extra data to go with the block (eg: confidence rating).
  * @return bool Whether the action was logged successfully.
  */
