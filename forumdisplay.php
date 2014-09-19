@@ -336,10 +336,16 @@ if($mybb->settings['browsingthisforum'] != 0)
 	}
 
 	$invisonline = '';
-	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
+	if($mybb->user['invisible'] == 1)
+	{
+		// the user was counted as invisible user --> correct the inviscount
+		$inviscount -= 1;
+	}
+	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 	{
 		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
-	}
+	} 
+	
 
 	$onlinesep2 = '';
 	if($invisonline != '' && $guestcount)
