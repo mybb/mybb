@@ -74,7 +74,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$table = new Table;
 	if($lang->settings['rtl'] === true)
 	{
-		$`div_align = "left";
+		$div_align = "left";
 	}
 	else
 	{
