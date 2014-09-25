@@ -1386,6 +1386,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
+			$level_permissions = $fpermcache[$fid][$gid];
+
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1402,10 +1404,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
-			}
-			else
-			{
-				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
