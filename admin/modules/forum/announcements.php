@@ -548,9 +548,9 @@ if($mybb->input['action'] == "edit")
 					"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
 				);
 
-				$db->update_query("announcements", $update_announcement, "aid='{$mybb->input['aid']}'");
-
 				$plugins->run_hooks("admin_forum_announcements_edit_commit");
+
+				$db->update_query("announcements", $update_announcement, "aid='{$mybb->input['aid']}'");
 
 				// Log admin action
 				log_admin_action($mybb->input['aid'], $mybb->input['title']);

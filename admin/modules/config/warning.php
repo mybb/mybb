@@ -251,9 +251,9 @@ if($mybb->input['action'] == "edit_level")
 				"action" => serialize($action)
 			);
 
-			$db->update_query("warninglevels", $updated_level, "lid='{$level['lid']}'");
-
 			$plugins->run_hooks("admin_config_warning_edit_level_commit");
+
+			$db->update_query("warninglevels", $updated_level, "lid='{$level['lid']}'");
 
 			// Log admin action
 			log_admin_action($level['lid'], $mybb->input['percentage']);
@@ -545,9 +545,9 @@ if($mybb->input['action'] == "edit_type")
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
-			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
-
 			$plugins->run_hooks("admin_config_warning_edit_type_commit");
+
+			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
 
 			// Log admin action
 			log_admin_action($type['tid'], $mybb->input['title']);

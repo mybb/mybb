@@ -46,9 +46,9 @@ if($mybb->input['action'] == "add")
 			);
 			$sid = $db->insert_query("spiders", $new_spider);
 
-			$cache->update_spiders();
-
 			$plugins->run_hooks("admin_config_spiders_add_commit");
+
+			$cache->update_spiders();
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
@@ -137,9 +137,9 @@ if($mybb->input['action'] == "delete")
 		// Delete the spider
 		$db->delete_query("spiders", "sid='{$spider['sid']}'");
 
-		$cache->update_spiders();
-
 		$plugins->run_hooks("admin_config_spiders_delete_commit");
+
+		$cache->update_spiders();
 
 		// Log admin action
 		log_admin_action($spider['sid'], $spider['name']);
@@ -188,11 +188,12 @@ if($mybb->input['action'] == "edit")
 				"usergroup" => (int)$mybb->input['usergroup'],
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
+
+			$plugins->run_hooks("admin_config_spiders_edit_commit");
+
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
-
-			$plugins->run_hooks("admin_config_spiders_edit_commit");
 
 			// Log admin action
 			log_admin_action($spider['sid'], $mybb->input['name']);

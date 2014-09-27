@@ -1147,14 +1147,14 @@ if($mybb->input['action'] == "edit")
 
 		if(empty($errors))
 		{
+			$plugins->run_hooks("admin_style_themes_edit_commit");
+
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
 
 			if($theme['def'] == 1)
 			{
 				$cache->update_default_theme();
 			}
-
-			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
 			log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
@@ -2937,9 +2937,9 @@ if($mybb->input['action'] == "force")
 			"style" => $theme['tid']
 		);
 
-		$db->update_query("users", $updated_users);
-
 		$plugins->run_hooks("admin_style_themes_force_commit");
+
+		$db->update_query("users", $updated_users);
 
 		// Log admin action
 		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));

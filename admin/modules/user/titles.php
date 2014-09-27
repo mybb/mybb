@@ -65,9 +65,9 @@ if($mybb->input['action'] == "add")
 
 			$utid = $db->insert_query("usertitles", $new_title);
 
-			$cache->update_usertitles();
-
 			$plugins->run_hooks("admin_user_titles_add_commit");
+
+			$cache->update_usertitles();
 
 			// Log admin action
 			log_admin_action($utid, $mybb->input['title'], $mybb->input['posts']);
@@ -152,11 +152,11 @@ if($mybb->input['action'] == "edit")
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 
+			$plugins->run_hooks("admin_user_titles_edit_commit");
+
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
 
 			$cache->update_usertitles();
-
-			$plugins->run_hooks("admin_user_titles_edit_commit");
 
 			// Log admin action
 			log_admin_action($usertitle['utid'], $mybb->input['title'], $mybb->input['posts']);

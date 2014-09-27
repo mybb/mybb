@@ -364,9 +364,9 @@ if($mybb->input['action'] == "edit_thread_tool")
 				$update_tool['groups'] = "-1";
 			}
 
-			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
-
 			$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool_commit");
+
+			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
@@ -1371,9 +1371,9 @@ if($mybb->input['action'] == "edit_post_tool")
 				$update_tool['groups'] = "-1";
 			}
 
-			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
-
 			$plugins->run_hooks("admin_config_mod_tools_edit_post_tool_commit");
+
+			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);

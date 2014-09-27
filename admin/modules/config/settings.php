@@ -162,9 +162,9 @@ if($mybb->input['action'] == "editgroup")
 				"disporder" => (int)$mybb->input['disporder'],
 			);
 
-			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
-
 			$plugins->run_hooks("admin_config_settings_editgroup_commit");
+
+			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
 
 			// Log admin action
 			log_admin_action($group['gid'], $mybb->input['name']);
@@ -518,10 +518,11 @@ if($mybb->input['action'] == "edit")
 				"disporder" => (int)$mybb->input['disporder'],
 				"gid" => (int)$mybb->input['gid']
 			);
-			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
-			rebuild_settings();
 
 			$plugins->run_hooks("admin_config_settings_edit_commit");
+
+			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
+			rebuild_settings();
 
 			// Log admin action
 			log_admin_action($setting['sid'], $mybb->input['title']);
@@ -971,13 +972,13 @@ if($mybb->input['action'] == "change")
 
 		rebuild_settings();
 
+		$plugins->run_hooks("admin_config_settings_change_commit");
+
 		// If we have changed our report reasons recache them
 		if(isset($mybb->input['upsetting']['reportreasons']))
 		{
 			$cache->update_reportedposts();
 		}
-
-		$plugins->run_hooks("admin_config_settings_change_commit");
 
 		// Log admin action
 		log_admin_action();

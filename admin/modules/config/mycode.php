@@ -51,11 +51,11 @@ if($mybb->input['action'] == "toggle_status")
 		'active' => $new_status,
 	);
 
+	$plugins->run_hooks("admin_config_mycode_toggle_status_commit");
+
 	$db->update_query("mycode", $mycode_update, "cid='".$mybb->get_input('cid', 1)."'");
 
 	$cache->update_mycode();
-
-	$plugins->run_hooks("admin_config_mycode_toggle_status_commit");
 
 	// Log admin action
 	log_admin_action($mycode['cid'], $mycode['title'], $new_status);
@@ -123,9 +123,9 @@ if($mybb->input['action'] == "add")
 
 			$cid = $db->insert_query("mycode", $new_mycode);
 
-			$cache->update_mycode();
-
 			$plugins->run_hooks("admin_config_mycode_add_commit");
+
+			$cache->update_mycode();
 
 			// Log admin action
 			log_admin_action($cid, $mybb->input['title']);
@@ -248,11 +248,11 @@ if($mybb->input['action'] == "edit")
 				'parseorder' => (int)$mybb->input['parseorder']
 			);
 
+			$plugins->run_hooks("admin_config_mycode_edit_commit");
+
 			$db->update_query("mycode", $updated_mycode, "cid='".$mybb->get_input('cid', 1)."'");
 
 			$cache->update_mycode();
-
-			$plugins->run_hooks("admin_config_mycode_edit_commit");
 
 			// Log admin action
 			log_admin_action($mycode['cid'], $mybb->input['title']);
@@ -349,9 +349,9 @@ if($mybb->input['action'] == "delete")
 	{
 		$db->delete_query("mycode", "cid='{$mycode['cid']}'");
 
-		$cache->update_mycode();
-
 		$plugins->run_hooks("admin_config_mycode_delete_commit");
+
+		$cache->update_mycode();
 
 		// Log admin action
 		log_admin_action($mycode['cid'], $mycode['title']);

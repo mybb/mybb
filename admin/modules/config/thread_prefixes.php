@@ -322,9 +322,9 @@ if($mybb->input['action'] == 'edit_prefix')
 				$update_prefix['groups'] = '-1';
 			}
 
-			$db->update_query('threadprefixes', $update_prefix, "pid='{$mybb->input['pid']}'");
-
 			$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_commit');
+
+			$db->update_query('threadprefixes', $update_prefix, "pid='{$mybb->input['pid']}'");
 
 			// Log admin action
 			log_admin_action($mybb->input['pid'], $mybb->input['prefix']);
@@ -480,12 +480,13 @@ if($mybb->input['action'] == 'delete_prefix')
 	{
 		// Remove prefix from existing threads
 		$update_threads = array('prefix' => 0);
-		$db->update_query('threads', $update_threads, "prefix='{$prefix['pid']}'");
 
 		// Delete prefix
 		$db->delete_query('threadprefixes', "pid='{$prefix['pid']}'");
 
 		$plugins->run_hooks('admin_config_thread_prefixes_delete_thread_prefix_commit');
+
+		$db->update_query('threads', $update_threads, "prefix='{$prefix['pid']}'");
 
 		// Log admin action
 		log_admin_action($prefix['pid'], $prefix['prefix']);
