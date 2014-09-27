@@ -540,14 +540,14 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 
-		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'] && $thread['closed'] != 1)) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 
 		// Quick Delete button
 		$can_delete_thread = $can_delete_post = 0;
-		if($mybb->user['uid'] == $post['uid'])
+		if($mybb->user['uid'] == $post['uid'] && $thread['closed'] == 0)
 		{
 			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{
