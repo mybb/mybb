@@ -13724,15 +13724,6 @@ if(use_xmlhttprequest == "1")
 		<template name="xmlhttp_buddyselect_online" version="1800"><![CDATA[					<tr>
 						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.png" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
-		<template name="xmlhttp_inline_post_editor" version="1800"><![CDATA[<div class="clear">
-			<div>
-				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}" tabindex="999">{$post['message']}</textarea>
-			</div>
-			<div class="editor_control_bar" style="width: 99%; padding: 4px; margin-top: 3px; text-align: right;">
-				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="{$lang->save_changes}" tabindex="1000" />
-				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" tabindex="1001" />
-			</div>
-		</div>]]></template>
 		<template name="attachment_icon" version="1800"><![CDATA[<img src="{$icon}" title="{$name}" border="0" alt=".{$ext}" />]]></template>		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
