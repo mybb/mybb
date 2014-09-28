@@ -121,6 +121,37 @@ class DefaultForm
 	}
 
 	/**
+	 * Generate a numeric text field.
+	 *
+	 * @param string The name of the text box.
+	 * @param string The value of the text box.
+	 * @param array Array of options for the text box (class, style, id)
+	 * @return string The generated text box.
+	 */
+	function generate_numeric_field($name, $value="", $options=array())
+	{
+		$input = "<input type=\"text\" name=\"".$name."\" value=\"".(int)$value."\"";
+		if(isset($options['class']))
+		{
+			$input .= " class=\"text_input ".$options['class']."\"";
+		}
+		else
+		{
+			$input .= " class=\"text_input\"";
+		}
+		if(isset($options['style']))
+		{
+			$input .= " style=\"".$options['style']."\"";
+		}
+		if(isset($options['id']))
+		{
+			$input .= " id=\"".$options['id']."\"";
+		}
+		$input .= " />";
+		return $input;
+	}
+
+	/**
 	 * Generate a password input box.
 	 *
 	 * @param string The name of the password box.

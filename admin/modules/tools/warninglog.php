@@ -469,7 +469,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $mybb->input['filter']['reason'], array('id' => 'filter_reason')), 'filter_reason');
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('filter[per_page]', $per_page, array('id' => 'filter_per_page')), 'filter_per_page');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('filter[per_page]', $per_page, array('id' => 'filter_per_page')), 'filter_per_page');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->filter_warning_logs);
