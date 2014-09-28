@@ -109,10 +109,10 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->add_calendar);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->display_order, $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
-	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
+	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_numeric_field('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
 	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true));
 	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true));
 	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
@@ -352,10 +352,10 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_calendar);
 	$form_container->output_row($lang->name." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
-	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
+	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_numeric_field('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
 	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true));
 	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true));
 	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
@@ -457,7 +457,7 @@ if(!$mybb->input['action'])
 	{
 		$calendar['name'] = htmlspecialchars_uni($calendar['name']);
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=edit&amp;cid={$calendar['cid']}\"><strong>{$calendar['name']}</strong></a>");
-		$table->construct_cell($form->generate_text_box("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center')));
+		$table->construct_cell($form->generate_numeric_field("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center')));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=permissions&amp;cid={$calendar['cid']}\">{$lang->permissions}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config-calendars&amp;action=delete&amp;cid={$calendar['cid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_calendar_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));

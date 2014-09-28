@@ -998,7 +998,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
 	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
@@ -1540,7 +1540,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->additional_forum_options);

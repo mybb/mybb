@@ -99,8 +99,8 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->add_new_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_text_box('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_text_box('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 
@@ -190,8 +190,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container = new FormContainer($lang->edit_user_title);
 	$form_container->output_row($lang->title_to_assign."<em>*</em>", $lang->title_to_assign_desc, $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_text_box('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
-	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_text_box('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
+	$form_container->output_row($lang->minimum_posts, $lang->minimum_posts_desc, $form->generate_numeric_field('posts', $mybb->input['posts'], array('id' => 'posts')), 'posts');
+	$form_container->output_row($lang->number_of_stars, $lang->number_of_stars_desc, $form->generate_numeric_field('stars', $mybb->input['stars'], array('id' => 'stars')), 'stars');
 	$form_container->output_row($lang->star_image, $lang->star_image_desc, $form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage')), 'starimage');
 	$form_container->end();
 

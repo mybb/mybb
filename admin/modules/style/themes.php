@@ -1487,7 +1487,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
+		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -1549,8 +1549,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
 	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_text_box('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_text_box('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
 
 	$form_container->end();
 

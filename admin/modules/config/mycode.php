@@ -173,7 +173,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
 	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
-	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_text_box('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
+	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_mycode);
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
 	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
-	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_text_box('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
+	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_numeric_field('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_mycode);

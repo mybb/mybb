@@ -124,7 +124,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
@@ -239,7 +239,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->name, $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_numeric_field('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
