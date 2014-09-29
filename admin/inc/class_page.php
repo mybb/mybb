@@ -976,7 +976,7 @@ EOF;
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "bbcode",
-	style: "../jscripts/sceditor/jquery.sceditor.mybb.css",
+	style: "../jscripts/sceditor/textarea_styles/jquery.sceditor.mybb.css",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,

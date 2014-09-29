@@ -13735,7 +13735,7 @@ if(use_xmlhttprequest == "1")
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "bbcode",
-	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
+	style: "{$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{$theme['editortheme']}",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,
