@@ -781,7 +781,7 @@ $(document).ready(function() {
 
 		if($mybb->input['ajax'] == 1)
 		{
-			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close(); return false;'));
+			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close();'));
 			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'savePermissions'));
 			$form->output_submit_wrapper($buttons);
 			$form->end();
