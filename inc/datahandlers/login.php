@@ -111,7 +111,18 @@ class LoginDataHandler extends DataHandler
 		$user = &$this->data;
 		$username = $db->escape_string(my_strtolower($user['username']));
 
-		$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
+		switch($mybb->settings['username_method'])
+		{
+			case 1:
+				$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(email) = '{$username}'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username) = '{$username}'", array('limit' => 1));
+				break;
+		}
 
 		if($db->fetch_field($query, 'user') != 1)
 		{
@@ -139,7 +150,8 @@ class LoginDataHandler extends DataHandler
 		$username = $this->login_data['username'];
 
 		$options = array(
-			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
+			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup'),
+			'username_method' => $mybb->settings['username_method']
 		);
 
 		$this->login_data = get_user_by_username($username, $options);
