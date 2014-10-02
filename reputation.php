@@ -225,12 +225,14 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid='0'");
 		$existing_reputation = $db->fetch_array($query);
 		$rid = $existing_reputation['rid'];
+		$was_post = false;
 	}
 	if($mybb->get_input('pid', 1) != 0)
 	{
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND uid='{$uid}' AND pid = '".$mybb->get_input('pid', 1)."'");
-		$existing_post_reputation = $db->fetch_array($query);
-		$rid = $existing_post_reputation['rid'];
+		$existing_reputation = $db->fetch_array($query);
+		$rid = $existing_reputation['rid'];
+		$was_post = true;
 	}
 }
 
@@ -382,16 +384,9 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	$plugins->run_hooks("reputation_do_add_process");
 
 	// Updating an existing reputation
-	if(!empty($existing_reputation['uid']) || !empty($existing_post_reputation['uid']))
+	if(!empty($existing_reputation['uid']))
 	{
-		if(!empty($existing_reputation['uid']))
-		{
-			$db->update_query("reputation", $reputation, "rid='".$existing_reputation['rid']."'");
-		}
-		elseif(!empty($existing_post_reputation['uid']))
-		{
-			$db->update_query("reputation", $reputation, "rid='".$existing_post_reputation['rid']."'");
-		}
+		$db->update_query("reputation", $reputation, "rid='".$existing_reputation['rid']."'");
 
 		// Recount the reputation of this user - keep it in sync.
 		$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
@@ -427,18 +422,11 @@ if($mybb->input['action'] == "add")
 	$plugins->run_hooks("reputation_add_start");
 
 	// If we have an existing reputation for this user, the user can modify or delete it.
-	if(!empty($existing_reputation['uid']) || !empty($existing_post_reputation['uid']))
+	if(!empty($existing_reputation['uid']))
 	{
 		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
 		$vote_button = $lang->update_vote;
-		if(!empty($existing_reputation['uid']))
-		{
-			$comments = htmlspecialchars_uni($existing_reputation['comments']);
-		}
-		elseif(!empty($existing_post_reputation['uid']))
-		{
-			$comments = htmlspecialchars_uni($existing_post_reputation['comments']);
-		}
+		$comments = htmlspecialchars_uni($existing_reputation['comments']);
 
 		eval("\$delete_button = \"".$templates->get("reputation_add_delete")."\";");
 	}
@@ -475,7 +463,7 @@ if($mybb->input['action'] == "add")
 			$vote_check[$value] = '';
 		}
 
-		if(!empty($existing_reputation['uid']))
+		if(!empty($existing_reputation['uid']) && !$was_post)
 		{
 			$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
 		}
