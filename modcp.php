@@ -4610,18 +4610,27 @@ if(!$mybb->input['action'])
 	}
 
 	$query = $db->query("
-		SELECT b.*, a.username AS adminuser, u.username, (b.lifted-".TIME_NOW.") AS remaining
+		SELECT b.*, a.username AS adminuser, u.username
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
 		WHERE b.bantime != '---' AND b.bantime != 'perm'
-		ORDER BY remaining ASC
+		ORDER BY lifted ASC
 		LIMIT 5
 	");
 
+	$banned_cache = array();
+	while($banned = $db->fetch_array($query))
+	{
+		$banned['remaining'] = $banned['lifted']-TIME_NOW;
+		$banned_cache[$banned['remaining']] = $banned;
+
+		unset($banned);
+	}
+
 	// Get the banned users
 	$bannedusers = '';
-	while($banned = $db->fetch_array($query))
+	foreach($banned_cache as $banned)
 	{
 		$profile_link = build_profile_link($banned['username'], $banned['uid']);
 
