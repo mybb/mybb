@@ -45,6 +45,8 @@ class LoginDataHandler extends DataHandler
 	
 	private $captcha = false;
 
+	public $username_method = null;
+
 	function verify_attempts($check_captcha = 0)
 	{
 		global $db, $mybb;
@@ -106,26 +108,20 @@ class LoginDataHandler extends DataHandler
 
 	function verify_username()
 	{
-		global $db, $mybb;
+		$this->get_login_data();
 
-		$user = &$this->data;
-		$username = $db->escape_string(my_strtolower($user['username']));
-
-		$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username) = '{$username}' OR LOWER(email) = '{$username}'", array('limit' => 1));
-
-		if($db->fetch_field($query, 'user') != 1)
+		if(!$this->login_data['uid'])
 		{
 			$this->invalid_combination();
 			return false;
 		}
-
-		// Add username to data
-		$this->login_data['username'] = $username;
 	}
 
 	function verify_password($strict = true)
 	{
 		global $db, $mybb;
+
+		$this->get_login_data();
 
 		if(empty($this->login_data['username']))
 		{
@@ -135,14 +131,8 @@ class LoginDataHandler extends DataHandler
 		}
 
 		$user = &$this->data;
+
 		$password = md5($user['password']);
-		$username = $this->login_data['username'];
-
-		$options = array(
-			'fields' => array('username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup')
-		);
-
-		$this->login_data = get_user_by_username($username, $options);
 
 		if(!$this->login_data['uid'] || $this->login_data['uid'] && !$this->login_data['salt'] && $strict == false)
 		{
@@ -218,6 +208,25 @@ class LoginDataHandler extends DataHandler
 				$this->set_error('invalidpwordusername', $login_text);
 				break;
 		}
+	}
+
+	function get_login_data()
+	{
+		global $db, $settings;
+
+		$user = &$this->data;
+
+		$options = array(
+			'fields' => array('uid', 'username', 'password', 'salt', 'loginkey', 'coppauser', 'usergroup', 'loginattempts'),
+			'username_method' => (int)$settings['username_method']
+		);
+
+		if($this->username_method !== null)
+		{
+			$options['username_method'] = (int)$this->username_method;
+		}
+
+		$this->login_data = get_user_by_username($user['username'], $options);
 	}
 
 	function validate_login()

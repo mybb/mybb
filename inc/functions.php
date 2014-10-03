@@ -5657,9 +5657,7 @@ function get_user_by_username($username, $options=array())
 		$fields = array_merge((array)$options['fields'], $fields);
 	}
 
-	$fields = array_flip($fields);
-
-	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+	$query = $db->simple_select('users', implode(',', array_unique($fields)), $sqlwhere, array('limit' => 1));
 
 	if(isset($options['exists']))
 	{
