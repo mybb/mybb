@@ -672,10 +672,13 @@ function generate_question()
 {
 	global $db;
 
-	$order_by = 'RAND()';
-	if($db->type == 'pgsql')
+	if($db->type == 'pgsql' || $db->type == 'sqlite')
 	{
 		$order_by = 'RANDOM()';
+	}
+	else
+	{
+		$order_by = 'RAND()';
 	}
 
 	$query = $db->simple_select('questions', 'qid, shown', 'active=1', array('limit' => 1, 'order_by' => $order_by));
