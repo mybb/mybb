@@ -4276,6 +4276,12 @@ if($mybb->input['action'] == "banuser")
 		}
 	}
 
+	// Permission to edit this ban?
+	if($banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	{
+		error_no_permission();
+	}
+
 	// New ban!
 	if(!$banuser_username)
 	{
@@ -4363,10 +4369,10 @@ if($mybb->input['action'] == "banuser")
 		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
 	}
 
-	if(!empty($user['uid']))
+	if(!empty($banned['uid']))
 	{
 		eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
-		$uid = $user['uid'];
+		$uid = $banned['uid'];
 	}
 	else
 	{
