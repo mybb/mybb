@@ -1,0 +1,77 @@
+/* language editor issue icons */
+.langeditor_ok {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	margin: 1px;
+	background: url(images/icons/tick.png) no-repeat;
+}
+
+.langeditor_nothingtocompare {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	margin: 1px;
+	background: url(images/icons/no_change.png) no-repeat;
+}
+
+.langeditor_warning {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	margin: 1px;
+	background: url(images/icons/warning.png) no-repeat;
+}
+
+/* language editor file list rows */
+.langeditor_editwithfile,
+.langeditor_phrases,
+.langeditor_editfile,
+.langeditor_issues,
+.langeditor_edit {
+	font-weight: bold;
+	text-align: center;
+}
+
+.langeditor_editwithfile,
+.langeditor_editfile {
+	text-align: left;
+}
+
+.langeditor_edit,
+.langeditor_phrases {
+	font-weight: normal;
+}
+
+/* language editor edit mode textareas */
+.langeditor_textarea_issue {
+	border: 1px solid red;
+}
+
+.langeditor_textarea_editwith {
+	background: #E0E0E0;
+}
+.langeditor_textarea_edit,
+.langeditor_textarea_editwith {
+	width: 98%;
+	padding: 4px;
+}
+
+/* language editor main page */
+.langeditor_info_name {
+	font-weight: bold;
+}
+
+.langeditor_info_author {
+	font-size: x-small;
+}
+
+.langeditor_rtl {
+	direction: rtl;
+    unicode-bidi: bidi-override;
+}
+
+.langeditor_ltr {
+	direction: ltr;
+    unicode-bidi: bidi-override;
+}
