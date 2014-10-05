@@ -232,9 +232,9 @@ if($mybb->settings['enableattachments'] == 1 && !$mybb->get_input('attachmentaid
 	if($forumpermissions['canpostattachments'] != 0)
 	{
 		// If attachment exists..
-		if (!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
+		if(!empty($_FILES['attachment']['name']) && !empty($_FILES['attachment']['type']))
 		{
-			if ($_FILES['attachment']['size'] > 0)
+			if($_FILES['attachment']['size'] > 0)
 			{
 				$query = $db->simple_select("attachments", "aid", "filename='".$db->escape_string($_FILES['attachment']['name'])."' AND {$attachwhere}");
 				$updateattach = $db->fetch_field($query, "aid");
