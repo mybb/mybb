@@ -287,7 +287,7 @@ $date_formats = array(
 	11 => "jS F, Y",
 	12 => "l, jS F, Y",
 	// ISO 8601
-	13 => "Y-d-m"
+	13 => "Y-m-d"
 );
 
 // An array of valid time formats (Used for user selections etc)
