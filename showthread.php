@@ -12,13 +12,13 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'showthread.php');
 
 $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_avatar,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature,postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread";
-$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,showthread_inlinemoderation_manage,showthread_quickreply_options_close,showthread_quickreply_options_stick";
-$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason";
-$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button,showthread_inlinemoderation_standard";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
+$templatelist .= ",multipage,multipage_breadcrumb,multipage_end,multipage_jump_page,multipage_nextpage,multipage_page,multipage_page_current,multipage_page_link_current,multipage_prevpage,multipage_start,showthread_inlinemoderation_softdelete,showthread_inlinemoderation_restore,showthread_inlinemoderation_delete,showthread_inlinemoderation_manage";
+$templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,postbit_profilefield,showthread_quickreply,showthread_add_poll,showthread_send_thread,showthread_poll_editpoll,showthread_poll_undovote,showthread_moderationoptions_standard,postbit_editedby_editreason,postbit_warninglevel";
+$templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,postbit_reputation,postbit_quickdelete,postbit_attachments,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,showthread_inlinemoderation_standard,showthread_quickreply_options_stick,showthread_quickreply_options_close";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_posturl,postbit_rep_button";
 $templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,showthread_poll_option_multiple,showthread_poll_option,showthread_poll,showthread_threadedbox,showthread_quickreply_options_signature,showthread_threaded_bitactive,showthread_threaded_bit,postbit_attachments_attachment_unapproved,showthread_threadnotes,showthread_threadnotes_viewnotes";
 $templatelist .= ",showthread_moderationoptions_openclose,showthread_moderationoptions_stickunstick,showthread_moderationoptions_delete,showthread_moderationoptions_threadnotes,showthread_moderationoptions_manage,showthread_moderationoptions_deletepoll,showthread_threadnoteslink,showthread_poll_results,showthread_classic_header,postbit_warn";
-$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,postbit_warninglevel,showthread_poll_resultbit,global_moderation_notice";
+$templatelist .= ",postbit_userstar,postbit_reputation_formatted_link,postbit_warninglevel_formatted,postbit_quickrestore,forumdisplay_password,forumdisplay_password_wrongpass,postbit_classic,postbit_purgespammer,showthread_inlinemoderation_approve,showthread_moderationoptions,forumdisplay_thread_icon,showthread_poll_resultbit,global_moderation_notice";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -997,10 +997,6 @@ if($mybb->input['action'] == "thread")
         }
 
         $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode));
-		if($postcount > $perpage)
-		{
-			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");
-		}
 
 		// Lets get the pids of the posts on this page.
 		$pids = "";
@@ -1477,20 +1473,25 @@ if($mybb->input['action'] == "thread")
 			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
 		}
 
+		$invisonline = '';
+		if($mybb->user['invisible'] == 1)
+		{
+			// the user was counted as invisible user --> correct the inviscount
+			$inviscount -= 1;
+		}
+		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
+		{
+			$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
+		}
+
 		$onlinesep = '';
-		if($guestcount && $onlinemembers)
+		if($invisonline != '' && $onlinemembers)
 		{
 			$onlinesep = $lang->comma;
 		}
-
-		$invisonline = '';
-		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
-		{
-			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
-		}
-
+		
 		$onlinesep2 = '';
-		if($invisonline != '' && $guestcount)
+		if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 		{
 			$onlinesep2 = $lang->comma;
 		}

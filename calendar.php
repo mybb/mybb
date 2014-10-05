@@ -1475,7 +1475,6 @@ if($mybb->input['action'] == "event")
 			$event['username'] = $lang->guest;
 		}
 
-		$event['username'] = $event['username'];
 		$event['profilelink'] = format_name($event['username'], 1);
 
 		if($user_usergroup['usertitle'])

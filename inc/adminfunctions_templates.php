@@ -15,10 +15,11 @@
  * @param string The regular expression to match in the template
  * @param string The replacement string
  * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
+ * @param int The maximum possible replacements for the regular expression
  * @return boolean true if updated one or more templates, false if not.
  */
 
-function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=false)
+function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=false, $limit=-1)
 {
 	global $db, $mybb;
 
@@ -37,7 +38,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		while($template = $db->fetch_array($query))
 		{
 			// Update the template if there is a replacement term or a change
-			$new_template = preg_replace($find, $replace, $template['template']);
+			$new_template = preg_replace($find, $replace, $template['template'], $limit);
 			if($new_template == $template['template'])
 			{
 				continue;
@@ -59,7 +60,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		$template_sets[] = $template['sid'];
 
 		// Update the template if there is a replacement term or a change
-		$new_template = preg_replace($find, $replace, $template['template']);
+		$new_template = preg_replace($find, $replace, $template['template'], $limit);
 		if($new_template == $template['template'])
 		{
 			continue;
@@ -80,7 +81,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1, $sid=
 		// Select our master template with that title
 		$query = $db->simple_select("templates", "title, template", "title='".$db->escape_string($title)."' AND sid='-2'", array('limit' => 1));
 		$master_template = $db->fetch_array($query);
-		$master_template['new_template'] = preg_replace($find, $replace, $master_template['template']);
+		$master_template['new_template'] = preg_replace($find, $replace, $master_template['template'], $limit);
 
 		if($master_template['new_template'] != $master_template['template'])
 		{

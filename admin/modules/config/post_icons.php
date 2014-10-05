@@ -43,9 +43,9 @@ if($mybb->input['action'] == "add")
 
 			$iid = $db->insert_query("icons", $new_icon);
 
-			$cache->update_posticons();
-
 			$plugins->run_hooks("admin_config_post_icons_add_commit");
+
+			$cache->update_posticons();
 
 			// Log admin action
 			log_admin_action($iid, $mybb->input['name']);
@@ -246,9 +246,9 @@ if($mybb->input['action'] == "add_multiple")
 				}
 			}
 
-			$cache->update_posticons();
-
 			$plugins->run_hooks("admin_config_post_icons_add_multiple_commit");
+
+			$cache->update_posticons();
 
 			// Log admin action
 			log_admin_action();
@@ -331,11 +331,11 @@ if($mybb->input['action'] == "edit")
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
+			$plugins->run_hooks("admin_config_post_icons_edit_commit");
+
 			$db->update_query("icons", $updated_icon, "iid='".(int)$mybb->input['iid']."'");
 
 			$cache->update_posticons();
-
-			$plugins->run_hooks("admin_config_post_icons_edit_commit");
 
 			// Log admin action
 			log_admin_action($icon['iid'], $mybb->input['name']);
@@ -405,9 +405,9 @@ if($mybb->input['action'] == "delete")
 	{
 		$db->delete_query("icons", "iid='{$icon['iid']}'");
 
-		$cache->update_posticons();
-
 		$plugins->run_hooks("admin_config_post_icons_delete_commit");
+
+		$cache->update_posticons();
 
 		// Log admin action
 		log_admin_action($icon['iid'], $icon['name']);

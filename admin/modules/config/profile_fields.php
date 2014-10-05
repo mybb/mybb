@@ -105,11 +105,11 @@ if($mybb->input['action'] == "add")
 
 			$fid = $db->insert_query("profilefields", $new_profile_field);
 
-			$cache->update_profilefields();
-
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
 
 			$plugins->run_hooks("admin_config_profile_fields_add_commit");
+
+			$cache->update_profilefields();
 
 			// Log admin action
 			log_admin_action($fid, $mybb->input['name']);
@@ -199,11 +199,11 @@ if($mybb->input['action'] == "add")
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
@@ -424,11 +424,11 @@ if($mybb->input['action'] == "edit")
 				"allowvideocode" => (int)$mybb->input['allowvideocode']
 			);
 
+			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
+
 			$db->update_query("profilefields", $updated_profile_field, "fid = '".$mybb->get_input('fid', 1)."'");
 
 			$cache->update_profilefields();
-
-			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
 
 			// Log admin action
 			log_admin_action($profile_field['fid'], $mybb->input['name']);
@@ -515,11 +515,11 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->field_regex, $lang->field_regex_desc, $form->generate_text_box('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex', array(), array('id' => 'row_regex'));
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_numeric_field('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_numeric_field('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
 	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
-	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_numeric_field('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->show_on_registration." <em>*</em>", $lang->show_on_registration_desc, $form->generate_yes_no_radio('registration', $mybb->input['registration']));
 	$form_container->output_row($lang->display_on_profile." <em>*</em>", $lang->display_on_profile_desc, $form->generate_yes_no_radio('profile', $mybb->input['profile']));
@@ -676,9 +676,9 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
 
-		$cache->update_profilefields();
-
 		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
+
+		$cache->update_profilefields();
 
 		// Log admin action
 		log_admin_action($profile_field['fid'], $profile_field['name']);

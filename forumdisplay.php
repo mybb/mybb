@@ -329,20 +329,26 @@ if($mybb->settings['browsingthisforum'] != 0)
 		$guestsonline = $lang->sprintf($lang->users_browsing_forum_guests, $guestcount);
 	}
 
+	$invisonline = '';
+	if($mybb->user['invisible'] == 1)
+	{
+		// the user was counted as invisible user --> correct the inviscount
+		$inviscount -= 1;
+	}
+	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
+	{
+		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
+	} 
+	
+
 	$onlinesep = '';
-	if($guestcount && $onlinemembers)
+	if($invisonline != '' && $onlinemembers)
 	{
 		$onlinesep = $lang->comma;
 	}
-
-	$invisonline = '';
-	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
-	{
-		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
-	}
-
+	
 	$onlinesep2 = '';
-	if($invisonline != '' && $guestcount)
+	if($invisonline != '' && $guestcount || $onlinemembers && $guestcount)
 	{
 		$onlinesep2 = $lang->comma;
 	}
@@ -430,11 +436,11 @@ unset($rating);
 
 // Pick out some sorting options.
 // First, the date cut for the threads.
-$datecut = 0;
+$datecut = 9999;
 if(empty($mybb->input['datecut']))
 {
 	// If the user manually set a date cut, use it.
-	if(isset($mybb->user['daysprune']))
+	if(isset($mybb->user['daysprune']) && (int)$mybb->user['daysprune'] != 0)
 	{
 		$datecut = $mybb->user['daysprune'];
 	}
@@ -453,8 +459,7 @@ else
 	$datecut = $mybb->get_input('datecut', 1);
 }
 
-$datecut = (int)$datecut;
-$datecutsel[$datecut] = "selected=\"selected\"";
+$datecutsel[(int)$datecut] = ' selected="selected"';
 if($datecut > 0 && $datecut != 9999)
 {
 	$checkdate = TIME_NOW - ($datecut * 86400);
@@ -471,13 +476,22 @@ else
 $tprefix = $mybb->get_input('prefix', 1);
 if($tprefix > 0)
 {
-	$prefixsql = "AND prefix='{$tprefix}'";
-	$prefixsql2 = "AND t.prefix='{$tprefix}'";
+	$prefixsql = "AND prefix = {$tprefix}";
+	$prefixsql2 = "AND t.prefix = {$tprefix}";
+}
+else if($tprefix == -1)
+{
+	$prefixsql = "AND prefix = 0";
+	$prefixsql2 = "AND t.prefix = 0";
+}
+else if($tprefix == -2)
+{
+	$prefixsql = "AND prefix != 0";
+	$prefixsql2 = "AND t.prefix != 0";
 }
 else
 {
-	$prefixsql = '';
-	$prefixsql2 = '';
+	$prefixsql = $prefixsql2 = '';
 }
 
 // Pick the sort order.
@@ -496,13 +510,13 @@ switch(my_strtolower($mybb->input['order']))
 {
 	case "asc":
 		$sortordernow = "asc";
-        $ordersel['asc'] = "selected=\"selected\"";
+        $ordersel['asc'] = ' selected="selected"';
 		$oppsort = $lang->desc;
 		$oppsortnext = "desc";
 		break;
 	default:
         $sortordernow = "desc";
-		$ordersel['desc'] = "selected=\"selected\"";
+		$ordersel['desc'] = ' selected="selected"';
         $oppsort = $lang->asc;
 		$oppsortnext = "asc";
 		break;
@@ -553,7 +567,7 @@ switch($mybb->input['sortby'])
 }
 
 $sortsel['rating'] = ''; // Needs to be initialized in order to speed-up things. Fixes #2031
-$sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
+$sortsel[$mybb->input['sortby']] = ' selected="selected"';
 
 // Pick the right string to join the sort URL
 if($mybb->seo_support == true)
@@ -685,7 +699,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut'] ||
 		$and = "&";
 	}
 
-	if($tprefix > 0)
+	if($tprefix != 0)
 	{
 		$page_url .= "{$q}{$and}prefix={$tprefix}";
 	}

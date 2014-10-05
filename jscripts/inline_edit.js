@@ -43,7 +43,7 @@ var inlineEditor = {
 						else
 						{
 							// Change subject
-							$(this).html('<a href="showthread.php?tid=' + tid + '">' + values.subject + '</a>');
+							$(this).html(values.subject);
 						}
 					}
 					

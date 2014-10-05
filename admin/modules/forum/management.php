@@ -167,10 +167,11 @@ if($mybb->input['action'] == "copy")
 				// Log admin action (no group permissions)
 				log_admin_action($from, $from_forum['name'], $to, $new_forum['name']);
 			}
-			$cache->update_forums();
-			$cache->update_forumpermissions();
 
 			$plugins->run_hooks("admin_forum_management_copy_commit");
+
+			$cache->update_forums();
+			$cache->update_forumpermissions();
 
 			flash_message($lang->success_forum_copied, 'success');
 			admin_redirect("index.php?module=forum-management&action=edit&fid={$to}");
@@ -330,11 +331,12 @@ if($mybb->input['action'] == "editmod")
 				'canmanagereportedposts' => (int)$mybb->input['canmanagereportedposts'],
 				'canviewmodlog' => (int)$mybb->input['canviewmodlog']
 			);
+
+			$plugins->run_hooks("admin_forum_management_editmod_commit");
+
 			$db->update_query("moderators", $update_array, "mid='".$mybb->get_input('mid', 1)."'");
 
 			$cache->update_moderators();
-
-			$plugins->run_hooks("admin_forum_management_editmod_commit");
 
 			// Log admin action
 			log_admin_action($fid, $forum['name'], $mid, $mod[$fieldname]);
@@ -522,14 +524,15 @@ if($mybb->input['action'] == "permissions")
 			$update_array['gid'] = (int)$mybb->input['gid'];
 			$db->insert_query("forumpermissions", $update_array);
 		}
-		else
+
+		$plugins->run_hooks("admin_forum_management_permissions_commit");
+
+		if(!($fid && !$pid))
 		{
 			$db->update_query("forumpermissions", $update_array, "pid='{$pid}'");
 		}
 
 		$cache->update_forumpermissions();
-
-		$plugins->run_hooks("admin_forum_management_permissions_commit");
 
 		// Log admin action
 		log_admin_action($fid, $forum['name']);
@@ -778,7 +781,7 @@ $(document).ready(function() {
 
 		if($mybb->input['ajax'] == 1)
 		{
-			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close();'));
+			$buttons[] = $form->generate_submit_button($lang->cancel, array('onclick' => '$.modal.close(); return false;'));
 			$buttons[] = $form->generate_submit_button($lang->save_permissions, array('id' => 'savePermissions'));
 			$form->output_submit_wrapper($buttons);
 			$form->end();
@@ -896,8 +899,6 @@ if($mybb->input['action'] == "add")
 				}
 			}
 
-			$cache->update_forums();
-
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostpolls = $permissions['canpostpolls'];
@@ -906,6 +907,8 @@ if($mybb->input['action'] == "add")
 			save_quick_perms($fid);
 
 			$plugins->run_hooks("admin_forum_management_add_commit");
+
+			$cache->update_forums();
 
 			// Log admin action
 			log_admin_action($fid, $insert_array['name']);
@@ -995,7 +998,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
 	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('#additional_options_link').toggle(); $('#additional_options').fadeToggle('fast'); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
@@ -1537,7 +1540,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->additional_forum_options);
@@ -1897,9 +1900,10 @@ if($mybb->input['action'] == "deletemod")
 		$mod = $db->fetch_array($query);
 
 		$db->delete_query("moderators", "mid='{$mid}'");
-		$cache->update_moderators();
 
 		$plugins->run_hooks("admin_forum_management_deletemod_commit");
+
+		$cache->update_moderators();
 
 		$forum = get_forum($fid);
 
@@ -1988,10 +1992,6 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
 
-		$cache->update_forums();
-		$cache->update_moderators();
-		$cache->update_forumpermissions();
-
 		$update_stats = array(
 			'numthreads' => "-".$stats['threads'],
 			'numunapprovedthreads' => "-".$stats['unapprovedthreads'],
@@ -2001,6 +2001,10 @@ if($mybb->input['action'] == "delete")
 		update_stats($update_stats);
 
 		$plugins->run_hooks("admin_forum_management_delete_commit");
+
+		$cache->update_forums();
+		$cache->update_moderators();
+		$cache->update_forumpermissions();
 
 		// Log admin action
 		log_admin_action($forum_info['fid'], $forum_info['name']);
@@ -2074,8 +2078,6 @@ if(!$mybb->input['action'])
 				}
 			}
 
-			$cache->update_forums();
-
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostpolls = $permissions['canpostpolls'];
@@ -2085,6 +2087,8 @@ if(!$mybb->input['action'])
 			save_quick_perms($fid);
 
 			$plugins->run_hooks("admin_forum_management_start_permissions_commit");
+
+			$cache->update_forums();
 
 			// Log admin action
 			log_admin_action('quickpermissions', $fid, $forum['name']);
@@ -2175,8 +2179,9 @@ if(!$mybb->input['action'])
 						$db->update_query("users", array('usergroup' => 6), "uid='{$newmod['id']}' AND usergroup='2'");
 					}
 
-					$cache->update_moderators();
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
+
+					$cache->update_moderators();
 
 					// Log admin action
 					log_admin_action('addmod', $mid, $newmod['name'], $fid, $forum['name']);
@@ -2205,9 +2210,9 @@ if(!$mybb->input['action'])
 					$db->update_query("forums", array('disporder' => (int)$order), "fid='".(int)$update_fid."'");
 				}
 
-				$cache->update_forums();
-
 				$plugins->run_hooks("admin_forum_management_start_disporder_commit");
+
+				$cache->update_forums();
 
 				// Log admin action
 				log_admin_action('orders', $forum['fid'], $forum['name']);
@@ -2788,10 +2793,10 @@ function retrieve_single_permissions_row($gid, $fid)
 	);
 
 	$field_list2 = array(
-		'canview' => $lang->permissions_canview,
-		'canpostthreads' => $lang->permissions_canpostthreads,
-		'canpostreplys' => $lang->permissions_canpostreplys,
-		'canpostpolls' => $lang->permissions_canpostpolls,
+		'canview' => $lang->perm_drag_canview,
+		'canpostthreads' => $lang->perm_drag_canpostthreads,
+		'canpostreplys' => $lang->perm_drag_canpostreplys,
+		'canpostpolls' => $lang->perm_drag_canpostpolls,
 	);
 
 	$form = new Form('', '', "", 0, "", true);

@@ -265,11 +265,11 @@ if($mybb->input['action'] == "browse")
 	// Recommended themes = Default; Otherwise search results & pagination
 	if($mybb->request_method == "post")
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->browse_results_for_mybb, $mybb->version));
 	}
 	else
 	{
-		$table->output("<span style=\"float: right;\"><small><a href=\"http://mods.mybb.com/themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
+		$table->output("<span style=\"float: right;\"><small><a href=\"http://community.mybb.com/mods.php?action=browse&category=themes\" target=\"_blank\">{$lang->browse_all_themes}</a></small></span>".$lang->sprintf($lang->recommended_themes_for_mybb, $mybb->version));
 	}
 
 	echo "<br />".draw_admin_pagination($mybb->input['page'], 15, $tree['results']['attributes']['total'], "index.php?module=style-themes&amp;action=browse{$keywords}&amp;page={page}");
@@ -1147,14 +1147,14 @@ if($mybb->input['action'] == "edit")
 
 		if(empty($errors))
 		{
+			$plugins->run_hooks("admin_style_themes_edit_commit");
+
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
 
 			if($theme['def'] == 1)
 			{
 				$cache->update_default_theme();
 			}
-
-			$plugins->run_hooks("admin_style_themes_edit_commit");
 
 			// Log admin action
 			log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));
@@ -1261,6 +1261,10 @@ if($mybb->input['action'] == "edit")
 		{
 			$cache->update_default_theme();
 		}
+
+		// normalize for consistency
+		update_theme_stylesheet_list($theme['tid'], false, true);
+
 		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
@@ -1382,26 +1386,38 @@ if($mybb->input['action'] == "edit")
 		if(is_array($style['applied_to']) && (!isset($style['applied_to']['global']) || $style['applied_to']['global'][0] != "global"))
 		{
 			$attached_to = '';
-			$got_color = false;
 
 			$applied_to_count = count($style['applied_to']);
 			$count = 0;
 			$sep = " ";
 			$name = "";
 
+			$colors = array();
+
+			if(!is_array($properties['colors']))
+			{
+				$properties['colors'] = array();
+			}
+
 			foreach($style['applied_to'] as $name => $actions)
 			{
-				if(strpos($name, ".php") === false)
-				{
-					$got_color = true; // Maybe...
-					continue;
-				}
-
 				if(!$name)
 				{
 					continue;
 				}
 
+				if(array_key_exists($name, $properties['colors']))
+				{
+					$colors[] = $properties['colors'][$name];
+				}
+
+				if(count($colors))
+				{
+					// Colors override files and are handled below.
+					continue;
+				}
+
+				// It's a file:
 				++$count;
 
 				if($actions[0] != "global")
@@ -1423,31 +1439,11 @@ if($mybb->input['action'] == "edit")
 				$attached_to = "<small>{$lang->attached_to} {$attached_to}</small>";
 			}
 
-			$colors = array();
-			if($got_color == true && is_array($properties['colors']))
+			if(count($colors))
 			{
-				// We might have colors here...
-				foreach($style['applied_to'] as $name => $actions)
-				{
-					if(strpos($name, ".php") !== false)
-					{
-						continue;
-					}
-
-					// Verify this is a color for this theme
-					if(array_key_exists($name, $properties['colors']))
-					{
-						$colors[] =  $properties['colors'][$name];
-					}
-				}
-
+				// Attached to color instead of files.
 				$count = 1;
-				$plural = 's';
 				$color_list = $sep = '';
-				if(count($colors == 1))
-				{
-					$plural = '';
-				}
 
 				foreach($colors as $color)
 				{
@@ -1462,7 +1458,7 @@ if($mybb->input['action'] == "edit")
 					$sep = ', ';
 				}
 
-				$attached_to = "<small>{$lang->attached_to} ".$lang->sprintf($lang->colors_attached_to, $plural)." {$color_list}</small>";
+				$attached_to = "<small>{$lang->attached_to} ".$lang->sprintf($lang->colors_attached_to)." {$color_list}</small>";
 			}
 
 			if($attached_to == '')
@@ -1487,7 +1483,7 @@ if($mybb->input['action'] == "edit")
 		}
 
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
+		$table->construct_cell($form->generate_numeric_field("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -1549,8 +1545,8 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
 	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_text_box('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_text_box('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_numeric_field('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_numeric_field('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
 
 	$form_container->end();
 
@@ -1802,19 +1798,29 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$count = 0;
 	if(is_array($applied_to) && $applied_to['global'][0] != "global")
 	{
-		$got_color = false;
 		$check_actions = "";
+		$stylesheet['colors'] = array();
+
+		if(!is_array($properties['colors']))
+		{
+			$properties['colors'] = array();
+		}
 
 		foreach($applied_to as $name => $actions)
 		{
-			if(strpos($name, ".php") === false)
+			// Verify this is a color for this theme
+			if(array_key_exists($name, $properties['colors']))
 			{
-				$got_color = true; // Maybe...
+				$stylesheet['colors'][] = $name;
+			}
+
+			if(count($stylesheet['colors']))
+			{
+				// Colors override files and are handled below.
 				continue;
 			}
 
-			$short_name = substr($name, 0, -4);
-
+			// It's a file:
 			$action_list = "";
 			if($actions[0] != "global")
 			{
@@ -1864,30 +1870,11 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$global_checked[1] = "";
 		}
 
-		$stylesheet['colors'] = array();
-		if($got_color == true && is_array($properties['colors']))
+		if(!empty($stylesheet['colors']))
 		{
-			// We might have colors here...
-			foreach($applied_to as $name => $actions)
-			{
-				if(strpos($name, ".php") !== false)
-				{
-					continue;
-				}
-
-				// Verify this is a color for this theme
-				if(array_key_exists($name, $properties['colors']))
-				{
-					$stylesheet['colors'][] = $name;
-				}
-			}
-
-			if(!empty($stylesheet['colors']))
-			{
-				$global_checked[3] = "checked=\"checked\"";
-				$global_checked[2] = "";
-				$global_checked[1] = "";
-			}
+			$global_checked[3] = "checked=\"checked\"";
+			$global_checked[2] = "";
+			$global_checked[1] = "";
 		}
 	}
 
@@ -2686,8 +2673,6 @@ if($mybb->input['action'] == "add_stylesheet")
 
 		foreach($mybb->input['applied_to'] as $name => $actions)
 		{
-			$short_name = substr($name, 0, -4);
-
 			$action_list = "";
 			if($actions[0] != "global")
 			{
@@ -2937,9 +2922,9 @@ if($mybb->input['action'] == "force")
 			"style" => $theme['tid']
 		);
 
-		$db->update_query("users", $updated_users);
-
 		$plugins->run_hooks("admin_style_themes_force_commit");
+
+		$db->update_query("users", $updated_users);
 
 		// Log admin action
 		log_admin_action($theme['tid'], htmlspecialchars_uni($theme['name']));

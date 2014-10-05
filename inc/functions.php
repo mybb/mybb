@@ -1386,6 +1386,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
+			$level_permissions = $fpermcache[$fid][$gid];
+
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1402,10 +1404,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
-			}
-			else
-			{
-				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
@@ -3319,12 +3317,20 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return false;
 	}
 
-	$prefixselect = $prefixselect_prefix = '';
-
-	$default_selected = '';
-	if((int)$selected_pid == 0)
+	$default_selected = array();
+	$selected_pid = (int)$selected_pid;
+	
+	if($selected_pid == 0)
 	{
-		$default_selected = " selected=\"selected\"";
+		$default_selected['all'] = ' selected="selected"';
+	}
+	else if($selected_pid == -1)
+	{
+		$default_selected['none'] = ' selected="selected"';
+	}
+	else if($selected_pid == -2)
+	{
+		$default_selected['any'] = ' selected="selected"';
 	}
 
 	foreach($prefixes as $prefix)
@@ -3332,14 +3338,14 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$selected = '';
 		if($prefix['pid'] == $selected_pid)
 		{
-			$selected = " selected=\"selected\"";
+			$selected = ' selected="selected"';
 		}
 
 		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+		eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
 	}
 
-	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
 	return $prefixselect;
 }
 
@@ -5659,9 +5665,7 @@ function get_user_by_username($username, $options=array())
 		$fields = array_merge((array)$options['fields'], $fields);
 	}
 
-	$fields = array_flip($fields);
-
-	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+	$query = $db->simple_select('users', implode(',', array_unique($fields)), $sqlwhere, array('limit' => 1));
 
 	if(isset($options['exists']))
 	{
