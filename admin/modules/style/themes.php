@@ -78,7 +78,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	}
 	else
 	{
-		$div_align = "right"
+		$div_align = "right";
 	}
 
 	$table->construct_cell("<div style=\"float: {$div_align};\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div><strong>{$lang->background}</strong></div>", array('style' => 'width: 20%;'));
