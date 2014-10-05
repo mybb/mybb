@@ -32,7 +32,7 @@ $l['duplicate_theme'] = "Duplicate Theme";
 $l['duplicate_theme_desc'] = "Here you can duplicate your themes. This helps you if you want to develop another version of it.";
 
 $l['colors_manage'] = "Manage Colors";
-$l['colors_attached_to'] = "color setting {1}";
+$l['colors_attached_to'] = "color setting";
 $l['colors_setting'] = "Base Color";
 $l['colors_setting_desc'] = "Select the color this theme should use as its base color. Stylesheets attached to this color will be used.";
 $l['colors_no_color_setting'] = "There are no colors available. Please create a list of colors below to use this feature.";
