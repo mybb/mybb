@@ -3965,7 +3965,7 @@ a.button {
 	</td>]]></template>
 		<template name="forumdisplay_thread_rating_moved" version="1800"><![CDATA[<td class="{$bgcolor}" style="text-align: center;">-</td>]]></template>
 		<template name="forumdisplay_thread_unapproved_posts" version="1800"><![CDATA[ <span title="{$unapproved_posts_count}">({$thread['unapprovedposts']})</span>]]></template>
-		<template name="forumdisplay_threadlist" version="1800"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1801"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -3996,31 +3996,30 @@ a.button {
 	<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
 			<form action="forumdisplay.php" method="get">
-				<input type="hidden" name="selectall" value="" />
 				<input type="hidden" name="fid" value="{$fid}" />
 				<select name="sortby">
-					<option value="subject" {$sortsel['subject']}>{$lang->sort_by_subject}</option>
-					<option value="lastpost" {$sortsel['lastpost']}>{$lang->sort_by_lastpost}</option>
-					<option value="starter" {$sortsel['starter']}>{$lang->sort_by_starter}</option>
-					<option value="started" {$sortsel['started']}>{$lang->sort_by_started}</option>
+					<option value="subject"{$sortsel['subject']}>{$lang->sort_by_subject}</option>
+					<option value="lastpost"{$sortsel['lastpost']}>{$lang->sort_by_lastpost}</option>
+					<option value="starter"{$sortsel['starter']}>{$lang->sort_by_starter}</option>
+					<option value="started"{$sortsel['started']}>{$lang->sort_by_started}</option>
 					{$ratingsort}
-					<option value="replies" {$sortsel['replies']}>{$lang->sort_by_replies}</option>
-					<option value="views" {$sortsel['views']}>{$lang->sort_by_views}</option>
+					<option value="replies"{$sortsel['replies']}>{$lang->sort_by_replies}</option>
+					<option value="views"{$sortsel['views']}>{$lang->sort_by_views}</option>
 				</select>
 				<select name="order">
-					<option value="asc" {$ordersel['asc']}>{$lang->sort_order_asc}</option>
-					<option value="desc" {$ordersel['desc']}>{$lang->sort_order_desc}</option>
+					<option value="asc"{$ordersel['asc']}>{$lang->sort_order_asc}</option>
+					<option value="desc"{$ordersel['desc']}>{$lang->sort_order_desc}</option>
 				</select>
 				<select name="datecut">
-					<option value="1" {$datecutsel['1']}>{$lang->datelimit_1day}</option>
-					<option value="5" {$datecutsel['5']}>{$lang->datelimit_5days}</option>
-					<option value="10" {$datecutsel['10']}>{$lang->datelimit_10days}</option>
-					<option value="20" {$datecutsel['20']}>{$lang->datelimit_20days}</option>
-					<option value="50" {$datecutsel['50']}>{$lang->datelimit_50days}</option>
-					<option value="75" {$datecutsel['75']}>{$lang->datelimit_75days}</option>
-					<option value="100" {$datecutsel['100']}>{$lang->datelimit_100days}</option>
-					<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
-					<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
+					<option value="1"{$datecutsel['1']}>{$lang->datelimit_1day}</option>
+					<option value="5"{$datecutsel['5']}>{$lang->datelimit_5days}</option>
+					<option value="10"{$datecutsel['10']}>{$lang->datelimit_10days}</option>
+					<option value="20"{$datecutsel['20']}>{$lang->datelimit_20days}</option>
+					<option value="50"{$datecutsel['50']}>{$lang->datelimit_50days}</option>
+					<option value="75"{$datecutsel['75']}>{$lang->datelimit_75days}</option>
+					<option value="100"{$datecutsel['100']}>{$lang->datelimit_100days}</option>
+					<option value="365"{$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
+					<option value="9999"{$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
 				</select>
 				{$prefixselect}
 				{$gobutton}
@@ -4061,8 +4060,10 @@ a.button {
 <br class="clear" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="forumdisplay_threadlist_prefixes" version="1800"><![CDATA[<select name="prefix">
-<option value="0"{$default_selected}>{$lang->prefix_all}</option>
+		<template name="forumdisplay_threadlist_prefixes" version="1801"><![CDATA[<select name="prefix">
+<option value="-2"{$default_selected['any']}>{$lang->prefix_any}</option>
+<option value="-1"{$default_selected['none']}>{$lang->prefix_none}</option>
+<option value="0"{$default_selected['all']}>{$lang->prefix_all}</option>
 {$prefixselect_prefix}
 </select>]]></template>
 		<template name="forumdisplay_threadlist_prefixes_prefix" version="1800"><![CDATA[<option value="{$prefix['pid']}"{$selected}>{$lang->prefix} {$prefix['prefix']}</option>]]></template>

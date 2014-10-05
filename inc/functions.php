@@ -3317,12 +3317,20 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return false;
 	}
 
-	$prefixselect = $prefixselect_prefix = '';
-
-	$default_selected = '';
-	if((int)$selected_pid == 0)
+	$default_selected = array();
+	$selected_pid = (int)$selected_pid;
+	
+	if($selected_pid == 0)
 	{
-		$default_selected = " selected=\"selected\"";
+		$default_selected['all'] = ' selected="selected"';
+	}
+	else if($selected_pid == -1)
+	{
+		$default_selected['none'] = ' selected="selected"';
+	}
+	else if($selected_pid == -2)
+	{
+		$default_selected['any'] = ' selected="selected"';
 	}
 
 	foreach($prefixes as $prefix)
@@ -3330,14 +3338,14 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$selected = '';
 		if($prefix['pid'] == $selected_pid)
 		{
-			$selected = " selected=\"selected\"";
+			$selected = ' selected="selected"';
 		}
 
 		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+		eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
 	}
 
-	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
 	return $prefixselect;
 }
 
