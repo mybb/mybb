@@ -2523,62 +2523,59 @@ if($mybb->input['action'] == "profile")
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 
 	$bannedbit = '';
-	if($memperms['isbannedgroup'] == 1)
+	if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1)
 	{
 		// Fetch details on their ban
 		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
 		$memban = $db->fetch_array($query);
 
-		if($mybb->usergroup['canbanusers'] == 1)
+		if($memban['reason'])
 		{
-			if($memban['reason'])
-			{
-				$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-				$memban['reason'] = my_wordwrap($memban['reason']);
-			}
-			else
-			{
-				$memban['reason'] = $lang->na;
-			}
-
-			if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
-			{
-				$banlength = $lang->permanent;
-				$timeremaining = $lang->na;
-			}
-			else
-			{
-				// Set up the array of ban times.
-				$bantimes = fetch_ban_times();
-
-				$banlength = $bantimes[$memban['bantime']];
-				$remaining = $memban['lifted']-TIME_NOW;
-
-				$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
-
-				if($remaining < 3600)
-				{
-					$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
-				}
-				else if($remaining < 86400)
-				{
-					$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
-				}
-				else if($remaining < 604800)
-				{
-					$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
-				}
-				else
-				{
-					$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
-				}
-			}
-
-			$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
-
-			// Display a nice warning to the user
-			eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
+			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
+			$memban['reason'] = my_wordwrap($memban['reason']);
 		}
+		else
+		{
+			$memban['reason'] = $lang->na;
+		}
+
+		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
+		{
+			$banlength = $lang->permanent;
+			$timeremaining = $lang->na;
+		}
+		else
+		{
+			// Set up the array of ban times.
+			$bantimes = fetch_ban_times();
+
+			$banlength = $bantimes[$memban['bantime']];
+			$remaining = $memban['lifted']-TIME_NOW;
+
+			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+			if($remaining < 3600)
+			{
+				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 86400)
+			{
+				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 604800)
+			{
+				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else
+			{
+				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+			}
+		}
+
+		$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
+
+		// Display a nice warning to the user
+		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
 	}
 
 	$adminoptions = '';
