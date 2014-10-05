@@ -2793,10 +2793,10 @@ function retrieve_single_permissions_row($gid, $fid)
 	);
 
 	$field_list2 = array(
-		'canview' => $lang->permissions_canview,
-		'canpostthreads' => $lang->permissions_canpostthreads,
-		'canpostreplys' => $lang->permissions_canpostreplys,
-		'canpostpolls' => $lang->permissions_canpostpolls,
+		'canview' => $lang->perm_drag_canview,
+		'canpostthreads' => $lang->perm_drag_canpostthreads,
+		'canpostreplys' => $lang->perm_drag_canpostreplys,
+		'canpostpolls' => $lang->perm_drag_canpostpolls,
 	);
 
 	$form = new Form('', '', "", 0, "", true);
