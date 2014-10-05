@@ -192,7 +192,7 @@ email=Sent via Email]]></optionscode>
 			<title>Stats Limit</title>
 			<description><![CDATA[The number of threads to show on the stats page for most replies and most views.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -240,7 +240,7 @@ email=Sent via Email]]></optionscode>
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
 			<disporder>14</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -280,7 +280,7 @@ email=Sent via Email]]></optionscode>
 			<title>Expire Old Group Invites</title>
 			<description><![CDATA[The number of days until any pending invites to user groups expire. Set to 0 to disable.]]></description>
 			<disporder>19</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[180]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -333,7 +333,7 @@ no=Disabled]]></optionscode>
 			<title>GZip Page Compression Level</title>
 			<description><![CDATA[Set the level for GZip Page Compression from 0-9.  (0=no compression, 9=maximum compression). A level of 4 is recommended for most installations.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -592,7 +592,7 @@ none=Hide Errors and Warnings
 			<title>Subforums to show on Index listing</title>
 			<description><![CDATA[The number of subforums that you wish to show inside forums on the index and forumdisplay pages. Set to 0 to not show the subforum list]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -632,7 +632,7 @@ none=Hide Errors and Warnings
 			<title>Only Show Birthdays with x Posts</title>
 			<description><![CDATA[You can choose to only display users with at least the following amount of posts. A setting of 0 will show all users who have a birthday today.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -666,7 +666,7 @@ none=Hide Errors and Warnings
 			<title>Threads Per Page</title>
 			<description><![CDATA[The number of threads to display per page on the forum display]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -674,7 +674,7 @@ none=Hide Errors and Warnings
 			<title>Replies For Hot Topic</title>
 			<description><![CDATA[The number of replies that is needed for a topic to be considered 'hot'.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -682,7 +682,7 @@ none=Hide Errors and Warnings
 			<title>Views For Hot Topic</title>
 			<description><![CDATA[The number of views a thread can have before it is considered 'hot'.]]></description>
 			<disporder>3</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[150]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -722,7 +722,7 @@ none=Hide Errors and Warnings
 			<title>Announcements Limit</title>
 			<description><![CDATA[The number of forum announcements to  show in the thread listing on the forum display pages. Set to 0 to disable announcements altogether.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -750,7 +750,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<title>Posts Per Page:</title>
 			<description><![CDATA[The number of posts to display per page. We recommend its not higher than 20 for people with slower connections.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -774,7 +774,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<title>Read Threads in Database (Days)</title>
 			<description><![CDATA[The number of days that you wish to keep thread read information in the database. For large boards, we do not recommend a high number as the board will become slower. Set to 0 to disable.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -814,7 +814,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<title>Similar Threads Relevancy Rating</title>
 			<description><![CDATA[This allows you to limit similar threads to ones more relevant (0 being not relevant). This number should not be over 10 and should not be set low (<5) for large forums. Does not apply to PgSQL databases.]]></description>
 			<disporder>10</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -822,7 +822,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<title>Similar Threads Limit</title>
 			<description><![CDATA[Here you can change the total amount of similar threads to be shown in the similar threads table. It is recommended that it is not over 15 for 56k users.]]></description>
 			<disporder>11</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -885,7 +885,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Minimum Username Length</title>
 			<description><![CDATA[The minimum number of characters a username can be when a user registers.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -893,7 +893,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Maximum Username Length</title>
 			<description><![CDATA[The maximum number of characters a username can be when a user registers.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -901,7 +901,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Minimum Password Length</title>
 			<description><![CDATA[The minimum number of characters a password should contain.]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[6]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -909,7 +909,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Maximum Password Length</title>
 			<description><![CDATA[The maximum number of characters a password should contain.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -925,7 +925,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Time Between Registrations</title>
 			<description><![CDATA[The amount of time (in hours) to disallow registrations for users who have already registered an account under the same ip address.]]></description>
 			<disporder>9</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -933,7 +933,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 			<title>Maximum Registrations Per IP Address</title>
 			<description><![CDATA[This option allows you to set the maximum amount of times a certain user can register within the timeframe specified above.]]></description>
 			<disporder>10</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1003,7 +1003,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Number of failed logins before verification required</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login before required to enter a CAPTCHA verification. 0 to disable]]></description>
 			<disporder>18</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1011,7 +1011,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
 			<disporder>19</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1019,7 +1019,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
 			<disporder>20</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1035,7 +1035,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Minimum Registration Time</title>
 			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form.  Used to prevent automated bot signups.  Setting this to 0 to disables the function.]]></description>
 			<disporder>22</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1093,7 +1093,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Maximum Number of Images per Signature</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable images in signatures altogether.]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1101,7 +1101,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Length limit in Signatures</title>
 			<description><![CDATA[The maximum number of characters a user can place in a signature.]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1152,7 +1152,7 @@ x=X]]></optionscode>
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
 			<disporder>12</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[25]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1179,7 +1179,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Custom User Title Maximum Length</title>
 			<description><![CDATA[Maximum length a user can enter for the custom user title.]]></description>
 			<disporder>15</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1205,7 +1205,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Minimum Message Length</title>
 			<description><![CDATA[The minimum number of characters to post.]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1219,7 +1219,7 @@ disabled=Disable this feature]]></optionscode>
 	<li>LONGTEXT: 4294967295</li>
 </ul>]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1243,7 +1243,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Post Flood Time</title>
 			<description><![CDATA[Set the time (in seconds) users have to wait between posting, to be in effect; the option above must be on.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1251,7 +1251,7 @@ disabled=Disable this feature]]></optionscode>
 			<title>Post Merge Time</title>
 			<description><![CDATA[With this enabled, posts posted within x minutes by the same author right after each other, will be merged. Set the time limit (in minutes) to merge posts. Set to 0 or leave blank to disable this feature. Default: 60]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1310,7 +1310,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Images per Post</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their post. Set to 0 to disable this.]]></description>
 			<disporder>13</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1318,7 +1318,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Videos per Post</title>
 			<description><![CDATA[Enter the maximum number of videos a user can put in their post. Set to 0 to disable this.]]></description>
 			<disporder>14</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1326,7 +1326,7 @@ show=Show to all Users]]></optionscode>
 			<title>Amount of Characters for Subscription Previews</title>
 			<description><![CDATA[How many characters of the post do you want to send with the email notification of a new reply?]]></description>
 			<disporder>15</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1334,7 +1334,7 @@ show=Show to all Users]]></optionscode>
 			<title>Number of Characters before Word Wrapping Occurs</title>
 			<description><![CDATA[The maximum number of characters that can be present in a word before a space is automatically inserted. (helps preservation of the forum layout). Set to 0 to disable.]]></description>
 			<disporder>16</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[80]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1342,7 +1342,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Nested Quote Tags</title>
 			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a post, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect posts already submitted. Set to 0 to disable.]]></description>
 			<disporder>17</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1350,7 +1350,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Poll Option Length</title>
 			<description><![CDATA[The maximum length that each poll option can be. (Set to 0 to disable).]]></description>
 			<disporder>18</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1358,7 +1358,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Number of Poll Options</title>
 			<description><![CDATA[The maximum number of options for polls that users can post.]]></description>
 			<disporder>19</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1366,7 +1366,7 @@ show=Show to all Users]]></optionscode>
 			<title>Poll Time Limit</title>
 			<description><![CDATA[The number of hours until regular users cannot add a poll to their own threads (if they have the permission). Enter 0 (zero) for no limit.]]></description>
 			<disporder>20</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[12]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1400,7 +1400,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum Attachments Per Post</title>
 			<description><![CDATA[The maximum number of attachments a user is allowed to upload per post.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1419,7 +1419,7 @@ download=As Download Link]]></optionscode>
 			<title>Attached Thumbnail Maximum Height</title>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1427,7 +1427,7 @@ download=As Download Link]]></optionscode>
 			<title>Attached Thumbnail Maximum Width</title>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1445,7 +1445,7 @@ download=As Download Link]]></optionscode>
 			<title>Members Per Page</title>
 			<description><![CDATA[The number of members to show per page on the member list.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1533,7 +1533,7 @@ descending=Descending]]></optionscode>
 			<title>Reputation Comments Per Page</title>
 			<description><![CDATA[Here you can enter the number of reputation comments to show per page on the reputation system]]></description>
 			<disporder>7</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1541,7 +1541,7 @@ descending=Descending]]></optionscode>
 			<title>Maximum Reputation Length</title>
 			<description><![CDATA[The maximum number of characters a reputation can be.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[300]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1549,7 +1549,7 @@ descending=Descending]]></optionscode>
 			<title>Minimum Reputation Length</title>
 			<description><![CDATA[The minimum number of characters a reputation can be.]]></description>
 			<disporder>9</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1591,7 +1591,7 @@ descending=Descending]]></optionscode>
 			<title>Maximum Warning Points</title>
 			<description><![CDATA[The maximum warning points that can be given to a user before it is considered a warning level of 100%.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1657,7 +1657,7 @@ descending=Descending]]></optionscode>
 			<title>Private Message Flood Time</title>
 			<description><![CDATA[Set the time (in seconds) users have to wait between sending messages, to be in effect; set to 0 to disable.]]></description>
 			<disporder>8</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1676,7 +1676,7 @@ show=Show to all Users]]></optionscode>
 			<title>Maximum PM Nested Quote Tags</title>
 			<description><![CDATA[The maximum depth level for quote tags. When quote-replying to a PM, all nested quotes which exceed this threshold are automatically removed. Note that this value is only enforced when quote-replying - it is still possible to manually enter quotes to exceed this limit, and this setting will not affect PMs already sent. Set to 0 to disable.]]></description>
 			<disporder>10</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1696,7 +1696,7 @@ show=Show to all Users]]></optionscode>
 			<title>Cut-off Time (mins)</title>
 			<description><![CDATA[The number of minutes before a user is marked offline. Recommended: 15.]]></description>
 			<disporder>1</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1704,7 +1704,7 @@ show=Show to all Users]]></optionscode>
 			<title>Refresh Who's online page Time (mins)</title>
 			<description><![CDATA[The number of minutes before the "Who's online" page refreshes. 0 is disabled.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1740,7 +1740,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Post count to prune by</title>
 			<description><![CDATA[Set to prune users less then a specified number of posts.]]></description>
 			<disporder>3</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1748,7 +1748,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Days registered before pruning by post count</title>
 			<description><![CDATA[Set to prune users whom have been registered for at least the given amount of days.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1764,7 +1764,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Days registered before pruning unactivated users</title>
 			<description><![CDATA[Set to prune users whom have been unactived for at least the given amount of days.]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[90]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1798,7 +1798,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Number of announcements to show</title>
 			<description><![CDATA[Please enter the number of announcements to show per page on the main page.]]></description>
 			<disporder>3</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1854,7 +1854,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Number of latest discussions to show</title>
 			<description><![CDATA[Please enter the number of current forum discussions to show on the portal page.]]></description>
 			<disporder>10</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1881,7 +1881,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Search Flood Time (seconds)</title>
 			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performing searches. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1889,7 +1889,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Minimum Search Word Length</title>
 			<description><![CDATA[Enter the minimum number of characters an individual word in a search query can be. Set to 0 to disable (and accept the hard limit default of 3 for standard searching and 4 for MySQL fulltext searching). If you use MySQL fulltext searching and set this lower than the MySQL setting - MySQL will override it.]]></description>
 			<disporder>3</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1897,7 +1897,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Hard Limit for Maximum Search Results</title>
 			<description><![CDATA[Enter the maximum amount of results to be processed. Set to 0 to disable. On larger boards (more than 1 million posts) this should be set to no more than 1000.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1931,7 +1931,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>No. of Smilies to show</title>
 			<description><![CDATA[Enter the total number of smilies to show on the clickable smilie inserter.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -1939,7 +1939,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>No. of Smilie Cols to Show</title>
 			<description><![CDATA[Enter the number of columns you wish to show on the clickable smilie inserter.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2069,7 +2069,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Max Number of Login Attempts</title>
 			<description><![CDATA[The max number of attempts to login before being locked out. Set to 0 to disable.]]></description>
 			<disporder>3</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2077,7 +2077,7 @@ activity=Order By Last Activity (DESC)]]></optionscode>
 			<title>Login Attempts Timeout</title>
 			<description><![CDATA[If the person trying to login reaches the max number of attempts, how long should they have to wait before being able to login again? (Set in minutes)]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2193,7 +2193,7 @@ smtp=SMTP mail]]></optionscode>
 			<title>Maximum Subject Length on Contact Page</title>
 			<description><![CDATA[The maximum number of characters (bytes) to allow in the subject. A setting of 0 allows an unlimited length.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[85]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2201,7 +2201,7 @@ smtp=SMTP mail]]></optionscode>
 			<title>Minimum Message Length on Contact Page</title>
 			<description><![CDATA[The minimum number of characters in order to send the message. A value of 0 disables this setting.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2209,7 +2209,7 @@ smtp=SMTP mail]]></optionscode>
 			<title>Maximum Message Length on Contact Page</title>
 			<description><![CDATA[The maximum number of characters (bytes) to allow in the message. A setting of 0 allows an unlimited length.]]></description>
 			<disporder>6</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
@@ -2228,7 +2228,7 @@ smtp=SMTP mail]]></optionscode>
 			<title>Post Limit</title>
 			<description><![CDATA[This setting stops this tool being used on users who have more than a certain amount of posts, to prevent it being used on active members. Setting the value to 0 will disable the post check, however this is not recommended.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
@@ -2248,7 +2248,7 @@ delete=Delete]]></optionscode>
 			<title>Ban Usergroup</title>
 			<description><![CDATA[Enter the ID of the usergroup (not the name) to put users into when they get banned. Defaults to 7, the default Banned usergroup. The above setting must be set to 'Ban' for this to take effect.]]></description>
 			<disporder>4</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
@@ -2425,7 +2425,7 @@ delete=Delete]]></optionscode>
 			<title>Statistics Cache Time</title>
 			<description><![CDATA[Insert the interval of time to refresh the statistics page cache in hours. 0 to disable caching.]]></description>
 			<disporder>2</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[numeric]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>

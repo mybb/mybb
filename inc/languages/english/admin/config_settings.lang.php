@@ -25,6 +25,7 @@ $l['name'] = "Identifier";
 $l['name_desc'] = "This unique identifier is used in the settings array to reference this setting (in scripts, translations, and templates).";
 $l['group_name_desc'] = "This unique identifier is used for the translation system.";
 $l['text'] = "Text";
+$l['numeric_text'] = "Numeric Text";
 $l['textarea'] = "Textarea";
 $l['yesno'] = "Yes / No Choice";
 $l['onoff'] = "On / Off Choice";

@@ -100,7 +100,7 @@ if($mybb->input['action'] == "addgroup")
 	$form_container = new FormContainer($lang->add_new_setting_group);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->end();
 
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "editgroup")
 	$form_container = new FormContainer($lang->edit_setting_group);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $group_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $group_data['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $group_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $group_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $group_data['name'], array('id' => 'name')), 'name');
 	$form_container->end();
 
@@ -323,12 +323,21 @@ if($mybb->input['action'] == "add")
 			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
 			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
 
+			if($options_code == "numeric")
+			{
+				$value = (int)$mybb->input['value'];
+			}
+			else
+			{
+				$value = $db->escape_string($mybb->input['value']);
+			}
+
 			$new_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
-				"value" => $db->escape_string($mybb->input['value']),
+				"value" => $value,
 				"disporder" => (int)$mybb->input['disporder'],
 				"gid" => (int)$mybb->input['gid']
 			);
@@ -389,12 +398,13 @@ if($mybb->input['action'] == "add")
 		$options[$group['gid']] = $group['title'];
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 
 	$setting_types = array(
 		"text" => $lang->text,
+		"numeric" => $lang->numeric_text,
 		"textarea" => $lang->textarea,
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
@@ -509,12 +519,21 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['name'] = str_replace('$', '', $mybb->input['name']);
 			$mybb->input['name'] = str_replace("'", '', $mybb->input['name']);
 
+			if($options_code == "numeric")
+			{
+				$value = (int)$mybb->input['value'];
+			}
+			else
+			{
+				$value = $db->escape_string($mybb->input['value']);
+			}
+
 			$updated_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"optionscode" => $db->escape_string($options_code),
-				"value" => $db->escape_string($mybb->input['value']),
+				"value" => $value,
 				"disporder" => (int)$mybb->input['disporder'],
 				"gid" => (int)$mybb->input['gid']
 			);
@@ -585,7 +604,7 @@ if($mybb->input['action'] == "edit")
 		$options[$group['gid']] = $group['title'];
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->setting_configuration, 1);
@@ -593,6 +612,7 @@ if($mybb->input['action'] == "edit")
 
 	$setting_types = array(
 		"text" => $lang->text,
+		"numeric" => $lang->numeric_text,
 		"textarea" => $lang->textarea,
 		"yesno" => $lang->yesno,
 		"onoff" => $lang->onoff,
@@ -772,7 +792,7 @@ if($mybb->input['action'] == "manage")
 			$group_title = htmlspecialchars_uni($group['title']);
 		}
 		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
-		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold', 'class' => 'align_center')));
+		$table->construct_cell($form->generate_numeric_field("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold', 'class' => 'align_center')));
 		// Only show options if not a default setting group
 		if($group['isdefault'] != 1)
 		{
@@ -802,7 +822,7 @@ if($mybb->input['action'] == "manage")
 					$setting_title = htmlspecialchars_uni($setting['title']);
 				}
 				$table->construct_cell($setting_title, array('style' => 'padding-left: 40px;'));
-				$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
+				$table->construct_cell($form->generate_numeric_field("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
 				// Only show options if not a default setting group or is a custom setting
 				if($group['isdefault'] != 1 || $setting['isdefault'] != 1)
 				{
@@ -1143,6 +1163,10 @@ if($mybb->input['action'] == "change")
 			if($type[0] == "text" || $type[0] == "")
 			{
 				$setting_code = $form->generate_text_box($element_name, $setting['value'], array('id' => $element_id));
+			}
+			else if($type[0] == "numeric")
+			{
+				$setting_code = $form->generate_numeric_field($element_name, $setting['value'], array('id' => $element_id));
 			}
 			else if($type[0] == "textarea")
 			{

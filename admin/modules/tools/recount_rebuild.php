@@ -646,32 +646,32 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header("&nbsp;");
 
 	$form_container->output_cell("<label>{$lang->rebuild_forum_counters}</label><div class=\"description\">{$lang->rebuild_forum_counters_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("forumcounters", 50, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("forumcounters", 50, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildforumcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_thread_counters}</label><div class=\"description\">{$lang->rebuild_thread_counters_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("threadcounters", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("threadcounters", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildthreadcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_poll_counters}</label><div class=\"description\">{$lang->rebuild_poll_counters_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("pollcounters", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("pollcounters", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildpollcounters")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_user_posts}</label><div class=\"description\">{$lang->recount_user_posts_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("userposts", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("userposts", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserposts")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_user_threads}</label><div class=\"description\">{$lang->recount_user_threads_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("userthreads", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("userthreads", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserthreads")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->rebuild_attachment_thumbs}</label><div class=\"description\">{$lang->rebuild_attachment_thumbs_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("attachmentthumbs", 20, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("attachmentthumbs", 20, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildattachmentthumbs")));
 	$form_container->construct_row();
 
@@ -681,27 +681,27 @@ if(!$mybb->input['action'])
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_reputation}</label><div class=\"description\">{$lang->recount_reputation_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("reputation", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("reputation", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreputation")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_warning}</label><div class=\"description\">{$lang->recount_warning_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("warning", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("warning", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountwarning")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_private_messages}</label><div class=\"description\">{$lang->recount_private_messages_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("privatemessages", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("privatemessages", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountprivatemessages")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_referrals}</label><div class=\"description\">{$lang->recount_referrals_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("referral", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("referral", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreferral")));
 	$form_container->construct_row();
 
 	$form_container->output_cell("<label>{$lang->recount_thread_ratings}</label><div class=\"description\">{$lang->recount_thread_ratings_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("threadrating", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_numeric_field("threadrating", 500, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountthreadrating")));
 	$form_container->construct_row();
 
