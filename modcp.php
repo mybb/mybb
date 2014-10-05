@@ -4629,7 +4629,7 @@ if(!$mybb->input['action'])
 	while($banned = $db->fetch_array($query))
 	{
 		$banned['remaining'] = $banned['lifted']-TIME_NOW;
-		$banned_cache[] = $banned;
+		$banned_cache[$banned['remaining'].$banned['uid']] = $banned;
 
 		unset($banned);
 	}
