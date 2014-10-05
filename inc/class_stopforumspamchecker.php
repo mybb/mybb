@@ -100,7 +100,7 @@ class StopForumSpamChecker
 			{
 				$result_json = @json_decode($check_url);
 
-				if(json_last_error() == JSON_ERROR_NONE && $result_json != null && !isset($result_json->error))
+				if($result_json != null && !isset($result_json->error))
 				{
 					if($this->check_usernames && $result_json->username->appears)
 					{
