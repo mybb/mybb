@@ -2732,6 +2732,8 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$max_dimensions = $mybb->settings['maxavatardims'];
 	}
 
+	$avatar_width_height = '';
+
 	if($dimensions)
 	{
 		$dimensions = explode("|", $dimensions);
@@ -2762,7 +2764,10 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 }
 
 /**
- * Build the javascript based MyCode inserter
+ * Build the javascript based MyCode inserter.
+ *
+ * @param string $bind The ID of the textarea to bind to. Defaults to "message".
+ * @param bool $smilies Whether to include smilies. Defaults to true.
  *
  * @return string The MyCode inserter
  */
@@ -2881,7 +2886,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 				if(!$smiliecache)
 				{
-					if(!is_array($smilie_cache))
+					if(!isset($smilie_cache) || !is_array($smilie_cache))
 					{
 						$smilie_cache = $cache->read("smilies");
 					}
@@ -2913,7 +2918,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$smilie['find'] = $finds[0];
 
 						$find = htmlspecialchars_uni($smilie['find']);
-						$image = htmlspecialchars_uni($smilie['image']);
+						$image = $mybb->get_asset_url($smilie['image']);
+						$image = htmlspecialchars_uni($image);
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
