@@ -63,9 +63,9 @@ class StopForumSpamChecker
 	 * @param bool         $check_emails              Whether to check email address against StopForumSpam.
 	 * @param bool         $check_ips                 Whether to check IP addresses against StopForumSpam.
 	 */
-	public function __construct(&$plugins = null, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
+	public function __construct(&$plugins, $min_weighting_before_spam = 50.00, $check_usernames = false, $check_emails = true, $check_ips = true, $log_blocks = true)
 	{
-		$this->plugins                   = & $plugins;
+		$this->plugins                   = $plugins;
 		$this->min_weighting_before_spam = (double)$min_weighting_before_spam;
 		$this->check_usernames           = (bool)$check_usernames;
 		$this->check_emails              = (bool)$check_emails;
@@ -89,18 +89,18 @@ class StopForumSpamChecker
 
 		if(filter_var($email, FILTER_VALIDATE_EMAIL) && filter_var($ip_address, FILTER_VALIDATE_IP)) // Calls to the API with invalid email/ip formats cause issues
 		{
-			$username = urlencode($username);
-			$email    = urlencode($email);
+			$username_encoded = urlencode($username);
+			$email_encoded    = urlencode($email);
 
-			$check_url = sprintf(self::STOP_FORUM_SPAM_API_URL_FORMAT, $username, $email, $ip_address);
+			$check_url = sprintf(self::STOP_FORUM_SPAM_API_URL_FORMAT, $username_encoded, $email_encoded, $ip_address);
 
 			$result = fetch_remote_file($check_url);
 
 			if($result !== false)
 			{
-				$result_json = @json_decode($check_url);
+				$result_json = @json_decode($result);
 
-				if(json_last_error() == JSON_ERROR_NONE && $result_json != null && !isset($result_json->error))
+				if($result_json != null && !isset($result_json->error))
 				{
 					if($this->check_usernames && $result_json->username->appears)
 					{
@@ -124,12 +124,12 @@ class StopForumSpamChecker
 				}
 				else
 				{
-					throw new Exception('Error decoding data from StopForumSpam.');
+					throw new Exception('stopforumspam_error_decoding');
 				}
 			}
 			else
 			{
-				throw new Exception('Error retrieving data from StopForumSpam.');
+				throw new Exception('stopforumspam_error_retrieving');
 			}
 		}
 

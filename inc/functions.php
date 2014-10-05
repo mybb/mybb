@@ -3065,7 +3065,7 @@ function build_clickable_smilies()
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
-					
+
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
@@ -3424,7 +3424,7 @@ function log_moderator_action($data, $action="")
 		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
-	
+
 	$pid = 0;
 	if(isset($data['pid']))
 	{
@@ -3867,7 +3867,7 @@ function build_breadcrumb()
 					{
 						$mybb->settings['threadsperpage'] = 20;
 					}
-		
+
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
 					{
@@ -7792,7 +7792,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
  *
  * @param string $username The username that the user was using.
  * @param string $email    The email address the user was using.
- * @param string $ip_address THe IP addres of the user.
+ * @param string $ip_address The IP addres of the user.
  * @param array  $data     An array of extra data to go with the block (eg: confidence rating).
  * @return bool Whether the action was logged successfully.
  */
@@ -7808,7 +7808,6 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	if(!$ip_address)
 	{
 		$ip_address = get_ip();
-		$session->packedip;
 	}
 
 	$ip_address = my_inet_pton($ip_address);
@@ -7821,5 +7820,5 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'data'      => $db->escape_string(@serialize($data)),
 	);
 
-	return (bool)$db->insert_array('spamlog', $insert_array);
+	return (bool)$db->insert_query('spamlog', $insert_array);
 }
