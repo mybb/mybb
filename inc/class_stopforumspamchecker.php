@@ -157,4 +157,34 @@ class StopForumSpamChecker
 
 		return $is_spammer;
 	}
+
+	public function getErrorText()
+	{
+		global $mybb;
+		if ($mybb->settings['stopforumspam_check_usernames'])
+		{
+			$settingsenabled[] = "username";
+		}
+		if ($mybb->settings['stopforumspam_check_emails'])
+		{
+			$settingsenabled[] = "email";
+		}
+		if ($mybb->settings['stopforumspam_check_ips'])
+		{
+			$settingsenabled[] = "IP";
+		}
+
+		if (sizeof($settingsenabled) > 1)
+		{
+			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
+			unset($settingsenabled[sizeof($settingsenabled)-1]);
+
+			$stopforumspamerror = implode(", ", $settingsenabled) . " or " . $lastsetting;
+		}
+		else
+		{
+			$stopforumspamerror = $settingsenabled[0];
+		}
+		return $stopforumspamerror;
+	}
 }

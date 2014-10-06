@@ -177,7 +177,7 @@ if($mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer('', $mybb->input['email'], get_ip()))
 			{
-				$errors[] = $lang->error_stop_forum_spam_spammer;
+				$errors[] = $lang->sprintf($lang->error_stop_forum_spam_spammer, $stop_forum_spam_checker->getErrorText());
 			}
 		}
 		catch (Exception $e)
