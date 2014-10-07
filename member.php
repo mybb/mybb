@@ -21,7 +21,7 @@ $templatelist .= ",member_profile_signature,member_profile_avatar,member_profile
 $templatelist .= ",member_profile_modoptions_manageuser,member_profile_modoptions_editprofile,member_profile_modoptions_banuser,member_profile_modoptions_viewnotes,member_profile_modoptions,member_profile_modoptions_editnotes,member_profile_modoptions_purgespammer,postbit_reputation_formatted,postbit_warninglevel_formatted";
 $templatelist .= ",usercp_profile_profilefields_select_option,usercp_profile_profilefields_multiselect,usercp_profile_profilefields_select,usercp_profile_profilefields_textarea,usercp_profile_profilefields_radio,usercp_profile_profilefields_checkbox,usercp_profile_profilefields_text,usercp_options_tppselect_option";
 $templatelist .= ",member_register_question,member_register_question_refresh,usercp_options_timezone,usercp_options_timezone_option,usercp_options_language_option,member_register_language,member_profile_userstar,member_profile_customfields_field_multi_item,member_profile_customfields_field_multi,member_register_day";
-$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden";
+$templatelist .= ",member_profile_contact_fields_aim,member_profile_contact_fields_google,member_profile_contact_fields_icq,member_profile_contact_fields_skype,member_profile_contact_fields_yahoo,member_profile_pm,member_profile_contact_details,member_emailuser_hidden,member_profile_banned";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1666,7 +1666,12 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		'imagestring' => $mybb->get_input('imagestring')
 	);
 
-	$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
+	$options = array(
+		'fields' => 'loginattempts',
+		'username_method' => (int)$mybb->settings['username_method'],
+	);
+
+	$user_loginattempts = get_user_by_username($user['username'], $options);
 	$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
 
 	$loginhandler->set_data($user);
@@ -1678,12 +1683,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->request_method = "get";
 
 		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
+		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "uid='".(int)$loginhandler->login_data['uid']."'", 1, true);
 
 		$errors = $loginhandler->get_friendly_errors();
 
-		$user_loginattempts = get_user_by_username($user['username'], array('fields' => 'loginattempts'));
-		$user['loginattempts'] = (int)$user_loginattempts['loginattempts'];
+		$user['loginattempts'] = (int)$loginhandler->login_data['loginattempts'];
 
 		// If we need a captcha set it here
 		if($mybb->settings['failedcaptchalogincount'] > 0 && ($user['loginattempts'] > $mybb->settings['failedcaptchalogincount'] || (int)$mybb->cookies['loginattempts'] > $mybb->settings['failedcaptchalogincount']))
@@ -2527,6 +2531,62 @@ if($mybb->input['action'] == "profile")
 
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 
+	$bannedbit = '';
+	if($memperms['isbannedgroup'] == 1 && $mybb->usergroup['canbanusers'] == 1)
+	{
+		// Fetch details on their ban
+		$query = $db->simple_select('banned b LEFT JOIN '.TABLE_PREFIX.'users a ON (b.admin=a.uid)', 'b.*, a.username AS adminuser', "b.uid='{$uid}'", array('limit' => 1));
+		$memban = $db->fetch_array($query);
+
+		if($memban['reason'])
+		{
+			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
+			$memban['reason'] = my_wordwrap($memban['reason']);
+		}
+		else
+		{
+			$memban['reason'] = $lang->na;
+		}
+
+		if($memban['lifted'] == 'perm' || $memban['lifted'] == '' || $memban['bantime'] == 'perm' || $memban['bantime'] == '---')
+		{
+			$banlength = $lang->permanent;
+			$timeremaining = $lang->na;
+		}
+		else
+		{
+			// Set up the array of ban times.
+			$bantimes = fetch_ban_times();
+
+			$banlength = $bantimes[$memban['bantime']];
+			$remaining = $memban['lifted']-TIME_NOW;
+
+			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+			if($remaining < 3600)
+			{
+				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 86400)
+			{
+				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 604800)
+			{
+				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else
+			{
+				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+			}
+		}
+
+		$memban['adminuser'] = build_profile_link($memban['adminuser'], $memban['admin']);
+
+		// Display a nice warning to the user
+		eval('$bannedbit = "'.$templates->get('member_profile_banned').'";');
+	}
+
 	$adminoptions = '';
 	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
@@ -2558,7 +2618,7 @@ if($mybb->input['action'] == "profile")
 			eval("\$editnotes = \"".$templates->get("member_profile_modoptions_editnotes")."\";");
 		}
 
-		if($mybb->usergroup['canbanusers'] == 1)
+		if($mybb->usergroup['canbanusers'] == 1 && (!$memban['uid'] || $memban['uid'] && ($mybb->user['uid'] == $memban['admin']) || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1))
 		{
 			eval("\$banuser = \"".$templates->get("member_profile_modoptions_banuser")."\";");
 		}

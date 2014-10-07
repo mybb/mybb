@@ -547,4 +547,5 @@ $l['select2_selectiontoobig_plural'] = "You can only select {1} items";
 $l['select2_loadmore'] = "Loading more results…";
 $l['select2_searching'] = "Searching…";
 
-$l['ip'] = "IP";
+$l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
+$l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';

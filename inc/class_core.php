@@ -160,7 +160,8 @@ class MyBB {
 		'searchlog' => array('ipaddress' => true),
 		'sessions' => array('ip' => true),
 		'threadratings' => array('ipaddress' => true),
-		'users' => array('regip' => true, 'lastip' => true)
+		'users' => array('regip' => true, 'lastip' => true),
+		'spamlog' => array('ipaddress' => true),
 	);
 
 	/**

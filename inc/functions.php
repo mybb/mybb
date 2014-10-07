@@ -1386,6 +1386,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if(!empty($groupscache[$gid]))
 		{
+			$level_permissions = $fpermcache[$fid][$gid];
+
 			// If our permissions arn't inherited we need to figure them out
 			if(empty($fpermcache[$fid][$gid]))
 			{
@@ -1402,10 +1404,6 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 						}
 					}
 				}
-			}
-			else
-			{
-				$level_permissions = $fpermcache[$fid][$gid];
 			}
 
 			// If we STILL don't have forum permissions we use the usergroup itself
@@ -2734,6 +2732,8 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 		$max_dimensions = $mybb->settings['maxavatardims'];
 	}
 
+	$avatar_width_height = '';
+
 	if($dimensions)
 	{
 		$dimensions = explode("|", $dimensions);
@@ -2764,7 +2764,10 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 }
 
 /**
- * Build the javascript based MyCode inserter
+ * Build the javascript based MyCode inserter.
+ *
+ * @param string $bind The ID of the textarea to bind to. Defaults to "message".
+ * @param bool $smilies Whether to include smilies. Defaults to true.
  *
  * @return string The MyCode inserter
  */
@@ -2883,7 +2886,7 @@ function build_mycode_inserter($bind="message", $smilies = true)
 
 				if(!$smiliecache)
 				{
-					if(!is_array($smilie_cache))
+					if(!isset($smilie_cache) || !is_array($smilie_cache))
 					{
 						$smilie_cache = $cache->read("smilies");
 					}
@@ -2915,7 +2918,8 @@ function build_mycode_inserter($bind="message", $smilies = true)
 						$smilie['find'] = $finds[0];
 
 						$find = htmlspecialchars_uni($smilie['find']);
-						$image = htmlspecialchars_uni($smilie['image']);
+						$image = $mybb->get_asset_url($smilie['image']);
+						$image = htmlspecialchars_uni($image);
 						if($i < $mybb->settings['smilieinsertertot'])
 						{
 							$dropdownsmilies .= '"'.$find.'": "'.$image.'",';
@@ -3067,7 +3071,7 @@ function build_clickable_smilies()
 					// Only show the first text to replace in the box
 					$temp = explode("\n", $smilie['find']); // assign to temporary variable for php 5.3 compatibility
 					$smilie['find'] = $temp[0];
-					
+
 					$find = htmlspecialchars_uni($smilie['find']);
 
 					$onclick = ' onclick="MyBBEditor.insertText(\' '.$smilie['find'].' \');"';
@@ -3319,12 +3323,20 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		return false;
 	}
 
-	$prefixselect = $prefixselect_prefix = '';
-
-	$default_selected = '';
-	if((int)$selected_pid == 0)
+	$default_selected = array();
+	$selected_pid = (int)$selected_pid;
+	
+	if($selected_pid == 0)
 	{
-		$default_selected = " selected=\"selected\"";
+		$default_selected['all'] = ' selected="selected"';
+	}
+	else if($selected_pid == -1)
+	{
+		$default_selected['none'] = ' selected="selected"';
+	}
+	else if($selected_pid == -2)
+	{
+		$default_selected['any'] = ' selected="selected"';
 	}
 
 	foreach($prefixes as $prefix)
@@ -3332,14 +3344,14 @@ function build_forum_prefix_select($fid, $selected_pid=0)
 		$selected = '';
 		if($prefix['pid'] == $selected_pid)
 		{
-			$selected = " selected=\"selected\"";
+			$selected = ' selected="selected"';
 		}
 
 		$prefix['prefix'] = htmlspecialchars_uni($prefix['prefix']);
-		eval("\$prefixselect_prefix .= \"".$templates->get("forumdisplay_threadlist_prefixes_prefix")."\";");
+		eval('$prefixselect_prefix .= "'.$templates->get("forumdisplay_threadlist_prefixes_prefix").'";');
 	}
 
-	eval("\$prefixselect = \"".$templates->get("forumdisplay_threadlist_prefixes")."\";");
+	eval('$prefixselect = "'.$templates->get("forumdisplay_threadlist_prefixes").'";');
 	return $prefixselect;
 }
 
@@ -3418,7 +3430,7 @@ function log_moderator_action($data, $action="")
 		$tid = (int)$data['tid'];
 		unset($data['tid']);
 	}
-	
+
 	$pid = 0;
 	if(isset($data['pid']))
 	{
@@ -3861,7 +3873,7 @@ function build_breadcrumb()
 					{
 						$mybb->settings['threadsperpage'] = 20;
 					}
-		
+
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
 					{
@@ -5659,9 +5671,7 @@ function get_user_by_username($username, $options=array())
 		$fields = array_merge((array)$options['fields'], $fields);
 	}
 
-	$fields = array_flip($fields);
-
-	$query = $db->simple_select('users', implode(',', array_keys($fields)), $sqlwhere, array('limit' => 1));
+	$query = $db->simple_select('users', implode(',', array_unique($fields)), $sqlwhere, array('limit' => 1));
 
 	if(isset($options['exists']))
 	{
@@ -7788,7 +7798,7 @@ function send_pm($pm, $fromid = 0, $admin_override=false)
  *
  * @param string $username The username that the user was using.
  * @param string $email    The email address the user was using.
- * @param string $ip_address THe IP addres of the user.
+ * @param string $ip_address The IP addres of the user.
  * @param array  $data     An array of extra data to go with the block (eg: confidence rating).
  * @return bool Whether the action was logged successfully.
  */
@@ -7804,7 +7814,6 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 	if(!$ip_address)
 	{
 		$ip_address = get_ip();
-		$session->packedip;
 	}
 
 	$ip_address = my_inet_pton($ip_address);
@@ -7817,5 +7826,5 @@ function log_spam_block($username = '', $email = '', $ip_address = '', $data = a
 		'data'      => $db->escape_string(@serialize($data)),
 	);
 
-	return (bool)$db->insert_array('spamlog', $insert_array);
+	return (bool)$db->insert_query('spamlog', $insert_array);
 }

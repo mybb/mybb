@@ -848,9 +848,9 @@ if(!$mybb->input['action'])
 		"less_than" => $lang->less_than
 	);
 
-	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_text_box('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." {$lang->days_ago}", 'dateuploaded');
-	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_text_box('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." {$lang->kb}", 'dateuploaded');
-	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_text_box('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
+	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_numeric_field('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." {$lang->days_ago}", 'dateuploaded');
+	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_numeric_field('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." {$lang->kb}", 'dateuploaded');
+	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_numeric_field('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->display_options);
@@ -866,7 +866,7 @@ if(!$mybb->input['action'])
 		"desc" => $lang->desc
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);

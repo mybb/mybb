@@ -920,7 +920,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	return $sid;
 }
 
-function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = false)
+function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = true)
 {
 	global $db, $cache;
 
@@ -1045,7 +1045,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 
 		foreach($stylesheets as $stylesheet)
 		{
-			if(!$properties['disporder'][$stylesheet['name']])
+			if(!isset($properties['disporder'][$stylesheet['name']]))
 			{
 				$orphaned_stylesheets[] = $stylesheet['name'];
 				continue;

@@ -88,7 +88,7 @@ if($mybb->input['action'] == "add")
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", true));
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", true, false, true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 
@@ -234,7 +234,7 @@ if($mybb->input['action'] == "edit")
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", true));
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", true, false, true));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 	while($usergroup = $db->fetch_array($query))

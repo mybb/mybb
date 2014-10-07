@@ -4276,6 +4276,12 @@ if($mybb->input['action'] == "banuser")
 		}
 	}
 
+	// Permission to edit this ban?
+	if($banned['uid'] && $mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
+	{
+		error_no_permission();
+	}
+
 	// New ban!
 	if(!$banuser_username)
 	{
@@ -4363,10 +4369,10 @@ if($mybb->input['action'] == "banuser")
 		eval("\$bangroups = \"".$templates->get("modcp_banuser_bangroups_hidden")."\";");
 	}
 
-	if(!empty($user['uid']))
+	if(!empty($banned['uid']))
 	{
 		eval("\$lift_link = \"".$templates->get("modcp_banuser_lift")."\";");
-		$uid = $user['uid'];
+		$uid = $banned['uid'];
 	}
 	else
 	{
@@ -4610,18 +4616,27 @@ if(!$mybb->input['action'])
 	}
 
 	$query = $db->query("
-		SELECT b.*, a.username AS adminuser, u.username, (b.lifted-".TIME_NOW.") AS remaining
+		SELECT b.*, a.username AS adminuser, u.username
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
 		WHERE b.bantime != '---' AND b.bantime != 'perm'
-		ORDER BY remaining ASC
+		ORDER BY lifted ASC
 		LIMIT 5
 	");
 
+	$banned_cache = array();
+	while($banned = $db->fetch_array($query))
+	{
+		$banned['remaining'] = $banned['lifted']-TIME_NOW;
+		$banned_cache[$banned['remaining'].$banned['uid']] = $banned;
+
+		unset($banned);
+	}
+
 	// Get the banned users
 	$bannedusers = '';
-	while($banned = $db->fetch_array($query))
+	foreach($banned_cache as $banned)
 	{
 		$profile_link = build_profile_link($banned['username'], $banned['uid']);
 
