@@ -549,3 +549,5 @@ $l['select2_searching'] = "Searching…";
 
 $l['stopforumspam_error_decoding'] = 'Error decoding data from StopForumSpam.com.';
 $l['stopforumspam_error_retrieving'] = 'Error retrieving data from StopForumSpam.com.';
+
+$l['ip'] = "IP";
