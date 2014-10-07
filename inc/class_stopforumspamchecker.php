@@ -158,22 +158,24 @@ class StopForumSpamChecker
 		return $is_spammer;
 	}
 
-	public function getErrorText()
+	public function getErrorText($sfsSettingsEnabled)
 	{
-		global $mybb;
-		if ($mybb->settings['stopforumspam_check_usernames'])
+		global $mybb, $lang;
+		foreach ($sfsSettingsEnabled as $setting)
 		{
-			$settingsenabled[] = "username";
+			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings['stopforumspam_check_usernames'])
+			{
+				$settingsenabled[] = $lang->massmail_username;
+			}
+			if ($setting == 'stopforumspam_check_emails' && $mybb->settings['stopforumspam_check_emails'])
+			{
+				$settingsenabled[] = $lang->email_addr;
+			}
+			if ($setting == 'stopforumspam_check_ips' && $mybb->settings['stopforumspam_check_ips'])
+			{
+				$settingsenabled[] = $lang->ip;
+			}
 		}
-		if ($mybb->settings['stopforumspam_check_emails'])
-		{
-			$settingsenabled[] = "email";
-		}
-		if ($mybb->settings['stopforumspam_check_ips'])
-		{
-			$settingsenabled[] = "IP";
-		}
-
 		if (sizeof($settingsenabled) > 1)
 		{
 			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];

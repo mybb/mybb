@@ -546,3 +546,5 @@ $l['select2_selectiontoobig_single'] = "You can only select one item";
 $l['select2_selectiontoobig_plural'] = "You can only select {1} items";
 $l['select2_loadmore'] = "Loading more results…";
 $l['select2_searching'] = "Searching…";
+
+$l['ip'] = "IP";

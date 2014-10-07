@@ -281,7 +281,11 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			try {
 				if($stop_forum_spam_checker->is_user_a_spammer($mybb->get_input('username'), '', get_ip()))
 				{
-					$errors[] = $lang->sprintf($lang->error_stop_forum_spam_spammer, $stop_forum_spam_checker->getErrorText());
+					$errors[] = $lang->sprintf($lang->error_stop_forum_spam_spammer,
+						$stop_forum_spam_checker->getErrorText(array(
+							'stopforumspam_check_usernames',
+							'stopforumspam_check_ips'
+							)));
 				}
 			}
 			catch (Exception $e)
