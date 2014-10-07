@@ -1758,7 +1758,7 @@ class Moderation
 		}
 
 		// Get the first split post
-		$query = $db->simple_select('posts', 'pid,uid,visible,icon,username,dateline', 'pid IN ('.$pids_list.')', array('order_by' => 'dateline', 'order_dir' => 'asc'));
+		$query = $db->simple_select('posts', 'pid,uid,visible,icon,username,dateline', 'pid IN ('.$pids_list.')', array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
 
 		$post_info = $db->fetch_array($query);
 
