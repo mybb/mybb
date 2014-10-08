@@ -455,7 +455,7 @@ class MyBB {
 				{
 					return 0;
 				}
-				return(int)$this->input[$name];
+				return (int)$this->input[$name];
 			case MyBB::INPUT_FLOAT:
 				if(!isset($this->input[$name]) || !is_numeric($this->input[$name]))
 				{
