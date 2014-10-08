@@ -177,6 +177,36 @@ class MyBB {
 	 * @var string
 	 */
 	public $asset_url = null;
+	/**
+	 * String input constant for use with get_input().
+	 *
+	 * @see get_input
+	 */
+	const INPUT_STRING = 0;
+	/**
+	 * Integer input constant for use with get_input().
+	 *
+	 * @see get_input
+	 */
+	const INPUT_INT = 1;
+	/**
+	 * Array input constant for use with get_input().
+	 *
+	 * @see get_input
+	 */
+	const INPUT_ARRAY = 2;
+	/**
+	 * Float input constant for use with get_input().
+	 *
+	 * @see get_input
+	 */
+	const INPUT_FLOAT = 3;
+	/**
+	 * Boolean input constant for use with get_input().
+	 *
+	 * @see get_input
+	 */
+	const INPUT_BOOL = 4;
 
 	/**
 	 * Constructor of class.
@@ -405,26 +435,39 @@ class MyBB {
 	/**
 	 * Checks the input data type before usage.
 	 *
-	 * @param string Variable name ($mybb->input)
-	 * @param Data type (0/Default=String, 1=Integer, 2=Array)
-	 * @param Checked data
+	 * @param string $name Variable name ($mybb->input)
+	 * @param int $type The type of the variable to get. Should be one of MyBB::INPUT_INT, MyBB::INPUT_ARRAY or MyBB::INPUT_STRING.
+	 *
+	 * @return mixed Checked data
 	 */
-	function get_input($name, $type=0)
+	function get_input($name, $type = MyBB::INPUT_STRING)
 	{
 		switch($type)
 		{
-			case 2:
+			case MyBB::INPUT_ARRAY:
 				if(!isset($this->input[$name]) || !is_array($this->input[$name]))
 				{
 					return array();
 				}
 				return $this->input[$name];
-			case 1:
+			case MyBB::INPUT_INT:
 				if(!isset($this->input[$name]) || !is_numeric($this->input[$name]))
 				{
 					return 0;
 				}
-				return (int)$this->input[$name];
+				return(int)$this->input[$name];
+			case MyBB::INPUT_FLOAT:
+				if(!isset($this->input[$name]) || !is_numeric($this->input[$name]))
+				{
+					return 0.0;
+				}
+				return (float)$this->input[$name];
+			case MyBB::INPUT_BOOL:
+				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
+				{
+					return 0.0;
+				}
+				return (bool)$this->input[$name];
 			default:
 				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
 				{
