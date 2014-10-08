@@ -465,7 +465,7 @@ class MyBB {
 			case MyBB::INPUT_BOOL:
 				if(!isset($this->input[$name]) || !is_scalar($this->input[$name]))
 				{
-					return 0.0;
+					return false;
 				}
 				return (bool)$this->input[$name];
 			default:
