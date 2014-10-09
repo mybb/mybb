@@ -212,7 +212,7 @@ if($mybb->request_method == "post")
 		}
 
 		$subject = $lang->sprintf($lang->email_contact_subject, $mybb->input['subject']);
-		$message = $lang->sprintf($lang->email_contact, $user, $session->ipaddress, $mybb->input['message']);
+		$message = $lang->sprintf($lang->email_contact, $mybb->input['email'], $user, $session->ipaddress, $mybb->input['message']);
 
 		// Email the administrator
 		my_mail($mybb->settings['adminemail'], $subject, $message, $mybb->input['email']);
