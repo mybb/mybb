@@ -441,10 +441,11 @@ Thank you,
 {4} Staff";
 
 $l['email_contact_subject'] = "Contact: {1}";
-$l['email_contact'] = "Forum profile: {1}
-IP Address: {2}
+$l['email_contact'] = "E-mail: {1}
+Forum profile: {2}
+IP Address: {3}
 Message:
-{3}";
+{4}";
 
 $l['pmsubject_subscription'] = "New Reply to {1}";
 $l['pm_subscription'] = "{1},
