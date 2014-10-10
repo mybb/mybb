@@ -20,6 +20,7 @@ $templatelist .= ',moderation_inline_splitposts,forumjump_bit,forumjump_special,
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_upload.php";
+require_once MYBB_ROOT.'/inc/functions_rebuild.php';
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 require_once MYBB_ROOT."inc/class_moderation.php";

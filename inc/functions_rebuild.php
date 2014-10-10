@@ -88,6 +88,7 @@ function rebuild_thread_counters($tid)
 
 	update_thread_counters($tid, $count);
 	update_thread_data($tid);
+	update_last_post($tid);
 }
 
 /**
