@@ -1464,7 +1464,7 @@ class Moderation
 			$update_users = array();
 			foreach($subscriptions[$mergetid] as $user)
 			{
-				if(!in_array($user, $subscriptions[$tid]))
+				if(!isset($subscriptions[$tid]) || !in_array($user, $subscriptions[$tid]))
 				{
 					// User doesn't have a $tid subscription
 					$update_users[] = $user;
@@ -1818,7 +1818,7 @@ class Moderation
 
 		// Get selected posts before moving forums to keep old fid
 		$original_posts_query = $db->query("
-			SELECT p.pid, p.tid, p.fid, p.visible, p.uid, t.visible as threadvisible, t.firstpost, COUNT(a.aid) as postattachmentcount
+			SELECT p.pid, p.tid, p.fid, p.visible, p.uid, p.dateline, t.visible as threadvisible, t.firstpost, COUNT(a.aid) as postattachmentcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
@@ -1880,13 +1880,6 @@ class Moderation
 				{
 					// Moving into a forum that does count post counts
 					++$user_counters[$post['uid']]['postnum'];
-				}
-
-				// Modify users' thread counts
-				if($post_info['uid'] == $post['uid'] && $forum_cache[$moveto]['usethreadcounts'] == 1 && $newthread['visible'] == 1)
-				{
-					// Moving into a forum that does count thread counts
-					++$user_counters[$post['uid']]['threadnum'];
 				}
 
 				// Subtract 1 from the old thread's replies
@@ -1951,15 +1944,29 @@ class Moderation
 			{
 				// In some cases the first post of a thread changes
 				// Therefore resync the visible field to make sure they're the same if they're not
-				$query = $db->simple_select("posts", "pid, visible", "tid='{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+				$query = $db->simple_select("posts", "pid, visible, uid", "tid='{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
 				$new_firstpost = $db->fetch_array($query);
+
+				if(!isset($user_counters[$new_firstpost['uid']]))
+				{
+					$user_counters[$new_firstpost['uid']] = array(
+						'postnum' => 0,
+						'threadnum' => 0
+					);
+				}
+
+				// Update post counters if visibility changes
 				if($post['threadvisible'] != $new_firstpost['visible'])
 				{
 					$db->update_query("posts", array('visible' => $post['threadvisible']), "pid='{$new_firstpost['pid']}'");
-					// Correct counters
+					// Subtract new first post
 					if($new_firstpost['visible'] == 1)
 					{
 						--$thread_counters[$post['tid']]['replies'];
+						if($post['threadvisible'] == 1 && $forum_cache[$post['fid']]['usepostcounts'] == 1)
+						{
+							--$user_counters[$new_firstpost['uid']]['postnum'];
+						}
 					}
 					elseif($new_firstpost['visible'] == -1)
 					{
@@ -1969,20 +1976,126 @@ class Moderation
 					{
 						--$thread_counters[$post['tid']]['unapprovedposts'];
 					}
+					if($post['threadvisible'] == 1 && $new_firstpost['visible'] == 1)
+					{
+						--$forum_counters[$post['fid']]['posts'];
+					}
+					elseif($post['threadvisible'] == 0 || ($new_firstpost['visible'] == 0 && $post['threadvisible'] == 1))
+					{
+						--$forum_counters[$post['fid']]['unapprovedposts'];
+					}
+					else
+					{
+						--$forum_counters[$post['fid']]['deletedposts'];
+					}
+
+					// Add old first post
 					if($post['threadvisible'] == 1)
 					{
 						++$thread_counters[$post['tid']]['replies'];
+						++$forum_counters[$post['fid']]['posts'];
+						if($forum_cache[$post['fid']]['usepostcounts'] == 1)
+						{
+							++$user_counters[$new_firstpost['uid']]['postnum'];
+						}
 					}
 					elseif($post['threadvisible'] == -1)
 					{
 						++$thread_counters[$post['tid']]['deletedposts'];
+						++$forum_counters[$post['fid']]['deletedposts'];
 					}
 					else
 					{
 						++$thread_counters[$post['tid']]['unapprovedposts'];
+						++$forum_counters[$post['fid']]['unapprovedposts'];
 					}
 				}
+
+				// Update user thread counter if thread opener changes
+				if($post['threadvisible'] == 1 && $forum_cache[$post['fid']]['usethreadcounts'] == 1 && $post['uid'] != $new_firstpost['uid'])
+				{
+					// Subtract thread from old thread opener
+					// Add thread to new thread opener
+					++$user_counters[$new_firstpost['uid']]['threadnum'];
+				}
 				update_first_post($post['tid']);
+			}
+
+			// This is the new first post of an existing thread?
+			if($post['pid'] == $post_info['pid'] && $post['dateline'] < $newthread['dateline'])
+			{
+				// Update post counters if visibility changes
+				if($post['visible'] != $newthread['visible'])
+				{
+					$db->update_query("posts", array('visible' => $newthread['visible']), "pid='{$post['pid']}'");
+					// Subtract new first post
+					if($post['visible'] == 1)
+					{
+						--$thread_counters[$newtid]['replies'];
+						if($forum_cache[$moveto]['usepostcounts'] == 1)
+						{
+							--$user_counters[$post['uid']]['postnum'];
+						}
+					}
+					elseif($post['visible'] == -1)
+					{
+						--$thread_counters[$newtid]['deletedposts'];
+					}
+					else
+					{
+						--$thread_counters[$newtid]['unapprovedposts'];
+					}
+					if($post['threadvisible'] == 1 && $post['visible'] == 1)
+					{
+						--$forum_counters[$moveto]['posts'];
+					}
+					elseif($post['threadvisible'] == 0 || ($post['visible'] == 0 && $post['threadvisible'] == 1))
+					{
+						--$forum_counters[$moveto]['unapprovedposts'];
+					}
+					else
+					{
+						--$forum_counters[$moveto]['deletedposts'];
+					}
+
+					// Add old first post
+					if($newthread['visible'] == 1)
+					{
+						++$thread_counters[$newtid]['replies'];
+						++$forum_counters[$moveto]['posts'];
+						if($forum_cache[$moveto]['usepostcounts'] == 1)
+						{
+							++$user_counters[$post['uid']]['postnum'];
+						}
+					}
+					elseif($newthread['visible'] == -1)
+					{
+						++$thread_counters[$newtid]['deletedposts'];
+						++$forum_counters[$moveto]['deletedposts'];
+					}
+					else
+					{
+						++$thread_counters[$newtid]['unapprovedposts'];
+						++$forum_counters[$moveto]['unapprovedposts'];
+					}
+				}
+
+				// Update user thread counter if thread opener changes
+				if($newthread['visible'] && $forum_cache[$post['fid']]['usethreadcounts'] == 1 && $post['uid'] != $newthread['uid'])
+				{
+					// Add thread to new thread opener
+					++$user_counters[$post['uid']]['threadnum'];
+					if(!isset($user_counters[$newthread['uid']]))
+					{
+						$user_counters[$newthread['uid']] = array(
+							'postnum' => 0,
+							'threadnum' => 0
+						);
+					}
+					// Subtract thread from old thread opener
+					--$user_counters[$newthread['uid']]['threadnum'];
+				}
+				update_first_post($newtid);
 			}
 		}
 		if($destination_tid == 0 && $newthread['visible'] == 1)
