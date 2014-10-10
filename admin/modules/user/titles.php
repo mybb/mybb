@@ -171,7 +171,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_title'] = array(
 		'title' => $lang->edit_user_title,
-		'link' => "index.php?module=user-titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
+		'link' => "index.php?module=user-titles&amp;action=edit&amp;utid=".$mybb->input['utid'],
 		'description' => $lang->edit_user_title_desc
 	);
 

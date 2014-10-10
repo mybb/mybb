@@ -48,6 +48,7 @@ $l['no_language_files_admin_cp'] = "There are no Admin CP Language files found."
 $l['error_invalid_set'] = "Invalid language set specified.";
 $l['error_invalid_file'] = "Invalid language file specified.";
 $l['error_cannot_write_to_file'] = "Cannot write to file.  Check the file permissions for this language set and try again";
+$l['error_folders_fail'] = "There was problem accessing requested language pack folders. Please make sure they exists and are writable.";
 
 $l['alert_note_cannot_write'] = "Before you can edit the language file, you must CHMOD the files in this language set so that the server has permission to write to them.";
 
@@ -55,3 +56,8 @@ $l['success_langfile_updated'] = "The language file has been updated successfull
 $l['success_langprops_updated'] = "The language properties have been updated successfully.";
 $l['success_quickphrases_updated'] = "The quick language phrases have been updated successfully.";
 
+$l['issues'] = "Issues";
+$l['phrases'] = "Phrases";
+$l['issues_ok'] = "It seems like everything should be ok here.";
+$l['issues_nothingtocompare'] = "There is nothing to compare here.";
+$l['issues_warning'] = "This file may require your attention.\nPlease make sure to check it.";
