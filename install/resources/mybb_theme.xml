@@ -4789,7 +4789,7 @@ if(use_xmlhttprequest == "1")
 			</table>
 			{$contact_details}
 		</td>
-		<td><img src="{$theme['imgdir']}/pixel.png" height="1" width="8" alt=""/></td>
+		<td>&nbsp;&nbsp;</td>
 		<td width="50%" valign="top">
 			{$profilefields}
 			{$signature}
