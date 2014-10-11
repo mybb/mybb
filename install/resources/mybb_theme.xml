@@ -3776,7 +3776,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_announcement_rating" version="1801"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center"><img src="{$theme['imgdir']}/pixel.png" alt="" /></td>]]></template>
+		<template name="forumdisplay_announcement_rating" version="1801"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center">-</template>
 		<template name="forumdisplay_announcements" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->forum_announcements}</td>
 </tr>
@@ -10022,7 +10022,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_messagebit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" align="center" valign="middle" />]]></template>
 		<template name="private_messagebit_sep" version="1801"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.png" height="1" width="1" alt=""/></td>
+<td class="tcat" align="center" colspan="6" height="1"> </td>
 </tr>
     ]]></template>
 		<template name="private_move" version="1800"><![CDATA[<input type="hidden" value="{$mybb->input['fid']}" name="fromfid" />
