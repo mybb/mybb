@@ -3776,7 +3776,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_announcement_rating" version="1801"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center">-</template>
+		<template name="forumdisplay_announcement_rating" version="1801"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center">-</td>]]></template>
 		<template name="forumdisplay_announcements" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->forum_announcements}</td>
 </tr>
