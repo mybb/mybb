@@ -22,7 +22,7 @@ $upgrade_detail = array(
 
 function upgrade31_dbchanges()
 {
-	global $db, $output;
+	global $db, $cache, $output;
 
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
@@ -53,6 +53,8 @@ function upgrade31_dbchanges()
 		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
 	}
 	$db->update_query('helpdocs', array('document' => $helpdoc['document']), 'hid=\'3\'');
+
+	$cache->update_awaitingactivation()
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("31_done");

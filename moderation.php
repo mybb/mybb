@@ -2827,6 +2827,7 @@ switch($mybb->input['action'])
 
 				$cache->update_banned();
 				$cache->update_bannedips();
+				$cache->update_awaitingactivation();
 
 				// Update reports cache
 				$cache->update_reportedcontent();
