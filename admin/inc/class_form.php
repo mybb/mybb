@@ -121,12 +121,12 @@ class DefaultForm
 	}
 
 	/**
-	 * Generate a numeric text field.
+	 * Generate a numeric field.
 	 *
-	 * @param string The name of the text box.
-	 * @param string The value of the text box.
-	 * @param array Array of options for the text box (min, max, step, class, style, id)
-	 * @return string The generated text box.
+	 * @param string The name of the numeric box.
+	 * @param int The value of the numeric box.
+	 * @param array Array of options for the numeric box (min, max, step, class, style, id)
+	 * @return string The generated numeric box.
 	 */
 	function generate_numeric_field($name, $value="", $options=array())
 	{
