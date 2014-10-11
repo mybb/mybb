@@ -9885,7 +9885,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="{$theme['imgdir']}/pixel.png" height="3" width="1" alt="" /></td>
+<td class="tcat" height="3"> </td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="120"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
