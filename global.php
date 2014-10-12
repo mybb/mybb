@@ -414,7 +414,7 @@ else
 
 $templatelist .= "headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,error,footer_languageselect_option,footer_contactus";
 $templatelist .= ",global_pending_joinrequests,global_awaiting_activation,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,footer_themeselect,header_welcomeblock_member_moderator,redirect,header_menu_calendar,nav_dropdown,footer_themeselector,task_image";
-$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie";
+$templatelist .= ",global_boardclosed_warning,global_bannedwarning,error_inline,error_nopermission_loggedin,error_nopermission,debug_summary,header_quicksearch,header_menu_search,header_menu_portal,header_menu_memberlist,usercp_themeselector_option,smilie, global_board_offline_modal";
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -894,7 +894,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 	else
 	{
 		$output = '';
-		eval('$output = "'.$templates->get('board_offline_modal', 1, 0).'";');
+		eval('$output = "'.$templates->get('global_board_offline_modal', 1, 0).'";');
 		echo($output);
 	}
 	exit;
