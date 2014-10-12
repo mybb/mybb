@@ -4112,5 +4112,3 @@ $("#username").select2({
 // -->
 </script>';
 }
-
-?>

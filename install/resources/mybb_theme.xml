@@ -3776,7 +3776,7 @@ a.button {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_announcement_rating" version="1800"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center"><img src="{$theme['imgdir']}/pixel.gif" alt="" /></td>]]></template>
+		<template name="forumdisplay_announcement_rating" version="1801"><![CDATA[	<td class="{$bgcolor} forumdisplay_announcement" align="center">-</td>]]></template>
 		<template name="forumdisplay_announcements" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->forum_announcements}</td>
 </tr>
@@ -4789,7 +4789,7 @@ if(use_xmlhttprequest == "1")
 			</table>
 			{$contact_details}
 		</td>
-		<td><img src="{$theme['imgdir']}/pixel.gif" height="1" width="8" alt=""/></td>
+		<td>&nbsp;&nbsp;</td>
 		<td width="50%" valign="top">
 			{$profilefields}
 			{$signature}
@@ -9878,14 +9878,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="tcat" colspan="2"><strong>{$lang->folder} {$foldername}</strong></td>
 </tr>]]></template>
-		<template name="private_archive_html_message" version="1800"><![CDATA[<tr>
+		<template name="private_archive_html_message" version="1801"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->subject} {$message['subject']}</strong><br /><em>{$lang->to} {$message['tousername']}<br />{$lang->from} {$message['fromusername']}<br />{$lang->sent} {$senddate}</em></td>
 </tr>
 <tr>
 <td class="trow2">{$message['message']}</td>
 </tr>
 <tr>
-<td class="tcat" height="3"><img src="{$theme['imgdir']}/pixel.gif" height="3" width="1" alt="" /></td>
+<td class="tcat" height="3"> </td>
 </tr>]]></template>
 		<template name="private_archive_txt" version="120"><![CDATA[{$lang->private_messages_for}
 ({$lang->exported_date})
@@ -10021,8 +10021,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_messagebit_icon" version="1800"><![CDATA[<img src="{$icon['path']}" alt="{$icon['name']}" title="{$icon['name']}" align="center" valign="middle" />]]></template>
-		<template name="private_messagebit_sep" version="120"><![CDATA[<tr>
-<td class="tcat" align="center" colspan="6" height="1"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt=""/></td>
+		<template name="private_messagebit_sep" version="1801"><![CDATA[<tr>
+<td class="tcat" align="center" colspan="6" height="1"> </td>
 </tr>
     ]]></template>
 		<template name="private_move" version="1800"><![CDATA[<input type="hidden" value="{$mybb->input['fid']}" name="fromfid" />
@@ -13738,7 +13738,7 @@ if(use_xmlhttprequest == "1")
 var partialmode = {$mybb->settings['partialmode']},
 opt_editor = {
 	plugins: "bbcode",
-	style: "{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.mybb.css",
+	style: "{$mybb->asset_url}/jscripts/sceditor/textarea_styles/jquery.sceditor.{$theme['editortheme']}",
 	rtl: {$lang->settings['rtl']},
 	locale: "mybblang",
 	enablePasteFiltering: true,

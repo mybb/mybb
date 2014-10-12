@@ -91,6 +91,5 @@ $l['redirect_cookiescleared'] = "All cookies have been cleared.";
 
 $l['error_invalidimtype'] = "This user does not have this type of instant messenger account specified in their profile.";
 $l['error_invalidhelpdoc'] = "The specified help document does not appear to exist.";
-$l['error_invalidkey'] = "You could not be verified to clear cookies.  This may have been because a malicious Javascript was attempting to clear your cookies automatically. If you intended to clear your cookies, please view the \"Use of Cookies on MyBB\" help document.";
 
 $l['dst_settings_updated'] = "Your daylight saving time settings have automatically been adjusted.<br /><br />You will now be taken back to the forum index.";
