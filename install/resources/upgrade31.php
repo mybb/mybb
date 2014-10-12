@@ -45,6 +45,15 @@ function upgrade31_dbchanges()
 	$db->update_query('settings', array('optionscode' => 'numeric'), 'name IN (\'portal_showdiscussionsnum\', \'searchfloodtime\', \'minsearchword\', \'searchhardlimit\', \'smilieinsertertot\', \'smilieinsertercols\', \'maxloginattempts\') AND optionscode=\'text\'');
 	$db->update_query('settings', array('optionscode' => 'numeric'), 'name IN (\'loginattemptstimeout\', \'contact_maxsubjectlength\', \'contact_minmessagelength\', \'contact_maxmessagelength\', \'purgespammerpostlimit\', \'purgespammerbangroup\', \'statscachetime\') AND optionscode=\'text\'');
 
+	// Update help documents
+	$query = $db->simple_select('helpdocs', 'document', 'hid=\'3\'');
+	$helpdoc = $db->fetch_array($query);
+	if(my_strpos($helpdoc['document'], ';key={1}') !== false)
+	{
+		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
+	}
+	$db->update_query('helpdocs', array('document' => $helpdoc['document']), 'hid=\'3\'');
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("31_done");
 }
