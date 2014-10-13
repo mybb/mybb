@@ -164,7 +164,7 @@ $l['timeonline'] = "Time Spent Online:";
 $l['timeonline_hidden'] = "(Hidden)";
 $l['registrations_disabled'] = "Sorry, but you cannot register at this time because the administrator has disabled new account registrations.";
 $l['error_username_length'] = "Your username is invalid. Usernames have to be within {1} to {2} characters.";
-$l['error_stop_forum_spam_spammer'] = 'Sorry, your username or email address matches that of a known spammer. If you feel this is a mistake, please contact an administrator.';
+$l['error_stop_forum_spam_spammer'] = 'Sorry, your {1} matches that of a known spammer. If you feel this is a mistake, please contact an administrator.';
 $l['error_stop_forum_spam_fetching'] = 'Sorry, something went wrong verifying your account against a spammer database. Most likely the database couldn\'t be accessed. Please try again later.';
 
 $l['none_registered'] = "None Registered";

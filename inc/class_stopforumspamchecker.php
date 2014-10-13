@@ -84,6 +84,7 @@ class StopForumSpamChecker
 	 */
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
+		return true;
 		$is_spammer = false;
 		$confidence = 0;
 
@@ -156,5 +157,41 @@ class StopForumSpamChecker
 		}
 
 		return $is_spammer;
+	}
+
+	public function getErrorText($sfsSettingsEnabled)
+	{
+		global $mybb, $lang;
+
+		foreach ($sfsSettingsEnabled as $setting)
+		{
+			if ($setting == 'stopforumspam_check_usernames' && $mybb->settings[$setting])
+			{
+				$settingsenabled[] = $lang->sfs_error_username;
+				continue;
+			}
+			if ($setting == 'stopforumspam_check_emails' && $mybb->settings[$setting])
+			{
+				$settingsenabled[] = $lang->sfs_error_email;
+				continue;
+			}
+			if ($setting = 'stopforumspam_check_ips' && $mybb->settings[$setting])
+			{
+				$settingsenabled[] = $lang->sfs_error_ip;
+				continue;
+			}
+		}
+		if (sizeof($settingsenabled) > 1)
+		{
+			$lastsetting = $settingsenabled[sizeof($settingsenabled)-1];
+			unset($settingsenabled[sizeof($settingsenabled)-1]);
+
+			$stopforumspamerror = implode(", ", $settingsenabled) . " {$lang->sfs_error_or} " . $lastsetting;
+		}
+		else
+		{
+			$stopforumspamerror = $settingsenabled[0];
+		}
+		return $stopforumspamerror;
 	}
 }
