@@ -84,7 +84,6 @@ class StopForumSpamChecker
 	 */
 	public function is_user_a_spammer($username = '', $email = '', $ip_address = '')
 	{
-		return true;
 		$is_spammer = false;
 		$confidence = 0;
 
