@@ -214,7 +214,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
 			{
-				error($lang->error_stop_forum_spam_spammer);
+				error($lang->sprintf($lang->error_stop_forum_spam_spammer,
+					$stop_forum_spam_checker->getErrorText(array(
+						'stopforumspam_check_usernames',
+						'stopforumspam_check_emails',
+						'stopforumspam_check_ips'
+						))));
 			}
 		}
 		catch (Exception $e)
