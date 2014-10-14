@@ -64,7 +64,7 @@ $l['expiration_permanent'] = "Permanent";
 $l['error_invalid_warning_level'] = "The specified warning level does not exist.";
 $l['error_invalid_warning_percentage'] = "You did not enter a valid percentage value for this warning level. Your percentage value must be between 1 and 100.";
 $l['error_invalid_warning_type'] = "The specified warning type does not exist.";
-$l['error_missing_warning_type'] = "Please select one of the actions to be taken to assign with this new warning level.";
+$l['error_missing_action_type'] = "Please select one of the actions to be taken to assign with this new warning level.";
 $l['error_missing_type_title'] = "You did not enter a title for this warning type";
 $l['error_missing_type_points'] = "You did not enter a valid number of points to add when giving warnings of this type. You must enter a number greater than 0 but not greater than {1}";
 
