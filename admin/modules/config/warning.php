@@ -57,7 +57,7 @@ if($mybb->input['action'] == "add_level")
 
 		if(!$mybb->input['action_type'])
 		{
-			$errors[] = $lang->error_missing_warning_type;
+			$errors[] = $lang->error_missing_action_type;
 		}
 
 		if(!$errors)
