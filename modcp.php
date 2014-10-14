@@ -4165,8 +4165,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		if($existing_ban)
 		{
 			$update_array = array(
-				'gid' => $mybb->get_input('usergroup', 1),
-				'admin' => (int)$mybb->user['uid'],
+				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
@@ -4174,7 +4173,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			);
 
 			$db->update_query('banned', $update_array, "uid='{$user['uid']}'");
-		}
+        }
 		else
 		{
 			$insert_array = array(
