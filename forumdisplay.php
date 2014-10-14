@@ -440,7 +440,7 @@ $datecut = 9999;
 if(empty($mybb->input['datecut']))
 {
 	// If the user manually set a date cut, use it.
-	if(isset($mybb->user['daysprune']) && (int)$mybb->user['daysprune'] != 0)
+	if(!empty($mybb->user['daysprune']))
 	{
 		$datecut = $mybb->user['daysprune'];
 	}

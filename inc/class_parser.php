@@ -1558,7 +1558,7 @@ class postParser
 	function mycode_prepare_list($matches)
 	{
 		// Append number to identify matching list tags
-		if($matches[1] == '[/list]')
+		if(strcasecmp($matches[1], '[/list]') == 0)
 		{
 			$count = array_pop($this->list_elements);
 			if($count !== NULL)
