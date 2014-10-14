@@ -4173,7 +4173,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			);
 
 			$db->update_query('banned', $update_array, "uid='{$user['uid']}'");
-		}
+        }
 		else
 		{
 			$insert_array = array(
