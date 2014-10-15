@@ -1132,7 +1132,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		
+
 		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
@@ -2741,7 +2741,7 @@ if($mybb->input['action'] == "editprofile")
 	}
 
 	$user['usertitle'] = htmlspecialchars_uni($user['usertitle']);
-	
+
 	if(empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';
@@ -4165,8 +4165,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		if($existing_ban)
 		{
 			$update_array = array(
-				'gid' => $mybb->get_input('usergroup', 1),
-				'admin' => (int)$user['uid'],
+				'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 				'dateline' => TIME_NOW,
 				'bantime' => $db->escape_string($mybb->get_input('liftafter')),
 				'lifted' => $db->escape_string($lifted),
