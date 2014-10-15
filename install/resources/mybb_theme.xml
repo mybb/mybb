@@ -10872,7 +10872,7 @@ if(use_xmlhttprequest == "1")
 {$forumlistbits}
 </select>]]></template>
 		<template name="search_forumlist_forum" version="1800"><![CDATA[<option value="{$forum['fid']}">{$depth} {$forum['name']}</option>]]></template>
-		<template name="search_moderator_options" version="1800"><![CDATA[<tr>
+		<template name="search_moderator_options" version="1801"><![CDATA[<tr>
 <td class="tcat"><strong>{$lang->mod_options}</strong></td>
 </tr>
 <tr>
@@ -13731,7 +13731,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
 <td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>]]></template>
-		<template name="codebuttons" version="1800"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
+		<template name="codebuttons" version="1801"><![CDATA[<link rel="stylesheet" href="{$mybb->asset_url}/jscripts/sceditor/editor_themes/{$theme['editortheme']}" type="text/css" media="all" />
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/sceditor/jquery.sceditor.bbcode.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/bbcodes_sceditor.js"></script>
 <script type="text/javascript">
