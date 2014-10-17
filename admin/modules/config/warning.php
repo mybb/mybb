@@ -224,6 +224,11 @@ if($mybb->input['action'] == "edit_level")
 			$errors[] = $lang->error_invalid_warning_percentage;
 		}
 
+		if(!$mybb->input['action_type'])
+		{
+			$errors[] = $lang->error_missing_warning_type;
+		}
+
 		if(!$errors)
 		{
 			// Ban
