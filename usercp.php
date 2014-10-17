@@ -55,7 +55,7 @@ $mybb->input['action'] = $mybb->get_input('action');
 usercp_menu();
 
 $plugins->run_hooks("usercp_start");
-if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_editsig" && $mybb->request_method == "post")
 {
 	$parser_options = array(
 		'allow_html' => $mybb->settings['sightml'],
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 // Make navigation
 add_breadcrumb($lang->nav_usercp, "usercp.php");
 
-switch($mybb->input['action'])
+switch($mybb->get_input('action'))
 {
 	case "profile":
 	case "do_profile":
@@ -180,7 +180,7 @@ switch($mybb->input['action'])
 		break;
 }
 
-if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	if($mybb->get_input('away', 1) == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$awaydate = TIME_NOW;
-		if(!empty($mybb->input['awayday']))
+		if(!empty($mybb->get_input('awayday')))
 		{
 			// If the user has indicated that they will return on a specific day, but not month or year, assume it is current month and year
 			if(!$mybb->get_input('awaymonth', 1))
@@ -291,7 +291,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		{
 			$user['usertitle'] = $mybb->get_input('usertitle');
 		}
-		else if(!empty($mybb->input['reverttitle']))
+		else if($mybb->get_input('reverttitle') != '')
 		{
 			$user['usertitle'] = '';
 		}
@@ -320,7 +320,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "profile")
+if($mybb->get_input('action') == "profile")
 {
 	if($errors)
 	{
@@ -779,7 +779,7 @@ if($mybb->input['action'] == "profile")
 	output_page($editprofile);
 }
 
-if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_options" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -853,7 +853,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "options")
+if($mybb->get_input('action') == "options")
 {
 	$plugins->run_hooks("usercp_options_start");
 
@@ -1194,7 +1194,7 @@ if($mybb->input['action'] == "options")
 	output_page($editprofile);
 }
 
-if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_email" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -1271,7 +1271,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "email")
+if($mybb->get_input('action') == "email")
 {
 	// Coming back to this page after one or more errors were experienced, show fields the user previously entered (with the exception of the password)
 	if($errors)
@@ -1290,7 +1290,7 @@ if($mybb->input['action'] == "email")
 	output_page($changemail);
 }
 
-if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_password" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -1341,7 +1341,7 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "password")
+if($mybb->get_input('action') == "password")
 {
 	$plugins->run_hooks("usercp_password");
 
@@ -1349,7 +1349,7 @@ if($mybb->input['action'] == "password")
 	output_page($editpassword);
 }
 
-if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_changename" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -1396,7 +1396,7 @@ if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "changename")
+if($mybb->get_input('action') == "changename")
 {
 	$plugins->run_hooks("usercp_changename_start");
 	if($mybb->usergroup['canchangename'] != 1)
@@ -1410,7 +1410,7 @@ if($mybb->input['action'] == "changename")
 	output_page($changename);
 }
 
-if($mybb->input['action'] == "do_subscriptions")
+if($mybb->get_input('action') == "do_subscriptions")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -1456,7 +1456,7 @@ if($mybb->input['action'] == "do_subscriptions")
 	redirect("usercp.php?action=subscriptions", $lang->redirect_subscriptions_updated);
 }
 
-if($mybb->input['action'] == "subscriptions")
+if($mybb->get_input('action') == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 
@@ -1795,7 +1795,7 @@ if($mybb->input['action'] == "subscriptions")
 	output_page($subscriptions);
 }
 
-if($mybb->input['action'] == "forumsubscriptions")
+if($mybb->get_input('action') == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
 
@@ -1920,7 +1920,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 	output_page($forumsubscriptions);
 }
 
-if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_editsig" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -1956,7 +1956,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 	redirect("usercp.php?action=editsig", $lang->redirect_sigupdated);
 }
 
-if($mybb->input['action'] == "editsig")
+if($mybb->get_input('action') == "editsig")
 {
 	$plugins->run_hooks("usercp_editsig_start");
 	if(!empty($mybb->input['preview']) && empty($error))
@@ -2078,7 +2078,7 @@ if($mybb->input['action'] == "editsig")
 	output_page($editsig);
 }
 
-if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_avatar" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -2129,10 +2129,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		if(validate_email_format($mybb->input['avatarurl']) != false)
 		{
 			// Gravatar
-			$mybb->input['avatarurl'] = my_strtolower($mybb->input['avatarurl']);
+			$mybb->input['avatarurl'] = my_strtolower($mybb->get_input('avatarurl'));
 
 			// If user image does not exist, or is a higher rating, use the mystery man
-			$email = md5($mybb->input['avatarurl']);
+			$email = md5($mybb->get_input('avatarurl'));
 
 			$s = '';
 			if(!$mybb->settings['maxavatardims'])
@@ -2166,10 +2166,10 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		else
 		{
 			$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->get_input('avatarurl'));
-			$ext = get_extension($mybb->input['avatarurl']);
+			$ext = get_extension($mybb->get_input('avatarurl'));
 
 			// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
-			$file = fetch_remote_file($mybb->input['avatarurl']);
+			$file = fetch_remote_file($mybb->get_input('avatarurl'));
 			if(!$file)
 			{
 				$avatar_error = $lang->error_invalidavatarurl;
@@ -2215,7 +2215,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 					$avatar_dimensions = (int)$width."|".(int)$height;
 				}
 				$updated_avatar = array(
-					"avatar" => $db->escape_string($mybb->input['avatarurl'].'?dateline='.TIME_NOW),
+					"avatar" => $db->escape_string($mybb->get_input('avatarurl').'?dateline='.TIME_NOW),
 					"avatardimensions" => $avatar_dimensions,
 					"avatartype" => "remote"
 				);
@@ -2237,7 +2237,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	}
 }
 
-if($mybb->input['action'] == "avatar")
+if($mybb->get_input('action') == "avatar")
 {
 	$plugins->run_hooks("usercp_avatar_start");
 
@@ -2301,13 +2301,13 @@ if($mybb->input['action'] == "avatar")
 	output_page($avatar);
 }
 
-if($mybb->input['action'] == "acceptrequest")
+if($mybb->get_input('action') == "acceptrequest")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2405,13 +2405,13 @@ if($mybb->input['action'] == "acceptrequest")
 	
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_accepted);
 }
-elseif($mybb->input['action'] == "declinerequest")
+elseif($mybb->get_input('action') == "declinerequest")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2434,13 +2434,13 @@ elseif($mybb->input['action'] == "declinerequest")
 	
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_declined);
 }
-elseif($mybb->input['action'] == "cancelrequest")
+elseif($mybb->get_input('action') == "cancelrequest")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
 	
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->input['id'].' AND uid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND uid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
@@ -2456,7 +2456,7 @@ elseif($mybb->input['action'] == "cancelrequest")
 	redirect("usercp.php?action=editlists", $lang->buddyrequest_cancelled);
 }
 
-if($mybb->input['action'] == "do_editlists")
+if($mybb->get_input('action') == "do_editlists")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -2708,7 +2708,7 @@ if($mybb->input['action'] == "do_editlists")
 					$user['buddylist'] = array();
 				}
 				
-				$key = array_search((int)$mybb->input['delete'], $user['buddylist']);
+				$key = array_search((int)$mybb->get_input('delete', 1), $user['buddylist']);
 				unset($user['buddylist'][$key]);
 				
 				// Now we have the new list, so throw it all back together
@@ -2835,7 +2835,7 @@ if($mybb->input['action'] == "do_editlists")
 	}
 }
 
-if($mybb->input['action'] == "editlists")
+if($mybb->get_input('action') == "editlists")
 {
 	$plugins->run_hooks("usercp_editlists_start");
 
@@ -2900,9 +2900,9 @@ if($mybb->input['action'] == "editlists")
 	}
 
 	// If an AJAX request from buddy management, echo out whatever the new list is.
-	if($mybb->request_method == "post" && $mybb->input['ajax'] == 1)
+	if($mybb->request_method == "post" && $mybb->get_input('ajax', 1) == 1)
 	{
-		if($mybb->input['manage'] == "ignored")
+		if($mybb->get_input('manage') == "ignored")
 		{
 			echo $ignore_list;
 			echo "<script type=\"text/javascript\"> $(\"#ignored_count\").html(\"{$ignore_count}\"); {$message_js}</script>";
@@ -2995,7 +2995,7 @@ if($mybb->input['action'] == "editlists")
 	output_page($listpage);
 }
 
-if($mybb->input['action'] == "drafts")
+if($mybb->get_input('action') == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");
 
@@ -3057,7 +3057,7 @@ if($mybb->input['action'] == "drafts")
 	output_page($draftlist);
 }
 
-if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_drafts" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -3105,7 +3105,7 @@ if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 	redirect("usercp.php?action=drafts", $lang->selected_drafts_deleted);
 }
 
-if($mybb->input['action'] == "usergroups")
+if($mybb->get_input('action') == "usergroups")
 {
 	$plugins->run_hooks("usercp_usergroups_start");
 	$ingroups = ",".$mybb->user['usergroup'].",".$mybb->user['additionalgroups'].",".$mybb->user['displaygroup'].",";
@@ -3139,7 +3139,7 @@ if($mybb->input['action'] == "usergroups")
 	if($mybb->get_input('leavegroup', 1))
 	{
 		// Verify incoming POST request
-		verify_post_check($mybb->input['my_post_key']);
+		verify_post_check($mybb->get_input('my_post_key'));
 
 		if(my_strpos($ingroups, ",".$mybb->get_input('leavegroup', 1).",") === false)
 		{
@@ -3487,7 +3487,7 @@ if($mybb->input['action'] == "usergroups")
 	output_page($groupmemberships);
 }
 
-if($mybb->input['action'] == "attachments")
+if($mybb->get_input('action') == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
@@ -3594,7 +3594,7 @@ if($mybb->input['action'] == "attachments")
 	output_page($manageattachments);
 }
 
-if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_attachments" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
@@ -3615,7 +3615,7 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	redirect("usercp.php?action=attachments", $lang->attachments_deleted);
 }
 
-if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
+if($mybb->get_input('action') == "do_notepad" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->get_input('my_post_key'));
