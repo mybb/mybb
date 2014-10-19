@@ -1127,7 +1127,7 @@ switch($mybb->input['action'])
 	// Let's look up the ip address of a post
 	case "getip":
 		add_breadcrumb($lang->nav_getip);
-		if(!is_moderator($fid, "canviewips") || !$mybb->usergroup['issupermod'])
+		if(!is_moderator($fid, "canviewips") && !$mybb->usergroup['issupermod'])
 		{
 			error_no_permission();
 		}
