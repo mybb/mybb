@@ -2307,7 +2307,7 @@ if($mybb->get_input('action') == "acceptrequest")
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Validate request
-	$query = $db->simple_select('buddyrequests', '*', 'id='.(int)$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
+	$query = $db->simple_select('buddyrequests', '*', 'id='.$mybb->get_input('id', 1).' AND touid='.(int)$mybb->user['uid']);
 	$request = $db->fetch_array($query);
 	if(empty($request))
 	{
