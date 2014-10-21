@@ -1109,8 +1109,8 @@ if($mybb->input['action'] == "do_new_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT));
+	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1127,8 +1127,8 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
@@ -1361,9 +1361,9 @@ if($mybb->input['action'] == "new_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => (int)$mybb->input['allowhtml'],
-			'allowmycode' => (int)$mybb->input['allowmycode'],
-			'allowsmilies' => (int)$mybb->input['allowsmilies'],
+			'allowhtml' => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+			'allowmycode' => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+			'allowsmilies' => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
 			'dateline' => TIME_NOW,
 			'userusername' => $mybb->user['username'],
 		);
@@ -1479,8 +1479,8 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$mybb->input['starttime_month'] = '01';
 	}
 
-	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, (int)$mybb->input['starttime_month'], $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
-	if(!checkdate((int)$mybb->input['starttime_month'], (int)$mybb->input['starttime_day'], (int)$mybb->input['starttime_year']) || $startdate < 0 || $startdate == false)
+	$startdate = gmmktime((int)$startdate[0], (int)$startdate[1], 0, $mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', 1), $mybb->get_input('starttime_year', 1));
+	if(!checkdate($mybb->get_input('starttime_month', MyBB::INPUT_INT), $mybb->get_input('starttime_day', MyBB::INPUT_INT), $mybb->get_input('starttime_year', MyBB::INPUT_INT)) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1497,8 +1497,8 @@ if($mybb->input['action'] == "do_edit_announcement")
 		{
 			$mybb->input['endtime_month'] = '01';
 		}
-		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, (int)$mybb->input['endtime_month'], $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
-		if(!checkdate((int)$mybb->input['endtime_month'], (int)$mybb->input['endtime_day'], (int)$mybb->input['endtime_year']) || $enddate < 0 || $enddate == false)
+		$enddate = gmmktime((int)$enddate[0], (int)$enddate[1], 0, $mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', 1), $mybb->get_input('endtime_year', 1));
+		if(!checkdate($mybb->get_input('endtime_month', MyBB::INPUT_INT), $mybb->get_input('endtime_day', MyBB::INPUT_INT), $mybb->get_input('endtime_year', MyBB::INPUT_INT)) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
@@ -1578,7 +1578,7 @@ if($mybb->input['action'] == "edit_announcement")
 		error_no_permission();
 	}
 
-	$aid = (int)$mybb->input['aid'];
+	$aid = $mybb->get_input('aid', MyBB::INPUT_INT);
 
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 	add_breadcrumb($lang->edit_announcement, "modcp.php?action=edit_announcements&amp;aid={$aid}");
@@ -1761,9 +1761,9 @@ if($mybb->input['action'] == "edit_announcement")
 			'uid' => $mybb->user['uid'],
 			'subject' => $mybb->input['title'],
 			'message' => $mybb->input['message'],
-			'allowhtml' => (int)$mybb->input['allowhtml'],
-			'allowmycode' => (int)$mybb->input['allowmycode'],
-			'allowsmilies' => (int)$mybb->input['allowsmilies'],
+			'allowhtml' => $mybb->get_input('allowhtml', MyBB::INPUT_INT),
+			'allowmycode' => $mybb->get_input('allowmycode', MyBB::INPUT_INT),
+			'allowsmilies' => $mybb->get_input('allowsmilies', MyBB::INPUT_INT),
 			'dateline' => TIME_NOW,
 			'userusername' => $mybb->user['username'],
 		);
@@ -2594,7 +2594,7 @@ if($mybb->input['action'] == "do_editprofile")
 
 				if(!is_array($errors))
 				{
-					$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
+					$suspend_length = fetch_time_length($mybb->get_input($option['time'], MyBB::INPUT_INT), $mybb->input[$option['period']]);
 
 					if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 					{
