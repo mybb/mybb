@@ -204,7 +204,7 @@ if($mybb->get_input('action') == "do_profile" && $mybb->request_method == "post"
 
 			$return_month = (int)substr($mybb->get_input('awaymonth'), 0, 2);
 			$return_day = (int)substr($mybb->get_input('awayday'), 0, 2);
-			$return_year = min((int)$mybb->get_input('awayyear'), 9999);
+			$return_year = min($mybb->get_input('awayyear', MyBB::INPUT_INT), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -2708,7 +2708,7 @@ if($mybb->get_input('action') == "do_editlists")
 					$user['buddylist'] = array();
 				}
 				
-				$key = array_search((int)$mybb->get_input('delete', 1), $user['buddylist']);
+				$key = array_search($mybb->get_input('delete', MyBB::INPUT_INT), $user['buddylist']);
 				unset($user['buddylist'][$key]);
 				
 				// Now we have the new list, so throw it all back together
