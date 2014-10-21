@@ -47,6 +47,12 @@ if(!$attachment)
 {
 	error($lang->error_invalidattachment);
 }
+
+if($attachment['thumbnail'] == '' && isset($mybb->input['thumbnail']))
+{
+	error($lang->error_invalidattachment);
+}
+
 $pid = $attachment['pid'];
 
 // Don't check the permissions on preview
