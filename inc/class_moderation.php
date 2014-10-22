@@ -483,7 +483,7 @@ class Moderation
 					update_forum_lastpost($fid);
 				}
 			}
-			
+
 			if(!empty($user_counters))
 			{
 				foreach($user_counters as $uid => $counters)
@@ -828,15 +828,22 @@ class Moderation
 				{
 					--$thread_counters[$post['tid']]['replies'];
 					$forum = get_forum($post['fid']);
+					if(!isset($user_counters[$post['uid']]))
+					{
+						$user_counters[$post['uid']] = array(
+							'num_posts' => 0,
+							'num_threads' => 0
+						);
+					}
 					// Subtract 1 from user's post count
 					if($forum['usepostcounts'] != 0 && $post['threadvisible'] == 1)
 					{
-						if(!isset($user_counters[$post['uid']]))
-						{
-							$user_counters[$post['uid']] = 0;
-						}
 						// Update post count of the user of the merged posts
-						--$user_counters[$post['uid']];
+						--$user_counters[$post['uid']]['num_posts'];
+					}
+					if($post['threadfirstpost'] == $post['pid'] && $forum['usethreadcounts'] != 0 && $post['threadvisible'] == 1)
+					{
+						--$user_counters[$post['uid']]['num_threads'];
 					}
 				}
 				elseif($post['visible'] == 0)
@@ -883,12 +890,12 @@ class Moderation
 		$db->update_query("attachments", $mergepost2, "pid IN({$pidin})");
 
 		// If the first post of a thread is merged out, the first should be updated
-		$query = $db->simple_select("threads", "tid, fid, visible", "firstpost IN({$pidin}) AND firstpost != '{$masterpid}'");
+		$query = $db->simple_select("threads", "tid, uid, fid, visible", "firstpost IN({$pidin}) AND firstpost != '{$masterpid}'");
 		while($thread = $db->fetch_array($query))
 		{
 			// In some cases the first post of a thread changes
 			// Therefore resync the visible field to make sure they're the same if they're not
-			$query = $db->simple_select("posts", "pid, visible", "tid='{$thread['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+			$query = $db->simple_select("posts", "pid, uid, visible", "tid='{$thread['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
 			$new_firstpost = $db->fetch_array($query);
 			if($thread['visible'] != $new_firstpost['visible'])
 			{
@@ -918,6 +925,18 @@ class Moderation
 				{
 					++$thread_counters[$thread['tid']]['unapprovedposts'];
 				}
+			}
+
+			if($new_firstpost['uid'] != $thread['uid'] && $forum['usethreadcounts'] != 0 && $thread['visible'] == 1)
+			{
+				if(!isset($user_counters[$new_firstpost['uid']]))
+				{
+					$user_counters[$new_firstpost['uid']] = array(
+						'num_posts' => 0,
+						'num_threads' => 0
+					);
+				}
+				++$user_counters[$new_firstpost['uid']]['num_threads'];
 			}
 			update_first_post($thread['tid']);
 		}
@@ -956,9 +975,13 @@ class Moderation
 
 		if(!empty($user_counters))
 		{
-			foreach($user_counters as $uid => $counter)
+			foreach($user_counters as $uid => $counters)
 			{
-				update_user_counters($uid, array('postnum' => "{$counter}"));
+				$update_array = array(
+					"postnum" => "+{$counters['num_posts']}",
+					"threadnum" => "+{$counters['num_threads']}"
+				);
+				update_user_counters($uid, $update_array);
 			}
 		}
 
@@ -1385,7 +1408,7 @@ class Moderation
 		{
 			$thread = get_thread($tid);
 		}
-		
+
 		if(!$mergethread || !$thread)
 		{
 			return false;
@@ -1532,6 +1555,10 @@ class Moderation
 			{
 				++$user_posts[$post['uid']]['postnum'];
 			}
+		}
+		// Update first post if needed
+		if($new_firstpost['pid'] != $thread['firstpost'])
+		{
 			update_first_post($thread['tid']);
 		}
 
@@ -1815,8 +1842,8 @@ class Moderation
 						'threadnum' => 0
 					);
 				}
-				// Add thread to new thread opener
-				++$user_counters[$newthread['uid']]['threadnum'];
+				// Subtract thread from old thread opener
+				--$user_counters[$newthread['uid']]['threadnum'];
 			}
 			elseif($visible == -1)
 			{
@@ -1914,7 +1941,7 @@ class Moderation
 				// Subtract 1 from the old thread's deleted posts
 				--$thread_counters[$post['tid']]['deletedposts'];
 			}
-			
+
 			// Subtract 1 from the old forum's posts
 			if($post['threadvisible'] == 1 && $post['visible'] == 1)
 			{
@@ -2024,7 +2051,7 @@ class Moderation
 				}
 
 				// Update user thread counter if thread opener changes
-				if($newthread['visible'] == 1 && $forum_cache[$post['fid']]['usethreadcounts'] == 1 && $post['uid'] != $newthread['uid'])
+				if($newthread['visible'] == 1 && $forum_cache[$newthread['fid']]['usethreadcounts'] == 1 && $post['uid'] != $newthread['uid'])
 				{
 					// Add thread to new thread opener
 					++$user_counters[$post['uid']]['threadnum'];
@@ -2202,7 +2229,7 @@ class Moderation
 		$moveto = (int)$moveto;
 
 		$newforum = get_forum($moveto);
-		
+
 		if(empty($tids) || !$newforum)
 		{
 			return false;
@@ -2335,7 +2362,7 @@ class Moderation
 
 		$arguments = array("tids" => $tids, "moveto" => $moveto);
 		$plugins->run_hooks("class_moderation_move_threads", $arguments);
-		
+
 		if(!empty($user_counters))
 		{
 			foreach($user_counters as $uid => $counters)
@@ -2359,7 +2386,7 @@ class Moderation
 					'unapprovedthreads' => "-{$counter['unapprovedthreads']}",
 					'deletedposts' => "-{$counter['deletedposts']}",
 					'deletedthreads' => "-{$counter['deletedthreads']}"
-					
+
 				);
 				update_forum_counters($fid, $updated_count);
 				update_forum_lastpost($fid);
