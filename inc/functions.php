@@ -2063,6 +2063,10 @@ function update_stats($changes=array(), $force=false)
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2158,6 +2162,10 @@ function update_forum_counters($fid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2324,6 +2332,10 @@ function update_thread_counters($tid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2450,6 +2462,10 @@ function update_user_counters($uid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{

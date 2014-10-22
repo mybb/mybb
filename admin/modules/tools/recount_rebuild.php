@@ -186,7 +186,7 @@ function acp_recount_user_threads()
 		$query2 = $db->query("
 			SELECT COUNT(t.tid) AS thread_count
 			FROM ".TABLE_PREFIX."threads t
-			WHERE t.uid='{$user['uid']}' AND t.visible > 0{$fids}
+			WHERE t.uid='{$user['uid']}' AND t.visible > 0 AND t.closed NOT LIKE 'moved|%'{$fids}
 		");
 		$num_threads = $db->fetch_field($query2, "thread_count");
 
