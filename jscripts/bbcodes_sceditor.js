@@ -167,26 +167,19 @@ $(document).ready(function($) {
 
 			if($cite.length === 1 || $elm.data('author'))
 			{
-				author = $elm.data('author') || $cite.text();
+				author = $cite.text() || $elm.data('author');
 
 				$elm.data('author', author);
 				$cite.remove();
 
 				content	= this.elementToBbcode($(element));
-				if($elm.data('pid') || $elm.data('dateline'))
-				{
-					author  = "='" + author;
-				}
-				else
-				{
-					author  = "=" + author;
-				}
+				author = '=' + author.replace(/(^\s+|\s+$)/g, '');
 
 				$elm.prepend($cite);
 			}
 
 			if($elm.data('pid'))
-				author += "' pid='" + $elm.data('pid') + "'";
+				author += " pid='" + $elm.data('pid') + "'";
 
 			if($elm.data('dateline'))
 				author += " dateline='" + $elm.data('dateline') + "'";
@@ -203,10 +196,7 @@ $(document).ready(function($) {
 				data += ' data-dateline="' + attrs.dateline + '"';
 
 			if(typeof attrs.defaultattr !== "undefined")
-			{
-				content = '<cite contenteditable="false">' + attrs.defaultattr.replace(/\s/g, '&nbsp;') + '</cite>' + content;
-				data += ' data-author="' + attrs.defaultattr + '"';
-			}
+				content = '<cite>' + attrs.defaultattr.replace(/ /g, '&nbsp;') + '</cite>' + content;
 
 			return '<blockquote' + data + '>' + content + '</blockquote>';
 		},
