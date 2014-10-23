@@ -16,5 +16,5 @@ Pull Requests should only be sent for confirmed issues. Only one issue should be
 
 If your Pull Request is for a new feature, that feature must be already confirmed to be added in the respective suggestions forum. You may only include one feature per Pull Request for the same reasons stated above.
 
-All changes made in Pull Requests must follow the [Development Standards](http://docs.mybb.com/Development_Standards.html).
+All changes made in Pull Requests must follow the [Development Standards](http://docs.mybb.com/1.8/development/standards/).
 If you need any help with sending your code contributions the [GitHub Help site](https://help.github.com) is a good place to start.
