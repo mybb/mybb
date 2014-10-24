@@ -1963,12 +1963,16 @@ if($mybb->input['action'] == "profile")
 	}
 	
 	$contact_fields = array();
+	$any_contact_field = false;
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
 	{
+		$contact_fields[$field] = '';
 		$settingkey = 'allow'.$field.'field';
 
 		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
 		{
+			$any_contact_field = true;
+			
 			if($field == 'icq')
 			{
 				$memprofile[$field] = (int)$memprofile[$field];
@@ -1984,7 +1988,7 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 	
-	if(!empty($contact_fields) || $sendemail || $sendpm || $website)
+	if($any_contact_field || $sendemail || $sendpm || $website)
 	{
 		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
 	}
