@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add_level")
 	}
 
 	$form_container = new FormContainer($lang->add_warning_level);
-	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0)), 'percentage');
+	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
 
 	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
@@ -319,7 +319,7 @@ if($mybb->input['action'] == "edit_level")
 	}
 
 	$form_container = new FormContainer($lang->edit_warning_level);
-	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0)), 'percentage');
+	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_numeric_field('percentage', $mybb->input['percentage'], array('id' => 'percentage', 'min' => 0, 'max' => 100)), 'percentage');
 
 	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
