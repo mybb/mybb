@@ -6538,7 +6538,7 @@ function is_super_admin($uid)
  * Originates from frostschutz's PluginLibrary
  * github.com/frostschutz
  *
- * @param mixed A selection of groups to check or -1 for any group 
+ * @param mixed A selection of groups to check or -1 for any group
  * @param mixed User to check selection against
  * @return mixed Array of groups this user belongs to
  */
