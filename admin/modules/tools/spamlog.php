@@ -97,7 +97,7 @@ if($mybb->input['action'] == 'prune')
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px', 'min' => 0))." {$lang->days}", 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_numeric_field('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 50px', 'min' => 0))." {$lang->days}", 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_spam_logs);
 	$form->output_submit_wrapper($buttons);

@@ -579,7 +579,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;', 'min' => 0))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -1052,7 +1052,7 @@ if($mybb->input['action'] == "add_thread_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;', 'min' => 0))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -1675,7 +1675,7 @@ if($mybb->input['action'] == "edit_post_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;', 'min' => 0))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>
@@ -2244,7 +2244,7 @@ if($mybb->input['action'] == "add_post_tool")
 				</tr>
 				<tr>
 					<td><small>{$lang->delete_redirect_after}</small></td>
-					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;', 'min' => 0))." {$lang->days}</td>
+					<td>".$form->generate_numeric_field('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 3em;', 'min' => 0))." {$lang->days}</td>
 				</tr>
 			</table>
 		</dd>

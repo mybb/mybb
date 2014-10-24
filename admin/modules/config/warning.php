@@ -166,7 +166,7 @@ if($mybb->input['action'] == "add_level")
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "add_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "edit_level")
 				</tr>
 				<tr>
 					<td><small>{$lang->ban_length}</small></td>
-					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
+					<td>".$form->generate_numeric_field('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -376,7 +376,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->suspension_length}</small></td>
-					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
+					<td>".$form->generate_numeric_field('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
 		</dd>
@@ -385,7 +385,7 @@ if($mybb->input['action'] == "edit_level")
 			<table cellpadding=\"4\">
 				<tr>
 					<td><small>{$lang->moderation_length}</small></td>
-					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
+					<td>".$form->generate_numeric_field('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 3em;', 'min' => 0))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>
 		</dd>

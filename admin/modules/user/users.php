@@ -1164,7 +1164,7 @@ EOF;
 
 	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
 	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));
-	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 3em;', 'min' => 0));
+	$birthday_row .= ' '.$form->generate_numeric_field('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 4em;', 'min' => 0));
 
 	$form_container->output_row($lang->birthday, "", $birthday_row, 'birthday');
 
@@ -1188,7 +1188,7 @@ EOF;
 		//Return date (we can use the arrays from birthday)
 		$return_row = $form->generate_select_box('away_day', $birthday_days, $mybb->input['away_day'], array('id' => 'away_day'));
 		$return_row .= ' '.$form->generate_select_box('away_month', $birthday_months, $mybb->input['away_month'], array('id' => 'away_month'));
-		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 3em;', 'min' => 0));
+		$return_row .= ' '.$form->generate_numeric_field('away_year', $mybb->input['away_year'], array('id' => 'away_year', 'style' => 'width: 4em;', 'min' => 0));
 
 		$form_container->output_row($lang->return_date, $lang->return_date_desc, $return_row, 'away_date');
 
@@ -1410,7 +1410,7 @@ EOF;
 			<table cellpadding="4">'.$user_suspend_info.'
 				<tr>
 					<td width="30%"><small>'.$lang->expire_length.'</small></td>
-					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 2em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
+					<td>'.$form->generate_numeric_field('action_time', $mybb->input['action_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$form->generate_select_box('action_period', $periods, $mybb->input['action_period']).'</td>
 				</tr>
 			</table>
 		</dd>
@@ -1535,7 +1535,7 @@ EOF;
 		}
 	}
 
-	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 2em;', 'min' => 0)).' '.$modpost_options.'</div>';
+	$modpost_div = '<div id="modpost">'.$existing_info.''.$lang->moderate_for.' '.$form->generate_numeric_field("modpost_time", $mybb->input['modpost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$modpost_options.'</div>';
 	$lang->moderate_posts_info = $lang->sprintf($lang->moderate_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("moderateposting", 1, $lang->moderate_posts, array("id" => "moderateposting", "onclick" => "toggleBox('modpost');", "checked" => $mybb->input['moderateposting'])), $lang->moderate_posts_info, $modpost_div);
 
@@ -1559,7 +1559,7 @@ EOF;
 		}
 	}
 
-	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 2em;', 'min' => 0)).' '.$suspost_options.'</div>';
+	$suspost_div = '<div id="suspost">'.$existing_info.''.$lang->suspend_for.' '.$form->generate_numeric_field("suspost_time", $mybb->input['suspost_time'], array('style' => 'width: 3em;', 'min' => 0)).' '.$suspost_options.'</div>';
 	$lang->suspend_posts_info = $lang->sprintf($lang->suspend_posts_info, $user['username']);
 	$form_container->output_row($form->generate_check_box("suspendposting", 1, $lang->suspend_posts, array("id" => "suspendposting", "onclick" => "toggleBox('suspost');", "checked" => $mybb->input['suspendposting'])), $lang->suspend_posts_info, $suspost_div);
 
