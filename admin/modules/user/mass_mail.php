@@ -413,7 +413,7 @@ if($mybb->input['action'] == "edit")
 		</script>";
 	$form_container->output_row("{$lang->delivery_date}: <em>*</em>", $lang->delivery_date_desc, $actions);
 
-	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
 
 	$format_options = array(
 		0 => $lang->plain_text_only,
@@ -575,7 +575,7 @@ if($mybb->input['action'] == "edit")
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
 
 	$more_options = array(
 		"more_than" => $lang->more_than,
@@ -589,9 +589,9 @@ if($mybb->input['action'] == "edit")
 		"months" => $lang->months,
 		"years" => $lang->years
 	);
-	$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
+	$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate', 'min' => 0))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-	$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
+	$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive', 'min' => 0))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 	$form_container->end();
 
@@ -1010,7 +1010,7 @@ if($mybb->input['action'] == "send")
 			"is_exactly" => $lang->is_exactly,
 			"less_than" => $lang->less_than
 		);
-		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum')), 'postnum');
+		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'postnum_dir'))." ".$form->generate_numeric_field('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'postnum', 'min' => 0)), 'postnum');
 
 		$more_options = array(
 			"more_than" => $lang->more_than,
@@ -1024,9 +1024,9 @@ if($mybb->input['action'] == "send")
 			"months" => $lang->months,
 			"years" => $lang->years
 		);
-		$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate'))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
+		$form_container->output_row($lang->user_registered, "", $form->generate_select_box('conditions[regdate_dir]', $more_options, $input['conditions']['regdate_dir'], array('id' => 'regdate_dir'))." ".$form->generate_numeric_field('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate', 'min' => 0))." ".$form->generate_select_box('conditions[regdate_date]', $date_options, $input['conditions']['regdate_date'], array('id' => 'regdate_date'))." {$lang->ago}", 'regdate');
 
-		$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive'))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
+		$form_container->output_row($lang->user_last_active, "", $form->generate_select_box('conditions[lastactive_dir]', $more_options, $input['conditions']['lastactive_dir'], array('id' => 'lastactive_dir'))." ".$form->generate_numeric_field('conditions[lastactive]', $input['conditions']['lastactive'], array('id' => 'lastactive', 'min' => 0))." ".$form->generate_select_box('conditions[lastactive_date]', $date_options, $input['conditions']['lastactive_date'], array('id' => 'lastactive_date'))." {$lang->ago}", 'lastactive');
 
 		$form_container->end();
 
@@ -1254,7 +1254,7 @@ if($mybb->input['action'] == "send")
 
 		$form_container->output_row("{$lang->message_format}:", "", $form->generate_select_box('format', $format_options, $input['format'], array('id' => 'format')), 'format', null, array("id" => "format_container"));
 
-		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage')), 'perpage');
+		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
 
 		$form_container->end();
 
