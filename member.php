@@ -1965,8 +1965,6 @@ if($mybb->input['action'] == "profile")
 	$contact_fields = array();
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
 	{
-		$contact_fields[$field] = '';
-
 		$settingkey = 'allow'.$field.'field';
 
 		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
@@ -1983,10 +1981,6 @@ if($mybb->input['action'] == "profile")
 
 			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
-		}
-		else
-		{
-			$memprofile[$field] = '';
 		}
 	}
 	
