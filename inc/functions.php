@@ -6558,6 +6558,7 @@ function is_member($groups, $user = false)
 
 	$memberships = array_map('intval', explode(',', $user['additionalgroups']));
 	$memberships[] = $user['usergroup'];
+	$memberships[] = -1;
 
 	if(!is_array($groups))
 	{
