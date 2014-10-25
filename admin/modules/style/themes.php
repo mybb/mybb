@@ -2219,7 +2219,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1802"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
@@ -2855,7 +2855,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>";
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1802"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {
