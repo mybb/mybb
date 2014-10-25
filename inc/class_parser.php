@@ -692,7 +692,7 @@ class postParser
 			"#(o)(nabort\s?=)#i"
 		);
 
-		$message = preg_replace($js_array, "$1<strong></strong>$2$4", $message);
+		$message = preg_replace($js_array, "$1<strong></strong>$2$6", $message);
 
 		return $message;
 	}
