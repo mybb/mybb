@@ -538,13 +538,13 @@ $(document).ready(function($) {
 
 
 	/*************************************
-	 * Remove last bits of table support *
+	 * Remove last bits of table and superscript/subscript support *
 	 *************************************/
-	$.sceditor.command.remove('table');
-	$.sceditor.plugins.bbcode.bbcode.remove('table')
-					.remove('tr')
-					.remove('th')
-					.remove('td');
+	$.sceditor.command
+	.remove('table').remove('subscript').remove('superscript');
+	
+	$.sceditor.plugins.bbcode.bbcode
+	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup');
 
 
 
