@@ -257,7 +257,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("php", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -277,11 +277,7 @@ $(document).ready(function($) {
 					before = '[php]',
 					end = '[/php]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -294,6 +290,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertphp', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[php]', '[/php]');
+				return;
+			}
 			$.sceditor.command.get('php')._dropDown(this, caller);
 		},
 		txtExec: ['[php]', '[/php]'],
@@ -322,7 +322,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("code", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -342,11 +342,7 @@ $(document).ready(function($) {
 					before = '[code]',
 					end = '[/code]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -359,6 +355,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertcode', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[code]', '[/code]');
+				return;
+			}
 			$.sceditor.command.get('code')._dropDown(this, caller);
 		},
 		txtExec: ['[code]', '[/code]'],
