@@ -1243,14 +1243,27 @@ if($mybb->input['action'] == "thread")
 
 		if(is_moderator($forum['fid'], "canusecustomtools") && (!empty($forum_stats[-1]['modtools']) || !empty($forum_stats[$forum['fid']]['modtools'])))
 		{
+			$gids = explode(',', $mybb->user['additionalgroups']);
+			$gids[] = $mybb->user['usergroup'];
+			$gids = array_filter(array_unique($gids));
 			switch($db->type)
 			{
 				case "pgsql":
 				case "sqlite":
-					$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR ','||groups||',' LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND (groups='' OR ','||groups||',' LIKE '%,-1,%'{$gidswhere})");
 					break;
 				default:
-					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+					foreach($gids as $gid)
+					{
+						$gid = (int)$gid;
+						$gidswhere .= " OR CONCAT(',',groups,',') LIKE '%,{$gid},%'";
+					}
+					$query = $db->simple_select("modtools", 'tid, name, type', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND (groups='' OR CONCAT(',',groups,',') LIKE '%,-1,%'{$gidswhere})");
 					break;
 			}
 
