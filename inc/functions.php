@@ -3551,7 +3551,7 @@ function get_ip()
 {
 	global $mybb, $plugins;
 
-	$ip = $_SERVER['REMOTE_ADDR'];
+	$ip = strtolower($_SERVER['REMOTE_ADDR']);
 
 	if($mybb->settings['ip_forwarded_check'])
 	{
@@ -3559,11 +3559,11 @@ function get_ip()
 
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_FORWARDED_FOR']));
 		}
 		elseif(isset($_SERVER['HTTP_X_REAL_IP']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_REAL_IP']));
 		}
 
 		if(is_array($addresses))
@@ -3585,7 +3585,7 @@ function get_ip()
 	{
 		if(isset($_SERVER['HTTP_CLIENT_IP']))
 		{
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = strtolower($_SERVER['HTTP_CLIENT_IP']);
 		}
 	}
 
