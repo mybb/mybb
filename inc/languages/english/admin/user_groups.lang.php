@@ -146,6 +146,7 @@ $l['max_recipients'] = "Maximum Recipients Per Message:";
 $l['max_recipients_desc'] = "Maximum number of recipients a user can send a private message to at one time. If empty, users can send private messages to an unlimited number of recipients.";
 $l['show_reputations'] = "Show reputations for users in this group?";
 $l['can_give_reputation'] = "Can give reputations to users?";
+$l['can_delete_own_reputation'] = "Can delete own given reputations?";
 $l['points_to_award_take'] = "Points to Award/Take Away:";
 $l['points_to_award_take_desc'] = "Here you need to enter the number of points to give or take away on each reputation given by users of this group.";
 $l['max_reputations_daily'] = "Maximum Reputations Allowed Per Day:";

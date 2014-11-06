@@ -61,6 +61,7 @@
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
+		<candeletereputations><![CDATA[0]]></candeletereputations>
 		<reputationpower><![CDATA[0]]></reputationpower>
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -148,6 +149,7 @@
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
+		<candeletereputations><![CDATA[1]]></candeletereputations>
 		<reputationpower><![CDATA[1]]></reputationpower>
 		<maxreputationsday><![CDATA[5]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -235,6 +237,7 @@
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
+		<candeletereputations><![CDATA[1]]></candeletereputations>
 		<reputationpower><![CDATA[1]]></reputationpower>
 		<maxreputationsday><![CDATA[10]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -323,6 +326,7 @@
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
+		<candeletereputations><![CDATA[1]]></candeletereputations>
 		<reputationpower><![CDATA[2]]></reputationpower>
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -410,6 +414,7 @@
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
+		<candeletereputations><![CDATA[0]]></candeletereputations>
 		<reputationpower><![CDATA[0]]></reputationpower>
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -497,6 +502,7 @@
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
 		<cangivereputations><![CDATA[1]]></cangivereputations>
+		<candeletereputations><![CDATA[1]]></candeletereputations>
 		<reputationpower><![CDATA[1]]></reputationpower>
 		<maxreputationsday><![CDATA[10]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
@@ -584,6 +590,7 @@
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
+		<candeletereputations><![CDATA[0]]></candeletereputations>
 		<reputationpower><![CDATA[0]]></reputationpower>
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>

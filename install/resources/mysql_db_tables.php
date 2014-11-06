@@ -997,6 +997,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   showforumteam tinyint(1) NOT NULL default '0',
   usereputationsystem tinyint(1) NOT NULL default '0',
   cangivereputations tinyint(1) NOT NULL default '0',
+  candeletereputations tinyint(1) NOT NULL default '0',
   reputationpower int unsigned NOT NULL default '0',
   maxreputationsday int unsigned NOT NULL default '0',
   maxreputationsperuser int unsigned NOT NULL default '0',
