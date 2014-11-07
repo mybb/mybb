@@ -3749,7 +3749,7 @@ a.button {
 		<template name="forumbit_moderators_group" version="1800"><![CDATA[{$comma}{$moderator['title']}]]></template>
 		<template name="forumbit_moderators_user" version="1800"><![CDATA[{$comma}<a href="{$moderator['profilelink']}">{$moderator['username']}</a>]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
-		<template name="forumdisplay" version="1800"><![CDATA[<html>
+		<template name="forumdisplay" version="1802"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
@@ -3764,7 +3764,7 @@ a.button {
 </script>
 <!-- jeditable (jquery) -->
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/inline_edit.js?ver=1802"></script>
 </head>
 <body>
 {$header}
