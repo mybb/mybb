@@ -1523,6 +1523,7 @@ a.button.report_user_button span {
 /** Modal Start **/
 
 .modal {
+	z-index: 9999 !important;
 	display: none;
 	width: 400px;
 	text-align: left;
@@ -1551,6 +1552,7 @@ a.button.report_user_button span {
 }
 
 .modal-spinner {
+	z-index: 10000 !important;
 	display: none;
 	width: 64px;
 	height: 64px;
@@ -1565,6 +1567,10 @@ a.button.report_user_button span {
 	-o-border-radius: 8px;
 	-ms-border-radius: 8px;
 	border-radius: 8px;
+}
+
+.jquery-modal {
+	z-index: 9998 !important;
 }
 
 /** Modal End **/
@@ -1774,8 +1780,7 @@ div.jqi .jqisubstate .jqibuttons button {
 }
 
 /** Impromptu End */
-]]>
-		</stylesheet>
+]]></stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1800" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
