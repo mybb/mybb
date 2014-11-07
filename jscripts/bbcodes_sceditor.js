@@ -91,18 +91,16 @@ $(document).ready(function($) {
 					size     = 1;
 
 					if(fontSize > 9)
-						size = 1;
-					if(fontSize > 12)
 						size = 2;
-					if(fontSize > 15)
+					if(fontSize > 12)
 						size = 3;
-					if(fontSize > 17)
+					if(fontSize > 15)
 						size = 4;
-					if(fontSize > 23)
+					if(fontSize > 17)
 						size = 5;
-					if(fontSize > 31)
+					if(fontSize > 23)
 						size = 6;
-					if(fontSize > 47)
+					if(fontSize > 31)
 						size = 7;
 				}
 				else
