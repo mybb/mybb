@@ -10551,7 +10551,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1">{$lang->success_report_voted}</td>
 	</tr>
 </table>]]></template>
-		<template name="reputation" version="1800"><![CDATA[<html>
+		<template name="reputation" version="1802"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -10560,7 +10560,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1802"></script>
 </head>
 <body>
 {$header}
@@ -11162,7 +11162,7 @@ if(use_xmlhttprequest == "1")
 // -->
 </script>
 <!-- jeditable (jquery) -->
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1802"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1802"></script>
 </head>
