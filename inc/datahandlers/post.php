@@ -146,7 +146,7 @@ class PostDataHandler extends DataHandler
 			}
 			
 			// username does not contain bad characters --> perform specialchar transformation
-			$post['username'] = htmlspecialchars_uni($post['username']);
+			$post['username'] = $post['username'];
 			
 			if($userhandler->verify_username_exists())
 			{
@@ -162,8 +162,6 @@ class PostDataHandler extends DataHandler
 			$post['username'] = "Guest";
 		}
 
-		// Sanitize the username
-		$post['username'] = htmlspecialchars_uni($post['username']);
 		return true;
 	}
 
