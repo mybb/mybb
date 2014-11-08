@@ -145,9 +145,6 @@ class PostDataHandler extends DataHandler
 				return false;
 			}
 			
-			// username does not contain bad characters --> perform specialchar transformation
-			$post['username'] = $post['username'];
-			
 			if($userhandler->verify_username_exists())
 			{
 				// username is in use
