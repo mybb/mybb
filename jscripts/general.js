@@ -373,7 +373,7 @@ var MyBB = {
 
 		$.ajax({
 			type: "POST",
-			url: "reputation.php",
+			url: "reputation.php?modal=1",
 			data: datastring,
 			dataType: "html",
 			success: function(data) {
@@ -381,6 +381,7 @@ var MyBB = {
 				$(".modal_"+uid+"_"+pid).fadeOut('slow', function() {
 					$(".modal_"+uid+"_"+pid).html(data);
 					$(".modal_"+uid+"_"+pid).fadeIn('slow');
+					$(".modal").fadeIn('slow');
 				});
 			},
 			error: function(){
