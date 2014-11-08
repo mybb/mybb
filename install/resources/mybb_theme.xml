@@ -4224,7 +4224,7 @@ a.button {
 				<script type="text/javascript">
 					$("#quick_login input[name='url']").val($(location).attr('href'));
 				</script>]]></template>
-		<template name="header_welcomeblock_member" version="1801"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
+		<template name="header_welcomeblock_member" version="1802"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
 	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
 	</div>
 </div>
@@ -4830,7 +4830,7 @@ if(use_xmlhttprequest == "1")
 <span class="smalltext"><strong>{$lang->ban_by}:</strong> {$memban['adminuser']} &mdash; <strong>{$lang->ban_length}:</strong> {$banlength} <span class="smalltext">{$timeremaining}</span></span>
 </fieldset>
 <br />]]></template>
-		<template name="member_profile_contact_details" version="1801"><![CDATA[<br />
+		<template name="member_profile_contact_details" version="1802"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed">
 	<colgroup>
 	<col style="width: 30%;" />
@@ -6004,7 +6004,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="misc_imcenter_nav" version="1801"><![CDATA[{$navsep}<a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}&amp;modal=1'); return false;">{$imtype_lang}</a>]]></template>
+		<template name="misc_imcenter_nav" version="1802"><![CDATA[{$navsep}<a href="javascript:;" onclick="MyBB.popupWindow('/misc.php?action=imcenter&amp;imtype={$imtype}&amp;uid={$uid}&amp;modal=1'); return false;">{$imtype_lang}</a>]]></template>
 		<template name="misc_imcenter_skype" version="1800"><![CDATA[<div class="modal">
 <div style="overflow-y: auto; max-height: 400px;">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
@@ -7274,7 +7274,7 @@ if(use_xmlhttprequest == "1")
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_results_information" version="1801"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a>)</div>]]></template>
+		<template name="modcp_ipsearch_results_information" version="1802"><![CDATA[<div class="float_right">(<a href="modcp.php?action=iplookup&ipaddress={$ipaddress}" onclick="MyBB.popupWindow('/modcp.php?action=iplookup&ipaddress={$ipaddress_url}&modal=1'); return false;">{$lang->info_on_ip}</a>)</div>]]></template>
 		<template name="modcp_lastattachment" version="1800"><![CDATA[<span class="smalltext">
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']}<br />{$lang->by} {$attachment['profilelink']}</span>]]></template>
@@ -8213,7 +8213,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_getip_modoptions" version="1801"><![CDATA[<tr>
+		<template name="moderation_getip_modoptions" version="1802"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2">
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$ipaddress}&amp;search_users=1">{$lang->search_ip_users}</a><br />
@@ -11556,7 +11556,7 @@ if(use_xmlhttprequest == "1")
 {$getmore}
 </table>
 </div>]]></template>
-		<template name="smilieinsert_getmore" version="1801"><![CDATA[<tr>
+		<template name="smilieinsert_getmore" version="1802"><![CDATA[<tr>
   <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:MyBB.popupWindow('/misc.php?action=smilies&popup=true&editor=MyBBEditor&modal=1')">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
 		<template name="smilieinsert_smilie" version="1800"><![CDATA[<td style="text-align: center">{$smilie}</td>]]></template>
@@ -13942,7 +13942,7 @@ $(function() {
 <input type="hidden" name="fromemail" value="{$mybb->user['email']}" />]]></template>
 		<template name="task_image" version="1800"><![CDATA[<img src="{$mybb->settings['bburl']}/task.php" width="1" height="1" alt="" />]]></template>
 		<template name="smilie" version="1800"><![CDATA[<img src="{$smilie['image']}" alt="{$smilie['name']}" title="{$smilie['name']}" class="smilie smilie_{$smilie['sid']}{$extra_class}"{$onclick} />]]></template>
-		<template name="global_board_offline_modal" version="1801"><![CDATA[<div class="modal">
+		<template name="global_board_offline_modal" version="1802"><![CDATA[<div class="modal">
 	<div style="overflow-y: auto; max-height: 400px;">
 		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
