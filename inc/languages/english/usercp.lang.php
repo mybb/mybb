@@ -321,11 +321,11 @@ $l['cannot_leave_group'] = "You cannot leave this group because it is not a publ
 $l['details'] = "Details";
 $l['members_referred'] = "Members Referred:";
 $l['referral_link'] = "<br />To refer a member to this board, direct them to {1}/member.php?action=register&amp;referrer={2}";
-$l['redirect_subscriptionsremoved'] = "Your thread subscriptions list has been cleared.<br />You will be now returned to the location you came from.";
-$l['redirect_forumsubscriptionsremoved'] = "Your forum subscriptions list has now been cleared.<br />You will be now returned to the location you came from.";
+$l['redirect_subscriptionsremoved'] = "Your thread subscriptions list has been cleared.<br />You will be now returned to the Thread subscriptions list.";
+$l['redirect_forumsubscriptionsremoved'] = "Your forum subscriptions list has now been cleared.<br />You will be now returned to where you came from.";
 $l['redirect_subscriptionadded'] = "The selected thread has been added to your subscriptions list.<br />You will be now returned to the location you came from.";
-$l['redirect_optionsupdated'] = "Thank you, you have successfully updated your options.";
-$l['redirect_subscriptionremoved'] = "The selected thread has been removed from your subscriptions list.";
+$l['redirect_optionsupdated'] = "Thank you, you have successfully updated your options.<br />You will be now returned to the Thread subscriptions list.";
+$l['redirect_subscriptionremoved'] = "The selected thread has been removed from your subscriptions list.<br /> You will be now returned to the Thread subscriptions list.";
 $l['redirect_sigupdated'] = "Your signature has been successfully updated.<br />You will be now returned to the Signature settings.";
 $l['redirect_notepadupdated'] = "Your personal notepad has been updated.<br />You will be now returned to the User CP.";
 $l['redirect_profileupdated'] = "Thank you, your profile has been successfully updated.<br />You will be now returned to the Profile settings.";
