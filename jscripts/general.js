@@ -72,7 +72,7 @@ var MyBB = {
 
 	popupWindow: function(url, options, root)
 	{
-		if(!options) options = { fadeDuration: 250, zIndex: 5 }
+		if(!options) options = { fadeDuration: 250, zIndex: modal_zindex ? modal_zindex : 9999 }
 		if(root != true)
 			url = rootpath + url;
 
@@ -341,8 +341,8 @@ var MyBB = {
 
 	dismissPMNotice: function(bburl)
 	{
-		var pm_notice = $("#content").find("#pm_notice");
-		if(!pm_notice)
+		var pm_notice = $("#pm_notice");
+		if(!pm_notice.length)
 		{
 			return false;
 		}
@@ -578,7 +578,7 @@ var expandables = {
 			if(expandedItem.is(":hidden"))
 			{
 				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace("collapse_collapsed.png", "collapse.png"))
+				element.attr("src", element.attr("src").replace(/collapse_collapsed\.(gif|jpg|jpeg|bmp|png)$/i, "collapse.$1"))
 									.attr("alt", "[-]")
 									.attr("title", "[-]");
 				element.parent().parent('td').removeClass('tcat_collapse_collapsed');
@@ -589,7 +589,7 @@ var expandables = {
 			else
 			{
 				expandedItem.toggle("fast");
-				element.attr("src", element.attr("src").replace("collapse.png", "collapse_collapsed.png"))
+				element.attr("src", element.attr("src").replace(/collapse\.(gif|jpg|jpeg|bmp|png)$/i, "collapse_collapsed.$1"))
 									.attr("alt", "[+]")
 									.attr("title", "[+]");
 				element.parent().parent('td').addClass('tcat_collapse_collapsed');
