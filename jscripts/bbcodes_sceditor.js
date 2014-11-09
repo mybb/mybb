@@ -135,6 +135,18 @@ $(document).ready(function($) {
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
 		},
+		exec: function (caller) {
+			var	editor = this,
+				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
+
+			$.sceditor.command.get('size')._dropDown(
+				editor,
+				caller,
+				function(fontSize) {
+					editor.wysiwygEditorInsertHtml('<span data-scefontsize=' + sizes[fontSize-1] + ' style="font-size:' + sizes[fontSize-1] + '">', '</span>');
+				}
+			);
+		},
 		txtExec: function(caller) {
 			var	editor = this,
 				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
