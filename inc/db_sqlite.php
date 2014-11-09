@@ -8,7 +8,7 @@
  *
  */
 
-class DB_SQLite
+class DB_SQLite extends DB_Base
 {
 	/**
 	 * The title of this layer.
@@ -153,7 +153,7 @@ class DB_SQLite
 	 * @param boolean 1 if hide errors, 0 if not.
 	 * @return resource The query data.
 	 */
-	function query($string, $hide_errors=0)
+	function query($string, $hide_errors=0, $write_query=0)
 	{
 		global $pagestarttime, $db, $mybb;
 
@@ -287,7 +287,7 @@ class DB_SQLite
 	 * @param constant The type of array to return.
 	 * @return array The array of results.
 	 */
-	function fetch_array($query)
+	function fetch_array($query, $resulttype=0)
 	{
 		$array = $this->db->fetch_array($query);
 		return $array;

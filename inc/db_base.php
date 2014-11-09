@@ -19,14 +19,6 @@ abstract class DB_Base
     abstract function connect($config);
 
     /**
-     * Selects the database to use.
-     *
-     * @param string $database The database name.
-     * @return boolean True when successfully connected, false if not.
-     */
-    abstract function select_db($database);
-
-    /**
      * Query the database.
      *
      * @param string $string The query SQL.
