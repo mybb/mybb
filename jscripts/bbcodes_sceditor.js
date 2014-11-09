@@ -91,18 +91,16 @@ $(document).ready(function($) {
 					size     = 1;
 
 					if(fontSize > 9)
-						size = 1;
-					if(fontSize > 12)
 						size = 2;
-					if(fontSize > 15)
+					if(fontSize > 12)
 						size = 3;
-					if(fontSize > 17)
+					if(fontSize > 15)
 						size = 4;
-					if(fontSize > 23)
+					if(fontSize > 17)
 						size = 5;
-					if(fontSize > 31)
+					if(fontSize > 23)
 						size = 6;
-					if(fontSize > 47)
+					if(fontSize > 31)
 						size = 7;
 				}
 				else
@@ -136,6 +134,18 @@ $(document).ready(function($) {
 				content.append($('<a class="sceditor-fontsize-option" data-size="' + i + '" href="#"><font size="' + i + '">' + i + '</font></a>').click(clickFunc));
 
 			editor.createDropDown(caller, 'fontsize-picker', content);
+		},
+		exec: function (caller) {
+			var	editor = this,
+				sizes = ['xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'];
+
+			$.sceditor.command.get('size')._dropDown(
+				editor,
+				caller,
+				function(fontSize) {
+					editor.wysiwygEditorInsertHtml('<span data-scefontsize=' + sizes[fontSize-1] + ' style="font-size:' + sizes[fontSize-1] + '">', '</span>');
+				}
+			);
 		},
 		txtExec: function(caller) {
 			var	editor = this,
@@ -257,7 +267,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("php", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -277,11 +287,7 @@ $(document).ready(function($) {
 					before = '[php]',
 					end = '[/php]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -294,6 +300,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertphp', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[php]', '[/php]');
+				return;
+			}
 			$.sceditor.command.get('php')._dropDown(this, caller);
 		},
 		txtExec: ['[php]', '[/php]'],
@@ -322,7 +332,7 @@ $(document).ready(function($) {
 	});
 
 	$.sceditor.command.set("code", {
-		_dropDown: function (editor, caller, html) {
+		_dropDown: function (editor, caller) {
 			var $content;
 
 			$content = $(
@@ -342,11 +352,7 @@ $(document).ready(function($) {
 					before = '[code]',
 					end = '[/code]';
 
-				if (html) {
-					before = before + html + end;
-					end = null;
-				}
-				else if (val) {
+				if (val) {
 					before = before + val + end;
 					end = null;
 				}
@@ -359,6 +365,10 @@ $(document).ready(function($) {
 			editor.createDropDown(caller, 'insertcode', $content);
 		},
 		exec: function (caller) {
+			if ($.trim(this.getRangeHelper().selectedRange())) {
+				this.insert('[code]', '[/code]');
+				return;
+			}
 			$.sceditor.command.get('code')._dropDown(this, caller);
 		},
 		txtExec: ['[code]', '[/code]'],
@@ -538,13 +548,13 @@ $(document).ready(function($) {
 
 
 	/*************************************
-	 * Remove last bits of table support *
+	 * Remove last bits of table and superscript/subscript support *
 	 *************************************/
-	$.sceditor.command.remove('table');
-	$.sceditor.plugins.bbcode.bbcode.remove('table')
-					.remove('tr')
-					.remove('th')
-					.remove('td');
+	$.sceditor.command
+	.remove('table').remove('subscript').remove('superscript');
+	
+	$.sceditor.plugins.bbcode.bbcode
+	.remove('table').remove('tr').remove('th').remove('td').remove('sub').remove('sup');
 
 
 

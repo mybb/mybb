@@ -7,17 +7,17 @@ var Report = {
 
 	reportPost: function(pid)
 	{
-		MyBB.popupWindow("/report.php?type=post&pid="+pid);
+		MyBB.popupWindow("/report.php?modal=1&type=post&pid="+pid);
 	},
 	
 	reportUser: function(pid)
 	{
-		MyBB.popupWindow("/report.php?type=profile&pid="+pid);
+		MyBB.popupWindow("/report.php?modal=1&type=profile&pid="+pid);
 	},
 
 	reportReputation: function(pid)
 	{
-		MyBB.popupWindow("/report.php?type=reputation&pid="+pid);
+		MyBB.popupWindow("/report.php?modal=1&type=reputation&pid="+pid);
 	},
 	
 	submitReport: function(pid)
@@ -26,7 +26,7 @@ var Report = {
 		var datastring = $(".reportData_"+pid).serialize();
 		$.ajax({
 			type: "POST",
-			url: "report.php",
+			url: "report.php?modal=1",
 			data: datastring,
 			dataType: "html",
 			success: function(data) {
@@ -34,6 +34,7 @@ var Report = {
 				$('.modal_'+pid).fadeOut('slow', function() {
 					$('.modal_'+pid).html(data);
 					$('.modal_'+pid).fadeIn('slow');
+					$('.modal').fadeIn('slow');
 				});
 			},
 			error: function(){

@@ -2063,6 +2063,10 @@ function update_stats($changes=array(), $force=false)
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2158,6 +2162,10 @@ function update_forum_counters($fid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2324,6 +2332,10 @@ function update_thread_counters($tid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -2450,6 +2462,10 @@ function update_user_counters($uid, $changes=array())
 	{
 		if(array_key_exists($counter, $changes))
 		{
+			if(substr($changes[$counter], 0, 2) == "+-")
+			{
+				$changes[$counter] = substr($changes[$counter], 1);
+			}
 			// Adding or subtracting from previous value?
 			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
 			{
@@ -3535,7 +3551,7 @@ function get_ip()
 {
 	global $mybb, $plugins;
 
-	$ip = $_SERVER['REMOTE_ADDR'];
+	$ip = strtolower($_SERVER['REMOTE_ADDR']);
 
 	if($mybb->settings['ip_forwarded_check'])
 	{
@@ -3543,11 +3559,11 @@ function get_ip()
 
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_FORWARDED_FOR']));
 		}
 		elseif(isset($_SERVER['HTTP_X_REAL_IP']))
 		{
-			$addresses = explode(',', $_SERVER['HTTP_X_REAL_IP']);
+			$addresses = explode(',', strtolower($_SERVER['HTTP_X_REAL_IP']));
 		}
 
 		if(is_array($addresses))
@@ -3569,7 +3585,7 @@ function get_ip()
 	{
 		if(isset($_SERVER['HTTP_CLIENT_IP']))
 		{
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			$ip = strtolower($_SERVER['HTTP_CLIENT_IP']);
 		}
 	}
 

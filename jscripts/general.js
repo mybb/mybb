@@ -152,12 +152,12 @@ var MyBB = {
 			var pid = 0;
 		}
 
-		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid);
+		MyBB.popupWindow("/reputation.php?action=add&uid="+uid+"&pid="+pid+"&modal=1");
 	},
 
 	viewNotes: function(uid)
 	{
-		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid);
+		MyBB.popupWindow("/member.php?action=viewnotes&uid="+uid+"&modal=1");
 	},
 
 	deleteReputation: function(uid, rid)
@@ -218,7 +218,7 @@ var MyBB = {
 
 	whoPosted: function(tid)
 	{
-		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid);
+		MyBB.popupWindow("/misc.php?action=whoposted&tid="+tid+"&modal=1");
 	},
 
 	markForumRead: function(event)
@@ -373,7 +373,7 @@ var MyBB = {
 
 		$.ajax({
 			type: "POST",
-			url: "reputation.php",
+			url: "reputation.php?modal=1",
 			data: datastring,
 			dataType: "html",
 			success: function(data) {
@@ -381,6 +381,7 @@ var MyBB = {
 				$(".modal_"+uid+"_"+pid).fadeOut('slow', function() {
 					$(".modal_"+uid+"_"+pid).html(data);
 					$(".modal_"+uid+"_"+pid).fadeIn('slow');
+					$(".modal").fadeIn('slow');
 				});
 			},
 			error: function(){

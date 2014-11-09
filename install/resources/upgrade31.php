@@ -52,7 +52,7 @@ function upgrade31_dbchanges()
 	{
 		$helpdoc['document'] = str_replace(';key={1}', ';my_post_key={1}', $helpdoc['document']);
 	}
-	$db->update_query('helpdocs', array('document' => $helpdoc['document']), 'hid=\'3\'');
+	$db->update_query('helpdocs', array('document' => $db->escape_string($helpdoc['document'])), 'hid=\'3\'');
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("31_done");

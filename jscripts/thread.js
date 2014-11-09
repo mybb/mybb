@@ -562,7 +562,7 @@ var Thread = {
 
 	viewNotes: function(tid)
 	{
-		MyBB.popupWindow("/moderation.php?action=viewthreadnotes&tid="+tid);
+		MyBB.popupWindow("/moderation.php?action=viewthreadnotes&tid="+tid+"&modal=1");
 	}
 };
 
