@@ -306,6 +306,7 @@ if($mybb->input['action'] == "add_template")
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
@@ -710,6 +711,7 @@ if($mybb->input['action'] == "edit_template")
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
@@ -1209,6 +1211,7 @@ if($mybb->input['action'] == "search_replace")
 		echo "<script type=\"text/javascript\">
 			var editor1 = CodeMirror.fromTextArea(document.getElementById(\"find\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
@@ -1217,6 +1220,7 @@ if($mybb->input['action'] == "search_replace")
 
 			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				lineWrapping: true,
 				mode: \"text/html\",
 				tabMode: \"indent\",
