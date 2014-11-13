@@ -255,7 +255,7 @@ if($mybb->input['action'] == "add_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "add_template")
 
 	$form = new Form("index.php?module=style-templates&amp;action=add_template{$expand_str}", "post", "add_template");
 
-	$form_container = new FormContainer($lang->add_template);
+	$form_container = new FormContainer($lang->add_template, 'tfixed');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->template_set, $lang->template_set_desc, $form->generate_select_box('sid', $template_sets, $sid), 'sid');
 	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => '', 'style' => 'width: 100%; height: 500px;')), 'template');
@@ -303,15 +303,17 @@ if($mybb->input['action'] == "add_template")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -618,7 +620,7 @@ if($mybb->input['action'] == "edit_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
@@ -684,7 +686,7 @@ if($mybb->input['action'] == "edit_template")
 		echo $form->generate_hidden_field('from', "diff_report");
 	}
 
-	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title']);
+	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title'], 'tfixed');
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 
 	// Force users to save the default template to a specific set, rather than the "global" templates - where they can delete it
@@ -707,15 +709,17 @@ if($mybb->input['action'] == "edit_template")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor = CodeMirror.fromTextArea(document.getElementById(\"template\"), {
+		echo '<script type="text/javascript">
+			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -1150,7 +1154,7 @@ if($mybb->input['action'] == "search_replace")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
@@ -1172,7 +1176,7 @@ if($mybb->input['action'] == "search_replace")
 	$form = new Form("index.php?module=style-templates&amp;action=search_replace", "post", "do_template");
 	echo $form->generate_hidden_field('type', "templates");
 
-	$form_container = new FormContainer($lang->search_replace);
+	$form_container = new FormContainer($lang->search_replace, 'tfixed');
 	$form_container->output_row($lang->search_for, "", $form->generate_text_area('find', $mybb->input['find'], array('id' => 'find', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
 
 	$form_container->output_row($lang->replace_with, "", $form->generate_text_area('replace', $mybb->input['replace'], array('id' => 'replace', 'class' => '', 'style' => 'width: 100%; height: 200px;')));
@@ -1206,23 +1210,27 @@ if($mybb->input['action'] == "search_replace")
 
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script type=\"text/javascript\">
-			var editor1 = CodeMirror.fromTextArea(document.getElementById(\"find\"), {
+		echo '<script type="text/javascript">
+			var editor1 = CodeMirror.fromTextArea(document.getElementById("find"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
 
-			var editor2 = CodeMirror.fromTextArea(document.getElementById(\"replace\"), {
+			var editor2 = CodeMirror.fromTextArea(document.getElementById("replace"), {
 				lineNumbers: true,
 				lineWrapping: true,
-				mode: \"text/html\",
-				tabMode: \"indent\",
-				theme: \"mybb\"
+				viewportMargin: Infinity,
+				indentWithTabs: true,
+				indentUnit: 4,
+				mode: "text/html",
+				theme: "mybb"
 			});
-		</script>";
+		</script>';
 	}
 
 	$page->output_footer();
@@ -1685,7 +1693,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	$template_groups = array();
 	while($templategroup = $db->fetch_array($query))
 	{
-		$templategroup['title'] = $lang->sprintf($lang->templates, $lang->parse($templategroup['title']));
+		$templategroup['title'] = $lang->parse($templategroup['title'])." ".$lang->templates;
 		if($mybb->input['expand'] == 'all')
 		{
 			$expand_array[] = $templategroup['gid'];

@@ -317,6 +317,11 @@ table.general tr:last-child td:last-child {
 	-webkit-border-bottom-right-radius: 5px;
 }
 
+.tfixed {
+	table-layout: fixed;
+	word-wrap: break-word;
+}
+
 /* Page Footer */
 #footer {
 	clear: both;
