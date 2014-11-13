@@ -2393,6 +2393,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				tabMode: \"indent\",
 				theme: \"mybb\",
 				lineWrapping: true
@@ -2849,6 +2850,7 @@ if($mybb->input['action'] == "add_stylesheet")
 		echo "<script type=\"text/javascript\">
 			var editor = CodeMirror.fromTextArea(document.getElementById(\"stylesheet\"), {
 				lineNumbers: true,
+				viewportMargin: Infinity,
 				tabMode: \"indent\",
 				theme: \"mybb\",
 				lineWrapping: true
