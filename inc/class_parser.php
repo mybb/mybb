@@ -1434,7 +1434,7 @@ class postParser
 			$name = $url;
 		}
 
-		$link = "<a href=\"{$url}\" target=\"_blank\">{$name}</a>";
+		$link = "<a href=\"".urlencode($url)."\" target=\"_blank\">{$name}</a>";
 		$video = $lang->sprintf($lang->posted_video, $link);
 		return $video;
 	}

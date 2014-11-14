@@ -249,7 +249,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	// If we have a security question, check to see if answer is correct
 	if($mybb->settings['securityquestion'])
 	{
-		$question_id = $mybb->get_input('question_id');
+		$question_id = $db->escape_string($mybb->get_input('question_id'));
 		$answer = $db->escape_string($mybb->get_input('answer'));
 
 		$query = $db->query("

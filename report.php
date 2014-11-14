@@ -31,7 +31,7 @@ $error = $report_type_db = '';
 
 if(!empty($mybb->input['type']))
 {
-	$report_type = $mybb->get_input('type');
+	$report_type = htmlspecialchars_uni($mybb->get_input('type'));
 }
 
 $report_title = $lang->report_content;

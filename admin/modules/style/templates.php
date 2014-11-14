@@ -613,6 +613,7 @@ if($mybb->input['action'] == "edit_template")
 		$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 		$template = $db->fetch_array($query);
 	}
+	$template['title'] = htmlspecialchars_uni($template['title']);
 
 	if($admin_options['codepress'] != 0)
 	{
