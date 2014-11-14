@@ -100,6 +100,11 @@ $plugins->run_hooks("attachment_end");
 
 if(isset($mybb->input['thumbnail']))
 {
+	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['thumbnail']))
+	{
+		error($lang->error_invalidattachment);
+	}
+
 	$ext = get_extension($attachment['thumbnail']);
 	switch($ext)
 	{
@@ -135,6 +140,11 @@ if(isset($mybb->input['thumbnail']))
 }
 else
 {
+	if(!file_exists($mybb->settings['uploadspath']."/".$attachment['attachname']))
+	{
+		error($lang->error_invalidattachment);
+	}
+
 	$ext = get_extension($attachment['filename']);
 
 	switch($attachment['filetype'])
