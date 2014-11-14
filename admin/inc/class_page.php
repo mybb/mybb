@@ -97,7 +97,7 @@ class DefaultPage
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
 		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
-		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css?ver=1802\" type=\"text/css\" />\n";
+		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css?ver=1803\" type=\"text/css\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/modal.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one

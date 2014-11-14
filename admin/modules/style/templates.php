@@ -255,7 +255,7 @@ if($mybb->input['action'] == "add_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
@@ -620,7 +620,7 @@ if($mybb->input['action'] == "edit_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
@@ -1154,7 +1154,7 @@ if($mybb->input['action'] == "search_replace")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1802" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
