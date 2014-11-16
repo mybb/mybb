@@ -544,12 +544,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			}
 			else
 			{
-				$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
+				$profilelink = build_profile_link(htmlspecialchars_uni($announcement['username']), $announcement['uid']);
 			}
 
 			if(!$announcement['username'])
 			{
-				$announcement['username'] = $announcement['threadusername'];
+				$announcement['username'] = htmlspecialchars_uni($announcement['threadusername']);
 			}
 			$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
