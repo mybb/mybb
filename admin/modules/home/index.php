@@ -115,9 +115,24 @@ if($mybb->input['action'] == "version_check")
 		{
 			if(!isset($updated_cache['news'][2]))
 			{
+                $description = $item['description'];
+                if($item['content'])
+                {
+                    $description = $item['content'];
+                }
+
+                while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $description))
+                {
+                    $description = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $description);
+                }
+
+                $find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
+                $replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
+                $description = str_replace($find, $replace, $description);
+
 				$updated_cache['news'][] = array(
 					'title' => htmlspecialchars_uni($item['title']),
-					'description' => htmlspecialchars_uni(preg_replace('#<img(.*)/>#', '', $item['description'])),
+					'description' => preg_replace('#<img(.*)/>#', '', $description),
 					'link' => htmlspecialchars_uni($item['link']),
 					'author' => htmlspecialchars_uni($item['author']),
 					'dateline' => $item['date_timestamp'],
@@ -130,13 +145,9 @@ if($mybb->input['action'] == "version_check")
 				$stamp = my_date('relative', $item['date_timestamp']);
 			}
 
-			$content = htmlspecialchars_uni($item['description']);
-			if($item['content'])
-			{
-				$content = htmlspecialchars_uni($item['content']);
-			}
+            $link = htmlspecialchars_uni($item['link']);
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$updated_cache['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$description}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -345,7 +356,7 @@ elseif(!$mybb->input['action'])
 			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell(htmlspecialchars_uni($news_item['description']));
+			$table->construct_cell($news_item['description']);
 			$table->construct_row();
 		}
 	}
