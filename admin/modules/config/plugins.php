@@ -102,6 +102,12 @@ if($mybb->input['action'] == "browse")
 
 		foreach($tree['results']['result'] as $result)
 		{
+			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
+			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
+			$result['author']['value'] = htmlspecialchars_uni($result['author']['value']);
+			$result['version']['value'] = htmlspecialchars_uni($result['version']['value']);
+			$result['download_url']['value'] = htmlspecialchars_uni($result['download_url']['value']);
+			
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell($result['version']['value'], array("class" => "align_center"));
 			$table->construct_cell("<strong><a href=\"http://community.mybb.com/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));

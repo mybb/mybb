@@ -43,8 +43,8 @@ function task_versioncheck($task)
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	$latest_code = $tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
+	$latest_code = htmlspecialchars_uni($tree['mybb']['version_code']['value']);
+	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
