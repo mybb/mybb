@@ -75,10 +75,10 @@ function task_versioncheck($task)
 			}
 
 			$updated_cache['news'][] = array(
-				'title' => $item['title'],
-				'description' => preg_replace('#<img(.*)/>#', '', $item['description']),
-				'link' => $item['link'],
-				'author' => $item['author'],
+				'title' => htmlspecialchars_uni($item['title']),
+				'description' => htmlspecialchars_uni(preg_replace('#<img(.*)/>#', '', $item['description'])),
+				'link' => htmlspecialchars_uni($item['link']),
+				'author' => htmlspecialchars_uni($item['author']),
 				'dateline' => $item['date_timestamp']
 			);
 		}

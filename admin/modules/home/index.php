@@ -116,11 +116,11 @@ if($mybb->input['action'] == "version_check")
 			if(!isset($updated_cache['news'][2]))
 			{
 				$updated_cache['news'][] = array(
-					'title' => $item['title'],
-					'description' => preg_replace('#<img(.*)/>#', '', $item['description']),
-					'link' => $item['link'],
-					'author' => $item['author'],
-					'dateline' => $item['date_timestamp']
+					'title' => htmlspecialchars_uni($item['title']),
+					'description' => htmlspecialchars_uni(preg_replace('#<img(.*)/>#', '', $item['description'])),
+					'link' => htmlspecialchars_uni($item['link']),
+					'author' => htmlspecialchars_uni($item['author']),
+					'dateline' => $item['date_timestamp'],
 				);
 			}
 
@@ -130,13 +130,13 @@ if($mybb->input['action'] == "version_check")
 				$stamp = my_date('relative', $item['date_timestamp']);
 			}
 
-			$content = $item['description'];
+			$content = htmlspecialchars_uni($item['description']);
 			if($item['content'])
 			{
-				$content = $item['content'];
+				$content = htmlspecialchars_uni($item['content']);
 			}
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$updated_cache['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
