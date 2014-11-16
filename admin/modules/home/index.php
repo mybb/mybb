@@ -109,6 +109,9 @@ if($mybb->input['action'] == "version_check")
 
 	$updated_cache['news'] = array();
 
+	require_once MYBB_ROOT . '/inc/class_parser.php';
+	$post_parser = new postParser();
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
@@ -121,16 +124,10 @@ if($mybb->input['action'] == "version_check")
 					$description = $item['content'];
 				}
 
-				while (preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $description))
-				{
-					$description = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is",
-					                            "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $description
-					);
-				}
-
-				$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
-				$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
-				$description = str_replace($find, $replace, $description);
+				$description = $post_parser->parse_message($description, array(
+						'allow_html' => true,
+					)
+				);
 
 				$updated_cache['news'][] = array(
 					'title' => htmlspecialchars_uni($item['title']),
