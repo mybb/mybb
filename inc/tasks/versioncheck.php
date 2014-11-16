@@ -71,25 +71,27 @@ function task_versioncheck($task)
 	{
 		foreach($feed_parser->items as $item)
 		{
-			if(isset($updated_cache['news'][2]))
+			if (isset($updated_cache['news'][2]))
 			{
 				break;
 			}
 
-            $description = $item['description'];
-            if($item['content'])
-            {
-                $description = $item['content'];
-            }
+			$description = $item['description'];
+			if ($item['content'])
+			{
+				$description = $item['content'];
+			}
 
-            while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $description))
-            {
-                $description = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $description);
-            }
+			while (preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $description))
+			{
+				$description = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is",
+				                            "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $description
+				);
+			}
 
-            $find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
-            $replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
-            $description = str_replace($find, $replace, $description);
+			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
+			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
+			$description = str_replace($find, $replace, $description);
 
 			$updated_cache['news'][] = array(
 				'title' => htmlspecialchars_uni($item['title']),
