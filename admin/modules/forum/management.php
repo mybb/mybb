@@ -1991,6 +1991,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("posts", "fid='{$fid}' {$delquery}");
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
 		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
+		$db->delete_query("forumpermissions", "fid='{$fid}' {$delquery}");
 
 		$update_stats = array(
 			'numthreads' => "-".$stats['threads'],
