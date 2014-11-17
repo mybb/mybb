@@ -301,7 +301,7 @@ if($mybb->input['action'] == "check")
 		{
 			$plugin['download_url']['value'] = htmlspecialchars_uni($plugin['download_url']['value']);
 			$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
-			$plugin['vulnerable']['version'] = htmlspecialchars_uni($plugin['vulnerable']['version']);
+			$plugin['version']['value'] = htmlspecialchars_uni($plugin['version']['value']);
 		
 			if($is_vulnerable)
 			{
