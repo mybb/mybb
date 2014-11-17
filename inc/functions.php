@@ -2547,10 +2547,9 @@ function delete_post($pid)
  */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $showall=false, $permissions="", $name="fid")
 {
-	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = (int)$pid;
-	$jumpsel['default'] = '';
 
 	if($permissions)
 	{
@@ -2592,8 +2591,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 					if($selitem == $forum['fid'])
 					{
-						$optionselected = "selected=\"selected\"";
-						$selecteddone = 1;
+						$optionselected = 'selected="selected"';
 					}
 
 					$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
@@ -2612,16 +2610,6 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 	if($addselect)
 	{
-		if(!$selecteddone)
-		{
-			if(!$selitem)
-			{
-				$selitem = "default";
-			}
-
-			$jumpsel[$selitem] = 'selected="selected"';
-		}
-
 		if($showextras == 0)
 		{
 			$template = "special";
@@ -2632,11 +2620,11 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 			if(strpos(FORUM_URL, '.html') !== false)
 			{
-				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value+'", FORUM_URL)."'";
+				$forum_link = "'".str_replace('{fid}', "'+option+'", FORUM_URL)."'";
 			}
 			else
 			{
-				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value", FORUM_URL);
+				$forum_link = "'".str_replace('{fid}', "'+option", FORUM_URL);
 			}
 		}
 

@@ -4088,11 +4088,9 @@ a.button {
 </tr>]]></template>
 		<template name="forumdisplay_usersbrowsing" version="1400"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span><br />]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="forumjump_advanced" version="1611"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1803"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" class="forumjump">
-<option value="-1" {$jumpsel['default']}>{$lang->forumjump_select}</option>
-<option value="-1">--------------------</option>
 <option value="-4">{$lang->forumjump_pms}</option>
 <option value="-3">{$lang->forumjump_usercp}</option>
 <option value="-5">{$lang->forumjump_wol}</option>
@@ -4103,24 +4101,21 @@ a.button {
 {$gobutton}
 </form>
 <script type="text/javascript">
-<!--
-	$(".forumjump").change(function() {
-		var option = $(".forumjump").get(0).selectedIndex.value;
+$(".forumjump").change(function() {
+	var option = $(this).val();
 
-		if(option < 0)
-		{
-			window.location=('forumdisplay.php?fid='+option)
-			return
-		}
-
-		window.location=({$forum_link})
-	})
-//-->
+	if(option < 0)
+	{
+		window.location = 'forumdisplay.php?fid='+option;
+	}
+	else
+	{
+		window.location = {$forum_link};
+	}
+});
 </script>]]></template>
 		<template name="forumjump_bit" version="120"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
-		<template name="forumjump_special" version="120"><![CDATA[<select name="{$name}">
-<option value="index" {$jumpsel['default']}>{$lang->forumjump_select}</option>
-<option value="index">--------------------</option>
+		<template name="forumjump_special" version="1803"><![CDATA[<select name="{$name}">
 {$forumjumpbits}
 </select>]]></template>
 		<template name="global_bannedwarning" version="1400"><![CDATA[<div class="red_alert">

@@ -288,7 +288,6 @@ $l['postbit_button_delete_pm'] = 'Delete';
 $l['postbit_button_purgespammer'] = "Purge Spammer";
 
 $l['forumjump'] = "Forum Jump:";
-$l['forumjump_select'] = "Please select one:";
 $l['forumjump_pms'] = "Private Messages";
 $l['forumjump_usercp'] = "User Control Panel";
 $l['forumjump_wol'] = "Who's Online";
