@@ -78,10 +78,6 @@ function task_versioncheck($task)
 			}
 
 			$description = $item['description'];
-			if ($item['content'])
-			{
-				$description = $item['content'];
-			}
 
 			$description = $post_parser->parse_message($description, array(
 					'allow_html' => true,

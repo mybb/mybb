@@ -119,12 +119,14 @@ if($mybb->input['action'] == "version_check")
 			if(!isset($updated_cache['news'][2]))
 			{
 				$description = $item['description'];
-				if ($item['content'])
-				{
-					$description = $item['content'];
-				}
+				$content = $item['content'];
 
 				$description = $post_parser->parse_message($description, array(
+						'allow_html' => true,
+					)
+				);
+
+				$content = $post_parser->parse_message($content, array(
 						'allow_html' => true,
 					)
 				);
@@ -146,7 +148,7 @@ if($mybb->input['action'] == "version_check")
 
 			$link = htmlspecialchars_uni($item['link']);
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$description}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
