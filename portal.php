@@ -538,18 +538,21 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
+			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
+			$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+
 			if($announcement['uid'] == 0)
 			{
-				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
+				$profilelink = $announcement['threadusername'];
 			}
 			else
 			{
-				$profilelink = build_profile_link(htmlspecialchars_uni($announcement['username']), $announcement['uid']);
+				$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
 			}
 
 			if(!$announcement['username'])
 			{
-				$announcement['username'] = htmlspecialchars_uni($announcement['threadusername']);
+				$announcement['username'] = $announcement['threadusername'];
 			}
 			$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
 			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
