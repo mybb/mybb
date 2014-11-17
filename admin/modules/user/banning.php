@@ -564,7 +564,7 @@ if(!$mybb->input['action'])
 	<script type="text/javascript">
 	<!--
 	$("#username").select2({
-		placeholder: "Search for a user",
+		placeholder: "'.$lang->search_user.'",
 		minimumInputLength: 3,
 		maximumSelectionSize: 3,
 		multiple: false,
@@ -592,6 +592,11 @@ if(!$mybb->input['action'])
 				}).done(function(data) { callback(data); });
 			}
 		},
+	});
+
+  	$(\'[for=username]\').click(function(){
+		$("#username").select2(\'open\');
+		return false;
 	});
 	// -->
 	</script>';
