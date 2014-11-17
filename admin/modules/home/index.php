@@ -69,7 +69,7 @@ if($mybb->input['action'] == "version_check")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
-	$latest_code = htmlspecialchars_uni($tree['mybb']['version_code']['value']);
+	$latest_code = (int)$tree['mybb']['version_code']['value'];
 	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{

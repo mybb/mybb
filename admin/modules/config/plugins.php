@@ -299,6 +299,10 @@ if($mybb->input['action'] == "check")
 
 		if(version_compare($names[$plugin['attributes'][$compare_by]]['version'], $plugin['version']['value'], "<"))
 		{
+			$plugin['download_url']['value'] = htmlspecialchars_uni($plugin['download_url']['value']);
+			$plugin['vulnerable']['value'] = htmlspecialchars_uni($plugin['vulnerable']['value']);
+			$plugin['vulnerable']['version'] = htmlspecialchars_uni($plugin['vulnerable']['version']);
+		
 			if($is_vulnerable)
 			{
 				$table->construct_cell("<div class=\"error\" id=\"flash_message\">
