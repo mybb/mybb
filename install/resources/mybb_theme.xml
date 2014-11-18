@@ -4469,11 +4469,6 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 	});
-
-  	$('[for=inviteusername]').click(function(){
-		$("#inviteusername").select2('open');
-		return false;
-	});
 }
 // -->
 </script>
@@ -5383,11 +5378,6 @@ if(use_xmlhttprequest == "1")
 				});
 			}
 		},
-	});
-
-  	$('[for=referer]').click(function(){
-		$("#referer").select2('open');
-		return false;
 	});
 }
 // -->
@@ -10360,11 +10350,6 @@ if(use_xmlhttprequest == "1")
 		}
 	});
 
-  	$('[for=to]').click(function(){
-		$("#to").select2('open');
-		return false;
-	});
-
   $("#bcc").select2({
 		placeholder: "{$lang->search_user}",
 		minimumInputLength: 3,
@@ -10401,11 +10386,6 @@ if(use_xmlhttprequest == "1")
 				callback(newqueries);
 			}
 		}
-	});
-
-  	$('[for=bcc]').click(function(){
-		$("#bcc").select2('open');
-		return false;
 	});
 }
 // -->
@@ -10891,11 +10871,6 @@ if(use_xmlhttprequest == "1")
 				});
 			}
 		},
-	});
-
-  	$('[for=author]').click(function(){
-		$("#author").select2('open');
-		return false;
 	});
 }
 // -->
@@ -12099,11 +12074,6 @@ if(use_xmlhttprequest == "1")
 											}
 										},
 									});
-
-									$('[for=buddy_add_username]').click(function(){
-										$("#buddy_add_username").select2('open');
-										return false;
-									});
                                 }
                             // -->
 							</script>
@@ -12175,11 +12145,6 @@ if(use_xmlhttprequest == "1")
 												callback(newqueries);
 											}
 										},
-									});
-
-									$('[for=ignored_add_username]').click(function(){
-										$("#ignored_add_username").select2('open');
-										return false;
 									});
 								}
 							// -->
