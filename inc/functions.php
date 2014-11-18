@@ -6399,7 +6399,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 }
 
 /**
- * Fetch the contents of a remote fle.
+ * Fetch the contents of a remote file.
  *
  * @param string The URL of the remote file
  * @param array The array of post data
