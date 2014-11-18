@@ -8,7 +8,7 @@
  *
  */
 
-$l['hello'] = 'Test Plugin';
+$l['hello'] = 'Hello World!';
 $l['hello_add'] = 'Add';
 $l['hello_add_message'] = 'Add Message';
 $l['hello_empty'] = 'No messages were found.';
