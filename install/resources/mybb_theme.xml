@@ -5514,7 +5514,7 @@ if(use_xmlhttprequest == "1")
 </table>
 </div>
 </div>]]></template>
-		<template name="memberlist" version="1800"><![CDATA[<html>
+		<template name="memberlist" version="1803"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -5658,6 +5658,11 @@ if(use_xmlhttprequest == "1")
 			}
 		},
 	});
+
+  	$('[for=username]').click(function(){
+		$("#username").select2('open');
+		return false;
+	});
 }
 // -->
 </script>
@@ -5665,7 +5670,7 @@ if(use_xmlhttprequest == "1")
 </html>]]></template>
 		<template name="memberlist_referrals" version="1800"><![CDATA[<td class="tcat" width="10%" align="center"><span class="smalltext"><a href="{$sorturl}&amp;sort=referrals&amp;order=descending"><strong>{$lang->referrals}</strong></a> {$orderarrow['referrals']}</span></td>]]></template>
 		<template name="memberlist_referrals_bit" version="1600"><![CDATA[<td class="{$alt_bg}" align="center">{$user['referrals']}</td>]]></template>
-		<template name="memberlist_search" version="1800"><![CDATA[<html>
+		<template name="memberlist_search" version="1803"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -5799,6 +5804,11 @@ if(use_xmlhttprequest == "1")
 				return {id:term, text:term};
 			}
 		},
+	});
+
+  	$('[for=username]').click(function(){
+		$("#username").select2('open');
+		return false;
 	});
 }
 // -->
