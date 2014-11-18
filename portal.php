@@ -538,9 +538,12 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			$announcement['forumlink'] = get_forum_link($announcement['fid']);
 			$announcement['forumname'] = $forum_cache[$announcement['fid']]['name'];
 
+			$announcement['username'] = htmlspecialchars_uni($announcement['username']);
+			$announcement['threadusername'] = htmlspecialchars_uni($announcement['threadusername']);
+
 			if($announcement['uid'] == 0)
 			{
-				$profilelink = htmlspecialchars_uni($announcement['threadusername']);
+				$profilelink = $announcement['threadusername'];
 			}
 			else
 			{
