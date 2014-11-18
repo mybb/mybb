@@ -5107,19 +5107,33 @@ function update_first_post($tid)
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
-
-	if(empty($firstpost['username']))
+	if(empty($firstpost))
 	{
-		$firstpost['username'] = $firstpost['postusername'];
+		$update_array = array(
+			'firstpost' => 0,
+			'username' => '',
+			'uid' => 0,
+			'dateline' => 0,
+		);
+		
+		$db->update_query("threads", $update_array, "tid='{$tid}'");
 	}
-	$firstpost['username'] = $db->escape_string($firstpost['username']);
+	else
+	{
+		if(empty($firstpost['username']))
+		{
+			$firstpost['username'] = $firstpost['postusername'];
+		}
+		$firstpost['username'] = $db->escape_string($firstpost['username']);
 
-	$update_array = array(
-		'firstpost' => (int)$firstpost['pid'],
-		'username' => $firstpost['username'],
-		'uid' => (int)$firstpost['uid'],
-		'dateline' => (int)$firstpost['dateline']
-	);
+		$update_array = array(
+			'firstpost' => (int)$firstpost['pid'],
+			'username' => $firstpost['username'],
+			'uid' => (int)$firstpost['uid'],
+			'dateline' => (int)$firstpost['dateline']
+		);
+	}
+	
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
