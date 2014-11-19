@@ -65,20 +65,30 @@ function task_versioncheck($task)
 
 	$updated_cache['news'] = array();
 
+	require_once MYBB_ROOT . '/inc/class_parser.php';
+	$post_parser = new postParser();
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{
-			if(isset($updated_cache['news'][2]))
+			if (isset($updated_cache['news'][2]))
 			{
 				break;
 			}
 
+			$description = $item['description'];
+
+			$description = $post_parser->parse_message($description, array(
+					'allow_html' => true,
+				)
+			);
+
 			$updated_cache['news'][] = array(
-				'title' => $item['title'],
-				'description' => preg_replace('#<img(.*)/>#', '', $item['description']),
-				'link' => $item['link'],
-				'author' => $item['author'],
+				'title' => htmlspecialchars_uni($item['title']),
+				'description' => preg_replace('#<img(.*)/>#', '', $description),
+				'link' => htmlspecialchars_uni($item['link']),
+				'author' => htmlspecialchars_uni($item['author']),
 				'dateline' => $item['date_timestamp']
 			);
 		}

@@ -109,18 +109,34 @@ if($mybb->input['action'] == "version_check")
 
 	$updated_cache['news'] = array();
 
+	require_once MYBB_ROOT . '/inc/class_parser.php';
+	$post_parser = new postParser();
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
 		{
 			if(!isset($updated_cache['news'][2]))
 			{
+				$description = $item['description'];
+				$content = $item['content'];
+
+				$description = $post_parser->parse_message($description, array(
+						'allow_html' => true,
+					)
+				);
+
+				$content = $post_parser->parse_message($content, array(
+						'allow_html' => true,
+					)
+				);
+
 				$updated_cache['news'][] = array(
-					'title' => $item['title'],
-					'description' => preg_replace('#<img(.*)/>#', '', $item['description']),
-					'link' => $item['link'],
-					'author' => $item['author'],
-					'dateline' => $item['date_timestamp']
+					'title' => htmlspecialchars_uni($item['title']),
+					'description' => preg_replace('#<img(.*)/>#', '', $description),
+					'link' => htmlspecialchars_uni($item['link']),
+					'author' => htmlspecialchars_uni($item['author']),
+					'dateline' => $item['date_timestamp'],
 				);
 			}
 
@@ -130,13 +146,9 @@ if($mybb->input['action'] == "version_check")
 				$stamp = my_date('relative', $item['date_timestamp']);
 			}
 
-			$content = $item['description'];
-			if($item['content'])
-			{
-				$content = $item['content'];
-			}
+			$link = htmlspecialchars_uni($item['link']);
 
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".htmlspecialchars_uni($item['title'])."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$link}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
@@ -345,7 +357,7 @@ elseif(!$mybb->input['action'])
 			$table->construct_cell("<strong><a href=\"{$news_item['link']}\" target=\"_blank\">{$news_item['title']}</a></strong><br /><span class=\"smalltext\">{$posted}</span>");
 			$table->construct_row();
 
-			$table->construct_cell(htmlspecialchars_uni($news_item['description']));
+			$table->construct_cell($news_item['description']);
 			$table->construct_row();
 		}
 	}
