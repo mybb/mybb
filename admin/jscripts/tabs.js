@@ -9,7 +9,7 @@ $(function()
 
 		$(this).data('rendered', 'yes');
 
-		var tab = $(this).parent().parent(), activeTab, activeContent, links = $(this).find('a');
+		var activeTab, activeContent, links = $(this).find('a');
 
 		activeTab = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
 		activeTab.addClass('active');
@@ -18,7 +18,7 @@ $(function()
 		// Hide the remaining content
 		links.not(activeTab).each(function()
 		{
-			tab.find($(this).attr('href')).hide();
+			$($(this).attr('href')).hide();
 		});
 
 		// Tab functionality
