@@ -11908,7 +11908,7 @@ if(use_xmlhttprequest == "1")
 </body>
 </html>]]></template>
 		<template name="usercp_currentavatar" version="1800"><![CDATA[<td class="trow1" valign="top" align="center" width="1"><div class="usercp_container"><img src="{$useravatar['image']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$useravatar['width_height']} /></div></td>]]></template>
-		<template name="usercp_drafts" version="1600"><![CDATA[<html>
+		<template name="usercp_drafts" version="1803"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
 {$headerinclude}
@@ -11929,7 +11929,7 @@ if(use_xmlhttprequest == "1")
 <td width="66%" class="tcat"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
-<td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox checkall" /></td>
+<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
 </tr>
 {$drafts}
 </table>
