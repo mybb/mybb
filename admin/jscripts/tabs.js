@@ -2,6 +2,13 @@ $(function()
 {
 	$('ul.tabs').each(function()
 	{
+		if($(this).data('rendered'))
+		{
+			return;
+		}
+
+		$(this).data('rendered', 'yes');
+
 		var activeTab, activeContent, links = $(this).find('a');
 
 		activeTab = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
