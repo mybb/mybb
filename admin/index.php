@@ -192,7 +192,7 @@ elseif($mybb->input['do'] == "login")
 		$db->insert_query("adminsessions", $admin_session);
 		$admin_session['data'] = array();
 		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".(int)$mybb->user['uid']."'");
-		my_setcookie("adminsid", $sid);
+		my_setcookie("adminsid", $sid, '', true);
 		my_setcookie('acploginattempts', 0);
 		$post_verify = false;
 
