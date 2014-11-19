@@ -1663,10 +1663,6 @@ div.jqi .jqibuttons button:focus {
 	outline: none;
 }
 
-.jqiwarning .jqi .jqibuttons {
-	background-color: #b95656;
-}
-
 /* sub states */
 
 div.jqi .jqiparentstate::after {
