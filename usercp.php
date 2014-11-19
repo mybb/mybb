@@ -2914,10 +2914,10 @@ if($mybb->input['action'] == "editlists")
 				$sent_rows = '';
 				$query = $db->query("
 					SELECT r.*, u.username
-					FROM `".TABLE_PREFIX."buddyrequests` r
-					LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
-					WHERE r.uid=".(int)$mybb->user['uid']."
-				");
+					FROM ".TABLE_PREFIX."buddyrequests r
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
+					WHERE r.uid=".(int)$mybb->user['uid']);
+
 				while($request = $db->fetch_array($query))
 				{
 					$bgcolor = alt_trow();
@@ -2948,10 +2948,10 @@ if($mybb->input['action'] == "editlists")
 	$received_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
-		FROM `".TABLE_PREFIX."buddyrequests` r
-		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.uid)
-		WHERE r.touid=".(int)$mybb->user['uid']."
-	");
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.uid)
+		WHERE r.touid=".(int)$mybb->user['uid']);
+
 	while($request = $db->fetch_array($query))
 	{
 		$bgcolor = alt_trow();
@@ -2970,10 +2970,10 @@ if($mybb->input['action'] == "editlists")
 	$sent_rows = '';
 	$query = $db->query("
 		SELECT r.*, u.username
-		FROM `".TABLE_PREFIX."buddyrequests` r
-		LEFT JOIN `".TABLE_PREFIX."users` u ON (u.uid=r.touid)
-		WHERE r.uid=".(int)$mybb->user['uid']."
-	");
+		FROM ".TABLE_PREFIX."buddyrequests r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.touid)
+		WHERE r.uid=".(int)$mybb->user['uid']);
+
 	while($request = $db->fetch_array($query))
 	{
 		$bgcolor = alt_trow();
