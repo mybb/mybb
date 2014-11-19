@@ -981,7 +981,7 @@ if($mybb->input['action'] == "change")
 		{
 			my_unsetcookie("adminsid");
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
-			my_setcookie("adminsid", $admin_session['sid']);
+			my_setcookie("adminsid", $admin_session['sid'], '', true);
 		}
 
 		// Have we opted for a reCAPTCHA and not set a public/private key?
