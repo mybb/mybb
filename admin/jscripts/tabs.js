@@ -2,7 +2,14 @@ $(function()
 {
 	$('ul.tabs').each(function()
 	{
-		var activeTab, activeContent, links = $(this).find('a');
+		if($(this).data('rendered'))
+		{
+			return;
+		}
+
+		$(this).data('rendered', 'yes');
+
+		var tab = $(this).parent().parent(), activeTab, activeContent, links = $(this).find('a');
 
 		activeTab = $(links.filter('[href="'+location.hash+'"]')[0] || links[0]);
 		activeTab.addClass('active');
@@ -11,7 +18,7 @@ $(function()
 		// Hide the remaining content
 		links.not(activeTab).each(function()
 		{
-			$($(this).attr('href')).hide();
+			tab.find($(this).attr('href')).hide();
 		});
 
 		// Tab functionality
