@@ -1270,6 +1270,10 @@ class postParser
 		{
 			return "<a href=\"mailto:$email\">".$name."</a>";
 		}
+		elseif(preg_match("/^([a-zA-Z0-9-_\+\.]+?)@[a-zA-Z0-9-]+\.[a-zA-Z0-9\.-]+\?(.*?)$/si", $email))
+		{
+			return "<a href=\"mailto:".htmlspecialchars_uni($email)."\">".$name."</a>";
+		}
 		else
 		{
 			return $email;
