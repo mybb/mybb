@@ -1038,9 +1038,6 @@ class postParser
 		}
 		$fullurl = $url;
 
-		$url = str_replace('&amp;', '&', $url);
-		$name = str_replace('&amp;', '&', $name);
-
 		if(!$name)
 		{
 			$name = $url;
@@ -1187,25 +1184,8 @@ class postParser
 	function mycode_parse_img_disabled($url)
 	{
 		global $lang;
-		$url = trim($url);
-		$url = str_replace("\n", "", $url);
-		$url = str_replace("\r", "", $url);
-		$url = str_replace("\'", "'", $url);
 
-		if(!empty($this->options['shorten_urls']))
-		{
-			if(my_strlen($url) > 55)
-			{
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
-			}
-		}
-		else
-		{
-			$name = $url;
-		}
-
-		$link = "<a href=\"{$url}\" target=\"_blank\">{$name}</a>";
-		$image = $lang->sprintf($lang->posted_image, $link);
+		$image = $lang->sprintf($lang->posted_image, $this->mycode_parse_url($url));
 		return $image;
 	}
 
@@ -1422,20 +1402,7 @@ class postParser
 		$url = str_replace("\r", "", $url);
 		$url = str_replace("\'", "'", $url);
 
-		if(!empty($this->options['shorten_urls']))
-		{
-			if(my_strlen($url) > 55)
-			{
-				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
-			}
-		}
-		else
-		{
-			$name = $url;
-		}
-
-		$link = "<a href=\"".urlencode($url)."\" target=\"_blank\">{$name}</a>";
-		$video = $lang->sprintf($lang->posted_video, $link);
+		$video = $lang->sprintf($lang->posted_video, $this->mycode_parse_url($url));
 		return $video;
 	}
 
