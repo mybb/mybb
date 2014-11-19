@@ -73,14 +73,14 @@ if(!$mybb->input['action'])
 			foreach($team['member'] as $member)
 			{
 				$members[] = array(
-					'name' => $member['name']['value'],
-					'username' => $member['username']['value'],
-					'profile' => $member['profile']['value'],
-					'lead' => (bool) $member['attributes']['lead'] or false
+					'name' => htmlspecialchars_uni($member['name']['value']),
+					'username' => htmlspecialchars_uni($member['username']['value']),
+					'profile' => htmlspecialchars_uni($member['profile']['value']),
+					'lead' => (bool)$member['attributes']['lead'] or false
 				);
 			}
 			$mybbgroup[] = array(
-				'title' => $team['attributes']['title'],
+				'title' => htmlspecialchars_uni($team['attributes']['title']),
 				'members' => $members
 			);
 		}
