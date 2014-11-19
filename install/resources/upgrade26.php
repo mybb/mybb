@@ -34,7 +34,7 @@ function upgrade26_dbchanges()
 
 	if($db->field_exists('failedlogin', 'users'))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
+		$db->drop_column("users", "failedlogin");
 	}
 
 	// We don't need the posthash after the post is inserted into the database
