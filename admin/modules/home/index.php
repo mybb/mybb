@@ -131,9 +131,12 @@ if($mybb->input['action'] == "version_check")
 					)
 				);
 
+				$description = preg_replace('#<img(.*)/>#', '', $description);
+				$content = preg_replace('#<img(.*)/>#', '', $content);
+
 				$updated_cache['news'][] = array(
 					'title' => htmlspecialchars_uni($item['title']),
-					'description' => preg_replace('#<img(.*)/>#', '', $description),
+					'description' => $description,
 					'link' => htmlspecialchars_uni($item['link']),
 					'author' => htmlspecialchars_uni($item['author']),
 					'dateline' => $item['date_timestamp'],
