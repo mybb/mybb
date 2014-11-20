@@ -1644,6 +1644,8 @@ if($mybb->input['action'] == "subscriptions")
 			{
 				$icon = $icon_cache[$thread['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 			}
 			else
@@ -3885,6 +3887,8 @@ if(!$mybb->input['action'])
 						{
 							$icon = $icon_cache[$thread['icon']];
 							$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+							$icon['path'] = htmlspecialchars_uni($icon['path']);
+							$icon['name'] = htmlspecialchars_uni($icon['name']);
 							eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 						}
 						else
@@ -4071,6 +4075,8 @@ if(!$mybb->input['action'])
 				{
 					$icon = $icon_cache[$thread['icon']];
 					$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+					$icon['path'] = htmlspecialchars_uni($icon['path']);
+					$icon['name'] = htmlspecialchars_uni($icon['name']);
 					eval("\$icon = \"".$templates->get("usercp_subscriptions_thread_icon")."\";");
 				}
 				else

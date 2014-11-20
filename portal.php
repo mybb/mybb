@@ -559,6 +559,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			{
 				$icon = $icon_cache[$announcement['icon']];
 				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("portal_announcement_icon")."\";");
 			}
 			else

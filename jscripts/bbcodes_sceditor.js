@@ -174,6 +174,7 @@ $(document).ready(function($) {
 			var	author = '',
 				$elm  = $(element),
 				$cite = $elm.children('cite').first();
+				$cite.html($cite.text());
 
 			if($cite.length === 1 || $elm.data('author'))
 			{

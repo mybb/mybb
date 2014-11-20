@@ -70,7 +70,7 @@ if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset'])
 // 1. Check cookies
 if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
 }
 
 // 2. Load style

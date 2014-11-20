@@ -1914,6 +1914,12 @@ function my_set_array_cookie($name, $id, $value, $expires="")
  */
 function my_unserialize($data)
 {
+	// Do no unserialize objects
+	if(substr($data, 0, 1) == 'O')
+	{
+		return array();
+	}
+
 	$array = unserialize($data);
 
 	if(!is_array($array))

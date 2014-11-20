@@ -1102,6 +1102,9 @@ if($mybb->input['action'] == "thread")
 			if($similar_thread['icon'] > 0 && $icon_cache[$similar_thread['icon']])
 			{
 				$icon = $icon_cache[$similar_thread['icon']];
+				$icon['path'] = str_replace("{theme}", $theme['imgdir'], $icon['path']);
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				eval("\$icon = \"".$templates->get("forumdisplay_thread_icon")."\";");
 			}
 			else

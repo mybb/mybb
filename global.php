@@ -131,7 +131,7 @@ if(isset($mybb->input['theme']) && verify_post_check($mybb->get_input('my_post_k
 // Cookied theme!
 else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybbtheme']))
 {
-	$mybb->user['style'] = $mybb->cookies['mybbtheme'];
+	$mybb->user['style'] = (int)$mybb->cookies['mybbtheme'];
 }
 
 // This user has a custom theme set in their profile
