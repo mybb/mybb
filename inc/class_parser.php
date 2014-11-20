@@ -1184,6 +1184,10 @@ class postParser
 	function mycode_parse_img_disabled($url)
 	{
 		global $lang;
+		$url = trim($url);
+		$url = str_replace("\n", "", $url);
+		$url = str_replace("\r", "", $url);
+		$url = str_replace("\'", "'", $url);
 
 		$image = $lang->sprintf($lang->posted_image, $this->mycode_parse_url($url));
 		return $image;
