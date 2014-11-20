@@ -84,9 +84,11 @@ function task_versioncheck($task)
 				)
 			);
 
+			$description = preg_replace('#<img(.*)/>#', '', $description);
+
 			$updated_cache['news'][] = array(
 				'title' => htmlspecialchars_uni($item['title']),
-				'description' => preg_replace('#<img(.*)/>#', '', $description),
+				'description' => $description,
 				'link' => htmlspecialchars_uni($item['link']),
 				'author' => htmlspecialchars_uni($item['author']),
 				'dateline' => $item['date_timestamp']
