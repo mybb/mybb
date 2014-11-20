@@ -985,6 +985,8 @@ if(!empty($threadcache))
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
 			$icon = $icon_cache[$thread['icon']];
+			$icon['path'] = htmlspecialchars_uni($icon['path']);
+			$icon['name'] = htmlspecialchars_uni($icon['name']);
 			$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 		}
 		else

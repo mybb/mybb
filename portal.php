@@ -485,6 +485,8 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 			if($announcement['icon'] > 0 && $icon_cache[$announcement['icon']])
 			{
 				$icon = $icon_cache[$announcement['icon']];
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
 			else

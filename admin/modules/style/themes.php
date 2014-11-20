@@ -194,8 +194,20 @@ if($mybb->input['action'] == "browse")
 			$tree['results']['result'][0] = $only_theme;
 		}
 
+		require_once MYBB_ROOT . '/inc/class_parser.php';
+		$post_parser = new postParser();
+
 		foreach($tree['results']['result'] as $result)
 		{
+			$result['thumbnail']['value'] = htmlspecialchars_uni($result['thumbnail']['value']);
+			$result['name']['value'] = htmlspecialchars_uni($result['name']['value']);
+			$result['description']['value'] = htmlspecialchars_uni($result['description']['value']);
+			$result['author']['value'] = $post_parser->parse_message($result['author']['value'], array(
+					'allow_html' => true
+				)
+			);
+			$result['download_url']['value'] = htmlspecialchars_uni(html_entity_decode($result['download_url']['value']));
+
 			$table->construct_cell("<img src=\"http://mods.mybb.com/{$result['thumbnail']['value']}\" alt=\"{$lang->theme_thumbnail}\" title=\"{$lang->theme_thumbnail}\"/>", array("class" => "align_center", "width" => 100));
 			$table->construct_cell("<strong>{$result['name']['value']}</strong><br /><small>{$result['description']['value']}</small><br /><i><small>{$lang->created_by} {$result['author']['value']}</small></i>");
 			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$result['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));

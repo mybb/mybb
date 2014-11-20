@@ -404,6 +404,8 @@ if($mybb->input['action'] == "results")
 			if($icon_cache[$thread['icon']])
 			{
 				$posticon = $icon_cache[$thread['icon']];
+				$posticon['path'] = htmlspecialchars_uni($posticon['path']);
+				$posticon['name'] = htmlspecialchars_uni($posticon['name']);
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
 			}
 			else
@@ -801,6 +803,8 @@ if($mybb->input['action'] == "results")
 			if($icon_cache[$post['icon']])
 			{
 				$posticon = $icon_cache[$post['icon']];
+				$posticon['path'] = htmlspecialchars_uni($posticon['path']);
+				$posticon['name'] = htmlspecialchars_uni($posticon['name']);
 				$icon = "<img src=\"".$posticon['path']."\" alt=\"".$posticon['name']."\" />";
 			}
 			else

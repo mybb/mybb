@@ -1333,6 +1333,8 @@ if($mybb->input['action'] == "event")
 		}
 	}
 
+	$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
+
 	if($event['ignoretimezone'] == 0)
 	{
 		$offset = $event['timezone'];
@@ -1663,6 +1665,8 @@ if($mybb->input['action'] == "dayview")
 					$event['usertitle'] = $lang->guest;
 				}
 			}
+
+			$event['usertitle'] = htmlspecialchars_uni($event['usertitle']); 
 
 			if($event['ignoretimezone'] == 0)
 			{

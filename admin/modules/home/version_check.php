@@ -82,8 +82,8 @@ if(!$mybb->input['action'])
 		exit;
 	}
 
-	$latest_code = $tree['mybb']['version_code']['value'];
-	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
+	$latest_code = (int)$tree['mybb']['version_code']['value'];
+	$latest_version = "<strong>".htmlspecialchars_uni($tree['mybb']['latest_version']['value'])."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
 		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
@@ -121,7 +121,10 @@ if(!$mybb->input['action'])
 	{
 		$page->output_success("<p><em>{$lang->success_up_to_date}</em></p>");
 	}
-	
+
+	require_once MYBB_ROOT . '/inc/class_parser.php';
+	$post_parser = new postParser();
+
 	if($feed_parser->error == '')
 	{
 		foreach($feed_parser->items as $item)
@@ -142,6 +145,15 @@ if(!$mybb->input['action'])
 			{
 				$content = $item['description'];
 			}
+
+			$item['title'] = htmlspecialchars_uni($item['title']);
+			$item['link'] = htmlspecialchars_uni($item['link']);
+
+			$content = $post_parser->parse_message($content, array(
+					'allow_html' => true,
+				)
+			);
+
 			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}

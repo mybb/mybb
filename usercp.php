@@ -1404,6 +1404,8 @@ if($mybb->input['action'] == "subscriptions")
 			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
 				$icon = $icon_cache[$thread['icon']];
+				$icon['path'] = htmlspecialchars_uni($icon['path']);
+				$icon['name'] = htmlspecialchars_uni($icon['name']);
 				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
 			else
@@ -3283,6 +3285,8 @@ if(!$mybb->input['action'])
 						if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 						{
 							$icon = $icon_cache[$thread['icon']];
+							$icon['path'] = htmlspecialchars_uni($icon['path']);
+							$icon['name'] = htmlspecialchars_uni($icon['name']);
 							$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 						}
 						else
@@ -3462,6 +3466,8 @@ if(!$mybb->input['action'])
 				if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 				{
 					$icon = $icon_cache[$thread['icon']];
+					$icon['path'] = htmlspecialchars_uni($icon['path']);
+					$icon['name'] = htmlspecialchars_uni($icon['name']);
 					$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 				}
 				else

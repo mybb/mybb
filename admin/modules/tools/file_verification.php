@@ -95,7 +95,7 @@ if(!$mybb->input['action'])
 					break;
 			}
 			
-			$table->construct_cell("<strong><span style=\"color: {$color};\">".substr($file['path'], 2)."</span></strong>");
+			$table->construct_cell("<strong><span style=\"color: {$color};\">".htmlspecialchars_uni(substr($file['path'], 2))."</span></strong>");
 			
 			$table->construct_cell("<strong><span style=\"color: {$color};\">{$file['status']}</span></strong>", array("class" => "align_center"));
 			$table->construct_row();
