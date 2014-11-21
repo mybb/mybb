@@ -4088,7 +4088,7 @@ a.button {
 </tr>]]></template>
 		<template name="forumdisplay_usersbrowsing" version="1400"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span><br />]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="forumjump_advanced" version="1803"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1804"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" class="forumjump">
 <option value="-4">{$lang->forumjump_pms}</option>
@@ -4115,7 +4115,7 @@ $(".forumjump").change(function() {
 });
 </script>]]></template>
 		<template name="forumjump_bit" version="120"><![CDATA[<option value="{$forum['fid']}" {$optionselected}>{$depth} {$forum['name']}</option>]]></template>
-		<template name="forumjump_special" version="1803"><![CDATA[<select name="{$name}">
+		<template name="forumjump_special" version="1804"><![CDATA[<select name="{$name}">
 {$forumjumpbits}
 </select>]]></template>
 		<template name="global_bannedwarning" version="1400"><![CDATA[<div class="red_alert">
