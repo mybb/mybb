@@ -4951,7 +4951,7 @@ if(use_xmlhttprequest == "1")
 	<td class="{$bgcolor}"><strong>{$lang->homepage}</strong></td>
 	<td class="{$bgcolor}"><a href="{$memprofile['website']}" target="_blank">{$memprofile['website']}</a></td>
 </tr>]]></template>
-		<template name="member_register" version="1800"><![CDATA[<html>
+		<template name="member_register" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
@@ -5077,48 +5077,45 @@ if(use_xmlhttprequest == "1")
 </div>
 </form>
 <script type="text/javascript">
-<!--
-$().ready(function() {
-	// validate registration_form
+$(document).ready(function() {
 	$("#registration_form").validate({
 		rules: {
-          username: {
-            required: true,
-            minlength: {$mybb->settings['minnamelength']},
-			maxlength: {$mybb->settings['maxnamelength']},
-			remote:{
-				url: "xmlhttp.php?action=username_availability",
-				type: "post",
-              	dataType: "json",
-				data:
-				{
-					my_post_key: my_post_key
+			username: {
+				required: true,
+				minlength: {$mybb->settings['minnamelength']},
+				maxlength: {$mybb->settings['maxnamelength']},
+				remote: {
+					url: "xmlhttp.php?action=username_availability",
+					type: "post",
+					dataType: "json",
+					data:
+					{
+						my_post_key: my_post_key
+					},
 				},
 			},
-          },
-          email: {
+			email: {
 				required: true,
 				email: true,
-          },
-          email2: {
+			},
+			email2: {
 				required: true,
 				email: true,
 				equalTo: "#email"
-          },
+			},
 		},
 		messages: {
-            username: {
-              		minlength: "{$lang->js_validator_username_length}",
-              		maxlength: "{$lang->js_validator_username_length}",
-            },
-          	email: "{$lang->js_validator_invalid_email}",
+			username: {
+				minlength: "{$lang->js_validator_username_length}",
+				maxlength: "{$lang->js_validator_username_length}",
+			},
+			email: "{$lang->js_validator_invalid_email}",
 			email2: "{$lang->js_validator_email_match}",
 		}
 	});
 
-   {$validator_extra}
+	{$validator_extra}
 });
-// -->
 </script>
 {$footer}
 </body>
