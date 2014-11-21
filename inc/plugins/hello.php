@@ -68,6 +68,7 @@ function hello_info()
 		'author'		=> 'MyBB Group',
 		'authorsite'	=> 'http://www.mybb.com',
 		'version'		=> '2.0',
+		'compatibility'	=> '1.8*',
 		'codename'		=> 'hello'
 	);
 }
@@ -290,7 +291,27 @@ function hello_is_installed()
 */
 function hello_uninstall()
 {
-	global $db;
+	global $db, $mybb;
+
+	if($mybb->request_method != 'post')
+	{
+		global $page;
+
+		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello');
+	}
+
+	if(!verify_post_check($mybb->get_input('my_post_key')))
+	{
+		global $lang;
+
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect('index.php?module=config-plugins');
+	}
+
+	if(isset($mybb->input['no']))
+	{
+		admin_redirect('index.php?module=config-plugins');
+	}
 
 	// remove our template
 	$db->delete_query('templates', "title IN ('hello_index') AND sid='-1'");
