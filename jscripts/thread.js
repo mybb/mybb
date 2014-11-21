@@ -273,7 +273,7 @@ var Thread = {
 				// Create a copy of the post
 				if($('#pid_' + pid + '_temp').length == 0)
 				{
-					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').css('display','none').appendTo("body");
+					$('#pid_' + pid).clone().attr('id','pid_' + pid + '_temp').appendTo("body").hide();
 				}
 
 				// Trigger the edit event
@@ -376,13 +376,13 @@ var Thread = {
 						{
 							$('#imagestring').attr('type', 'hidden').val(cap[3]);
 							// hide the captcha
-							$('#captcha_trow').css('display', 'none');
+							$('#captcha_trow').hide();
 						}
 						else
 						{
 							$('#captcha_img').attr('src', "captcha.php?action=regimage&imagehash="+imghash);
 							$('#imagestring').attr('type', 'text').val('');
-							$('#captcha_trow').css('display', '');
+							$('#captcha_trow').show();
 						}
 					}
 				}
@@ -404,13 +404,10 @@ var Thread = {
 				
 			Thread.quickEdit("#pid_" + pid);
 
-			/*if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
-			{*/
-				// Eval javascript
-				$(json.data).filter("script").each(function(e) {
-					eval($(this).text());
-				});
-			//}
+			// Eval javascript
+			$(json.data).filter("script").each(function(e) {
+				eval($(this).text());
+			});
 
 			$('#quick_reply_form')[0].reset();
 
@@ -467,7 +464,7 @@ var Thread = {
 								if(json.data == 1)
 								{
 									// Change CSS class of div 'post_[pid]'
-									$("#post_"+pid).addClass("unapproved_post").addClass("deleted_post");
+									$("#post_"+pid).addClass("unapproved_post deleted_post");
 
 									$("#quick_delete_" + pid).hide();
 									$("#quick_restore_" + pid).show();
@@ -540,7 +537,7 @@ var Thread = {
 							else if(json.hasOwnProperty("data"))
 							{
 								// Change CSS class of div 'post_[pid]'
-								$("#post_"+pid).removeClass("unapproved_post").removeClass("deleted_post");
+								$("#post_"+pid).removeClass("unapproved_post deleted_post");
 
 								$("#quick_delete_" + pid).show();
 								$("#quick_restore_" + pid).hide();

@@ -214,7 +214,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		try {
 			if($stop_forum_spam_checker->is_user_a_spammer($user['username'], $user['email'], get_ip()))
 			{
-					error($lang->sprintf($lang->error_stop_forum_spam_spammer,
+				error($lang->sprintf($lang->error_stop_forum_spam_spammer,
 						$stop_forum_spam_checker->getErrorText(array(
 							'stopforumspam_check_usernames',
 							'stopforumspam_check_emails',
@@ -1040,11 +1040,11 @@ if($mybb->input['action'] == "register")
 					}
 					
 					$validator_extra .= "
-					$(\"#{$id}\").rules(\"add\", {
+					$('#{$id}').rules('add', {
 						required: true,
 						minlength: 1,
 						messages: {
-							required: \"{$lang->js_validator_not_empty}\"
+							required: '{$lang->js_validator_not_empty}'
 						}
 					});\n";
 
@@ -1105,20 +1105,22 @@ if($mybb->input['action'] == "register")
 				{
 					// JS validator extra for our default CAPTCHA
 					$validator_extra .= "
-					$(\"#imagestring\").rules(\"add\", {
+					$('#imagestring').rules('add', {
 						required: true,
 						remote:{
-							url: \"xmlhttp.php?action=validate_captcha\",
-							type: \"post\",
-							dataType: \"json\",
+							url: 'xmlhttp.php?action=validate_captcha',
+							type: 'post',
+							dataType: 'json',
 							data:
 							{
-								imagehash: $('#imagehash').val(),
+								imagehash: function () {
+									return $('#imagehash').val();
+								},
 								my_post_key: my_post_key
 							},
 						},
 						messages: {
-							remote: \"{$lang->js_validator_no_image_text}\"
+							remote: '{$lang->js_validator_no_image_text}'
 						}
 					});\n";
 				}
@@ -1152,20 +1154,22 @@ if($mybb->input['action'] == "register")
 				eval("\$questionbox = \"".$templates->get("member_register_question")."\";");
 				
 				$validator_extra .= "
-				$(\"#answer\").rules(\"add\", {
+				$('#answer').rules('add', {
 					required: true,
 					remote:{
-						url: \"xmlhttp.php?action=validate_question\",
-						type: \"post\",
-						dataType: \"json\",
+						url: 'xmlhttp.php?action=validate_question',
+						type: 'post',
+						dataType: 'json',
 						data:
 						{
-							question: $('#question_id').val(),
+							question: function () {
+								return $('#question_id').val();
+							},
 							my_post_key: my_post_key
 						},
 					},
 					messages: {
-						remote: \"{$lang->js_validator_no_security_question}\"
+						remote: '{$lang->js_validator_no_security_question}'
 					}
 				});\n";
 			}
@@ -1190,47 +1194,47 @@ if($mybb->input['action'] == "register")
 				$lang->password = $lang->complex_password = $lang->sprintf($lang->complex_password, $mybb->settings['minpasswordlength']);
 				
 				$validator_extra .= "
-				$(\"#password\").rules(\"add\", {
+				$('#password').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
 					remote:{
-						url: \"xmlhttp.php?action=complex_password\",
-						type: \"post\",
-						dataType: \"json\",
+						url: 'xmlhttp.php?action=complex_password',
+						type: 'post',
+						dataType: 'json',
 						data:
 						{
 							my_post_key: my_post_key
 						},
 					},
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\",
-						remote: \"{$lang->js_validator_no_image_text}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}',
+						remote: '{$lang->js_validator_no_image_text}'
 					}
 				});\n";
 			}
 			else
 			{
 				$validator_extra .= "
-				$(\"#password\").rules(\"add\", {
+				$('#password').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}'
 					}
 				});\n";
 			}
 
 			$validator_extra .= "
-				$(\"#password2\").rules(\"add\", {
+				$('#password2').rules('add', {
 					required: true,
 					minlength: {$mybb->settings['minpasswordlength']},
-					equalTo: \"#password\",
+					equalTo: '#password',
 					messages: {
-						minlength: \"{$lang->js_validator_password_length}\",
-						required: \"{$lang->js_validator_password_length}\",
-						equalTo: \"{$lang->js_validator_password_matches}\"
+						minlength: '{$lang->js_validator_password_length}',
+						required: '{$lang->js_validator_password_length}',
+						equalTo: '{$lang->js_validator_password_matches}'
 					}
 				});\n";
 
@@ -1968,14 +1972,16 @@ if($mybb->input['action'] == "profile")
 	}
 	
 	$contact_fields = array();
+	$any_contact_field = false;
 	foreach(array('icq', 'aim', 'yahoo', 'skype', 'google') as $field)
 	{
 		$contact_fields[$field] = '';
-
 		$settingkey = 'allow'.$field.'field';
 
 		if(!empty($memprofile[$field]) && ($mybb->settings[$settingkey] == -1 || $mybb->settings[$settingkey] != '' && is_member($mybb->settings[$settingkey], array('usergroup' => $memprofile['usergroup'], 'additionalgroups' => $memprofile['additionalgroups']))))
 		{
+			$any_contact_field = true;
+			
 			if($field == 'icq')
 			{
 				$memprofile[$field] = (int)$memprofile[$field];
@@ -1989,13 +1995,9 @@ if($mybb->input['action'] == "profile")
 			$bgcolors[$field] = alt_trow();
 			eval('$contact_fields[\''.$field.'\'] = "'.$templates->get($tmpl).'";');
 		}
-		else
-		{
-			$memprofile[$field] = '';
-		}
 	}
 	
-	if(!empty($contact_fields) || $sendemail || $sendpm || $website)
+	if($any_contact_field || $sendemail || $sendpm || $website)
 	{
 		eval('$contact_details = "'.$templates->get("member_profile_contact_details").'";');
 	}

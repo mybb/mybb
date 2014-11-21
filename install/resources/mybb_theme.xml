@@ -5291,14 +5291,14 @@ $().ready(function() {
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
 </tr>]]></template>
-		<template name="member_register_question" version="1800"><![CDATA[<br />
+		<template name="member_register_question" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.question_fetch_failure = "{$lang->question_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/question.js?ver=1804"></script>
 <legend><strong>{$lang->security_question}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -5382,14 +5382,14 @@ if(use_xmlhttprequest == "1")
 }
 // -->
 </script>]]></template>
-		<template name="member_register_regimage" version="1800"><![CDATA[<br />
+		<template name="member_register_regimage" version="1804"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript">
 <!--
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -9326,7 +9326,7 @@ if(use_xmlhttprequest == "1")
 </td>
 </tr>]]></template>
 		<template name="post_attachments_update" version="1604"><![CDATA[<input type="submit" class="button" name="updateattachment" value="{$lang->update_attachment}" tabindex="12" />]]></template>
-		<template name="post_captcha" version="1800"><![CDATA[<tr id="captcha_trow">
+		<template name="post_captcha" version="1804"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top" width="350"><strong>{$lang->image_verification}</strong>
 <br/>
 <span class="smalltext">{$lang->verification_note}</span>
@@ -9337,7 +9337,7 @@ if(use_xmlhttprequest == "1")
 	lang.captcha_fetch_failure = "{$lang->captcha_fetch_failure}";
 // -->
 </script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/captcha.js?ver=1804"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td style="vertical-align: middle;"><img src="{$mybb->settings['bburl']}/captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -11141,7 +11141,7 @@ if(use_xmlhttprequest == "1")
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$emailcode}</div></td>
 <td width="5%" class="{$bgcolor}"><div class="postbit_buttons">{$pmcode}</div></td>
 </tr>]]></template>
-		<template name="showthread" version="1800"><![CDATA[<html>
+		<template name="showthread" version="1804"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -11165,7 +11165,7 @@ if(use_xmlhttprequest == "1")
 <!-- jeditable (jquery) -->
 <script type="text/javascript" src="{$mybb->asset_url}/jscripts/report.js?ver=1800"></script>
 <script src="{$mybb->asset_url}/jscripts/jeditable/jeditable.min.js"></script>
-<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1800"></script>
+<script type="text/javascript" src="{$mybb->asset_url}/jscripts/thread.js?ver=1804"></script>
 </head>
 <body>
 	{$header}
