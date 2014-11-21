@@ -165,7 +165,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
 		}
 
-		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
+		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 		if($type == "user")
 		{
@@ -372,7 +372,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
 		}
 
-		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
+		$form_container->output_row($lang->results_per_page, "", $form->generate_numeric_field('perpage', $mybb->input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 		if($type == "user")
 		{

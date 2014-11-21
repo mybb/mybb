@@ -413,7 +413,7 @@ if($mybb->input['action'] == "edit")
 		</script>";
 	$form_container->output_row("{$lang->delivery_date}: <em>*</em>", $lang->delivery_date_desc, $actions);
 
-	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
+	$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 	$format_options = array(
 		0 => $lang->plain_text_only,
@@ -1254,7 +1254,7 @@ if($mybb->input['action'] == "send")
 
 		$form_container->output_row("{$lang->message_format}:", "", $form->generate_select_box('format', $format_options, $input['format'], array('id' => 'format')), 'format', null, array("id" => "format_container"));
 
-		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 0)), 'perpage');
+		$form_container->output_row("{$lang->per_page}: <em>*</em>", $lang->per_page_desc, $form->generate_numeric_field('perpage', $input['perpage'], array('id' => 'perpage', 'min' => 1)), 'perpage');
 
 		$form_container->end();
 
