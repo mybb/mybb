@@ -1051,12 +1051,12 @@ if($mybb->input['action'] == "register")
 						}
 						
 						$validator_extra .= "
-								{$inp_selector}.rules('add', {
-									required: true,
-									messages: {
-										required: '{$lang->js_validator_not_empty}'
-									}
-								});\n";
+						{$inp_selector}.rules('add', {
+							required: true,
+							messages: {
+								required: '{$lang->js_validator_not_empty}'
+							}
+						});\n";
 					}
 
 					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
