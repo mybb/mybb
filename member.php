@@ -881,6 +881,7 @@ if($mybb->input['action'] == "register")
 					continue;
 				}
 
+				$code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 				$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 				$thing = explode("\n", $profilefield['type'], "2");
 				$type = trim($thing[0]);
@@ -923,7 +924,7 @@ if($mybb->input['action'] == "register")
 							$sel = "";
 							if($val == $seloptions[$val])
 							{
-								$sel = " selected=\"selected\"";
+								$sel = ' selected="selected"';
 							}
 
 							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
@@ -948,7 +949,7 @@ if($mybb->input['action'] == "register")
 							$sel = "";
 							if($val == $userfield)
 							{
-								$sel = " selected=\"selected\"";
+								$sel = ' selected="selected"';
 							}
 
 							eval("\$select .= \"".$templates->get("usercp_profile_profilefields_select_option")."\";");
@@ -971,7 +972,7 @@ if($mybb->input['action'] == "register")
 							$checked = "";
 							if($val == $userfield)
 							{
-								$checked = "checked=\"checked\"";
+								$checked = 'checked="checked"';
 							}
 
 							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_radio")."\";");
@@ -1003,7 +1004,7 @@ if($mybb->input['action'] == "register")
 							$checked = "";
 							if($val == $seloptions[$val])
 							{
-								$checked = "checked=\"checked\"";
+								$checked = 'checked="checked"';
 							}
 
 							eval("\$code .= \"".$templates->get("usercp_profile_profilefields_checkbox")."\";");
@@ -1029,24 +1030,34 @@ if($mybb->input['action'] == "register")
 
 				if($profilefield['required'] == 1)
 				{
-					// JS validator extra
-					if($type == "checkbox" || $type == "radio")
+					// JS validator extra, choose correct selectors for everything except single select which always has value
+					if($type != 'select')
 					{
-						$id = "{$field}0";
-					}
-					else
-					{
-						$id = "fid{$profilefield['fid']}";
-					}
-					
-					$validator_extra .= "
-					$('#{$id}').rules('add', {
-						required: true,
-						minlength: 1,
-						messages: {
-							required: '{$lang->js_validator_not_empty}'
+						if($type == "textarea")
+						{
+							$inp_selector = "$('textarea[name=\"profile_fields[{$field}]\"')";					
 						}
-					});\n";
+						elseif($type == "multiselect")
+						{
+							$inp_selector = "$('select[name=\"profile_fields[{$field}][]\"')";					
+						}
+						elseif($type == "checkbox")
+						{
+							$inp_selector = "$('input[name=\"profile_fields[{$field}][]\"')";	
+						}
+						else
+						{
+							$inp_selector = "$('input[name=\"profile_fields[{$field}]\"')";
+						}
+						
+						$validator_extra .= "
+								{$inp_selector}.rules('add', {
+									required: true,
+									messages: {
+										required: '{$lang->js_validator_not_empty}'
+									}
+								});\n";
+					}
 
 					eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
@@ -1054,14 +1065,6 @@ if($mybb->input['action'] == "register")
 				{
 					eval("\$customfields .= \"".$templates->get("member_register_customfield")."\";");
 				}
-
-				$code = '';
-				$select = '';
-				$val = '';
-				$options = '';
-				$expoptions = '';
-				$useropts = '';
-				$seloptions = '';
 			}
 		}
 

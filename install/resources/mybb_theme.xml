@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1800">
+<theme name="MyBB Master Style" version="1804">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[mybb.css]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
+		<stylesheet name="global.css" version="1804" disporder="1"><![CDATA[body {
 	background: #fff;
 	color: #333;
 	text-align: center;
@@ -619,26 +619,16 @@ form {
 	padding: 0;
 }
 
-form input.error {
+input.error, textarea.error, select.error {
 	border: 1px solid #f30;
 	color: #f30;
-	background: #ffffff;
-	padding: 3px;
-	outline: 0;
-	font-size: 13px;
-	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-form input.valid {
+input.valid, textarea.valid, select.valid {
 	border: 1px solid #0c0;
-	background: #ffffff;
-	padding: 3px;
-	outline: 0;
-	font-size: 13px;
-	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
-form label.error {
+label.error {
 	color: #f30;
 	margin: 5px;
 	padding: 0px;
@@ -5111,6 +5101,12 @@ $(document).ready(function() {
 			},
 			email: "{$lang->js_validator_invalid_email}",
 			email2: "{$lang->js_validator_email_match}",
+		},
+		errorPlacement: function(error, element) {
+			if(element.is(':checkbox') || element.is(':radio'))
+				error.insertAfter($('input[name="' + element.attr('name') + '"]').last().next('span'));
+			else
+				error.insertAfter(element);
 		}
 	});
 
