@@ -8,7 +8,7 @@
  *
  */
 
-class DB_SQLite extends DB_Base
+class DB_SQLite implements DB_Base
 {
 	/**
 	 * The title of this layer.
