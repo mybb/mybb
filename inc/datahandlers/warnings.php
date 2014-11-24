@@ -212,7 +212,7 @@ class WarningsHandler extends DataHandler
 
 			$warning['points'] = round($warning['custom_points']);
 
-			// Build expiry date				
+			// Build expiry date
 			if($warning['expires_period'] == "hours")
 			{
 				$warning['expires'] = $warning['expires']*3600 + TIME_NOW;
@@ -254,7 +254,7 @@ class WarningsHandler extends DataHandler
 
 			$warning['points'] = $this->warning_type['points'];
 
-			$warning['title'] = $warning['expires'] = '';
+			$warning['title'] = $this->warning_type['title'];
 			if($this->warning_type['expirationtime'])
 			{
 				$warning['expires'] = TIME_NOW+$this->warning_type['expirationtime'];
