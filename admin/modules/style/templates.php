@@ -255,16 +255,20 @@ if($mybb->input['action'] == "add_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -307,6 +311,8 @@ if($mybb->input['action'] == "add_template")
 			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
 				indentWithTabs: true,
 				indentUnit: 4,
@@ -620,16 +626,20 @@ if($mybb->input['action'] == "edit_template")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -713,6 +723,8 @@ if($mybb->input['action'] == "edit_template")
 			var editor = CodeMirror.fromTextArea(document.getElementById("template"), {
 				lineNumbers: true,
 				lineWrapping: true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
 				indentWithTabs: true,
 				indentUnit: 4,
@@ -1154,16 +1166,20 @@ if($mybb->input['action'] == "search_replace")
 	{
 		$page->extra_header .= '
 <link href="./jscripts/codemirror/lib/codemirror.css" rel="stylesheet">
-<link href="./jscripts/codemirror/theme/mybb.css?ver=1803" rel="stylesheet">
+<link href="./jscripts/codemirror/theme/mybb.css?ver=1804" rel="stylesheet">
 <script src="./jscripts/codemirror/lib/codemirror.js"></script>
 <script src="./jscripts/codemirror/mode/xml/xml.js"></script>
 <script src="./jscripts/codemirror/mode/javascript/javascript.js"></script>
 <script src="./jscripts/codemirror/mode/css/css.js"></script>
 <script src="./jscripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet" >
+<link href="./jscripts/codemirror/addon/dialog/dialog-mybb.css" rel="stylesheet">
 <script src="./jscripts/codemirror/addon/dialog/dialog.js"></script>
 <script src="./jscripts/codemirror/addon/search/searchcursor.js"></script>
 <script src="./jscripts/codemirror/addon/search/search.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldcode.js"></script>
+<script src="./jscripts/codemirror/addon/fold/xml-fold.js"></script>
+<script src="./jscripts/codemirror/addon/fold/foldgutter.js"></script>
+<link href="./jscripts/codemirror/addon/fold/foldgutter.css" rel="stylesheet">
 ';
 	}
 
@@ -1214,6 +1230,8 @@ if($mybb->input['action'] == "search_replace")
 			var editor1 = CodeMirror.fromTextArea(document.getElementById("find"), {
 				lineNumbers: true,
 				lineWrapping: true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
 				indentWithTabs: true,
 				indentUnit: 4,
@@ -1224,6 +1242,8 @@ if($mybb->input['action'] == "search_replace")
 			var editor2 = CodeMirror.fromTextArea(document.getElementById("replace"), {
 				lineNumbers: true,
 				lineWrapping: true,
+				foldGutter: true,
+				gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 				viewportMargin: Infinity,
 				indentWithTabs: true,
 				indentUnit: 4,
