@@ -197,7 +197,7 @@ if(!$mybb->input['action'])
 	}
 
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
+	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject);
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));

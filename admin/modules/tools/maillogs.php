@@ -270,7 +270,7 @@ if(!$mybb->input['action'])
 	$form = new Form("index.php?module=tools-maillogs&amp;action=prune", "post");
 
 	$table = new Table;
-	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
+	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject, array("colspan" => 2));
 	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
