@@ -195,6 +195,10 @@ if(!$mybb->input['action'])
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
 	}
+	else
+	{
+		$additional_criteria = '';
+	}
 
 	$table = new Table;
 	$table->construct_header($form->generate_check_box("allbox", 1, '', array('class' => 'checkall')));
