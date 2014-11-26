@@ -11721,7 +11721,7 @@ if(use_xmlhttprequest == "1")
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_attachments" version="1400"><![CDATA[<html>
+		<template name="usercp_attachments" version="1804"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 {$headerinclude}
@@ -11742,7 +11742,7 @@ if(use_xmlhttprequest == "1")
 <td class="tcat" colspan="2" width="40%"><span class="smalltext"><strong>{$lang->attachments_attachment}</strong></span></td>
 <td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->attachments_post}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date_uploaded}</strong></span></td>
-<td class="tcat" width="1"><input type="checkbox" class="checkbox checkall" /></td>
+<td class="tcat" width="1"><input type="checkbox" name="allbox" class="checkbox checkall" /></td>
 </tr>
 {$attachments}
 </table>
