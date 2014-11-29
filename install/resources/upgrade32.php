@@ -38,6 +38,9 @@ function upgrade32_dbchanges()
 		case "pgsql":
 			$db->add_column("usergroups", "candeletereputations", "smallint NOT NULL default '0' AFTER cangivereputations");
 			break;
+		case "sqlite":
+			$db->add_column("usergroups", "candeletereputations", "tinyint(1) NOT NULL default '0'");
+			break;
 		default:
 			$db->add_column("usergroups", "candeletereputations", "tinyint(1) NOT NULL default '0' AFTER cangivereputations");
 			break;
