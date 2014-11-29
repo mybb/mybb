@@ -28,6 +28,21 @@ function upgrade32_dbchanges()
 	echo "<p>Performing necessary upgrade queries...</p>";
 	flush();
 
+	if($db->field_exists('candeletereputations', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "candeletereputations");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+			$db->add_column("usergroups", "candeletereputations", "smallint NOT NULL default '0' AFTER cangivereputations");
+			break;
+		default:
+			$db->add_column("usergroups", "candeletereputations", "tinyint(1) NOT NULL default '0' AFTER cangivereputations");
+			break;
+	}
+
 	// delete forumpermissions belonging to a deleted forum
 	$db->delete_query("forumpermissions", "fid NOT IN(SELECT fid FROM {$db->table_prefix}forums)");
 	

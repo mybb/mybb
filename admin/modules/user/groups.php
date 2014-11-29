@@ -61,6 +61,7 @@ $usergroup_permissions = array(
 	"showforumteam" => 0,
 	"usereputationsystem" => 1,
 	"cangivereputations" => 1,
+	"candeletereputations" => 1,
 	"reputationpower" => 1,
 	"maxreputationsday" => 5,
 	"maxreputationsperuser" => 5,
@@ -867,6 +868,7 @@ if($mybb->input['action'] == "edit")
 				"showforumteam" => (int)$mybb->input['showforumteam'],
 				"usereputationsystem" => (int)$mybb->input['usereputationsystem'],
 				"cangivereputations" => (int)$mybb->input['cangivereputations'],
+				"candeletereputations" => (int)$mybb->input['candeletereputations'],
 				"reputationpower" => (int)$mybb->input['reputationpower'],
 				"maxreputationsday" => (int)$mybb->input['maxreputationsday'],
 				"maxreputationsperuser" => (int)$mybb->input['maxreputationsperuser'],
@@ -1096,6 +1098,7 @@ if($mybb->input['action'] == "edit")
 	$reputation_options = array(
 		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->input['usereputationsystem'])),
 		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->input['cangivereputations'])),
+		$form->generate_check_box("candeletereputations", 1, $lang->can_delete_own_reputation, array("checked" => $mybb->input['candeletereputations'])),
 		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_numeric_field('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50')),
 		"{$lang->max_reputations_perthread}<br /><small class=\"input\">{$lang->max_reputations_perthread_desc}</small><br />".$form->generate_numeric_field('maxreputationsperthread', $mybb->input['maxreputationsperthread'], array('id' => 'maxreputationsperthread', 'class' => 'field50')),
 		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_numeric_field('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50'))
