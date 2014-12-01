@@ -186,12 +186,7 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
 
-	$unviewablefids = explode(',', $unviewableforums);
-	foreach($unviewablefids as $key => $fid)
-	{
-		$unviewablefids[$key] = (int)$fid;
-	}
-	unset($fid);
+	$unviewablefids1 = array_map('intval', explode(',', $unviewableforums));
 }
 
 if($inactiveforums)
@@ -199,15 +194,10 @@ if($inactiveforums)
 	$flist .= " AND fid NOT IN ({$inactiveforums})";
 	$tflist .= " AND t.fid NOT IN ({$inactiveforums})";
 
-	$unviewablefids = explode(',', $inactiveforums);
-	foreach($unviewablefids as &$fid)
-	{
-		$fid = (int)$fid;
-	}
-	unset($fid);
+	$unviewablefids2 = array_map('intval', explode(',', $inactiveforums));
 }
 
-$unviewableforums = $unviewablefids;
+$unviewableforums = array_merge($unviewablefids1, $unviewablefids2);
 
 if(!isset($collapsedimg['modcpforums']))
 {
@@ -1053,8 +1043,13 @@ if($mybb->input['action'] == "do_new_announcement")
 		error_no_permission();
 	}
 
+<<<<<<< HEAD
 	$announcement_fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+=======
+	$announcement_fid = $mybb->get_input('fid', 1);
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement_fid, $unviewableforums)))
+>>>>>>> Fix #1669 and #1670 - announcements no permission error and wrong $unviewablefids
 	{
 		error_no_permission();
 	}
@@ -1215,7 +1210,7 @@ if($mybb->input['action'] == "new_announcement")
 
 	$announcement_fid = $mybb->get_input('fid', MyBB::INPUT_INT);
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement['fid'], $unviewableforums)))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid, "canmanageannouncements")) || ($unviewableforums && in_array($announcement_fid, $unviewableforums)))
 	{
 		error_no_permission();
 	}
