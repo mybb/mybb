@@ -51,14 +51,14 @@ if(!$mybb->settings['threadsperpage'] || (int)$mybb->settings['threadsperpage'] 
 	$mybb->settings['threadsperpage'] = 20;
 }
 
-$errors = '';
+$tflist = $flist = $tflist_queue_threads = $flist_queue_threads = $tflist_queue_posts = $flist_queue_posts = $tflist_queue_attach =
+$flist_queue_attach = $wflist_reports = $tflist_reports = $flist_reports = $tflist_modlog = $flist_modlog = $errors = '';
 // SQL for fetching items only related to forums this user moderates
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 
-	$flist = $flist_queue_threads = $flist_queue_posts = $flist_queue_attach = $flist_reports = $flist_modlog = null;
 	$numannouncements = $nummodqueuethreads = $nummodqueueposts = $nummodqueueattach = $numreportedposts = $nummodlogs = 0;
 	while($forum = $db->fetch_array($query))
 	{
@@ -172,10 +172,6 @@ if($mybb->usergroup['issupermod'] != 1)
 		$flist = " AND fid IN (0{$flist})";
 	}
 }
-else
-{
-	$flist = $tflist = '';
-}
 
 // Retrieve a list of unviewable forums
 $unviewableforums = get_unviewable_forums();
@@ -186,7 +182,7 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 	$flist .= " AND fid NOT IN ({$unviewableforums})";
 	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
 
-	$unviewablefids1 = array_map('intval', explode(',', $unviewableforums));
+	$unviewablefids1 = explode(',', $unviewableforums);
 }
 
 if($inactiveforums)
@@ -194,7 +190,7 @@ if($inactiveforums)
 	$flist .= " AND fid NOT IN ({$inactiveforums})";
 	$tflist .= " AND t.fid NOT IN ({$inactiveforums})";
 
-	$unviewablefids2 = array_map('intval', explode(',', $inactiveforums));
+	$unviewablefids2 = explode(',', $inactiveforums);
 }
 
 $unviewableforums = array_merge($unviewablefids1, $unviewablefids2);
@@ -2849,6 +2845,7 @@ if($mybb->input['action'] == "editprofile")
 	{
 		foreach($pfcache as $profilefield)
 		{
+			$userfield = $code = $select = $val = $options = $expoptions = $useropts = $seloptions = '';
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 			$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 			$thing = explode("\n", $profilefield['type'], "2");
@@ -2857,28 +2854,18 @@ if($mybb->input['action'] == "editprofile")
 			{
 				$options = $thing[1];
 			}
-			else
-			{
-				$options = '';
-			}
 			$field = "fid{$profilefield['fid']}";
-			$select = '';
 			if($errors)
 			{
 				if(isset($mybb->input['profile_fields'][$field]))
 				{
 					$userfield = $mybb->input['profile_fields'][$field];
 				}
-				else
-				{
-					$userfield = '';
-				}
 			}
 			else
 			{
 				$userfield = $user_fields[$field];
 			}
-			$code = '';
 			if($type == "multiselect")
 			{
 				if($errors)
@@ -3020,13 +3007,6 @@ if($mybb->input['action'] == "editprofile")
 				eval("\$customfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 			}
 			$altbg = alt_trow();
-			$code = "";
-			$select = "";
-			$val = "";
-			$options = "";
-			$expoptions = "";
-			$useropts = "";
-			$seloptions = "";
 		}
 	}
 	if($customfields)
@@ -3278,7 +3258,7 @@ if($mybb->input['action'] == "finduser")
 	$page_url = 'modcp.php?action=finduser';
 	foreach(array('username', 'sortby', 'order') as $field)
 	{
-		$mybb->input[$field] = htmlspecialchars_uni($mybb->get_input($field));
+		$mybb->input[$field] = urlencode($mybb->get_input($field));
 		if(!empty($mybb->input[$field]))
 		{
 			$page_url .= "&amp;{$field}=".$mybb->input[$field];
@@ -3613,11 +3593,7 @@ if($mybb->input['action'] == "ipsearch")
 
 			if($user_ip_sql)
 			{
-				$query = $db->query("
-					SELECT COUNT(uid) AS count
-					FROM ".TABLE_PREFIX."users
-					WHERE {$user_ip_sql}
-				");
+				$query = $db->simple_select('users', 'COUNT(uid) AS count', $user_ip_sql);
 
 				$user_results = $db->fetch_field($query, "count");
 			}
@@ -3671,7 +3647,7 @@ if($mybb->input['action'] == "ipsearch")
 		{
 			if(!empty($mybb->input[$input]))
 			{
-				$page_url .= "&amp;{$input}=".htmlspecialchars_uni($mybb->input[$input]);
+				$page_url .= "&amp;{$input}=".urlencode($mybb->input[$input]);
 			}
 		}
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
