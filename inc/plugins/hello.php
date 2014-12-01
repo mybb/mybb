@@ -83,6 +83,130 @@ function hello_activate()
 	global $db, $lang;
 	$lang->load('hello');
 
+	// Add a new template (hello_index) to our global templates (sid = -1)
+	$templatearray = array(
+	'index' => '<br />
+<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
+	<thead>
+		<tr>
+			<td class="thead">
+				<strong>{$lang->hello}</strong>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="tcat">
+				<form method="POST" action="misc.php">
+					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+					<input type="hidden" name="action" value="hello" />
+					{$lang->hello_add_message}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" value="{$lang->hello_add}" />
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">
+				{$messages}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<br />',
+	'message' => '<br /> - {$msg[\'message\']}'
+	);
+
+	$group = array(
+		'prefix' => $db->escape_string('hello'),
+		'title' => $db->escape_string('Hello World!')
+	);
+
+	// Update or create template group:
+	$query = $db->simple_select('templategroups', 'prefix', "prefix='{$group['prefix']}'");
+
+	if($db->fetch_array($query))
+	{
+		$db->update_query('templategroups', $group, "prefix='{$group['prefix']}'");
+	}
+	else
+	{
+		$db->insert_query('templategroups', $group);
+	}
+
+	// Query already existing templates.
+	$query = $db->simple_select('templates', 'tid,title,template', "sid=-2 AND (title='{$group['prefix']}' OR title LIKE '{$group['prefix']}=_%' ESCAPE '=')");
+
+	$templates = $duplicates = array();
+
+	while($row = $db->fetch_array($query))
+	{
+		$title = $row['title'];
+
+		if(isset($templates[$title]))
+		{
+			// PluginLibrary had a bug that caused duplicated templates.
+			$duplicates[] = $row['tid'];
+			$templates[$title]['template'] = false; // force update later
+		}
+		else
+		{
+			$templates[$title] = $row;
+		}
+	}
+
+	// Delete duplicated master templates, if they exist.
+	if($duplicates)
+	{
+		$db->delete_query('templates', 'tid IN ('.implode(",", $duplicates).')');
+	}
+
+	// Update or create templates.
+	foreach($templatearray as $name => $code)
+	{
+		if(strlen($name))
+		{
+			$name = "hello_{$name}";
+		}
+		else
+		{
+			$name = "hello";
+		}
+
+		$template = array(
+			'title' => $db->escape_string($name),
+			'template' => $db->escape_string($code),
+			'version' => 1,
+			'sid' => -2,
+			'dateline' => TIME_NOW
+		);
+
+		// Update
+		if(isset($templates[$name]))
+		{
+			if($templates[$name]['template'] !== $code)
+			{
+				// Update version for custom templates if present
+				$db->update_query('templates', array('version' => 0), "title='{$template['title']}'");
+
+				// Update master template
+				$db->update_query('templates', $template, "tid={$templates[$name]['tid']}");
+			}
+		}
+		// Create
+		else
+		{
+			$db->insert_query('templates', $template);
+		}
+
+		// Remove this template from the earlier queried list.
+		unset($templates[$name]);
+	}
+
+	// Remove no longer used templates.
+	foreach($templates as $name => $row)
+	{
+		$db->delete_query('templates', "title='{$db->escape_string($name)}'");
+	}
+
 	// Settings group array details
 	$group = array(
 		'name' => 'hello',
@@ -221,41 +345,6 @@ function hello_install()
 {
 	global $db;
 
-	// Add a new template (hello_index) to our global templates (sid = -1)
-	$templatearray = array(
-	'title' => 'hello_index',
-	'template' => $db->escape_string('<br />
-<table border="0" cellspacing="{$theme[\'borderwidth\']}" cellpadding="{$theme[\'tablespace\']}" class="tborder">
-	<thead>
-		<tr>
-			<td class="thead">
-				<strong>{$lang->hello}</strong>
-			</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td class="tcat">
-				<form method="POST" action="misc.php">
-					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-					<input type="hidden" name="action" value="hello" />
-					{$lang->hello_add_message}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" value="{$lang->hello_add}" />
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td class="trow1">
-				{$messages}
-			</td>
-		</tr>
-	</tbody>
-</table>
-<br />'),
-	'sid' => '-1',
-	);
-
-	$db->insert_query('templates', $templatearray);
-
 	// Create our entries table
 	$collation = $db->build_create_table_collation();
 
@@ -263,9 +352,9 @@ function hello_install()
 	if(!$db->table_exists('hello_messages'))
 	{
 		$db->write_query("CREATE TABLE `".TABLE_PREFIX."hello_messages` (
-		`mid` int(10) UNSIGNED NOT NULL auto_increment,
-		`message` varchar(100) NOT NULL default '',
-		PRIMARY KEY  (`mid`)
+			`mid` int(10) UNSIGNED NOT NULL auto_increment,
+			`message` varchar(100) NOT NULL default '',
+			PRIMARY KEY  (`mid`)
 		) ENGINE=MyISAM{$collation}");
 	}
 }
@@ -313,8 +402,27 @@ function hello_uninstall()
 		admin_redirect('index.php?module=config-plugins');
 	}
 
-	// remove our template
-	$db->delete_query('templates', "title IN ('hello_index') AND sid='-1'");
+	// remove our templates group
+	// Query the template groups
+	$query = $db->simple_select('templategroups', 'prefix', "prefix='hello'");
+
+	// Build where string for templates
+	$sqlwhere = array();
+
+	while($row = $db->fetch_array($query))
+	{
+		$tprefix = $db->escape_string($row['prefix']);
+		$sqlwhere[] = "title='{$tprefix}' OR title LIKE '{$tprefix}=_%' ESCAPE '='";
+	}
+
+	if($sqlwhere) // else there are no groups to delete
+	{
+		// Delete template groups.
+		$db->delete_query('templategroups', "prefix='hello'");
+
+		// Delete templates belonging to template groups.
+		$db->delete_query('templates', implode(' OR ', $sqlwhere));
+	}
 
 	// delete settings group
 	$db->delete_query('settinggroups', "name='hello'");
@@ -362,7 +470,8 @@ function hello_index()
 	while($msg = $db->fetch_array($query))
 	{
 		// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
-		$messages .= '<br /> - '.htmlspecialchars_uni($msg['message']);
+		$msg['message'] = htmlspecialchars_uni($msg['message']);
+		$messages .= eval($templates->render('hello_message'));
 	}
 
 	// If no messages were found, display that notice.
@@ -452,7 +561,7 @@ function hello_new()
 	$message = trim($mybb->get_input('message'));
 
 	// Message cannot be empty
-	if(!$message)
+	if(!$message || my_strpos($message) > 100)
 	{
 		error($lang->hello_message_empty);
 	}
