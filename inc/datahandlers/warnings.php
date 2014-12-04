@@ -126,11 +126,6 @@ class WarningsHandler extends DataHandler
 			return false;
 		}
 
-		if(!isset($warning['tid']))
-		{
-			$warning['tid'] = $post['tid'];
-		}
-
 		return true;
 	}
 
@@ -696,7 +691,7 @@ class WarningsHandler extends DataHandler
 
 		$this->write_warning_data = array(
 			"uid" => (int)$warning['uid'],
-			"tid" => (int)$warning['tid'],
+			"tid" => (int)$warning['type'],
 			"pid" => (int)$warning['pid'],
 			"title" => $db->escape_string($warning['title']),
 			"points" => (int)$warning['points'],
