@@ -665,7 +665,7 @@ function upload_attachment($attachment, $update_attachment=false)
  */
 function delete_uploaded_file($path = '')
 {
-	global $mybb;
+	global $mybb, $plugins;
 
 	$deleted = false;
 
@@ -675,11 +675,12 @@ function delete_uploaded_file($path = '')
 	$path = ltrim($path, '/');
 	$cdn_path = realpath($cdn_base_path . '/' . $path);
 
-
 	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
 	{
 		$deleted = $deleted && @unlink($cdn_path);
 	}
+
+	$plugins->run_hooks('delete_uploaded_file');
 
 	return $deleted;
 }
@@ -693,7 +694,7 @@ function delete_uploaded_file($path = '')
  */
 function delete_upload_directory($path = '')
 {
-	global $mybb;
+	global $mybb, $plugins;
 
 	$deleted = false;
 
@@ -707,6 +708,8 @@ function delete_upload_directory($path = '')
 	{
 		$deleted = $deleted && @rmdir($cdn_path);
 	}
+
+	$plugins->run_hooks('delete_upload_directory');
 
 	return $deleted;
 }
@@ -740,15 +743,9 @@ function upload_file($file, $path, $filename="")
 	$filename = preg_replace("#/$#", "", $filename); // Make the filename safe
 	$moved = @move_uploaded_file($file['tmp_name'], $path."/".$filename);
 
-	$moved_cdn = false;
-	$cdn_base_path = rtrim($mybb->settings['cdnpath'], '/');
-	$cdn_path = rtrim(realpath($cdn_base_path . '/' . $path), '/');
+	$cdn_path = '';
 
-	if($mybb->settings['usecdn'] && !empty($cdn_base_path))
-	{
-		$moved_cdn = @copy($path . '/' . $filename, $cdn_path . '/' . $filename);
-		@my_chmod($cdn_path . '/' . $filename, '0644');
-	}
+	$moved_cdn = copy_file_to_cdn($path."/".$filename, $cdn_path);
 
 	if(!$moved)
 	{
