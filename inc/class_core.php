@@ -487,6 +487,8 @@ class MyBB {
 	 */
 	public function get_asset_url($path = '', $use_cdn = true)
 	{
+		global $plugins;
+
 		$path = (string) $path;
 		$path = ltrim($path, '/');
 
@@ -518,6 +520,8 @@ class MyBB {
 		{
 			$url = $path;
 		}
+
+		$plugins->run_hooks('get_asset_url_end', $url);
 
 		return $url;
 	}

@@ -7868,47 +7868,45 @@ function copy_file_to_cdn($file_path = '', &$uploaded_path = null)
 
 	$file_path = (string) $file_path;
 
-	$plugins->run_hooks('copy_file_to_cdn_start', $success);
+	$file_dir_path = dirname($file_path);
+	$file_dir_path = ltrim($file_dir_path, './\\');
 
-	if ($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
+	$file_name = basename($file_path);
+
+	if(file_exists($file_path))
 	{
-		$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
-
-		if(file_exists($file_path))
+		if ($mybb->settings['usecdn'] && !empty($mybb->settings['cdnpath']))
 		{
-			$file_dir_path = dirname($file_path);
-			$file_dir_path = ltrim($file_dir_path, './\\');
+			$cdn_path = rtrim($mybb->settings['cdnpath'], '/\\');
 
-			$file_name = basename($file_path);
-
-			if (substr($file_dir_path, 0, my_strlen(MYBB_ROOT)) == MYBB_ROOT)
+			if(substr($file_dir_path, 0, my_strlen(MYBB_ROOT)) == MYBB_ROOT)
 			{
 				$file_dir_path = str_replace(MYBB_ROOT, '', $file_dir_path);
 			}
 
 			$cdn_upload_path = $cdn_path . DIRECTORY_SEPARATOR . $file_dir_path;
 
-			if (!($dir_exists = is_dir($cdn_upload_path)))
+			if(!($dir_exists = is_dir($cdn_upload_path)))
 			{
 				$dir_exists = @mkdir($cdn_upload_path, 0777, true);
 			}
 
 			if($dir_exists)
 			{
-				if (($cdn_upload_path = realpath($cdn_upload_path)) !== false)
+				if(($cdn_upload_path = realpath($cdn_upload_path)) !== false)
 				{
 					$success = @copy($file_path, $cdn_upload_path . DIRECTORY_SEPARATOR . $file_name);
 
-					if ($success)
+					if($success)
 					{
 						$uploaded_path = $cdn_upload_path;
 					}
 				}
 			}
 		}
-	}
 
-	$plugins->run_hooks('copy_file_to_cdn_end', $success);
+		$plugins->run_hooks('copy_file_to_cdn_end', $success);
+	}
 
 	return $success;
 }
