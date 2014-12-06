@@ -966,7 +966,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			}
 		}
 
-		$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url;
+		$plugins->run_hooks('update_theme_stylesheet_list_set_css_url', $css_url);
 
 		$attachedto = $stylesheet['attachedto'];
 		if(!$attachedto)
