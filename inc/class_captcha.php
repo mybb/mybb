@@ -274,7 +274,7 @@ class captcha
 
 	function validate_captcha()
 	{
-		global $db, $lang, $mybb;
+		global $db, $lang, $mybb, $session;
 
 		// Plugin hook
 

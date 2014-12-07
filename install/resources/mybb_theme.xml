@@ -5443,7 +5443,7 @@ if(use_xmlhttprequest == "1")
 	<legend><strong>{$lang->human_verification}</strong></legend>
 	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
 	<tr>
-		<td><span class="smalltext">{$lang->verification_note_nocaptca}</span></td>
+		<td><span class="smalltext">{$lang->verification_note_nocaptcha}</span></td>
 	</tr>
 	<tr>
 		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
@@ -9415,7 +9415,7 @@ if(use_xmlhttprequest == "1")
 <td class="trow1">
 <table style="width: 300px; padding: 4px;">
 	<tr>
-		<td><span class="smalltext">{$lang->verification_note_nocaptca}</span></td>
+		<td><span class="smalltext">{$lang->verification_note_nocaptcha}</span></td>
 	</tr>
 	<tr>
 		<td><script type="text/javascript" src="{$server}"></script><div class="g-recaptcha" data-sitekey="{$public_key}"></div></td>
