@@ -2375,7 +2375,7 @@ a.button {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
-		<template name="announcement" version="1800"><![CDATA[<html>
+		<template name="announcement" version="1804"><![CDATA[<html>
 <head>
 <title>{$lang->forum_announcement}</title>
 {$headerinclude}
@@ -2390,6 +2390,7 @@ a.button {
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder tfixed clear no_bottom_border">
 <tr>
 <td class="thead"><strong>{$lang->forum_announcement}</strong></td>
+</tr>
 <tr><td id="posts_container">
 	<div id="posts">
 	{$announcement}
