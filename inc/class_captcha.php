@@ -118,6 +118,9 @@ class captcha
 			{
 				$this->captcha_template .= "_ayah";
 			}
+			else if($this->type == 4){
+				$this->captcha_template .= "_nocaptcha";
+			}
 		}
 
 		// Work on which CAPTCHA we've got installed
@@ -141,6 +144,18 @@ class captcha
 			$this->server = "http://www.google.com/recaptcha/api";
 			$this->secure_server = "https://www.google.com/recaptcha/api";
 			$this->verify_server = "www.google.com";
+
+			if($build == true)
+			{
+				$this->build_recaptcha();
+			}
+		}
+		else if($this->type == 4 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
+		{
+			// We want to use reCAPTCHA, set the server options
+			$this->server = "http://www.google.com/recaptcha/api.js";
+			$this->secure_server = "https://www.google.com/recaptcha/api.js";
+			$this->verify_server = "https://www.google.com/recaptcha/api/siteverify";
 
 			if($build == true)
 			{
@@ -331,6 +346,42 @@ class captcha
 					{
 						// We got it wrong! Oh no...
 						$this->set_error($lang->invalid_captcha_verify);
+					}
+				}
+			}
+		}
+		elseif($this->type == 4)
+		{
+			$response = $mybb->input['g-recaptcha-response'];
+			if(!$response || strlen($response) == 0)
+			{
+				$this->set_error($lang->invalid_nocaptcha);
+			}
+			else
+			{
+
+				// We have a noCAPTCHA to handle
+				$data = $this->_qsencode(array(
+					'secret' => $mybb->settings['captchaprivatekey'],
+					'remoteip' => $session->ipaddress,
+					'response' => $response
+				));
+
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = @file_get_contents($this->verify_server.'?'.$data);
+
+				if($response == false)
+				{
+					$this->set_error($lang->invalid_nocaptcha_transmit);
+				}
+				else
+				{
+					$answer = json_decode($response, true);
+
+					if($answer['success'] != 'true')
+					{
+						// We got it wrong! Oh no...
+						$this->set_error($lang->invalid_nocaptcha_verify);
 					}
 				}
 			}
