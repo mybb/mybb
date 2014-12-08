@@ -381,7 +381,7 @@ class captcha
 					if($answer['success'] != 'true')
 					{
 						// We got it wrong! Oh no...
-						$this->set_error($lang->invalid_nocaptcha_verify);
+						$this->set_error($lang->invalid_nocaptcha);
 					}
 				}
 			}
