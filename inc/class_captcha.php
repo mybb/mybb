@@ -368,7 +368,7 @@ class captcha
 				));
 
 				// Contact Google and see if our reCAPTCHA was successful
-				$response = @file_get_contents($this->verify_server.'?'.$data);
+				$response = fetch_remote_file($this->verify_server.'?'.$data);
 
 				if($response == false)
 				{
