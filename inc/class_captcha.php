@@ -41,6 +41,7 @@ class captcha
 	 * 1 = Default CAPTCHA
 	 * 2 = reCAPTCHA
 	 * 3 = Are You a Human
+	 * 4 = NoCATPCHA reCAPTCHA
 	 *
 	 * @var int
 	 */
@@ -359,16 +360,13 @@ class captcha
 			}
 			else
 			{
-
 				// We have a noCAPTCHA to handle
-				$data = $this->_qsencode(array(
+				// Contact Google and see if our reCAPTCHA was successful
+				$response = fetch_remote_file($this->verify_server, array(
 					'secret' => $mybb->settings['captchaprivatekey'],
 					'remoteip' => $session->ipaddress,
 					'response' => $response
 				));
-
-				// Contact Google and see if our reCAPTCHA was successful
-				$response = fetch_remote_file($this->verify_server.'?'.$data);
 
 				if($response == false)
 				{
