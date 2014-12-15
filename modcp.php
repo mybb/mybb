@@ -3689,12 +3689,12 @@ if($mybb->input['action'] == "ipsearch")
 				$ip = false;
 				if(is_array($ip_range))
 				{
-					if(strcmp($ip_range[0], $ipaddress['regip']) >= 0 && strcmp($ip_range[1], $ipaddress['regip']) <= 0)
+					if(strcmp($ip_range[0], $ipaddress['regip']) <= 0 && strcmp($ip_range[1], $ipaddress['regip']) >= 0)
 					{
 						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_regip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['regip']));
 					}
-					elseif(strcmp($ip_range[0], $ipaddress['lastip']) >= 0 && strcmp($ip_range[1], $ipaddress['lastip']) <= 0)
+					elseif(strcmp($ip_range[0], $ipaddress['lastip']) <= 0 && strcmp($ip_range[1], $ipaddress['lastip']) >= 0)
 					{
 						eval("\$subject = \"".$templates->get("modcp_ipsearch_result_lastip")."\";");
 						$ip = my_inet_ntop($db->unescape_binary($ipaddress['lastip']));
