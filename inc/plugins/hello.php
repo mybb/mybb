@@ -16,7 +16,7 @@ if(!defined('IN_MYBB'))
 	
 // cache templates - this is important when it comes to performance
 // THIS_SCRIPT is defined by some of the MyBB scripts, including index.php
-if(defined('THIS_SCRIPT') && THIS_SCRIPT== 'index.php')
+if(defined('THIS_SCRIPT'))
 {
     global $templatelist;
 
@@ -25,7 +25,16 @@ if(defined('THIS_SCRIPT') && THIS_SCRIPT== 'index.php')
         $templatelist .= ',';
     }
 
-    $templatelist .= 'hello_index';
+	if(THIS_SCRIPT== 'index.php')
+	{
+		$templatelist .= 'hello_index';
+	}
+	elseif(THIS_SCRIPT== 'showthread.php')
+	{
+		$templatelist .= 'hello_post';
+	}
+
+    $templatelist .= ', hello_message';
 }
 
 if(defined('IN_ADMINCP'))
@@ -116,8 +125,7 @@ function hello_activate()
 </table>
 <br />',
 	'post' => '<br /><br /><strong>{$lang->hello}:</strong><br />{$messages}',
-	'post_message' => '<br /> - {$msg[\'message\']}',
-	'message' => '<br /> - {$msg[\'message\']}'
+	'message' => '<br /> - {$message}'
 	);
 
 	$group = array(
@@ -320,7 +328,7 @@ function hello_activate()
 	require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
 	
 	// Edit the index template and add our variable to above {$forums}
-	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', '{$hello}'.'\n'.'{$forums}');
+	find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', "{\$hello}\n{\$forums}");
 }
 
 /*
@@ -448,10 +456,10 @@ function hello_settings()
 */
 function hello_index()
 {
-	global $settings;
+	global $mybb;
 
 	// Only run this function is the setting is set to yes
-	if($settings['hello_display1'] == 0)
+	if($mybb->settings['hello_display1'] == 0)
 	{
 		return;
 	}
@@ -474,7 +482,8 @@ function hello_index()
 	// If no messages were found, display that notice.
 	if(empty($messages))
 	{
-		$messages = $lang->hello_empty;
+		$message = $lang->hello_empty;
+		$messages = eval($templates->render('hello_message'));
 	}
 
 	// Set $hello as our template and use eval() to do it so we can have our variables parsed
@@ -518,13 +527,14 @@ function hello_post(&$post)
 		{
 			// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
 			$message = htmlspecialchars_uni($message);
-			$messages .= eval($templates->render('hello_post_message'));
+			$messages .= eval($templates->render('hello_message'));
 		}
 
 		// If no messages were found, display that notice.
 		if(empty($messages))
 		{
-			$messages = $lang->hello_empty;
+			$message = $lang->hello_empty;
+			$messages = eval($templates->render('hello_message'));
 		}
 	}
 
@@ -567,7 +577,7 @@ function hello_new()
 		error($lang->hello_message_empty);
 	}
 
-	global $lang;
+	global $db;
 
 	// Escape input data
 	$message = $db->escape_string($message);
