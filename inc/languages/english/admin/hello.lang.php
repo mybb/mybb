@@ -8,6 +8,8 @@
  *
  */
 
+$l['hello_desc'] = 'A sample plugin that prepends the messages in each post.';
+
 $l['setting_group_hello'] = 'Hello World!';
 $l['setting_group_hello_desc'] = 'Settings for Hello World! Plugin.';
 

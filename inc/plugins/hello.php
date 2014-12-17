@@ -50,6 +50,9 @@ else
 
 function hello_info()
 {
+	global $lang;
+	$lang->load('hello');
+
 	/**
 	 * Array of information about the plugin.
 	 * name: The name of the plugin
@@ -63,12 +66,12 @@ function hello_info()
 	 */
 	return array(
 		'name'			=> 'Hello World!',
-		'description'	=> 'A sample plugin that prepends the messages in each post',
+		'description'	=> $lang->hello_desc,
 		'website'		=> 'http://mybb.com',
 		'author'		=> 'MyBB Group',
 		'authorsite'	=> 'http://www.mybb.com',
 		'version'		=> '2.0',
-		'compatibility'	=> '1.8*',
+		'compatibility'	=> '18*',
 		'codename'		=> 'hello'
 	);
 }
@@ -100,7 +103,7 @@ function hello_activate()
 				<form method="POST" action="misc.php">
 					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 					<input type="hidden" name="action" value="hello" />
-					{$lang->hello_add_message}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" value="{$lang->hello_add}" />
+					{$lang->hello_add_message}: <input type="text" name="message" class="textbox" /> <input type="submit" name="submit" class="button" value="{$lang->hello_add}" />
 				</form>
 			</td>
 		</tr>
@@ -112,6 +115,8 @@ function hello_activate()
 	</tbody>
 </table>
 <br />',
+	'post' => '<br /><br /><strong>{$lang->hello}:</strong><br />{$messages}',
+	'post_message' => '<br /> - {$msg[\'message\']}',
 	'message' => '<br /> - {$msg[\'message\']}'
 	);
 
@@ -123,7 +128,7 @@ function hello_activate()
 	// Update or create template group:
 	$query = $db->simple_select('templategroups', 'prefix', "prefix='{$group['prefix']}'");
 
-	if($db->fetch_array($query))
+	if($db->fetch_field($query, 'prefix'))
 	{
 		$db->update_query('templategroups', $group, "prefix='{$group['prefix']}'");
 	}
@@ -140,6 +145,7 @@ function hello_activate()
 	while($row = $db->fetch_array($query))
 	{
 		$title = $row['title'];
+		$row['tid'] = (int)$row['tid'];
 
 		if(isset($templates[$title]))
 		{
@@ -218,22 +224,20 @@ function hello_activate()
 	// Check if the group already exists.
 	$query = $db->simple_select('settinggroups', 'gid', "name='hello'");
 
-	if($row = $db->fetch_array($query))
+	if($gid = (int)$db->fetch_field($query, 'gid'))
 	{
 		// We already have a group. Update title and description.
-		$gid = $row['gid'];
 		$db->update_query('settinggroups', $group, "gid='{$gid}'");
 	}
-
 	else
 	{
 		// We don't have a group. Create one with proper disporder.
 		$query = $db->simple_select('settinggroups', 'MAX(disporder) AS disporder');
-		$row = $db->fetch_array($query);
+		$disporder = (int)$db->fetch_field($query, 'disporder');
 
-		$group['disporder'] = ++$row['disporder'];
+		$group['disporder'] = ++$disporder;
 
-		$gid = $db->insert_query('settinggroups', $group);
+		$gid = (int)$db->insert_query('settinggroups', $group);
 	}
 
 	// Deprecate all the old entries.
@@ -292,13 +296,12 @@ function hello_activate()
 		// Check if the setting already exists.
 		$query = $db->simple_select('settings', 'sid', "gid='{$gid}' AND name='{$setting['name']}'");
 
-		if($row = $db->fetch_array($query))
+		if($sid = $db->fetch_field($query, 'sid'))
 		{
 			// It exists, update it, but keep value intact.
 			unset($setting['value']);
-			$db->update_query('settings', $setting, "sid='{$row['sid']}'");
+			$db->update_query('settings', $setting, "sid='{$sid}'");
 		}
-
 		else
 		{
 			// It doesn't exist, create it.
@@ -389,14 +392,6 @@ function hello_uninstall()
 		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello');
 	}
 
-	if(!verify_post_check($mybb->get_input('my_post_key')))
-	{
-		global $lang;
-
-		flash_message($lang->invalid_post_verify_key2, 'error');
-		admin_redirect('index.php?module=config-plugins');
-	}
-
 	if(isset($mybb->input['no']))
 	{
 		admin_redirect('index.php?module=config-plugins');
@@ -409,9 +404,9 @@ function hello_uninstall()
 	// Build where string for templates
 	$sqlwhere = array();
 
-	while($row = $db->fetch_array($query))
+	while($prefix = $db->fetch_field($query, 'prefix'))
 	{
-		$tprefix = $db->escape_string($row['prefix']);
+		$tprefix = $db->escape_string($prefix);
 		$sqlwhere[] = "title='{$tprefix}' OR title LIKE '{$tprefix}=_%' ESCAPE '='";
 	}
 
@@ -453,24 +448,26 @@ function hello_settings()
 */
 function hello_index()
 {
-	global $mybb, $db, $lang, $templates, $hello, $theme;
+	global $settings;
 
 	// Only run this function is the setting is set to yes
-	if($mybb->settings['hello_display1'] == 0)
+	if($settings['hello_display1'] == 0)
 	{
 		return;
 	}
+
+	global $db, $lang, $templates, $hello, $theme;
 
 	// Load our language file
 	$lang->load('hello');
 
 	// Retreive all messages from the database
 	$messages = '';
-	$query = $db->simple_select('hello_messages', '*', '', array('order_by' => 'mid', 'order_dir' => 'DESC'));
-	while($msg = $db->fetch_array($query))
+	$query = $db->simple_select('hello_messages', 'message', '', array('order_by' => 'mid', 'order_dir' => 'DESC'));
+	while($message = $db->fetch_field($query, 'message'))
 	{
 		// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
-		$msg['message'] = htmlspecialchars_uni($msg['message']);
+		$message = htmlspecialchars_uni($message);
 		$messages .= eval($templates->render('hello_message'));
 	}
 
@@ -491,13 +488,15 @@ function hello_index()
 */
 function hello_post(&$post)
 {
-	global $db, $mybb, $lang;
+	global $settings;
 
 	// Only run this function is the setting is set to yes
-	if($mybb->settings['hello_display2'] == 0)
+	if($settings['hello_display2'] == 0)
 	{
 		return;
 	}
+
+	global $lang, $templates;
 
 	// Load our language file
 	if(!isset($lang->hello))
@@ -510,13 +509,16 @@ function hello_post(&$post)
 	// Only retreive messages from the database if they were not retreived already
 	if(!isset($messages))
 	{
+		global $db;
+
 		// Retreive all messages from the database
 		$messages = '';
-		$query = $db->simple_select('hello_messages', '*', '', array('order_by' => 'mid', 'order_dir' => 'DESC'));
-		while($msg = $db->fetch_array($query))
+		$query = $db->simple_select('hello_messages', 'message', '', array('order_by' => 'mid', 'order_dir' => 'DESC'));
+		while($message = $db->fetch_field($query, 'message'))
 		{
 			// htmlspecialchars_uni is similar to PHP's htmlspecialchars but allows unicode
-			$messages .= '<br /> - '.htmlspecialchars_uni($msg['message']);
+			$message = htmlspecialchars_uni($message);
+			$messages .= eval($templates->render('hello_post_message'));
 		}
 
 		// If no messages were found, display that notice.
@@ -527,7 +529,7 @@ function hello_post(&$post)
 	}
 
 	// Alter the current post's message
-	$post['message'] .= '<br /><br /><strong>'.$lang->hello.':</strong><br />'.$messages;
+	$post['message'] = eval($templates->render('hello_post'));
 }
 
 /*
@@ -535,7 +537,7 @@ function hello_post(&$post)
 */
 function hello_new()
 {
-	global $db, $mybb, $lang;
+	global $mybb;
 
 	// If we're not running the 'hello' action as specified in our form, get out of there.
 	if($mybb->get_input('action') != 'hello')
@@ -546,25 +548,26 @@ function hello_new()
 	// Only accept POST
 	if($mybb->request_method != 'post')
 	{
-		error();
+		error_no_permission();
 	}
+
+	global $lang;
 
 	// Correct post key? This is important to prevent CSRF
 	verify_post_check($mybb->get_input('my_post_key'));
 
 	// Load our language file
-	if(!isset($lang->hello))
-	{
-		$lang->load('hello');
-	}
+	$lang->load('hello');
 
 	$message = trim($mybb->get_input('message'));
 
 	// Message cannot be empty
-	if(!$message || my_strpos($message) > 100)
+	if(!$message || my_strlen($message) > 100)
 	{
 		error($lang->hello_message_empty);
 	}
+
+	global $lang;
 
 	// Escape input data
 	$message = $db->escape_string($message);
