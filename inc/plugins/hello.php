@@ -27,14 +27,12 @@ if(defined('THIS_SCRIPT'))
 
 	if(THIS_SCRIPT== 'index.php')
 	{
-		$templatelist .= 'hello_index';
+		$templatelist .= 'hello_index, hello_message';
 	}
 	elseif(THIS_SCRIPT== 'showthread.php')
 	{
-		$templatelist .= 'hello_post';
+		$templatelist .= 'hello_post, hello_message';
 	}
-
-    $templatelist .= ', hello_message';
 }
 
 if(defined('IN_ADMINCP'))
@@ -538,7 +536,7 @@ function hello_post(&$post)
 	}
 
 	// Alter the current post's message
-	$post['message'] = eval($templates->render('hello_post'));
+	$post['message'] .= eval($templates->render('hello_post'));
 }
 
 /*
