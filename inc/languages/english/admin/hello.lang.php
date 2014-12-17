@@ -18,3 +18,6 @@ $l['setting_hello_display1_desc'] = 'Set to no if you do not want to display the
 
 $l['setting_hello_display2'] = 'Display Message Postbit';
 $l['setting_hello_display2_desc'] = 'Set to no if you do not want to display the messages below every post.';
+
+$l['hello_uninstall'] = 'Hello World! Uninstallation';
+$l['hello_uninstall_message'] = 'Do you wish to drop all messages from the database?';

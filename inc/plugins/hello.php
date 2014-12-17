@@ -395,14 +395,10 @@ function hello_uninstall()
 
 	if($mybb->request_method != 'post')
 	{
-		global $page;
+		global $page, $lang;
+		$lang->load('hello');
 
-		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello');
-	}
-
-	if(isset($mybb->input['no']))
-	{
-		admin_redirect('index.php?module=config-plugins');
+		$page->output_confirm_action('index.php?module=config-plugins&action=deactivate&uninstall=1&plugin=hello', $lang->hello_uninstall_message, $lang->hello_uninstall);
 	}
 
 	// remove our templates group
@@ -436,8 +432,11 @@ function hello_uninstall()
 	// This is required so it updates the settings.php file as well and not only the database - they must be synchronized!
 	rebuild_settings();
 
-	// drop tables
-	$db->drop_table('hello_messages');
+	// drop tables if desired
+	if(!isset($mybb->input['no']))
+	{
+		$db->drop_table('hello_messages');
+	}
 }
 
 /*
