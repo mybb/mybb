@@ -502,7 +502,7 @@ if($mybb->input['action'] == "add_type")
 
 	$form_container = new FormContainer($lang->add_warning_type);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0)), 'points');
+	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
 	$expiration_periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
@@ -598,7 +598,7 @@ if($mybb->input['action'] == "edit_type")
 
 	$form_container = new FormContainer($lang->edit_warning_type);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0)), 'points');
+	$form_container->output_row($lang->points_to_add." <em>*</em>", $lang->points_to_add_desc, $form->generate_numeric_field('points', $mybb->input['points'], array('id' => 'points', 'min' => 0, 'max' => $mybb->settings['maxwarningpoints'])), 'points');
 	$expiration_periods = array(
 		"hours" => $lang->expiration_hours,
 		"days" => $lang->expiration_days,
