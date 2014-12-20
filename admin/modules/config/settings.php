@@ -395,7 +395,15 @@ if($mybb->input['action'] == "add")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
@@ -601,7 +609,15 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
-		$options[$group['gid']] = $group['title'];
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$options[$group['gid']] = htmlspecialchars_uni($group['title']);
+		}
 	}
 	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row($lang->display_order, "", $form->generate_numeric_field('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
