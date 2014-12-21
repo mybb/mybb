@@ -6287,7 +6287,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		$ip_range = fetch_ip_range($banned_ip['filter']);
 		if(is_array($ip_range))
 		{
-			if(strcmp($ip_range[0], $ip_address) >= 0 && strcmp($ip_range[1], $ip_address) <= 0)
+			if(strcmp($ip_range[0], $ip_address) <= 0 && strcmp($ip_range[1], $ip_address) >= 0)
 			{
 				$banned = true;
 			}
