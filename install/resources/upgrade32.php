@@ -30,6 +30,8 @@ function upgrade32_dbchanges()
 
 	// delete forumpermissions belonging to a deleted forum
 	$db->delete_query("forumpermissions", "fid NOT IN(SELECT fid FROM {$db->table_prefix}forums)");
+
+	$cache->update_awaitingactivation();
 	
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("32_done");

@@ -719,9 +719,15 @@ if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user
 	eval('$pm_notice = "'.$templates->get('global_pm_alert').'";');
 }
 
-if($mybb->usergroup['cancp'] == 1)
+if($mybb->settings['awactialert'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	$awaitingusers = $cache->read('awaitingactivation');
+
+	if(isset($awaitingusers['time']) && (int)$awaitingusers['time'] < TIME_NOW + 86400)
+	{
+		$cache->update_awaitingactivation();
+		$awaitingusers = $cache->read('awaitingactivation');
+	}
 
 	if(!empty($awaitingusers['users']))
 	{
@@ -886,7 +892,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['canviewboardclosed']
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
-	
+
 	if(!$mybb->get_input('modal')) 
 	{
 		error($lang->error_boardclosed);
