@@ -119,7 +119,7 @@ class LoginDataHandler extends DataHandler
 
 	function verify_password($strict = true)
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		$this->get_login_data();
 
@@ -129,6 +129,13 @@ class LoginDataHandler extends DataHandler
 			$this->invalid_combination();
 			return false;
 		}
+
+		$args = array(
+			'this' => &$this,
+			'strict' => &$strict,
+		);
+
+		$plugins->run_hooks('datahandler_login_verify_password_start', $args);
 
 		$user = &$this->data;
 
@@ -168,6 +175,8 @@ class LoginDataHandler extends DataHandler
 		}
 
 		$salted_password = md5(md5($this->login_data['salt']).$password);
+
+		$plugins->run_hooks('datahandler_login_verify_password_end', $args);
 
 		if($salted_password != $this->login_data['password'])
 		{

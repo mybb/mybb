@@ -21,14 +21,14 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("printthread");
 
-$plugins->run_hooks("printthread_start");
-
 $thread = get_thread($mybb->get_input('tid', 1));
 
 if(!$thread)
 {
 	error($lang->error_invalidthread);
 }
+
+$plugins->run_hooks("printthread_start");
 
 $thread['threadprefix'] = $thread['displaystyle'] = '';
 if($thread['prefix'])
