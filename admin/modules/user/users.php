@@ -2632,7 +2632,7 @@ if($mybb->input['action'] == "inline_edit")
 
 						// Check the month
 						$months = get_bdays($year);
-						if($day > $months[$month]-1)
+						if($day > $months[$month-1])
 						{
 							$errors[] = $lang->incorrect_date;
 						}
