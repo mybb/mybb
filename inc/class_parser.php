@@ -844,10 +844,15 @@ class postParser
 		{
 			$username = my_substr($username, 0, my_strlen($username)-1);
 		}
+		
+		if(!empty($this->options['allow_html']))
+		{
+			$username = htmlspecialchars_uni($username);
+		}
 
 		if($text_only)
 		{
-			return "\n".htmlspecialchars_uni($username)." $lang->wrote{$date}\n--\n{$message}\n--\n";
+			return "\n{$username} {$lang->wrote}{$date}\n--\n{$message}\n--\n";
 		}
 		else
 		{
@@ -857,7 +862,7 @@ class postParser
 				$span = "<span>{$date}</span>";
 			}
 
-			return "<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n";
+			return "<blockquote><cite>{$span}{$username} {$lang->wrote}{$linkback}</cite>{$message}</blockquote>\n";
 		}
 	}
 
