@@ -8,7 +8,7 @@
  *
  */
 
-$l['hello_desc'] = 'A sample plugin that prepends the messages in each post.';
+$l['hello_desc'] = 'A sample plugin that allows you to create messages on the index page and appends them to each post.';
 
 $l['setting_group_hello'] = 'Hello World!';
 $l['setting_group_hello_desc'] = 'Settings for Hello World! Plugin.';

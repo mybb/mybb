@@ -276,12 +276,12 @@ function hello_activate()
 
 		// Filter valid entries.
 		$setting = array_intersect_key($setting,
-									   array(
-										   'title' => 0,
-										   'description' => 0,
-										   'optionscode' => 0,
-										   'value' => 0,
-										   ));
+			array(
+				'title' => 0,
+				'description' => 0,
+				'optionscode' => 0,
+				'value' => 0,
+		));
 
 		// Escape input values.
 		$setting = array_map(array($db, 'escape_string'), $setting);
@@ -291,10 +291,10 @@ function hello_activate()
 
 		$setting = array_merge(
 			array('description' => '',
-				  'optionscode' => 'yesno',
-				  'value' => '0',
-				  'disporder' => $disporder),
-			$setting);
+				'optionscode' => 'yesno',
+				'value' => 0,
+				'disporder' => $disporder),
+		$setting);
 
 		$setting['name'] = $db->escape_string($key);
 		$setting['gid'] = $gid;
