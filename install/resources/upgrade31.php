@@ -54,8 +54,6 @@ function upgrade31_dbchanges()
 	}
 	$db->update_query('helpdocs', array('document' => $db->escape_string($helpdoc['document'])), 'hid=\'3\'');
 
-	$cache->update_awaitingactivation();
-
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("31_done");
 }

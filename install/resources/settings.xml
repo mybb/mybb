@@ -876,7 +876,7 @@ both=Email Verification & Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="awactialert">
 			<title>Awaiting Activation Notification</title>
-			<description><![CDATA[Do you want to show an notification to administrators about accounts awaiting activation?]]></description>
+			<description><![CDATA[Do you want to show a notification to administrators about accounts awaiting activation?]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
