@@ -6418,6 +6418,7 @@ function fetch_remote_file($url, $post_data=array())
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		if(!empty($post_body))
 		{
 			curl_setopt($ch, CURLOPT_POST, 1);
@@ -6446,7 +6447,19 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			$url['path'] .= "?{$url['query']}";
 		}
-		$fp = @fsockopen($url['host'], $url['port'], $error_no, $error, 10);
+
+		$scheme = '';
+
+		if($url['scheme'] == 'https')
+		{
+			$scheme = 'ssl://';
+			if($url['port'] == 80)
+			{
+				$url['port'] = 443;
+			}
+		}
+
+		$fp = @fsockopen($scheme.$url['host'], $url['port'], $error_no, $error, 10);
 		@stream_set_timeout($fp, 10);
 		if(!$fp)
 		{

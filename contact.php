@@ -11,7 +11,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'contact.php');
 
-$templatelist = "contact,post_captcha";
+$templatelist = "contact,post_captcha,post_captcha_recaptcha,post_captcha_nocaptcha,post_captcha_ayah";
 
 require_once "./global.php";
 require_once MYBB_ROOT.'inc/class_captcha.php';

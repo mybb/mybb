@@ -141,7 +141,8 @@
 0=No CAPTCHA
 1=MyBB Default CAPTCHA
 2=reCAPTCHA
-3=Are You a Human]]></optionscode>
+3=Are You a Human
+4=NoCAPTCHA reCAPTCHA]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
 		</setting>
