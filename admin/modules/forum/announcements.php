@@ -569,9 +569,11 @@ if($mybb->input['action'] == "edit")
 	$form = new Form("index.php?module=forum-announcements&amp;action=edit", "post");
 	echo $form->generate_hidden_field("aid", $mybb->input['aid']);
 
-	if($errors)
+	if($errors || isset($mybb->input['preview']))
 	{
-		$page->output_inline_error($errors);
+		// Only show errors if we have any
+		if($errors)
+			$page->output_inline_error($errors);
 
 		// Gather start and end date data
 		$startday = $mybb->input['starttime_day'];
