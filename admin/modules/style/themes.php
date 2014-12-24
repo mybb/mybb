@@ -2231,12 +2231,12 @@ if($mybb->input['action'] == "edit_stylesheet" && (!isset($mybb->input['mode']) 
 
 	$form->output_submit_wrapper($buttons);
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
 	echo '<script type="text/javascript">
 
 $(document).ready(function() {
 //<![CDATA[
-	new ThemeSelector("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
+	ThemeSelector.init("./index.php?module=style-themes&action=xmlhttp_stylesheet", "./index.php?module=style-themes&action=edit_stylesheet", $("#selector"), $("#stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("#selector_form"), "'.$mybb->input['tid'].'");
 	lang.saving = "'.$lang->saving.'";
 });
 //]]>
@@ -2867,7 +2867,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			});</script>";
 	}
 
-	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript" src="./jscripts/themes.js?ver=1804"></script>';
 	echo '<script type="text/javascript" src="./jscripts/theme_properties.js"></script>';
 	echo '<script type="text/javascript">
 $(function() {
