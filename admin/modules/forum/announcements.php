@@ -573,7 +573,9 @@ if($mybb->input['action'] == "edit")
 	{
 		// Only show errors if we have any
 		if($errors)
+		{
 			$page->output_inline_error($errors);
+		}
 
 		// Gather start and end date data
 		$startday = $mybb->input['starttime_day'];
