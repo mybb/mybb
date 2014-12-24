@@ -46,8 +46,13 @@ var ThemeSelector = {
 		$("#save_close").on('click', function(event) { ThemeSelector.saveClose(event); } );
 		
 
-		window.onbeforeunload = function(event) { return ThemeSelector.saveCheck(event, false); }
-		window.onunload = function(event) { return ThemeSelector.save(false, false); }
+		$(window).on('beforeunload', function(event){
+			if(ThemeSelector.isChanged())
+			{
+				return ' ';
+			}
+		});
+
 		
 		
 		ThemeSelector.selector.on("change", ThemeSelector.updateSelector);
@@ -136,6 +141,19 @@ var ThemeSelector = {
 		return true;
 	},
 
+	isChanged: function()
+	{
+		return (ThemeSelector.background != $("#css_bits\\[background\\]").val() ||
+				ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
+				ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
+				ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
+				ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
+				ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
+				ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
+				ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
+				ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val());
+	},
+
 	/**
 	 * check if anything has changed
 	 *
@@ -153,15 +171,7 @@ var ThemeSelector = {
 		if(e != null && isAjax == true)
 			e.preventDefault();
 
-		if (ThemeSelector.background != $("#css_bits\\[background\\]").val() ||
-		    ThemeSelector.width != $("#css_bits\\[width\\]").val() ||
-			ThemeSelector.color != $("#css_bits\\[color\\]").val() ||
-			ThemeSelector.extra != $("#css_bits\\[extra\\]").val() ||
-			ThemeSelector.text_decoration != $("#css_bits\\[text_decoration\\]").val() ||
-			ThemeSelector.font_family != $("#css_bits\\[font_family\\]").val() ||
-			ThemeSelector.font_size != $("#css_bits\\[font_size\\]").val() ||
-			ThemeSelector.font_style != $("#css_bits\\[font_style\\]").val() ||
-			ThemeSelector.font_weight != $("#css_bits\\[font_weight\\]").val()) {
+		if (ThemeSelector.isChanged()) {
 			
 			e.preventDefault();
 			
