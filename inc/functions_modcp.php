@@ -144,14 +144,18 @@ function send_report($report)
 {
 	global $db, $lang, $forum, $mybb, $post, $thread;
 
-	$query = $db->query("
-		SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-		WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-	");
+	$nummods = false;
+	if(!empty($forum['parentlist']))
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
 
-	$nummods = $db->num_rows($query);
+		$nummods = $db->num_rows($query);
+	}
 
 	if(!$nummods)
 	{
