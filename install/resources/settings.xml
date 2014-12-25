@@ -11,7 +11,7 @@
 		</setting>
 		<setting name="boardclosed_reason">
 			<title>Board Closed Reason</title>
-			<description><![CDATA[If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums.]]></description>
+			<description><![CDATA[If your forum is closed, you can set a message here that your visitors will be able to see when they visit your forums. You can leave this empty to use the language files.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[These forums are currently closed for maintenance. Please check back later.]]></settingvalue>
