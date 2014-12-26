@@ -229,8 +229,6 @@ class postParser
 			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
 		}
 
-		$message = my_wordwrap($message);
-
 		$message = $plugins->run_hooks("parse_message_end", $message);
 
 		return $message;
