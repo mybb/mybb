@@ -446,13 +446,21 @@ class session
 			$onlinedata['uid'] = 0;
 		}
 		$onlinedata['time'] = TIME_NOW;
-		$onlinedata['location'] = $db->escape_string(get_current_location());
+		
+		$location = get_current_location();
+		if(strlen($location) > 150)
+		{
+			$location = substr($location, 0, 150);
+		}
+		$onlinedata['location'] = $db->escape_string($location);
+		
 		$useragent = $this->useragent;
 		if(my_strlen($useragent) > 100)
 		{
 			$useragent = my_substr($useragent, 0, 100);
 		}
 		$onlinedata['useragent'] = $db->escape_string($useragent);
+		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
@@ -500,13 +508,21 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
-		$onlinedata['location'] = $db->escape_string(get_current_location());
+		
+		$location = get_current_location();
+		if(strlen($location) > 150)
+		{
+			$location = substr($location, 0, 150);
+		}
+		$onlinedata['location'] = $db->escape_string($location);
+		
 		$useragent = $this->useragent;
 		if(my_strlen($useragent) > 100)
 		{
 			$useragent = my_substr($useragent, 0, 100);
 		}
 		$onlinedata['useragent'] = $db->escape_string($useragent);
+		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
 		$onlinedata['nopermission'] = 0;
