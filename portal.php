@@ -52,7 +52,14 @@ if($mybb->settings['portal'] == 0)
 // Fetch the current URL
 $portal_url = get_current_location();
 
-add_breadcrumb($lang->nav_portal, "portal.php");
+$file_name = THIS_SCRIPT;
+$file_name_real = my_strtolower(basename($portal_url));
+if($file_name_real != THIS_SCRIPT)
+{
+	$file_name = $file_name_real;
+}
+
+add_breadcrumb($lang->nav_portal, $file_name);
 
 $plugins->run_hooks("portal_start");
 
@@ -462,7 +469,7 @@ if(!empty($mybb->settings['portal_announcementsfid']))
 		$page = 1;
 	}
 
-	$multipage = multipage($announcementcount, $numannouncements, $page, 'portal.php');
+	$multipage = multipage($announcementcount, $numannouncements, $page, $file_name);
 
 	$pids = '';
 	$tids = '';
