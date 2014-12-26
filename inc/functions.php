@@ -4876,10 +4876,7 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references. - DEPRECATED
- *
- * @param string The string to be word wrapped
- * @return string The word wraped string
+ * DEPRECATED! Please use other alternatives.
  */
 function my_wordwrap($message)
 {
