@@ -3956,7 +3956,6 @@ if($mybb->input['action'] == "banning")
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
-			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{
@@ -4653,7 +4652,6 @@ if(!$mybb->input['action'])
 		if($banned['reason'])
 		{
 			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
-			$banned['reason'] = my_wordwrap($banned['reason']);
 		}
 		else
 		{

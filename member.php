@@ -2539,7 +2539,6 @@ if($mybb->input['action'] == "profile")
 		if($memban['reason'])
 		{
 			$memban['reason'] = htmlspecialchars_uni($parser->parse_badwords($memban['reason']));
-			$memban['reason'] = my_wordwrap($memban['reason']);
 		}
 		else
 		{

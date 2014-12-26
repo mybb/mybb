@@ -4876,29 +4876,13 @@ function convert_through_utf8($str, $to=true)
 }
 
 /**
- * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
+ * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references. - DEPRECATED
  *
  * @param string The string to be word wrapped
  * @return string The word wraped string
  */
 function my_wordwrap($message)
 {
-	global $mybb;
-
-	if($mybb->settings['wordwrap'] > 0)
-	{
-		$message = convert_through_utf8($message);
-
-		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
-		{
-			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);
-		}
-
-		$new_message = convert_through_utf8($new_message, false);
-
-		return $new_message;
-	}
-
 	return $message;
 }
 
