@@ -447,19 +447,8 @@ class session
 		}
 		$onlinedata['time'] = TIME_NOW;
 		
-		$location = get_current_location();
-		if(strlen($location) > 150)
-		{
-			$location = substr($location, 0, 150);
-		}
-		$onlinedata['location'] = $db->escape_string($location);
-		
-		$useragent = $this->useragent;
-		if(my_strlen($useragent) > 100)
-		{
-			$useragent = my_substr($useragent, 0, 100);
-		}
-		$onlinedata['useragent'] = $db->escape_string($useragent);
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
@@ -509,19 +498,8 @@ class session
 		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_binary($this->packedip);
 		
-		$location = get_current_location();
-		if(strlen($location) > 150)
-		{
-			$location = substr($location, 0, 150);
-		}
-		$onlinedata['location'] = $db->escape_string($location);
-		
-		$useragent = $this->useragent;
-		if(my_strlen($useragent) > 100)
-		{
-			$useragent = my_substr($useragent, 0, 100);
-		}
-		$onlinedata['useragent'] = $db->escape_string($useragent);
+		$onlinedata['location'] = $db->escape_string(substr(get_current_location(), 0, 150));
+		$onlinedata['useragent'] = $db->escape_string(my_substr($this->useragent, 0, 100));
 		
 		$onlinedata['location1'] = (int)$speciallocs['1'];
 		$onlinedata['location2'] = (int)$speciallocs['2'];
