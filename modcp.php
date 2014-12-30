@@ -686,7 +686,7 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id)
+		LEFT JOIN ".TABLE_PREFIX."users pr ON (pr.uid=r.id2)
 		{$wflist_reports}
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
@@ -720,7 +720,7 @@ if($mybb->input['action'] == "allreports")
 			}
 			else if($report['type'] == 'reputation')
 			{
-				$user = build_profile_link($report['profileusername'], $report['id3']);
+				$user = build_profile_link($report['profileusername'], $report['id2']);
 				$reputation_link = "reputation.php?uid={$report['id3']}#rid{$report['id']}";
 				$report_data['content'] = $lang->sprintf($lang->report_info_reputation, $reputation_link, $user);
 			}
