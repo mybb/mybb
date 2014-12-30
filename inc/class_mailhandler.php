@@ -122,12 +122,12 @@ class MailHandler
 
 			if($mybb->settings['mail_handler'] == 'smtp')
 			{
-				$this->from = $mybb->settings['adminemail'];
+				$this->from = $mybb->settings['returnemail'];
 			}
 			else
 			{
 				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-				$this->from .= " <{$mybb->settings['adminemail']}>";
+				$this->from .= " <{$mybb->settings['returnemail']}>";
 			}
 		}
 
