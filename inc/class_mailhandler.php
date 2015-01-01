@@ -92,6 +92,23 @@ class MailHandler
 	public $parse_format = 'text';
 
 	/**
+	 * Selects between AdminEmail and ReturnEmail, dependant on if ReturnEmail is filled.
+	 */
+	function from_select()
+	{
+		global $mybb;
+		
+		if($mybb->settings['returnemail'])
+		{
+			return "returnemail";
+		}
+		else
+		{
+			return "adminemail";
+		}
+	}
+
+	/**
 	 * Builds the whole mail.
 	 * To be used by the different email classes later.
 	 *
@@ -122,26 +139,12 @@ class MailHandler
 
 			if($mybb->settings['mail_handler'] == 'smtp')
 			{
-				if($mybb->settings['returnemail'])
-				{
-					$this->from = $mybb->settings['returnemail'];
-				}
-				else
-				{
-					$this->from = $mybb->settings['adminemail'];
-				}
+				$this->from = $mybb->settings[$this->from_select()];
 			}
 			else
 			{
 				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-				if($mybb->settings['returnemail'])
-				{
-					$this->from .= " <{$mybb->settings['returnemail']}>";
-				}
-				else
-				{
-					$this->from .= " <{$mybb->settings['adminemail']}>";
-				}
+				$this->from .= " <".$mybb->settings[$this->from_select()].">";
 			}
 		}
 
@@ -152,14 +155,7 @@ class MailHandler
 		else
 		{
 			$this->return_email = "";
-			if($mybb->settings['returnemail'])
-			{
-				$this->return_email = $mybb->settings['returnemail'];
-			}
-			else
-			{
-				$this->return_email = $mybb->settings['adminemail'];
-			}
+			$this->return_email = $mybb->settings[$this->from_select()];
 		}
 
 		$this->set_to($to);
