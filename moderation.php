@@ -271,7 +271,7 @@ switch($mybb->input['action'])
 				}
 			}
 
-			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), (int)$mybb->input['date_month'], (int)$mybb->input['date_day'], (int)$mybb->input['date_year']);
+			$rundate = mktime((int)$date_time[0], (int)$date_time[1], date('s', TIME_NOW), $mybb->get_input('date_month', MyBB::INPUT_INT), $mybb->get_input('date_day', MyBB::INPUT_INT), $mybb->get_input('date_year', MyBB::INPUT_INT));
 
 			if(!$errors)
 			{

@@ -476,7 +476,7 @@ if($mybb->input['action'] == "edit")
 
 			$return_month = (int)substr($mybb->input['away_month'], 0, 2);
 			$return_day = (int)substr($mybb->input['away_day'], 0, 2);
-			$return_year = min((int)$mybb->input['away_year'], 9999);
+			$return_year = min($mybb->get_input('away_year', MyBB::INPUT_INT), 9999);
 
 			// Check if return date is after the away date.
 			$returntimestamp = gmmktime(0, 0, 0, $return_month, $return_day, $return_year);
@@ -522,8 +522,8 @@ if($mybb->input['action'] == "edit")
 			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
-			"dateformat" => (int)$mybb->input['dateformat'],
-			"timeformat" => (int)$mybb->input['timeformat'],
+			"dateformat" => $mybb->get_input('dateformat', MyBB::INPUT_INT),
+			"timeformat" => $mybb->get_input('timeformat', MyBB::INPUT_INT),
 			"language" => $mybb->input['language'],
 			"usernotes" => $mybb->input['usernotes'],
 			"away" => array(
@@ -572,12 +572,12 @@ if($mybb->input['action'] == "edit")
 
 		if($mybb->settings['usertppoptions'])
 		{
-			$updated_user['options']['tpp'] = (int)$mybb->input['tpp'];
+			$updated_user['options']['tpp'] = $mybb->get_input('tpp', MyBB::INPUT_INT);
 		}
 
 		if($mybb->settings['userpppoptions'])
 		{
-			$updated_user['options']['ppp'] = (int)$mybb->input['ppp'];
+			$updated_user['options']['ppp'] = $mybb->get_input('ppp', MyBB::INPUT_INT);
 		}
 
 		// Set the data of the user in the datahandler.
@@ -759,7 +759,7 @@ if($mybb->input['action'] == "edit")
 
 				if($mybb->input[$option['action']])
 				{
-					if((int)$mybb->input[$option['time']] == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
+					if($mybb->get_input($option['time'], MyBB::INPUT_INT) == 0 && $mybb->input[$option['period']] != "never" && $user[$option['update_field']] != 1)
 					{
 						// User has selected a type of ban, but not entered a valid time frame
 						$string = $option['action']."_error";
@@ -768,7 +768,7 @@ if($mybb->input['action'] == "edit")
 
 					if(!is_array($errors))
 					{
-						$suspend_length = fetch_time_length((int)$mybb->input[$option['time']], $mybb->input[$option['period']]);
+						$suspend_length = fetch_time_length($mybb->get_input($option['time'], MyBB::INPUT_INT), $mybb->input[$option['period']]);
 
 						if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 						{
@@ -868,7 +868,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$mybb->input['bday'][0] = $mybb->input['bday1'];
 		$mybb->input['bday'][1] = $mybb->input['bday2'];
-		$mybb->input['bday'][2] = (int)$mybb->input['bday3'];
+		$mybb->input['bday'][2] = $mybb->get_input('bday3', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -882,7 +882,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->input['away_day'] || $mybb->input['away_month'] || $mybb->input['away_year'])
 	{
-		$mybb->input['away_year'] = (int)$mybb->input['away_year'];
+		$mybb->input['away_year'] = $mybb->get_input('away_year', MyBB::INPUT_INT);
 	}
 	else
 	{
@@ -2500,7 +2500,7 @@ if($mybb->input['action'] == "inline_edit")
 							// Not currently banned - insert the ban
 							$insert_array = array(
 								'uid' => $user['uid'],
-								'gid' => (int)$mybb->input['usergroup'],
+								'gid' => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 								'oldgroup' => $user['usergroup'],
 								'oldadditionalgroups' => $user['additionalgroups'],
 								'olddisplaygroup' => $user['displaygroup'],
@@ -2617,9 +2617,9 @@ if($mybb->input['action'] == "inline_edit")
 						$errors[] = $lang->multi_selected_dates;
 					}
 
-					$day = (int)$mybb->input['day'];
-					$month = (int)$mybb->input['month'];
-					$year = (int)$mybb->input['year'];
+					$day = $mybb->get_input('day', MyBB::INPUT_INT);
+					$month = $mybb->get_input('month', MyBB::INPUT_INT);
+					$year = $mybb->get_input('year', MyBB::INPUT_INT);
 
 					// Selected a date - check if the date the user entered is valid
 					if($mybb->input['day'] || $mybb->input['month'] || $mybb->input['year'])

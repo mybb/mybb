@@ -168,11 +168,11 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$touid = (int)$mybb->input['touid'];
+	$touid = $mybb->get_input('touid', MyBB::INPUT_INT);
 	$toname = $db->escape_string($mybb->input['toname']);
 	$toemail = $db->escape_string_like($mybb->input['toemail']);
 
-	$fromuid = (int)$mybb->input['fromuid'];
+	$fromuid = $mybb->get_input('fromuid', MyBB::INPUT_INT);
 	$fromname = $db->escape_string($mybb->input['fromname']);
 	$fromemail = $db->escape_string_like($mybb->input['fromemail']);
 

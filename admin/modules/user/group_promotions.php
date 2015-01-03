@@ -229,26 +229,26 @@ if($mybb->input['action'] == "edit")
 			$update_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"posts" => (int)$mybb->input['postcount'],
+				"posts" => $mybb->get_input('postcount', MyBB::INPUT_INT),
 				"posttype" => $db->escape_string($mybb->input['posttype']),
-				"threads" => (int)$mybb->input['threadcount'],
+				"threads" => $mybb->get_input('threadcount', MyBB::INPUT_INT),
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
-				"registered" => (int)$mybb->input['timeregistered'],
+				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
 				"online" => $db->escape_string($mybb->input['timeonline']),
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
-				"reputations" => (int)$mybb->input['reputationcount'],
+				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
-				"referrals" => (int)$mybb->input['referrals'],
+				"referrals" => $mybb->get_input('referrals', MyBB::INPUT_INT),
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
-				"warnings" => (int)$mybb->input['warnings'],
+				"warnings" => $mybb->get_input('warnings', MyBB::INPUT_INT),
 				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
-				"newusergroup" => (int)$mybb->input['newusergroup'],
+				"newusergroup" => $mybb->get_input('newusergroup', MyBB::INPUT_INT),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
@@ -435,26 +435,26 @@ if($mybb->input['action'] == "add")
 			$new_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
-				"posts" => (int)$mybb->input['postcount'],
+				"posts" => $mybb->get_input('postcount', MyBB::INPUT_INT),
 				"posttype" => $db->escape_string($mybb->input['posttype']),
-				"threads" => (int)$mybb->input['threadcount'],
+				"threads" => $mybb->get_input('threadcount', MyBB::INPUT_INT),
 				"threadtype" => $db->escape_string($mybb->input['threadtype']),
-				"registered" => (int)$mybb->input['timeregistered'],
+				"registered" => $mybb->get_input('timeregistered', MyBB::INPUT_INT),
 				"registeredtype" => $db->escape_string($mybb->input['timeregisteredtype']),
-				"online" => (int)$mybb->input['timeonline'],
+				"online" => $mybb->get_input('timeonline', MyBB::INPUT_INT),
 				"onlinetype" => $db->escape_string($mybb->input['timeonlinetype']),
-				"reputations" => (int)$mybb->input['reputationcount'],
+				"reputations" => $mybb->get_input('reputationcount', MyBB::INPUT_INT),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
-				"referrals" => (int)$mybb->input['referrals'],
+				"referrals" => $mybb->get_input('referrals', MyBB::INPUT_INT),
 				"referralstype" => $db->escape_string($mybb->input['referralstype']),
-				"warnings" => (int)$mybb->input['warnings'],
+				"warnings" => $mybb->get_input('warnings', MyBB::INPUT_INT),
 				"warningstype" => $db->escape_string($mybb->input['warningstype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
 				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
-				"newusergroup" => (int)$mybb->input['newusergroup'],
-				"enabled" => (int)$mybb->input['enabled'],
-				"logging" => (int)$mybb->input['logging']
+				"newusergroup" => $mybb->get_input('newusergroup', MyBB::INPUT_INT),
+				"enabled" => $mybb->get_input('enabled', MyBB::INPUT_INT),
+				"logging" => $mybb->get_input('logging', MyBB::INPUT_INT)
 			);
 
 			$pid = $db->insert_query("promotions", $new_promotion);

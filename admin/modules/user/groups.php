@@ -175,7 +175,7 @@ if($mybb->input['action'] == "deny_join_request")
 
 if($mybb->input['action'] == "join_requests")
 {
-	$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	if(!$group['gid'] || $group['type'] != 4)
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "join_requests")
 }
 if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	if(!$group['gid'])
@@ -345,9 +345,9 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$new_leader = array(
 			"gid" => $group['gid'],
 			"uid" => $user['uid'],
-			"canmanagemembers" => (int)$mybb->input['canmanagemembers'],
-			"canmanagerequests" => (int)$mybb->input['canmanagerequests'],
-			"caninvitemembers" => (int)$mybb->input['caninvitemembers']
+			"canmanagemembers" => $mybb->get_input('canmanagemembers', MyBB::INPUT_INT),
+			"canmanagerequests" => $mybb->get_input('canmanagerequests', MyBB::INPUT_INT),
+			"caninvitemembers" => $mybb->get_input('caninvitemembers', MyBB::INPUT_INT)
 		);
 
 		$plugins->run_hooks("admin_user_groups_add_leader_commit");
@@ -372,7 +372,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 // Show a listing of group leaders
 if($mybb->input['action'] == "leaders")
 {
-	$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$group = $db->fetch_array($query);
 
 	if(!$group['gid'])
@@ -492,7 +492,7 @@ if($mybb->input['action'] == "delete_leader")
 		SELECT l.*, u.username
 		FROM ".TABLE_PREFIX."groupleaders l
 		INNER JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
-		WHERE l.lid='".(int)$mybb->input['lid']."'");
+		WHERE l.lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$leader = $db->fetch_array($query);
 
 	if(!$leader['lid'])
@@ -541,7 +541,7 @@ if($mybb->input['action'] == "edit_leader")
 		SELECT l.*, u.username
 		FROM ".TABLE_PREFIX."groupleaders l
 		INNER JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
-		WHERE l.lid='".(int)$mybb->input['lid']."'
+		WHERE l.lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'
 	");
 	$leader = $db->fetch_array($query);
 
@@ -559,9 +559,9 @@ if($mybb->input['action'] == "edit_leader")
 	if($mybb->request_method == "post")
 	{
 		$updated_leader = array(
-			"canmanagemembers" => (int)$mybb->input['canmanagemembers'],
-			"canmanagerequests" => (int)$mybb->input['canmanagerequests'],
-			"caninvitemembers" => (int)$mybb->input['caninvitemembers']
+			"canmanagemembers" => $mybb->get_input('canmanagemembers', MyBB::INPUT_INT),
+			"canmanagerequests" => $mybb->get_input('canmanagerequests', MyBB::INPUT_INT),
+			"caninvitemembers" => $mybb->get_input('caninvitemembers', MyBB::INPUT_INT)
 		);
 
 		$plugins->run_hooks("admin_user_groups_edit_leader_commit");
@@ -647,7 +647,7 @@ if($mybb->input['action'] == "add")
 				"description" => $db->escape_string($mybb->input['description']),
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
-				"stars" => (int)$mybb->input['stars'],
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage']),
 				"disporder" => 0
 			);
@@ -660,7 +660,7 @@ if($mybb->input['action'] == "add")
 			// Copying permissions from another group
 			else
 			{
-				$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['copyfrom']."'");
+				$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('copyfrom', MyBB::INPUT_INT)."'");
 				$existing_usergroup = $db->fetch_array($query);
 				foreach(array_keys($usergroup_permissions) as $field)
 				{
@@ -677,7 +677,7 @@ if($mybb->input['action'] == "add")
 			// Are we copying permissions? If so, copy all forum permissions too
 			if($mybb->input['copyfrom'] > 0)
 			{
-				$query = $db->simple_select("forumpermissions", "*", "gid='".(int)$mybb->input['copyfrom']."'");
+				$query = $db->simple_select("forumpermissions", "*", "gid='".$mybb->get_input('copyfrom', MyBB::INPUT_INT)."'");
 				while($forum_permission = $db->fetch_array($query))
 				{
 					unset($forum_permission['pid']);
@@ -740,7 +740,7 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$usergroup = $db->fetch_array($query);
 
 	if(!$usergroup['gid'])
@@ -814,91 +814,91 @@ if($mybb->input['action'] == "edit")
 				"description" => $db->escape_string($mybb->input['description']),
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
-				"stars" => (int)$mybb->input['stars'],
+				"stars" => $mybb->get_input('stars', MyBB::INPUT_INT),
 				"starimage" => $db->escape_string($mybb->input['starimage']),
 				"image" => $db->escape_string($mybb->input['image']),
-				"isbannedgroup" => (int)$mybb->input['isbannedgroup'],
-				"canview" => (int)$mybb->input['canview'],
-				"canviewthreads" => (int)$mybb->input['canviewthreads'],
-				"canviewprofiles" => (int)$mybb->input['canviewprofiles'],
-				"candlattachments" => (int)$mybb->input['candlattachments'],
-				"canviewboardclosed" => (int)$mybb->input['canviewboardclosed'],
-				"canpostthreads" => (int)$mybb->input['canpostthreads'],
-				"canpostreplys" => (int)$mybb->input['canpostreplys'],
-				"canpostattachments" => (int)$mybb->input['canpostattachments'],
-				"canratethreads" => (int)$mybb->input['canratethreads'],
-				"modposts" => (int)$mybb->input['modposts'],
-				"modthreads" => (int)$mybb->input['modthreads'],
-				"mod_edit_posts" => (int)$mybb->input['mod_edit_posts'],
-				"modattachments" => (int)$mybb->input['modattachments'],
-				"caneditposts" => (int)$mybb->input['caneditposts'],
-				"candeleteposts" => (int)$mybb->input['candeleteposts'],
-				"candeletethreads" => (int)$mybb->input['candeletethreads'],
-				"caneditattachments" => (int)$mybb->input['caneditattachments'],
-				"canpostpolls" => (int)$mybb->input['canpostpolls'],
-				"canvotepolls" => (int)$mybb->input['canvotepolls'],
-				"canundovotes" => (int)$mybb->input['canundovotes'],
-				"canusepms" => (int)$mybb->input['canusepms'],
-				"cansendpms" => (int)$mybb->input['cansendpms'],
-				"cantrackpms" => (int)$mybb->input['cantrackpms'],
-				"candenypmreceipts" => (int)$mybb->input['candenypmreceipts'],
-				"pmquota" => (int)$mybb->input['pmquota'],
-				"maxpmrecipients" => (int)$mybb->input['maxpmrecipients'],
-				"cansendemail" => (int)$mybb->input['cansendemail'],
-				"cansendemailoverride" => (int)$mybb->input['cansendemailoverride'],
-				"maxemails" => (int)$mybb->input['maxemails'],
-				"emailfloodtime" => (int)$mybb->input['emailfloodtime'],
-				"canviewmemberlist" => (int)$mybb->input['canviewmemberlist'],
-				"canviewcalendar" => (int)$mybb->input['canviewcalendar'],
-				"canaddevents" => (int)$mybb->input['canaddevents'],
-				"canbypasseventmod" => (int)$mybb->input['canbypasseventmod'],
-				"canmoderateevents" => (int)$mybb->input['canmoderateevents'],
-				"canviewonline" => (int)$mybb->input['canviewonline'],
-				"canviewwolinvis" => (int)$mybb->input['canviewwolinvis'],
-				"canviewonlineips" => (int)$mybb->input['canviewonlineips'],
-				"cancp" => (int)$mybb->input['cancp'],
-				"issupermod" => (int)$mybb->input['issupermod'],
-				"cansearch" => (int)$mybb->input['cansearch'],
-				"canusercp" => (int)$mybb->input['canusercp'],
-				"canuploadavatars" => (int)$mybb->input['canuploadavatars'],
-				"canchangename" => (int)$mybb->input['canchangename'],
-				"canbereported" => (int)$mybb->input['canbereported'],
-				"canchangewebsite" => (int)$mybb->input['canchangewebsite'],
-				"showforumteam" => (int)$mybb->input['showforumteam'],
-				"usereputationsystem" => (int)$mybb->input['usereputationsystem'],
-				"cangivereputations" => (int)$mybb->input['cangivereputations'],
-				"reputationpower" => (int)$mybb->input['reputationpower'],
-				"maxreputationsday" => (int)$mybb->input['maxreputationsday'],
-				"maxreputationsperuser" => (int)$mybb->input['maxreputationsperuser'],
-				"maxreputationsperthread" => (int)$mybb->input['maxreputationsperthread'],
-				"attachquota" => (int)$mybb->input['attachquota'],
-				"cancustomtitle" => (int)$mybb->input['cancustomtitle'],
-				"canwarnusers" => (int)$mybb->input['canwarnusers'],
-				"canreceivewarnings" =>(int)$mybb->input['canreceivewarnings'],
-				"maxwarningsday" => (int)$mybb->input['maxwarningsday'],
-				"canmodcp" => (int)$mybb->input['canmodcp'],
-				"showinbirthdaylist" => (int)$mybb->input['showinbirthdaylist'],
-				"canoverridepm" => (int)$mybb->input['canoverridepm'],
-				"canusesig" => (int)$mybb->input['canusesig'],
-				"canusesigxposts" => (int)$mybb->input['canusesigxposts'],
-				"signofollow" => (int)$mybb->input['signofollow'],
-				"edittimelimit" => (int)$mybb->input['edittimelimit'],
-				"maxposts" => (int)$mybb->input['maxposts'],
-				"showmemberlist" => (int)$mybb->input['showmemberlist'],
-				"canmanageannounce" => (int)$mybb->input['canmanageannounce'],
-				"canmanagemodqueue" => (int)$mybb->input['canmanagemodqueue'],
-				"canmanagereportedcontent" => (int)$mybb->input['canmanagereportedcontent'],
-				"canviewmodlogs" => (int)$mybb->input['canviewmodlogs'],
-				"caneditprofiles" => (int)$mybb->input['caneditprofiles'],
-				"canbanusers" => (int)$mybb->input['canbanusers'],
-				"canviewwarnlogs" => (int)$mybb->input['canviewwarnlogs'],
-				"canuseipsearch" => (int)$mybb->input['canuseipsearch']
+				"isbannedgroup" => $mybb->get_input('isbannedgroup', MyBB::INPUT_INT),
+				"canview" => $mybb->get_input('canview', MyBB::INPUT_INT),
+				"canviewthreads" => $mybb->get_input('canviewthreads', MyBB::INPUT_INT),
+				"canviewprofiles" => $mybb->get_input('canviewprofiles', MyBB::INPUT_INT),
+				"candlattachments" => $mybb->get_input('candlattachments', MyBB::INPUT_INT),
+				"canviewboardclosed" => $mybb->get_input('canviewboardclosed', MyBB::INPUT_INT),
+				"canpostthreads" => $mybb->get_input('canpostthreads', MyBB::INPUT_INT),
+				"canpostreplys" => $mybb->get_input('canpostreplys', MyBB::INPUT_INT),
+				"canpostattachments" => $mybb->get_input('canpostattachments', MyBB::INPUT_INT),
+				"canratethreads" => $mybb->get_input('canratethreads', MyBB::INPUT_INT),
+				"modposts" => $mybb->get_input('modposts', MyBB::INPUT_INT),
+				"modthreads" => $mybb->get_input('modthreads', MyBB::INPUT_INT),
+				"mod_edit_posts" => $mybb->get_input('mod_edit_posts', MyBB::INPUT_INT),
+				"modattachments" => $mybb->get_input('modattachments', MyBB::INPUT_INT),
+				"caneditposts" => $mybb->get_input('caneditposts', MyBB::INPUT_INT),
+				"candeleteposts" => $mybb->get_input('candeleteposts', MyBB::INPUT_INT),
+				"candeletethreads" => $mybb->get_input('candeletethreads', MyBB::INPUT_INT),
+				"caneditattachments" => $mybb->get_input('caneditattachments', MyBB::INPUT_INT),
+				"canpostpolls" => $mybb->get_input('canpostpolls', MyBB::INPUT_INT),
+				"canvotepolls" => $mybb->get_input('canvotepolls', MyBB::INPUT_INT),
+				"canundovotes" => $mybb->get_input('canundovotes', MyBB::INPUT_INT),
+				"canusepms" => $mybb->get_input('canusepms', MyBB::INPUT_INT),
+				"cansendpms" => $mybb->get_input('cansendpms', MyBB::INPUT_INT),
+				"cantrackpms" => $mybb->get_input('cantrackpms', MyBB::INPUT_INT),
+				"candenypmreceipts" => $mybb->get_input('candenypmreceipts', MyBB::INPUT_INT),
+				"pmquota" => $mybb->get_input('pmquota', MyBB::INPUT_INT),
+				"maxpmrecipients" => $mybb->get_input('maxpmrecipients', MyBB::INPUT_INT),
+				"cansendemail" => $mybb->get_input('cansendemail', MyBB::INPUT_INT),
+				"cansendemailoverride" => $mybb->get_input('cansendemailoverride', MyBB::INPUT_INT),
+				"maxemails" => $mybb->get_input('maxemails', MyBB::INPUT_INT),
+				"emailfloodtime" => $mybb->get_input('emailfloodtime', MyBB::INPUT_INT),
+				"canviewmemberlist" => $mybb->get_input('canviewmemberlist', MyBB::INPUT_INT),
+				"canviewcalendar" => $mybb->get_input('canviewcalendar', MyBB::INPUT_INT),
+				"canaddevents" => $mybb->get_input('canaddevents', MyBB::INPUT_INT),
+				"canbypasseventmod" => $mybb->get_input('canbypasseventmod', MyBB::INPUT_INT),
+				"canmoderateevents" => $mybb->get_input('canmoderateevents', MyBB::INPUT_INT),
+				"canviewonline" => $mybb->get_input('canviewonline', MyBB::INPUT_INT),
+				"canviewwolinvis" => $mybb->get_input('canviewwolinvis', MyBB::INPUT_INT),
+				"canviewonlineips" => $mybb->get_input('canviewonlineips', MyBB::INPUT_INT),
+				"cancp" => $mybb->get_input('cancp', MyBB::INPUT_INT),
+				"issupermod" => $mybb->get_input('issupermod', MyBB::INPUT_INT),
+				"cansearch" => $mybb->get_input('cansearch', MyBB::INPUT_INT),
+				"canusercp" => $mybb->get_input('canusercp', MyBB::INPUT_INT),
+				"canuploadavatars" => $mybb->get_input('canuploadavatars', MyBB::INPUT_INT),
+				"canchangename" => $mybb->get_input('canchangename', MyBB::INPUT_INT),
+				"canbereported" => $mybb->get_input('canbereported', MyBB::INPUT_INT),
+				"canchangewebsite" => $mybb->get_input('canchangewebsite', MyBB::INPUT_INT),
+				"showforumteam" => $mybb->get_input('showforumteam', MyBB::INPUT_INT),
+				"usereputationsystem" => $mybb->get_input('usereputationsystem', MyBB::INPUT_INT),
+				"cangivereputations" => $mybb->get_input('cangivereputations', MyBB::INPUT_INT),
+				"reputationpower" => $mybb->get_input('reputationpower', MyBB::INPUT_INT),
+				"maxreputationsday" => $mybb->get_input('maxreputationsday', MyBB::INPUT_INT),
+				"maxreputationsperuser" => $mybb->get_input('maxreputationsperuser', MyBB::INPUT_INT),
+				"maxreputationsperthread" => $mybb->get_input('maxreputationsperthread', MyBB::INPUT_INT),
+				"attachquota" => $mybb->get_input('attachquota', MyBB::INPUT_INT),
+				"cancustomtitle" => $mybb->get_input('cancustomtitle', MyBB::INPUT_INT),
+				"canwarnusers" => $mybb->get_input('canwarnusers', MyBB::INPUT_INT),
+				"canreceivewarnings" =>$mybb->get_input('canreceivewarnings', MyBB::INPUT_INT),
+				"maxwarningsday" => $mybb->get_input('maxwarningsday', MyBB::INPUT_INT),
+				"canmodcp" => $mybb->get_input('canmodcp', MyBB::INPUT_INT),
+				"showinbirthdaylist" => $mybb->get_input('showinbirthdaylist', MyBB::INPUT_INT),
+				"canoverridepm" => $mybb->get_input('canoverridepm', MyBB::INPUT_INT),
+				"canusesig" => $mybb->get_input('canusesig', MyBB::INPUT_INT),
+				"canusesigxposts" => $mybb->get_input('canusesigxposts', MyBB::INPUT_INT),
+				"signofollow" => $mybb->get_input('signofollow', MyBB::INPUT_INT),
+				"edittimelimit" => $mybb->get_input('edittimelimit', MyBB::INPUT_INT),
+				"maxposts" => $mybb->get_input('maxposts', MyBB::INPUT_INT),
+				"showmemberlist" => $mybb->get_input('showmemberlist', MyBB::INPUT_INT),
+				"canmanageannounce" => $mybb->get_input('canmanageannounce', MyBB::INPUT_INT),
+				"canmanagemodqueue" => $mybb->get_input('canmanagemodqueue', MyBB::INPUT_INT),
+				"canmanagereportedcontent" => $mybb->get_input('canmanagereportedcontent', MyBB::INPUT_INT),
+				"canviewmodlogs" => $mybb->get_input('canviewmodlogs', MyBB::INPUT_INT),
+				"caneditprofiles" => $mybb->get_input('caneditprofiles', MyBB::INPUT_INT),
+				"canbanusers" => $mybb->get_input('canbanusers', MyBB::INPUT_INT),
+				"canviewwarnlogs" => $mybb->get_input('canviewwarnlogs', MyBB::INPUT_INT),
+				"canuseipsearch" => $mybb->get_input('canuseipsearch', MyBB::INPUT_INT)
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
 			if($usergroup['type'] != 1)
 			{
-				$updated_group['candisplaygroup'] = (int)$mybb->input['candisplaygroup'];
+				$updated_group['candisplaygroup'] = $mybb->get_input('candisplaygroup', MyBB::INPUT_INT);
 			}
 
 			$plugins->run_hooks("admin_user_groups_edit_commit");
@@ -1193,7 +1193,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("usergroups", "*", "gid='".(int)$mybb->input['gid']."'");
+	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->get_input('gid', MyBB::INPUT_INT)."'");
 	$usergroup = $db->fetch_array($query);
 
 	if(!$usergroup['gid'])
