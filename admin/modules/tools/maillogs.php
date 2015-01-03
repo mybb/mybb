@@ -196,8 +196,7 @@ if(!$mybb->input['action'])
 	}
 	else if($mybb->input['fromname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username) = '{$fromname}'");
-		$user = $db->fetch_array($query);
+		$user = get_user_by_username($mybb->input['fromname'], array('fields' => 'uid, username'));
 		$from_filter = $user['username'];
 
 		if(!$user['uid'])

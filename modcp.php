@@ -3210,7 +3210,17 @@ if($mybb->input['action'] == "finduser")
 
 	if(isset($mybb->input['username']))
 	{
-		$where = " AND LOWER(username) LIKE '%".my_strtolower($db->escape_string_like($mybb->get_input('username')))."%'";
+		switch($db->type)
+		{
+			case 'mysql':
+			case 'mysqli':
+				$field = 'username';
+				break;
+			default:
+				$field = 'LOWER(username)';
+				break;
+		}
+		$where = " AND {$field} LIKE '%".my_strtolower($db->escape_string_like($mybb->get_input('username')))."%'";
 	}
 
 	// Sort order & direction
