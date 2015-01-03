@@ -67,7 +67,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => $mybb->get_input('action_1_usergroup', MyBB::INPUT_INT),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -88,7 +88,7 @@ if($mybb->input['action'] == "add_level")
 				);
 			}
 			$new_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
+				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
 				"action" => serialize($action)
 			);
 
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -236,7 +236,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 1,
-					"usergroup" => (int)$mybb->input['action_1_usergroup'],
+					"usergroup" => $mybb->get_input('action_1_usergroup', MyBB::INPUT_INT),
 					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "edit_level")
 				);
 			}
 			$updated_level = array(
-				"percentage" => (int)$mybb->input['percentage'],
+				"percentage" => $mybb->get_input('percentage', MyBB::INPUT_INT),
 				"action" => serialize($action)
 			);
 
@@ -406,7 +406,7 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
-	$query = $db->simple_select("warninglevels", "*", "lid='".(int)$mybb->input['lid']."'");
+	$query = $db->simple_select("warninglevels", "*", "lid='".$mybb->get_input('lid', MyBB::INPUT_INT)."'");
 	$level = $db->fetch_array($query);
 
 	// Does the warning level not exist?
@@ -463,7 +463,7 @@ if($mybb->input['action'] == "add_type")
 		{
 			$new_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => $mybb->get_input('points', MyBB::INPUT_INT),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "edit_type")
 		{
 			$updated_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
-				"points" => (int)$mybb->input['points'],
+				"points" => $mybb->get_input('points', MyBB::INPUT_INT),
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 

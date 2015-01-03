@@ -118,7 +118,7 @@ if($mybb->input['action'] == "add")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => (int)$mybb->input['parseorder']
+				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 
 			$cid = $db->insert_query("mycode", $new_mycode);
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "edit")
 				'regex' => $db->escape_string(str_replace("\x0", "", $mybb->input['regex'])),
 				'replacement' => $db->escape_string($mybb->input['replacement']),
 				'active' => $db->escape_string($mybb->input['active']),
-				'parseorder' => (int)$mybb->input['parseorder']
+				'parseorder' => $mybb->get_input('parseorder', MyBB::INPUT_INT)
 			);
 
 			$plugins->run_hooks("admin_config_mycode_edit_commit");
