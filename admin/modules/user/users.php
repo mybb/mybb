@@ -2858,9 +2858,9 @@ if($mybb->input['action'] == "inline_edit")
 
 					// Create an update array
 					$update_array = array(
-						"usergroup" => (int)$mybb->input['usergroup'],
+						"usergroup" => $mybb->get_input('usergroup', MyBB::INPUT_INT),
 						"additionalgroups" => $additionalgroups,
-						"displaygroup" => (int)$mybb->input['displaygroup']
+						"displaygroup" => $mybb->get_input('displaygroup', MyBB::INPUT_INT)
 					);
 
 					// Do the usergroup update for all those selected
